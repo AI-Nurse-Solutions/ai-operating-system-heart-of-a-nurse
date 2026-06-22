@@ -138,7 +138,10 @@ Cover:
 4. Stop conditions
 5. Monthly AI OS audit
 6. Integration Gate for Obsidian, Google Workspace, GitHub, and GitHub Pages
-7. Why every connector is a doorway requiring least privilege, approval gates, and a human owner
+7. macOS GitHub setup: `brew install gh`, `gh auth login`, private repo first, public Pages only when publishable
+8. Image generation for learning dashboards, personal sites, and public-safe visual drafts
+9. Video generation for short 4–8 second ambient dashboard loops
+10. Why every connector and media tool needs least privilege, cost awareness, approval gates, and a human owner
 
 Key line:
 

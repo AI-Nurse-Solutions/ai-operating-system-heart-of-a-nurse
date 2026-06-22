@@ -781,6 +781,156 @@ Before creating or publishing anything, scan for PHI, secrets, API keys, confide
 Do not push until I approve the repo name, visibility, and files.
 ```
 
+### macOS GitHub day-one setup
+
+Use this when participants are ready to let Hermes help with code storage or simple websites.
+
+1. Install GitHub CLI:
+
+```bash
+brew install gh
+```
+
+2. Log in:
+
+```bash
+gh auth login
+```
+
+Recommended beginner choices:
+
+- GitHub.com
+- HTTPS
+- browser-based login
+
+3. Confirm Hermes and GitHub are available:
+
+```bash
+hermes --version
+gh auth status
+```
+
+4. In Hermes Desktop, enable GitHub-related skills in the Projects or Professional Non-PHI profile.
+
+5. Optional advanced path: add a GitHub MCP server only when there is a real need for richer issue, PR, or repo tools. Store tokens in a secure environment file or Hermes auth path. Do not paste live tokens into public notes, public repos, slides, or screenshots.
+
+Safer MCP token pattern:
+
+```yaml
+mcp_servers:
+  github:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-github"]
+    env:
+      GITHUB_PERSONAL_ACCESS_TOKEN: "[REDACTED_OR_ENV_REFERENCE]"
+```
+
+For most beginners, `gh auth login` plus Hermes GitHub skills is enough.
+
+### Private code repo prompt
+
+```text
+This folder is my new project.
+Initialize git here, create a GitHub repository, and connect the two.
+Make the repository private by default.
+Before pushing, show me the files that will be committed and scan for PHI, secrets, API keys, credentials, and private notes.
+Do not push until I approve.
+```
+
+### Public GitHub Pages prompt
+
+```text
+This folder is a public GitHub Pages site.
+Create or update a simple static site using index.html, CSS, and public-safe assets.
+Before publishing, scan for PHI, secrets, API keys, confidential employer material, personal notes, and anything not intentionally public.
+Use the main branch root for GitHub Pages unless I specify otherwise.
+Verify the live site after deployment.
+```
+
+## Image Generation for Personal Projects and Learning Dashboards
+
+Hermes does not need a separate local image generator installed. Image generation is exposed through Hermes tools, commonly through Nous Portal / Tool Gateway or a direct FAL.ai backend.
+
+Simple setup path:
+
+```bash
+hermes setup --portal
+hermes tools
+```
+
+In `hermes tools`, enable image generation and choose a backend such as Nous Subscription or FAL.ai. Tool availability, models, and pricing can change; check the current Hermes docs and provider terms.
+
+Good first uses:
+
+- personal website hero image
+- learning dashboard background
+- Obsidian dashboard visual
+- project logo concepts
+- article/banner draft images
+
+Nurse-safe boundaries:
+
+- No patient photos.
+- No PHI in prompts.
+- No screenshots containing patient identifiers.
+- Do not imply clinical endorsement or diagnostic capability through generated images.
+- Use generated images as drafts until reviewed by a human.
+
+Starter image prompts:
+
+```text
+Generate a calm 16:9 hero illustration for a personal learning dashboard: warm navy, soft gold, subtle knowledge graph motif, nurse-centered but non-clinical, no text, no patient imagery.
+```
+
+```text
+Create a square logo concept for a personal learning vault called "Learning OS": simple vector style, warm human-centered design, no medical symbols, no text unless typography is reliable.
+```
+
+```text
+Generate a background for an Obsidian Personal Learning dashboard: dark mode friendly, subtle interconnected notes and soft glow, minimal distraction, no text.
+```
+
+## Video Generation for Learning Dashboards
+
+Video generation is optional and advanced. Use it mainly for short, low-distraction loops, not long clinical explainers.
+
+Common setup concepts:
+
+- Enable video tools through `hermes tools` when available.
+- Use Nous Tool Gateway when supported or a direct provider key such as FAL for video models.
+- Keep generated clips short and non-distracting.
+- Treat costs as variable and check provider pricing before repeated generation.
+
+Best uses for the course audience:
+
+- 4–8 second ambient learning dashboard loops
+- subtle knowledge graph motion
+- study timer background
+- daily review loop
+- gentle image-to-video animation from an already approved still image
+
+Design rules:
+
+- Prefer slow drift, pulse, glow, or parallax.
+- Avoid fast cuts or dramatic camera movement.
+- Avoid text inside videos unless the chosen model handles typography well.
+- Do not use patient images, clinical screenshots, or PHI.
+- Use human review before publishing.
+
+Starter video prompts:
+
+```text
+Create a 6-second seamless loop for a learning dashboard background: soft blue and slate abstract gradients, gentle particle drift, minimal motion, clean modern interface aesthetic, no text, 16:9.
+```
+
+```text
+Generate a subtle animated concept visual for a note-taking dashboard: interconnected nodes and faint lines pulsing slowly like a knowledge graph, calm and readable, dark-mode friendly, seamless 8-second loop, no text.
+```
+
+```text
+Animate this existing dashboard hero image into a 5-second loop with slow parallax, slight glow movement, and gentle depth. Preserve the original composition and keep motion subtle.
+```
+
 ---
 
 # Advanced Growth and Sovereign Systems Pathway

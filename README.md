@@ -15,5 +15,7 @@ Downloads:
 - macOS official .dmg installer path and day-one checklist: included in Week 2 and video script 2
 - Personal Projects and Personal Learning profile templates, knowledge inbox workflow, and weekly learning review prompts
 - Integration pathways for Apple Notes → Obsidian → Hermes, Google Workspace, GitHub, and GitHub Pages
+- macOS GitHub day-one walkthrough with private repo and public Pages prompts
+- Image and video generation prompts for personal sites and learning dashboards, with media safety gates
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

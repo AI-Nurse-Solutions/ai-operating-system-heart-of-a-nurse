@@ -292,6 +292,148 @@ Use two sub-agents for a non-clinical learning question. One should summarize be
 
 Do not enable computer use, messaging connectors, cron jobs, background loops, or autonomous approval until a normal chat, workspace boundary, and no-PHI workflow are working reliably.
 
+### Personal Projects and Personal Learning Profiles
+
+Hermes profiles let you run separate agents on the same machine. Each profile has its own configuration, `.env`, `SOUL.md`, memories, sessions, skills, cron jobs, state database, gateway state, and identity.
+
+Use profiles to avoid mixing personal learning, personal projects, and professional work.
+
+Recommended beginner profiles:
+
+```text
+Personal Projects
+Personal Learning
+Professional Non-PHI
+```
+
+Important boundary:
+
+> Profiles help separate memory, configuration, skills, and sessions. They are not a substitute for data governance, access control, or clinical privacy review.
+
+#### Personal Projects profile
+
+Use this for side projects, writing, small apps, personal goals, and low-stakes experiments.
+
+Suggested `SOUL.md`:
+
+```markdown
+# Personal Projects SOUL
+
+You help me plan and ship small personal side projects and learning experiments.
+You keep my goals realistic, help me choose next actions, and protect my time and energy.
+You do not access work files, patient information, or confidential employer material.
+You preserve my judgment and ask for approval before changing files or creating scheduled jobs.
+```
+
+Start with one recurring personal workflow:
+
+- weekly project review
+- daily idea grooming
+- lightweight learning plan
+- personal project next-action list
+
+Day-one prompt:
+
+```text
+I am in my Personal Projects profile.
+Here are my current personal projects and rough goals: [PASTE LIST]
+Design one simple weekly review workflow with clear input, output, manual approval, and a reusable prompt.
+Do not create a cron job yet. Do not access work or clinical files.
+```
+
+#### Personal Learning profile
+
+Use this for books, articles, podcasts, videos, courses, research notes, and your second brain.
+
+Suggested `SOUL.md`:
+
+```markdown
+# Personal Learning SOUL
+
+You help me learn efficiently, turn reading into structured notes, and surface past insights when relevant.
+You are evidence-aware, systems-thinking oriented, and careful about uncertainty.
+You distinguish source claims, assumptions, implications, and my own reflections.
+You do not turn learning notes into clinical recommendations.
+```
+
+Choose one knowledge home:
+
+- a local markdown folder such as `~/Notes/Learning`
+- an Obsidian vault
+- a course folder inside `My-Nurse-AI-OS`
+
+Create an inbox pattern:
+
+```text
+Learning/
+  Inbox/
+  Notes/
+  Weekly-Digests/
+  Skills/
+```
+
+Knowledge inbox prompt:
+
+```text
+I am in my Personal Learning profile.
+Process this as a learning inbox item.
+Use the HERMES Transformation Protocol:
+1. Hear and Harvest the source faithfully.
+2. Evaluate claims, assumptions, uncertainty, and bias.
+3. Reframe for nursing, wellbeing, leadership, policy, AI, or innovation.
+4. Map the system: stakeholders, incentives, feedback loops, constraints, and leverage points.
+5. Enable: create prompts, checklists, workflows, learning steps, or experiments.
+6. Steward: name safety, privacy, equity, accountability, reversibility, and stop conditions.
+
+Output a markdown note with:
+- title and date
+- 5–10 bullet summary
+- key concepts and definitions
+- what this changes for my thinking or practice
+- open questions
+- what I should verify
+- related notes or tags
+
+Do not use PHI. Do not make patient-specific recommendations.
+```
+
+#### Saving workflows as skills
+
+When a workflow works after 2–3 uses, turn it into a skill or reusable template.
+
+Good candidates:
+
+- `process-learning-inbox`
+- `weekly-project-review`
+- `research-claim-check`
+- `career-map-review`
+
+Skill rule:
+
+> Save repeated procedures as skills only after the workflow has proven useful. Do not create a skill for every one-off prompt.
+
+#### Weekly review cron — only after the manual workflow works
+
+Cron jobs run in fresh sessions, so prompts must be self-contained. Do not assume the cron job remembers the current chat.
+
+Begin with a manual weekly review. If the output is consistently useful, then create a scheduled job.
+
+Safe personal-learning cron concept:
+
+```text
+Every Sunday at 5pm, review the Learning/Notes folder for new or updated notes from the past 7 days. Create a weekly learning digest with: what I read, top 5 ideas, 3 follow-up questions, and 1 grounded learning focus for next week. Do not access clinical or work files. Do not process PHI. Save the digest to Learning/Weekly-Digests/.
+```
+
+Safe personal-project cron concept:
+
+```text
+Every Sunday at 5pm, review the Personal Projects folder and create a weekly project review with: completed progress, blocked items, highest-leverage next actions, and one thing to pause. Do not make purchases, send messages, change files outside this folder, or create new automations without approval.
+```
+
+Cron boundary:
+
+> Schedule only low-stakes, non-PHI, review-oriented workflows at first. Anything involving messaging, external systems, financial actions, legal decisions, clinical work, or employer systems requires a higher EDENA tier and human approval.
+
 ---
 
 ## Week 3 — Build Your Nurse-Centered Chief of Staff

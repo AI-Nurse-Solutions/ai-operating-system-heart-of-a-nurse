@@ -47,6 +47,8 @@ Cover:
 13. Add `HUMAN-AGENCY-RULES.md`
 14. Run first safe prompt
 15. Demonstrate one bounded file task inside the course folder
+16. Create separated profiles: Personal Projects, Personal Learning, and Professional Non-PHI
+17. Explain that profiles separate config, SOUL, memory, sessions, skills, cron jobs, and identity — but do not replace privacy governance
 
 Safe first prompt:
 

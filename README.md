@@ -1,6 +1,8 @@
 # AI Operating System with the Heart of a Nurse
 
-GitHub Pages course landing page + starter kit for setting up Hermes as a nurse-centered Chief of Staff, Learning OS, strategic advisor, and stewardship partner.
+Carry Florence Nightingale's lamp into the AI age. A nurse-centered course that turns data science and AI into a calm, governed operating system — for student nurses, staff nurses, and nurse leaders — reducing burden, sharpening judgment, and protecting human care. Hermes is set up as a nurse-centered Chief of Staff, Learning OS, strategic advisor, and stewardship partner.
+
+> Carry the lamp. Keep the ledger. Hermes supports. Humans judge. Nurses steward.
 
 Live page: https://ai-nurse-solutions.github.io/ai-operating-system-heart-of-a-nurse/
 

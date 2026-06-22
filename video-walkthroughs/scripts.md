@@ -6,23 +6,24 @@ These are short first-version scripts for a GitHub Pages + PDF workbook launch. 
 
 ## Video 1 — Welcome: A System with the Heart of a Nurse
 
-**Goal:** Explain the course promise and nursing posture.
+**Goal:** Explain the course promise and nursing posture through the Florence Nightingale frame.
 
 Opening:
 
-> This course is not about replacing nursing judgment with AI. It is about building an AI operating system that supports your life, learning, work, and contribution with the heart of a nurse.
+> Florence Nightingale carried a lamp — and a notebook. She stayed present with the suffering, and she charted the data that proved most deaths were preventable. Heart and evidence, together. This course hands you both instruments for the AI age. It is not about replacing nursing judgment with AI. It is about building an operating system that carries the busywork so you can carry the patient.
 
 Cover:
 
-1. Why nurses need more than a chatbot
-2. The three spheres: personal, professional, community / entrepreneurship
-3. Core rule: Hermes supports. Humans judge. Nurses steward.
-4. What this course is not: no PHI, no patient-specific care decisions, no replacement for licensed judgment
-5. What students will build by the end
+1. Florence's two instruments: the caring heart and the counting mind
+2. Who this is for — student nurse, staff nurse, nurse leader — and the ache each one carries
+3. The three spheres: personal, professional, community / entrepreneurship
+4. Core rule: Hermes supports. Humans judge. Nurses steward.
+5. What this course is not: no PHI, no patient-specific care decisions, no replacement for licensed judgment
+6. What students will build by the end
 
 Close:
 
-> Your first task is not to install a tool. Your first task is to define the values that will guide the tool.
+> Your first task is not to install a tool. Your first task is to define the values that will guide the tool. Carry the lamp. Keep the ledger.
 
 ---
 

@@ -2,6 +2,14 @@
 
 ## Starter Kit + Course Workbook
 
+> *"She was the lady with the lamp. She was also the first to chart the truth in a way the powerful could not ignore — and the truth saved lives."*
+
+### Carry the lamp into the AI age
+
+Florence Nightingale brought a lamp to the Crimean wards — and a notebook. She stayed present, comforted the dying, and protected human dignity at the bedside. She also gathered data, built her famous rose diagram, and proved that poor sanitation, not battle, was killing most soldiers. Compassion told her to act; **evidence told everyone else they had to.**
+
+That union — **the caring heart and the counting mind** — is the whole point of this course. Data science and AI are not here to replace the nurse who notices. They are here to extend her reach, lighten her load, and let her light fall on more people. You will build a calm, governed operating system that carries the busywork so you can carry the patient.
+
 **Course promise:** Build a nurse-centered AI operating system for personal, professional, and community / entrepreneurial use — governed by human agency, evidence-awareness, systems thinking, ethical stewardship, safety, and dignity.
 
 **Default posture:** Hermes becomes your nurse-centered Chief of Staff, Learning OS, strategic advisor, and stewardship partner.
@@ -9,6 +17,32 @@
 **Core line:**
 
 > Hermes supports. Humans judge. Nurses steward.
+
+---
+
+## Who This Is For: The Same Lamp, at Every Stage
+
+Whether you are learning the profession, carrying a full assignment, or shaping a whole unit, you face the same modern ache: too much information, too little time, and a quiet fear that the documentation is crowding out the patient. This course meets you where you are — and points you toward who you want to become.
+
+### The student nurse
+
+- **The ache:** Drowning in readings, care plans, and NCLEX prep. Unsure what matters, anxious about clinicals, afraid of falling behind, and tempted to let AI think *for* you instead of *with* you.
+- **What the course gives you:** A Learning OS that turns lectures, articles, and videos into clear study notes and self-tests; "think first, then consult AI" habits that build real clinical reasoning; and a calm system for deadlines, energy, and wellbeing so school does not consume you.
+- **Who you become:** A nurse who learns deeply, reasons independently, and trusts her own judgment — using AI as a tutor, never a crutch.
+
+### The staff nurse
+
+- **The ache:** Buried in charting, hand-offs, emails, and policy updates. Cognitive overload, alert fatigue, and the heartbreak of having less time at the bedside than the work on the screen.
+- **What the course gives you:** A Chief-of-Staff OS for daily briefs, weekly review, and energy protection; safe, no-PHI workflows that draft, summarize, and organize the non-clinical load; and ergonomics, focus blocks, and shutdown rituals that defend your body and attention.
+- **Who you become:** A nurse who reclaims time and presence — letting the system carry the busywork so you can carry the patient.
+
+### The nurse leader / educator
+
+- **The ache:** Asked to "do AI" without a method. Worried about safety, privacy, equity, and adoption — and about protecting staff and students from one more tool that adds burden instead of removing it.
+- **What the course gives you:** A governance method (HERMES, EDENA, profiles, approval gates, connector boundaries); Team Lab and workshop blueprints to train staff and faculty safely; and evaluation questions that judge any tool by workload, safety, equity, and human connection.
+- **Who you become:** A Nightingale for your unit — bringing evidence-led, dignity-first AI to your team without losing the heart of nursing.
+
+**One promise across all three:** by the end you do not just "use AI" — you steward it. You hold the lamp and you keep the ledger, exactly as Florence did, so technology serves the human in the bed and the human giving the care.
 
 ---
 
@@ -1947,3 +1981,13 @@ Monthly:
 # Completion Statement
 
 I have built a nurse-centered AI operating system for personal, professional, and community use, governed by human agency, evidence-awareness, safety boundaries, and nursing stewardship.
+
+---
+
+## The Closing Charge: Be a Nightingale for Your Time
+
+Florence Nightingale did not choose between the heart and the evidence — she held both, and that is why the wards changed. Your generation inherits her charge with new instruments. Data science and intelligent agents can now carry the counting, the sorting, the drafting, and the remembering, so that you can carry what only a nurse can: presence, judgment, and care for the human being in front of you.
+
+Carry the lamp. Keep the ledger. Bring your light on the human condition — and let the system do the rest.
+
+> Agents propose. Humans judge. Nurses steward.

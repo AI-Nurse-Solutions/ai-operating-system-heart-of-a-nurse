@@ -747,6 +747,88 @@ Use wikilinks when helpful.
 Do not process PHI, patient identifiers, confidential employer data, passwords, API keys, or private family information.
 ```
 
+---
+
+## Obsidian + Hermes Second-Brain Skill
+
+The previous section turns notes into markdown. This section turns your markdown vault into a **living file system** that Hermes can read, update, and reason over across devices.
+
+### Core idea: living files vs. dead files
+
+A **dead file** is one Hermes cannot easily access or update: a PDF, locked Google Doc, screenshot, or a note buried in a folder it never sees.
+
+A **living file** is a markdown note in a synced vault that Hermes can use as **memory, skill, reference, or prompt context** — and that you can see, edit, and audit in Obsidian's graph view.
+
+### When to use this
+
+- You want Hermes to remember patterns across sessions without repeating prompts.
+- You want to edit Hermes behavior by editing markdown notes instead of YAML or terminal configs.
+- You want your notes backed up across MacBook, phone, and a VPS.
+- You are ready to move from chat-in, chat-out into a stewarded second brain.
+
+### Setup options
+
+| Method | Effort | Cost | Best for |
+|---|---|---|---|
+| **Obsidian Sync** | Low | ~$4–5/month | Most users; encrypted; just works. |
+| **Syncthing** | Medium | Free | Self-hosting preference; more setup. |
+
+The open-source **Syncthing** path is free but requires more configuration. The official **Obsidian Sync** path is the easiest starting point.
+
+### Recommended vault structure
+
+```text
+My-Nurse-AI-OS/
+├── 00-Start-Here/
+│   └── MY-AI-VALUES.md, NO-PHI-BOUNDARY.md, HUMAN-AGENCY-RULES.md
+├── 01-SOUL/
+│   └── Personal-SOUL.md, Professional-SOUL.md, Community-SOUL.md
+├── 02-Skills/
+├── 03-Memory/
+├── 04-Projects/
+├── 05-Learning/
+└── 99-Archive/
+```
+
+### Setup prompts to hand a setup agent
+
+```text
+1. Create a new Obsidian vault called "My-Nurse-AI-OS" and build the folder structure above.
+2. Install Obsidian headless on the VPS and connect it to the same remote vault.
+3. Configure Hermes to load skills from 02-Skills/ and use 01-SOUL/ as part of its system memory.
+4. Test the loop: create a note on the MacBook, have Hermes edit it on the VPS, and confirm it syncs back within 30 seconds.
+```
+
+### Example commands for Hermes
+
+**Update a skill by editing its markdown file:**
+
+```text
+Edit my research skill so that every literature summary includes an EDENA-AS evidence-quality check before any citation is accepted.
+```
+
+**Run a deep-research goal into your vault:**
+
+```text
+/go Find the 10 most-cited papers on nurse-led AI governance from 2024–2026, summarize each, and save the results to 05-Learning/nurse-ai-governance-research.md.
+```
+
+**Weekly review from your notes:**
+
+```text
+Read 05-Learning/knowledge-inbox.md, 03-Memory/decisions/, and any weekly review notes from the last 7 days. Summarize what I learned, what I decided, and what to focus on next week. Save the review to 03-Memory/weekly-reviews/<YYYY-Wnn>.md.
+```
+
+### Safety rules
+
+- Keep the vault PHI-free unless it is in an approved, BAA-covered environment.
+- Use encryption and a strong password with Obsidian Sync.
+- Audit skills every 90 days; archive unused files.
+- Always keep a human review step before Hermes rewrites governance, values, or safety-critical files.
+- Use version history (Obsidian Sync or git) so you can roll back changes.
+
+> Rule: Hermes may write in the ledger. Nurses steward it.
+
 ## Google Workspace for a non-personal account
 
 Use Google Workspace only after the no-PHI boundary is clear.

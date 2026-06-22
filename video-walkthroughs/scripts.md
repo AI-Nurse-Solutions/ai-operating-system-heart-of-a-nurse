@@ -33,12 +33,29 @@ Close:
 Cover:
 
 1. Download/install Hermes Desktop
-2. Choose provider/model
-3. Explain local vs cloud realities in plain language
-4. Create a nurse-centered workspace folder
-5. Add `NO-PHI-BOUNDARY.md`
-6. Add `HUMAN-AGENCY-RULES.md`
-7. Run first safe prompt
+2. Open the UI: sessions, pinned messages, artifacts, skills, tools, messaging, settings
+3. Set the workspace to the course folder, not the whole computer
+4. Choose provider/model and explain that free/low-cost model availability can change
+5. Protect API keys: never place keys in public notes, screenshots, GitHub, or course forums
+6. Keep manual approval on for beginner use
+7. Explain memory as useful but governed: no PHI, no secrets, no confidential employer data
+8. Create a nurse-centered workspace folder
+9. Add `NO-PHI-BOUNDARY.md`
+10. Add `HUMAN-AGENCY-RULES.md`
+11. Run first safe prompt
+12. Demonstrate one bounded file task inside the course folder
+
+Safe first prompt:
+
+```text
+Read my Nurse-AI-OS folder and summarize the starter files you see. Do not access other folders. Do not modify anything yet.
+```
+
+Safe file-task prompt:
+
+```text
+Create a new folder called Practice inside My-Nurse-AI-OS and write a short README explaining that this is a safe test folder.
+```
 
 Safety line:
 

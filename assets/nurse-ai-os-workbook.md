@@ -127,6 +127,116 @@ Create a simple structure for personal, professional, and community / entreprene
 Include safety boundaries, human-agency rules, and weekly review templates.
 ```
 
+### Hermes Desktop Setup Walkthrough
+
+Use the setup tutorial as a practical orientation, but translate it through the nurse-centered safety lens.
+
+#### 1. Install and launch Hermes
+
+- Download Hermes Desktop for your operating system.
+- Launch the app and open a new session.
+- Notice the main areas: sessions, pinned messages, artifacts, skills, tools, messaging, settings, and provider/model settings.
+
+#### 2. Configure the workspace
+
+Set the workspace to a folder you intentionally created for this course, such as:
+
+```text
+My-Nurse-AI-OS/
+```
+
+Do not point Hermes at folders that contain patient information, confidential employer files, tax records, passwords, or sensitive family documents unless you fully understand and approve the access.
+
+#### 3. Choose safety controls
+
+Start with manual approval, not full autonomy.
+
+For nurses, the recommended beginner posture is:
+
+```text
+Manual approval first.
+Small safe tasks first.
+No PHI.
+No clinical decisions.
+No background automation until you understand the risk.
+```
+
+Smart or autonomous approval settings should be treated as advanced features. More access means more governance.
+
+#### 4. Understand memory
+
+Hermes can remember durable preferences and context. This is powerful, but nurses should treat memory as a governed space.
+
+Use memory for:
+
+- writing preferences
+- learning goals
+- non-PHI professional interests
+- course progress
+- recurring workflow preferences
+
+Do not store:
+
+- patient identifiers
+- confidential employer details
+- secrets, passwords, or API keys
+- sensitive family information
+- anything you would not want resurfacing later
+
+#### 5. Configure models and providers
+
+Hermes can connect to providers such as OpenRouter, Google Gemini, GitHub Copilot, Anthropic, and others depending on current Hermes support and your account access.
+
+Some providers may list free or low-cost models. Treat “free” as temporary and subject to change. Always check current provider terms, privacy policy, rate limits, and cost before using a model for serious work.
+
+Never paste API keys into public notes, screenshots, course forums, shared documents, or GitHub repos. If a key appears in a file, revoke it and create a new one.
+
+#### 6. Test with a safe task
+
+Start with a low-risk task such as:
+
+```text
+Read my Nurse-AI-OS folder and summarize the starter files you see. Do not access other folders. Do not modify anything yet.
+```
+
+Then try a bounded file task:
+
+```text
+Create a new folder called Practice inside My-Nurse-AI-OS and write a short README explaining that this is a safe test folder.
+```
+
+#### 7. Use sub-agents responsibly
+
+Sub-agents can research different sides of a question in parallel while Hermes supervises and synthesizes the result.
+
+Safe beginner example:
+
+```text
+Fire two sub-agents for a non-clinical learning task.
+Agent 1: summarize the benefits of using AI for nurse professional development.
+Agent 2: summarize the risks and limitations.
+Then synthesize both sides and tell me what I should verify before acting.
+No PHI. No clinical decisions.
+```
+
+Avoid using sub-agents for patient-specific care, confidential employer work, or decisions with financial, legal, clinical, or employment consequences without human expert review.
+
+#### 8. Voice, messaging, and connectors
+
+Voice, Telegram, Discord, Slack, and other messaging integrations can make Hermes more useful, but each connector creates a new doorway.
+
+Before connecting a channel, ask:
+
+- What data can pass through this channel?
+- Who else can see it?
+- Can messages be forwarded, stored, or searched?
+- What should never be sent here?
+- How do I disconnect it?
+
+Connector rule:
+
+> Do not connect Hermes to sensitive healthcare systems, employer systems, patient data, or confidential channels without formal approval.
+
 ---
 
 ## Week 3 — Build Your Nurse-Centered Chief of Staff

@@ -11,5 +11,6 @@ Downloads:
 - Starter kit ZIP: `assets/nurse-ai-os-starter-kit.zip`
 - Video walkthrough scripts: `video-walkthroughs/scripts.md`
 - Advanced Growth Map and Sovereign Systems pathway: included in the workbook and starter kit governance folder
+- Hermes setup safety checklist: included in the starter kit and Week 2 workbook
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

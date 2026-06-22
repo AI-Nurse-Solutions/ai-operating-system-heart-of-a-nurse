@@ -20,5 +20,7 @@ Downloads:
 - Knowledge graph dashboard prompt pack for static images, ambient loops, and image-to-video
 - Three-lane research setup: personal knowledge, academic/medical reading, and technical project research
 - Perplexity MCP research boundary with public-safe config pattern and verification rules
+- Messaging gateway selection guide for Telegram, WhatsApp, Slack, SMS, Email, and team use
+- Team Lab profile blueprint with SOUL.md, env sketch, core skills, cron ideas, and launch checklist
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

@@ -1104,6 +1104,200 @@ Do not process PHI or patient-specific clinical questions.
 
 ---
 
+# Messaging Gateway and Team Collaboration
+
+Hermes can be accessed through a multi-platform messaging gateway. Think of each messaging platform as another doorway into the same agent profile.
+
+Gateway principle:
+
+> One agent can have many doors, but every door needs an owner, an allowlist, and a clear purpose.
+
+## Choosing a messaging channel
+
+Start with the channel you actually open every day.
+
+| Platform | Best for | Advantages | Watch-outs |
+|---|---|---|---|
+| Telegram | personal access, small groups, quick setup | easy BotFather setup, streaming, voice notes, images, files | separate from many work environments |
+| WhatsApp Cloud API | family / field teams / public-facing access | familiar app, official business API, buttons and media | Meta setup, webhooks, policy rules, 24-hour windows |
+| Slack | work teams | channel workflows, threads, team visibility | admin approval, not ideal for personal life |
+| Discord | communities and dev groups | streaming, media, community workflow | not common for healthcare professional settings |
+| Signal | privacy-focused communication | privacy posture | smaller ecosystem and less mainstream bot support |
+| SMS | universal phone access | no app required | provider cost, weak formatting, limited media |
+| Email | longform summaries and reports | universal, good for digests and triage | not real-time and can clutter inbox |
+
+Recommended beginner pattern for this course:
+
+```text
+Personal use: Telegram or WhatsApp
+Longform reports: Email
+Team use: Slack or Telegram
+```
+
+## Gateway security controls
+
+Never expose a tool-using Hermes bot to everyone.
+
+Use:
+
+- platform allowlists, such as Telegram or Slack user IDs
+- DM pairing / approval codes where available
+- separate profiles for personal, team, and experimental bots
+- manual approval for risky actions
+- a dedicated home channel for cron delivery
+
+Do not use:
+
+```text
+GATEWAY_ALLOW_ALL_USERS=true
+```
+
+for any bot with tool access, private notes, terminal access, email access, GitHub access, Google Workspace access, or MCP integrations.
+
+## Messaging setup prompt
+
+```text
+Help me choose the safest first Hermes messaging channel for my use case.
+Compare Telegram, WhatsApp, Slack, Email, and SMS for: setup difficulty, privacy, media support, team use, and risk.
+Recommend one starting channel and one reporting channel.
+Before setup, define allowed users, home channel, no-PHI boundary, and approval rules.
+```
+
+## Team collaboration model
+
+For a small team, do not let everyone create random shared agents. Use a stable team profile.
+
+Recommended five-person setup:
+
+```text
+One shared Team profile
+One primary team messaging bot
+A small shared skill library
+One daily or weekly scheduled report
+Personal profiles for individual experiments
+```
+
+Team boundaries:
+
+- shared profile for shared work only
+- personal profiles for drafts, experiments, private notes, and learning
+- no PHI or patient-specific clinical work
+- no public publishing without review
+- no external system changes without approval
+- no broad MCP access without tool filtering
+
+## Team Lab Profile Blueprint
+
+Use this when creating a small shared Hermes workspace for about five collaborators.
+
+Create the profile:
+
+```bash
+hermes profile create team-lab
+team-lab setup
+```
+
+### Team Lab SOUL.md
+
+```markdown
+# Identity
+You are the Team Lab agent for a small group of five collaborators.
+You support research, writing, light coding, and coordination across healthcare, technology, learning, and responsible innovation.
+You keep the team organized, reduce busywork, and surface important information at the right time.
+
+# Style
+Be concise, direct, and practical.
+Prefer bullet points and short sections.
+Explain reasoning when decisions matter, but avoid over-explaining simple things.
+When something is uncertain or needs human judgment, say so clearly and propose options.
+
+# Avoid
+Do not fabricate URLs, citations, or data.
+Do not make clinical decisions or practice medicine; structure evidence and highlight considerations instead.
+Do not run destructive or risky tools without explicit confirmation from a human.
+Do not spam channels; keep proactive messages focused and valuable.
+Do not process PHI, patient identifiers, confidential employer material, or secrets.
+
+# Defaults
+Optimize for usefulness and clarity over sounding impressive.
+Default to evidence-backed reasoning and cite sources when using web or research tools.
+Assume the shared workspace is the source of truth; update durable notes or repos rather than keeping important information only in chat.
+When a task could become a reusable workflow, suggest turning it into a named skill.
+When interacting in messaging channels, be respectful of noise: reply in-thread when possible and keep routine updates to one message.
+
+# Team and Surfaces
+You primarily work through:
+- Messaging: Team Lab Telegram or Slack channel for quick questions, triage, and summaries.
+- Files / Notes: shared notes or repo research/ and notes/ directories for durable records.
+- Web and Research: web tools and connected research services for up-to-date information.
+- Cron: scheduled reports for status, learning, and reminders.
+
+# Priorities
+1. Make the team faster by summarizing, prioritizing, and clarifying.
+2. Capture durable knowledge into shared notes and repos.
+3. Proactively spot follow-ups and next actions, but always let humans decide.
+4. Keep security, privacy, and safety at the center of all tool use.
+```
+
+### Public-safe .env sketch
+
+Do not paste real keys into course notes, screenshots, public repos, or shared chat.
+
+```bash
+# Messaging example: Telegram
+TELEGRAM_BOT_TOKEN=[REDACTED]
+TELEGRAM_ALLOWED_USERS=123456789,987654321,555555555
+
+# Optional Slack example
+SLACK_BOT_TOKEN=[REDACTED]
+SLACK_APP_TOKEN=[REDACTED]
+SLACK_ALLOWED_USERS=U12345,U67890
+
+# Optional GitHub token
+GITHUB_PERSONAL_ACCESS_TOKEN=[REDACTED]
+```
+
+### Minimal team skills
+
+Start with 3–4 skills only:
+
+- `summarize-meeting` — decisions, owners, next actions, open questions
+- `weekly-digest` — highlights, shipped work, risks, next focus
+- `triage-inbox` — P0/P1/P2 grouping, owner, next step
+- `research-brief` — question, source links, synthesis, uncertainty, next step
+
+Do not create a skill for every prompt. Create skills only for workflows the team repeats.
+
+### Team cron ideas
+
+Schedule only after the workflow works manually.
+
+Daily team recap:
+
+```text
+Every weekday at 5:30pm, summarize today's Team Lab notes or standup thread. Include decisions, blockers, owners, and next actions. Deliver to the Team Lab channel. If source access fails, report the limitation rather than guessing.
+```
+
+Weekly digest:
+
+```text
+Every Friday at 4pm, create a weekly Team Lab digest from approved shared notes, GitHub activity, and research notes. Include highlights, work shipped, risks, blockers, and three suggested focuses for next week. Deliver to the Team Lab channel.
+```
+
+Team launch checklist:
+
+- [ ] Team profile created
+- [ ] SOUL.md reviewed by team owner
+- [ ] One primary messaging channel chosen
+- [ ] Allowed users configured or paired
+- [ ] No-PHI and no-secrets boundary posted in channel
+- [ ] Three starter skills added
+- [ ] One scheduled report tested manually
+- [ ] Gateway logs reviewed after first use
+- [ ] Human owner assigned for skills, cron jobs, and integrations
+
+---
+
 # Advanced Growth and Sovereign Systems Pathway
 
 The foundational class prepares participants to work responsibly with individual AI assistants and agents. As their responsibilities and projects expand, the **Advanced Growth Map** introduces the skills required to supervise an increasingly complex AI ecosystem.

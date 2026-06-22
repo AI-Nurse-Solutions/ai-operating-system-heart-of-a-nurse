@@ -630,6 +630,159 @@ Named Human Owner:
 
 ---
 
+# Practical Integrations: Notes, Google Workspace, and GitHub
+
+These integrations should be added only after your basic Hermes setup, no-PHI boundary, workspace folder, and manual workflows are working.
+
+Integration principle:
+
+> Every connector is a doorway. Open only the doors you need, with the least privilege required, and keep a human owner responsible for review.
+
+## Apple Notes → Obsidian Vault → Hermes
+
+For learning and personal knowledge, the cleanest macOS pipeline is:
+
+```text
+Apple Notes → Obsidian vault → Hermes working with the vault as markdown files
+```
+
+### Step 1 — Move Apple Notes into Obsidian
+
+Goal: convert Apple Notes into durable markdown files.
+
+Recommended path:
+
+- Install Obsidian.
+- Use Obsidian's official Importer plugin.
+- Choose Apple Notes as the import format.
+- Follow Obsidian's instructions for selecting the Apple Notes database folder.
+- Confirm the imported notes appear as `.md` files with attachments preserved where possible.
+
+Alternative path:
+
+- Use an Apple Notes exporter tool to export notes as markdown.
+- Open the exported folder as an Obsidian vault.
+
+Result:
+
+```text
+A stable Obsidian vault folder on disk that contains your notes as markdown.
+```
+
+### Step 2 — Make Obsidian the home for notes
+
+Choose one single source of truth for notes going forward.
+
+Simple structure:
+
+```text
+Obsidian Vault/
+  Archive/Apple Notes Archive/
+  Inbox/
+  Learning/
+  Projects/
+  Personal/
+  Professional-Non-PHI/
+```
+
+Keep Apple Notes read-only or occasional. Use Obsidian as the durable knowledge home.
+
+### Step 3 — Point Hermes at the vault
+
+Hermes' Obsidian workflow is filesystem-first. It reads, searches, creates, and edits markdown notes in a vault folder.
+
+Set a vault path convention such as:
+
+```bash
+OBSIDIAN_VAULT_PATH=/Users/yourname/path/to/your/vault
+```
+
+Important safety rule:
+
+> Do not publish `.env` files, API keys, vault paths with sensitive usernames, or private note contents.
+
+When using file tools, Hermes needs the concrete absolute vault path. Do not pass unresolved variables like `$OBSIDIAN_VAULT_PATH` to file tools.
+
+Starter prompt:
+
+```text
+Use my Obsidian vault as my long-term learning notebook.
+Before writing, confirm the vault path and the target folder.
+Create new learning notes under Learning/Inbox unless I specify another folder.
+Use wikilinks when helpful.
+Do not process PHI, patient identifiers, confidential employer data, passwords, API keys, or private family information.
+```
+
+## Google Workspace for a non-personal account
+
+Use Google Workspace only after the no-PHI boundary is clear.
+
+Recommended path when you need Gmail + Drive + Docs:
+
+- Use the Hermes Google Workspace skill.
+- Use a dedicated non-personal Google account when possible.
+- Complete OAuth through the official Google Cloud / OAuth flow.
+- Enable only the APIs required for the workflow.
+- Keep a human approval step before sending emails, modifying files, or sharing documents.
+
+The Google Workspace integration may support Gmail, Calendar, Drive, Docs, Sheets, and Contacts depending on current Hermes setup.
+
+Email-only alternative:
+
+- Use the email / IMAP-SMTP path if you only need mailbox access.
+- For Gmail, use 2-step verification and an app password.
+- Do not use your normal Google password.
+
+Boundary:
+
+> Do not connect Hermes to personal Gmail, employer Gmail, Drive folders with PHI, confidential HR files, legal documents, or clinical operations folders unless formal governance and approval exist.
+
+Safe first Google Workspace prompt:
+
+```text
+Help me set up a dedicated non-personal Google Workspace connection for non-PHI learning and project work.
+Before any setup, list the scopes or APIs needed, what data they can access, and the approval boundaries.
+Do not send emails, modify files, share documents, or access clinical/employer data without explicit approval.
+```
+
+## GitHub and GitHub Pages
+
+GitHub can serve two different purposes:
+
+1. **Private working repos** for drafts, code, prompts, experiments, and project development.
+2. **Public GitHub Pages repos** for polished websites, landing pages, docs, and public learning artifacts.
+
+Recommended structure:
+
+```text
+Private repo = working area
+Public GitHub Pages repo = published output
+```
+
+Use private repos when material includes:
+
+- drafts
+- unfinished code
+- personal notes
+- proprietary ideas
+- private project planning
+- anything not ready to be copied or indexed
+
+Use public repos only when the content is intentionally publishable.
+
+GitHub Pages is for static public websites. Do not use it for secrets, API keys, private notes, PHI, clinical files, or dynamic apps requiring server-side secrets.
+
+Safe first GitHub prompt:
+
+```text
+Help me design a GitHub setup for this project.
+Separate what belongs in a private working repo from what belongs in a public GitHub Pages repo.
+Before creating or publishing anything, scan for PHI, secrets, API keys, confidential employer material, and private notes.
+Do not push until I approve the repo name, visibility, and files.
+```
+
+---
+
 # Advanced Growth and Sovereign Systems Pathway
 
 The foundational class prepares participants to work responsibly with individual AI assistants and agents. As their responsibilities and projects expand, the **Advanced Growth Map** introduces the skills required to supervise an increasingly complex AI ecosystem.

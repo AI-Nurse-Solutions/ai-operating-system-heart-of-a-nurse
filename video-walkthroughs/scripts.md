@@ -137,6 +137,8 @@ Cover:
 3. Loop Charter
 4. Stop conditions
 5. Monthly AI OS audit
+6. Integration Gate for Obsidian, Google Workspace, GitHub, and GitHub Pages
+7. Why every connector is a doorway requiring least privilege, approval gates, and a human owner
 
 Key line:
 

@@ -14,5 +14,6 @@ Downloads:
 - Hermes setup safety checklist: included in the starter kit and Week 2 workbook
 - macOS official .dmg installer path and day-one checklist: included in Week 2 and video script 2
 - Personal Projects and Personal Learning profile templates, knowledge inbox workflow, and weekly learning review prompts
+- Integration pathways for Apple Notes → Obsidian → Hermes, Google Workspace, GitHub, and GitHub Pages
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

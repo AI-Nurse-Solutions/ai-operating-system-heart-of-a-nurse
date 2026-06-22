@@ -931,6 +931,177 @@ Generate a subtle animated concept visual for a note-taking dashboard: interconn
 Animate this existing dashboard hero image into a 5-second loop with slow parallax, slight glow movement, and gentle depth. Preserve the original composition and keep motion subtle.
 ```
 
+### Knowledge Graph Dashboard Prompt Pack
+
+Use these when building a personal learning dashboard, Obsidian homepage, or knowledge-management visual.
+
+Static image prompts:
+
+```text
+Create a clean dark-mode knowledge graph dashboard background: interconnected glowing nodes and fine linking lines, soft blue and teal palette, subtle depth, modern research interface aesthetic, minimal visual clutter, large empty central area for dashboard cards, no text, no labels, no logos, 16:9.
+```
+
+```text
+Generate a minimalist personal learning dashboard hero image: abstract knowledge graph with clustered concepts, gentle gradient background in slate and indigo, small luminous nodes, elegant line connections, premium software product feel, readable behind interface panels, no labels, no text, 16:9.
+```
+
+```text
+Design a visual for a knowledge management dashboard: network map of ideas with a few brighter hub nodes and many faint peripheral nodes, calm scientific mood, clean dark background, subtle glassmorphism atmosphere, no text, no logos, 16:9.
+```
+
+Ambient loop prompts:
+
+```text
+Create a seamless 6-second loop for a dark-mode learning dashboard: a floating knowledge graph of glowing nodes and connecting lines, gentle pulse through the network, slow drifting particles, minimal camera movement, calm and non-distracting, slate blue and teal palette, no text, 16:9.
+```
+
+```text
+Generate an 8-second ambient loop for a personal knowledge dashboard: clustered concept nodes connected by elegant lines, subtle wave of light moving through the graph, steady camera, soft depth, modern research-lab interface feel, seamless loop, dark background, no text, 16:9.
+```
+
+Image-to-video prompt:
+
+```text
+Animate this knowledge graph dashboard image into a 5-second seamless loop with slow parallax, faint node pulsing, and a soft traveling light across a few connections. Keep composition stable and motion subtle for use behind interface cards. No scene changes, no camera jumps, no text.
+```
+
+Style variations:
+
+- Scientific: clinical, precise, network intelligence, cool blue, minimal glow.
+- Creative PKM: hand-drawn constellation of ideas, warm neutral background, elegant ink-like links, modern notebook aesthetic.
+- Futuristic: glassy nodes, volumetric depth, slow holographic pulse, premium AI dashboard aesthetic.
+- Quiet productivity: soft grayscale graph, one accent color, almost no particle effects, distraction-free UI background.
+
+Prompt rule:
+
+```text
+Create a [static image / seamless 6-second loop] for a [personal learning / knowledge management] dashboard: [knowledge graph subject], [color palette], [motion behavior], [camera behavior], [mood], readable behind interface panels, no text, 16:9.
+```
+
+## Research Integrations: Three-Lane Setup
+
+Hermes research should start simple and become more specialized only when needed.
+
+Core pattern:
+
+```text
+Native web tools → specialized MCP when needed → reusable research skills → scheduled review only after workflow is proven
+```
+
+### Lane 1 — Personal Knowledge Research
+
+Best for articles, newsletters, essays, podcasts, web pages, and learning notes.
+
+- Storage: Obsidian or a markdown vault.
+- Tools: `web_search`, `web_extract`, and browser automation only when needed.
+- Skills to create after the workflow works: `capture-article`, `compare-sources`, `weekly-digest`.
+- Output: a clean learning note with source link, summary, key ideas, open questions, and links to related notes.
+
+Prompt:
+
+```text
+Research this topic for my Personal Learning profile.
+Use open-web sources first.
+Create one Obsidian-ready markdown note with source links, key ideas, open questions, and what I should verify.
+Do not use PHI or confidential employer material.
+```
+
+### Lane 2 — Academic / Medical Reading
+
+Best for papers, guidelines, white papers, reports, and evidence summaries.
+
+- Storage: vault folders such as `Reading Inbox`, `Papers`, `Clinical Topics`, and `Evidence Summaries`.
+- Tools: `web_search`, `web_extract`, PDF URL extraction, and browser only when needed.
+- Skills to create after the workflow works: `read-paper`, `summarize-guideline`, `compare-studies`, `evidence-brief`.
+- Output: question, population, intervention/exposure, findings, limitations, confidence, practical takeaway, and original source link.
+
+Boundary:
+
+> Hermes may summarize and compare sources. It does not replace clinical judgment, guideline review, institutional policy, or licensed decision-making.
+
+Prompt:
+
+```text
+Read this academic or medical source as evidence, not as clinical advice.
+Separate claims, methods, findings, limitations, uncertainty, and practical implications.
+Create an evidence-aware note I can review against the original source.
+Do not make patient-specific recommendations.
+```
+
+### Lane 3 — Technical Project Research
+
+Best for codebases, GitHub issues, package choices, technical docs, and implementation decisions.
+
+- Storage: project repo `research/` or `notes/` folder.
+- Tools: `web_search`, `web_extract`, GitHub workflow, and MCP only when useful.
+- Skills to create after the workflow works: `repo-brief`, `research-lib`, `compare-approaches`, `weekly-tech-digest`.
+- Output: decision note, alternatives, tradeoffs, evidence links, and next implementation step.
+
+Prompt:
+
+```text
+Research this technical project question.
+Use web sources for external docs and GitHub/repo context only if approved.
+Write findings into a project research note with options, tradeoffs, risks, evidence links, and a recommended next step.
+Do not publish, push, or change code without approval.
+```
+
+## Perplexity Research via MCP
+
+Perplexity can be added as a specialized research source through MCP, but it should not replace Hermes' native web tools or source review.
+
+Best use:
+
+- citation-rich research questions
+- current topic reconnaissance
+- source discovery before deeper extraction
+- comparing against Hermes native web-search results
+
+Recommended pattern:
+
+```text
+Hermes = workflow brain
+Native web tools = baseline research
+Perplexity MCP = specialized citation-rich research source
+Obsidian / repo notes = durable output
+Skills = reusable method
+```
+
+Setup options:
+
+1. Composio Perplexity MCP — easier managed route if already using Composio.
+2. Direct Perplexity MCP server — more direct, self-managed route using a Perplexity API key.
+
+Safety requirements:
+
+- Store API keys in `.env` or the approved Hermes credential path; never paste real keys into notes, public repos, slides, or screenshots.
+- Use MCP tool filtering; expose only the tools needed.
+- Treat Perplexity answers as source leads, not final truth.
+- Verify high-stakes claims against original sources.
+- Do not use Perplexity MCP for PHI, patient-specific decisions, confidential employer material, or clinical operations.
+
+Public-safe config pattern:
+
+```yaml
+mcp_servers:
+  perplexity:
+    command: npx
+    args: ["-y", "perplexity-mcp"]
+    env:
+      PERPLEXITY_API_KEY: "[REDACTED_OR_ENV_REFERENCE]"
+    tools:
+      include: ["search", "ask"]
+```
+
+Prompt:
+
+```text
+Use Perplexity MCP only as one research source.
+Find source leads and citations, then verify important claims with original sources where possible.
+Create an evidence-aware markdown note with: question, answer summary, sources to verify, uncertainties, and next research step.
+Do not process PHI or patient-specific clinical questions.
+```
+
 ---
 
 # Advanced Growth and Sovereign Systems Pathway

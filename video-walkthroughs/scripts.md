@@ -140,8 +140,11 @@ Cover:
 6. Integration Gate for Obsidian, Google Workspace, GitHub, and GitHub Pages
 7. macOS GitHub setup: `brew install gh`, `gh auth login`, private repo first, public Pages only when publishable
 8. Image generation for learning dashboards, personal sites, and public-safe visual drafts
-9. Video generation for short 4–8 second ambient dashboard loops
-10. Why every connector and media tool needs least privilege, cost awareness, approval gates, and a human owner
+9. Knowledge graph dashboard prompt pack: static image, ambient loop, and image-to-video patterns
+10. Video generation for short 4–8 second ambient dashboard loops
+11. Three-lane research setup: personal knowledge, academic/medical reading, and technical project research
+12. Perplexity MCP as an optional citation-rich source, never as final truth
+13. Why every connector, media tool, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
 
 Key line:
 

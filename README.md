@@ -17,5 +17,8 @@ Downloads:
 - Integration pathways for Apple Notes → Obsidian → Hermes, Google Workspace, GitHub, and GitHub Pages
 - macOS GitHub day-one walkthrough with private repo and public Pages prompts
 - Image and video generation prompts for personal sites and learning dashboards, with media safety gates
+- Knowledge graph dashboard prompt pack for static images, ambient loops, and image-to-video
+- Three-lane research setup: personal knowledge, academic/medical reading, and technical project research
+- Perplexity MCP research boundary with public-safe config pattern and verification rules
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

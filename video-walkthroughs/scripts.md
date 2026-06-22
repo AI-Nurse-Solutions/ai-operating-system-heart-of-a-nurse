@@ -146,7 +146,11 @@ Cover:
 12. Perplexity MCP as an optional citation-rich source, never as final truth
 13. Messaging gateway comparison: Telegram, WhatsApp, Slack, Discord, Signal, SMS, and Email
 14. Team Lab profile blueprint: SOUL.md, allowlisted gateway, shared skills, cron reports, and launch checklist
-15. Why every connector, media tool, messaging channel, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
+15. Screenshot workflows: paste/attach images, browser_vision for public/test pages, and no-PHI visual boundaries
+16. macOS Computer Use + Magnet layouts for study, writing, coding, and meeting setups
+17. AI browser boundary: Hermes as hub, Comet/Atlas as optional manual research browsers unless governed
+18. YouTube transcripts into Hermes: lecture → timestamped chapters, Obsidian note, follow-up questions
+19. Why every connector, media tool, messaging channel, screenshot, browser, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
 
 Key line:
 

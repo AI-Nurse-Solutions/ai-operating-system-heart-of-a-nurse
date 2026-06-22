@@ -152,7 +152,9 @@ Cover:
 18. YouTube transcripts into Hermes: lecture → timestamped chapters, Obsidian note, follow-up questions
 19. Living and thriving with AI: cognitive load, ergonomics, relationships, critical thinking, systems thinking, and leader/educator practice
 20. 90-minute workshop outline for nurses, leaders, educators, or students
-21. Why every connector, media tool, messaging channel, screenshot, browser, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
+21. Google Workspace as a governed suite: Gmail, Drive, Docs, Sheets, Slides, Meet, Calendar, and core services under BAA only when eligible/configured/approved
+22. Safe AI with PHI: personal Gmail and generic AI are no-PHI; use fictional/de-identified/public/synthetic material unless explicitly approved
+23. Why every connector, media tool, messaging channel, screenshot, browser, Workspace service, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
 
 Key line:
 

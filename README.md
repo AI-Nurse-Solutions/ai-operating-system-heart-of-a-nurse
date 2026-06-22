@@ -24,5 +24,6 @@ Downloads:
 - Team Lab profile blueprint with SOUL.md, env sketch, core skills, cron ideas, and launch checklist
 - Screenshot workflows, browser vision QA, macOS Computer Use + Magnet layouts, AI browser boundaries, and YouTube transcript learning-note prompts
 - Living and Thriving with AI module for nurse wellbeing, critical/systems thinking, digital wellness, ergonomics, leader/educator guidance, and a 90-minute workshop outline
+- Google Workspace HIPAA/BAA boundary module with safe AI one-pager, Workspace vs personal Gmail rules, nurse educator case-study flow, and governance checklist
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

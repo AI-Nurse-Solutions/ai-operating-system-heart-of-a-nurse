@@ -1659,6 +1659,134 @@ Use AI to support learning, organization, reflection, drafting, and evidence awa
 
 ---
 
+# Google Workspace, HIPAA Boundaries, and Safe AI Use
+
+Google Workspace matters because it is not just email. In eligible paid organizational plans, Workspace can become a centrally governed suite — Gmail, Drive, Docs, Sheets, Slides, Meet, Calendar, Chat, and related core services — under an institutional HIPAA Business Associate Agreement (BAA) when properly configured and approved.
+
+This does **not** mean every Google account, every Google product, or every AI tool is safe for PHI.
+
+Core rule:
+
+> Workspace may be part of a governed environment. Personal Gmail and generic external AI are not automatically governed environments.
+
+## Workspace vs personal Gmail
+
+| Environment | Practical posture |
+|---|---|
+| Personal Gmail / consumer Drive | No PHI, no patient stories, no employer confidential data, no proprietary organizational information. |
+| Workspace without accepted BAA / admin governance | Treat as non-PHI for healthcare use. |
+| Eligible paid Workspace with accepted BAA and configured controls | Potentially appropriate for PHI only when organizational privacy/compliance approves the workflow. |
+| Gemini or AI features inside approved Workspace | Potentially usable only if included in the covered services list, configured by admin, and explicitly approved. |
+| External generic AI tools | No PHI unless formally vetted, contracted, governed, and approved for PHI. |
+
+## Why Drive, Docs, Sheets, Slides, and Meet matter
+
+Nursing AI work often touches more than email:
+
+- Drive stores policies, curricula, QI reports, teaching materials, meeting notes, and datasets.
+- Docs is where drafts, case studies, policy language, and feedback are created.
+- Sheets may hold schedules, de-identified tracking logs, or evaluation data.
+- Slides carries education and leadership materials.
+- Meet and Chat may include discussion, transcripts, summaries, or recordings.
+
+If these tools are inside a governed Workspace, they can inherit central controls:
+
+- identity and account management
+- sharing restrictions
+- audit logs
+- retention rules
+- external sharing policies
+- access review
+- device and download controls
+
+That is very different from scattered personal accounts and stand-alone apps.
+
+## First-things-first PHI rule
+
+Unless privacy/compliance has explicitly approved the tool and workflow:
+
+```text
+PHI stays out of Hermes, personal Gmail, personal Drive, consumer AI tools, personal chatbots, and unapproved external AI.
+```
+
+Use instead:
+
+- fictional cases
+- de-identified teaching examples
+- public policies or articles
+- synthetic data
+- abstracted scenarios with no unique identifiers
+
+## Safe example: nurse educator case study
+
+### Green path — non-PHI / fictional
+
+1. Create a fictional case in an approved course planning document.
+2. Ask AI to draft learning objectives, debrief questions, and assessment prompts.
+3. Review for accuracy, bias, safety, and scope.
+4. Store the final teaching version in the approved course folder.
+
+### Yellow / Red path — real clinical material
+
+Stop before using external AI if the source includes:
+
+- patient name, initials, MRN, DOB, precise dates, room numbers, rare conditions, unique story details, photos, voice, or family identifiers
+- identifiable staff/student data
+- employer confidential information
+- operational details not approved for external sharing
+
+Escalate to organizational privacy, security, legal, or governance review.
+
+## One-page message for nurses and faculty
+
+> Unless our privacy/compliance team has explicitly said this AI is approved for PHI and it sits in a HIPAA-covered, BAA-backed, configured environment, we use AI only with de-identified, fictional, public, or non-sensitive information.
+
+## Do / Don't examples
+
+| Scenario | Safer action | Avoid |
+|---|---|---|
+| Drafting a student case | Use a fictional composite case | Paste a real patient story into external AI |
+| Summarizing a policy | Use public or internal-approved policy text in approved tools | Upload proprietary policy into personal AI |
+| Creating a teaching quiz | Use fictional details and educator review | Use identifiable patient details from practice |
+| Writing an email | Draft non-sensitive language | Include PHI in personal Gmail or generic AI |
+| Reviewing data | Use de-identified or synthetic data unless governed | Upload spreadsheets with identifiers to unapproved AI |
+
+## Workspace governance checklist
+
+Before using Google Workspace or AI for sensitive healthcare work, confirm:
+
+- [ ] Is this a paid, HIPAA-eligible Workspace plan?
+- [ ] Has the organization accepted Google's BAA?
+- [ ] Are the specific services being used covered and enabled appropriately?
+- [ ] Are sharing, download, retention, and audit policies configured?
+- [ ] Has privacy/compliance approved the AI feature or workflow?
+- [ ] Is minimum necessary access enforced?
+- [ ] Are staff trained on what cannot be pasted into AI?
+- [ ] Is there a process to report accidental disclosure or unsafe use?
+
+## Hermes posture
+
+For this course, Hermes remains a **no-PHI personal and professional learning environment** unless an institution deliberately deploys it under formal governance.
+
+Do not describe Hermes, Google Workspace, or any AI system as HIPAA-compliant just because it is paid, enterprise, encrypted, or self-hosted. Compliance requires:
+
+- correct environment
+- access control
+- auditability
+- encryption
+- risk analysis
+- written policies
+- workforce training
+- vendor review
+- BAA where required
+- explicit organizational approval
+
+Stewardship line:
+
+> BAA-backed tools can create a safer room. Nurses still need rules for what enters the room, who can see it, and what AI is allowed to do with it.
+
+---
+
 # Advanced Growth and Sovereign Systems Pathway
 
 The foundational class prepares participants to work responsibly with individual AI assistants and agents. As their responsibilities and projects expand, the **Advanced Growth Map** introduces the skills required to supervise an increasingly complex AI ecosystem.

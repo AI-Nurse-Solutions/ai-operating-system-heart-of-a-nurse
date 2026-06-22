@@ -10,5 +10,6 @@ Downloads:
 - Markdown workbook: `assets/nurse-ai-os-workbook.md`
 - Starter kit ZIP: `assets/nurse-ai-os-starter-kit.zip`
 - Video walkthrough scripts: `video-walkthroughs/scripts.md`
+- Advanced Growth Map and Sovereign Systems pathway: included in the workbook and starter kit governance folder
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

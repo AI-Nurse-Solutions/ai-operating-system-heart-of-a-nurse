@@ -323,6 +323,79 @@ Named Human Owner:
 
 ---
 
+# Advanced Growth and Sovereign Systems Pathway
+
+The foundational class prepares participants to work responsibly with individual AI assistants and agents. As their responsibilities and projects expand, the **Advanced Growth Map** introduces the skills required to supervise an increasingly complex AI ecosystem.
+
+Participants first learn to define agent roles, permissions, task boundaries, handoffs, escalation pathways, evaluation criteria, and human accountability. When one agent is no longer sufficient, the advanced pathway may include **OpenClaw integration** as an orchestration layer for coordinating multiple specialized agents across separate workspaces, functions, and communication channels. OpenClaw supports multi-agent routing with isolated agent workspaces, state, and session histories through a shared gateway.
+
+Reference: https://docs.openclaw.ai/concepts/multi-agent
+
+The progression is:
+
+```text
+AI user → AI supervisor → Agent manager → Multi-agent ecosystem steward
+```
+
+OpenClaw integration is introduced only when multiple agents create genuine operational value. Complexity is never added for appearance, novelty, or unnecessary automation.
+
+Every multi-agent system must retain:
+
+- Clearly designated human ownership
+- Least-privilege permissions
+- Defined agent responsibilities
+- Approval gates for consequential actions
+- Complete logging and auditability
+- Failure detection and escalation procedures
+- Data-minimization and confidentiality controls
+- Cost, energy, and environmental monitoring
+- A manual fallback and safe shutdown process
+
+OpenClaw or any comparable orchestration platform must not be connected to sensitive healthcare systems, patient information, clinical workflows, or organizational infrastructure without formal security review, technical validation, and institutional approval.
+
+## Separate Advanced Module: Sovereign On-Premises AI Systems
+
+Designing and implementing a **sovereign, on-premises AI system** for a hospital unit, clinic, public-health program, or community organization is a separate advanced module and implementation pathway.
+
+The foundational masterclass does not by itself prepare or authorize participants to deploy production clinical AI infrastructure. It provides the essential conceptual foundation needed to participate intelligently in such work, including:
+
+- AI and agent literacy
+- Human-in-the-loop workflow design
+- Critical and systems thinking
+- Source and output evaluation
+- Privacy-aware data practices
+- Role and permission design
+- AI governance fundamentals
+- Risk identification
+- Workflow mapping
+- Ethical and environmental stewardship
+
+The sovereign-systems module builds on those foundations and addresses:
+
+- Local and private model deployment
+- Secure infrastructure architecture
+- Identity and access management
+- Network segmentation
+- Protected health information controls
+- Data residency and retention
+- Encryption and key management
+- Retrieval-augmented knowledge systems
+- Model and agent evaluation
+- Audit trails and observability
+- Cybersecurity and supply-chain review
+- Backup, recovery, and business continuity
+- Clinical validation and change control
+- Interoperability with approved organizational systems
+- Incident response and safe shutdown
+- Regulatory, legal, privacy, and institutional governance
+- Lifecycle cost and environmental impact
+
+Such systems require collaboration among clinical leadership, nursing, informatics, information security, privacy, legal counsel, compliance, data governance, biomedical or technical teams, and the communities affected by their use.
+
+> **The class teaches participants how to begin working with AI responsibly. The Advanced Growth Map teaches them how to steward multiple agents. The Sovereign Systems Module prepares qualified teams to explore institutionally governed, locally controlled AI infrastructure.**
+
+---
+
 # First 10 Prompts
 
 ## 1. Daily Chief of Staff

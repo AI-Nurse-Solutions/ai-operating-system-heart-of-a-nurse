@@ -150,7 +150,9 @@ Cover:
 16. macOS Computer Use + Magnet layouts for study, writing, coding, and meeting setups
 17. AI browser boundary: Hermes as hub, Comet/Atlas as optional manual research browsers unless governed
 18. YouTube transcripts into Hermes: lecture → timestamped chapters, Obsidian note, follow-up questions
-19. Why every connector, media tool, messaging channel, screenshot, browser, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
+19. Living and thriving with AI: cognitive load, ergonomics, relationships, critical thinking, systems thinking, and leader/educator practice
+20. 90-minute workshop outline for nurses, leaders, educators, or students
+21. Why every connector, media tool, messaging channel, screenshot, browser, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
 
 Key line:
 

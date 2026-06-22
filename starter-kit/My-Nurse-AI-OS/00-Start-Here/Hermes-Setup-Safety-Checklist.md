@@ -2,6 +2,15 @@
 
 Use this checklist before connecting models, tools, memory, voice, messaging, or sub-agents.
 
+## 0. macOS official installer path
+
+- [ ] I downloaded Hermes Desktop from the official Hermes Agent site: https://hermes-agent.nousresearch.com/ or an official Nous Research GitHub release path.
+- [ ] I avoided third-party mirrors and unofficial download sites.
+- [ ] I opened the `.dmg`, dragged Hermes into Applications, ejected the DMG, and launched Hermes from Applications or Spotlight.
+- [ ] If macOS Gatekeeper warned me, I confirmed the download source before opening.
+- [ ] I completed first-run onboarding and verified one normal chat works.
+- [ ] Optional Terminal check: `hermes --tui` opens the terminal UI.
+
 ## 1. Workspace
 
 - [ ] Hermes workspace points to my intentional course folder, not my whole computer.

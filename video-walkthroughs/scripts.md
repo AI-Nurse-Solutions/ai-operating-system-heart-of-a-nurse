@@ -32,18 +32,21 @@ Close:
 
 Cover:
 
-1. Download/install Hermes Desktop
-2. Open the UI: sessions, pinned messages, artifacts, skills, tools, messaging, settings
-3. Set the workspace to the course folder, not the whole computer
-4. Choose provider/model and explain that free/low-cost model availability can change
-5. Protect API keys: never place keys in public notes, screenshots, GitHub, or course forums
-6. Keep manual approval on for beginner use
-7. Explain memory as useful but governed: no PHI, no secrets, no confidential employer data
-8. Create a nurse-centered workspace folder
-9. Add `NO-PHI-BOUNDARY.md`
-10. Add `HUMAN-AGENCY-RULES.md`
-11. Run first safe prompt
-12. Demonstrate one bounded file task inside the course folder
+1. Download/install Hermes Desktop from the official Hermes Agent site or official Nous Research release path
+2. On macOS: open the `.dmg`, drag Hermes into Applications, eject the DMG, and launch from Applications or Spotlight
+3. Complete first-run onboarding
+4. Open the UI: sessions, pinned messages, artifacts, skills, tools, messaging, settings
+5. Pick a provider/model; use Nous Portal or another supported provider if available, and remember that free/low-cost model availability can change
+6. Optional Terminal verification: `hermes --tui`
+7. Set the workspace to the course folder, not the whole computer
+8. Protect API keys: never place keys in public notes, screenshots, GitHub, or course forums
+9. Keep manual approval on for beginner use
+10. Explain memory as useful but governed: no PHI, no secrets, no confidential employer data
+11. Create a nurse-centered workspace folder
+12. Add `NO-PHI-BOUNDARY.md`
+13. Add `HUMAN-AGENCY-RULES.md`
+14. Run first safe prompt
+15. Demonstrate one bounded file task inside the course folder
 
 Safe first prompt:
 

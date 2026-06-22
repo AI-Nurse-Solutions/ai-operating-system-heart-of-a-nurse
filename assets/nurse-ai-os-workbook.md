@@ -133,8 +133,31 @@ Use the setup tutorial as a practical orientation, but translate it through the 
 
 #### 1. Install and launch Hermes
 
-- Download Hermes Desktop for your operating system.
-- Launch the app and open a new session.
+For macOS, the easiest beginner path is the official Hermes Desktop installer.
+
+- Go to the official Hermes Agent site: https://hermes-agent.nousresearch.com/
+- Download the macOS Desktop installer from the official site or official Nous Research GitHub release path.
+- Avoid third-party mirrors and unofficial download sites.
+- Open the downloaded `.dmg` file.
+- Drag Hermes into Applications when prompted.
+- Eject the DMG, then launch Hermes from Applications or Spotlight.
+- If Gatekeeper warns that the app came from the internet, confirm it came from the official Hermes/Nous source before opening.
+
+The Desktop app and CLI share the same Hermes core: config, provider settings, sessions, skills, memory, and profiles. A setup completed in Desktop also prepares the underlying Hermes CLI for later advanced use.
+
+If you are comfortable with Terminal, you can verify the terminal UI after setup:
+
+```bash
+hermes --tui
+```
+
+If the command does not work, use the official docs path first: run Hermes Desktop onboarding, or use the official `hermes setup` flow to repair provider/config issues.
+
+Beginner note: current platform support and installer details can change. Always use the official Hermes Agent docs as the source of truth.
+
+After launch:
+
+- Open a new session.
 - Notice the main areas: sessions, pinned messages, artifacts, skills, tools, messaging, settings, and provider/model settings.
 
 #### 2. Configure the workspace
@@ -236,6 +259,38 @@ Before connecting a channel, ask:
 Connector rule:
 
 > Do not connect Hermes to sensitive healthcare systems, employer systems, patient data, or confidential channels without formal approval.
+
+### macOS Day-One Checklist
+
+Use these first tasks after installation:
+
+1. **Verify a normal chat works**
+
+```text
+Give me a 5-bullet orientation to this Nurse-AI-OS course. Do not use clinical advice. Do not ask for PHI.
+```
+
+2. **Create a safe daily brief**
+
+```text
+Act as my nurse-centered Chief of Staff. Create a daily brief for personal priorities, professional learning, and one community or entrepreneurial action. Do not include patient information.
+```
+
+3. **Check your workspace boundary**
+
+```text
+Tell me what workspace folder you can see. Do not read outside the course folder. Tell me if anything looks sensitive before opening it.
+```
+
+4. **Try a balanced sub-agent research task**
+
+```text
+Use two sub-agents for a non-clinical learning question. One should summarize benefits; one should summarize risks. Synthesize the result and tell me what requires human verification.
+```
+
+5. **Do not add advanced features yet**
+
+Do not enable computer use, messaging connectors, cron jobs, background loops, or autonomous approval until a normal chat, workspace boundary, and no-PHI workflow are working reliably.
 
 ---
 

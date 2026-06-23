@@ -414,6 +414,18 @@ function stepDone(){
           <a class="btn ghost" href="assets/lamp-huddle.md">Join the Lamp Huddle</a>
         </div>
         <hr class="sep" />
+        <h3 style="color:var(--gold-2);margin:0 0 4px">Share your tier map</h3>
+        <p class="help">A one-image card you can post on LinkedIn or save for your records. Generated entirely in your browser. No data uploaded.</p>
+        <div style="text-align:center;margin:12px 0">
+          <canvas id="tierCanvas" width="1200" height="630" style="width:100%;max-width:600px;height:auto;border-radius:12px;border:1px solid var(--line);background:#0a1830"></canvas>
+        </div>
+        <div class="btnrow">
+          <button class="btn" id="dlCard" type="button">📥 Download tier-map card (PNG)</button>
+          <a class="btn secondary" id="shareLi" href="#" target="_blank" rel="noopener">🔗 Share on LinkedIn</a>
+        </div>
+        <p class="help">LinkedIn doesn't accept image uploads through a share URL — clicking "Share on LinkedIn" pre-fills a post with the course link and suggested caption. Download the card first, then attach it manually to the post.</p>
+
+        <hr class="sep" />
         <label for="email">Get the next Lamp Huddle invite</label>
         <p class="help">A real signup form lands the week of July 4. For now, click the button below — it will open your mail app with a pre-filled email to <strong>great.ai.nurses@gmail.com</strong>. Add your name and role, hit send, and you're on the list.</p>
         <div class="btnrow">
@@ -621,6 +633,163 @@ function downloadAll(){
   downloadOne(`Nurse-AI-OS-SOUL-Bundle-${(state.data.name||'you').replace(/\W+/g,'-')}.md`, bundle);
 }
 
+/* ---------- Tier-map social card (canvas) ---------- */
+
+function drawTierCard(canvas){
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // Background gradient (navy → deeper navy)
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#13294b');
+  bg.addColorStop(1,'#0a1830');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  // Subtle constellation dots in the background
+  ctx.fillStyle = 'rgba(20, 184, 166, 0.18)';
+  const dots = 60;
+  // Deterministic pseudo-random so the card is stable for the same name
+  let seed = (state.data.name||'NAIO').split('').reduce((a,c)=>a + c.charCodeAt(0), 1);
+  const rand = ()=>{ seed=(seed*9301+49297)%233280; return seed/233280; };
+  for (let i=0;i<dots;i++){
+    const x = rand()*W, y = rand()*H, r = rand()*3 + 1;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  }
+  // A few gold dots for warmth
+  ctx.fillStyle = 'rgba(251, 191, 36, 0.25)';
+  for (let i=0;i<12;i++){
+    const x = rand()*W, y = rand()*H, r = rand()*2 + 1;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  }
+
+  // Soft glow center-left (lamp halo)
+  const halo = ctx.createRadialGradient(170, H/2, 10, 170, H/2, 280);
+  halo.addColorStop(0,'rgba(251,191,36,0.35)');
+  halo.addColorStop(1,'rgba(251,191,36,0)');
+  ctx.fillStyle = halo;
+  ctx.fillRect(0,0,W,H);
+
+  // Lamp icon (simple stylized)
+  drawLamp(ctx, 130, H/2);
+
+  // Top kicker
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '600 22px -apple-system, Inter, Segoe UI, sans-serif';
+  ctx.textBaseline = 'top';
+  ctx.fillText('NURSE AI OS · EDENA TIER MAP', 320, 60);
+
+  // Headline
+  ctx.fillStyle = '#e7eef7';
+  ctx.font = '700 46px -apple-system, Inter, Segoe UI, sans-serif';
+  const name = state.data.name || 'A nurse';
+  const role = state.data.role || '';
+  const headline = `${name} is building their AI OS`;
+  ctx.fillText(headline, 320, 100);
+
+  // Subline
+  ctx.fillStyle = '#9fb0c8';
+  ctx.font = '400 22px -apple-system, Inter, Segoe UI, sans-serif';
+  if (role) ctx.fillText(role, 320, 158);
+
+  // Tier rows
+  const startY = 220;
+  const rowH = 56;
+  const tiers = state.data.spheres.map(k=>{
+    const def = SPHERES.find(s=>s.key===k);
+    if (!def) return null;
+    return {
+      label: def.label.split(' (')[0],
+      tier: state.data.tiers[k] || TIER_DEFAULT[k] || 'Green'
+    };
+  }).filter(Boolean);
+
+  if (tiers.length === 0) {
+    ctx.fillStyle = '#9fb0c8';
+    ctx.font = '400 22px -apple-system, Inter, Segoe UI, sans-serif';
+    ctx.fillText('Choose at least one sphere to populate this card.', 320, startY);
+  } else {
+    tiers.forEach((t, i)=>{
+      const y = startY + i*rowH;
+      // Sphere label
+      ctx.fillStyle = '#cfe1ff';
+      ctx.font = '500 26px -apple-system, Inter, Segoe UI, sans-serif';
+      ctx.fillText(t.label, 320, y);
+
+      // Tier pill (right side)
+      const pillX = 900, pillY = y-4, pillW = 200, pillH = 40;
+      const isGreen = t.tier === 'Green';
+      ctx.fillStyle = isGreen ? 'rgba(34,197,94,0.20)' : 'rgba(251,191,36,0.20)';
+      ctx.strokeStyle = isGreen ? '#22c55e' : '#fbbf24';
+      ctx.lineWidth = 2;
+      roundRect(ctx, pillX, pillY, pillW, pillH, 20);
+      ctx.fill(); ctx.stroke();
+
+      ctx.fillStyle = isGreen ? '#86efac' : '#fde68a';
+      ctx.font = '600 22px -apple-system, Inter, Segoe UI, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(t.tier.toUpperCase(), pillX + pillW/2, pillY + 7);
+      ctx.textAlign = 'left';
+    });
+  }
+
+  // Footer stewardship line
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = 'italic 24px -apple-system, Inter, Segoe UI, sans-serif';
+  ctx.fillText('Agents propose. Humans judge. Nurses steward.', 320, H - 100);
+
+  // URL
+  ctx.fillStyle = '#9fb0c8';
+  ctx.font = '500 20px -apple-system, Inter, Segoe UI, sans-serif';
+  ctx.fillText('nurse-ai-os.org', 320, H - 60);
+}
+
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+}
+
+function drawLamp(ctx, cx, cy){
+  // Lamp body (brass oval)
+  ctx.fillStyle = '#b7791f';
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + 30, 70, 35, 0, 0, Math.PI*2);
+  ctx.fill(); ctx.stroke();
+  // Spout
+  ctx.beginPath();
+  ctx.moveTo(cx + 60, cy + 20);
+  ctx.lineTo(cx + 110, cy);
+  ctx.lineTo(cx + 110, cy + 12);
+  ctx.lineTo(cx + 65, cy + 35);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  // Handle
+  ctx.beginPath();
+  ctx.arc(cx - 70, cy + 20, 22, -Math.PI/2, Math.PI/2, false);
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = '#b7791f';
+  ctx.stroke();
+  // Wick / flame base
+  ctx.fillStyle = '#fbbf24';
+  ctx.fillRect(cx + 95, cy - 18, 8, 18);
+  // Flame
+  const flame = ctx.createRadialGradient(cx + 99, cy - 30, 2, cx + 99, cy - 30, 30);
+  flame.addColorStop(0, '#fffbeb');
+  flame.addColorStop(0.4, '#fbbf24');
+  flame.addColorStop(1, 'rgba(183,121,31,0)');
+  ctx.fillStyle = flame;
+  ctx.beginPath();
+  ctx.ellipse(cx + 99, cy - 30, 18, 32, 0, 0, Math.PI*2);
+  ctx.fill();
+}
+
 /* ---------- Step engine ---------- */
 
 function buildSteps(){
@@ -693,6 +862,24 @@ function render(){
   });
   const dlAll = document.getElementById('dlAll');
   if (dlAll) dlAll.onclick = downloadAll;
+
+  // Tier-map social card (canvas)
+  const canvas = document.getElementById('tierCanvas');
+  if (canvas) {
+    drawTierCard(canvas);
+    const dlCard = document.getElementById('dlCard');
+    if (dlCard) dlCard.onclick = ()=>{
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = `Nurse-AI-OS-Tier-Map-${(state.data.name||'you').replace(/\W+/g,'-')}.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+    };
+    const shareLi = document.getElementById('shareLi');
+    if (shareLi) {
+      const url = 'https://nurse-ai-os.org/soul-quiz.html';
+      shareLi.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+    }
+  }
 
   // Mailto + copy email handlers (only on the final step)
   const mailtoBtn = document.getElementById('mailtoBtn');

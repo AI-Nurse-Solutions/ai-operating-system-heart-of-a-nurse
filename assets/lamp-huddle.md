@@ -82,6 +82,8 @@ The Lamp Huddle is a learning and stewardship space — **not** clinical guidanc
 
 The Huddle list goes live July 4, 2026 at https://nurse-ai-os.org.
 
+Until then, email **[great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com?subject=Lamp%20Huddle%20Invite)** with your name, role, and active spheres to be added to the manual invite list.
+
 Until then:
 
 - Download the [free course + starter kit](https://nurse-ai-os.org/)

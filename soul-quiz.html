@@ -414,9 +414,13 @@ function stepDone(){
           <a class="btn ghost" href="assets/lamp-huddle.md">Join the Lamp Huddle</a>
         </div>
         <hr class="sep" />
-        <label for="email">Optional: get the next Lamp Huddle invite by email</label>
-        <input id="email" type="email" placeholder="you@example.com" value="${esc(state.data.email)}" />
-        <p class="help">We don't have a list yet — for now, copy this email and send it to <a href="mailto:hello@nurse-ai-os.org?subject=Lamp%20Huddle%20Invite">hello@nurse-ai-os.org</a>. A signup form goes live the week of July 4.</p>
+        <label for="email">Get the next Lamp Huddle invite</label>
+        <p class="help">A real signup form lands the week of July 4. For now, click the button below — it will open your mail app with a pre-filled email to <strong>great.ai.nurses@gmail.com</strong>. Add your name and role, hit send, and you're on the list.</p>
+        <div class="btnrow">
+          <a id="mailtoBtn" class="btn" href="#">📧 Email me the Lamp Huddle invite</a>
+          <button class="btn secondary" id="copyEmail" type="button">Copy email address</button>
+        </div>
+        <p class="help" id="copyMsg" style="display:none;color:var(--teal-2)">Copied — paste it into your mail app.</p>
       `;
     },
     save(){ state.data.email = val('email'); },
@@ -689,6 +693,38 @@ function render(){
   });
   const dlAll = document.getElementById('dlAll');
   if (dlAll) dlAll.onclick = downloadAll;
+
+  // Mailto + copy email handlers (only on the final step)
+  const mailtoBtn = document.getElementById('mailtoBtn');
+  if (mailtoBtn) {
+    const role = state.data.role || '(your role)';
+    const name = state.data.name || '(your name)';
+    const spheres = state.data.spheres.map(k=>SPHERES.find(s=>s.key===k).label.split(' (')[0]).join(', ') || '(none specified)';
+    const subject = encodeURIComponent('Lamp Huddle invite request');
+    const body = encodeURIComponent(
+`Hi NAIO team,
+
+I just finished the SOUL Quiz and would like the next Lamp Huddle invite.
+
+Name: ${name}
+Role: ${role}
+Active spheres: ${spheres}
+
+Thanks!`);
+    mailtoBtn.href = `mailto:great.ai.nurses@gmail.com?subject=${subject}&body=${body}`;
+  }
+  const copyBtn = document.getElementById('copyEmail');
+  if (copyBtn) {
+    copyBtn.onclick = async ()=>{
+      try {
+        await navigator.clipboard.writeText('great.ai.nurses@gmail.com');
+        const msg = document.getElementById('copyMsg');
+        if (msg) { msg.style.display='block'; setTimeout(()=>msg.style.display='none', 3000); }
+      } catch(e) {
+        prompt('Copy this email address:', 'great.ai.nurses@gmail.com');
+      }
+    };
+  }
 }
 
 render();

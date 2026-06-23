@@ -410,9 +410,11 @@ function stepDone(){
         <div class="dl">${downloads}</div>
         <div class="btnrow">
           <button class="btn" id="dlAll">Download all (bundle .md)</button>
+          <button class="btn" id="dlOsConfig">⚙️ Export OS Config (naio-soul.json)</button>
           <a class="btn secondary" href="index.html">Back to the course</a>
           <a class="btn ghost" href="assets/lamp-huddle.md">Join the Lamp Huddle</a>
         </div>
+        <p class="help">The OS Config is a machine-readable file (no PHI) the NAIO installer uses to set up a personalized, governed Hermes — your spheres, voice, boundaries, and EDENA tier ceilings. <a href="naio-os/README.md">What is this?</a></p>
         <hr class="sep" />
         <h3 style="color:var(--gold-2);margin:0 0 4px">Share your tier map</h3>
         <p class="help">A one-image card you can post on LinkedIn or save for your records. Generated entirely in your browser. No data uploaded.</p>
@@ -631,6 +633,73 @@ function downloadAll(){
   const files = buildAllFiles();
   const bundle = files.map(f=>`<!-- FILE: ${f.path} -->\n\n${f.content}\n\n---\n`).join('\n');
   downloadOne(`Nurse-AI-OS-SOUL-Bundle-${(state.data.name||'you').replace(/\W+/g,'-')}.md`, bundle);
+}
+
+/* ---------- OS Config export (the personalization bridge) ---------- */
+
+const ROLE_KEY = {
+  'Student nurse':'student',
+  'Staff nurse (bedside / clinical role)':'staff',
+  'Nurse leader / manager / educator':'leader',
+  'Other':'other'
+};
+
+function buildOsConfig(){
+  const d = state.data, c = d.core||{};
+  const ceilings = {};
+  d.spheres.forEach(k=>{
+    // Onboarding clamps to green/yellow only.
+    const t = (d.tiers[k] || TIER_DEFAULT[k] || 'green').toLowerCase();
+    ceilings[k] = (t === 'yellow') ? 'yellow' : 'green';
+  });
+  const splitList = s => (s||'').split(/[\n,]/).map(x=>x.trim()).filter(Boolean);
+  return {
+    schema_version: '1.0.0',
+    generated_at: new Date().toISOString(),
+    generator: 'soul-quiz',
+    identity: {
+      name: d.name || '',
+      role: ROLE_KEY[d.role] || 'other',
+      role_label: d.role || '',
+      one_liner: c.self || '',
+      always_remember: c.remember || ''
+    },
+    voice: {
+      length: c.length || '',
+      formality: c.formality || '',
+      pushback: c.pushback || '',
+      avoid: c.avoid || ''
+    },
+    values: splitList(c.values),
+    spheres: d.spheres.slice(),
+    interests: (d.interests||[]).map(i=>{
+      const a = d.interestAnswers[i.name] || {};
+      return { name:i.name, why:a.why||'', help:a.help||'', anti_goal:a.anti||'', visibility:a.visibility||'' };
+    }),
+    tier_ceilings: ceilings,
+    boundaries: {
+      no_phi_confirmed: !!c.phi,
+      no_clinical_decisions_confirmed: !!c.license,
+      confidential_list: splitList(c.confidential),
+      wellbeing_rule: c.wellbeing || '',
+      decisions_always_mine: splitList(c.mineOnly),
+      drafts_without_asking: splitList(c.draftOk)
+    },
+    doctrine: {
+      edena: 'edena-policy@1.0.0',
+      florence_x: 'florence-x@1.0.0',
+      core_line: 'Agents propose. Humans judge. Nurses steward.'
+    }
+  };
+}
+
+function downloadOsConfig(){
+  const cfg = buildOsConfig();
+  if (!cfg.boundaries.no_phi_confirmed || !cfg.boundaries.no_clinical_decisions_confirmed) {
+    alert("The OS Config requires the PHI and clinical-decision boundaries to be confirmed on the Core SOUL step. Go back and confirm them first.");
+    return;
+  }
+  downloadOne(`naio-soul.json`, JSON.stringify(cfg, null, 2));
 }
 
 /* ---------- Tier-map social card (canvas) ---------- */
@@ -862,6 +931,8 @@ function render(){
   });
   const dlAll = document.getElementById('dlAll');
   if (dlAll) dlAll.onclick = downloadAll;
+  const dlOs = document.getElementById('dlOsConfig');
+  if (dlOs) dlOs.onclick = downloadOsConfig;
 
   // Tier-map social card (canvas)
   const canvas = document.getElementById('tierCanvas');

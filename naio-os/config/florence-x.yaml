@@ -1,0 +1,125 @@
+# Florence-X Doctrine — the build & quality discipline for the Nurse AI OS (NAIO)
+#
+# Where edena-policy.yaml governs WHAT an agent may DO, florence-x.yaml governs
+# HOW the system itself BEHAVES and how it is BUILT. It is the engineering
+# expression of Florence Nightingale's two instruments:
+#
+#   The caring heart  — dignity, human agency, wellbeing.
+#   The counting mind  — evidence, verification, observability.
+#
+# Doctrine: Carry the lamp. Keep the ledger.
+
+version: 1.0.0
+policy_id: florence-x
+motto: "Carry the lamp. Keep the ledger."
+
+# ---------------------------------------------------------------------------
+# THE TWO INSTRUMENTS — the paired values every NAIO behavior must honor.
+# ---------------------------------------------------------------------------
+instruments:
+  caring_heart:
+    - human_agency_first
+    - dignity_preserved
+    - wellbeing_aware
+    - presence_over_throughput
+  counting_mind:
+    - verify_before_claim
+    - evidence_awareness
+    - observability
+    - reproducibility
+
+# ---------------------------------------------------------------------------
+# BUILD DOCTRINE — rules the installer, harnesses, and agents must follow.
+# ---------------------------------------------------------------------------
+doctrine:
+
+  # Verify-before-claim: no success is reported until it is checked.
+  verify_before_claim:
+    enabled: true
+    applies_to: [installer, side_effecting_actions, deploys, file_writes]
+    rule: >
+      Any action with an external effect must run a verification step and pass it
+      before the action is reported as successful. A self-report is not proof.
+
+  # Evidence-awareness: research and citations are quality-checked.
+  evidence_awareness:
+    enabled: true
+    rubric: edena-as          # source, methodology, bias, applicability
+    rule: "Citations must be verified against the source before they are presented."
+
+  # Human agency: the gates that protect the human are not optional.
+  human_agency:
+    non_removable_tiers: [green, yellow]
+    rule: "Green and Yellow human gates cannot be disabled by config or by the agent."
+
+  # Model/routing policy: which models may touch which spheres.
+  routing:
+    prefer: cost-and-safety-aware
+    no_phi_capable_required_for: [professional, community]   # sphere must use a model under a no-PHI posture
+    evidence_preferring_defaults: true
+    fallback_chain_required: true
+    rule: >
+      The router selects models by sphere posture. Spheres that touch
+      professional or community work must use a model configured under the
+      no-PHI posture; the router refuses to route those spheres elsewhere.
+
+  # Observability: the lamp AND the ledger. Metrics plus wellbeing.
+  observability:
+    log_side_effects: true
+    surface_metrics: true
+    surface_wellbeing: true
+    rule: "Every ritual reports both what was done (ledger) and how the human is (lamp)."
+
+# ---------------------------------------------------------------------------
+# STEWARDSHIP RITUALS — seed cron jobs the installer schedules.
+# Each ritual is bounded by the EDENA tier of the sphere it serves.
+# ---------------------------------------------------------------------------
+rituals:
+
+  counting:   # the ledger — evidence and accounting
+    - id: weekly-review
+      cadence: "0 17 * * 0"            # Sunday 5pm
+      sphere: personal
+      tier_required: green
+      summary: "Summarize the week's notes, decisions, and learnings into a review file."
+    - id: tier-audit
+      cadence: "0 9 1 * *"            # first of the month, 9am
+      sphere: all
+      tier_required: green
+      summary: "List every agent/skill/workflow and confirm its assigned EDENA tier; flag drift."
+    - id: knowledge-inbox-digest
+      cadence: "0 8 * * 1"            # Monday 8am
+      sphere: professional
+      tier_required: yellow
+      summary: "Summarize the knowledge inbox and propose what to study or archive."
+
+  caring:     # the lamp — wellbeing and dignity
+    - id: wellbeing-check
+      cadence: "0 18 * * 5"           # Friday 6pm
+      sphere: personal
+      tier_required: green
+      summary: "Gentle reflection on energy, rest, and boundaries for the week ahead."
+    - id: boundary-review
+      cadence: "0 9 1 */3 *"          # quarterly
+      sphere: all
+      tier_required: green
+      summary: "Review the no-PHI boundary, confidentiality list, and tier ceilings."
+
+# ---------------------------------------------------------------------------
+# INSTALLER CONTRACT — what a compliant installer must guarantee.
+# ---------------------------------------------------------------------------
+installer_contract:
+  idempotent: true
+  preflight_required: true
+  healthcheck_required: true
+  never_claim_unverified: true
+  rollback_on_failure: true
+  refuse_if:
+    - phi_detected_in_import
+    - tier_above_yellow_at_onboarding
+    - missing_human_gate_on_green_or_yellow
+
+# ---------------------------------------------------------------------------
+# CLOSING
+# ---------------------------------------------------------------------------
+closing_line: "Hermes supports. Humans judge. Nurses steward."

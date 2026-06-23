@@ -1,0 +1,143 @@
+# EDENA Policy — the governance source of truth for the Nurse AI OS (NAIO)
+#
+# This file is READ BY THE RUNTIME on every turn to decide what an agent is
+# ALLOWED to do in a given sphere. It turns EDENA from labels in a document
+# into machine-enforced policy.
+#
+# Doctrine: Agents propose. Humans judge. Nurses steward.
+#
+# Read order at runtime:
+#   1. Determine the active sphere (from the loaded Sphere SOUL).
+#   2. Look up sphere_ceilings[<sphere>] -> the maximum tier allowed.
+#   3. Apply the tier's autonomy, side_effects, human_gate, and toolsets.
+#   4. A request that exceeds the ceiling is refused or down-scoped, never silently run.
+
+version: 1.0.0
+policy_id: edena-policy
+doctrine: "Agents propose. Humans judge. Nurses steward."
+
+# ---------------------------------------------------------------------------
+# TIER DEFINITIONS — the four autonomy levels.
+# Green and Yellow are available at onboarding. Orange and Red must be unlocked.
+# ---------------------------------------------------------------------------
+tiers:
+
+  green:
+    label: "Green — Draft only"
+    autonomy: draft-only
+    description: >
+      The agent drafts, suggests, summarizes, and organizes. It never takes an
+      action with an external side effect. The human reviews every output.
+    side_effects: forbidden          # no send / publish / commit / post / purchase
+    human_gate: every-output         # nothing leaves without explicit human review
+    toolsets: [file, search, vision] # read + draft only
+    network: read-only               # may fetch/read, may not write to remote systems
+    removable: false                 # the gate cannot be turned off at this tier
+
+  yellow:
+    label: "Yellow — Structured assist"
+    autonomy: structured-assist
+    description: >
+      The agent assists with structured work and may use more tools, but any
+      action with an external side effect is gated behind explicit approval and
+      no output is used externally without human review.
+    side_effects: gated              # allowed only after an explicit approval step
+    human_gate: before-external-use  # review required before anything is sent/published
+    toolsets: [file, search, vision, web, browser, todo]
+    network: read-write-gated        # remote writes require approval
+    removable: false
+
+  orange:
+    label: "Orange — Bounded autonomy"
+    autonomy: bounded
+    description: >
+      The agent may act inside a tightly defined, written scope, with all actions
+      logged. Available only after the learner completes the governance module.
+    side_effects: logged             # side effects allowed inside scope, fully logged
+    human_gate: scoped-checkpoint    # human checkpoint at defined boundaries
+    toolsets: [file, search, vision, web, browser, todo, terminal, cronjob]
+    network: read-write-logged
+    removable: false
+    requires_unlock: governance-module
+    requires_written_scope: true
+
+  red:
+    label: "Red — Semi-autonomous (audited)"
+    autonomy: semi-autonomous
+    description: >
+      The agent may operate semi-autonomously inside a verified scope, subject to
+      audit. Reserved. Not assignable during onboarding or by self-service.
+    side_effects: audited
+    human_gate: post-hoc-audit
+    toolsets: all
+    network: read-write-audited
+    removable: false
+    requires_unlock: verified-scope
+    requires_review_board: true
+
+# ---------------------------------------------------------------------------
+# HARD BOUNDARIES — apply at EVERY tier, including Red. Non-negotiable.
+# These are enforced at the harness layer before any tier logic runs.
+# ---------------------------------------------------------------------------
+hard_boundaries:
+  no_phi:
+    rule: "No PHI, patient identifiers, or HIPAA-regulated data unless inside an approved BAA-covered environment."
+    enforcement: refuse-and-redirect
+  no_clinical_decisions:
+    rule: "The agent does not make clinical decisions for an identified patient. The licensed human decides."
+    enforcement: refuse-and-redirect
+  human_agency:
+    rule: "Green and Yellow human gates are structurally non-removable."
+    enforcement: gate-locked
+  license_respect:
+    rule: "No action that violates the user's professional license, employer policy, or law."
+    enforcement: refuse-and-redirect
+  confidentiality:
+    rule: "Never disclose a specific person, employer, or client named in the user's confidentiality list."
+    enforcement: redact-or-refuse
+
+# ---------------------------------------------------------------------------
+# SPHERE CEILINGS — the maximum tier allowed per sphere.
+# These DEFAULTS are overwritten by the SOUL Quiz export (naio-soul.json).
+# Onboarding never assigns above Yellow.
+# ---------------------------------------------------------------------------
+sphere_ceilings:
+  personal: green
+  professional: yellow
+  community: yellow
+  sidegig: yellow
+  interest: green
+
+# ---------------------------------------------------------------------------
+# GATE BEHAVIOR — how a human gate is presented when triggered.
+# ---------------------------------------------------------------------------
+gates:
+  every-output:
+    prompt: "Review this draft before it is used anywhere. Approve, edit, or discard?"
+    blocking: true
+  before-external-use:
+    prompt: "This will be used externally (sent/published/shared). Approve, edit, or cancel?"
+    blocking: true
+  scoped-checkpoint:
+    prompt: "Reached a scope boundary. Continue within scope, adjust scope, or stop?"
+    blocking: true
+  post-hoc-audit:
+    prompt: "Action logged for audit. Flag for review?"
+    blocking: false
+
+# ---------------------------------------------------------------------------
+# AGENT/SUBAGENT INHERITANCE — delegated agents cannot exceed the sphere ceiling.
+# ---------------------------------------------------------------------------
+delegation:
+  inherit_sphere_soul: true
+  inherit_ceiling: true
+  may_exceed_parent_tier: false
+  leaf_default_tier: green
+
+# ---------------------------------------------------------------------------
+# AUDIT — review cadence for the tier map itself.
+# ---------------------------------------------------------------------------
+audit:
+  review_cadence: quarterly
+  review_after_incident: true
+  unused_skill_flag_days: 90

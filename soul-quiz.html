@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SOUL Quiz — Nurse AI OS</title>
+<meta name="description" content="A free, self-serve quiz that helps you draft tailored SOUL.md files for your Nurse AI OS — Personal, Professional, Community, Side Gig, and Interests. No PHI. Runs entirely in your browser." />
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon-lamp.svg" />
+<style>
+:root{
+  --navy:#10213f; --navy-2:#0c1830; --teal:#0f766e; --teal-2:#14b8a6;
+  --gold:#b7791f; --gold-2:#fbbf24; --ink:#e7eef7; --muted:#9fb0c8;
+  --card:#13294b; --line:#22365e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--navy);color:var(--ink);font:16px/1.55 -apple-system,Segoe UI,Inter,system-ui,sans-serif}
+a{color:var(--teal-2)}
+header{padding:28px 20px 8px;text-align:center}
+header h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px}
+header p{margin:0;color:var(--muted);max-width:720px;margin:6px auto 0}
+.wrap{max-width:780px;margin:0 auto;padding:18px 18px 80px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px;margin:14px 0;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.card h2{margin:0 0 4px;font-size:20px;color:var(--gold-2)}
+.card .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+label{display:block;margin:10px 0 6px;color:#cfe1ff;font-weight:600}
+input[type=text],input[type=email],select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0a1830;color:var(--ink);font:inherit}
+textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.row{grid-template-columns:1fr}}
+.checks label, .radios label{display:flex;align-items:flex-start;gap:8px;background:#0a1830;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;cursor:pointer;font-weight:500;color:#e7eef7}
+.checks input, .radios input{margin-top:3px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{display:inline-block;padding:11px 16px;border-radius:10px;border:1px solid var(--line);background:var(--teal);color:#fff;text-decoration:none;font-weight:600;cursor:pointer;font:inherit}
+.btn.secondary{background:transparent;color:var(--teal-2);border-color:var(--teal-2)}
+.btn.ghost{background:transparent;color:var(--muted);border-color:var(--line)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.progress{height:6px;background:#0a1830;border-radius:99px;overflow:hidden;margin:8px 0 18px;border:1px solid var(--line)}
+.progress > div{height:100%;background:linear-gradient(90deg,var(--teal-2),var(--gold-2));width:0;transition:width .3s}
+.kicker{display:inline-block;background:#0a1830;border:1px solid var(--line);color:var(--gold-2);padding:3px 10px;border-radius:99px;font-size:12px;letter-spacing:.4px;margin-bottom:6px;text-transform:uppercase}
+.help{color:var(--muted);font-size:13px;margin-top:6px}
+.footer{color:var(--muted);text-align:center;font-size:13px;margin-top:30px}
+.banner{background:linear-gradient(180deg,#0a1830,#13294b);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--muted);font-size:14px;margin:10px 0 16px}
+.banner strong{color:var(--gold-2)}
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:640px){.dl{grid-template-columns:1fr}}
+.dl a{display:block;padding:12px 14px;background:#0a1830;border:1px solid var(--line);border-radius:10px;color:var(--ink);text-decoration:none}
+.dl a:hover{border-color:var(--teal-2)}
+.dl a small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
+.mirror{background:#0a1830;border-left:3px solid var(--teal-2);padding:10px 12px;border-radius:8px;color:#cfe1ff;font-style:italic;margin-top:8px;display:none}
+.mirror.show{display:block}
+.spheretag{display:inline-block;background:#0a1830;border:1px solid var(--line);color:var(--gold-2);padding:2px 8px;border-radius:99px;font-size:12px;margin-left:8px}
+hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
+.nav-back{color:var(--muted);background:transparent;border:none;cursor:pointer;font:inherit;padding:6px 0}
+.nav-back:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<header>
+  <h1>The SOUL Quiz</h1>
+  <p>Draft your tailored Nurse AI OS soul files in ~15 minutes. Runs entirely in your browser. No data leaves your device.</p>
+</header>
+
+<div class="wrap">
+  <div class="banner">
+    <strong>Stewardship first.</strong> No PHI. No clinical decisions. Your answers stay on this page — nothing is uploaded. At the end you'll download Markdown files you can drop into Obsidian or any AI host.
+  </div>
+
+  <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+
+  <div id="app"></div>
+
+  <p class="footer">© NAIO Institute · <a href="index.html">← Back to course</a> · <a href="assets/lamp-huddle.md">Join the Lamp Huddle</a></p>
+</div>
+
+<script>
+/* ============================================================
+   SOUL Quiz — client-side only.
+   Mirrors the 6-stage SOUL Interview Agent framework.
+   ============================================================ */
+
+const SPHERES = [
+  {key:'personal', label:'Personal (daily life, health, family, finances)'},
+  {key:'professional', label:'Professional (clinical learning, career, license-aligned work)'},
+  {key:'community', label:'Community / Advocacy (volunteer, civic, nurse community)'},
+  {key:'sidegig', label:'Side Gig / Entrepreneurial (consulting, content, business)'},
+  {key:'interest', label:'Interest / Hobby (e.g., music, writing, gardening — you can list multiple)'}
+];
+
+const TIER_DEFAULT = {personal:'Green', professional:'Yellow', community:'Yellow', sidegig:'Yellow', interest:'Green'};
+
+const state = {
+  stepIndex: 0,
+  steps: [],          // built dynamically based on chosen spheres
+  data: {
+    name:'',
+    role:'',
+    time:'',
+    spheres:[],            // array of sphere keys
+    interests:[],          // array of {name, ...answers}
+    core:{},
+    sphereAnswers:{},      // {personal:{...}, professional:{...}, ...}
+    interestAnswers:{},    // {<interest name>:{...}}
+    safety:{phi:false, license:false, confidential:'', wellbeing:''},
+    tiers:{},
+    email:''
+  }
+};
+
+const $app = document.getElementById('app');
+const $bar = document.getElementById('bar');
+
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstElementChild; }
+function esc(s){ return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function val(id){ const e=document.getElementById(id); return e?(e.type==='checkbox'?e.checked:e.value.trim()):''; }
+function checked(name){ return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(x=>x.value); }
+function radio(name){ const e=document.querySelector(`input[name="${name}"]:checked`); return e?e.value:''; }
+
+/* ---------- Step builders ---------- */
+
+function stepIntakeRole(){
+  return {
+    title:'Stage 1 · Who are you?',
+    sub:'We start with your role and which spheres you want Hermes to support.',
+    render(){
+      return `
+        <label for="name">Name you want Hermes to use</label>
+        <input id="name" type="text" value="${esc(state.data.name)}" placeholder="e.g., Maria" />
+
+        <label>Which best describes you right now?</label>
+        <div class="radios">
+          ${['Student nurse','Staff nurse (bedside / clinical role)','Nurse leader / manager / educator','Other'].map(r=>`
+            <label><input type="radio" name="role" value="${esc(r)}" ${state.data.role===r?'checked':''}/>${esc(r)}</label>
+          `).join('')}
+        </div>
+
+        <label>Which spheres do you want Hermes to support? <small style="color:var(--muted);font-weight:400">Choose any that apply.</small></label>
+        <div class="checks">
+          ${SPHERES.map(s=>`
+            <label><input type="checkbox" name="spheres" value="${s.key}" ${state.data.spheres.includes(s.key)?'checked':''}/>${esc(s.label)}</label>
+          `).join('')}
+        </div>
+
+        <label>How much time can you give this quiz today?</label>
+        <select id="time">
+          ${['15 min','30 min','45 min','Multi-session'].map(t=>`<option ${state.data.time===t?'selected':''}>${t}</option>`).join('')}
+        </select>
+      `;
+    },
+    save(){
+      state.data.name = val('name');
+      state.data.role = radio('role');
+      state.data.spheres = checked('spheres');
+      state.data.time = val('time');
+    },
+    valid(){
+      return state.data.name && state.data.role && state.data.spheres.length>0;
+    }
+  };
+}
+
+function stepInterests(){
+  return {
+    title:'Interests / Hobbies',
+    sub:'List the interests or hobbies you want Hermes to support. One per line.',
+    render(){
+      return `
+        <label for="interestList">Name each interest (one per line)</label>
+        <textarea id="interestList" placeholder="Photography&#10;Bread baking&#10;Songwriting">${esc(state.data.interests.map(i=>i.name).join('\n'))}</textarea>
+        <p class="help">You'll answer a few quick questions for each one.</p>
+      `;
+    },
+    save(){
+      const lines = val('interestList').split('\n').map(s=>s.trim()).filter(Boolean);
+      // Preserve existing answers if interest names match
+      const existingByName = Object.fromEntries(state.data.interests.map(i=>[i.name,i]));
+      state.data.interests = lines.map(n=>existingByName[n]||{name:n});
+    },
+    valid(){ return state.data.interests.length>0; }
+  };
+}
+
+function stepCoreSOUL(){
+  const c = state.data.core;
+  return {
+    title:'Stage 2 · Core SOUL',
+    sub:'The base layer Hermes always loads. Identity, values, voice, boundaries, decisions.',
+    render(){
+      return `
+        <h3 style="color:var(--gold-2);margin:6px 0 0">Identity</h3>
+        <label for="self">In one sentence, who are you and what are you about right now?</label>
+        <input id="self" type="text" value="${esc(c.self||'')}" placeholder="A second-year nursing student trying to learn deeply and stay sane." />
+
+        <label for="values">3–5 non-negotiable values (comma-separated)</label>
+        <input id="values" type="text" value="${esc(c.values||'')}" placeholder="dignity, honesty, evidence, family, rest" />
+
+        <label for="remember">One thing Hermes should always remember about you</label>
+        <input id="remember" type="text" value="${esc(c.remember||'')}" placeholder="I am the primary caregiver for an aging parent." />
+
+        <hr class="sep" />
+        <h3 style="color:var(--gold-2);margin:0 0 0">Voice & communication</h3>
+        <div class="row">
+          <div>
+            <label>Default answer length</label>
+            <select id="length">
+              ${['Short & direct','Long & thorough','Bulleted & structured','Conversational'].map(o=>`<option ${c.length===o?'selected':''}>${o}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label>Formality</label>
+            <select id="formality">
+              ${['Casual','Professional','Formal'].map(o=>`<option ${c.formality===o?'selected':''}>${o}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <label>Pushback style</label>
+        <div class="radios">
+          ${['Always push back when I am wrong','Push back when stakes are high','Stay agreeable'].map(o=>`
+            <label><input type="radio" name="pushback" value="${esc(o)}" ${c.pushback===o?'checked':''}/>${esc(o)}</label>
+          `).join('')}
+        </div>
+        <label for="avoid">Words, tones, or framings Hermes should avoid</label>
+        <input id="avoid" type="text" value="${esc(c.avoid||'')}" placeholder="no toxic positivity, no corporate-speak, no clinical authority claims" />
+
+        <hr class="sep" />
+        <h3 style="color:var(--gold-2);margin:0 0 0">Boundaries</h3>
+        <div class="checks">
+          <label><input id="phi" type="checkbox" ${c.phi?'checked':''}/> I will never share PHI or HIPAA-regulated data with Hermes unless I am inside an institutional BAA-covered setup.</label>
+          <label><input id="license" type="checkbox" ${c.license?'checked':''}/> Hermes does not make clinical decisions for me. I make them.</label>
+        </div>
+        <label for="confidential">People, employers, or projects Hermes must never write about externally</label>
+        <textarea id="confidential" placeholder="My employer's name; my family members; clients of my side project">${esc(c.confidential||'')}</textarea>
+        <label>Wellbeing rule when I'm tired, overwhelmed, or unsafe</label>
+        <div class="radios">
+          ${['Slow down','Suggest rest','Refer me to human support','Pause work entirely'].map(o=>`
+            <label><input type="radio" name="wellbeing" value="${esc(o)}" ${c.wellbeing===o?'checked':''}/>${esc(o)}</label>
+          `).join('')}
+        </div>
+
+        <hr class="sep" />
+        <h3 style="color:var(--gold-2);margin:0 0 0">Decision rules</h3>
+        <label for="mineOnly">Decisions I always make myself (comma-separated)</label>
+        <input id="mineOnly" type="text" value="${esc(c.mineOnly||'')}" placeholder="financial, clinical, ethical, relational, health, legal, license-related" />
+        <label for="draftOk">Work Hermes may draft without asking</label>
+        <input id="draftOk" type="text" value="${esc(c.draftOk||'')}" placeholder="notes, summaries, outlines, schedules, templates, brainstorms" />
+      `;
+    },
+    save(){
+      state.data.core = {
+        self:val('self'), values:val('values'), remember:val('remember'),
+        length:val('length'), formality:val('formality'),
+        pushback:radio('pushback'), avoid:val('avoid'),
+        phi:val('phi'), license:val('license'),
+        confidential:val('confidential'), wellbeing:radio('wellbeing'),
+        mineOnly:val('mineOnly'), draftOk:val('draftOk')
+      };
+      state.data.safety.phi = state.data.core.phi;
+      state.data.safety.license = state.data.core.license;
+      state.data.safety.confidential = state.data.core.confidential;
+      state.data.safety.wellbeing = state.data.core.wellbeing;
+    },
+    valid(){
+      const c = state.data.core;
+      // Require PHI + license boundaries to proceed. This is the stewardship gate.
+      return c.self && c.values && c.phi && c.license;
+    }
+  };
+}
+
+const SPHERE_DEFS = {
+  personal: {
+    label:'Personal Sphere',
+    fields:[
+      {id:'goodweek', label:'What does a good week look like outside work/school?', type:'text'},
+      {id:'tasks', label:'Recurring personal tasks Hermes can help with', type:'text', ph:'meal planning, finances, journaling, scheduling'},
+      {id:'wellbeingNote', label:'Non-PHI wellbeing patterns Hermes should know', type:'text', ph:"e.g., I'm working on 7 hours of sleep"},
+      {id:'offlimits', label:'Off-limits topics even for AI help', type:'text', ph:'children, finances details, faith details'},
+      {id:'persona', label:'How should Hermes show up here?', type:'select', opts:['Coach','Planner','Journal partner','Quiet helper']}
+    ]
+  },
+  professional: {
+    label:'Professional Sphere',
+    fields:[
+      {id:'stage', label:'Where are you in your career right now?', type:'select', opts:['School','New grad','Experienced','Leadership','Transition']},
+      {id:'goals90', label:'Professional outcomes you want in the next 90 days', type:'textarea', ph:'NCLEX prep, certification, charting efficiency, leadership project'},
+      {id:'phiNever', label:'What CANNOT enter Hermes from work?', type:'text', ph:'PHI, internal policies, proprietary data'},
+      {id:'employer', label:'Employer or institution constraints Hermes must respect', type:'text', ph:'no naming employer, no policy quoting'},
+      {id:'skills', label:'Professional skills you most want Hermes to help build', type:'text'}
+    ]
+  },
+  community: {
+    label:'Community / Advocacy Sphere',
+    fields:[
+      {id:'area', label:'What community/advocacy work matters to you?', type:'text'},
+      {id:'audience', label:'Who is your audience or who do you serve?', type:'text'},
+      {id:'goals90', label:'Outcomes you want in the next 90 days', type:'textarea'},
+      {id:'voice', label:'Voice you want here', type:'select', opts:['Pastoral','Professional','Prophetic','Peer','Organizer']},
+      {id:'orgs', label:'Organizations whose names need careful handling', type:'text'},
+      {id:'offlimits', label:'What is off-limits even in community work?', type:'text'}
+    ]
+  },
+  sidegig: {
+    label:'Side Gig / Entrepreneurial Sphere',
+    fields:[
+      {id:'focus', label:'What is your side project / business / consulting focus?', type:'text'},
+      {id:'customers', label:'Who are your customers or supporters?', type:'text'},
+      {id:'goals90', label:'Revenue, growth, or impact goals in 90 days', type:'textarea'},
+      {id:'structure', label:'Legal / operational structure', type:'select', opts:['Sole proprietor','LLC','Partnership','Corporation','Not yet formed']},
+      {id:'noShare', label:'What CANNOT be shared externally?', type:'text', ph:'client data, contracts, pricing'},
+      {id:'helpAreas', label:'Where do you most want Hermes\' help?', type:'text', ph:'content, proposals, planning, financial modeling'},
+      {id:'stewardship', label:'Your stewardship boundary', type:'text', ph:'no exploitative copy, no medical claims, no clinical authority I do not hold'}
+    ]
+  }
+};
+
+function stepSphere(key){
+  const def = SPHERE_DEFS[key];
+  return {
+    title:`Stage 3 · ${def.label}`,
+    sub:`A short pass for this sphere. Answers shape ${def.label.split(' ')[0]}-SOUL.md.`,
+    render(){
+      const a = state.data.sphereAnswers[key] || {};
+      return def.fields.map(f=>{
+        const v = a[f.id]||'';
+        if (f.type==='select') {
+          return `<label>${esc(f.label)}</label><select id="${key}_${f.id}">${f.opts.map(o=>`<option ${v===o?'selected':''}>${o}</option>`).join('')}</select>`;
+        }
+        if (f.type==='textarea') {
+          return `<label for="${key}_${f.id}">${esc(f.label)}</label><textarea id="${key}_${f.id}" placeholder="${esc(f.ph||'')}">${esc(v)}</textarea>`;
+        }
+        return `<label for="${key}_${f.id}">${esc(f.label)}</label><input id="${key}_${f.id}" type="text" value="${esc(v)}" placeholder="${esc(f.ph||'')}" />`;
+      }).join('');
+    },
+    save(){
+      const out = {};
+      def.fields.forEach(f=>{ out[f.id] = val(`${key}_${f.id}`); });
+      state.data.sphereAnswers[key] = out;
+    },
+    valid(){ return true; }  // Allow pass; we never block stewardship work
+  };
+}
+
+function stepInterest(name){
+  return {
+    title:`Stage 3 · Interest: ${name}`,
+    sub:'A short pass for this interest. Answers shape Interest-<name>-SOUL.md.',
+    render(){
+      const a = state.data.interestAnswers[name] || {};
+      return `
+        <label for="i_why">Why does this matter to you?</label>
+        <input id="i_why" type="text" value="${esc(a.why||'')}" placeholder="joy, mastery, rest, community, expression" />
+        <label for="i_help">What would Hermes' help look like here?</label>
+        <input id="i_help" type="text" value="${esc(a.help||'')}" placeholder="research, scheduling, learning curriculum, journaling" />
+        <label for="i_anti">The anti-goal (what you do NOT want this to become)</label>
+        <input id="i_anti" type="text" value="${esc(a.anti||'')}" placeholder="don't let it become work; no engagement-bait" />
+        <label>Should this sphere be private or shared/public?</label>
+        <div class="radios">
+          ${['Private','Shared/Public'].map(o=>`<label><input type="radio" name="i_visibility" value="${o}" ${a.visibility===o?'checked':''}/>${o}</label>`).join('')}
+        </div>
+      `;
+    },
+    save(){
+      state.data.interestAnswers[name] = {
+        why:val('i_why'), help:val('i_help'), anti:val('i_anti'),
+        visibility:radio('i_visibility')
+      };
+    },
+    valid(){ return true; }
+  };
+}
+
+function stepTiers(){
+  return {
+    title:'Stage 5 · EDENA Tier Assignment',
+    sub:'Onboarding stays in Green or Yellow. Orange and Red are earned after the governance module.',
+    render(){
+      return state.data.spheres.map(k=>{
+        const def = TIER_DEFAULT[k] || 'Green';
+        const cur = state.data.tiers[k] || def;
+        return `
+          <label>${esc(SPHERES.find(s=>s.key===k).label)} <span class="spheretag">default: ${def}</span></label>
+          <div class="radios">
+            ${['Green','Yellow'].map(t=>`<label><input type="radio" name="tier_${k}" value="${t}" ${cur===t?'checked':''}/>${t}</label>`).join('')}
+          </div>
+        `;
+      }).join('');
+    },
+    save(){
+      state.data.spheres.forEach(k=>{
+        state.data.tiers[k] = radio(`tier_${k}`) || (TIER_DEFAULT[k]||'Green');
+      });
+    },
+    valid(){ return true; }
+  };
+}
+
+function stepDone(){
+  return {
+    title:'Stage 6 · Your SOUL files',
+    sub:'Generated locally in your browser. Download and drop into your Obsidian vault under 01-SOUL/ and 00-Start-Here/.',
+    render(){
+      const files = buildAllFiles();
+      const downloads = files.map(f=>`
+        <a href="#" data-name="${esc(f.name)}" data-content="${encodeURIComponent(f.content)}" class="dlfile">
+          ${esc(f.name)}<small>${esc(f.path)}</small>
+        </a>`).join('');
+      const bundleHref = '#bundle';
+      return `
+        <div class="banner"><strong>Carry the lamp.</strong> Hermes supports. Humans judge. Nurses steward. Welcome.</div>
+        <p>Click any file to download, or grab everything as a single bundle:</p>
+        <div class="dl">${downloads}</div>
+        <div class="btnrow">
+          <button class="btn" id="dlAll">Download all (bundle .md)</button>
+          <a class="btn secondary" href="index.html">Back to the course</a>
+          <a class="btn ghost" href="assets/lamp-huddle.md">Join the Lamp Huddle</a>
+        </div>
+        <hr class="sep" />
+        <label for="email">Optional: get the next Lamp Huddle invite by email</label>
+        <input id="email" type="email" placeholder="you@example.com" value="${esc(state.data.email)}" />
+        <p class="help">We don't have a list yet — for now, copy this email and send it to <a href="mailto:hello@nurse-ai-os.org?subject=Lamp%20Huddle%20Invite">hello@nurse-ai-os.org</a>. A signup form goes live the week of July 4.</p>
+      `;
+    },
+    save(){ state.data.email = val('email'); },
+    valid(){ return true; }
+  };
+}
+
+/* ---------- File generation ---------- */
+
+function fileCoreSOUL(){
+  const c = state.data.core;
+  const values = (c.values||'').split(',').map(s=>s.trim()).filter(Boolean).map(v=>`- ${v}`).join('\n') || '- _(not specified)_';
+  const confidential = (c.confidential||'').split(/[\n,]/).map(s=>s.trim()).filter(Boolean).map(v=>`  - ${v}`).join('\n') || '  - _(none specified)_';
+  const mineOnly = (c.mineOnly||'').split(',').map(s=>s.trim()).filter(Boolean).map(v=>`- ${v}`).join('\n') || '- _(none specified)_';
+  const draftOk = (c.draftOk||'').split(',').map(s=>s.trim()).filter(Boolean).map(v=>`- ${v}`).join('\n') || '- _(none specified)_';
+  const spheres = state.data.spheres.map(k=>`- [x] ${SPHERES.find(s=>s.key===k).label.split(' (')[0]}`).join('\n');
+  return `# Core SOUL — ${state.data.name||'(your name)'}
+
+> The base layer that applies across every sphere. Always loaded.
+
+## Identity
+- **Name Hermes should use:** ${state.data.name||''}
+- **Role:** ${state.data.role||''}
+- **In one sentence:** ${c.self||''}
+- **Always remember:** ${c.remember||''}
+
+## Values (non-negotiable)
+${values}
+
+## Voice and communication preferences
+- **Default answer length:** ${c.length||''}
+- **Tone:** ${c.formality||''}
+- **Pushback style:** ${c.pushback||''}
+- **Avoid:** ${c.avoid||''}
+
+## Boundaries
+- **PHI:** I will never share PHI, patient identifiers, or HIPAA-regulated data with Hermes. Hermes is not HIPAA-compliant unless I am inside an institutional BAA-covered setup. ${c.phi?'✅ Confirmed.':'⚠️ Not yet confirmed.'}
+- **License:** Hermes does not make clinical decisions for me. I make them. ${c.license?'✅ Confirmed.':'⚠️ Not yet confirmed.'}
+- **Confidentiality (never write about externally):**
+${confidential}
+- **Wellbeing rule:** When I am tired, overwhelmed, or unsafe, Hermes should ${c.wellbeing||'_(unspecified)_'}.
+
+## Decision rules
+- **I always decide myself:**
+${mineOnly}
+- **Hermes may draft without asking:**
+${draftOk}
+
+## Active spheres
+${spheres}
+
+## Stewardship line
+> Agents propose. Humans judge. Nurses steward.
+`;
+}
+
+function fileSphereSOUL(key){
+  const def = SPHERE_DEFS[key];
+  const a = state.data.sphereAnswers[key] || {};
+  const tier = state.data.tiers[key] || TIER_DEFAULT[key] || 'Green';
+  const sphereName = def.label.split(' ')[0];
+  const body = def.fields.map(f=>`- **${f.label}** ${a[f.id]||'_(not specified)_'}`).join('\n');
+  return `# ${sphereName}-SOUL — ${state.data.name||'(your name)'}
+
+> Loaded by Hermes only when working in the **${def.label}**. Layered on top of \`Core-SOUL.md\`.
+
+## Context
+- **Sphere:** ${def.label}
+- **EDENA tier:** ${tier}
+
+## Answers
+${body}
+
+## Operating rules
+- **Approval gate:** Hermes drafts; I review before any external use.
+- **Confidentiality:** as per Core SOUL.
+
+## Stewardship line
+> Agents propose. Humans judge. Nurses steward.
+`;
+}
+
+function fileInterestSOUL(name){
+  const a = state.data.interestAnswers[name] || {};
+  const tier = state.data.tiers['interest'] || 'Green';
+  return `# Interest-${name}-SOUL — ${state.data.name||'(your name)'}
+
+> Loaded by Hermes when working on **${name}**. Layered on top of \`Core-SOUL.md\`.
+
+## Context
+- **Interest:** ${name}
+- **EDENA tier:** ${tier}
+- **Visibility:** ${a.visibility||'_(unspecified)_'}
+
+## Why it matters
+${a.why||'_(unspecified)_'}
+
+## How Hermes can help
+${a.help||'_(unspecified)_'}
+
+## Anti-goal
+${a.anti||'_(unspecified)_'}
+
+## Stewardship line
+> Agents propose. Humans judge. Nurses steward.
+`;
+}
+
+function fileTierMap(){
+  const rows = state.data.spheres.map(k=>{
+    const label = SPHERES.find(s=>s.key===k).label.split(' (')[0];
+    const tier = state.data.tiers[k] || TIER_DEFAULT[k] || 'Green';
+    return `| ${label} | ${tier} | onboarding default | quarterly |`;
+  }).join('\n');
+  return `# MY EDENA Tier Map — ${state.data.name||'(your name)'}
+
+> Per-sphere autonomy settings for Hermes. Reviewed quarterly.
+
+## Tier definitions
+- **Green** — Hermes drafts and suggests. I review all output before any use.
+- **Yellow** — Hermes assists with structured tasks. Human review required before external use.
+- **Orange** — Hermes can act inside a tightly defined scope with logging. *(Earned after governance module.)*
+- **Red** — Hermes can act semi-autonomously inside a verified scope with audit. *(Reserved.)*
+
+## My current tier per sphere
+| Sphere | Tier | Rationale | Review date |
+|---|---|---|---|
+${rows}
+
+## Rules I keep
+- I do not assign Orange or Red during onboarding.
+- I review this map quarterly or after any safety incident.
+- Any tool I add must be tier-tagged before use.
+
+## Stewardship line
+> Agents propose. Humans judge. Nurses steward.
+`;
+}
+
+function fileWelcome(){
+  const created = ['01-SOUL/Core-SOUL.md', ...state.data.spheres.filter(s=>s!=='interest').map(k=>{
+    const sphereName = SPHERE_DEFS[k].label.split(' ')[0];
+    return `01-SOUL/${sphereName}-SOUL.md`;
+  }), ...state.data.interests.map(i=>`01-SOUL/Interest-${i.name}-SOUL.md`),
+  '00-Start-Here/MY-EDENA-TIERS.md'].map(f=>`- \`${f}\``).join('\n');
+  return `# Welcome — Carry the Lamp
+
+> *"She was the lady with the lamp. She was also the first to chart the truth in a way the powerful could not ignore."*
+
+## You just drafted the soul of your Hermes.
+
+## Your files
+${created}
+
+## How Hermes uses these
+- The **Core SOUL** is always loaded.
+- A **Sphere SOUL** is loaded only when you work in that sphere.
+- Hermes never crosses your EDENA tier without your approval.
+
+## Next steps
+1. Start the [30-Day Nurse AI OS Roadmap](https://nurse-ai-os.org/assets/30-day-roadmap.md).
+2. Join the [Lamp Huddle](https://nurse-ai-os.org/assets/lamp-huddle.md).
+3. Add one **skill** this week. Audit your tier map at the end of the month.
+
+## Stewardship line
+> Agents propose. Humans judge. Nurses steward.
+
+Welcome.
+`;
+}
+
+function buildAllFiles(){
+  const files = [];
+  files.push({name:'Core-SOUL.md', path:'01-SOUL/Core-SOUL.md', content:fileCoreSOUL()});
+  state.data.spheres.filter(s=>s!=='interest').forEach(k=>{
+    const sphereName = SPHERE_DEFS[k].label.split(' ')[0];
+    files.push({name:`${sphereName}-SOUL.md`, path:`01-SOUL/${sphereName}-SOUL.md`, content:fileSphereSOUL(k)});
+  });
+  state.data.interests.forEach(i=>{
+    files.push({name:`Interest-${i.name}-SOUL.md`, path:`01-SOUL/Interest-${i.name}-SOUL.md`, content:fileInterestSOUL(i.name)});
+  });
+  files.push({name:'MY-EDENA-TIERS.md', path:'00-Start-Here/MY-EDENA-TIERS.md', content:fileTierMap()});
+  files.push({name:'WELCOME-Carry-the-Lamp.md', path:'00-Start-Here/WELCOME-Carry-the-Lamp.md', content:fileWelcome()});
+  return files;
+}
+
+function downloadOne(name, content){
+  const blob = new Blob([content], {type:'text/markdown;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function downloadAll(){
+  const files = buildAllFiles();
+  const bundle = files.map(f=>`<!-- FILE: ${f.path} -->\n\n${f.content}\n\n---\n`).join('\n');
+  downloadOne(`Nurse-AI-OS-SOUL-Bundle-${(state.data.name||'you').replace(/\W+/g,'-')}.md`, bundle);
+}
+
+/* ---------- Step engine ---------- */
+
+function buildSteps(){
+  const steps = [stepIntakeRole()];
+  // If interest sphere active, ask for list early so we can branch.
+  if (state.data.spheres.includes('interest')) steps.push(stepInterests());
+  steps.push(stepCoreSOUL());
+  // Per-sphere passes (except interest which spawns per-interest)
+  state.data.spheres.filter(s=>s!=='interest' && SPHERE_DEFS[s]).forEach(k=>steps.push(stepSphere(k)));
+  // Per-interest passes
+  if (state.data.spheres.includes('interest')) {
+    state.data.interests.forEach(i=>steps.push(stepInterest(i.name)));
+  }
+  steps.push(stepTiers());
+  steps.push(stepDone());
+  return steps;
+}
+
+function render(){
+  // After stage 1 we may need to refresh steps because spheres/interests changed
+  if (state.stepIndex===0 || state.steps.length===0) state.steps = buildSteps();
+  const s = state.steps[state.stepIndex];
+  $bar.style.width = Math.round((state.stepIndex/(state.steps.length-1))*100)+'%';
+  $app.innerHTML = '';
+  const card = el(`<div class="card">
+    <span class="kicker">Step ${state.stepIndex+1} of ${state.steps.length}</span>
+    <h2>${esc(s.title)}</h2>
+    <div class="sub">${esc(s.sub)}</div>
+    <div id="form"></div>
+    <div class="btnrow">
+      ${state.stepIndex>0?'<button class="nav-back" id="back">← Back</button>':''}
+      <button class="btn" id="next">${state.stepIndex===state.steps.length-1?'Finish':'Next →'}</button>
+    </div>
+  </div>`);
+  $app.appendChild(card);
+  document.getElementById('form').innerHTML = s.render();
+
+  document.getElementById('next').onclick = ()=>{
+    s.save();
+    if (!s.valid()) {
+      alert("Please fill the required fields before continuing. Tip: you must confirm the PHI and license boundaries on the Core SOUL step.");
+      return;
+    }
+    // After stage 1, rebuild steps so per-sphere stages appear
+    if (state.stepIndex===0) state.steps = buildSteps();
+    if (state.stepIndex < state.steps.length-1) {
+      state.stepIndex++;
+      window.scrollTo({top:0, behavior:'smooth'});
+      render();
+    } else {
+      // Already on done step — re-render to refresh files
+      render();
+    }
+  };
+  if (state.stepIndex>0) document.getElementById('back').onclick = ()=>{
+    s.save();
+    state.stepIndex--;
+    window.scrollTo({top:0, behavior:'smooth'});
+    render();
+  };
+
+  // Wire downloads on final step
+  $app.querySelectorAll('a.dlfile').forEach(a=>{
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      const name = a.dataset.name;
+      const content = decodeURIComponent(a.dataset.content);
+      downloadOne(name, content);
+    });
+  });
+  const dlAll = document.getElementById('dlAll');
+  if (dlAll) dlAll.onclick = downloadAll;
+}
+
+render();
+</script>
+</body>
+</html>

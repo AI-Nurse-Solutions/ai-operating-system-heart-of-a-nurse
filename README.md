@@ -29,5 +29,6 @@ Downloads:
 - Google Workspace HIPAA/BAA and safe AI one-pager, governance checklist, and nurse educator case-study flow
 - Obsidian + Hermes Second-Brain skill — sync your Obsidian vault with Hermes to turn notes and skills into living, editable, stewarded files
 - SOUL Interview Agent — guided interview framework + templates that help students, staff nurses, and leaders draft tailored SOUL.md files across all their spheres
+- SOUL Quiz (self-serve) — `/soul-quiz.html` — a browser-only multi-step quiz that drafts and downloads tailored SOUL.md files with no server or upload
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

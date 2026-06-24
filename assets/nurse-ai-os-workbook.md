@@ -614,6 +614,10 @@ Check safety, privacy, equity, accountability, reversibility, and stop condition
 
 ## EDENA Stewardship Lens
 
+**EDENA** stands for **Ethical Design & Enablement for Nursing Augmentation** — the name of the governance framework, and a promise: AI that is ethically designed, that enables rather than merely restricts, and that augments the nurse without ever replacing her judgment.
+
+The same five letters name the **Stewardship Lens** — the rubric you apply to any major recommendation. The name says what the framework *is*; the Lens says how you *check your work*.
+
 Use this for major recommendations.
 
 ### E — Equity and Ethics

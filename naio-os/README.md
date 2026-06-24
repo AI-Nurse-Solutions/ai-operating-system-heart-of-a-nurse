@@ -92,7 +92,9 @@ The quiz already produces human-readable Markdown. It now also exports a machine
 
 ## EDENA in one breath
 
-**EDENA = Ethical Decision & Enablement for Nurse Autonomy.** A tier governs **autonomy only** — how much the agent acts without the human. Two other levers are scoped *independently* (this is the v2 change, grounded in Knight Columbia 2025 and OWASP LLM06):
+**EDENA = Ethical Design & Enablement for Nursing Augmentation.** The name states the mission: AI that is ethically *designed*, that *enables* (not just restricts), and that *augments* the nurse — never replaces her judgment (ANA Provision 7.5). Applied through the **EDENA Stewardship Lens**, a five-dimension rubric (Equity & Ethics · Dignity & Data · Environment & Externalities · Nursing relevance & Nurse wellbeing · Agency & Action). *The name says what it is; the Lens says how you check your work.*
+
+A tier governs **autonomy only** — how much the agent acts without the human. Two other levers are scoped *independently* (this is the v2 change, grounded in Knight Columbia 2025 and OWASP LLM06):
 
 - **Lever 1 — Autonomy tier:** Green (draft only) · Yellow (structured assist, gated) · Orange (bounded, written scope + monitoring) · Red (semi-autonomous, audited, reserved).
 - **Lever 2 — Functionality:** which tools load, by side-effect class, least-privilege.

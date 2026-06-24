@@ -51,6 +51,8 @@ OWASP's **Excessive Agency** (S10) decomposes the same idea into **three indepen
 
 ## 3. EDENA tier ↔ external framework crosswalk
 
+> **EDENA = Ethical Design & Enablement for Nursing Augmentation** — the framework name (AI augments the nurse, ANA Provision 7.5). The five letters also name the **EDENA Stewardship Lens** evaluation rubric. Name = mission; Lens = method.
+
 | EDENA tier | Knight Columbia user role (S1) | CSA autonomy tier (S4) | NIST oversight (S2/S3) | Nursing framing (S8) |
 |---|---|---|---|---|
 | **Green** | Operator (user in charge; on-demand support) | Tier 1 (fully supervised; outputs need approval) | Human-in-the-loop | Augmented intelligence; nurse decides everything |

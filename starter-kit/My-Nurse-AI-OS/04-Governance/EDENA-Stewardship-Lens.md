@@ -1,5 +1,7 @@
 # EDENA Stewardship Lens
 
+> **EDENA = Ethical Design & Enablement for Nursing Augmentation.** The name states the mission; this Lens is how you check your work. Same five letters, two reinforcing roles.
+
 Use for major recommendations.
 
 ## Equity and Ethics

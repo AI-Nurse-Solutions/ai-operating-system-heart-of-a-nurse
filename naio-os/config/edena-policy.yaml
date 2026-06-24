@@ -2,7 +2,13 @@
 # EDENA POLICY — the governance source of truth for the Nurse AI OS (NAIO)
 # =============================================================================
 #
-# EDENA = Ethical Decision & Enablement for Nurse Autonomy.
+# EDENA = Ethical Design & Enablement for Nursing Augmentation.
+#   The name states the mission: AI that is ethically designed, that enables
+#   (not just restricts), and that AUGMENTS the nurse — never replaces her
+#   judgment (ANA Provision 7.5). Applied through the EDENA Stewardship Lens,
+#   a five-dimension rubric (Equity & Ethics, Dignity & Data, Environment &
+#   Externalities, Nursing relevance & Nurse wellbeing, Agency & Action).
+#   The name says what it is; the Lens says how you check your work.
 #
 # This file is READ BY THE RUNTIME on every turn to decide what an agent may DO
 # in a given sphere. It turns EDENA from labels in a document into machine-
@@ -32,6 +38,10 @@
 version: 2.0.0
 policy_id: edena-policy
 supersedes: 1.0.0
+acronym:
+  expansion: "Ethical Design & Enablement for Nursing Augmentation"
+  lens: "EDENA Stewardship Lens — Equity & Ethics, Dignity & Data, Environment & Externalities, Nursing relevance & Nurse wellbeing, Agency & Action"
+  note: "The name states the mission; the Lens is the five-dimension evaluation rubric. Both share the letters E-D-E-N-A; both rest inside Eden — a garden designed to be tended and kept."
 doctrine: "Agents propose. Humans judge. Nurses steward."
 last_reviewed: "2026-06-23"
 review_basis:

@@ -1,91 +1,218 @@
-# EDENA Policy — the governance source of truth for the Nurse AI OS (NAIO)
+# =============================================================================
+# EDENA POLICY — the governance source of truth for the Nurse AI OS (NAIO)
+# =============================================================================
 #
-# This file is READ BY THE RUNTIME on every turn to decide what an agent is
-# ALLOWED to do in a given sphere. It turns EDENA from labels in a document
-# into machine-enforced policy.
+# EDENA = Ethical Decision & Enablement for Nurse Autonomy.
 #
-# Doctrine: Agents propose. Humans judge. Nurses steward.
+# This file is READ BY THE RUNTIME on every turn to decide what an agent may DO
+# in a given sphere. It turns EDENA from labels in a document into machine-
+# enforced policy over Hermes Desktop.
+#
+# Doctrine:  Agents propose. Humans judge. Nurses steward.
+#
+# DESIGN PRINCIPLE (v2): agency and autonomy are DIFFERENT LEVERS.
+#   Following Knight Columbia "Levels of Autonomy for AI Agents" (2025) and
+#   OWASP LLM06 "Excessive Agency" (2025), a tier governs AUTONOMY ONLY.
+#   FUNCTIONALITY (which tools load) and PERMISSIONS (what those tools may touch)
+#   are scoped INDEPENDENTLY with least-privilege defaults. A capable agent may
+#   still run at low autonomy; a low-capability agent may still be over-permitted.
+#   Never collapse the three.
 #
 # Read order at runtime:
-#   1. Determine the active sphere (from the loaded Sphere SOUL).
-#   2. Look up sphere_ceilings[<sphere>] -> the maximum tier allowed.
-#   3. Apply the tier's autonomy, side_effects, human_gate, and toolsets.
-#   4. A request that exceeds the ceiling is refused or down-scoped, never silently run.
+#   1. Identify the active sphere (from the loaded Sphere SOUL).
+#   2. ceiling      = sphere_ceilings[sphere]                  # max autonomy
+#   3. reversibility = classify(action)                        # may FORCE a gate
+#   4. functionality = tool_scopes intersect tier.toolsets     # least privilege
+#   5. permissions   = permission_scoping (read-only default)  # complete mediation
+#   6. gate          = strongest_of(tier.human_gate, reversibility.gate)
+#   7. A request exceeding any limit is refused or down-scoped, never silently run.
+#
+# See GOVERNANCE-RESEARCH.md for the full standards crosswalk and source citations.
 
-version: 1.0.0
+version: 2.0.0
 policy_id: edena-policy
+supersedes: 1.0.0
 doctrine: "Agents propose. Humans judge. Nurses steward."
+last_reviewed: "2026-06-23"
+review_basis:
+  - "Knight Columbia — Levels of Autonomy for AI Agents (2025)"
+  - "NIST AI RMF 1.0 + Generative AI Profile (AI 600-1)"
+  - "CSA NIST AI RMF Agentic Profile (2026 draft)"
+  - "EU AI Act (Reg. 2024/1689), Art. 5 prohibited practices"
+  - "ISO/IEC 42001:2023 AI management systems"
+  - "WHO — Ethics & governance of AI for health: LMMs (2024)"
+  - "ANA Code of Ethics (2025) Provision 7.5; ANA AI in Nursing Practice"
+  - "ICN — Digital health transformation & nursing practice"
+  - "OWASP Top 10 for LLM Applications (2025), esp. LLM06 Excessive Agency"
+  - "OWASP Top 10 for Agentic Applications (ASI01–ASI10)"
 
-# ---------------------------------------------------------------------------
-# TIER DEFINITIONS — the four autonomy levels.
-# Green and Yellow are available at onboarding. Orange and Red must be unlocked.
-# ---------------------------------------------------------------------------
+# =============================================================================
+# LEVER 1 of 3 — AUTONOMY TIERS
+# A tier sets HOW MUCH the agent may act without the human. Nothing else.
+# Green and Yellow are available at onboarding. Orange and Red must be earned.
+# =============================================================================
 tiers:
 
   green:
-    label: "Green — Draft only"
+    label: "Green — Operator (draft only)"
     autonomy: draft-only
+    user_role: operator              # Knight Columbia L1: user in charge at all times
+    csa_tier: 1                      # CSA Agentic Profile: fully supervised
+    oversight: human-in-the-loop
     description: >
-      The agent drafts, suggests, summarizes, and organizes. It never takes an
-      action with an external side effect. The human reviews every output.
-    side_effects: forbidden          # no send / publish / commit / post / purchase
-    human_gate: every-output         # nothing leaves without explicit human review
-    toolsets: [file, search, vision] # read + draft only
-    network: read-only               # may fetch/read, may not write to remote systems
-    removable: false                 # the gate cannot be turned off at this tier
+      The agent drafts, suggests, summarizes, synthesizes, and organizes. It
+      never performs an action with an external side effect. The human reviews
+      every output before it is used anywhere. This tier is genuinely useful —
+      it is the daily working tier, not a sandbox.
+    side_effects: forbidden          # no send / publish / commit / post / purchase / delete
+    human_gate: every-output
+    removable: false                 # the gate cannot be disabled at this tier
 
   yellow:
-    label: "Yellow — Structured assist"
+    label: "Yellow — Consultant/Approver (structured assist)"
     autonomy: structured-assist
+    user_role: consultant-approver   # Knight Columbia L3–L4
+    csa_tier: 2                      # CSA: constrained autonomy, pre-approved action types
+    oversight: human-on-the-loop-gated
     description: >
-      The agent assists with structured work and may use more tools, but any
-      action with an external side effect is gated behind explicit approval and
-      no output is used externally without human review.
-    side_effects: gated              # allowed only after an explicit approval step
-    human_gate: before-external-use  # review required before anything is sent/published
-    toolsets: [file, search, vision, web, browser, todo]
-    network: read-write-gated        # remote writes require approval
+      The agent assists with structured, multi-step work and may use a wider
+      tool set, but any action with an external side effect is gated behind an
+      explicit, meaningful approval, and no output is used externally without
+      human review. The nurse stewards; nothing leaves without a deliberate yes.
+    side_effects: gated
+    human_gate: before-external-use
     removable: false
 
   orange:
-    label: "Orange — Bounded autonomy"
+    label: "Orange — Approver within written scope (bounded autonomy)"
     autonomy: bounded
+    user_role: approver              # Knight Columbia L4: engaged at blockers/sign-offs
+    csa_tier: 3                      # CSA: broad autonomy within boundary + continuous monitoring
+    oversight: human-on-the-loop-monitored
     description: >
-      The agent may act inside a tightly defined, written scope, with all actions
-      logged. Available only after the learner completes the governance module.
-    side_effects: logged             # side effects allowed inside scope, fully logged
-    human_gate: scoped-checkpoint    # human checkpoint at defined boundaries
-    toolsets: [file, search, vision, web, browser, todo, terminal, cronjob]
-    network: read-write-logged
+      The agent may act inside a tightly defined, WRITTEN scope, with all
+      actions logged and continuously monitored for behavioral drift. Available
+      only after the learner completes the governance module and writes a scope.
+    side_effects: logged
+    human_gate: scoped-checkpoint
     removable: false
     requires_unlock: governance-module
     requires_written_scope: true
+    requires_monitoring: true
 
   red:
-    label: "Red — Semi-autonomous (audited)"
+    label: "Red — Observer (semi-autonomous, audited)"
     autonomy: semi-autonomous
+    user_role: observer              # Knight Columbia L5: monitor logs + off-switch
+    csa_tier: 4                      # CSA: high autonomy, audited
+    oversight: human-out-of-the-loop-audited
     description: >
-      The agent may operate semi-autonomously inside a verified scope, subject to
-      audit. Reserved. Not assignable during onboarding or by self-service.
+      The agent may operate semi-autonomously inside a verified scope, subject
+      to audit and an always-available kill switch. Reserved. Never assignable
+      by self-service, never for patient care, never for an identified person.
     side_effects: audited
     human_gate: post-hoc-audit
-    toolsets: all
-    network: read-write-audited
     removable: false
     requires_unlock: verified-scope
     requires_review_board: true
+    requires_kill_switch: true
+    forbidden_for: [clinical-care, identified-patient, high-stakes-irreversible]
 
-# ---------------------------------------------------------------------------
+# =============================================================================
+# LEVER 2 of 3 — FUNCTIONALITY SCOPING (which tools load)
+# OWASP LLM06 root cause #1: excessive functionality. Offer only what's needed.
+# Tools are grouped by side-effect class, then granted per tier AND per task.
+# =============================================================================
+functionality:
+  principle: "Offer the minimum tools the task requires. No standing tools 'just in case'."
+  tool_classes:
+    read_only:        # never a side effect
+      examples: [file_read, search, vision, web_read, fetch]
+      allowed_tiers: [green, yellow, orange, red]
+    draft_local:      # writes only to the user's own vault/workspace, reversible
+      examples: [file_write_vault, note_create, todo_write]
+      allowed_tiers: [green, yellow, orange, red]
+      reversibility: reversible
+    external_reversible:   # external effect but undoable (drafts, scheduled-not-sent)
+      examples: [calendar_draft, email_draft, doc_share_view_only]
+      allowed_tiers: [yellow, orange, red]
+      gate: before-external-use
+    external_irreversible: # send / publish / post / pay / delete-remote
+      examples: [email_send, social_post, payment, remote_delete, commit_push]
+      allowed_tiers: [orange, red]
+      gate: forced-irreversible        # gated even at higher tiers (see reversibility)
+    code_execution:   # OWASP ASI05 unexpected code execution
+      examples: [terminal, shell, code_exec]
+      allowed_tiers: [orange, red]
+      requires_written_scope: true
+      sandbox: required
+    delegation:       # spawning sub-agents (OWASP ASI07/ASI10)
+      examples: [subagent_spawn, cron_create]
+      allowed_tiers: [orange, red]
+      inherits_ceiling: true
+  open_ended_tools:
+    rule: "Prefer granular tools over open-ended ones (a specific file-writer, not generic shell)."
+    source: "OWASP LLM06 mitigation #3"
+  draft_then_human_executes:
+    rule: >
+      At Green and Yellow, the agent DRAFTS irreversible external actions
+      (email, post, payment) but the NURSE executes them. This is empowerment,
+      not restriction: the human's hand stays on every irreversible lever during
+      the learning period. To let the agent itself execute irreversible actions,
+      a nurse earns Orange with a written scope and monitoring. This mirrors the
+      canonical OWASP mitigation (eliminate excessive autonomy: require the user
+      to review and hit 'send').
+    source: "OWASP LLM06 example mitigation; Knight Columbia (autonomy as design choice)"
+
+# =============================================================================
+# LEVER 3 of 3 — PERMISSION SCOPING (what tools may touch)
+# OWASP LLM06 root cause #2: excessive permissions. Least privilege + mediation.
+# =============================================================================
+permission_scoping:
+  default: read-only
+  least_privilege: true
+  execute_in_user_context: true       # OAuth min-scope, act AS the user, not a superuser
+  complete_mediation: true            # authorize in the downstream system, not in the LLM
+  scope_per_task: true                # grant exactly the resource the task needs, then revoke
+  deny_by_default: true
+  rules:
+    - "A read task never holds write/delete permission on the downstream system."
+    - "A per-user task never uses a shared high-privilege identity."
+    - "Credentials are never stored in agent memory or passed to a model."
+    - "Every external scope is time-boxed and revoked after the task."
+  source: "OWASP LLM06 mitigations #4–#7; CSA Agentic Profile tool-use risk"
+
+# =============================================================================
+# REVERSIBILITY — a CROSS-CUTTING gate that can override the tier.
+# CSA Agentic Profile: irreversibility + the temporal gap are first-class risks.
+# ANA 7.5: reversibility / ability to withdraw data must be preserved.
+# =============================================================================
+reversibility:
+  classes:
+    reversible:
+      definition: "The action can be fully undone by the user with no residual effect."
+      gate: per-tier                  # use the tier's normal gate
+    recoverable:
+      definition: "The action can be undone with effort (version history, soft delete)."
+      gate: before-external-use       # at least a Yellow gate, regardless of tier
+    irreversible:
+      definition: "The action cannot be undone (sent message, payment, public post, hard delete)."
+      gate: forced-irreversible       # ALWAYS gated, even at Orange/Red, unless inside a Red verified scope that explicitly pre-authorizes this exact action class
+  rule: "When tier and reversibility disagree, the STRONGER gate wins."
+
+# =============================================================================
 # HARD BOUNDARIES — apply at EVERY tier, including Red. Non-negotiable.
-# These are enforced at the harness layer before any tier logic runs.
-# ---------------------------------------------------------------------------
+# Enforced at the harness layer before any tier logic runs.
+# =============================================================================
 hard_boundaries:
   no_phi:
     rule: "No PHI, patient identifiers, or HIPAA-regulated data unless inside an approved BAA-covered environment."
     enforcement: refuse-and-redirect
+    source: "HIPAA; WHO LMM cybersecurity; ANA 7.5 privacy"
   no_clinical_decisions:
-    rule: "The agent does not make clinical decisions for an identified patient. The licensed human decides."
+    rule: "The agent does not make clinical decisions for an identified patient. The licensed human decides. AI is augmented, not autonomous, intelligence."
     enforcement: refuse-and-redirect
+    source: "ANA 7.5 (augmented intelligence); WHO automation-bias warning"
   human_agency:
     rule: "Green and Yellow human gates are structurally non-removable."
     enforcement: gate-locked
@@ -95,12 +222,129 @@ hard_boundaries:
   confidentiality:
     rule: "Never disclose a specific person, employer, or client named in the user's confidentiality list."
     enforcement: redact-or-refuse
+  data_withdrawal:
+    rule: "The user can withdraw data or permissions at any time; the system honors deletion and opt-out."
+    enforcement: honor-immediately
+    source: "ANA 7.5 reversibility; GDPR data-subject rights"
+  transparency:
+    rule: "AI involvement is disclosed. The agent never impersonates a licensed human or implies clinical authority."
+    enforcement: always-on
+    source: "EU AI Act transparency duty; WHO inclusive-design"
+  health_equity:
+    rule: "No workflow that stratifies care or access to exclude those who cannot afford options."
+    enforcement: refuse-and-flag
+    source: "ANA 7.5 health-equity; WHO equity recommendations"
 
-# ---------------------------------------------------------------------------
-# SPHERE CEILINGS — the maximum tier allowed per sphere.
-# These DEFAULTS are overwritten by the SOUL Quiz export (naio-soul.json).
+# =============================================================================
+# PROHIBITED PRACTICES — refused at every tier (EU AI Act Art. 5 ∩ nursing ethics).
+# =============================================================================
+prohibited_practices:
+  source: "EU AI Act Art. 5; ANA 7.5; ICN dignity & rights"
+  practices:
+    - id: manipulation
+      rule: "No subliminal, manipulative, or deceptive techniques that distort behavior and cause harm."
+    - id: vulnerability_exploitation
+      rule: "No exploitation of vulnerabilities (age, disability, illness, socio-economic status)."
+    - id: social_scoring
+      rule: "No social scoring or ranking of patients, colleagues, students by traits or behavior."
+    - id: surveillance_emotion_inference
+      rule: "No emotion inference for surveillance of staff or students."
+    - id: untargeted_biometric_scraping
+      rule: "No compiling identification databases via untargeted scraping."
+    - id: autonomous_care
+      rule: "No autonomous clinical action on an identified patient at any tier."
+
+# =============================================================================
+# RUNTIME MONITORING — CSA Agentic Profile gap #3 (behavioral drift).
+# Required at Orange+; available and recommended at all tiers.
+# =============================================================================
+monitoring:
+  log_side_effects: true
+  behavioral_baseline: true           # establish expected behavior, watch for drift
+  drift_detection:
+    required_at: [orange, red]
+    recommended_at: [green, yellow]
+  anomaly_response:
+    on_detected_drift: pause-and-notify
+    on_suspected_injection: halt-and-escalate     # OWASP ASI01/ASI06 goal-hijack, memory poisoning
+  rate_limiting:
+    enabled: true
+    purpose: "Limit blast radius and increase chance of early detection (OWASP LLM06 damage-limiting)."
+  kill_switch:
+    required_at: [red]
+    available_at: [green, yellow, orange, red]
+
+# =============================================================================
+# DELEGATION & SUB-AGENTS — CSA gap #4; OWASP ASI07/ASI10.
+# Oversight follows delegation. Children cannot exceed the sphere ceiling.
+# =============================================================================
+delegation:
+  inherit_sphere_soul: true
+  inherit_ceiling: true
+  may_exceed_parent_tier: false
+  leaf_default_tier: green
+  provenance_required: true           # every delegated action is traceable to its origin
+  inter_agent_auth: required          # guard against spoofing/rogue agents (ASI07/ASI10)
+  oversight_follows_delegation: true  # the human gate obligation propagates into sub-agents
+
+# =============================================================================
+# HUMAN GATES — designed AGAINST rubber-stamping (Knight Columbia L4 risk; NIST automation bias).
+# A gate that fires too often trains dismissal. Gates are reserved for meaning.
+# =============================================================================
+gates:
+  every-output:
+    prompt: "Review this draft before it is used anywhere. Approve, edit, or discard?"
+    blocking: true
+    anti_rubber_stamp: "Summarize what changed and surface anything uncertain; never present a wall of green checks."
+  before-external-use:
+    prompt: "This will be used externally (sent/published/shared). Here is exactly what will happen and to whom. Approve, edit, or cancel?"
+    blocking: true
+    anti_rubber_stamp: "State the concrete external effect and recipient before asking for approval."
+  forced-irreversible:
+    prompt: "This action CANNOT be undone (e.g., send, publish, pay, delete). Confirm you understand it is permanent. Approve or cancel?"
+    blocking: true
+    require_explicit_confirmation: true
+  scoped-checkpoint:
+    prompt: "Reached a scope boundary. Continue within scope, adjust scope, or stop?"
+    blocking: true
+  post-hoc-audit:
+    prompt: "Action logged for audit. Flag for review?"
+    blocking: false
+    requires_audit_trail: true
+  meaningful_review:
+    rule: "Gates must enable judgment, not solicit reflexive approval. Reserve gates for external effect, irreversibility, and scope boundaries — not routine drafting."
+    source: "Knight Columbia (rubber-stamp risk); NIST GenAI (automation bias); WHO (automation bias)"
+
+# =============================================================================
+# PROGRESSION — graduated trust. Balance: enable as deliberately as we restrict.
+# Over-restriction drives nurses to ungoverned 'shadow AI'. A nurse can EARN trust.
+# =============================================================================
+progression:
+  philosophy: "Stewardship grows competency, it does not cap it forever. Trust is earned and reviewable."
+  green_to_yellow:
+    available: onboarding             # both available immediately via the SOUL Quiz
+  yellow_to_orange:
+    requires:
+      - complete: governance-module
+      - write: action-scope-document
+      - enable: monitoring
+      - demonstrate: clean-audit-window
+    reviewable: true
+  orange_to_red:
+    requires:
+      - review_board_approval: true
+      - verified_scope: true
+      - kill_switch: true
+    note: "Red is institutional, never personal-care, never self-service."
+  downgrade:
+    on_incident: auto-downgrade-one-tier
+    on_drift: pause-then-review
+
+# =============================================================================
+# SPHERE CEILINGS — the maximum AUTONOMY tier allowed per sphere.
+# DEFAULTS below are overwritten by the SOUL Quiz export (naio-soul.json).
 # Onboarding never assigns above Yellow.
-# ---------------------------------------------------------------------------
+# =============================================================================
 sphere_ceilings:
   personal: green
   professional: yellow
@@ -108,36 +352,30 @@ sphere_ceilings:
   sidegig: yellow
   interest: green
 
-# ---------------------------------------------------------------------------
-# GATE BEHAVIOR — how a human gate is presented when triggered.
-# ---------------------------------------------------------------------------
-gates:
-  every-output:
-    prompt: "Review this draft before it is used anywhere. Approve, edit, or discard?"
-    blocking: true
-  before-external-use:
-    prompt: "This will be used externally (sent/published/shared). Approve, edit, or cancel?"
-    blocking: true
-  scoped-checkpoint:
-    prompt: "Reached a scope boundary. Continue within scope, adjust scope, or stop?"
-    blocking: true
-  post-hoc-audit:
-    prompt: "Action logged for audit. Flag for review?"
-    blocking: false
-
-# ---------------------------------------------------------------------------
-# AGENT/SUBAGENT INHERITANCE — delegated agents cannot exceed the sphere ceiling.
-# ---------------------------------------------------------------------------
-delegation:
-  inherit_sphere_soul: true
-  inherit_ceiling: true
-  may_exceed_parent_tier: false
-  leaf_default_tier: green
-
-# ---------------------------------------------------------------------------
-# AUDIT — review cadence for the tier map itself.
-# ---------------------------------------------------------------------------
-audit:
+# =============================================================================
+# LIFECYCLE — ISO/IEC 42001 PDCA continual improvement.
+# The policy itself is a managed, reviewed artifact — not set-and-forget.
+# =============================================================================
+lifecycle:
+  model: plan-do-check-act
   review_cadence: quarterly
   review_after_incident: true
   unused_skill_flag_days: 90
+  policy_version_pinned_in_export: true   # naio-soul.json records edena-policy@<version>
+  change_log_required: true
+  source: "ISO/IEC 42001:2023 (AIMS continual improvement)"
+
+# =============================================================================
+# CROSSWALK — keep EDENA legible to external frameworks (future-proofing).
+# =============================================================================
+crosswalk:
+  nist_ai_rmf: "GOVERN=tiers+prohibited; MAP=functionality+permissions+reversibility; MEASURE=monitoring; MANAGE=gates+progression+lifecycle"
+  knight_columbia_levels: "green=L1 operator; yellow=L3–L4 consultant/approver; orange=L4 approver; red=L5 observer"
+  csa_agentic_tiers: "green=1; yellow=2; orange=3; red=4"
+  owasp_llm06: "functionality+permissions+reversibility levers directly address excessive functionality/permissions/autonomy"
+  eu_ai_act: "prohibited_practices ↔ Art. 5; transparency ↔ disclosure duty; deployer-responsibility model"
+  iso_42001: "lifecycle PDCA; documented, reviewed management system"
+  who_lmm: "automation-bias gates; reversibility; inclusive design; equity"
+  ana_7_5: "augmented-not-autonomous; reversibility/data-withdrawal; equity; dignity; nursing voice present"
+
+closing_line: "Hermes may carry the ledger. Nurses steward the soul."

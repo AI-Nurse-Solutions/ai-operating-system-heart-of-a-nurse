@@ -116,8 +116,8 @@
       "required": ["edena", "florence_x", "core_line"],
       "additionalProperties": false,
       "properties": {
-        "edena": { "type": "string", "const": "edena-policy@1.0.0" },
-        "florence_x": { "type": "string", "const": "florence-x@1.0.0" },
+        "edena": { "type": "string", "pattern": "^edena-policy@\\d+\\.\\d+\\.\\d+$" },
+        "florence_x": { "type": "string", "pattern": "^florence-x@\\d+\\.\\d+\\.\\d+$" },
         "core_line": { "type": "string", "const": "Agents propose. Humans judge. Nurses steward." }
       }
     }

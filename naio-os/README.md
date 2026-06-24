@@ -51,8 +51,9 @@ The control plane can **veto** the other two. That is what makes NAIO *governed*
 ```
 naio-os/
 ├── README.md                       # this spec
+├── GOVERNANCE-RESEARCH.md          # standards crosswalk + gap analysis (the evidence base)
 ├── config/
-│   ├── edena-policy.yaml           # tier → autonomy/gate/toolset (the WHAT-is-allowed)
+│   ├── edena-policy.yaml           # autonomy tiers + functionality + permissions + reversibility (the WHAT-is-allowed)
 │   └── florence-x.yaml             # build/quality doctrine + rituals (the HOW-it-behaves)
 └── schema/
     └── naio-soul.schema.json       # the personalization bridge contract (quiz → installer)
@@ -91,12 +92,16 @@ The quiz already produces human-readable Markdown. It now also exports a machine
 
 ## EDENA in one breath
 
-- **Green** — draft only, every output gated, read/draft toolsets. *(onboarding)*
-- **Yellow** — structured assist, side effects gated, review before external use. *(onboarding)*
-- **Orange** — bounded autonomy inside a written scope, logged. *(requires governance module)*
-- **Red** — semi-autonomous inside a verified scope, audited. *(reserved, review board)*
+**EDENA = Ethical Decision & Enablement for Nurse Autonomy.** A tier governs **autonomy only** — how much the agent acts without the human. Two other levers are scoped *independently* (this is the v2 change, grounded in Knight Columbia 2025 and OWASP LLM06):
 
-Hard boundaries apply at **every** tier: no PHI, no clinical decisions for identified patients, non-removable human agency, license respect, confidentiality.
+- **Lever 1 — Autonomy tier:** Green (draft only) · Yellow (structured assist, gated) · Orange (bounded, written scope + monitoring) · Red (semi-autonomous, audited, reserved).
+- **Lever 2 — Functionality:** which tools load, by side-effect class, least-privilege.
+- **Lever 3 — Permissions:** what those tools may touch, read-only by default, complete mediation.
+- **Cross-cutting — Reversibility:** an irreversible action is gated at *any* tier. The stronger gate always wins.
+
+Hard boundaries apply at **every** tier: no PHI, no clinical decisions for identified patients, non-removable human agency, license respect, confidentiality, data-withdrawal, transparency, health equity. Prohibited practices mirror EU AI Act Art. 5 filtered through nursing ethics.
+
+A nurse **earns** higher tiers through demonstrated competency (graduated trust) — the policy enables as deliberately as it restricts, so nurses are never driven to ungoverned "shadow AI."
 
 ---
 
@@ -115,7 +120,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 
 | Phase | Deliverable | Status |
 |---|---|---|
-| **0** | `edena-policy.yaml` + `florence-x.yaml` source of truth | ✅ done |
+| **0** | `edena-policy.yaml` + `florence-x.yaml` source of truth | ✅ v2.0.0 (standards-grounded) |
 | **1** | Quiz "Export OS Config" → `naio-soul.json` + schema | ✅ done |
 | **2** | Bundle skeleton + `manifest.yaml` + dry-run `install.sh` | planned |
 | **3** | EDENA policy → Hermes config mapping (human gates live) | planned |

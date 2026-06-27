@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase9",
+  "latest_version": "2.0.0-phase10",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -40,6 +40,13 @@
       "published_at": "2026-06-27T00:00:00Z",
       "key_id": "naio-os-release-key-2026-06",
       "summary": "First-run activation guide, seven-day onboarding path, and activation readiness checker."
+    },
+    {
+      "version": "2.0.0-phase10",
+      "phase": 10,
+      "published_at": "2026-06-27T00:00:00Z",
+      "key_id": "naio-os-release-key-2026-06",
+      "summary": "Public Launch Pack assets and launch readiness checker for safe no-PHI sharing."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

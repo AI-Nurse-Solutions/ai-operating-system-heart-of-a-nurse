@@ -1,4 +1,4 @@
-version: 2.0.0-phase9
+version: 2.0.0-phase10
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -19,6 +19,7 @@ entrypoints:
   check_update: scripts/check-update.py
   recovery: scripts/recovery.py
   activation: scripts/activation.py
+  launch: scripts/launch.py
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
@@ -50,25 +51,25 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: af93c74c0e23b8c652b01d50011437b48f4be20dc97a2af1293c1c6eb837d0ab
+  sha256: 6c12ae45ca3679b77ffb8e2cf7a3d2287d5a22077d4f6b998b18790149c15e5a
 - path: scripts/self-test.py
   role: self-test
-  sha256: 9165e9f2f5b01c4d6ea60ef37cc519fc4cb753b7768ac7d6b8d1c6f12d072cff
+  sha256: ca4d4481bb710c431414171d6352ffcb05b872559130c1a3d896634493b4bf64
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: c63f5a2f33606751c2ff1c25330f1c57713aec8c9820a3b6afa1c41c92c2626c
+  sha256: 4fdeefde28bf715def3f51d2abb2eaa7539e0a2ba3964dfbf15d4438021a50d5
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: 9abe633c6274ac65a82eb76d23233ab7c45baf3a95b87929c0a241c6183c3b6f
+  sha256: 0d401eb825094c36934190988337696846bb0ce5b307f0b32a25e86e9f02a0e4
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: cb7c335139acea92de1e4d2639d52b8008cf2dba0266c619ce7a0d566bb8bb34
+  sha256: e073c46b3a169988f33ead34e5987447f6c38b0188d8098920e2e489e4dffde1
 - path: README.md
   role: spec
-  sha256: 7511e3a68dd60481dcb3b24b07adc368d151cf44eeb64056bc546f60add9775c
+  sha256: 43f5f743a6cc70c875bc208de5928fa92b2a178b5214e72310dc8f8a71703f96
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -77,10 +78,10 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: 3727842b3ccfe1df59feaaf9cfb868b9165848492fd6835a7ab9b4dd471446a1
+  sha256: 9bd99cf5a050932a8a0a8d72a928e27dd213a5664bbf5f8994ab5f496c79a81e
 - path: release-history.json
   role: release-history
-  sha256: 359d94d9a8f9248b50fcbb1971ec788b8517cb37283b2c32767ff35ed839d8d7
+  sha256: 6f7e7cc94d5b544d4630df89c2b36983bd92c2715209db8e3579266ec60eb55c
 - path: scripts/check-update.py
   role: update-advisory
   sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
@@ -89,9 +90,12 @@ contents:
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 - path: scripts/activation.py
   role: activation-check
-  sha256: 08cec3c6257e96e71dc04b71fd9e307d4fa3ea54d650a598d975d9140bbd674b
+  sha256: 08a2f1a132d217c9fd4bc63a8dfe77e80756447e9244232d0f428c9e2377af54
+- path: scripts/launch.py
+  role: public-launch-check
+  sha256: 97059beeec0229e183acdbecc3ef2304f267506e8491d2ce5f3dd2a641a41f6c
 safety_contract:
-  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready
+  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready
   idempotent: true
   mutation_scope: explicit_target_directory_only
   bootstrap_scope: temporary_download_directory_only
@@ -119,6 +123,9 @@ safety_contract:
   - 'activation_missing_start_here   # Phase 9 requires START-HERE.md first-run guide'
   - 'activation_missing_first_week    # Phase 9 requires 7-day activation path'
   - 'activation_phi_detected          # activation check refuses PHI-like indicators'
+  - 'launch_missing_public_pack    # Phase 10 requires 10-Public-Launch assets'
+  - 'launch_phi_detected          # launch check refuses PHI-like indicators'
+  - 'launch_overclaim_detected    # launch check refuses clinical-readiness overclaims'
 install_flow:
 - id: bootstrap-download
   description: Optional one-line installer downloads manifest and listed artifacts into a temporary directory.
@@ -164,6 +171,10 @@ install_flow:
 - id: healthcheck
   description: Re-verify bundle state. Never claim success unverified.
   blocking: true
+- id: launch-check
+  description: Optional --launch-check verifies no-PHI public launch pack readiness, no clinical-readiness claims, and human-review posture without mutating Hermes.
+  blocking: false
+  dry_run_skips: false
 not_yet:
 - Direct ~/.hermes mutation (deferred until explicit user-controlled installer hardening)
 - Automatic Hermes cron scheduling (templates only)
@@ -181,14 +192,15 @@ signature_policy:
   digest: manifest.sha256
   release_channel: release.json
   fail_closed: true
-  note: Bootstrap, install, and check-update verify release metadata before trusting artifact checksums. Phase 9 adds first-run activation readiness.
+  note: Bootstrap, install, and check-update verify release metadata before trusting artifact checksums. Phase 10 adds public launch pack readiness.
   key_id: naio-os-release-key-2026-06
   release_history: release-history.json
-phase9_outputs:
+phase10_outputs:
 - release-history.json
 - scripts/check-update.py
 - scripts/recovery.py
 - scripts/activation.py
+- scripts/launch.py
 - release.json
 - manifest.sha256
 - manifest.sig
@@ -199,6 +211,7 @@ phase9_outputs:
 - README-FIRST.md
 - START-HERE.md
 - 07-First-Week/*.md
+- 10-Public-Launch/*.md
 - SOUL.md
 - spheres/*.SOUL.md
 - projects/*.SYSTEM.md
@@ -211,18 +224,18 @@ phase9_outputs:
 - logs/render-report.json
 - NAIO-RECOVERY-MANIFEST.json
 - NAIO-RESTORE-PLAN.md
-phase9_activation:
-  script: scripts/activation.py
-  start_here: START-HERE.md
-  first_week_path: 07-First-Week/
-  first_prompt: Open START-HERE.md
-  safe_to_start: true
-  auto_schedules_cron: false
-  mutates_hermes: false
+phase10_public_launch:
+  script: scripts/launch.py
+  path: 10-Public-Launch/
+  safe_to_share: true
+  auto_publish: false
+  public_claims: no_clinical_readiness_claims
   refuses_phi: true
-phase9_one_line_commands:
+  requires_human_review: true
+phase10_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --check-update
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --recovery-drill --target ./NAIO-Hermes-Profile
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --activation-check --target ./NAIO-Hermes-Profile
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --launch-check --target ./NAIO-Hermes-Profile
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --apply --soul ~/Downloads/naio-soul.json --projects ~/Downloads/naio-projects.json --target ./NAIO-Hermes-Profile

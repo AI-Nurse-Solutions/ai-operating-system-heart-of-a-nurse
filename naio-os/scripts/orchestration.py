@@ -38,7 +38,7 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append("missing required orchestration files: "+", ".join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; orchestration=runtime.get('orchestration',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase19': failures.append(f"runtime version is not 2.0.0-phase19: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase20': failures.append(f"runtime version is not 2.0.0-phase20: {runtime.get('version')}")
     if orchestration.get('path')!='17-Florence-X-Orchestration/': failures.append('runtime orchestration.path is not 17-Florence-X-Orchestration/')
     if orchestration.get('orchestration_use')!='dry_run_preview_not_autonomous_multi_agent_runtime': failures.append('runtime orchestration_use must remain dry-run preview, not autonomous runtime')
     if orchestration.get('shared_memory_posture')!='orange_deferred_until_governed_review': failures.append('shared_memory_posture must remain orange_deferred_until_governed_review')

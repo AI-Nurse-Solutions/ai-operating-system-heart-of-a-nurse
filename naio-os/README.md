@@ -58,13 +58,13 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 19 bundle manifest + checksums
-├── release.json                    # Phase 19 current update-channel metadata
-├── release-history.json            # Phase 19 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 19 manifest digest
-├── manifest.sig                    # Phase 19 detached manifest signature
-├── bootstrap.sh                    # Phase 19 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 18 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --orchestration-check; --governance-check; --partner-check; --apply target-only)
+├── manifest.yaml                   # Phase 20 bundle manifest + checksums
+├── release.json                    # Phase 20 current update-channel metadata
+├── release-history.json            # Phase 20 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 20 manifest digest
+├── manifest.sig                    # Phase 20 detached manifest signature
+├── bootstrap.sh                    # Phase 20 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 18 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --orchestration-check; --governance-check; --partner-check; --stewardship-check; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
@@ -132,7 +132,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 19 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 20 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -190,6 +190,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **17** | Florence-X Orchestration Preview + shared intent/context cards | ✅ done — `17-Florence-X-Orchestration/*.md`, `scripts/orchestration.py`, and `install.sh --orchestration-check` verify no-PHI, no patient care, Orange-deferred shared memory, no shared memory runtime, and no automatic handoffs/routing/agent execution |
 | **18** | Governance Board / Steward Council Pack | ✅ done — `18-Governance-Board/*.md`, `scripts/governance.py`, and `install.sh --governance-check` verify advisory-only stewardship, no legal/compliance/institutional/clinical/procurement/certification/credentialing authority, and no automatic approvals or policy enforcement |
 | **19** | Partner / Sponsor Briefing Pack | ✅ done — `19-Partner-Briefing/*.md`, `scripts/partner.py`, and `install.sh --partner-check` verify informational-only partner conversations, no fundraising/investment/legal/compliance/procurement/clinical-deployment/approval claims, and no automatic outreach or follow-up |
+| **20** | Institutional Stewardship Operating Model Pack | ✅ done — `20-Stewardship-Operating-Model/*.md`, `scripts/stewardship.py`, and `install.sh --stewardship-check` verify advisory operating cadence, no legal/compliance/procurement/budget/contracting/staffing/clinical-deployment authority, and no automatic implementation, owner assignment, stakeholder notification, escalation, or dashboard publication |
 
 ---
 
@@ -437,5 +438,19 @@ It adds an informational-only partner path:
 - `install.sh --partner-check` — local target-only partner briefing check.
 
 This is an informational partner briefing template, not a solicitation, not a partnership approval, not sponsor approval, not procurement approval, not legal/compliance determination, and not clinical deployment authority.
+
+Agents propose. Humans judge. Nurses steward.
+
+## Phase 20 — Institutional Stewardship Operating Model Pack
+
+Phase 20 gives Robert and future nurse stewards a safe institution-facing operating cadence: **“How do we coordinate nurse-led AI stewardship inside schools, hospitals, associations, and partner ecosystems without claiming legal, compliance, procurement, staffing, clinical deployment, or implementation authority?”**
+
+It adds an advisory-only operating model path:
+
+- `20-Stewardship-Operating-Model/*.md` — operating model overview, role/cadence map, intake-to-decision workflow, Human-Gate RACI, meeting agenda, risk escalation map, metrics scorecard, implementation backlog, adoption readiness conversation guide, non-authority/no-deployment statement, and quarterly stewardship review.
+- `scripts/stewardship.py` — operating model posture checker for no-PHI, no patient-care use, no clinical decision support, no legal/compliance/procurement/budget/contracting/staffing/clinical-deployment authority, no credentialing/certification, no automatic implementation, no automatic owner assignment, no automatic stakeholder notification, no automatic escalation, no automatic dashboard publication, and no direct mutation.
+- `install.sh --stewardship-check` — local target-only institutional stewardship operating model check.
+
+This is an advisory operating model template, not legal advice, not compliance determination, not procurement approval, not budget approval, not contracting authority, not institutional policy authority, not clinical governance authority, not clinical deployment approval, not a staffing or labor decision, not credentialing, not certification, and not automatic implementation.
 
 Agents propose. Humans judge. Nurses steward.

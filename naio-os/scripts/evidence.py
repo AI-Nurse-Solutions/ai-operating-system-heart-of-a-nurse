@@ -77,8 +77,8 @@ def check_profile(profile: Path) -> dict:
     rituals = load_yaml(profile / "cron/rituals.yaml") or {}
     evidence = runtime.get("evidence", {}) if isinstance(runtime, dict) else {}
 
-    if runtime.get("version") != "2.0.0-phase19":
-        failures.append(f"runtime version is not 2.0.0-phase19: {runtime.get('version')}")
+    if runtime.get("version") != "2.0.0-phase20":
+        failures.append(f"runtime version is not 2.0.0-phase20: {runtime.get('version')}")
     if evidence.get("path") != "12-Evidence-Trail/":
         failures.append("runtime evidence.path is not 12-Evidence-Trail/")
     if evidence.get("credentialing") != "evidence_of_learning_not_certification":

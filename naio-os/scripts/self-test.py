@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 12)
+NAIO OS — self-test.py (Phase 13)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -204,7 +204,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase12", runtime.get("version") == "2.0.0-phase12")
+    check("runtime version phase13", runtime.get("version") == "2.0.0-phase13")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -215,17 +215,18 @@ def verify_target(target: Path) -> None:
     check("doctrine is carried", "Agents propose. Humans judge. Nurses steward." in combined)
     check("START-HERE carries first safe prompts", "Your first 3 safe prompts" in combined and "Open START-HERE.md" in combined)
     check("first-week activation path is present", "Day 1 — Setup and Safety" in combined and "Day 7 — Weekly Ledger" in combined)
-    check("public launch pack is present", "Phase 12 Public Launch Pack" in combined and "Launch Checklist" in combined and "not clinical decision support" in combined)
-    check("cohort mode pack is present", "Phase 12 Cohort Mode" in combined and "Participant Readiness Rubric" in combined and "not certification" in combined)
-    check("evidence trail pack is present", "Phase 12 EDENA Evidence Trail" in combined and "Evidence Capture Guide" in combined and "Not Certification Statement" in combined and "no automatic scoring" in combined.lower())
+    check("public launch pack is present", "Phase 13 Public Launch Pack" in combined and "Launch Checklist" in combined and "not clinical decision support" in combined)
+    check("cohort mode pack is present", "Phase 13 Cohort Mode" in combined and "Participant Readiness Rubric" in combined and "not certification" in combined)
+    check("evidence trail pack is present", "Phase 13 EDENA Evidence Trail" in combined and "Evidence Capture Guide" in combined and "Not Certification Statement" in combined and "no automatic scoring" in combined.lower())
+    check("contribution flow pack is present", "Phase 13 NIN Community Contribution Flow" in combined and "Contribution Intake Guide" in combined and "Not Endorsement Statement" in combined and "no automatic publishing" in combined.lower())
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 12 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 13 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 12 self-test ===\n")
+    print("\n=== NAIO OS — Phase 13 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -259,6 +260,8 @@ def main() -> int:
             check("cohort check reports ready and no mutation", cohort.returncode == 0 and '"status": "ready"' in cohort.stdout and '"cohort_ready": true' in cohort.stdout and '"safe_to_facilitate": true' in cohort.stdout and '"no_mutation": true' in cohort.stdout, f"exit={cohort.returncode}")
             evidence = run(["python3", "scripts/evidence.py", "--profile", str(target), "--json"])
             check("evidence check reports ready and no mutation", evidence.returncode == 0 and '"status": "ready"' in evidence.stdout and '"evidence_ready": true' in evidence.stdout and '"safe_to_document": true' in evidence.stdout and '"no_mutation": true' in evidence.stdout, f"exit={evidence.returncode}")
+            contribution = run(["python3", "scripts/contribute.py", "--profile", str(target), "--json"])
+            check("contribution check reports ready and no mutation", contribution.returncode == 0 and '"status": "ready"' in contribution.stdout and '"contribution_ready": true' in contribution.stdout and '"safe_to_contribute": true' in contribution.stdout and '"no_mutation": true' in contribution.stdout, f"exit={contribution.returncode}")
         else:
             fail("target directory was not created")
 
@@ -283,7 +286,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 12 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 13 safety contract.")
     return 1 if FAIL else 0
 
 

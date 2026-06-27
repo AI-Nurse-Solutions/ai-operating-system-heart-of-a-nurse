@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-NAIO OS — verify-release.py (Phase 12)
+NAIO OS — verify-release.py (Phase 13)
 
 Verifies the update-channel metadata and signed manifest before artifact
-checksums are trusted. Phase 12 preserves release history, key-id trust metadata, rollback protection, and adds activation metadata.
+checksums are trusted. Phase 13 preserves release history, key-id trust metadata, rollback protection, and adds activation metadata.
 
 Contract:
 - release.json declares the latest supported bundle version, key id, and manifest digest.
@@ -64,7 +64,7 @@ def version_rank(version: str) -> tuple[int, int]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 12 release verifier")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 13 release verifier")
     parser.add_argument("--allow-unsigned", action="store_true", help="warn instead of failing if signature verification cannot run")
     parser.add_argument("--quiet", action="store_true", help="print only failures/success summary")
     args = parser.parse_args()
@@ -81,7 +81,7 @@ def main() -> int:
     pub_p = ROOT / "config/naio-os-release-public.pem"
 
     failures = []
-    say("\n=== NAIO OS — release verification (Phase 12) ===\n")
+    say("\n=== NAIO OS — release verification (Phase 13) ===\n")
 
     for p in [release_p, history_p, manifest_p, sha_p, sig_p, pub_p]:
         if not p.is_file():
@@ -123,8 +123,8 @@ def main() -> int:
         failures.append(f"release latest_version {release.get('latest_version')} != manifest version {manifest.get('version')}")
     if release.get("channel") not in {"stable", "preview"}:
         failures.append("release channel must be stable or preview")
-    if release.get("minimum_installer_phase") != 12:
-        failures.append("release minimum_installer_phase must be 12")
+    if release.get("minimum_installer_phase") != 13:
+        failures.append("release minimum_installer_phase must be 13")
 
     releases = history.get("releases", [])
     history_versions = [r.get("version") for r in releases if r.get("version")]

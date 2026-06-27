@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — install.sh  (Phase 12: cohort / instructor mode)
+# NAIO OS — install.sh  (Phase 13: NIN community contribution flow)
 # =============================================================================
 # Default: dry-run validate + plan. Apply mode is real but safe:
 #   ./install.sh --apply --soul naio-soul.json --projects naio-projects.json --target ./NAIO-Hermes-Profile
@@ -24,10 +24,11 @@ ACTIVATION_CHECK=0
 LAUNCH_CHECK=0
 COHORT_CHECK=0
 EVIDENCE_CHECK=0
+CONTRIBUTION_CHECK=0
 
 print_help() {
   cat <<'EOF'
-NAIO OS installer (Phase 12 — cohort / instructor mode + healthcheck/self-test harness)
+NAIO OS installer (Phase 13 — NIN contribution flow + healthcheck/self-test harness)
 
 Usage:
   ./install.sh [--dry-run] [--soul <path>] [--projects <path>] [--no-checksums]
@@ -39,6 +40,7 @@ Usage:
   ./install.sh --launch-check --target <rendered-profile-dir>
   ./install.sh --cohort-check --target <rendered-profile-dir>
   ./install.sh --evidence-check --target <rendered-profile-dir>
+  ./install.sh --contribution-check --target <rendered-profile-dir>
 
 One-line remote self-test:
   curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
@@ -51,13 +53,14 @@ Options:
   --soul <path>      Path to naio-soul.json (from the SOUL Quiz). Required for --apply.
   --projects <path>  Path to naio-projects.json (from the Life & Projects Quiz).
   --no-checksums     Skip sha256 verification against the manifest (not recommended).
-  --self-test        Run the Phase 12 built-in smoke test and exit.
+  --self-test        Run the Phase 13 built-in smoke test and exit.
   --check-update     Verify release history and compare the advisory update channel; no install/mutation.
   --recovery-drill   Run a local-only recovery snapshot/verify/extract/plan drill for --target.
   --activation-check  Verify first-run START-HERE and 7-day activation readiness for --target.
   --launch-check     Verify no-PHI public launch pack readiness for --target.
   --cohort-check      Verify no-PHI cohort/instructor readiness for --target.
   --evidence-check    Verify no-PHI EDENA evidence trail readiness for --target.
+  --contribution-check Verify no-PHI NIN contribution flow readiness for --target.
   --help             Show this help.
 
 Doctrine: Agents propose. Humans judge. Nurses steward.
@@ -86,6 +89,7 @@ while [[ $# -gt 0 ]]; do
     --launch-check) LAUNCH_CHECK=1; shift ;;
     --cohort-check) COHORT_CHECK=1; shift ;;
     --evidence-check) EVIDENCE_CHECK=1; shift ;;
+    --contribution-check) CONTRIBUTION_CHECK=1; shift ;;
     --help|-h) print_help; exit 0 ;;
     *) echo "Unknown option: $1" >&2; print_help; exit 1 ;;
   esac
@@ -94,7 +98,7 @@ done
 cat <<'BANNER'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   NAIO OS — Nurse AI Operating System (Phase 12)           ║
+  ║   NAIO OS — Nurse AI Operating System (Phase 13)           ║
   ║   One-line installer + healthcheck/self-test harness       ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -104,17 +108,17 @@ cat <<'BANNER'
 BANNER
 
 if [[ $SELF_TEST -eq 1 ]]; then
-  echo "▶ SELF-TEST — focused Phase 12 smoke test"
+  echo "▶ SELF-TEST — focused Phase 13 smoke test"
   exec python3 "$HERE/scripts/self-test.py"
 fi
 
 if [[ $CHECK_UPDATE -eq 1 ]]; then
-  echo "▶ CHECK UPDATE — Phase 12 advisory, no mutation"
+  echo "▶ CHECK UPDATE — Phase 13 advisory, no mutation"
   exec python3 "$HERE/scripts/check-update.py"
 fi
 
 if [[ $RECOVERY_DRILL -eq 1 ]]; then
-  echo "▶ RECOVERY DRILL — Phase 12 local-only snapshot/verify/extract/plan"
+  echo "▶ RECOVERY DRILL — Phase 13 local-only snapshot/verify/extract/plan"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --recovery-drill requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -123,7 +127,7 @@ if [[ $RECOVERY_DRILL -eq 1 ]]; then
 fi
 
 if [[ $ACTIVATION_CHECK -eq 1 ]]; then
-  echo "▶ ACTIVATION CHECK — Phase 12 first-run readiness, no mutation"
+  echo "▶ ACTIVATION CHECK — Phase 13 first-run readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --activation-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -132,7 +136,7 @@ if [[ $ACTIVATION_CHECK -eq 1 ]]; then
 fi
 
 if [[ $LAUNCH_CHECK -eq 1 ]]; then
-  echo "▶ LAUNCH CHECK — Phase 12 public launch readiness, no mutation"
+  echo "▶ LAUNCH CHECK — Phase 13 public launch readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --launch-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -141,7 +145,7 @@ if [[ $LAUNCH_CHECK -eq 1 ]]; then
 fi
 
 if [[ $COHORT_CHECK -eq 1 ]]; then
-  echo "▶ COHORT CHECK — Phase 12 instructor/cohort readiness, no mutation"
+  echo "▶ COHORT CHECK — Phase 13 instructor/cohort readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --cohort-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -150,12 +154,21 @@ if [[ $COHORT_CHECK -eq 1 ]]; then
 fi
 
 if [[ $EVIDENCE_CHECK -eq 1 ]]; then
-  echo "▶ EVIDENCE CHECK — Phase 12 EDENA evidence trail readiness, no mutation"
+  echo "▶ EVIDENCE CHECK — Phase 13 EDENA evidence trail readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --evidence-check requires --target <rendered-profile-dir>" >&2
     exit 2
   fi
   exec python3 "$HERE/scripts/evidence.py" --profile "$TARGET"
+fi
+
+if [[ $CONTRIBUTION_CHECK -eq 1 ]]; then
+  echo "▶ CONTRIBUTION CHECK — Phase 13 NIN community contribution readiness, no mutation"
+  if [[ -z "$TARGET" ]]; then
+    echo "❌ --contribution-check requires --target <rendered-profile-dir>" >&2
+    exit 2
+  fi
+  exec python3 "$HERE/scripts/contribute.py" --profile "$TARGET"
 fi
 
 echo "▶ STEP 1/8 — Preflight (environment check)"
@@ -225,7 +238,7 @@ fi
 echo ""
 echo "▶ STEP 6/8 — Plan"
 cat <<'PLAN'
-  Phase 12 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
+  Phase 13 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
     1. Core SOUL.md and per-sphere SOUL files.
     2. EDENA runtime mapping: sphere ceilings → toolsets → human gates.
     3. Project system prompts from naio-projects.json, if provided.
@@ -237,6 +250,7 @@ cat <<'PLAN'
     9. Public launch pack for no-PHI, no-overclaim sharing.
     10. Cohort/Instructor Mode for no-PHI, non-certifying facilitation.
     11. EDENA Evidence Trail for no-PHI evidence of learning, not certification.
+    12. NIN Community Contribution Flow for sanitized, human-reviewed community submissions.
 
   Safety posture:
     • Writes only to --target when --apply is used.
@@ -257,7 +271,7 @@ if [[ $APPLY -eq 1 ]]; then
   if [[ $PROJECTS_PROVIDED -eq 1 ]]; then RENDER_ARGS+=("--projects" "$PROJECTS"); fi
   if [[ $FORCE -eq 1 ]]; then RENDER_ARGS+=("--force"); fi
   if ! python3 "$HERE/scripts/render-profile.py" "${RENDER_ARGS[@]}"; then
-    echo "❌ Phase 12 render failed." >&2
+    echo "❌ Phase 13 render failed." >&2
     exit 2
   fi
 else
@@ -281,19 +295,19 @@ if [[ $APPLY -eq 1 ]]; then
   cat <<DONE
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 12 apply complete.                     ║
+  ║   ✅  NAIO OS Phase 13 apply complete.                     ║
   ║   Governed profile + execution templates rendered.        ║
   ╚═══════════════════════════════════════════════════════════╝
 
   Target: $TARGET
-  Review README-FIRST.md, 10-Public-Launch/, 11-Cohort-Mode/, and 12-Evidence-Trail/ before copying, sharing, facilitating, or documenting anything.
+  Review README-FIRST.md, 10-Public-Launch/, 11-Cohort-Mode/, 12-Evidence-Trail/, and 13-Contribution-Flow/ before copying, sharing, facilitating, documenting, or contributing anything.
   Doctrine: Agents propose. Humans judge. Nurses steward.
 DONE
 else
   cat <<'DONE'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 12 dry-run complete.                   ║
+  ║   ✅  NAIO OS Phase 13 dry-run complete.                   ║
   ║   Bundle and provided imports are safe. Nothing written.  ║
   ╚═══════════════════════════════════════════════════════════╝
 

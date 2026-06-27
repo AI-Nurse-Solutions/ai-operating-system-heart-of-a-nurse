@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — activation.py (Phase 12)
+NAIO OS — activation.py (Phase 13)
 
 First-run activation checker for rendered NAIO Hermes profile bundles. It checks
 whether a nurse can safely start: START-HERE.md exists, the 7-day path exists,
@@ -108,8 +108,8 @@ def activation_report(profile: Path) -> tuple[dict, int]:
         except Exception as e:
             failures.append(f"cron/rituals.yaml malformed: {e}")
 
-    if runtime.get("version") != "2.0.0-phase12":
-        failures.append(f"runtime version is not 2.0.0-phase12: {runtime.get('version')}")
+    if runtime.get("version") != "2.0.0-phase13":
+        failures.append(f"runtime version is not 2.0.0-phase13: {runtime.get('version')}")
     if runtime.get("mutation_scope") != "target-directory-only":
         failures.append("runtime mutation_scope must be target-directory-only")
     if rituals.get("mode") != "templates_only_not_scheduled":
@@ -127,7 +127,7 @@ def activation_report(profile: Path) -> tuple[dict, int]:
     status = "ready" if not failures else "blocked"
     report = {
         "schema_version": "1.0.0",
-        "phase": 12,
+        "phase": 13,
         "status": status,
         "safe_to_start": not failures,
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -161,7 +161,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        print("\n=== NAIO OS — Phase 12 activation check ===\n")
+        print("\n=== NAIO OS — Phase 13 activation check ===\n")
         print(json.dumps(report, indent=2))
         if code == 0:
             print("\n✅ ACTIVATION READY — open START-HERE.md and begin Day 1.")

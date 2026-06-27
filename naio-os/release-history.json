@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase11",
+  "latest_version": "2.0.0-phase12",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -54,6 +54,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 11,
       "summary": "Cohort / Instructor Mode assets and readiness checker for safe no-PHI, non-certifying facilitation."
+    },
+    {
+      "version": "2.0.0-phase12",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 12,
+      "summary": "EDENA Evidence Trail assets and readiness checker for no-PHI evidence of learning without certification claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

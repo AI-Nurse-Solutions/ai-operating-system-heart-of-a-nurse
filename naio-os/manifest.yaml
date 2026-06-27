@@ -1,4 +1,4 @@
-version: 2.0.0-phase11
+version: 2.0.0-phase12
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -21,6 +21,7 @@ entrypoints:
   activation: scripts/activation.py
   launch: scripts/launch.py
   cohort: scripts/cohort.py
+  evidence: scripts/evidence.py
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
@@ -52,25 +53,25 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 67dcb252d5e4fd048b550b86bc8019ef7c1b2b502ea3a178bd5a5dae84365645
+  sha256: afae23d3be95330ac8cd5129577fce65e2962f7f4c059bf2818510f7081ede31
 - path: scripts/self-test.py
   role: self-test
-  sha256: 56078deec939da35dfeafa6ea277aac12f366b080b225df17223a0702f2d8258
+  sha256: 647f2f306289dfdd4b62d604e633916f2387ca30d9febba8c2394da2c7ccc62c
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: e1c0b0e443455a3bd9d128e4f21df8a266814a7999a8c2defde195d3487da2de
+  sha256: 8590393bf2aebe7341c57e76a3e2a0f0038df866f215e5682935331ca9bcdd07
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: e5299ab6c8b8af17fafb108b822b2f981a7c2f1a9a6de0ef845d54c60ff47908
+  sha256: d0f9a1595870e0c939f83eff54d521cc567f9fe27e7ad60357289e0a0ad39ad8
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: e37a0d66d66f723cb2370759dcb62baa05f42ba60d18f86e3e62ceba4c4789f7
+  sha256: 58dc8313594e354e87eab9c5e6325478955aabfd879a1f49dd12881f9706c08d
 - path: README.md
   role: spec
-  sha256: 1aa7fb4755631a193c32b12f5f077ac8fa22bbe2514bbe5447214b3c3328fcbc
+  sha256: 58acc9b6c532fb5ee2c8b567f6c3e5a2996339989301ab5e724c9e9b63fa50e9
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -79,10 +80,10 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: 9d0ab79fb126600b2981d1ee0c1205a3383d0794e1e5a54842fbaee1629725f9
+  sha256: 691b19d9835b29ce197ca8d779e79ed0b113951c5117e22ba34039947fd7f00b
 - path: release-history.json
   role: release-history
-  sha256: 1812d5811eecc79305203d689ff469244c68558caa5a22906fa1480e1dc89b05
+  sha256: d29fde2c0f274a5874cbe26ee58af2487125521b4d9ea1ea12df068fc66e8a2b
 - path: scripts/check-update.py
   role: update-advisory
   sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
@@ -91,13 +92,16 @@ contents:
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 - path: scripts/activation.py
   role: activation-check
-  sha256: cc935154813a63979e163411d9c0cb963258e012daa248ea4986a0b9a7a40979
+  sha256: 9f6bb3f0b566fb117da4b31b07ea1e6a1f43d4bc86696e9ac5e3a1cb2139301c
 - path: scripts/launch.py
   role: public-launch-check
-  sha256: a181cff917757c35a2daee15fab8332ec2a1ed7e6ce3e89bce8ac49be5653582
+  sha256: 1d001a66c76f2ce9a10c093daaa5a19f43a0f7ba8221fad20d47788591bb3db6
 - path: scripts/cohort.py
   role: cohort-mode-check
-  sha256: 80fbff46ada9056e33b19c87acf9f0d6d4baf0a0174aa2f88d260c8d41a0be95
+  sha256: 7bdf9b5759f9b8ec06913cdffa5f379f998b792e0335005abde215cb89fcfa82
+- path: scripts/evidence.py
+  role: evidence-trail-check
+  sha256: 0f2261c1bcad2b4e7bba2e84f6e9456b78be2d50e75d3b1bc5fe0b26f209cd72
 safety_contract:
   mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready
   idempotent: true
@@ -245,12 +249,15 @@ phase10_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --apply --soul ~/Downloads/naio-soul.json --projects ~/Downloads/naio-projects.json --target ./NAIO-Hermes-Profile
 fail_closed_conditions:
 - 'cohort_missing_mode_pack    # Phase 11 requires 11-Cohort-Mode assets'
+- 'evidence_missing_trail_pack    # Phase 12 requires 12-Evidence-Trail assets'
 features:
 - id: cohort-check
   description: Optional --cohort-check verifies no-PHI cohort/instructor readiness, no certification claims, no auto-enrollment, and human-review posture without mutating Hermes.
+- id: evidence-check
+  description: Optional --evidence-check verifies no-PHI EDENA evidence trail readiness, no certification claims, no automatic scoring/submission, and human-review posture without mutating Hermes.
 roadmap_next:
-- EDENA micro-cert evidence trail (Phase 12+)
 - NIN community contribution flow (Phase 13+)
+- Institutional pilot pack (Phase 14+)
 phase11_outputs:
 - scripts/cohort.py
 - install.sh --cohort-check
@@ -264,3 +271,17 @@ phase11_cohort_mode:
   claims: no_clinical_readiness_or_certification_claims
 phase11_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --cohort-check --target ./NAIO-Hermes-Profile
+phase12_outputs:
+- scripts/evidence.py
+- install.sh --evidence-check
+- 12-Evidence-Trail/*.md
+- config/edena-runtime.yaml evidence metadata
+phase12_evidence_trail:
+  script: scripts/evidence.py
+  path: 12-Evidence-Trail/
+  credentialing: evidence_of_learning_not_certification
+  auto_score: false
+  auto_submit: false
+  claims: no_clinical_readiness_or_certification_claims
+phase12_one_line_commands:
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --evidence-check --target ./NAIO-Hermes-Profile

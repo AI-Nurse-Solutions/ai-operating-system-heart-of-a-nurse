@@ -58,25 +58,26 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 11 bundle manifest + checksums
-├── release.json                    # Phase 11 current update-channel metadata
-├── release-history.json            # Phase 11 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 11 manifest digest
-├── manifest.sig                    # Phase 11 detached manifest signature
-├── bootstrap.sh                    # Phase 11 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 11 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --apply target-only)
+├── manifest.yaml                   # Phase 12 bundle manifest + checksums
+├── release.json                    # Phase 12 current update-channel metadata
+├── release-history.json            # Phase 12 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 12 manifest digest
+├── manifest.sig                    # Phase 12 detached manifest signature
+├── bootstrap.sh                    # Phase 12 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 12 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
     ├── import-projects.py          # validates naio-projects.json
     ├── render-profile.py           # EDENA → Hermes-ready profile + skill/ritual renderer
-    ├── self-test.py                # Phase 11 smoke test + recovery + activation + launch harness
-    ├── verify-release.py           # Phase 11 release metadata + signature/history verifier
-    ├── check-update.py             # Phase 11 advisory update check; no mutation
-    ├── recovery.py                 # Phase 11 local-only snapshot, verify, restore-plan, and drill
-    ├── activation.py               # Phase 11 first-run START-HERE + 7-day readiness check
-    ├── launch.py                   # Phase 11 public launch pack readiness check
-    ├── cohort.py                   # Phase 11 cohort/instructor readiness check
+    ├── self-test.py                # Phase 12 smoke test + recovery + activation + launch harness
+    ├── verify-release.py           # Phase 12 release metadata + signature/history verifier
+    ├── check-update.py             # Phase 12 advisory update check; no mutation
+    ├── recovery.py                 # Phase 12 local-only snapshot, verify, restore-plan, and drill
+    ├── activation.py               # Phase 12 first-run START-HERE + 7-day readiness check
+    ├── launch.py                   # Phase 12 public launch pack readiness check
+    ├── cohort.py                   # Phase 12 cohort/instructor readiness check
+    ├── evidence.py                 # Phase 12 EDENA evidence trail readiness check
     ├── healthcheck.py              # verify-before-claim harness
     └── compute-checksums.sh        # writes manifest sha256 fields
 ```
@@ -131,7 +132,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 11 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 12 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -181,6 +182,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **9** | First-run activation guide + 7-day nurse onboarding path | ✅ done — `START-HERE.md`, `07-First-Week/*.md`, `scripts/activation.py`, and `install.sh --activation-check` verify the nurse can safely begin without mutation |
 | **10** | Public Launch Pack + no-overclaim share readiness | ✅ done — `10-Public-Launch/*.md`, `scripts/launch.py`, and `install.sh --launch-check` verify no-PHI, no clinical-readiness claims, and human-review posture before sharing |
 | **11** | Cohort / Instructor Mode + readiness reflection | ✅ done — `11-Cohort-Mode/*.md`, `scripts/cohort.py`, and `install.sh --cohort-check` verify no-PHI, no certification claims, no auto-enrollment, and facilitation safety |
+| **12** | EDENA Evidence Trail + evidence-of-learning portfolio | ✅ done — `12-Evidence-Trail/*.md`, `scripts/evidence.py`, and `install.sh --evidence-check` verify no-PHI, no certification claims, no automatic scoring/submission, and evidence safety |
 
 ---
 
@@ -258,9 +260,9 @@ curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --launch-ch
 Safety posture remains unchanged: no PHI, no clinical decisions, no direct `~/.hermes` mutation, no automatic cron scheduling, no automatic restore, no automatic publishing, and no clinical-readiness claims.
 
 
-## Phase 11 — Cohort / Instructor Mode
+## Phase 12 — Cohort / Instructor Mode
 
-Phase 11 answers the cohort question: **“How do I teach this safely without becoming a premature certification body?”**
+Phase 12 answers the cohort question: **“How do I teach this safely without becoming a premature certification body?”**
 
 Rendered profiles include:
 
@@ -291,3 +293,38 @@ curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --cohort-ch
 ```
 
 Cohort Mode is for readiness reflection, not certification. It verifies no PHI, no clinical-readiness claims, no auto-enrollment, no automatic cron scheduling, and no direct `~/.hermes` mutation.
+
+
+## Phase 12 — EDENA Evidence Trail
+
+Phase 12 answers the evidence question: **“How do we document learning and stewardship without claiming certification or clinical readiness?”**
+
+Rendered profiles include:
+
+```text
+12-Evidence-Trail/README.md
+12-Evidence-Trail/Evidence-Capture-Guide.md
+12-Evidence-Trail/EDENA-Lens-Reflection.md
+12-Evidence-Trail/Artifact-Log.md
+12-Evidence-Trail/Human-Gate-Ledger.md
+12-Evidence-Trail/Boundary-Incident-Template.md
+12-Evidence-Trail/Portfolio-Index.md
+12-Evidence-Trail/Facilitator-Review-Notes.md
+12-Evidence-Trail/Evidence-Export-Checklist.md
+12-Evidence-Trail/Not-Certification-Statement.md
+```
+
+Check readiness locally:
+
+```bash
+./install.sh --evidence-check --target ./NAIO-Hermes-Profile
+python3 scripts/evidence.py --profile ./NAIO-Hermes-Profile --json
+```
+
+Remote one-line evidence check:
+
+```bash
+curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --evidence-check --target ./NAIO-Hermes-Profile
+```
+
+Evidence Trail is for evidence of learning, not certification. It verifies no PHI, no clinical-readiness claims, no automatic scoring, no automatic submission, no cron scheduling, and no direct `~/.hermes` mutation.

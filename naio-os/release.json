@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase18",
-  "minimum_installer_phase": 18,
+  "latest_version": "2.0.0-phase19",
+  "minimum_installer_phase": 19,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "f7897c5ca0ff72b79019e4d74975bac5e7e41cd1300d4821709289e2f58d2269",
+    "sha256": "4e20d3783c15b0eff42ab053687d31936660e89d1e1052e4840fa014d9095c54",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -36,7 +36,8 @@
     "readiness": "scripts/readiness.py",
     "registry": "scripts/registry.py",
     "orchestration": "scripts/orchestration.py",
-    "governance": "scripts/governance.py"
+    "governance": "scripts/governance.py",
+    "partner": "scripts/partner.py"
   },
   "safety_contract": [
     "no PHI",
@@ -97,7 +98,17 @@
     "no procurement approval",
     "no certification or credentialing",
     "no automatic approvals",
-    "no automatic policy enforcement"
+    "no automatic policy enforcement",
+    "Partner / Sponsor Briefing Pack",
+    "informational partner conversations only",
+    "no fundraising solicitation",
+    "no investment advice",
+    "no partnership or sponsor approval",
+    "no clinical deployment approval",
+    "no automatic outreach",
+    "no automatic sending",
+    "no automatic follow-up",
+    "human partner steward review required"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."
 }

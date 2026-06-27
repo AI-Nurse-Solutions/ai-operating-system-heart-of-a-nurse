@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase18",
+  "latest_version": "2.0.0-phase19",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -103,6 +103,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 18,
       "summary": "Governance Board / Steward Council Pack for advisory human stewardship without legal, compliance, institutional, clinical, procurement, certification, credentialing, disciplinary, or automatic approval authority."
+    },
+    {
+      "version": "2.0.0-phase19",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 19,
+      "summary": "Partner / Sponsor Briefing Pack for informational no-PHI collaboration conversations without solicitation, funding, approval, procurement, endorsement, or clinical-deployment claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

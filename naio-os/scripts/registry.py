@@ -38,7 +38,7 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append("missing required registry files: "+", ".join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; registry=runtime.get('registry',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase18': failures.append(f"runtime version is not 2.0.0-phase18: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase19': failures.append(f"runtime version is not 2.0.0-phase19: {runtime.get('version')}")
     if registry.get('path')!='16-Agent-Registry/': failures.append('runtime registry.path is not 16-Agent-Registry/')
     if registry.get('registry_use')!='human_reviewed_learning_registry_not_endorsement': failures.append('runtime registry_use must remain human-reviewed learning registry, not endorsement')
     for key in ['auto_vet','auto_list','auto_execute_agent','auto_recommend_for_patient_care']:

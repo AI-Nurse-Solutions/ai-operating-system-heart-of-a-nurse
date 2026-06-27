@@ -58,13 +58,13 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 18 bundle manifest + checksums
-├── release.json                    # Phase 18 current update-channel metadata
-├── release-history.json            # Phase 18 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 18 manifest digest
-├── manifest.sig                    # Phase 18 detached manifest signature
-├── bootstrap.sh                    # Phase 18 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 18 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --orchestration-check; --governance-check; --apply target-only)
+├── manifest.yaml                   # Phase 19 bundle manifest + checksums
+├── release.json                    # Phase 19 current update-channel metadata
+├── release-history.json            # Phase 19 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 19 manifest digest
+├── manifest.sig                    # Phase 19 detached manifest signature
+├── bootstrap.sh                    # Phase 19 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 18 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --orchestration-check; --governance-check; --partner-check; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
@@ -132,7 +132,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 18 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 19 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -189,6 +189,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **16** | NAIO Agent Registry Pack + steward review queue | ✅ done — `16-Agent-Registry/*.md`, `scripts/registry.py`, and `install.sh --registry-check` verify no-PHI, no patient care, no endorsement/procurement/deployment/clinical-readiness claims, and no automatic vetting/listing/agent execution |
 | **17** | Florence-X Orchestration Preview + shared intent/context cards | ✅ done — `17-Florence-X-Orchestration/*.md`, `scripts/orchestration.py`, and `install.sh --orchestration-check` verify no-PHI, no patient care, Orange-deferred shared memory, no shared memory runtime, and no automatic handoffs/routing/agent execution |
 | **18** | Governance Board / Steward Council Pack | ✅ done — `18-Governance-Board/*.md`, `scripts/governance.py`, and `install.sh --governance-check` verify advisory-only stewardship, no legal/compliance/institutional/clinical/procurement/certification/credentialing authority, and no automatic approvals or policy enforcement |
+| **19** | Partner / Sponsor Briefing Pack | ✅ done — `19-Partner-Briefing/*.md`, `scripts/partner.py`, and `install.sh --partner-check` verify informational-only partner conversations, no fundraising/investment/legal/compliance/procurement/clinical-deployment/approval claims, and no automatic outreach or follow-up |
 
 ---
 
@@ -422,5 +423,19 @@ It adds an advisory-only governance path:
 - `install.sh --governance-check` — local target-only governance pack check.
 
 This is an advisory Steward Council template, not legal or institutional authority.
+
+Agents propose. Humans judge. Nurses steward.
+
+## Phase 19 — Partner / Sponsor Briefing Pack
+
+Phase 19 gives Robert and future nurse stewards a safe outward-facing collaboration doorway: **“How can we brief hospitals, schools, associations, donors, sponsors, and ecosystem partners without implying solicitation, approval, funding, procurement, institutional endorsement, or clinical deployment?”**
+
+It adds an informational-only partner path:
+
+- `19-Partner-Briefing/*.md` — partner overview, one-page brief, use-case boundary map, stakeholder question prep, claim-vs-proof ledger, demo boundary script, partner intake form, risk/referral notes, sponsor conversation guide, non-solicitation/non-approval statement, and follow-up decision record.
+- `scripts/partner.py` — briefing posture checker for no-PHI, no patient-care use, no clinical decision support, no fundraising solicitation, no investment advice, no legal/compliance/procurement/clinical-deployment/approval claims, no automatic outreach/sending/follow-up/data-room/funding acceptance, and no direct mutation.
+- `install.sh --partner-check` — local target-only partner briefing check.
+
+This is an informational partner briefing template, not a solicitation, not a partnership approval, not sponsor approval, not procurement approval, not legal/compliance determination, and not clinical deployment authority.
 
 Agents propose. Humans judge. Nurses steward.

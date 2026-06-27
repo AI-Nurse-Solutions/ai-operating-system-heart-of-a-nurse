@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 18)
+NAIO OS — self-test.py (Phase 19)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -264,6 +264,18 @@ def verify_target(target: Path) -> None:
         "18-Governance-Board/Voting-and-Quorum-Checklist.md",
         "18-Governance-Board/Transparency-Ledger.md",
         "18-Governance-Board/Non-Authority-Statement.md",
+        "19-Partner-Briefing/README.md",
+        "19-Partner-Briefing/Partner-Briefing-Overview.md",
+        "19-Partner-Briefing/One-Page-Partner-Brief.md",
+        "19-Partner-Briefing/Use-Case-Boundary-Map.md",
+        "19-Partner-Briefing/Stakeholder-Question-Prep.md",
+        "19-Partner-Briefing/Claim-vs-Proof-Ledger.md",
+        "19-Partner-Briefing/Demo-Boundary-Script.md",
+        "19-Partner-Briefing/Partner-Intake-Form.md",
+        "19-Partner-Briefing/Risk-and-Referral-Notes.md",
+        "19-Partner-Briefing/Sponsor-Conversation-Guide.md",
+        "19-Partner-Briefing/Non-Solicitation-and-Non-Approval-Statement.md",
+        "19-Partner-Briefing/Follow-Up-Decision-Record.md",
     ]
     for rel in expected:
         check(f"generated {rel}", (target / rel).is_file())
@@ -275,7 +287,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase18", runtime.get("version") == "2.0.0-phase18")
+    check("runtime version phase19", runtime.get("version") == "2.0.0-phase19")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -295,14 +307,15 @@ def verify_target(target: Path) -> None:
     check("agent registry pack is present", "Phase 18 NAIO Agent Registry Pack" in combined and "Agent Intake Card" in combined and "Not-Endorsement Statement" in combined and "no automatic listing" in combined.lower())
     check("Florence-X orchestration pack is present", "Phase 18 Florence-X Orchestration Preview Pack" in combined and "Shared Intent Card" in combined and "Non-Deployment Statement" in combined and "no automatic handoffs" in combined.lower())
     check("governance board pack is present", "Phase 18 Governance Board / Steward Council Pack" in combined and "Governance Board Charter" in combined and "Non-Authority Statement" in combined and "no automatic approvals" in combined.lower())
+    check("partner briefing pack is present", "Phase 19 Partner / Sponsor Briefing Pack" in combined and "One-Page Partner Brief" in combined and "Non-Solicitation and Non-Approval Statement" in combined and "no automatic outreach" in combined.lower())
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 18 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 19 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 18 self-test ===\n")
+    print("\n=== NAIO OS — Phase 19 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -348,6 +361,8 @@ def main() -> int:
             check("orchestration check reports ready and no mutation", orchestration.returncode == 0 and '"status": "ready"' in orchestration.stdout and '"orchestration_ready": true' in orchestration.stdout and '"safe_to_rehearse": true' in orchestration.stdout and '"no_mutation": true' in orchestration.stdout, f"exit={orchestration.returncode}")
             governance = run(["python3", "scripts/governance.py", "--profile", str(target), "--json"])
             check("governance check reports ready and no mutation", governance.returncode == 0 and '"status": "ready"' in governance.stdout and '"governance_ready": true' in governance.stdout and '"safe_to_convene": true' in governance.stdout and '"no_mutation": true' in governance.stdout, f"exit={governance.returncode}")
+            partner = run(["python3", "scripts/partner.py", "--profile", str(target), "--json"])
+            check("partner check reports ready and no mutation", partner.returncode == 0 and '"status": "ready"' in partner.stdout and '"partner_ready": true' in partner.stdout and '"safe_to_brief": true' in partner.stdout and '"no_mutation": true' in partner.stdout, f"exit={partner.returncode}")
         else:
             fail("target directory was not created")
 
@@ -372,7 +387,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 18 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 19 safety contract.")
     return 1 if FAIL else 0
 
 

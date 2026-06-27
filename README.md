@@ -31,5 +31,6 @@ Downloads:
 - SOUL Interview Agent — guided interview framework + templates that help students, staff nurses, and leaders draft tailored SOUL.md files across all their spheres
 - SOUL Quiz (self-serve) — `/soul-quiz.html` — a browser-only multi-step quiz that drafts and downloads tailored SOUL.md files with no server or upload
 - Life & Projects Quiz — `/life-quiz.html` — maps a nurse's whole life across 3 spheres / 17 life domains and converts each active area into a governed project system prompt, with a completeness (coverage) check
+- AI Global Builder Incubator Academy — `/builder-academy.html` — public-facing landing page and browser-only interest form for the first country lane: Philippines implementation with nursing schools, associations, senior high learners, and diaspora mentors
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 8)
+NAIO OS — self-test.py (Phase 9)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -133,6 +133,7 @@ def sample_projects() -> dict:
 
 def verify_target(target: Path) -> None:
     expected = [
+        "START-HERE.md",
         "README-FIRST.md",
         "SOUL.md",
         ".hermes.md",
@@ -156,6 +157,13 @@ def verify_target(target: Path) -> None:
         "config/human-gates.yaml",
         "config/hermes-profile.patch.yaml",
         "logs/render-report.json",
+        "07-First-Week/Day-1-Setup.md",
+        "07-First-Week/Day-2-SOUL-Review.md",
+        "07-First-Week/Day-3-Project-Triage.md",
+        "07-First-Week/Day-4-Lamp-Huddle.md",
+        "07-First-Week/Day-5-Knowledge-Inbox.md",
+        "07-First-Week/Day-6-Boundary-Review.md",
+        "07-First-Week/Day-7-Weekly-Ledger.md",
     ]
     for rel in expected:
         check(f"generated {rel}", (target / rel).is_file())
@@ -167,7 +175,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase8", runtime.get("version") == "2.0.0-phase8")
+    check("runtime version phase9", runtime.get("version") == "2.0.0-phase9")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -176,14 +184,16 @@ def verify_target(target: Path) -> None:
     check("Green and Yellow gates are present", "human_gate: every-output" in combined and "human_gate: before-external-use" in combined)
     check("no-PHI boundary is carried", "Do not request or infer patient information" in combined)
     check("doctrine is carried", "Agents propose. Humans judge. Nurses steward." in combined)
+    check("START-HERE carries first safe prompts", "Your first 3 safe prompts" in combined and "Open START-HERE.md" in combined)
+    check("first-week activation path is present", "Day 1 — Setup and Safety" in combined and "Day 7 — Weekly Ledger" in combined)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 8 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 9 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 8 self-test ===\n")
+    print("\n=== NAIO OS — Phase 9 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -209,6 +219,8 @@ def main() -> int:
             verify_target(target)
             recovery = run(["python3", "scripts/recovery.py", "--drill", "--profile", str(target)])
             check("recovery drill snapshots/verifies/extracts/plans with no mutation", recovery.returncode == 0 and '"status": "drill-passed"' in recovery.stdout and '"no_mutation": true' in recovery.stdout, f"exit={recovery.returncode}")
+            activation = run(["python3", "scripts/activation.py", "--profile", str(target), "--json"])
+            check("activation check reports ready and no mutation", activation.returncode == 0 and '"status": "ready"' in activation.stdout and '"safe_to_start": true' in activation.stdout and '"no_mutation": true' in activation.stdout, f"exit={activation.returncode}")
         else:
             fail("target directory was not created")
 
@@ -233,7 +245,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 8 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 9 safety contract.")
     return 1 if FAIL else 0
 
 

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase8",
+  "latest_version": "2.0.0-phase9",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -33,6 +33,13 @@
       "date": "2026-06-27",
       "key_id": "naio-os-release-key-2026-06",
       "notes": "Phase 8 local-only recovery snapshots, checksum sidecars, safe archive verification, recovery drill, and human restore plans."
+    },
+    {
+      "version": "2.0.0-phase9",
+      "phase": 9,
+      "published_at": "2026-06-27T00:00:00Z",
+      "key_id": "naio-os-release-key-2026-06",
+      "summary": "First-run activation guide, seven-day onboarding path, and activation readiness checker."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

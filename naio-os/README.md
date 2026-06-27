@@ -58,22 +58,23 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 8 bundle manifest + checksums
-├── release.json                    # Phase 8 current update-channel metadata
-├── release-history.json            # Phase 8 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 8 manifest digest
-├── manifest.sig                    # Phase 8 detached manifest signature
-├── bootstrap.sh                    # Phase 8 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 8 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --apply target-only)
+├── manifest.yaml                   # Phase 9 bundle manifest + checksums
+├── release.json                    # Phase 9 current update-channel metadata
+├── release-history.json            # Phase 9 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 9 manifest digest
+├── manifest.sig                    # Phase 9 detached manifest signature
+├── bootstrap.sh                    # Phase 9 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 9 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill / activation-check; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
     ├── import-projects.py          # validates naio-projects.json
     ├── render-profile.py           # EDENA → Hermes-ready profile + skill/ritual renderer
-    ├── self-test.py                # Phase 8 smoke test + recovery drill harness
-    ├── verify-release.py           # Phase 8 release metadata + signature/history verifier
-    ├── check-update.py             # Phase 8 advisory update check; no mutation
-    ├── recovery.py                 # Phase 8 local-only snapshot, verify, restore-plan, and drill
+    ├── self-test.py                # Phase 9 smoke test + recovery drill harness
+    ├── verify-release.py           # Phase 9 release metadata + signature/history verifier
+    ├── check-update.py             # Phase 9 advisory update check; no mutation
+    ├── recovery.py                 # Phase 9 local-only snapshot, verify, restore-plan, and drill
+    ├── activation.py               # Phase 9 first-run START-HERE + 7-day readiness check
     ├── healthcheck.py              # verify-before-claim harness
     └── compute-checksums.sh        # writes manifest sha256 fields
 ```
@@ -128,7 +129,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 8 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 9 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -175,6 +176,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **6** | Versioning, update channel, signed checksums | ✅ done — `release.json`, `manifest.sha256`, detached `manifest.sig`, release public key, and fail-closed verifier gate before artifact checksums |
 | **7** | Release governance, rollback protection, advisory update check | ✅ done — `release-history.json`, trusted `key_id`, monotonic phase rollback refusal, and `install.sh --check-update` / `scripts/check-update.py` with no automatic mutation |
 | **8** | Local recovery snapshots, restore plans, recovery drill | ✅ done — `scripts/recovery.py`, explicit local snapshot directory, checksum sidecar, safe archive verification, `NAIO-RESTORE-PLAN.md`, and `install.sh --recovery-drill` with no automatic restore |
+| **9** | First-run activation guide + 7-day nurse onboarding path | ✅ done — `START-HERE.md`, `07-First-Week/*.md`, `scripts/activation.py`, and `install.sh --activation-check` verify the nurse can safely begin without mutation |
 
 ---
 
@@ -183,3 +185,36 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 > Agents propose. Humans judge. Nurses steward.
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.
+
+
+## Phase 9 — First-Run Activation Layer
+
+Phase 9 answers the bedside question: **“I installed this after a hard shift. What do I safely do first?”**
+
+Rendered profile bundles now include:
+
+```text
+START-HERE.md
+07-First-Week/Day-1-Setup.md
+07-First-Week/Day-2-SOUL-Review.md
+07-First-Week/Day-3-Project-Triage.md
+07-First-Week/Day-4-Lamp-Huddle.md
+07-First-Week/Day-5-Knowledge-Inbox.md
+07-First-Week/Day-6-Boundary-Review.md
+07-First-Week/Day-7-Weekly-Ledger.md
+```
+
+Activation can be checked without mutating Hermes:
+
+```bash
+./install.sh --activation-check --target ./NAIO-Hermes-Profile
+python3 scripts/activation.py --profile ./NAIO-Hermes-Profile --json
+```
+
+Remote one-line activation check:
+
+```bash
+curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --activation-check --target ./NAIO-Hermes-Profile
+```
+
+Safety posture remains unchanged: no PHI, no clinical decisions, no direct `~/.hermes` mutation, no automatic cron scheduling, and human gates remain non-removable.

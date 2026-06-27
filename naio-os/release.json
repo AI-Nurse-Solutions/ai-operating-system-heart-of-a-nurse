@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase8",
-  "minimum_installer_phase": 8,
+  "latest_version": "2.0.0-phase9",
+  "minimum_installer_phase": 9,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "95aff81de3b50f5b06ae8761a7900a21d607b83d7a08403648f68ac1522e4765",
+    "sha256": "47fb642d1eb3d53a2b1b7e60cc1c51931b5b87e13c8eb3850003ce6ef0eb734d",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -26,7 +26,8 @@
     "self_test": "scripts/self-test.py",
     "verify_release": "scripts/verify-release.py",
     "check_update": "scripts/check-update.py",
-    "recovery": "scripts/recovery.py"
+    "recovery": "scripts/recovery.py",
+    "activation": "scripts/activation.py"
   },
   "safety_contract": [
     "no PHI",
@@ -38,7 +39,10 @@
     "rollback protection",
     "advisory updates only",
     "local-only recovery snapshots",
-    "human restore plans only"
+    "human restore plans only",
+    "first-run activation guide",
+    "7-day nurse onboarding path",
+    "activation readiness check"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."
 }

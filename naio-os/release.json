@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase10",
-  "minimum_installer_phase": 10,
+  "latest_version": "2.0.0-phase11",
+  "minimum_installer_phase": 11,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "b804cf284fcbc095436b65c4734cfa2d093b704c2ba3d4576bb871030995c29d",
+    "sha256": "441cb53c4fe04aa87421273ab24df7813a76739de6cb3851b0264fd50565ad40",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -28,7 +28,8 @@
     "check_update": "scripts/check-update.py",
     "recovery": "scripts/recovery.py",
     "activation": "scripts/activation.py",
-    "launch": "scripts/launch.py"
+    "launch": "scripts/launch.py",
+    "cohort": "scripts/cohort.py"
   },
   "safety_contract": [
     "no PHI",

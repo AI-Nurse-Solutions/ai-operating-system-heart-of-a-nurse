@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — install.sh  (Phase 10: public launch pack)
+# NAIO OS — install.sh  (Phase 11: cohort / instructor mode)
 # =============================================================================
 # Default: dry-run validate + plan. Apply mode is real but safe:
 #   ./install.sh --apply --soul naio-soul.json --projects naio-projects.json --target ./NAIO-Hermes-Profile
@@ -22,10 +22,11 @@ CHECK_UPDATE=0
 RECOVERY_DRILL=0
 ACTIVATION_CHECK=0
 LAUNCH_CHECK=0
+COHORT_CHECK=0
 
 print_help() {
   cat <<'EOF'
-NAIO OS installer (Phase 10 — public launch pack + healthcheck/self-test harness)
+NAIO OS installer (Phase 11 — cohort / instructor mode + healthcheck/self-test harness)
 
 Usage:
   ./install.sh [--dry-run] [--soul <path>] [--projects <path>] [--no-checksums]
@@ -35,6 +36,7 @@ Usage:
   ./install.sh --recovery-drill --target <rendered-profile-dir>
   ./install.sh --activation-check --target <rendered-profile-dir>
   ./install.sh --launch-check --target <rendered-profile-dir>
+  ./install.sh --cohort-check --target <rendered-profile-dir>
 
 One-line remote self-test:
   curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
@@ -47,11 +49,12 @@ Options:
   --soul <path>      Path to naio-soul.json (from the SOUL Quiz). Required for --apply.
   --projects <path>  Path to naio-projects.json (from the Life & Projects Quiz).
   --no-checksums     Skip sha256 verification against the manifest (not recommended).
-  --self-test        Run the Phase 10 built-in smoke test and exit.
+  --self-test        Run the Phase 11 built-in smoke test and exit.
   --check-update     Verify release history and compare the advisory update channel; no install/mutation.
   --recovery-drill   Run a local-only recovery snapshot/verify/extract/plan drill for --target.
   --activation-check  Verify first-run START-HERE and 7-day activation readiness for --target.
   --launch-check     Verify no-PHI public launch pack readiness for --target.
+  --cohort-check      Verify no-PHI cohort/instructor readiness for --target.
   --help             Show this help.
 
 Doctrine: Agents propose. Humans judge. Nurses steward.
@@ -78,6 +81,7 @@ while [[ $# -gt 0 ]]; do
     --recovery-drill) RECOVERY_DRILL=1; shift ;;
     --activation-check) ACTIVATION_CHECK=1; shift ;;
     --launch-check) LAUNCH_CHECK=1; shift ;;
+    --cohort-check) COHORT_CHECK=1; shift ;;
     --help|-h) print_help; exit 0 ;;
     *) echo "Unknown option: $1" >&2; print_help; exit 1 ;;
   esac
@@ -86,7 +90,7 @@ done
 cat <<'BANNER'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   NAIO OS — Nurse AI Operating System (Phase 10)           ║
+  ║   NAIO OS — Nurse AI Operating System (Phase 11)           ║
   ║   One-line installer + healthcheck/self-test harness       ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -96,17 +100,17 @@ cat <<'BANNER'
 BANNER
 
 if [[ $SELF_TEST -eq 1 ]]; then
-  echo "▶ SELF-TEST — focused Phase 10 smoke test"
+  echo "▶ SELF-TEST — focused Phase 11 smoke test"
   exec python3 "$HERE/scripts/self-test.py"
 fi
 
 if [[ $CHECK_UPDATE -eq 1 ]]; then
-  echo "▶ CHECK UPDATE — Phase 10 advisory, no mutation"
+  echo "▶ CHECK UPDATE — Phase 11 advisory, no mutation"
   exec python3 "$HERE/scripts/check-update.py"
 fi
 
 if [[ $RECOVERY_DRILL -eq 1 ]]; then
-  echo "▶ RECOVERY DRILL — Phase 10 local-only snapshot/verify/extract/plan"
+  echo "▶ RECOVERY DRILL — Phase 11 local-only snapshot/verify/extract/plan"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --recovery-drill requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -115,7 +119,7 @@ if [[ $RECOVERY_DRILL -eq 1 ]]; then
 fi
 
 if [[ $ACTIVATION_CHECK -eq 1 ]]; then
-  echo "▶ ACTIVATION CHECK — Phase 10 first-run readiness, no mutation"
+  echo "▶ ACTIVATION CHECK — Phase 11 first-run readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --activation-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -124,12 +128,21 @@ if [[ $ACTIVATION_CHECK -eq 1 ]]; then
 fi
 
 if [[ $LAUNCH_CHECK -eq 1 ]]; then
-  echo "▶ LAUNCH CHECK — Phase 10 public launch readiness, no mutation"
+  echo "▶ LAUNCH CHECK — Phase 11 public launch readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --launch-check requires --target <rendered-profile-dir>" >&2
     exit 2
   fi
   exec python3 "$HERE/scripts/launch.py" --profile "$TARGET"
+fi
+
+if [[ $COHORT_CHECK -eq 1 ]]; then
+  echo "▶ COHORT CHECK — Phase 11 instructor/cohort readiness, no mutation"
+  if [[ -z "$TARGET" ]]; then
+    echo "❌ --cohort-check requires --target <rendered-profile-dir>" >&2
+    exit 2
+  fi
+  exec python3 "$HERE/scripts/cohort.py" --profile "$TARGET"
 fi
 
 echo "▶ STEP 1/8 — Preflight (environment check)"
@@ -199,7 +212,7 @@ fi
 echo ""
 echo "▶ STEP 6/8 — Plan"
 cat <<'PLAN'
-  Phase 10 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
+  Phase 11 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
     1. Core SOUL.md and per-sphere SOUL files.
     2. EDENA runtime mapping: sphere ceilings → toolsets → human gates.
     3. Project system prompts from naio-projects.json, if provided.
@@ -209,6 +222,7 @@ cat <<'PLAN'
     7. Signed release metadata, rollback protection, and update-channel verification.
     8. Healthcheck + self-test harness before claims of success.
     9. Public launch pack for no-PHI, no-overclaim sharing.
+    10. Cohort/Instructor Mode for no-PHI, non-certifying facilitation.
 
   Safety posture:
     • Writes only to --target when --apply is used.
@@ -229,7 +243,7 @@ if [[ $APPLY -eq 1 ]]; then
   if [[ $PROJECTS_PROVIDED -eq 1 ]]; then RENDER_ARGS+=("--projects" "$PROJECTS"); fi
   if [[ $FORCE -eq 1 ]]; then RENDER_ARGS+=("--force"); fi
   if ! python3 "$HERE/scripts/render-profile.py" "${RENDER_ARGS[@]}"; then
-    echo "❌ Phase 10 render failed." >&2
+    echo "❌ Phase 11 render failed." >&2
     exit 2
   fi
 else
@@ -253,19 +267,19 @@ if [[ $APPLY -eq 1 ]]; then
   cat <<DONE
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 10 apply complete.                     ║
+  ║   ✅  NAIO OS Phase 11 apply complete.                     ║
   ║   Governed profile + execution templates rendered.        ║
   ╚═══════════════════════════════════════════════════════════╝
 
   Target: $TARGET
-  Review README-FIRST.md and 10-Public-Launch/ before copying or sharing anything.
+  Review README-FIRST.md, 10-Public-Launch/, and 11-Cohort-Mode/ before copying, sharing, or facilitating anything.
   Doctrine: Agents propose. Humans judge. Nurses steward.
 DONE
 else
   cat <<'DONE'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 10 dry-run complete.                   ║
+  ║   ✅  NAIO OS Phase 11 dry-run complete.                   ║
   ║   Bundle and provided imports are safe. Nothing written.  ║
   ╚═══════════════════════════════════════════════════════════╝
 

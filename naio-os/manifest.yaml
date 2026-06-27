@@ -1,4 +1,4 @@
-version: 2.0.0-phase10
+version: 2.0.0-phase11
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -20,6 +20,7 @@ entrypoints:
   recovery: scripts/recovery.py
   activation: scripts/activation.py
   launch: scripts/launch.py
+  cohort: scripts/cohort.py
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
@@ -51,25 +52,25 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 6c12ae45ca3679b77ffb8e2cf7a3d2287d5a22077d4f6b998b18790149c15e5a
+  sha256: 67dcb252d5e4fd048b550b86bc8019ef7c1b2b502ea3a178bd5a5dae84365645
 - path: scripts/self-test.py
   role: self-test
-  sha256: ca4d4481bb710c431414171d6352ffcb05b872559130c1a3d896634493b4bf64
+  sha256: 56078deec939da35dfeafa6ea277aac12f366b080b225df17223a0702f2d8258
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: 4fdeefde28bf715def3f51d2abb2eaa7539e0a2ba3964dfbf15d4438021a50d5
+  sha256: e1c0b0e443455a3bd9d128e4f21df8a266814a7999a8c2defde195d3487da2de
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: 0d401eb825094c36934190988337696846bb0ce5b307f0b32a25e86e9f02a0e4
+  sha256: e5299ab6c8b8af17fafb108b822b2f981a7c2f1a9a6de0ef845d54c60ff47908
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: e073c46b3a169988f33ead34e5987447f6c38b0188d8098920e2e489e4dffde1
+  sha256: e37a0d66d66f723cb2370759dcb62baa05f42ba60d18f86e3e62ceba4c4789f7
 - path: README.md
   role: spec
-  sha256: 43f5f743a6cc70c875bc208de5928fa92b2a178b5214e72310dc8f8a71703f96
+  sha256: 1aa7fb4755631a193c32b12f5f077ac8fa22bbe2514bbe5447214b3c3328fcbc
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -78,10 +79,10 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: 9bd99cf5a050932a8a0a8d72a928e27dd213a5664bbf5f8994ab5f496c79a81e
+  sha256: 9d0ab79fb126600b2981d1ee0c1205a3383d0794e1e5a54842fbaee1629725f9
 - path: release-history.json
   role: release-history
-  sha256: 6f7e7cc94d5b544d4630df89c2b36983bd92c2715209db8e3579266ec60eb55c
+  sha256: 1812d5811eecc79305203d689ff469244c68558caa5a22906fa1480e1dc89b05
 - path: scripts/check-update.py
   role: update-advisory
   sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
@@ -90,10 +91,13 @@ contents:
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 - path: scripts/activation.py
   role: activation-check
-  sha256: 08a2f1a132d217c9fd4bc63a8dfe77e80756447e9244232d0f428c9e2377af54
+  sha256: cc935154813a63979e163411d9c0cb963258e012daa248ea4986a0b9a7a40979
 - path: scripts/launch.py
   role: public-launch-check
-  sha256: 97059beeec0229e183acdbecc3ef2304f267506e8491d2ce5f3dd2a641a41f6c
+  sha256: a181cff917757c35a2daee15fab8332ec2a1ed7e6ce3e89bce8ac49be5653582
+- path: scripts/cohort.py
+  role: cohort-mode-check
+  sha256: 80fbff46ada9056e33b19c87acf9f0d6d4baf0a0174aa2f88d260c8d41a0be95
 safety_contract:
   mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready
   idempotent: true
@@ -239,3 +243,24 @@ phase10_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --activation-check --target ./NAIO-Hermes-Profile
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --launch-check --target ./NAIO-Hermes-Profile
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --apply --soul ~/Downloads/naio-soul.json --projects ~/Downloads/naio-projects.json --target ./NAIO-Hermes-Profile
+fail_closed_conditions:
+- 'cohort_missing_mode_pack    # Phase 11 requires 11-Cohort-Mode assets'
+features:
+- id: cohort-check
+  description: Optional --cohort-check verifies no-PHI cohort/instructor readiness, no certification claims, no auto-enrollment, and human-review posture without mutating Hermes.
+roadmap_next:
+- EDENA micro-cert evidence trail (Phase 12+)
+- NIN community contribution flow (Phase 13+)
+phase11_outputs:
+- scripts/cohort.py
+- install.sh --cohort-check
+- 11-Cohort-Mode/*.md
+- config/edena-runtime.yaml cohort metadata
+phase11_cohort_mode:
+  script: scripts/cohort.py
+  path: 11-Cohort-Mode/
+  credentialing: readiness_reflection_not_certification
+  auto_enrollment: false
+  claims: no_clinical_readiness_or_certification_claims
+phase11_one_line_commands:
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --cohort-check --target ./NAIO-Hermes-Profile

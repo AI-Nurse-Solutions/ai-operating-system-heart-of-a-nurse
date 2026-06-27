@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 10)
+NAIO OS — self-test.py (Phase 11)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -173,6 +173,16 @@ def verify_target(target: Path) -> None:
         "10-Public-Launch/Social-Post-LinkedIn.md",
         "10-Public-Launch/Social-Post-Instagram-Facebook.md",
         "10-Public-Launch/Email-Invite.md",
+        "11-Cohort-Mode/README.md",
+        "11-Cohort-Mode/Instructor-Guide.md",
+        "11-Cohort-Mode/Cohort-Launch-Checklist.md",
+        "11-Cohort-Mode/Week-1-Facilitation-Plan.md",
+        "11-Cohort-Mode/Week-2-Facilitation-Plan.md",
+        "11-Cohort-Mode/Week-3-Facilitation-Plan.md",
+        "11-Cohort-Mode/Week-4-Facilitation-Plan.md",
+        "11-Cohort-Mode/Participant-Readiness-Rubric.md",
+        "11-Cohort-Mode/Office-Hours-Question-Triage.md",
+        "11-Cohort-Mode/Completion-Reflection.md",
     ]
     for rel in expected:
         check(f"generated {rel}", (target / rel).is_file())
@@ -184,7 +194,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase10", runtime.get("version") == "2.0.0-phase10")
+    check("runtime version phase11", runtime.get("version") == "2.0.0-phase11")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -195,15 +205,16 @@ def verify_target(target: Path) -> None:
     check("doctrine is carried", "Agents propose. Humans judge. Nurses steward." in combined)
     check("START-HERE carries first safe prompts", "Your first 3 safe prompts" in combined and "Open START-HERE.md" in combined)
     check("first-week activation path is present", "Day 1 — Setup and Safety" in combined and "Day 7 — Weekly Ledger" in combined)
-    check("public launch pack is present", "Phase 10 Public Launch Pack" in combined and "Launch Checklist" in combined and "not clinical decision support" in combined)
+    check("public launch pack is present", "Phase 11 Public Launch Pack" in combined and "Launch Checklist" in combined and "not clinical decision support" in combined)
+    check("cohort mode pack is present", "Phase 11 Cohort Mode" in combined and "Participant Readiness Rubric" in combined and "not certification" in combined)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 10 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 11 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 10 self-test ===\n")
+    print("\n=== NAIO OS — Phase 11 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -233,6 +244,8 @@ def main() -> int:
             check("activation check reports ready and no mutation", activation.returncode == 0 and '"status": "ready"' in activation.stdout and '"safe_to_start": true' in activation.stdout and '"no_mutation": true' in activation.stdout, f"exit={activation.returncode}")
             launch = run(["python3", "scripts/launch.py", "--profile", str(target), "--json"])
             check("launch check reports ready and no mutation", launch.returncode == 0 and '"status": "ready"' in launch.stdout and '"safe_to_share": true' in launch.stdout and '"no_mutation": true' in launch.stdout, f"exit={launch.returncode}")
+            cohort = run(["python3", "scripts/cohort.py", "--profile", str(target), "--json"])
+            check("cohort check reports ready and no mutation", cohort.returncode == 0 and '"status": "ready"' in cohort.stdout and '"cohort_ready": true' in cohort.stdout and '"safe_to_facilitate": true' in cohort.stdout and '"no_mutation": true' in cohort.stdout, f"exit={cohort.returncode}")
         else:
             fail("target directory was not created")
 
@@ -257,7 +270,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 10 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 11 safety contract.")
     return 1 if FAIL else 0
 
 

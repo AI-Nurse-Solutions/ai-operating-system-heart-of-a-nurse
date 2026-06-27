@@ -58,12 +58,13 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 2 bundle manifest + checksums
-├── install.sh                      # Phase 2 dry-run installer (validates + plans, no mutation)
+├── manifest.yaml                   # Phase 3 bundle manifest + checksums
+├── install.sh                      # Phase 3 installer (dry-run default; --apply renders target-only profile bundle)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
     ├── import-projects.py          # validates naio-projects.json
+    ├── render-profile.py           # Phase 3 EDENA → Hermes-ready profile renderer
     ├── healthcheck.py              # verify-before-claim harness
     └── compute-checksums.sh        # writes manifest sha256 fields
 ```
@@ -74,15 +75,27 @@ naio-os/
 
 ```
 SOUL Quiz          ──►  naio-soul.json     ──┐
-Life & Projects    ──►  naio-projects.json ──┼──► install.sh / validators
+Life & Projects    ──►  naio-projects.json ──┼──► install.sh
                                                 │
 .md files for humans                            ▼
                                   Phase 2: validate + plan only
-                                  Phase 3: write SOUL/project files,
-                                           configure gates + rituals
+                                  Phase 3: render governed profile bundle
+                                           (SOUL files + project prompts +
+                                            EDENA runtime + human gates)
 ```
 
-The SOUL Quiz produces human-readable Markdown and a machine-readable **`naio-soul.json`** (validated against `schema/naio-soul.schema.json`). The Life & Projects Quiz produces governed project prompts and **`naio-projects.json`** (validated against `schema/naio-projects.schema.json`). Phase 2 validates both and shows the exact plan; Phase 3 will apply them into a personalized, governed Hermes.
+The SOUL Quiz produces human-readable Markdown and a machine-readable **`naio-soul.json`** (validated against `schema/naio-soul.schema.json`). The Life & Projects Quiz produces governed project prompts and **`naio-projects.json`** (validated against `schema/naio-projects.schema.json`). Phase 2 validates both and shows the exact plan. **Phase 3 now renders a personalized, governed Hermes-ready profile bundle** into an explicit target directory — never directly into `~/.hermes`.
+
+Example:
+
+```bash
+./install.sh --apply \
+  --soul ~/Downloads/naio-soul.json \
+  --projects ~/Downloads/naio-projects.json \
+  --target ./NAIO-Hermes-Profile
+```
+
+Phase 3 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -123,7 +136,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **0** | `edena-policy.yaml` + `florence-x.yaml` source of truth | ✅ v2.0.0 (standards-grounded) |
 | **1** | Quiz "Export OS Config" → `naio-soul.json` + schema | ✅ done |
 | **2** | Bundle skeleton + `manifest.yaml` + dry-run `install.sh` | ✅ done — validates SOUL + Projects imports, checksums, healthcheck; no mutation |
-| **3** | EDENA policy → Hermes config mapping (human gates live) | planned |
+| **3** | EDENA policy → Hermes config mapping (human gates live) | ✅ done — `--apply --target` renders SOUL, project prompts, EDENA runtime, human gates, and profile overlay without mutating `~/.hermes` |
 | **4** | Tier-tagged skill pack + cron rituals | planned |
 | **5** | Healthcheck harness + one-line installer | planned |
 | **6** | Versioning, update channel, signed checksums | planned |

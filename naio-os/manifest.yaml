@@ -1,4 +1,4 @@
-version: 2.0.0-phase2
+version: 2.0.0-phase3
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -10,6 +10,7 @@ entrypoints:
   preflight: scripts/preflight.sh
   import_soul: scripts/import-soul.py
   import_projects: scripts/import-projects.py
+  render_profile: scripts/render-profile.py
   healthcheck: scripts/healthcheck.py
 checksum_policy:
   algorithm: sha256
@@ -40,32 +41,40 @@ contents:
 - path: scripts/import-projects.py
   role: import-projects
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
+- path: scripts/render-profile.py
+  role: render-profile
+  sha256: 10241ab59cfde0324e453729cb307561d5e6cfb2ed118f5e0b25a657aac3ab71
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: 5337e6aaa77154443053f8e7fb9d7995ba58252fdf4a044845fcf991133c7933
+  sha256: bff265b92420364c248a95fdce0e8189e4e6a48725399720cdd6b04ecfb4bf2d
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: eb3f47f0e58c7241b9767e1ad98aa06051fb907e52e5419db9c0ad28180d859a
+  sha256: 3a85de6f0b85b540d93dfe85ea2cf0de3bc1991148f8452c51c5ae90a0fe3c6f
 - path: README.md
   role: spec
-  sha256: e81e6598ae0031143e0fdb30e2c7c1321dca100c995289a53ed12d64e56f5939
+  sha256: d4acbb52b3db9df9bcf246983609ff0d41b29bfce0b1a8e9c1b6d35cc90629c5
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
 safety_contract:
-  mode: dry-run-default
+  mode: dry-run-default_apply-target-only
   idempotent: true
+  mutation_scope: explicit_target_directory_only
+  never_mutates:
+  - ~/.hermes
+  - user home directory
   refuse_if:
   - 'phi_detected_in_import            # regex-based PHI screen of naio-soul.json and naio-projects.json'
   - 'tier_above_yellow_at_onboarding   # onboarding clamps to green|yellow'
   - 'boundaries_not_confirmed          # no_phi + no_clinical_decisions must be true'
   - 'checksum_mismatch                 # any non-manifest file sha256 differs from manifest'
   - 'schema_validation_failed          # naio-soul.json or naio-projects.json fails JSON Schema'
-  - 'unsafe_project_path               # project prompt paths must remain under 04-Projects/*.md'
-  - 'unsigned_or_tampered_artifact     # future: GPG/Cosign signature'
+  - 'unsafe_project_path               # project prompt paths must remain under generated projects/*.SYSTEM.md'
+  - 'apply_without_target              # Phase 3 apply requires explicit --target'
+  - 'target_is_home_or_hermes_home     # never overwrite home or ~/.hermes directly'
 install_flow:
 - id: preflight
   description: Detect OS, bash, python3, core deps, optional Hermes presence.
@@ -80,22 +89,27 @@ install_flow:
   description: naio-projects.json validated against schema; project tiers/gates/paths + PHI checked.
   blocking: true
 - id: plan
-  description: Show exactly what would be written/configured. No mutation.
+  description: Show exactly what dry-run or apply will do.
   blocking: false
-- id: gate
-  description: Human confirmation prompt before apply. Skipped/refused in Phase 2.
+- id: render-profile
+  description: Phase 3 apply writes a governed Hermes-ready profile bundle to --target only.
   blocking: true
-  dry_run_skips: true
-- id: apply
-  description: 'Future: write SOUL/project files; configure tier ceilings. Idempotent.'
-  blocking: false
   dry_run_skips: true
 - id: healthcheck
   description: Re-verify bundle state. Never claim success unverified.
   blocking: true
+phase3_outputs:
+- README-FIRST.md
+- SOUL.md
+- spheres/*.SOUL.md
+- projects/*.SYSTEM.md
+- config/edena-runtime.yaml
+- config/human-gates.yaml
+- config/hermes-profile.patch.yaml
+- logs/render-report.json
 not_yet:
-- 'Live Hermes config mutation (Phase 3: EDENA → Hermes config mapping, live human gates)'
+- Direct ~/.hermes mutation (deferred until explicit user-controlled installer hardening)
 - 'Cryptographic signatures (Phase 6: GPG/Cosign; checksums exist now)'
 - Cron ritual seeding (Phase 4)
 - Tier-tagged skill pack install (Phase 4)
-- Network-side model routing enforcement (Phase 3+)
+- Network-side model routing enforcement (Phase 4+)

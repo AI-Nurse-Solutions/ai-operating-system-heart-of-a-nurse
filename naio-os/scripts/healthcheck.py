@@ -2,7 +2,7 @@
 """
 NAIO OS — healthcheck.py
 Verify-before-claim harness. The installer never reports success until this
-passes. Checks the Phase 2 bundle is internally consistent.
+passes. Checks the Phase 3 bundle is internally consistent.
 """
 import argparse, hashlib, json, sys
 from pathlib import Path
@@ -76,7 +76,7 @@ def verify_checksums(manifest):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 2 healthcheck")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 3 healthcheck")
     parser.add_argument("--checksums-only", action="store_true", help="only verify manifest + checksums")
     args = parser.parse_args()
 
@@ -133,7 +133,7 @@ def main():
                 fail(f"{schema_name} missing")
 
         print("\n[5] Scripts")
-        for s in ["scripts/preflight.sh", "scripts/import-soul.py", "scripts/import-projects.py", "scripts/healthcheck.py", "scripts/compute-checksums.sh", "install.sh"]:
+        for s in ["scripts/preflight.sh", "scripts/import-soul.py", "scripts/import-projects.py", "scripts/render-profile.py", "scripts/healthcheck.py", "scripts/compute-checksums.sh", "install.sh"]:
             p = ROOT / s
             if p.is_file():
                 ok(f"{s} present")
@@ -152,7 +152,7 @@ def print_summary():
     if FAIL > 0:
         print("\n❌ HEALTHCHECK FAILED — bundle is inconsistent. Do not ship.")
     else:
-        print("\n✅ HEALTHCHECK PASSED — bundle is internally consistent (Phase 2 dry-run scope).")
+        print("\n✅ HEALTHCHECK PASSED — bundle is internally consistent (Phase 3 target-only apply scope).")
 
 
 if __name__ == "__main__":

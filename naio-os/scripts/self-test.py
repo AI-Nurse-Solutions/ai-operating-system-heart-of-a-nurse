@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 14)
+NAIO OS — self-test.py (Phase 15)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -214,6 +214,18 @@ def verify_target(target: Path) -> None:
         "14-Institutional-Pilot/Governance-Escalation-Path.md",
         "14-Institutional-Pilot/Not-Clinical-Deployment-Statement.md",
         "14-Institutional-Pilot/Pilot-Closeout-Brief.md",
+        "15-EDENA-Readiness/README.md",
+        "15-EDENA-Readiness/Readiness-Overview.md",
+        "15-EDENA-Readiness/Eligibility-Self-Check.md",
+        "15-EDENA-Readiness/Evidence-Map.md",
+        "15-EDENA-Readiness/Stewardship-Reflection.md",
+        "15-EDENA-Readiness/Boundary-Competence-Ledger.md",
+        "15-EDENA-Readiness/Reviewer-Guide.md",
+        "15-EDENA-Readiness/Readiness-Rubric.md",
+        "15-EDENA-Readiness/Remediation-Plan.md",
+        "15-EDENA-Readiness/Non-Certification-Statement.md",
+        "15-EDENA-Readiness/Readiness-Review-Cover-Sheet.md",
+        "15-EDENA-Readiness/Badge-Deferral-Notice.md",
     ]
     for rel in expected:
         check(f"generated {rel}", (target / rel).is_file())
@@ -225,7 +237,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase14", runtime.get("version") == "2.0.0-phase14")
+    check("runtime version phase15", runtime.get("version") == "2.0.0-phase15")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -236,19 +248,20 @@ def verify_target(target: Path) -> None:
     check("doctrine is carried", "Agents propose. Humans judge. Nurses steward." in combined)
     check("START-HERE carries first safe prompts", "Your first 3 safe prompts" in combined and "Open START-HERE.md" in combined)
     check("first-week activation path is present", "Day 1 — Setup and Safety" in combined and "Day 7 — Weekly Ledger" in combined)
-    check("public launch pack is present", "Phase 14 Public Launch Pack" in combined and "Launch Checklist" in combined and "not clinical decision support" in combined)
-    check("cohort mode pack is present", "Phase 14 Cohort Mode" in combined and "Participant Readiness Rubric" in combined and "not certification" in combined)
-    check("evidence trail pack is present", "Phase 14 EDENA Evidence Trail" in combined and "Evidence Capture Guide" in combined and "Not Certification Statement" in combined and "no automatic scoring" in combined.lower())
-    check("contribution flow pack is present", "Phase 14 NIN Community Contribution Flow" in combined and "Contribution Intake Guide" in combined and "Not Endorsement Statement" in combined and "no automatic publishing" in combined.lower())
-    check("institutional pilot pack is present", "Phase 14 Institutional Pilot Pack" in combined and "Pilot Charter" in combined and "Not Clinical Deployment Statement" in combined and "no automatic reporting" in combined.lower())
+    check("public launch pack is present", "Phase 15 Public Launch Pack" in combined and "Launch Checklist" in combined and "not clinical decision support" in combined)
+    check("cohort mode pack is present", "Phase 15 Cohort Mode" in combined and "Participant Readiness Rubric" in combined and "not certification" in combined)
+    check("evidence trail pack is present", "Phase 15 EDENA Evidence Trail" in combined and "Evidence Capture Guide" in combined and "Not Certification Statement" in combined and "no automatic scoring" in combined.lower())
+    check("contribution flow pack is present", "Phase 15 NIN Community Contribution Flow" in combined and "Contribution Intake Guide" in combined and "Not Endorsement Statement" in combined and "no automatic publishing" in combined.lower())
+    check("institutional pilot pack is present", "Phase 15 Institutional Pilot Pack" in combined and "Pilot Charter" in combined and "Not Clinical Deployment Statement" in combined and "no automatic reporting" in combined.lower())
+    check("EDENA readiness pack is present", "Phase 15 EDENA Micro-Credential Readiness Pack" in combined and "Readiness Overview" in combined and "Non-Certification Statement" in combined and "no automatic scoring" in combined.lower())
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 14 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 15 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 14 self-test ===\n")
+    print("\n=== NAIO OS — Phase 15 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -286,6 +299,8 @@ def main() -> int:
             check("contribution check reports ready and no mutation", contribution.returncode == 0 and '"status": "ready"' in contribution.stdout and '"contribution_ready": true' in contribution.stdout and '"safe_to_contribute": true' in contribution.stdout and '"no_mutation": true' in contribution.stdout, f"exit={contribution.returncode}")
             pilot = run(["python3", "scripts/pilot.py", "--profile", str(target), "--json"])
             check("pilot check reports ready and no mutation", pilot.returncode == 0 and '"status": "ready"' in pilot.stdout and '"pilot_ready": true' in pilot.stdout and '"safe_to_pilot": true' in pilot.stdout and '"no_mutation": true' in pilot.stdout, f"exit={pilot.returncode}")
+            readiness = run(["python3", "scripts/readiness.py", "--profile", str(target), "--json"])
+            check("readiness check reports ready and no mutation", readiness.returncode == 0 and '"status": "ready"' in readiness.stdout and '"readiness_ready": true' in readiness.stdout and '"safe_to_review": true' in readiness.stdout and '"no_mutation": true' in readiness.stdout, f"exit={readiness.returncode}")
         else:
             fail("target directory was not created")
 
@@ -310,7 +325,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 14 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 15 safety contract.")
     return 1 if FAIL else 0
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NAIO OS — pilot.py (Phase 14)
+"""NAIO OS — pilot.py (Phase 15)
 
 Institutional Pilot Pack checker for rendered NAIO Hermes profile bundles.
 Verifies non-clinical pilot posture: no PHI, no patient care use, no clinical decision support,
@@ -65,14 +65,14 @@ def check_profile(profile: Path) -> dict:
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}
     rituals=load_yaml(profile/'cron/rituals.yaml') or {}
     pilot=runtime.get('pilot', {}) if isinstance(runtime, dict) else {}
-    if runtime.get('version') != '2.0.0-phase14': failures.append(f"runtime version is not 2.0.0-phase14: {runtime.get('version')}")
+    if runtime.get('version') != '2.0.0-phase15': failures.append(f"runtime version is not 2.0.0-phase15: {runtime.get('version')}")
     if pilot.get('path') != '14-Institutional-Pilot/': failures.append('runtime pilot.path is not 14-Institutional-Pilot/')
     if pilot.get('pilot_use') != 'non_clinical_learning_pilot_not_deployment': failures.append('runtime pilot.pilot_use must remain non-clinical learning, not deployment')
     for key in ['auto_report','auto_enroll','auto_escalate']:
         if pilot.get(key) is not False: failures.append(f'runtime pilot.{key} must be false')
     combined='\n'.join(text(profile/rel) for rel in REQUIRED if (profile/rel).is_file())
     required=[
-        'Phase 14 Institutional Pilot Pack','Pilot Charter','Stakeholder Brief','Risk Register','No-PHI Pilot Boundary',
+        'Phase 15 Institutional Pilot Pack','Pilot Charter','Stakeholder Brief','Risk Register','No-PHI Pilot Boundary',
         'Participant Onboarding Checklist','Weekly Pilot Ledger','Governance Escalation Path','Not Clinical Deployment Statement',
         'non-clinical','No PHI','No patient care use','No clinical decision support','No institutional endorsement',
         'No compliance','No certification','No automatic reporting','No automatic participant enrollment',
@@ -108,7 +108,7 @@ def check_profile(profile: Path) -> dict:
     }
 
 def main():
-    ap=argparse.ArgumentParser(description='Check Phase 14 Institutional Pilot Pack readiness for a rendered NAIO profile bundle.')
+    ap=argparse.ArgumentParser(description='Check Phase 15 Institutional Pilot Pack readiness for a rendered NAIO profile bundle.')
     ap.add_argument('--profile', required=True); ap.add_argument('--json', action='store_true')
     args=ap.parse_args(); profile=Path(args.profile).expanduser().resolve()
     if profile == Path.home() or str(profile) in ('/', str(Path.home()/'.hermes')): refuse('refusing to pilot-check home or ~/.hermes directly')
@@ -116,7 +116,7 @@ def main():
     report=check_profile(profile)
     if args.json: print(json.dumps(report, indent=2))
     else:
-        print('\n=== NAIO OS — Phase 14 institutional pilot check ===\n'); print(json.dumps(report, indent=2))
+        print('\n=== NAIO OS — Phase 15 institutional pilot check ===\n'); print(json.dumps(report, indent=2))
         if report['status']=='ready': print('\n✅ PILOT PACK READY — non-clinical small-group adoption with human governance review, no PHI, and no deployment claims.')
     return 0 if report['status']=='ready' else 2
 if __name__ == '__main__': sys.exit(main())

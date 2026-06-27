@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase14",
+  "latest_version": "2.0.0-phase15",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -75,6 +75,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 14,
       "summary": "Institutional Pilot Pack assets and readiness checker for non-clinical small-group adoption without deployment, endorsement, compliance, or certification claims."
+    },
+    {
+      "version": "2.0.0-phase15",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 15,
+      "summary": "EDENA Micro-Credential Readiness Pack for formative human review without certification, badges, clinical-readiness, competency, or automatic scoring claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

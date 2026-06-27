@@ -58,13 +58,13 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 14 bundle manifest + checksums
-├── release.json                    # Phase 14 current update-channel metadata
-├── release-history.json            # Phase 14 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 14 manifest digest
-├── manifest.sig                    # Phase 14 detached manifest signature
-├── bootstrap.sh                    # Phase 14 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 14 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --apply target-only)
+├── manifest.yaml                   # Phase 15 bundle manifest + checksums
+├── release.json                    # Phase 15 current update-channel metadata
+├── release-history.json            # Phase 15 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 15 manifest digest
+├── manifest.sig                    # Phase 15 detached manifest signature
+├── bootstrap.sh                    # Phase 15 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 15 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
@@ -132,7 +132,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 14 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 15 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -185,6 +185,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **12** | EDENA Evidence Trail + evidence-of-learning portfolio | ✅ done — `12-Evidence-Trail/*.md`, `scripts/evidence.py`, and `install.sh --evidence-check` verify no-PHI, no certification claims, no automatic scoring/submission, and evidence safety |
 | **13** | NIN Community Contribution Flow + sanitized contribution review | ✅ done — `13-Contribution-Flow/*.md`, `scripts/contribute.py`, and `install.sh --contribution-check` verify no-PHI, no secrets, no endorsement claims, and no automatic publishing/submission |
 | **14** | Institutional Pilot Pack + non-clinical pilot readiness | ✅ done — `14-Institutional-Pilot/*.md`, `scripts/pilot.py`, and `install.sh --pilot-check` verify no-PHI, no patient care, no institutional endorsement/compliance/certification claims, and no automatic reporting/enrollment |
+| **15** | EDENA Micro-Credential Readiness Pack + formative review | ✅ done — `15-EDENA-Readiness/*.md`, `scripts/readiness.py`, and `install.sh --readiness-check` verify no-PHI, no patient care, no certification/clinical-readiness claims, and no automatic scoring/pass-fail/badge/credential issuance |
 
 ---
 
@@ -332,9 +333,9 @@ curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --evidence-
 Evidence Trail is for evidence of learning, not certification. It verifies no PHI, no clinical-readiness claims, no automatic scoring, no automatic submission, no cron scheduling, and no direct `~/.hermes` mutation.
 
 
-## Phase 14 — NIN Community Contribution Flow
+## Phase 15 — NIN Community Contribution Flow
 
-Phase 14 answers the community question: **“How can nurses contribute safely without leaking PHI, implying endorsement, or turning learning artifacts into clinical claims?”**
+Phase 15 answers the community question: **“How can nurses contribute safely without leaking PHI, implying endorsement, or turning learning artifacts into clinical claims?”**
 
 It adds a governed contribution path for NIN:
 
@@ -347,9 +348,9 @@ This is a contribution workflow, not a public submission backend. Human stewards
 Agents propose. Humans judge. Nurses steward.
 
 
-## Phase 14 — Institutional Pilot Pack
+## Phase 15 — Institutional Pilot Pack
 
-Phase 14 answers the institutional question: **“How can a nurse leader or educator run a small non-clinical pilot safely without implying deployment, endorsement, compliance, or certification?”**
+Phase 15 answers the institutional question: **“How can a nurse leader or educator run a small non-clinical pilot safely without implying deployment, endorsement, compliance, or certification?”**
 
 It adds a governed 30–90 day pilot path:
 
@@ -358,5 +359,20 @@ It adds a governed 30–90 day pilot path:
 - `install.sh --pilot-check` — local target-only pilot readiness check.
 
 This is an institutional learning pilot, not clinical deployment. Human governance review is required before anything leaves the pilot group.
+
+Agents propose. Humans judge. Nurses steward.
+
+
+## Phase 15 — EDENA Micro-Credential Readiness Pack
+
+Phase 15 answers the credential question safely: **“How can a nurse organize evidence for human review without pretending NAIO is issuing certification or clinical AI-readiness?”**
+
+It adds a formative readiness path:
+
+- `15-EDENA-Readiness/*.md` — readiness overview, eligibility self-check, evidence map, stewardship reflection, boundary competence ledger, reviewer guide, rubric, remediation plan, non-certification statement, cover sheet, and badge deferral notice.
+- `scripts/readiness.py` — readiness posture checker for no-PHI, no patient-care use, no clinical decision support, no certification/clinical-readiness/competency claims, no automatic scoring, no automatic pass/fail, no automatic credential issuance, no automatic badge issuance, and no direct mutation.
+- `install.sh --readiness-check` — local target-only readiness review check.
+
+This is readiness reflection for human steward review, not certification.
 
 Agents propose. Humans judge. Nurses steward.

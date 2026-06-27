@@ -56,20 +56,16 @@ naio-os/
 │   ├── edena-policy.yaml           # autonomy tiers + functionality + permissions + reversibility (the WHAT-is-allowed)
 │   └── florence-x.yaml             # build/quality doctrine + rituals (the HOW-it-behaves)
 └── schema/
-    └── naio-soul.schema.json       # the personalization bridge contract (quiz → installer)
-```
-
-Planned (subsequent phases):
-
-```
-├── manifest.yaml                   # version, components, signed checksums
-├── install.sh                      # idempotent one-line bootstrap
-├── scripts/
-│   ├── import-soul.py              # consumes naio-soul.json
-│   └── healthcheck.py              # verify-before-claim harness
-├── skills/                         # tier-tagged NAIO skill pack
-├── vault/                          # Obsidian vault skeleton
-└── cron/                           # seed stewardship rituals
+    ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
+    └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
+├── manifest.yaml                   # Phase 2 bundle manifest + checksums
+├── install.sh                      # Phase 2 dry-run installer (validates + plans, no mutation)
+└── scripts/
+    ├── preflight.sh                # OS/dependency/Hermes preflight
+    ├── import-soul.py              # validates naio-soul.json
+    ├── import-projects.py          # validates naio-projects.json
+    ├── healthcheck.py              # verify-before-claim harness
+    └── compute-checksums.sh        # writes manifest sha256 fields
 ```
 
 ---
@@ -77,16 +73,18 @@ Planned (subsequent phases):
 ## The personalization bridge
 
 ```
-SOUL Quiz  ──►  naio-soul.json  ──►  install.sh / import-soul.py
-   │                  │                        │
- .md files      tier ceilings,           writes SOUL.md,
- (for humans)   voice, boundaries,       personalizes edena-policy,
-                spheres                  configures gates + rituals
+SOUL Quiz          ──►  naio-soul.json     ──┐
+Life & Projects    ──►  naio-projects.json ──┼──► install.sh / validators
+                                                │
+.md files for humans                            ▼
+                                  Phase 2: validate + plan only
+                                  Phase 3: write SOUL/project files,
+                                           configure gates + rituals
 ```
 
-The quiz already produces human-readable Markdown. It now also exports a machine-readable **`naio-soul.json`** (validated against `schema/naio-soul.schema.json`) that the installer ingests to produce a *personalized, governed* Hermes.
+The SOUL Quiz produces human-readable Markdown and a machine-readable **`naio-soul.json`** (validated against `schema/naio-soul.schema.json`). The Life & Projects Quiz produces governed project prompts and **`naio-projects.json`** (validated against `schema/naio-projects.schema.json`). Phase 2 validates both and shows the exact plan; Phase 3 will apply them into a personalized, governed Hermes.
 
-`naio-soul.json` contains **no PHI**. The installer refuses any import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`.
+Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
 ---
 
@@ -124,7 +122,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 |---|---|---|
 | **0** | `edena-policy.yaml` + `florence-x.yaml` source of truth | ✅ v2.0.0 (standards-grounded) |
 | **1** | Quiz "Export OS Config" → `naio-soul.json` + schema | ✅ done |
-| **2** | Bundle skeleton + `manifest.yaml` + dry-run `install.sh` | planned |
+| **2** | Bundle skeleton + `manifest.yaml` + dry-run `install.sh` | ✅ done — validates SOUL + Projects imports, checksums, healthcheck; no mutation |
 | **3** | EDENA policy → Hermes config mapping (human gates live) | planned |
 | **4** | Tier-tagged skill pack + cron rituals | planned |
 | **5** | Healthcheck harness + one-line installer | planned |

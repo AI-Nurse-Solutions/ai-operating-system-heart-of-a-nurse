@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nurse-ai-os.org/naio-os/schema/naio-projects.schema.json",
+  "title": "NAIO Projects Export",
+  "description": "Machine-readable project prompt bridge emitted by the Life & Projects Quiz and consumed by the NAIO installer. Contains no PHI and no clinical decisions.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "generator", "identity", "spheres_active", "project_count", "projects"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "generator": { "type": "string", "const": "life-quiz" },
+    "identity": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" }
+      }
+    },
+    "spheres_active": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["personal", "professional", "community", "sidegig", "interest"] }
+    },
+    "project_count": { "type": "integer", "minimum": 0 },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "suggested_prompt_name", "sphere", "sphere_label", "edena_tier", "slug", "human_gate", "reversibility", "file_path"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "suggested_prompt_name": { "type": "string" },
+          "sphere": { "type": "string", "enum": ["personal", "professional", "community", "sidegig", "interest"] },
+          "sphere_label": { "type": "string" },
+          "edena_tier": { "type": "string", "enum": ["green", "yellow"] },
+          "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,80}$" },
+          "help": { "type": "string" },
+          "goal_90_days": { "type": "string" },
+          "human_gate": { "type": "string", "enum": ["every-output", "before-external-use", "forced-irreversible"] },
+          "reversibility": { "type": "string", "enum": ["reversible", "recoverable", "irreversible"] },
+          "file_path": { "type": "string", "pattern": "^04-Projects/[A-Za-z0-9._/-]+\\.md$" }
+        }
+      }
+    }
+  }
+}

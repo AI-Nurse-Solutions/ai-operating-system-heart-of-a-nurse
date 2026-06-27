@@ -1,0 +1,101 @@
+version: 2.0.0-phase2
+bundle_id: naio-os
+created: '2026-06-27'
+doctrine: Agents propose. Humans judge. Nurses steward.
+policies:
+  edena: edena-policy@2.0.0
+  florence_x: florence-x@2.0.0
+entrypoints:
+  install: install.sh
+  preflight: scripts/preflight.sh
+  import_soul: scripts/import-soul.py
+  import_projects: scripts/import-projects.py
+  healthcheck: scripts/healthcheck.py
+checksum_policy:
+  algorithm: sha256
+  manifest_self_hash: excluded
+  note: manifest.yaml is intentionally not self-hashed; all other listed artifacts require sha256. Run scripts/compute-checksums.sh before shipping.
+contents:
+- path: manifest.yaml
+  role: manifest
+  self_checksum_excluded: true
+- path: config/edena-policy.yaml
+  role: policy-edena
+  sha256: a58a924a6d3a66ed7b1d102b76558e36bb8a5431dcd4daa4fefdf752db352ac7
+- path: config/florence-x.yaml
+  role: policy-florence-x
+  sha256: 21391abd36d361c6a49c0f54031ac7aa93afe1f8a735cc853f8641ed303a372d
+- path: schema/naio-soul.schema.json
+  role: schema-soul
+  sha256: 1dd940533c0fdef0a1bdd9d0c36d7c3f9980e493f66947f39d0264de1a0360fe
+- path: schema/naio-projects.schema.json
+  role: schema-projects
+  sha256: 022f12f1fec33c8e4c7381ac58fb0c314b4d6234afe8e068e705704e15705fe0
+- path: scripts/preflight.sh
+  role: preflight
+  sha256: cc112a0586f53501c647dad9463f28addc671160226e76883e980cdf529c6713
+- path: scripts/import-soul.py
+  role: import-soul
+  sha256: c5c1d69754e960e68aeb46fde7a9918cc9ce83a4637a935ccd423f3a82bbdd0f
+- path: scripts/import-projects.py
+  role: import-projects
+  sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
+- path: scripts/healthcheck.py
+  role: healthcheck
+  sha256: 5337e6aaa77154443053f8e7fb9d7995ba58252fdf4a044845fcf991133c7933
+- path: scripts/compute-checksums.sh
+  role: checksum-tool
+  sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
+- path: install.sh
+  role: entrypoint
+  sha256: eb3f47f0e58c7241b9767e1ad98aa06051fb907e52e5419db9c0ad28180d859a
+- path: README.md
+  role: spec
+  sha256: e81e6598ae0031143e0fdb30e2c7c1321dca100c995289a53ed12d64e56f5939
+- path: GOVERNANCE-RESEARCH.md
+  role: evidence
+  sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
+safety_contract:
+  mode: dry-run-default
+  idempotent: true
+  refuse_if:
+  - 'phi_detected_in_import            # regex-based PHI screen of naio-soul.json and naio-projects.json'
+  - 'tier_above_yellow_at_onboarding   # onboarding clamps to green|yellow'
+  - 'boundaries_not_confirmed          # no_phi + no_clinical_decisions must be true'
+  - 'checksum_mismatch                 # any non-manifest file sha256 differs from manifest'
+  - 'schema_validation_failed          # naio-soul.json or naio-projects.json fails JSON Schema'
+  - 'unsafe_project_path               # project prompt paths must remain under 04-Projects/*.md'
+  - 'unsigned_or_tampered_artifact     # future: GPG/Cosign signature'
+install_flow:
+- id: preflight
+  description: Detect OS, bash, python3, core deps, optional Hermes presence.
+  blocking: true
+- id: verify-checksums
+  description: Every non-manifest file's sha256 must match manifest; refuse on mismatch.
+  blocking: true
+- id: validate-soul-import
+  description: naio-soul.json validated against schema; boundaries + tier + PHI checked.
+  blocking: true
+- id: validate-projects-import
+  description: naio-projects.json validated against schema; project tiers/gates/paths + PHI checked.
+  blocking: true
+- id: plan
+  description: Show exactly what would be written/configured. No mutation.
+  blocking: false
+- id: gate
+  description: Human confirmation prompt before apply. Skipped/refused in Phase 2.
+  blocking: true
+  dry_run_skips: true
+- id: apply
+  description: 'Future: write SOUL/project files; configure tier ceilings. Idempotent.'
+  blocking: false
+  dry_run_skips: true
+- id: healthcheck
+  description: Re-verify bundle state. Never claim success unverified.
+  blocking: true
+not_yet:
+- 'Live Hermes config mutation (Phase 3: EDENA → Hermes config mapping, live human gates)'
+- 'Cryptographic signatures (Phase 6: GPG/Cosign; checksums exist now)'
+- Cron ritual seeding (Phase 4)
+- Tier-tagged skill pack install (Phase 4)
+- Network-side model routing enforcement (Phase 3+)

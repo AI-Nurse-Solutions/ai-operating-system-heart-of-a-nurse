@@ -1,4 +1,4 @@
-version: 2.0.0-phase16
+version: 2.0.0-phase17
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -26,6 +26,7 @@ entrypoints:
   pilot: scripts/pilot.py
   readiness: scripts/readiness.py
   registry: scripts/registry.py
+  orchestration: scripts/orchestration.py
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
@@ -57,25 +58,25 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 9ca7b03fdae7dc5880ff7cb939745e0534b9c97d689bd3f4cbe829b662997dea
+  sha256: c29159210fed17fdbf203f19a1314bec01a27c7f19bdbd77ea662f6b5673a228
 - path: scripts/self-test.py
   role: self-test
-  sha256: fe1897bbcc4e42577d8c88e83df4f9c211042317a848060844ed1fb72640578c
+  sha256: a693907540249e5a6e161d5eeb1be36f4a03ab5b4f51de746ad0cd722c82a92f
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: 937d53f04a0752719884a1cccfecfb1368f38d9fc5734248e75045752778a6c1
+  sha256: 25e50fb40bf6438fd4b6907185be8548001383bed32719867157261560441e8f
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: 04cc48b155ffbd07b2f1c804809e8fdae9281addcf07594fd102761e124f9edd
+  sha256: 4df7b5c698f5e436ace1dae9220e6bcfffc588b63f1cf7f1639adb84905b3575
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: bf44a99cfe51f0cff9aa12d9f461ba625eccc14229c3d311a5dc967f6ab738a3
+  sha256: 33dfc5d7519f3aa6cc3e33aa3cf8afcdca9d79d388b5fd8d2ce2e353856097bd
 - path: README.md
   role: spec
-  sha256: 2a4b0cd930db2bbcef07d0c541300d5598e85e43ceb0b1260c9ae55b2351e99d
+  sha256: 5c27d477fd9f548772c240bbc13f69112f9b4a466bf86ce0f62f4b06093cff82
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -84,10 +85,10 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: 1d8ff764a2d90eae5f06376852a3652563bde28935f40598d355130d4ad73dba
+  sha256: 32bcd6f7264302e1ef3a89df26be69a86c1dd4e265edb7eafd714685fbf9c8fe
 - path: release-history.json
   role: release-history
-  sha256: 00b6ea937e5fa9330fd2d51721b8cdc353260d171e91b772a3eedae1812f9bee
+  sha256: 1bc8eddbbfbd44d63a37af7b6f1fe6645bebd5452569bba9965d4d95bf60b904
 - path: scripts/check-update.py
   role: update-advisory
   sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
@@ -96,28 +97,31 @@ contents:
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 - path: scripts/activation.py
   role: activation-check
-  sha256: ffaed02145020634402e23c85ab8f901d31d95ed74f8029e7a67c49b5fe2d310
+  sha256: 55f132d9520208283dbc23db31645abe6e144fea4705eb52027957380bb0626f
 - path: scripts/launch.py
   role: public-launch-check
-  sha256: 0465a26da9018a808f5b2ef6ad6f8567650d09800ce94861c345d3ce166eb65e
+  sha256: b3a7b43dae3bce3e3a797debac31a1b96e792fbd5f53dd33c99ed911ace8b052
 - path: scripts/cohort.py
   role: cohort-mode-check
-  sha256: aa4a4248ebfb627a34c975f29c540566ded7cde6d2e26dfd6d43aa329c877000
+  sha256: 87f0372a8805edf8dc88d49ab038de7fbe5abf3cc57184b77107c448a06374fb
 - path: scripts/evidence.py
   role: evidence-trail-check
-  sha256: 29d404427caa9bb91e5ce1763ac508d54bd58e930863cc1b7a426412c10fb396
+  sha256: 0cbb092387e4bfb64391c1a80e34e83a83acc4614626c78335b8555ad00a9856
 - path: scripts/contribute.py
   role: contribution-flow-check
-  sha256: e2340ab33e8de3c6ac27bdc205c7a9f82698efceb17563030a44f91fb838c5f6
+  sha256: 85e0ec06175e14c89dfd4c8b50ee77c92f8cad58fc2ea3c73f21f89a90a21a17
 - path: scripts/pilot.py
   role: institutional-pilot-check
-  sha256: d90a2b4f56d8a63132495b666896924a7d047bc0690a8d20b5c4572c0b1cbf9c
+  sha256: df22af7f58e3a1ec29b0536b4088fa378ee30cea3d1aafb688cbd0be6d0d45e0
 - path: scripts/readiness.py
   role: edena-readiness-check
-  sha256: 03876f74fa3be5ef89686d2991017dee201821264426a2918f5cae8a2b65ad7d
+  sha256: 1f84ec4c21ac93fa48e85198bc95442ecdc637a5e4ac3063e2ca172975926e4c
 - path: scripts/registry.py
   role: agent-registry-check
-  sha256: c6a3e11fe6e6471c21960df24dd6626d805031bcf634e0f3f0ca8457cfdb9ffd
+  sha256: dc8fe6c80e79591494dcfe870ac5f1468d94b7a9ecd4144df02c7e69fc1805ba
+- path: scripts/orchestration.py
+  role: florence-x-orchestration-check
+  sha256: 804e6d0cb8ec1e548deaa4ddaa672a2be4b1d42c153281233413c350cacb66b4
 safety_contract:
   mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready
   idempotent: true
@@ -273,7 +277,7 @@ features:
 - id: evidence-check
   description: Optional --evidence-check verifies no-PHI EDENA evidence trail readiness, no certification claims, no automatic scoring/submission, and human-review posture without mutating Hermes.
 roadmap_next:
-- Florence-X Orchestration Preview (Phase 17+)
+- Governance Board / Steward Council Pack (Phase 18+)
 phase11_outputs:
 - scripts/cohort.py
 - install.sh --cohort-check
@@ -362,3 +366,20 @@ phase16_agent_registry:
   requires_human_registry_steward_review: true
 phase16_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --registry-check --target ./NAIO-Hermes-Profile
+phase17_florence_x_orchestration:
+  script: scripts/orchestration.py
+  path: 17-Florence-X-Orchestration/
+  safe_to_rehearse: true
+  orchestration_use: dry_run_preview_not_autonomous_multi_agent_runtime
+  shared_memory_posture: orange_deferred_until_governed_review
+  shared_memory_runtime: false
+  auto_handoff: false
+  auto_route: false
+  auto_execute_agents: false
+  auto_escalate: false
+  refuses_phi: true
+  refuses_patient_care: true
+  refuses_autonomous_runtime_claims: true
+  requires_human_orchestrator_review: true
+phase17_one_line_commands:
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --orchestration-check --target ./NAIO-Hermes-Profile

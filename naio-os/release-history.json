@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase16",
+  "latest_version": "2.0.0-phase17",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -89,6 +89,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 16,
       "summary": "NAIO Agent Registry Pack for human-reviewed learning listings without endorsement, procurement, deployment, clinical-readiness, or automatic listing claims."
+    },
+    {
+      "version": "2.0.0-phase17",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 17,
+      "summary": "Florence-X Orchestration Preview Pack for dry-run multi-agent coordination with shared intent/context cards, Orange-deferred shared memory, and no autonomous runtime claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

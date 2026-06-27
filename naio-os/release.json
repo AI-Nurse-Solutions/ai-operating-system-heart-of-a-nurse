@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase16",
-  "minimum_installer_phase": 16,
+  "latest_version": "2.0.0-phase17",
+  "minimum_installer_phase": 17,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "a5a2f289f351255916f4aa37277ff835ebc086880b9368185dcabd57f6984ce1",
+    "sha256": "0f2e52f67ce5004a9bdf579ddbc513b0a71b97e32d077f2c5566db5c46f1d5e6",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -34,7 +34,8 @@
     "contribution": "scripts/contribute.py",
     "pilot": "scripts/pilot.py",
     "readiness": "scripts/readiness.py",
-    "registry": "scripts/registry.py"
+    "registry": "scripts/registry.py",
+    "orchestration": "scripts/orchestration.py"
   },
   "safety_contract": [
     "no PHI",
@@ -77,7 +78,15 @@
     "no automatic vetting",
     "no automatic listing",
     "no automatic agent execution",
-    "human registry steward review required"
+    "human registry steward review required",
+    "Florence-X orchestration preview pack",
+    "dry-run orchestration templates only",
+    "no autonomous orchestration claims",
+    "no shared memory runtime",
+    "shared memory Orange-deferred",
+    "no automatic handoffs",
+    "no automatic routing",
+    "human orchestrator review required"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."
 }

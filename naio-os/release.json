@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase13",
-  "minimum_installer_phase": 13,
+  "latest_version": "2.0.0-phase14",
+  "minimum_installer_phase": 14,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "fc9009c4486ef9e6cbf3cae5aa183496efbaef7d3ba50c63584167a57240e0c6",
+    "sha256": "0583bffbc7e3680a61c9e1a25605b073fa39cfa3e01519702f84c640641103df",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -31,7 +31,8 @@
     "launch": "scripts/launch.py",
     "cohort": "scripts/cohort.py",
     "evidence": "scripts/evidence.py",
-    "contribution": "scripts/contribute.py"
+    "contribution": "scripts/contribute.py",
+    "pilot": "scripts/pilot.py"
   },
   "safety_contract": [
     "no PHI",
@@ -53,7 +54,12 @@
     "community contribution flow",
     "sanitized contribution readiness check",
     "no endorsement claims",
-    "no automatic publishing"
+    "no automatic publishing",
+    "institutional pilot pack",
+    "non-clinical pilot readiness check",
+    "no institutional endorsement claims",
+    "no automatic reporting",
+    "no automatic participant enrollment"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."
 }

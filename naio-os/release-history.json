@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase13",
+  "latest_version": "2.0.0-phase14",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -68,6 +68,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 13,
       "summary": "NIN Community Contribution Flow assets and readiness checker for sanitized, human-reviewed contributions without endorsement or clinical claims."
+    },
+    {
+      "version": "2.0.0-phase14",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 14,
+      "summary": "Institutional Pilot Pack assets and readiness checker for non-clinical small-group adoption without deployment, endorsement, compliance, or certification claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

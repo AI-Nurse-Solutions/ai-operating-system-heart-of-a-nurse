@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Life &amp; Projects — Nurse AI OS</title>
+<meta name="description" content="Map your whole life across Personal, Professional, and Community — and turn each active area into a ready-to-use, governed project system prompt. No PHI. Runs entirely in your browser." />
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon-lamp.svg" />
+<style>
+:root{
+  --navy:#10213f; --navy-2:#0c1830; --teal:#0f766e; --teal-2:#14b8a6;
+  --gold:#b7791f; --gold-2:#fbbf24; --ink:#e7eef7; --muted:#9fb0c8;
+  --card:#13294b; --line:#22365e; --green:#22c55e; --green-2:#86efac;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--navy);color:var(--ink);font:16px/1.6 -apple-system,Segoe UI,Inter,system-ui,sans-serif}
+a{color:var(--teal-2)}
+header{padding:28px 20px 8px;text-align:center}
+header h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px}
+header p{margin:0;color:var(--muted);max-width:720px;margin:6px auto 0}
+.wrap{max-width:820px;margin:0 auto;padding:18px 18px 80px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px;margin:14px 0;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.card h2{margin:0 0 4px;font-size:20px;color:var(--gold-2)}
+.card .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+label.q{display:block;margin:14px 0 6px;color:#cfe1ff;font-weight:600}
+input[type=text],input[type=email],select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0a1830;color:var(--ink);font:inherit}
+textarea{min-height:60px;resize:vertical}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{display:inline-block;padding:11px 16px;border-radius:10px;border:1px solid var(--line);background:var(--teal);color:#fff;text-decoration:none;font-weight:600;cursor:pointer;font:inherit}
+.btn.secondary{background:transparent;color:var(--teal-2);border-color:var(--teal-2)}
+.btn.ghost{background:transparent;color:var(--muted);border-color:var(--line)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.progress{height:6px;background:#0a1830;border-radius:99px;overflow:hidden;margin:8px 0 18px;border:1px solid var(--line)}
+.progress > div{height:100%;background:linear-gradient(90deg,var(--teal-2),var(--gold-2));width:0;transition:width .3s}
+.kicker{display:inline-block;background:#0a1830;border:1px solid var(--line);color:var(--gold-2);padding:3px 10px;border-radius:99px;font-size:12px;letter-spacing:.4px;margin-bottom:6px;text-transform:uppercase}
+.help{color:var(--muted);font-size:13px;margin-top:6px}
+.footer{color:var(--muted);text-align:center;font-size:13px;margin-top:30px}
+.banner{background:linear-gradient(180deg,#0a1830,#13294b);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--muted);font-size:14px;margin:10px 0 16px}
+.banner strong{color:var(--gold-2)}
+.warm{background:linear-gradient(180deg,rgba(15,118,110,.12),rgba(19,41,75,.6));border:1px solid rgba(20,184,166,.3);border-radius:14px;padding:16px 18px;color:#cfe1ff;font-size:15px;margin:10px 0 16px;line-height:1.7}
+.warm strong{color:var(--gold-2)}
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:640px){.dl{grid-template-columns:1fr}}
+.dl a,.dl button{display:block;padding:12px 14px;background:#0a1830;border:1px solid var(--line);border-radius:10px;color:var(--ink);text-decoration:none;text-align:left;cursor:pointer;font:inherit}
+.dl a:hover,.dl button:hover{border-color:var(--teal-2)}
+.dl a small,.dl button small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
+hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
+.nav-back{color:var(--muted);background:transparent;border:none;cursor:pointer;font:inherit;padding:6px 0}
+.nav-back:hover{color:var(--ink)}
+/* Domain cards */
+.domain{background:#0a1830;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.domain .dh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.domain h4{margin:0 0 4px;font-size:15px;color:#cfe1ff}
+.domain p.dd{margin:0;color:var(--muted);font-size:13px}
+.status{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.status.active{background:rgba(34,197,94,.15);color:var(--green-2);border:1px solid rgba(34,197,94,.4)}
+.status.inactive{background:rgba(159,176,200,.1);color:var(--muted);border:1px solid var(--line)}
+.status.notrel{background:rgba(251,191,36,.08);color:var(--gold-2);border:1px solid rgba(251,191,36,.3)}
+.domain .dfields{margin-top:10px;display:none}
+.domain .dfields.show{display:block}
+.tog{display:inline-flex;gap:6px;flex-wrap:wrap}
+.tog button{padding:5px 12px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);font:inherit;font-size:13px;cursor:pointer}
+.tog button.on-active{background:rgba(34,197,94,.2);color:var(--green-2);border-color:var(--green)}
+.tog button.on-inactive{background:rgba(159,176,200,.15);color:var(--ink);border-color:var(--muted)}
+.tog button.on-notrel{background:rgba(251,191,36,.15);color:var(--gold-2);border-color:var(--gold)}
+/* Coverage bar */
+.cov{background:#0a1830;border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+.cov .bar{height:10px;background:#0c1830;border-radius:99px;overflow:hidden;margin:8px 0}
+.cov .bar > div{height:100%;background:linear-gradient(90deg,var(--teal-2),var(--green));transition:width .4s}
+.cov .stat{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}
+.gaps{margin-top:12px}
+.gap-item{display:flex;justify-content:space-between;align-items:center;background:#0c1830;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0}
+.gap-item span{color:#cfe1ff;font-size:14px}
+.sphere-label{display:inline-block;color:var(--gold-2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Life &amp; Projects</h1>
+  <p>Map your whole life across three spheres — and turn each active area into a ready-to-use, governed project system prompt for your Nurse AI OS.</p>
+</header>
+
+<div class="wrap">
+  <div class="banner">
+    <strong>Stewardship first.</strong> No PHI. No clinical decisions. Your answers stay on this page — nothing is uploaded. At the end you'll download project prompts and a life-coverage map you can drop into Obsidian.
+  </div>
+
+  <div class="warm">
+    <strong>Before we begin — a word about completeness.</strong><br/>
+    The more honestly complete your answers, the better your Nurse AI OS can serve your <em>whole</em> life — not just the parts you remembered to type. You don't have to go deep everywhere today. <strong>Get the broad strokes in now.</strong> You can return and go deeper later, once you've established trust and seen the system prove its value in your hands. What you build here grows with you.
+  </div>
+
+  <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+
+  <div id="app"></div>
+
+  <p class="footer">© NAIO Institute · <a href="index.html">← Back to course</a> · <a href="soul-quiz.html">Take the SOUL Quiz first →</a></p>
+</div>
+
+<script>
+/* ============================================================
+   Life & Projects Quiz — client-side only. No data leaves device.
+   Three spheres · 17 life domains · completeness engine.
+   ============================================================ */
+
+const SPHERES = [
+  {key:'personal', label:'Personal / Family', tier:'green', desc:'Your life outside work — health, home, family, finances, rest, and renewal.'},
+  {key:'professional', label:'Professional', tier:'yellow', desc:'Your nursing career — role performance, learning, progression, leadership, and license.'},
+  {key:'community', label:'Community / Business', tier:'yellow', desc:'Your community, advocacy, content, side gig, boards, and network.'}
+];
+
+const DOMAINS = {
+  personal: [
+    {id:'health', name:'Health & wellbeing', desc:'Sleep, energy, mental health, movement, nutrition.', suggested:'Weekly Energy & Wellbeing Review'},
+    {id:'family', name:'Family & relationships', desc:'Partner, children, aging parents, caregiving.', suggested:'Family Coordination & Caregiving Planner'},
+    {id:'finances', name:'Finances', desc:'Budgeting, debt, savings, financial planning.', suggested:'Personal Finance Dashboard'},
+    {id:'home', name:'Home & household', desc:'Living space, household management, logistics.', suggested:'Household Operations'},
+    {id:'faith', name:'Faith / spirituality / reflection', desc:'Inner life, practice, meaning, journaling.', suggested:'Reflection & Journaling'},
+    {id:'rest', name:'Rest & renewal', desc:'Recovery, hobbies, joy, time off.', suggested:'Rest & Renewal Guardrails'}
+  ],
+  professional: [
+    {id:'role', name:'Current role performance', desc:'Doing your job well, efficiently, with less burden.', suggested:'Role Workflow Optimizer'},
+    {id:'learning', name:'Learning, CE, certifications', desc:'Continuing education, skills, credentials.', suggested:'CE & Certification Roadmap'},
+    {id:'career', name:'Career progression', desc:'Promotion, transition, specialization.', suggested:'Career Progression Plan'},
+    {id:'leadership', name:'Leadership / management', desc:'Leading a team, unit, or program (if applicable).', suggested:'Leadership Briefing & Decision Support'},
+    {id:'mentorship', name:'Mentorship (giving or receiving)', desc:'Mentoring others or finding a mentor.', suggested:'Mentorship Matching & Support'},
+    {id:'license', name:'License & boundaries protection', desc:'Protecting your license, scope, and safety.', suggested:'License & Scope Protection Review'}
+  ],
+  community: [
+    {id:'advocacy', name:'Advocacy or volunteer work', desc:'Causes, civic engagement, volunteering.', suggested:'Advocacy Campaign Assistant'},
+    {id:'content', name:'Content & thought leadership', desc:'Writing, speaking, social media, podcast.', suggested:'Content & Thought Leadership Studio'},
+    {id:'sidegig', name:'Side gig or business', desc:'Consulting, business, entrepreneurship.', suggested:'Side Gig Operations'},
+    {id:'boards', name:'Boards or organizational affiliation', desc:'Committee, board, or org membership.', suggested:'Board & Committee Prep'},
+    {id:'network', name:'Network & relationships', desc:'Professional network, community ties.', suggested:'Network & Relationship Stewardship'}
+  ]
+};
+
+const state = {
+  stepIndex: 0,
+  steps: [],
+  data: {
+    name: '',
+    spheres: [],
+    // status per domain: 'active' | 'inactive' | 'notrel' | undefined
+    domains: {},
+    // answers per domain: {help, goal90}
+    answers: {}
+  }
+};
+
+const $app = document.getElementById('app');
+const $bar = document.getElementById('bar');
+
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstElementChild; }
+function esc(s){ return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function val(id){ const e=document.getElementById(id); return e?(e.type==='checkbox'?e.checked:e.value.trim()):''; }
+
+/* ---------- Pre-fill name from localStorage (carry from SOUL Quiz) ---------- */
+try {
+  const carried = localStorage.getItem('naio-soul-name');
+  if (carried) state.data.name = carried;
+} catch(e){}
+
+/* ---------- Step 0: Welcome ---------- */
+function stepWelcome(){
+  return {
+    title:'Welcome',
+    sub:'A few words before we start.',
+    render(){
+      return `
+        <label class="q" for="name">Your name (so the project prompts feel like yours)</label>
+        <input id="name" type="text" value="${esc(state.data.name)}" placeholder="e.g., Maria" />
+        <p class="help">If you've already taken the SOUL Quiz, your name carries over automatically.</p>
+
+        <div class="warm" style="margin-top:16px">
+          <strong>How this works:</strong>
+          <ul style="margin:8px 0 0; padding-left:18px; line-height:1.8">
+            <li>We'll walk through <strong>three spheres</strong> of your life: Personal/Family, Professional, and Community/Business.</li>
+            <li>In each, you'll see <strong>life domains</strong> — health, finances, learning, leadership, advocacy, and more.</li>
+            <li>For each domain, you'll say if it's <em>active</em> now, and if so, what you'd want help with.</li>
+            <li>At the end, a <strong>completeness check</strong> shows you the broad strokes of your whole life — an invitation, not an audit.</li>
+            <li>You'll download <strong>project system prompts</strong> for every active area, plus a <strong>life-coverage map</strong>.</li>
+          </ul>
+        </div>
+        <p class="help" style="font-size:14px">⏱️ About 10–15 minutes. You can skip anything and come back later. Your work is saved in your browser as you go.</p>
+      `;
+    },
+    save(){ state.data.name = val('name'); },
+    valid(){ return !!state.data.name; }
+  };
+}
+
+/* ---------- Step 1: Scope ---------- */
+function stepScope(){
+  return {
+    title:'Which spheres are active?',
+    sub:'Choose the parts of your life you want your Nurse AI OS to support.',
+    render(){
+      return `
+        <div class="checks">
+          ${SPHERES.map(s=>`
+            <div class="domain" data-sphere="${s.key}">
+              <div class="dh">
+                <div>
+                  <span class="sphere-label">${esc(s.label)}</span>
+                  <h4>${esc(s.label)}</h4>
+                  <p class="dd">${esc(s.desc)}</p>
+                </div>
+                <div class="tog" id="tog_${s.key}">
+                  <button data-sphere="${s.key}" data-val="on" class="${state.data.spheres.includes(s.key)?'on-active':''}">Include</button>
+                  <button data-sphere="${s.key}" data-val="off" class="${!state.data.spheres.includes(s.key)?'on-inactive':''}">Skip</button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <p class="help">You can include all three, or just one. You can always add more later.</p>
+      `;
+    },
+    post(){
+      // Wire toggle buttons
+      $app.querySelectorAll('.tog button').forEach(btn=>{
+        btn.onclick = ()=>{
+          const sp = btn.dataset.sphere;
+          if (btn.dataset.val==='on') {
+            if (!state.data.spheres.includes(sp)) state.data.spheres.push(sp);
+          } else {
+            state.data.spheres = state.data.spheres.filter(x=>x!==sp);
+          }
+          // Update button classes for this group
+          const grp = document.getElementById('tog_'+sp);
+          grp.querySelectorAll('button').forEach(b=>{
+            b.classList.remove('on-active','on-inactive');
+            if (b.dataset.val==='on' && state.data.spheres.includes(sp)) b.classList.add('on-active');
+            if (b.dataset.val==='off' && !state.data.spheres.includes(sp)) b.classList.add('on-inactive');
+          });
+        };
+      });
+    },
+    save(){},
+    valid(){ return state.data.spheres.length > 0; }
+  };
+}
+
+/* ---------- Steps 2-4: Domain scan per sphere ---------- */
+function stepSphere(sphereKey){
+  const sphere = SPHERES.find(s=>s.key===sphereKey);
+  const domains = DOMAINS[sphereKey];
+  return {
+    title:`${sphere.label}`,
+    sub:`For each area below, mark it Active, Not right now, or Not relevant. If it's active, tell us what you'd want help with. This is your chance to get the broad strokes in.`,
+    render(){
+      return domains.map(d=>{
+        const status = state.data.domains[d.id] || '';
+        const ans = state.data.answers[d.id] || {};
+        const fieldsShow = status==='active' ? 'show' : '';
+        return `
+        <div class="domain" id="dom_${d.id}">
+          <div class="dh">
+            <div style="flex:1;min-width:200px">
+              <h4>${esc(d.name)}</h4>
+              <p class="dd">${esc(d.desc)}</p>
+              ${status==='active' && ans.help ? `<p class="dd" style="color:var(--teal-2);margin-top:6px;font-size:13px">→ ${esc(d.suggested)}</p>` : ''}
+            </div>
+            <div class="tog" id="togd_${d.id}">
+              <button data-dom="${d.id}" data-val="active" class="${status==='active'?'on-active':''}">Active</button>
+              <button data-dom="${d.id}" data-val="inactive" class="${status==='inactive'?'on-inactive':''}">Not now</button>
+              <button data-dom="${d.id}" data-val="notrel" class="${status==='notrel'?'on-notrel':''}">N/A</button>
+            </div>
+          </div>
+          <div class="dfields ${fieldsShow}" id="fld_${d.id}">
+            <label class="q" for="help_${d.id}" style="margin-top:10px">What would you want help with here? <span style="color:var(--muted);font-weight:400">(one line is fine)</span></label>
+            <input id="help_${d.id}" type="text" value="${esc(ans.help||'')}" placeholder="e.g., meal planning, sleep tracking, budgeting" />
+            <label class="q" for="goal_${d.id}" style="margin-top:8px">What does good look like in 90 days? <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+            <input id="goal_${d.id}" type="text" value="${esc(ans.goal90||'')}" placeholder="e.g., sleeping 7 hours, budget reviewed weekly" />
+          </div>
+        </div>`;
+      }).join('');
+    },
+    post(){
+      // Save current field values
+      DOMAINS[sphereKey].forEach(d=>{
+        const h = val('help_'+d.id);
+        const g = val('goal_'+d.id);
+        if (h || g) state.data.answers[d.id] = { help:h, goal90:g, suggested:d.suggested };
+      });
+      // Wire domain toggle buttons
+      $app.querySelectorAll('.tog button[data-dom]').forEach(btn=>{
+        btn.onclick = ()=>{
+          const did = btn.dataset.dom;
+          const v = btn.dataset.val;
+          state.data.domains[did] = v;
+          // Update button classes
+          const grp = document.getElementById('togd_'+did);
+          grp.querySelectorAll('button').forEach(b=>{
+            b.classList.remove('on-active','on-inactive','on-notrel');
+            if (b.dataset.val===v) {
+              if (v==='active') b.classList.add('on-active');
+              else if (v==='inactive') b.classList.add('on-inactive');
+              else b.classList.add('on-notrel');
+            }
+          });
+          // Show/hide fields
+          const fld = document.getElementById('fld_'+did);
+          if (fld) fld.classList.toggle('show', v==='active');
+        };
+      });
+    },
+    save(){
+      DOMAINS[sphereKey].forEach(d=>{
+        const h = val('help_'+d.id);
+        const g = val('goal_'+d.id);
+        if (h || g) state.data.answers[d.id] = { help:h, goal90:g, suggested:d.suggested };
+      });
+    },
+    valid(){ return true; } // never block — allow skipping
+  };
+}
+
+/* ---------- Step 5: Completeness check ---------- */
+function stepCoverage(){
+  return {
+    title:'Your life, at a glance',
+    sub:'Here is what I see so far. This is an invitation, not an audit.',
+    render(){
+      // Count all domains across active spheres
+      let total=0, active=0, inactive=0, notrel=0, unset=0;
+      const activeSpheres = state.data.spheres;
+      activeSpheres.forEach(sk=>{
+        DOMAINS[sk].forEach(d=>{
+          total++;
+          const s = state.data.domains[d.id];
+          if (s==='active') active++;
+          else if (s==='inactive') inactive++;
+          else if (s==='notrel') notrel++;
+          else unset++;
+        });
+      });
+      const addressed = active + inactive + notrel;
+      const pct = total>0 ? Math.round((addressed/total)*100) : 0;
+
+      // Find gaps (unset domains)
+      const gaps = [];
+      activeSpheres.forEach(sk=>{
+        DOMAINS[sk].forEach(d=>{
+          const s = state.data.domains[d.id];
+          if (!s) gaps.push({sphere:sk, dom:d});
+        });
+      });
+
+      return `
+        <div class="warm">
+          <strong>${active} active area${active===1?'':'s'}</strong> you want help with — that's what we'll turn into project prompts.
+          ${gaps.length>0 ? `<br/>There are <strong>${gaps.length} area${gaps.length===1?'':'s'}</strong> you haven't marked yet. Take a moment — are any of these quietly active in your life? You can add them now, mark them as "Not now," or say "Not relevant."` : '<br/>You\'ve touched every area. That\'s rare and good.'}
+        </div>
+
+        <div class="cov">
+          <div class="stat">
+            <span><strong style="color:var(--ink);font-size:18px">${addressed} of ${total}</strong> areas addressed</span>
+            <span>${pct}% coverage</span>
+          </div>
+          <div class="bar"><div style="width:${pct}%"></div></div>
+          <div class="stat" style="margin-top:8px">
+            <span><span class="status active">Active ${active}</span></span>
+            <span><span class="status inactive">Not now ${inactive}</span></span>
+            <span><span class="status notrel">N/A ${notrel}</span></span>
+            <span style="color:var(--muted)">Unmarked ${unset}</span>
+          </div>
+        </div>
+
+        ${gaps.length>0 ? `
+          <h3 style="color:var(--gold-2);margin:18px 0 8px;font-size:16px">Areas you haven't marked</h3>
+          <p class="help" style="margin-bottom:10px">No pressure. Just let us know — even "Not now" helps us see the whole picture.</p>
+          <div class="gaps">
+            ${gaps.map(g=>`
+              <div class="gap-item" id="gap_${g.dom.id}">
+                <div>
+                  <span style="display:block;color:var(--ink);font-size:14px">${esc(g.dom.name)}</span>
+                  <span class="sphere-label">${esc(SPHERES.find(s=>s.key===g.sphere).label)}</span>
+                </div>
+                <div class="tog">
+                  <button data-dom="${g.dom.id}" data-val="active">Add</button>
+                  <button data-dom="${g.dom.id}" data-val="inactive">Not now</button>
+                  <button data-dom="${g.dom.id}" data-val="notrel">N/A</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        <p class="help" style="margin-top:16px;font-size:14px">💡 <strong>You can always go deeper later.</strong> This first pass is about broad strokes. As you build trust with your Nurse AI OS and see it prove its value, come back and add detail, goals, and new areas. The system grows with you.</p>
+      `;
+    },
+    post(){
+      // Save field values for active domains
+      Object.keys(DOMAINS).forEach(sk=>{
+        DOMAINS[sk].forEach(d=>{
+          const h = val('help_'+d.id);
+          const g = val('goal_'+d.id);
+          if (h || g) state.data.answers[d.id] = { help:h, goal90:g, suggested:d.suggested };
+        });
+      });
+      // Wire gap toggle buttons
+      $app.querySelectorAll('.gaps .tog button[data-dom]').forEach(btn=>{
+        btn.onclick = ()=>{
+          const did = btn.dataset.dom;
+          const v = btn.dataset.val;
+          state.data.domains[did] = v;
+          // Update this gap row
+          const row = btn.closest('.gap-item');
+          row.querySelectorAll('button').forEach(b=>{
+            b.classList.remove('on-active','on-inactive','on-notrel');
+            if (b.dataset.val===v){
+              if (v==='active') b.classList.add('on-active');
+              else if (v==='inactive') b.classList.add('on-inactive');
+              else b.classList.add('on-notrel');
+            }
+          });
+          if (v==='active') {
+            // If they activate a gap domain, prompt for what they want help with
+            const dom = findDomain(did);
+            const help = prompt(`Great — "${dom.name}" is active. What would you want help with here? (one line is fine)`, '');
+            if (help) state.data.answers[did] = { help:help.trim(), goal90:'', suggested:dom.suggested };
+          }
+        };
+      });
+    },
+    save(){},
+    valid(){ return true; }
+  };
+}
+
+function findDomain(id){
+  for (const sk of Object.keys(DOMAINS)){
+    const f = DOMAINS[sk].find(d=>d.id===id);
+    if (f) return f;
+  }
+  return null;
+}
+
+/* ---------- Step 6: Generate & download ---------- */
+function stepDone(){
+  return {
+    title:'Your project prompts are ready',
+    sub:'Generated entirely in your browser. Download and drop into your Obsidian vault under 04-Projects/.',
+    render(){
+      const files = buildAllFiles();
+      const projectFiles = files.filter(f=>f.kind==='project');
+      const downloads = projectFiles.map(f=>`
+        <a href="#" data-name="${esc(f.name)}" data-content="${encodeURIComponent(f.content)}" class="dlfile">
+          ${esc(f.name)}<small>${esc(f.path)}</small>
+        </a>`).join('');
+      return `
+        <div class="banner"><strong>${projectFiles.length} project prompt${projectFiles.length===1?'':'s'}</strong> generated from your active life areas. Each one inherits its sphere's EDENA tier — so the governance travels with the work.</div>
+        <div class="dl">${downloads}</div>
+        <div class="btnrow" style="margin-top:14px">
+          <button class="btn" id="dlAll">Download all prompts (bundle .md)</button>
+          <a class="btn secondary" id="dlCoverage" href="#">📋 Life coverage map</a>
+          <a class="btn secondary" id="dlOsConfig" href="#">⚙️ Export project config (naio-projects.json)</a>
+        </div>
+        <hr class="sep" />
+        <h3 style="color:var(--gold-2);margin:0 0 8px;font-size:16px">What happens next</h3>
+        <p class="help" style="font-size:14px;line-height:1.7">
+          1. Drop these files into your <code>04-Projects/</code> folder.<br/>
+          2. Load the relevant prompt into your AI (Hermes, Claude, ChatGPT) when you sit down to do that work.<br/>
+          3. Start with <strong>one</strong> — ideally a Personal/Green one. See it prove its value before you expand.<br/>
+          4. When you trust it, come back and go deeper. Add goals, refine constraints, add new areas.<br/>
+          5. Bring your favorite to a <a href="assets/lamp-huddle.md">Lamp Huddle</a> and show another nurse.
+        </p>
+        <p class="help" style="margin-top:12px;font-size:14px"><strong>Remember:</strong> The agent proposes. You judge. You steward. These prompts are your leashes — they bound the work so you stay in charge of every irreversible action.</p>
+      `;
+    },
+    post(){
+      // Wire individual project downloads
+      $app.querySelectorAll('a.dlfile').forEach(a=>{
+        a.addEventListener('click', e=>{
+          e.preventDefault();
+          downloadOne(a.dataset.name, decodeURIComponent(a.dataset.content));
+        });
+      });
+      const dlAll = document.getElementById('dlAll');
+      if (dlAll) dlAll.onclick = downloadAllProjects;
+      const dlCov = document.getElementById('dlCoverage');
+      if (dlCov) dlCov.onclick = (e)=>{
+        e.preventDefault();
+        const cov = buildCoverageMap();
+        downloadOne('MY-LIFE-COVERAGE-MAP.md', cov);
+      };
+      const dlOs = document.getElementById('dlOsConfig');
+      if (dlOs) dlOs.onclick = (e)=>{
+        e.preventDefault();
+        const cfg = buildProjectsConfig();
+        downloadOne('naio-projects.json', JSON.stringify(cfg, null, 2));
+      };
+    },
+    save(){},
+    valid(){ return true; }
+  };
+}
+
+/* ---------- File generation ---------- */
+
+function getActiveDomains(){
+  const out = [];
+  state.data.spheres.forEach(sk=>{
+    DOMAINS[sk].forEach(d=>{
+      if (state.data.domains[d.id]==='active') {
+        const sphere = SPHERES.find(s=>s.key===sk);
+        out.push({...d, sphere:sk, sphereLabel:sphere.label, sphereTier:sphere.tier});
+      }
+    });
+  });
+  return out;
+}
+
+function slug(s){
+  return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').substring(0,50);
+}
+
+function buildProjectPrompt(dom){
+  const ans = state.data.answers[dom.id] || {};
+  const help = ans.help || '(describe what you want help with here)';
+  const goal = ans.goal90 || '(describe what success looks like in 90 days)';
+  const spherePath = dom.sphere === 'personal' ? 'Personal' : dom.sphere === 'professional' ? 'Professional' : 'Community';
+  const gate = dom.sphereTier === 'green' ? 'every-output' : 'before-external-use';
+  const gateDesc = dom.sphereTier === 'green'
+    ? 'I review every output before it goes into my vault.'
+    : 'I review every output before it is used externally (sent, published, shared).';
+  return `# Project: ${dom.name}
+> Generated by the Life & Projects Quiz — Nurse AI OS
+
+## Identity (inherited)
+Sphere: **${dom.sphereLabel}**
+EDENA tier: **${dom.sphereTier.toUpperCase()}** (inherited from sphere — never higher)
+EDENA reversibility: **reversible** (drafts only; I execute irreversible actions myself)
+Loaded with: Core-SOUL.md + ${spherePath}-SOUL.md (if you have them)
+
+## North star
+${help}
+
+## 90-day goal
+${goal}
+
+## Inputs I will provide
+- My notes, ideas, and context for this area (no PHI ever)
+- Whatever is relevant for the task at hand
+
+## Constraints
+- **No PHI**, patient identifiers, or employer confidential data.
+- **Confidentiality:** as per my Core SOUL confidentiality list.
+- **Scope:** this prompt is for "${dom.name}" only — not for other life areas.
+- **Voice:** inherits from my SOUL files; professional, direct, kind.
+- **No irreversible actions:** you draft, I execute. You never send, publish, pay, or delete.
+
+## Output format
+Markdown note or draft, ready for my review. Concise, structured, actionable.
+
+## Human gate: ${gate}
+${gateDesc}
+
+## Success metric
+Time saved, quality met, or decision made — with my judgment in the loop.
+
+## Sunset / review
+Review this prompt after 30 days or 10 uses, whichever comes first.
+
+## Stewardship line
+> Agents propose. Humans judge. Nurses steward.
+
+## Suggested name for this project
+${dom.suggested}
+`;
+}
+
+function buildCoverageMap(){
+  const lines = [];
+  lines.push(`# My Life Coverage Map — ${state.data.name||'(your name)'}`);
+  lines.push('');
+  lines.push('> Generated by the Life & Projects Quiz. An invitation, not an audit.');
+  lines.push('> Review quarterly. Go deeper as trust grows.');
+  lines.push('');
+  let total=0, active=0;
+  state.data.spheres.forEach(sk=>{
+    const sphere = SPHERES.find(s=>s.key===sk);
+    lines.push(`## ${sphere.label}`);
+    DOMAINS[sk].forEach(d=>{
+      total++;
+      const status = state.data.domains[d.id] || 'unmarked';
+      const mark = status==='active' ? '✅' : status==='inactive' ? '⬜' : status==='notrel' ? '➖' : '❓';
+      if (status==='active') active++;
+      const ans = state.data.answers[d.id] || {};
+      lines.push(`- ${mark} **${d.name}** — _${status}_${ans.help ? ' — ' + ans.help : ''}`);
+    });
+    lines.push('');
+  });
+  lines.push('---');
+  lines.push('');
+  lines.push(`**Coverage:** ${active} active areas out of ${total} across ${state.data.spheres.length} sphere(s).`);
+  lines.push('');
+  lines.push('> Agents propose. Humans judge. Nurses steward.');
+  return lines.join('\n');
+}
+
+function buildProjectsConfig(){
+  const projects = getActiveDomains().map(dom=>{
+    const ans = state.data.answers[dom.id] || {};
+    return {
+      name: dom.name,
+      suggested_prompt_name: dom.suggested,
+      sphere: dom.sphere,
+      sphere_label: dom.sphereLabel,
+      edena_tier: dom.sphereTier,
+      slug: slug(dom.name),
+      help: ans.help || '',
+      goal_90_days: ans.goal90 || '',
+      human_gate: dom.sphereTier === 'green' ? 'every-output' : 'before-external-use',
+      reversibility: 'reversible',
+      file_path: `04-Projects/${slug(dom.name)}.md`
+    };
+  });
+  return {
+    schema_version: '1.0.0',
+    generated_at: new Date().toISOString(),
+    generator: 'life-quiz',
+    identity: { name: state.data.name || '' },
+    spheres_active: state.data.spheres,
+    project_count: projects.length,
+    projects: projects
+  };
+}
+
+function buildAllFiles(){
+  const files = [];
+  getActiveDomains().forEach(dom=>{
+    files.push({
+      kind:'project',
+      name: `${slug(dom.name)}.md`,
+      path: `04-Projects/${slug(dom.name)}.md`,
+      content: buildProjectPrompt(dom)
+    });
+  });
+  return files;
+}
+
+function downloadOne(name, content){
+  const blob = new Blob([content], {type:'text/markdown;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function downloadAllProjects(){
+  const files = buildAllFiles();
+  const bundle = files.map(f=>`<!-- FILE: ${f.path} -->\n\n${f.content}\n\n---\n`).join('\n');
+  downloadOne(`Nurse-AI-OS-Project-Prompts-${(state.data.name||'you').replace(/\W+/g,'-')}.md`, bundle);
+}
+
+/* ---------- Step engine ---------- */
+
+function buildSteps(){
+  const steps = [stepWelcome(), stepScope()];
+  state.data.spheres.forEach(sk=>steps.push(stepSphere(sk)));
+  steps.push(stepCoverage());
+  steps.push(stepDone());
+  return steps;
+}
+
+function render(){
+  if (state.stepIndex <= 1 || state.steps.length === 0) state.steps = buildSteps();
+  const s = state.steps[state.stepIndex];
+  $bar.style.width = Math.round((state.stepIndex/(state.steps.length-1))*100)+'%';
+  $app.innerHTML = '';
+  const card = el(`<div class="card">
+    <span class="kicker">Step ${state.stepIndex+1} of ${state.steps.length}</span>
+    <h2>${esc(s.title)}</h2>
+    <div class="sub">${esc(s.sub)}</div>
+    <div id="form"></div>
+    <div class="btnrow">
+      ${state.stepIndex>0?'<button class="nav-back" id="back">← Back</button>':''}
+      <button class="btn" id="next">${state.stepIndex===state.steps.length-1?'Finish':'Next →'}</button>
+    </div>
+  </div>`);
+  $app.appendChild(card);
+  document.getElementById('form').innerHTML = s.render();
+
+  // Save name to localStorage on every render (carry-forward)
+  if (state.data.name) { try { localStorage.setItem('naio-soul-name', state.data.name); } catch(e){} }
+
+  if (s.post) s.post();
+
+  document.getElementById('next').onclick = ()=>{
+    s.save();
+    if (!s.valid()) {
+      alert("Please fill in the required field before continuing.");
+      return;
+    }
+    // Rebuild steps after scope selection so per-sphere steps appear
+    if (state.stepIndex === 1) state.steps = buildSteps();
+    // If moving past a sphere step, rebuild to preserve coverage + done
+    if (state.stepIndex < state.steps.length-1) {
+      state.stepIndex++;
+      window.scrollTo({top:0, behavior:'smooth'});
+      render();
+    } else {
+      render(); // refresh done step
+    }
+  };
+  if (state.stepIndex>0) document.getElementById('back').onclick = ()=>{
+    s.save();
+    state.stepIndex--;
+    window.scrollTo({top:0, behavior:'smooth'});
+    render();
+  };
+}
+
+render();
+</script>
+</body>
+</html>

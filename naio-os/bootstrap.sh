@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — bootstrap.sh (Phase 5 one-line installer)
+# NAIO OS — bootstrap.sh (Phase 6 signed update-channel installer)
 # =============================================================================
-# Remote-safe entrypoint. Downloads the signed-by-checksum bundle files from
-# nurse-ai-os.org into a temporary directory, verifies manifest checksums via
-# the downloaded healthcheck, then runs install.sh with forwarded arguments.
+# Remote-safe entrypoint. Downloads the release metadata and bundle files from
+# nurse-ai-os.org into a temporary directory, verifies the signed manifest and
+# artifact checksums, then runs install.sh with forwarded arguments.
 #
 # Example:
 #   curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
@@ -40,7 +40,7 @@ need() {
 
 need python3
 
-printf '\n%s\n' "=== NAIO OS bootstrap (Phase 5) ==="
+printf '\n%s\n' "=== NAIO OS bootstrap (Phase 6) ==="
 echo "Source: $BASE_URL"
 echo "Download directory: $WORKDIR"
 echo "Doctrine: Agents propose. Humans judge. Nurses steward."
@@ -54,7 +54,7 @@ base = sys.argv[1].rstrip('/')
 root = Path(sys.argv[2])
 root.mkdir(parents=True, exist_ok=True)
 
-headers = {'User-Agent': 'naio-os-bootstrap/2.0.0-phase5', 'Cache-Control': 'no-cache'}
+headers = {'User-Agent': 'naio-os-bootstrap/2.0.0-phase6', 'Cache-Control': 'no-cache'}
 
 def fetch(rel: str) -> bytes:
     url = f"{base}/{rel}"
@@ -63,6 +63,10 @@ def fetch(rel: str) -> bytes:
         if r.status != 200:
             raise SystemExit(f"download failed: {url} status={r.status}")
         return r.read()
+
+for rel in ['release.json', 'manifest.sha256', 'manifest.sig']:
+    (root / rel).write_bytes(fetch(rel))
+    print(f"downloaded {rel}")
 
 manifest_bytes = fetch('manifest.yaml')
 (root / 'manifest.yaml').write_bytes(manifest_bytes)
@@ -79,6 +83,10 @@ print(f"bundle_version={manifest.get('version')}")
 PY
 
 chmod +x "$WORKDIR/install.sh" "$WORKDIR/scripts/"*.sh "$WORKDIR/scripts/"*.py 2>/dev/null || true
+
+echo ""
+echo "▶ Bootstrap release verification"
+python3 "$WORKDIR/scripts/verify-release.py"
 
 echo ""
 echo "▶ Bootstrap healthcheck"

@@ -2,9 +2,9 @@
 """
 NAIO OS — healthcheck.py
 Verify-before-claim harness. The installer never reports success until this
-passes. Checks the Phase 5 bundle is internally consistent.
+passes. Checks the Phase 6 bundle is internally consistent.
 """
-import argparse, hashlib, json, sys
+import argparse, hashlib, json, subprocess, sys
 from pathlib import Path
 
 try:
@@ -75,8 +75,25 @@ def verify_checksums(manifest):
             fail(f"{rel} CHECKSUM MISMATCH (expected {expected[:12]}…, got {actual[:12]}…)")
 
 
+def verify_release_metadata():
+    print("\n[2] Release metadata + signature")
+    verifier = ROOT / "scripts/verify-release.py"
+    if not verifier.is_file():
+        fail("scripts/verify-release.py missing")
+        return
+    r = subprocess.run([sys.executable, str(verifier), "--quiet"], cwd=ROOT, text=True, capture_output=True)
+    output = (r.stdout + r.stderr).strip()
+    if r.returncode == 0:
+        ok("release metadata and manifest signature verified")
+    else:
+        fail("release metadata/signature verification failed")
+        if output:
+            for line in output.splitlines()[-8:]:
+                info(line)
+
+
 def main():
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 5 healthcheck")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 6 healthcheck")
     parser.add_argument("--checksums-only", action="store_true", help="only verify manifest + checksums")
     args = parser.parse_args()
 
@@ -133,13 +150,14 @@ def main():
                 fail(f"{schema_name} missing")
 
         print("\n[5] Scripts")
-        for s in ["scripts/preflight.sh", "scripts/import-soul.py", "scripts/import-projects.py", "scripts/render-profile.py", "scripts/self-test.py", "scripts/healthcheck.py", "scripts/compute-checksums.sh", "install.sh", "bootstrap.sh"]:
+        for s in ["scripts/preflight.sh", "scripts/import-soul.py", "scripts/import-projects.py", "scripts/render-profile.py", "scripts/self-test.py", "scripts/verify-release.py", "scripts/healthcheck.py", "scripts/compute-checksums.sh", "install.sh", "bootstrap.sh"]:
             p = ROOT / s
             if p.is_file():
                 ok(f"{s} present")
             else:
                 fail(f"{s} missing")
 
+    verify_release_metadata()
     verify_checksums(manifest)
     print_summary()
     return 1 if FAIL else 0
@@ -152,7 +170,7 @@ def print_summary():
     if FAIL > 0:
         print("\n❌ HEALTHCHECK FAILED — bundle is inconsistent. Do not ship.")
     else:
-        print("\n✅ HEALTHCHECK PASSED — bundle is internally consistent (Phase 5 target-only apply scope).")
+        print("\n✅ HEALTHCHECK PASSED — bundle is internally consistent (Phase 6 target-only apply scope).")
 
 
 if __name__ == "__main__":

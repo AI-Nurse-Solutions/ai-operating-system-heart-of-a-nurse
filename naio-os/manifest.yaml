@@ -1,4 +1,4 @@
-version: 2.0.0-phase5
+version: 2.0.0-phase6
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -14,10 +14,12 @@ entrypoints:
   import_projects: scripts/import-projects.py
   render_profile: scripts/render-profile.py
   healthcheck: scripts/healthcheck.py
+  verify_release: scripts/verify-release.py
+  release_channel: release.json
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
-  note: manifest.yaml is intentionally not self-hashed; all other listed artifacts require sha256. Run scripts/compute-checksums.sh before shipping.
+  note: manifest.yaml is intentionally not self-hashed; release.json, manifest.sha256, and manifest.sig are update-channel artifacts outside the manifest self-hash loop. Run scripts/compute-checksums.sh, then regenerate manifest.sha256, manifest.sig, and release.json before shipping.
 contents:
 - path: manifest.yaml
   role: manifest
@@ -45,30 +47,36 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 49b06936315edb018736581cf4ecf034edf40d4ddaad5430e5e90e1fb12d4e14
+  sha256: d9e87906da168168b8f510f06b0a5fbbe1b5775c0f8f17c3789e46718bb450a6
 - path: scripts/self-test.py
   role: self-test
-  sha256: 2ce94114ec8a6d930068d16fd9521b1552afe4d1f8f7b20765381b512cd293be
+  sha256: 08972d682c152d17180d5475cbf8738333ab0695bf0e2940f4193c8c8a157af7
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: 8b8b5c4cb230b54c58eb17a88aa3f0cc5a3e61f7b719a52fb9e5e64bc6fa4b5d
+  sha256: 53ce341d1179ddefaf19c7529d886e98de6a68eb673c0e14922dc76bc33eb805
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: 45595d0270a0ed833a1ac40157ad5b6f8ed1b7feac2e32460bafeb8c1e14ee86
+  sha256: ceb407a57ff90de516614f6003dd8004c609a38b398d916e02714a6f4f311b5e
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: 8af31e9119e831a04dd72c9320a97f83c1dea5e27bc825768a1a94a3101dc7a4
+  sha256: 0346b3dc39d851873aaff8787e51133c15693e210cf69ff73cf8dc5a85769f17
 - path: README.md
   role: spec
-  sha256: facef35966332c97a3fdacac86b9a1948ac2a87c43334e8794f34875bcaaa320
+  sha256: 7c4c197c34e5220eb405471109ac628a0714886e53dc1e877c3db47dc2d27a68
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
+- path: config/naio-os-release-public.pem
+  role: release-public-key
+  sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
+- path: scripts/verify-release.py
+  role: release-verifier
+  sha256: bf6c2ca21b501a0c4a02e4cc3ecef218aa0002f6f835cc5eb05459e24fcfc6a2
 safety_contract:
-  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test
+  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel
   idempotent: true
   mutation_scope: explicit_target_directory_only
   bootstrap_scope: temporary_download_directory_only
@@ -85,9 +93,15 @@ safety_contract:
   - 'unsafe_project_path               # project prompt paths must remain under generated projects/*.SYSTEM.md'
   - 'apply_without_target              # apply requires explicit --target'
   - 'target_is_home_or_hermes_home     # never overwrite home or ~/.hermes directly'
+  - 'release_signature_mismatch        # manifest.sig must verify against the public release key'
+  - 'release_digest_mismatch           # manifest.sha256 and release.json must match manifest.yaml'
+  - 'stale_update_channel              # release.json latest_version must equal manifest version'
 install_flow:
 - id: bootstrap-download
   description: Optional one-line installer downloads manifest and listed artifacts into a temporary directory.
+  blocking: true
+- id: verify-release-signature
+  description: Verify release.json, manifest.sha256, and manifest.sig before trusting manifest checksums.
   blocking: true
 - id: preflight
   description: Detect OS, bash, python3, core deps, optional Hermes presence.
@@ -96,7 +110,7 @@ install_flow:
   description: Every non-manifest file's sha256 must match manifest; refuse on mismatch.
   blocking: true
 - id: self-test
-  description: Phase 5 smoke test creates sample safe imports, dry-runs, applies to temp target, validates rendered outputs, and verifies refusal cases.
+  description: Phase 6 smoke test creates sample safe imports, verifies signed release metadata, dry-runs, applies to temp target, validates outputs, and verifies refusal cases.
   blocking: true
   optional: true
 - id: validate-soul-import
@@ -115,7 +129,26 @@ install_flow:
 - id: healthcheck
   description: Re-verify bundle state. Never claim success unverified.
   blocking: true
-phase5_outputs:
+not_yet:
+- Direct ~/.hermes mutation (deferred until explicit user-controlled installer hardening)
+- Automatic Hermes cron scheduling (templates only)
+- Network-side model routing enforcement (Phase 6+)
+- Key rotation / multiple trusted release keys (future hardening)
+signature_policy:
+  algorithm: RSA-SHA256 detached signature
+  public_key: config/naio-os-release-public.pem
+  signed_artifact: manifest.yaml
+  signature: manifest.sig
+  digest: manifest.sha256
+  release_channel: release.json
+  fail_closed: true
+  note: Bootstrap and install verify release metadata before trusting artifact checksums.
+phase6_outputs:
+- release.json
+- manifest.sha256
+- manifest.sig
+- config/naio-os-release-public.pem
+- scripts/verify-release.py
 - bootstrap.sh
 - scripts/self-test.py
 - README-FIRST.md
@@ -129,22 +162,23 @@ phase5_outputs:
 - config/human-gates.yaml
 - config/hermes-profile.patch.yaml
 - logs/render-report.json
-phase5_one_line_commands:
+phase6_update_channel:
+  current: release.json
+  signature: manifest.sig
+  digest: manifest.sha256
+  public_key: config/naio-os-release-public.pem
+  installer_gate: scripts/verify-release.py
+phase6_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --apply --soul ~/Downloads/naio-soul.json --projects ~/Downloads/naio-projects.json --target ./NAIO-Hermes-Profile
-phase5_skill_pack:
+phase6_skill_pack:
 - lamp-huddle-steward
 - weekly-ledger-review
 - project-next-action-brief
 - knowledge-inbox-digest
 - edena-tier-audit
-phase5_cron_rituals:
+phase6_cron_rituals:
 - weekly-lamp-huddle-review
 - monday-project-next-actions
 - monthly-edena-tier-audit
 - knowledge-inbox-digest
-not_yet:
-- Direct ~/.hermes mutation (deferred until explicit user-controlled installer hardening)
-- Automatic Hermes cron scheduling (templates only)
-- 'Cryptographic signatures (Phase 6: GPG/Cosign; checksums exist now)'
-- Network-side model routing enforcement (Phase 6+)

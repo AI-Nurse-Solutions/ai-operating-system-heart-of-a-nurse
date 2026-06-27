@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — install.sh  (Phase 5: one-line UX + healthcheck/self-test harness)
+# NAIO OS — install.sh  (Phase 6: signed update channel + one-line UX)
 # =============================================================================
 # Default: dry-run validate + plan. Apply mode is real but safe:
 #   ./install.sh --apply --soul naio-soul.json --projects naio-projects.json --target ./NAIO-Hermes-Profile
@@ -21,7 +21,7 @@ SELF_TEST=0
 
 print_help() {
   cat <<'EOF'
-NAIO OS installer (Phase 5 — one-line UX + healthcheck/self-test harness)
+NAIO OS installer (Phase 6 — one-line UX + healthcheck/self-test harness)
 
 Usage:
   ./install.sh [--dry-run] [--soul <path>] [--projects <path>] [--no-checksums]
@@ -39,7 +39,7 @@ Options:
   --soul <path>      Path to naio-soul.json (from the SOUL Quiz). Required for --apply.
   --projects <path>  Path to naio-projects.json (from the Life & Projects Quiz).
   --no-checksums     Skip sha256 verification against the manifest (not recommended).
-  --self-test        Run the Phase 5 built-in smoke test and exit.
+  --self-test        Run the Phase 6 built-in smoke test and exit.
   --help             Show this help.
 
 Doctrine: Agents propose. Humans judge. Nurses steward.
@@ -70,7 +70,7 @@ done
 cat <<'BANNER'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   NAIO OS — Nurse AI Operating System (Phase 5)           ║
+  ║   NAIO OS — Nurse AI Operating System (Phase 6)           ║
   ║   One-line installer + healthcheck/self-test harness       ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -80,18 +80,28 @@ cat <<'BANNER'
 BANNER
 
 if [[ $SELF_TEST -eq 1 ]]; then
-  echo "▶ SELF-TEST — focused Phase 5 smoke test"
+  echo "▶ SELF-TEST — focused Phase 6 smoke test"
   exec python3 "$HERE/scripts/self-test.py"
 fi
 
-echo "▶ STEP 1/7 — Preflight (environment check)"
+echo "▶ STEP 1/8 — Preflight (environment check)"
 if ! bash "$HERE/scripts/preflight.sh"; then
   echo "❌ Preflight blocked installation. Fix the issues above and re-run." >&2
   exit 2
 fi
 
 echo ""
-echo "▶ STEP 2/7 — Verify checksums"
+echo "▶ STEP 2/8 — Verify signed release metadata"
+if python3 "$HERE/scripts/verify-release.py" >/tmp/naio-release-verify.out 2>&1; then
+  tail -n 4 /tmp/naio-release-verify.out
+else
+  cat /tmp/naio-release-verify.out
+  echo "❌ Release signature verification failed. Refusing to proceed." >&2
+  exit 2
+fi
+
+echo ""
+echo "▶ STEP 3/8 — Verify checksums"
 if [[ $WITH_CHECKSUMS -eq 1 ]]; then
   if python3 "$HERE/scripts/healthcheck.py" --checksums-only >/tmp/naio-hc-checksums.out 2>&1; then
     tail -n 5 /tmp/naio-hc-checksums.out
@@ -105,7 +115,7 @@ else
 fi
 
 echo ""
-echo "▶ STEP 3/7 — Validate SOUL import (naio-soul.json)"
+echo "▶ STEP 4/8 — Validate SOUL import (naio-soul.json)"
 if [[ $SOUL_PROVIDED -eq 1 ]]; then
   if [[ ! -f "$SOUL" ]]; then
     echo "❌ naio-soul.json not found at: $SOUL" >&2
@@ -124,7 +134,7 @@ else
 fi
 
 echo ""
-echo "▶ STEP 4/7 — Validate Projects import (naio-projects.json)"
+echo "▶ STEP 5/8 — Validate Projects import (naio-projects.json)"
 if [[ $PROJECTS_PROVIDED -eq 1 ]]; then
   if [[ ! -f "$PROJECTS" ]]; then
     echo "❌ naio-projects.json not found at: $PROJECTS" >&2
@@ -139,16 +149,17 @@ else
 fi
 
 echo ""
-echo "▶ STEP 5/7 — Plan"
+echo "▶ STEP 6/8 — Plan"
 cat <<'PLAN'
-  Phase 5 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
+  Phase 6 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
     1. Core SOUL.md and per-sphere SOUL files.
     2. EDENA runtime mapping: sphere ceilings → toolsets → human gates.
     3. Project system prompts from naio-projects.json, if provided.
     4. Tier-tagged starter skills with EDENA frontmatter.
     5. Cron ritual templates for Lamp Huddle, ledger review, tier audit, and knowledge digest.
     6. Suggested Hermes profile overlay, review-before-use.
-    7. Healthcheck + self-test harness before claims of success.
+    7. Signed release metadata and update-channel verification.
+    8. Healthcheck + self-test harness before claims of success.
 
   Safety posture:
     • Writes only to --target when --apply is used.
@@ -160,7 +171,7 @@ PLAN
 
 if [[ $APPLY -eq 1 ]]; then
   echo ""
-  echo "▶ STEP 6/7 — Apply (render governed profile bundle to target)"
+  echo "▶ STEP 7/8 — Apply (render governed profile bundle to target)"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --apply requires --target <dir>" >&2
     exit 2
@@ -169,18 +180,18 @@ if [[ $APPLY -eq 1 ]]; then
   if [[ $PROJECTS_PROVIDED -eq 1 ]]; then RENDER_ARGS+=("--projects" "$PROJECTS"); fi
   if [[ $FORCE -eq 1 ]]; then RENDER_ARGS+=("--force"); fi
   if ! python3 "$HERE/scripts/render-profile.py" "${RENDER_ARGS[@]}"; then
-    echo "❌ Phase 5 render failed." >&2
+    echo "❌ Phase 6 render failed." >&2
     exit 2
   fi
 else
   echo ""
-  echo "▶ STEP 6/7 — Apply skipped (dry-run default)"
+  echo "▶ STEP 7/8 — Apply skipped (dry-run default)"
   echo "  Nothing was written. To render a profile bundle, rerun with:"
   echo "  ./install.sh --apply --soul path/to/naio-soul.json --projects path/to/naio-projects.json --target ./NAIO-Hermes-Profile"
 fi
 
 echo ""
-echo "▶ STEP 7/7 — Final healthcheck"
+echo "▶ STEP 8/8 — Final healthcheck"
 if python3 "$HERE/scripts/healthcheck.py" >/tmp/naio-hc-final.out 2>&1; then
   tail -n 4 /tmp/naio-hc-final.out
 else
@@ -193,7 +204,7 @@ if [[ $APPLY -eq 1 ]]; then
   cat <<DONE
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 5 apply complete.                     ║
+  ║   ✅  NAIO OS Phase 6 apply complete.                     ║
   ║   Governed profile + execution templates rendered.        ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -205,7 +216,7 @@ else
   cat <<'DONE'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 5 dry-run complete.                   ║
+  ║   ✅  NAIO OS Phase 6 dry-run complete.                   ║
   ║   Bundle and provided imports are safe. Nothing written.  ║
   ╚═══════════════════════════════════════════════════════════╝
 

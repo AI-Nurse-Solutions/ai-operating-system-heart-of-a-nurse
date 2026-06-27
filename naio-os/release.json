@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "channel": "stable",
+  "latest_version": "2.0.0-phase6",
+  "minimum_installer_phase": 6,
+  "published_at": "2026-06-27T00:00:00Z",
+  "base_url": "https://nurse-ai-os.org/naio-os",
+  "manifest": {
+    "path": "manifest.yaml",
+    "sha256": "7ef34dc86875609e3244f2adcaaef3995121a809a16585de671b09d30f23480b",
+    "signature": "manifest.sig",
+    "signature_algorithm": "RSA-SHA256",
+    "public_key": "config/naio-os-release-public.pem"
+  },
+  "entrypoints": {
+    "bootstrap": "bootstrap.sh",
+    "install": "install.sh",
+    "self_test": "scripts/self-test.py",
+    "verify_release": "scripts/verify-release.py"
+  },
+  "safety_contract": [
+    "no PHI",
+    "no clinical decisions",
+    "target-only apply",
+    "no direct ~/.hermes mutation",
+    "cron templates only",
+    "fail-closed release verification"
+  ],
+  "doctrine": "Agents propose. Humans judge. Nurses steward."
+}

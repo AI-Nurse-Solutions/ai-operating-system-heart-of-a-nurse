@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 17)
+NAIO OS — self-test.py (Phase 18)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -251,6 +251,19 @@ def verify_target(target: Path) -> None:
         "17-Florence-X-Orchestration/Stop-and-Escalation-Rules.md",
         "17-Florence-X-Orchestration/Trace-Ledger.md",
         "17-Florence-X-Orchestration/Non-Deployment-Statement.md",
+        "18-Governance-Board/README.md",
+        "18-Governance-Board/Governance-Board-Charter.md",
+        "18-Governance-Board/Steward-Council-Overview.md",
+        "18-Governance-Board/Member-Role-Card.md",
+        "18-Governance-Board/Review-Intake-Form.md",
+        "18-Governance-Board/Agenda-Template.md",
+        "18-Governance-Board/Decision-Record.md",
+        "18-Governance-Board/Conflict-of-Interest-Disclosure.md",
+        "18-Governance-Board/Boundary-and-Scope-Statement.md",
+        "18-Governance-Board/Escalation-and-Referral-Path.md",
+        "18-Governance-Board/Voting-and-Quorum-Checklist.md",
+        "18-Governance-Board/Transparency-Ledger.md",
+        "18-Governance-Board/Non-Authority-Statement.md",
     ]
     for rel in expected:
         check(f"generated {rel}", (target / rel).is_file())
@@ -262,7 +275,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase17", runtime.get("version") == "2.0.0-phase17")
+    check("runtime version phase18", runtime.get("version") == "2.0.0-phase18")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -273,22 +286,23 @@ def verify_target(target: Path) -> None:
     check("doctrine is carried", "Agents propose. Humans judge. Nurses steward." in combined)
     check("START-HERE carries first safe prompts", "Your first 3 safe prompts" in combined and "Open START-HERE.md" in combined)
     check("first-week activation path is present", "Day 1 — Setup and Safety" in combined and "Day 7 — Weekly Ledger" in combined)
-    check("public launch pack is present", "Phase 17 Public Launch Pack" in combined and "Launch Checklist" in combined and "not clinical decision support" in combined)
-    check("cohort mode pack is present", "Phase 17 Cohort Mode" in combined and "Participant Readiness Rubric" in combined and "not certification" in combined)
-    check("evidence trail pack is present", "Phase 17 EDENA Evidence Trail" in combined and "Evidence Capture Guide" in combined and "Not Certification Statement" in combined and "no automatic scoring" in combined.lower())
-    check("contribution flow pack is present", "Phase 17 NIN Community Contribution Flow" in combined and "Contribution Intake Guide" in combined and "Not Endorsement Statement" in combined and "no automatic publishing" in combined.lower())
-    check("institutional pilot pack is present", "Phase 17 Institutional Pilot Pack" in combined and "Pilot Charter" in combined and "Not Clinical Deployment Statement" in combined and "no automatic reporting" in combined.lower())
-    check("EDENA readiness pack is present", "Phase 17 EDENA Micro-Credential Readiness Pack" in combined and "Readiness Overview" in combined and "Non-Certification Statement" in combined and "no automatic scoring" in combined.lower())
-    check("agent registry pack is present", "Phase 17 NAIO Agent Registry Pack" in combined and "Agent Intake Card" in combined and "Not-Endorsement Statement" in combined and "no automatic listing" in combined.lower())
-    check("Florence-X orchestration pack is present", "Phase 17 Florence-X Orchestration Preview Pack" in combined and "Shared Intent Card" in combined and "Non-Deployment Statement" in combined and "no automatic handoffs" in combined.lower())
+    check("public launch pack is present", "Phase 18 Public Launch Pack" in combined and "Launch Checklist" in combined and "not clinical decision support" in combined)
+    check("cohort mode pack is present", "Phase 18 Cohort Mode" in combined and "Participant Readiness Rubric" in combined and "not certification" in combined)
+    check("evidence trail pack is present", "Phase 18 EDENA Evidence Trail" in combined and "Evidence Capture Guide" in combined and "Not Certification Statement" in combined and "no automatic scoring" in combined.lower())
+    check("contribution flow pack is present", "Phase 18 NIN Community Contribution Flow" in combined and "Contribution Intake Guide" in combined and "Not Endorsement Statement" in combined and "no automatic publishing" in combined.lower())
+    check("institutional pilot pack is present", "Phase 18 Institutional Pilot Pack" in combined and "Pilot Charter" in combined and "Not Clinical Deployment Statement" in combined and "no automatic reporting" in combined.lower())
+    check("EDENA readiness pack is present", "Phase 18 EDENA Micro-Credential Readiness Pack" in combined and "Readiness Overview" in combined and "Non-Certification Statement" in combined and "no automatic scoring" in combined.lower())
+    check("agent registry pack is present", "Phase 18 NAIO Agent Registry Pack" in combined and "Agent Intake Card" in combined and "Not-Endorsement Statement" in combined and "no automatic listing" in combined.lower())
+    check("Florence-X orchestration pack is present", "Phase 18 Florence-X Orchestration Preview Pack" in combined and "Shared Intent Card" in combined and "Non-Deployment Statement" in combined and "no automatic handoffs" in combined.lower())
+    check("governance board pack is present", "Phase 18 Governance Board / Steward Council Pack" in combined and "Governance Board Charter" in combined and "Non-Authority Statement" in combined and "no automatic approvals" in combined.lower())
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 17 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 18 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 17 self-test ===\n")
+    print("\n=== NAIO OS — Phase 18 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -332,6 +346,8 @@ def main() -> int:
             check("registry check reports ready and no mutation", registry.returncode == 0 and '"status": "ready"' in registry.stdout and '"registry_ready": true' in registry.stdout and '"safe_to_list": true' in registry.stdout and '"no_mutation": true' in registry.stdout, f"exit={registry.returncode}")
             orchestration = run(["python3", "scripts/orchestration.py", "--profile", str(target), "--json"])
             check("orchestration check reports ready and no mutation", orchestration.returncode == 0 and '"status": "ready"' in orchestration.stdout and '"orchestration_ready": true' in orchestration.stdout and '"safe_to_rehearse": true' in orchestration.stdout and '"no_mutation": true' in orchestration.stdout, f"exit={orchestration.returncode}")
+            governance = run(["python3", "scripts/governance.py", "--profile", str(target), "--json"])
+            check("governance check reports ready and no mutation", governance.returncode == 0 and '"status": "ready"' in governance.stdout and '"governance_ready": true' in governance.stdout and '"safe_to_convene": true' in governance.stdout and '"no_mutation": true' in governance.stdout, f"exit={governance.returncode}")
         else:
             fail("target directory was not created")
 
@@ -356,7 +372,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 17 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 18 safety contract.")
     return 1 if FAIL else 0
 
 

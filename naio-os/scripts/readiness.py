@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NAIO OS — readiness.py (Phase 17). Formative human review only; not certification."""
+"""NAIO OS — readiness.py (Phase 18). Formative human review only; not certification."""
 import argparse, json, re, sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -38,13 +38,13 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append("missing required readiness files: "+", ".join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; readiness=runtime.get('readiness',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase17': failures.append(f"runtime version is not 2.0.0-phase17: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase18': failures.append(f"runtime version is not 2.0.0-phase18: {runtime.get('version')}")
     if readiness.get('path')!='15-EDENA-Readiness/': failures.append('runtime readiness.path is not 15-EDENA-Readiness/')
     if readiness.get('readiness_use')!='formative_human_review_not_certification': failures.append('runtime readiness_use must remain formative human review, not certification')
     for key in ['auto_score','auto_pass_fail','auto_issue_badge','auto_issue_credential']:
         if readiness.get(key) is not False: failures.append(f'runtime readiness.{key} must be false')
     combined='\n'.join(read(profile/rel) for rel in REQUIRED if (profile/rel).is_file())
-    required=['Phase 17 EDENA Micro-Credential Readiness Pack','Readiness Overview','Eligibility Self-Check','Evidence Map','Stewardship Reflection','Boundary Competence Ledger','Human Reviewer Guide','Readiness Rubric','Non-Certification Statement','Badge Deferral Notice','No PHI','No patient care use','No clinical decision support','Not certification','Not clinical AI readiness','Not competency validation','No automatic scoring','No automatic pass or fail','No automatic credential issuance','No automatic badge issuance','Human steward review','Agents propose. Humans judge. Nurses steward.']
+    required=['Phase 18 EDENA Micro-Credential Readiness Pack','Readiness Overview','Eligibility Self-Check','Evidence Map','Stewardship Reflection','Boundary Competence Ledger','Human Reviewer Guide','Readiness Rubric','Non-Certification Statement','Badge Deferral Notice','No PHI','No patient care use','No clinical decision support','Not certification','Not clinical AI readiness','Not competency validation','No automatic scoring','No automatic pass or fail','No automatic credential issuance','No automatic badge issuance','Human steward review','Agents propose. Humans judge. Nurses steward.']
     for phrase in required:
         if phrase.lower() not in combined.lower(): failures.append(f'readiness pack missing phrase: {phrase}')
     phi=hits(PHI_PATTERNS,combined); secrets=hits(SECRET_PATTERNS,combined); over=unsupported_overclaims(combined)
@@ -58,13 +58,13 @@ def check_profile(profile):
     status='ready' if not failures else 'blocked'
     return {'schema_version':'1.0.0','phase':15,'status':status,'readiness_ready':not failures,'safe_to_review':not failures,'generated_at':datetime.now(timezone.utc).isoformat(),'profile':str(profile),'readiness_path':'15-EDENA-Readiness/','required_files_checked':len(REQUIRED),'missing_required':missing,'warnings':warnings,'failures':failures,'no_phi':not bool(phi),'no_secrets':not bool(secrets),'no_patient_care':'no patient care use' in combined.lower(),'no_clinical_decision_support':'no clinical decision support' in combined.lower(),'no_certification_claims':not bool(over),'no_clinical_readiness_claims':not bool(over),'no_auto_score':readiness.get('auto_score') is False,'no_auto_pass_fail':readiness.get('auto_pass_fail') is False,'no_auto_badge':readiness.get('auto_issue_badge') is False,'no_auto_credential':readiness.get('auto_issue_credential') is False,'no_mutation':True,'cron_scheduled':bool(scheduled),'readiness_use':readiness.get('readiness_use','unknown'),'doctrine':runtime.get('doctrine','Agents propose. Humans judge. Nurses steward.')}
 def main():
-    ap=argparse.ArgumentParser(description='Check Phase 17 EDENA readiness pack for a rendered NAIO profile bundle.'); ap.add_argument('--profile',required=True); ap.add_argument('--json',action='store_true'); args=ap.parse_args(); profile=Path(args.profile).expanduser().resolve()
+    ap=argparse.ArgumentParser(description='Check Phase 18 EDENA readiness pack for a rendered NAIO profile bundle.'); ap.add_argument('--profile',required=True); ap.add_argument('--json',action='store_true'); args=ap.parse_args(); profile=Path(args.profile).expanduser().resolve()
     if profile==Path.home() or str(profile) in ('/',str(Path.home()/'.hermes')): refuse('refusing to readiness-check home or ~/.hermes directly')
     if not profile.is_dir(): refuse(f'profile directory not found: {profile}')
     report=check_profile(profile)
     if args.json: print(json.dumps(report,indent=2))
     else:
-        print('\n=== NAIO OS — Phase 17 EDENA readiness check ===\n'); print(json.dumps(report,indent=2))
+        print('\n=== NAIO OS — Phase 18 EDENA readiness check ===\n'); print(json.dumps(report,indent=2))
         if report['status']=='ready': print('\n✅ READINESS PACK READY — formative human review only, no certification, no badges, no clinical-readiness claims.')
     return 0 if report['status']=='ready' else 2
 if __name__=='__main__': sys.exit(main())

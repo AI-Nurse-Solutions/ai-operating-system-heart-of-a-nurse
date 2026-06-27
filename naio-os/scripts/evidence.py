@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — evidence.py (Phase 17)
+NAIO OS — evidence.py (Phase 18)
 
 EDENA Evidence Trail checker for rendered NAIO Hermes profile bundles. It verifies
 that a learner can collect reflection/evidence artifacts safely without PHI,
@@ -77,8 +77,8 @@ def check_profile(profile: Path) -> dict:
     rituals = load_yaml(profile / "cron/rituals.yaml") or {}
     evidence = runtime.get("evidence", {}) if isinstance(runtime, dict) else {}
 
-    if runtime.get("version") != "2.0.0-phase17":
-        failures.append(f"runtime version is not 2.0.0-phase17: {runtime.get('version')}")
+    if runtime.get("version") != "2.0.0-phase18":
+        failures.append(f"runtime version is not 2.0.0-phase18: {runtime.get('version')}")
     if evidence.get("path") != "12-Evidence-Trail/":
         failures.append("runtime evidence.path is not 12-Evidence-Trail/")
     if evidence.get("credentialing") != "evidence_of_learning_not_certification":
@@ -96,7 +96,7 @@ def check_profile(profile: Path) -> dict:
     combined = "\n".join(combined_parts)
 
     required_phrases = [
-        "Phase 17 EDENA Evidence Trail",
+        "Phase 18 EDENA Evidence Trail",
         "Evidence Capture Guide",
         "EDENA Lens Reflection",
         "Artifact Log",
@@ -146,7 +146,7 @@ def check_profile(profile: Path) -> dict:
     status = "ready" if not failures else "blocked"
     return {
         "schema_version": "1.0.0",
-        "phase": 17,
+        "phase": 18,
         "status": status,
         "evidence_ready": not failures,
         "safe_to_document": not failures,
@@ -169,7 +169,7 @@ def check_profile(profile: Path) -> dict:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Check Phase 17 EDENA Evidence Trail readiness for a rendered NAIO profile bundle.")
+    ap = argparse.ArgumentParser(description="Check Phase 18 EDENA Evidence Trail readiness for a rendered NAIO profile bundle.")
     ap.add_argument("--profile", required=True, help="rendered NAIO profile directory")
     ap.add_argument("--json", action="store_true", help="print machine-readable report")
     args = ap.parse_args()
@@ -182,7 +182,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        print("\n=== NAIO OS — Phase 17 EDENA evidence trail check ===\n")
+        print("\n=== NAIO OS — Phase 18 EDENA evidence trail check ===\n")
         print(json.dumps(report, indent=2))
         if report["status"] == "ready":
             print("\n✅ EVIDENCE TRAIL READY — document learning with no PHI, no automatic scoring, and no certification claims.")

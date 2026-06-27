@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NAIO OS — registry.py (Phase 17). Human-reviewed learning registry only; not endorsement."""
+"""NAIO OS — registry.py (Phase 18). Human-reviewed learning registry only; not endorsement."""
 import argparse, json, re, sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -38,13 +38,13 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append("missing required registry files: "+", ".join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; registry=runtime.get('registry',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase17': failures.append(f"runtime version is not 2.0.0-phase17: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase18': failures.append(f"runtime version is not 2.0.0-phase18: {runtime.get('version')}")
     if registry.get('path')!='16-Agent-Registry/': failures.append('runtime registry.path is not 16-Agent-Registry/')
     if registry.get('registry_use')!='human_reviewed_learning_registry_not_endorsement': failures.append('runtime registry_use must remain human-reviewed learning registry, not endorsement')
     for key in ['auto_vet','auto_list','auto_execute_agent','auto_recommend_for_patient_care']:
         if registry.get(key) is not False: failures.append(f'runtime registry.{key} must be false')
     combined='\n'.join(read(profile/rel) for rel in REQUIRED if (profile/rel).is_file())
-    required=['Phase 17 NAIO Agent Registry Pack','Registry Overview','Agent Intake Card','Source Verification Checklist','EDENA Agent Evaluation','Risk and Boundary Review','Nurse Use-Case Fit','Registry Listing Template','Not-Endorsement Statement','Human Review Queue','Registry Change Log','Retirement and Recheck Plan','No PHI','No patient care use','No clinical decision support','Not endorsement','Not certification','Not clinical AI readiness','Not procurement approval','Not deployment approval','No automatic vetting','No automatic listing','No automatic agent execution','Human registry steward review','Agents propose. Humans judge. Nurses steward.']
+    required=['Phase 18 NAIO Agent Registry Pack','Registry Overview','Agent Intake Card','Source Verification Checklist','EDENA Agent Evaluation','Risk and Boundary Review','Nurse Use-Case Fit','Registry Listing Template','Not-Endorsement Statement','Human Review Queue','Registry Change Log','Retirement and Recheck Plan','No PHI','No patient care use','No clinical decision support','Not endorsement','Not certification','Not clinical AI readiness','Not procurement approval','Not deployment approval','No automatic vetting','No automatic listing','No automatic agent execution','Human registry steward review','Agents propose. Humans judge. Nurses steward.']
     for phrase in required:
         if phrase.lower() not in combined.lower(): failures.append(f'registry pack missing phrase: {phrase}')
     phi=hits(PHI_PATTERNS,combined); secrets=hits(SECRET_PATTERNS,combined); over=unsupported_overclaims(combined)
@@ -58,13 +58,13 @@ def check_profile(profile):
     status='ready' if not failures else 'blocked'
     return {'schema_version':'1.0.0','phase':16,'status':status,'registry_ready':not failures,'safe_to_list':not failures,'generated_at':datetime.now(timezone.utc).isoformat(),'profile':str(profile),'registry_path':'16-Agent-Registry/','required_files_checked':len(REQUIRED),'missing_required':missing,'warnings':warnings,'failures':failures,'no_phi':not bool(phi),'no_secrets':not bool(secrets),'no_patient_care':'no patient care use' in combined.lower(),'no_clinical_decision_support':'no clinical decision support' in combined.lower(),'no_endorsement_claims':not bool(over),'no_certification_claims':not bool(over),'no_clinical_readiness_claims':not bool(over),'no_procurement_approval_claims':not bool(over),'no_deployment_approval_claims':not bool(over),'no_auto_vet':registry.get('auto_vet') is False,'no_auto_list':registry.get('auto_list') is False,'no_auto_execute_agent':registry.get('auto_execute_agent') is False,'no_auto_patient_care_recommendation':registry.get('auto_recommend_for_patient_care') is False,'no_mutation':True,'cron_scheduled':bool(scheduled),'registry_use':registry.get('registry_use','unknown'),'doctrine':runtime.get('doctrine','Agents propose. Humans judge. Nurses steward.')}
 def main():
-    ap=argparse.ArgumentParser(description='Check Phase 17 NAIO Agent Registry pack for a rendered NAIO profile bundle.'); ap.add_argument('--profile',required=True); ap.add_argument('--json',action='store_true'); args=ap.parse_args(); profile=Path(args.profile).expanduser().resolve()
+    ap=argparse.ArgumentParser(description='Check Phase 18 NAIO Agent Registry pack for a rendered NAIO profile bundle.'); ap.add_argument('--profile',required=True); ap.add_argument('--json',action='store_true'); args=ap.parse_args(); profile=Path(args.profile).expanduser().resolve()
     if profile==Path.home() or str(profile) in ('/',str(Path.home()/'.hermes')): refuse('refusing to registry-check home or ~/.hermes directly')
     if not profile.is_dir(): refuse(f'profile directory not found: {profile}')
     report=check_profile(profile)
     if args.json: print(json.dumps(report,indent=2))
     else:
-        print('\n=== NAIO OS — Phase 17 agent registry check ===\n'); print(json.dumps(report,indent=2))
+        print('\n=== NAIO OS — Phase 18 agent registry check ===\n'); print(json.dumps(report,indent=2))
         if report['status']=='ready': print('\n✅ REGISTRY PACK READY — human-reviewed learning registry only, no endorsement, no clinical deployment claims.')
     return 0 if report['status']=='ready' else 2
 if __name__=='__main__': sys.exit(main())

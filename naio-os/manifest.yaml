@@ -1,4 +1,4 @@
-version: 2.0.0-phase17
+version: 2.0.0-phase18
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -27,6 +27,7 @@ entrypoints:
   readiness: scripts/readiness.py
   registry: scripts/registry.py
   orchestration: scripts/orchestration.py
+  governance: scripts/governance.py
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
@@ -58,25 +59,25 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: c29159210fed17fdbf203f19a1314bec01a27c7f19bdbd77ea662f6b5673a228
+  sha256: dd62655e5d3e6f313435596d799698ce4004c225ef24fd4a5268d20b40994bf1
 - path: scripts/self-test.py
   role: self-test
-  sha256: a693907540249e5a6e161d5eeb1be36f4a03ab5b4f51de746ad0cd722c82a92f
+  sha256: 5f71e52e63a824ff790b5fcec9f8402376d59a1a7766b867fc823770cc956961
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: 25e50fb40bf6438fd4b6907185be8548001383bed32719867157261560441e8f
+  sha256: 087e4c996c72397876a53fca039545f8ad9e45516f77cea3ec7d0b7be70bb974
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: 4df7b5c698f5e436ace1dae9220e6bcfffc588b63f1cf7f1639adb84905b3575
+  sha256: 1110a8c4c540a2953e6731089c577607bf7b2745f716138e7212108b89c547de
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: 33dfc5d7519f3aa6cc3e33aa3cf8afcdca9d79d388b5fd8d2ce2e353856097bd
+  sha256: d51fada45f496d819c85655836ec085fec1116c3e4d49d17eb62771ff569e3b1
 - path: README.md
   role: spec
-  sha256: 5c27d477fd9f548772c240bbc13f69112f9b4a466bf86ce0f62f4b06093cff82
+  sha256: 47c5eafdf20169ff06fede617246ac8fcc736f8ebb270759293ae4205f890d6d
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -85,10 +86,10 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: 32bcd6f7264302e1ef3a89df26be69a86c1dd4e265edb7eafd714685fbf9c8fe
+  sha256: 87c2094cbe1824494961190d0a19710182e43abcf510f4fd36e22dbbafff0539
 - path: release-history.json
   role: release-history
-  sha256: 1bc8eddbbfbd44d63a37af7b6f1fe6645bebd5452569bba9965d4d95bf60b904
+  sha256: 6bf894378d13c671f12f1e686e1dbca741f526a6ca200b662c648f0fef60c537
 - path: scripts/check-update.py
   role: update-advisory
   sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
@@ -97,31 +98,34 @@ contents:
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 - path: scripts/activation.py
   role: activation-check
-  sha256: 55f132d9520208283dbc23db31645abe6e144fea4705eb52027957380bb0626f
+  sha256: 9622bb3daa6c689450abb55a1a26e057b28e99562aff8760e15954bd53e7c0c5
 - path: scripts/launch.py
   role: public-launch-check
-  sha256: b3a7b43dae3bce3e3a797debac31a1b96e792fbd5f53dd33c99ed911ace8b052
+  sha256: 684987d08ccd94a8ccc948084a9827a9b64f12d245b8d06855a2edcde2b07dac
 - path: scripts/cohort.py
   role: cohort-mode-check
-  sha256: 87f0372a8805edf8dc88d49ab038de7fbe5abf3cc57184b77107c448a06374fb
+  sha256: a8835990f500d340c5cbc8692ea221631c957de408e666389a7440318ed7f0ed
 - path: scripts/evidence.py
   role: evidence-trail-check
-  sha256: 0cbb092387e4bfb64391c1a80e34e83a83acc4614626c78335b8555ad00a9856
+  sha256: 1046c1d1cc9290fe116d9ec89db5c2f7b5d06881c41d1f2b60c58560f8709255
 - path: scripts/contribute.py
   role: contribution-flow-check
-  sha256: 85e0ec06175e14c89dfd4c8b50ee77c92f8cad58fc2ea3c73f21f89a90a21a17
+  sha256: f7e6b93fc67fc9bf7ce7a1f129863e643f06806a4cc03a6d1aab29f0e5cc67b8
 - path: scripts/pilot.py
   role: institutional-pilot-check
-  sha256: df22af7f58e3a1ec29b0536b4088fa378ee30cea3d1aafb688cbd0be6d0d45e0
+  sha256: 504c45e9db8f28e10e64bf5706e97922c3f624e59deb4d9595817546353cb92c
 - path: scripts/readiness.py
   role: edena-readiness-check
-  sha256: 1f84ec4c21ac93fa48e85198bc95442ecdc637a5e4ac3063e2ca172975926e4c
+  sha256: 466088df2c809a5b12d628354e76d15fdcc60d03b35e124ce238686d21f9b918
 - path: scripts/registry.py
   role: agent-registry-check
-  sha256: dc8fe6c80e79591494dcfe870ac5f1468d94b7a9ecd4144df02c7e69fc1805ba
+  sha256: 6bf4574ad1bfe4b3d9961cb925d4ff0d3312fdd817eba707d6c69b17a871c463
 - path: scripts/orchestration.py
   role: florence-x-orchestration-check
-  sha256: 804e6d0cb8ec1e548deaa4ddaa672a2be4b1d42c153281233413c350cacb66b4
+  sha256: 7cdc4c655e313742713b8aa552f46ca7117d4cb5feb3101f7aa45a39cbd2abe1
+- path: scripts/governance.py
+  role: governance-board-check
+  sha256: e379089a9211b2177fdcc93927e4a3a3be05e2ecf427f6370ecb68e32e363187
 safety_contract:
   mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready
   idempotent: true
@@ -277,7 +281,7 @@ features:
 - id: evidence-check
   description: Optional --evidence-check verifies no-PHI EDENA evidence trail readiness, no certification claims, no automatic scoring/submission, and human-review posture without mutating Hermes.
 roadmap_next:
-- Governance Board / Steward Council Pack (Phase 18+)
+- Institutional Stewardship Operating Model (Phase 19+)
 phase11_outputs:
 - scripts/cohort.py
 - install.sh --cohort-check
@@ -383,3 +387,28 @@ phase17_florence_x_orchestration:
   requires_human_orchestrator_review: true
 phase17_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --orchestration-check --target ./NAIO-Hermes-Profile
+phase18_governance_board:
+  script: scripts/governance.py
+  path: 18-Governance-Board/
+  safe_to_convene: true
+  governance_use: advisory_stewardship_council_not_institutional_authority
+  legal_advice: false
+  compliance_determination: false
+  clinical_governance_authority: false
+  institutional_approval: false
+  institutional_endorsement: false
+  procurement_approval: false
+  certification: false
+  credentialing: false
+  disciplinary_action: false
+  auto_approve_policy: false
+  auto_enforce_policy: false
+  auto_assign_members: false
+  auto_publish_minutes: false
+  auto_escalate: false
+  refuses_phi: true
+  refuses_patient_care: true
+  refuses_authority_overclaims: true
+  requires_human_steward_review: true
+phase18_one_line_commands:
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --governance-check --target ./NAIO-Hermes-Profile

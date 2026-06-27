@@ -2,7 +2,7 @@
 """
 NAIO OS — healthcheck.py
 Verify-before-claim harness. The installer never reports success until this
-passes. Checks the Phase 17 bundle is internally consistent.
+passes. Checks the Phase 18 bundle is internally consistent.
 """
 import argparse, hashlib, json, subprocess, sys
 from pathlib import Path
@@ -93,7 +93,7 @@ def verify_release_metadata():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 17 healthcheck")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 18 healthcheck")
     parser.add_argument("--checksums-only", action="store_true", help="only verify manifest + checksums")
     args = parser.parse_args()
 
@@ -150,7 +150,7 @@ def main():
                 fail(f"{schema_name} missing")
 
         print("\n[5] Scripts")
-        for s in ["scripts/preflight.sh", "scripts/import-soul.py", "scripts/import-projects.py", "scripts/render-profile.py", "scripts/self-test.py", "scripts/verify-release.py", "scripts/check-update.py", "scripts/recovery.py", "scripts/activation.py", "scripts/launch.py", "scripts/cohort.py", "scripts/evidence.py", "scripts/contribute.py", "scripts/pilot.py", "scripts/readiness.py", "scripts/registry.py", "scripts/orchestration.py", "scripts/healthcheck.py", "scripts/compute-checksums.sh", "install.sh", "bootstrap.sh"]:
+        for s in ["scripts/preflight.sh", "scripts/import-soul.py", "scripts/import-projects.py", "scripts/render-profile.py", "scripts/self-test.py", "scripts/verify-release.py", "scripts/check-update.py", "scripts/recovery.py", "scripts/activation.py", "scripts/launch.py", "scripts/cohort.py", "scripts/evidence.py", "scripts/contribute.py", "scripts/pilot.py", "scripts/readiness.py", "scripts/registry.py", "scripts/orchestration.py", "scripts/governance.py", "scripts/healthcheck.py", "scripts/compute-checksums.sh", "install.sh", "bootstrap.sh"]:
             p = ROOT / s
             if p.is_file():
                 ok(f"{s} present")
@@ -170,7 +170,7 @@ def print_summary():
     if FAIL > 0:
         print("\n❌ HEALTHCHECK FAILED — bundle is inconsistent. Do not ship.")
     else:
-        print("\n✅ HEALTHCHECK PASSED — bundle is internally consistent (Phase 17 target-only apply + activation + launch + cohort + evidence + contribution + pilot + readiness + registry + orchestration scope).")
+        print("\n✅ HEALTHCHECK PASSED — bundle is internally consistent (Phase 18 target-only apply + activation + launch + cohort + evidence + contribution + pilot + readiness + registry + orchestration + governance scope).")
 
 
 if __name__ == "__main__":

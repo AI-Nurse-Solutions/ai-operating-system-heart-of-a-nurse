@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase17",
-  "minimum_installer_phase": 17,
+  "latest_version": "2.0.0-phase18",
+  "minimum_installer_phase": 18,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "0f2e52f67ce5004a9bdf579ddbc513b0a71b97e32d077f2c5566db5c46f1d5e6",
+    "sha256": "f7897c5ca0ff72b79019e4d74975bac5e7e41cd1300d4821709289e2f58d2269",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -35,7 +35,8 @@
     "pilot": "scripts/pilot.py",
     "readiness": "scripts/readiness.py",
     "registry": "scripts/registry.py",
-    "orchestration": "scripts/orchestration.py"
+    "orchestration": "scripts/orchestration.py",
+    "governance": "scripts/governance.py"
   },
   "safety_contract": [
     "no PHI",
@@ -86,7 +87,17 @@
     "shared memory Orange-deferred",
     "no automatic handoffs",
     "no automatic routing",
-    "human orchestrator review required"
+    "human orchestrator review required",
+    "Governance Board / Steward Council pack",
+    "advisory stewardship only",
+    "no legal advice",
+    "no compliance determination",
+    "no institutional authority",
+    "no clinical governance authority",
+    "no procurement approval",
+    "no certification or credentialing",
+    "no automatic approvals",
+    "no automatic policy enforcement"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."
 }

@@ -58,13 +58,13 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 17 bundle manifest + checksums
-├── release.json                    # Phase 17 current update-channel metadata
-├── release-history.json            # Phase 17 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 17 manifest digest
-├── manifest.sig                    # Phase 17 detached manifest signature
-├── bootstrap.sh                    # Phase 17 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 17 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --orchestration-check; --apply target-only)
+├── manifest.yaml                   # Phase 18 bundle manifest + checksums
+├── release.json                    # Phase 18 current update-channel metadata
+├── release-history.json            # Phase 18 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 18 manifest digest
+├── manifest.sig                    # Phase 18 detached manifest signature
+├── bootstrap.sh                    # Phase 18 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 18 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --orchestration-check; --governance-check; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
@@ -132,7 +132,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 17 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 18 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -188,6 +188,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **15** | EDENA Micro-Credential Readiness Pack + formative review | ✅ done — `15-EDENA-Readiness/*.md`, `scripts/readiness.py`, and `install.sh --readiness-check` verify no-PHI, no patient care, no certification/clinical-readiness claims, and no automatic scoring/pass-fail/badge/credential issuance |
 | **16** | NAIO Agent Registry Pack + steward review queue | ✅ done — `16-Agent-Registry/*.md`, `scripts/registry.py`, and `install.sh --registry-check` verify no-PHI, no patient care, no endorsement/procurement/deployment/clinical-readiness claims, and no automatic vetting/listing/agent execution |
 | **17** | Florence-X Orchestration Preview + shared intent/context cards | ✅ done — `17-Florence-X-Orchestration/*.md`, `scripts/orchestration.py`, and `install.sh --orchestration-check` verify no-PHI, no patient care, Orange-deferred shared memory, no shared memory runtime, and no automatic handoffs/routing/agent execution |
+| **18** | Governance Board / Steward Council Pack | ✅ done — `18-Governance-Board/*.md`, `scripts/governance.py`, and `install.sh --governance-check` verify advisory-only stewardship, no legal/compliance/institutional/clinical/procurement/certification/credentialing authority, and no automatic approvals or policy enforcement |
 
 ---
 
@@ -406,5 +407,20 @@ It adds a dry-run Florence-X path:
 - `install.sh --orchestration-check` — local target-only orchestration preview check.
 
 This is a Florence-X dry-run preview, not autonomous orchestration.
+
+Agents propose. Humans judge. Nurses steward.
+
+
+## Phase 18 — Governance Board / Steward Council Pack
+
+Phase 18 gives nurses a safe governance doorway: **“How can a Steward Council review AI artifacts without pretending to be legal counsel, compliance, clinical governance, procurement, certification, or institutional authority?”**
+
+It adds an advisory-only governance path:
+
+- `18-Governance-Board/*.md` — governance charter, steward council overview, member role card, review intake form, agenda template, advisory decision record, conflict-of-interest disclosure, boundary/scope statement, escalation/referral path, advisory quorum checklist, transparency ledger, and non-authority statement.
+- `scripts/governance.py` — governance posture checker for no-PHI, no patient-care use, no clinical decision support, no legal/compliance/institutional/clinical/procurement/certification/credentialing/disciplinary authority, no automatic approvals, no automatic policy enforcement, no automatic member assignment, no automatic publication of minutes, no automatic escalation, and no direct mutation.
+- `install.sh --governance-check` — local target-only governance pack check.
+
+This is an advisory Steward Council template, not legal or institutional authority.
 
 Agents propose. Humans judge. Nurses steward.

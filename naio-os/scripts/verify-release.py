@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-NAIO OS — verify-release.py (Phase 6)
+NAIO OS — verify-release.py (Phase 7)
 
 Verifies the update-channel metadata and signed manifest before artifact
-checksums are trusted. This is the Phase 6 release integrity gate.
+checksums are trusted. Phase 7 adds release history, key-id trust metadata,
+and rollback protection.
 
 Contract:
-- release.json declares the latest supported bundle version and manifest digest.
+- release.json declares the latest supported bundle version, key id, and manifest digest.
+- release-history.json declares trusted key ids and monotonic phase history.
 - manifest.sha256 must match manifest.yaml exactly.
 - manifest.sig must verify against config/naio-os-release-public.pem.
 - Verification is fail-closed unless --allow-unsigned is explicitly passed.
@@ -52,8 +54,18 @@ def verify_signature(manifest: Path, sig: Path, pub: Path) -> tuple[bool, str]:
     return r.returncode == 0, msg or f"openssl exit={r.returncode}"
 
 
+def version_rank(version: str) -> tuple[int, int]:
+    if "-phase" not in version:
+        return (0, 0)
+    base, phase = version.rsplit("-phase", 1)
+    try:
+        return (int(base.split(".", 1)[0]), int("".join(ch for ch in phase if ch.isdigit()) or "0"))
+    except Exception:
+        return (0, 0)
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 6 release verifier")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 7 release verifier")
     parser.add_argument("--allow-unsigned", action="store_true", help="warn instead of failing if signature verification cannot run")
     parser.add_argument("--quiet", action="store_true", help="print only failures/success summary")
     args = parser.parse_args()
@@ -63,15 +75,16 @@ def main() -> int:
             print(msg)
 
     release_p = ROOT / "release.json"
+    history_p = ROOT / "release-history.json"
     manifest_p = ROOT / "manifest.yaml"
     sha_p = ROOT / "manifest.sha256"
     sig_p = ROOT / "manifest.sig"
     pub_p = ROOT / "config/naio-os-release-public.pem"
 
     failures = []
-    say("\n=== NAIO OS — release verification (Phase 6) ===\n")
+    say("\n=== NAIO OS — release verification (Phase 7) ===\n")
 
-    for p in [release_p, manifest_p, sha_p, sig_p, pub_p]:
+    for p in [release_p, history_p, manifest_p, sha_p, sig_p, pub_p]:
         if not p.is_file():
             failures.append(f"missing {p.relative_to(ROOT)}")
         else:
@@ -89,6 +102,13 @@ def main() -> int:
         print(f"  ❌ release.json malformed: {e}")
         return 2
 
+    try:
+        history = json.loads(history_p.read_text(encoding="utf-8"))
+        say(f"  ✅ release-history.json parses (latest={history.get('latest_version','?')})")
+    except Exception as e:
+        print(f"  ❌ release-history.json malformed: {e}")
+        return 2
+
     if yaml is None:
         print("  ❌ pyyaml not installed — cannot compare release manifest metadata")
         return 2
@@ -99,12 +119,29 @@ def main() -> int:
         print(f"  ❌ manifest.yaml malformed: {e}")
         return 2
 
+    manifest_version = str(manifest.get("version"))
     if release.get("latest_version") != manifest.get("version"):
         failures.append(f"release latest_version {release.get('latest_version')} != manifest version {manifest.get('version')}")
     if release.get("channel") not in {"stable", "preview"}:
         failures.append("release channel must be stable or preview")
-    if release.get("minimum_installer_phase") != 6:
-        failures.append("release minimum_installer_phase must be 6")
+    if release.get("minimum_installer_phase") != 7:
+        failures.append("release minimum_installer_phase must be 7")
+
+    releases = history.get("releases", [])
+    history_versions = [r.get("version") for r in releases if r.get("version")]
+    history_latest = history.get("latest_version")
+    key_id = release.get("manifest", {}).get("key_id")
+    trusted_key_ids = set(history.get("trusted_key_ids", []))
+    if manifest_version not in history_versions:
+        failures.append(f"manifest version {manifest_version} is not listed in release-history.json")
+    if history_latest and version_rank(manifest_version) < version_rank(str(history_latest)):
+        failures.append(f"rollback detected: manifest version {manifest_version} is older than release-history latest {history_latest}")
+    if key_id not in trusted_key_ids:
+        failures.append(f"release key_id {key_id!r} is not trusted by release-history.json")
+    if history.get("rollback_policy", {}).get("fail_closed") is not True:
+        failures.append("release-history rollback_policy.fail_closed must be true")
+    elif key_id in trusted_key_ids and manifest_version in history_versions:
+        say(f"  ✅ release-history trusts key_id={key_id} and protects version={manifest_version}")
 
     expected_sha = read_expected_sha(sha_p)
     actual_sha = sha256_file(manifest_p)

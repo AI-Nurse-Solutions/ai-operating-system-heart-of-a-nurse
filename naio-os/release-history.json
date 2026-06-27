@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "channel": "stable",
+  "latest_version": "2.0.0-phase7",
+  "minimum_supported_version": "2.0.0-phase6",
+  "trusted_key_ids": [
+    "naio-os-release-key-2026-06"
+  ],
+  "rollback_policy": {
+    "mode": "monotonic_phase_history",
+    "fail_closed": true,
+    "description": "A local release is refused if its phase rank is older than release-history.json latest_version or if its key_id is not trusted."
+  },
+  "releases": [
+    {
+      "version": "2.0.0-phase6",
+      "phase": 6,
+      "status": "superseded",
+      "published_at": "2026-06-27T00:00:00Z",
+      "key_id": "naio-os-release-key-2026-06",
+      "notes": "Signed update-channel baseline."
+    },
+    {
+      "version": "2.0.0-phase7",
+      "phase": 7,
+      "status": "current",
+      "published_at": "2026-06-27T00:00:00Z",
+      "key_id": "naio-os-release-key-2026-06",
+      "notes": "Rollback protection, key-id trust metadata, and advisory update check."
+    }
+  ],
+  "doctrine": "Agents propose. Humans judge. Nurses steward."
+}

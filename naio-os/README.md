@@ -58,19 +58,21 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 6 bundle manifest + checksums
-├── release.json                    # Phase 6 update-channel metadata
-├── manifest.sha256                 # Phase 6 manifest digest
-├── manifest.sig                    # Phase 6 detached manifest signature
-├── bootstrap.sh                    # Phase 6 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 6 installer (dry-run default; signed release gate; --self-test; --apply renders target-only profile + execution templates)
+├── manifest.yaml                   # Phase 7 bundle manifest + checksums
+├── release.json                    # Phase 7 current update-channel metadata
+├── release-history.json            # Phase 7 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 7 manifest digest
+├── manifest.sig                    # Phase 7 detached manifest signature
+├── bootstrap.sh                    # Phase 7 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 7 installer (dry-run default; signed release gate; --self-test; --check-update; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
     ├── import-projects.py          # validates naio-projects.json
     ├── render-profile.py           # EDENA → Hermes-ready profile + skill/ritual renderer
-    ├── self-test.py                # Phase 6 smoke test harness
-    ├── verify-release.py           # Phase 6 release metadata + signature verifier
+    ├── self-test.py                # Phase 7 smoke test harness
+    ├── verify-release.py           # Phase 7 release metadata + signature/history verifier
+    ├── check-update.py             # Phase 7 advisory update check; no mutation
     ├── healthcheck.py              # verify-before-claim harness
     └── compute-checksums.sh        # writes manifest sha256 fields
 ```
@@ -94,9 +96,11 @@ Life & Projects    ──►  naio-projects.json ──┼──► install.sh
                                            (remote bootstrap + smoke harness)
                                   Phase 6: signed update channel
                                            (release metadata + manifest signature)
+                                  Phase 7: release governance
+                                           (rollback protection + advisory update check)
 ```
 
-The SOUL Quiz produces human-readable Markdown and a machine-readable **`naio-soul.json`** (validated against `schema/naio-soul.schema.json`). The Life & Projects Quiz produces governed project prompts and **`naio-projects.json`** (validated against `schema/naio-projects.schema.json`). Phase 2 validates both and shows the exact plan. Phase 3 renders a personalized, governed Hermes-ready profile bundle into an explicit target directory — never directly into `~/.hermes`. Phase 4 adds the execution plane: tier-tagged starter skills and cron ritual templates are rendered into that same target bundle for review-before-activation. Phase 5 adds the real UX: a one-line remote bootstrap plus `--self-test` smoke harness that proves the bundle can validate, render, and refuse unsafe actions before a nurse applies anything. **Phase 6 now adds the trust layer:** release metadata, manifest digest, and a detached RSA-SHA256 manifest signature are verified before artifact checksums are trusted.
+The SOUL Quiz produces human-readable Markdown and a machine-readable **`naio-soul.json`** (validated against `schema/naio-soul.schema.json`). The Life & Projects Quiz produces governed project prompts and **`naio-projects.json`** (validated against `schema/naio-projects.schema.json`). Phase 2 validates both and shows the exact plan. Phase 3 renders a personalized, governed Hermes-ready profile bundle into an explicit target directory — never directly into `~/.hermes`. Phase 4 adds the execution plane: tier-tagged starter skills and cron ritual templates are rendered into that same target bundle for review-before-activation. Phase 5 adds the real UX: a one-line remote bootstrap plus `--self-test` smoke harness that proves the bundle can validate, render, and refuse unsafe actions before a nurse applies anything. Phase 6 adds the trust layer: release metadata, manifest digest, and a detached RSA-SHA256 manifest signature are verified before artifact checksums are trusted. **Phase 7 now adds release governance:** rollback protection, trusted key-id metadata, release history, and a no-mutation `--check-update` advisory command.
 
 Self-test before applying anything:
 
@@ -123,7 +127,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 6 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `manifest.sha256`, `manifest.sig`, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 7 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -168,6 +172,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **4** | Tier-tagged skill pack + cron rituals | ✅ done — renders 5 EDENA-tagged starter skills and 4 reviewable cron ritual templates; nothing scheduled automatically |
 | **5** | Healthcheck harness + one-line installer | ✅ done — `bootstrap.sh` remote entrypoint plus `install.sh --self-test`; verifies checksums, safe sample render, and refusal cases before apply |
 | **6** | Versioning, update channel, signed checksums | ✅ done — `release.json`, `manifest.sha256`, detached `manifest.sig`, release public key, and fail-closed verifier gate before artifact checksums |
+| **7** | Release governance, rollback protection, advisory update check | ✅ done — `release-history.json`, trusted `key_id`, monotonic phase rollback refusal, and `install.sh --check-update` / `scripts/check-update.py` with no automatic mutation |
 
 ---
 

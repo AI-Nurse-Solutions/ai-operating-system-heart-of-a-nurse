@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 6)
+NAIO OS — self-test.py (Phase 7)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -167,7 +167,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase6", runtime.get("version") == "2.0.0-phase6")
+    check("runtime version phase7", runtime.get("version") == "2.0.0-phase7")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -179,15 +179,18 @@ def verify_target(target: Path) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 6 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 7 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 6 self-test ===\n")
+    print("\n=== NAIO OS — Phase 7 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
     check("full healthcheck exits 0", hc.returncode == 0, f"exit={hc.returncode}")
+
+    update = run(["python3", "scripts/check-update.py", "--local-only", "--json"])
+    check("local update advisory verifies rollback protection", update.returncode == 0 and '"rollback_protected": true' in update.stdout and '"no_mutation": true' in update.stdout, f"exit={update.returncode}")
 
     tmp = Path(tempfile.mkdtemp(prefix="naio-os-self-test-"))
     target = tmp / "NAIO-Hermes-Profile"
@@ -228,7 +231,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 6 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 7 safety contract.")
     return 1 if FAIL else 0
 
 

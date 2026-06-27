@@ -1,22 +1,31 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase6",
-  "minimum_installer_phase": 6,
+  "latest_version": "2.0.0-phase7",
+  "minimum_installer_phase": 7,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "7ef34dc86875609e3244f2adcaaef3995121a809a16585de671b09d30f23480b",
+    "sha256": "07b60d65709ad5851a567a5c89d3775802f1164d19c656a19227e25fa22bf40f",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
-    "public_key": "config/naio-os-release-public.pem"
+    "public_key": "config/naio-os-release-public.pem",
+    "key_id": "naio-os-release-key-2026-06"
+  },
+  "release_history": {
+    "path": "release-history.json",
+    "rollback_policy": "monotonic_phase_history",
+    "trusted_key_ids": [
+      "naio-os-release-key-2026-06"
+    ]
   },
   "entrypoints": {
     "bootstrap": "bootstrap.sh",
     "install": "install.sh",
     "self_test": "scripts/self-test.py",
-    "verify_release": "scripts/verify-release.py"
+    "verify_release": "scripts/verify-release.py",
+    "check_update": "scripts/check-update.py"
   },
   "safety_contract": [
     "no PHI",
@@ -24,7 +33,9 @@
     "target-only apply",
     "no direct ~/.hermes mutation",
     "cron templates only",
-    "fail-closed release verification"
+    "fail-closed release verification",
+    "rollback protection",
+    "advisory updates only"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."
 }

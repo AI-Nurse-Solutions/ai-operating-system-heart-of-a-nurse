@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — bootstrap.sh (Phase 6 signed update-channel installer)
+# NAIO OS — bootstrap.sh (Phase 7 signed update-channel installer)
 # =============================================================================
 # Remote-safe entrypoint. Downloads the release metadata and bundle files from
 # nurse-ai-os.org into a temporary directory, verifies the signed manifest and
@@ -40,7 +40,7 @@ need() {
 
 need python3
 
-printf '\n%s\n' "=== NAIO OS bootstrap (Phase 6) ==="
+printf '\n%s\n' "=== NAIO OS bootstrap (Phase 7) ==="
 echo "Source: $BASE_URL"
 echo "Download directory: $WORKDIR"
 echo "Doctrine: Agents propose. Humans judge. Nurses steward."
@@ -54,7 +54,7 @@ base = sys.argv[1].rstrip('/')
 root = Path(sys.argv[2])
 root.mkdir(parents=True, exist_ok=True)
 
-headers = {'User-Agent': 'naio-os-bootstrap/2.0.0-phase6', 'Cache-Control': 'no-cache'}
+headers = {'User-Agent': 'naio-os-bootstrap/2.0.0-phase7', 'Cache-Control': 'no-cache'}
 
 def fetch(rel: str) -> bytes:
     url = f"{base}/{rel}"
@@ -64,7 +64,7 @@ def fetch(rel: str) -> bytes:
             raise SystemExit(f"download failed: {url} status={r.status}")
         return r.read()
 
-for rel in ['release.json', 'manifest.sha256', 'manifest.sig']:
+for rel in ['release.json', 'release-history.json', 'manifest.sha256', 'manifest.sig']:
     (root / rel).write_bytes(fetch(rel))
     print(f"downloaded {rel}")
 

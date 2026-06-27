@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — install.sh  (Phase 6: signed update channel + one-line UX)
+# NAIO OS — install.sh  (Phase 7: signed update channel + one-line UX)
 # =============================================================================
 # Default: dry-run validate + plan. Apply mode is real but safe:
 #   ./install.sh --apply --soul naio-soul.json --projects naio-projects.json --target ./NAIO-Hermes-Profile
@@ -18,15 +18,17 @@ PROJECTS_PROVIDED=0
 TARGET=""
 WITH_CHECKSUMS=1
 SELF_TEST=0
+CHECK_UPDATE=0
 
 print_help() {
   cat <<'EOF'
-NAIO OS installer (Phase 6 — one-line UX + healthcheck/self-test harness)
+NAIO OS installer (Phase 7 — one-line UX + healthcheck/self-test harness)
 
 Usage:
   ./install.sh [--dry-run] [--soul <path>] [--projects <path>] [--no-checksums]
   ./install.sh --apply --soul <path> [--projects <path>] --target <dir> [--force]
   ./install.sh --self-test
+  ./install.sh --check-update
 
 One-line remote self-test:
   curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
@@ -39,7 +41,8 @@ Options:
   --soul <path>      Path to naio-soul.json (from the SOUL Quiz). Required for --apply.
   --projects <path>  Path to naio-projects.json (from the Life & Projects Quiz).
   --no-checksums     Skip sha256 verification against the manifest (not recommended).
-  --self-test        Run the Phase 6 built-in smoke test and exit.
+  --self-test        Run the Phase 7 built-in smoke test and exit.
+  --check-update     Verify release history and compare the advisory update channel; no install/mutation.
   --help             Show this help.
 
 Doctrine: Agents propose. Humans judge. Nurses steward.
@@ -62,6 +65,7 @@ while [[ $# -gt 0 ]]; do
       PROJECTS="$2"; PROJECTS_PROVIDED=1; shift 2 ;;
     --no-checksums) WITH_CHECKSUMS=0; shift ;;
     --self-test) SELF_TEST=1; shift ;;
+    --check-update) CHECK_UPDATE=1; shift ;;
     --help|-h) print_help; exit 0 ;;
     *) echo "Unknown option: $1" >&2; print_help; exit 1 ;;
   esac
@@ -70,7 +74,7 @@ done
 cat <<'BANNER'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   NAIO OS — Nurse AI Operating System (Phase 6)           ║
+  ║   NAIO OS — Nurse AI Operating System (Phase 7)           ║
   ║   One-line installer + healthcheck/self-test harness       ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -80,8 +84,13 @@ cat <<'BANNER'
 BANNER
 
 if [[ $SELF_TEST -eq 1 ]]; then
-  echo "▶ SELF-TEST — focused Phase 6 smoke test"
+  echo "▶ SELF-TEST — focused Phase 7 smoke test"
   exec python3 "$HERE/scripts/self-test.py"
+fi
+
+if [[ $CHECK_UPDATE -eq 1 ]]; then
+  echo "▶ CHECK UPDATE — Phase 7 advisory, no mutation"
+  exec python3 "$HERE/scripts/check-update.py"
 fi
 
 echo "▶ STEP 1/8 — Preflight (environment check)"
@@ -151,14 +160,14 @@ fi
 echo ""
 echo "▶ STEP 6/8 — Plan"
 cat <<'PLAN'
-  Phase 6 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
+  Phase 7 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
     1. Core SOUL.md and per-sphere SOUL files.
     2. EDENA runtime mapping: sphere ceilings → toolsets → human gates.
     3. Project system prompts from naio-projects.json, if provided.
     4. Tier-tagged starter skills with EDENA frontmatter.
     5. Cron ritual templates for Lamp Huddle, ledger review, tier audit, and knowledge digest.
     6. Suggested Hermes profile overlay, review-before-use.
-    7. Signed release metadata and update-channel verification.
+    7. Signed release metadata, rollback protection, and update-channel verification.
     8. Healthcheck + self-test harness before claims of success.
 
   Safety posture:
@@ -180,7 +189,7 @@ if [[ $APPLY -eq 1 ]]; then
   if [[ $PROJECTS_PROVIDED -eq 1 ]]; then RENDER_ARGS+=("--projects" "$PROJECTS"); fi
   if [[ $FORCE -eq 1 ]]; then RENDER_ARGS+=("--force"); fi
   if ! python3 "$HERE/scripts/render-profile.py" "${RENDER_ARGS[@]}"; then
-    echo "❌ Phase 6 render failed." >&2
+    echo "❌ Phase 7 render failed." >&2
     exit 2
   fi
 else
@@ -204,7 +213,7 @@ if [[ $APPLY -eq 1 ]]; then
   cat <<DONE
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 6 apply complete.                     ║
+  ║   ✅  NAIO OS Phase 7 apply complete.                     ║
   ║   Governed profile + execution templates rendered.        ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -216,7 +225,7 @@ else
   cat <<'DONE'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 6 dry-run complete.                   ║
+  ║   ✅  NAIO OS Phase 7 dry-run complete.                   ║
   ║   Bundle and provided imports are safe. Nothing written.  ║
   ╚═══════════════════════════════════════════════════════════╝
 

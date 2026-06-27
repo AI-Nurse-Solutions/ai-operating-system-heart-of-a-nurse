@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-NAIO OS — render-profile.py (Phase 6)
+NAIO OS — render-profile.py (Phase 7)
 
 Renders a governed Hermes-ready profile bundle from naio-soul.json and optional
-naio-projects.json. Phase 6 preserves the execution plane and emits runtime
+naio-projects.json. Phase 7 preserves the execution plane and emits runtime
 metadata aligned with the signed update channel. It writes only to an explicit
 target directory. It never mutates ~/.hermes directly and never schedules cron jobs automatically.
 
@@ -369,7 +369,7 @@ def render_phase4_execution_plane(target: Path) -> list[Path]:
     for skill in SKILL_PACK:
         written.append(safe_write(target, f"skills/{skill['name']}/SKILL.md", make_skill_md(skill)))
     rituals_doc = {
-        "version": "2.0.0-phase6",
+        "version": "2.0.0-phase7",
         "doctrine": "Agents propose. Humans judge. Nurses steward.",
         "mode": "templates_only_not_scheduled",
         "note": "These are reviewable cron templates. They are not installed into Hermes cron automatically.",
@@ -392,7 +392,7 @@ def render_runtime(soul: dict, projects: dict | None) -> dict:
     ceilings = soul.get("tier_ceilings", {})
     spheres = soul.get("spheres", list(ceilings.keys()))
     runtime = {
-        "version": "2.0.0-phase6",
+        "version": "2.0.0-phase7",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "doctrine": "Agents propose. Humans judge. Nurses steward.",
         "mode": "generated-profile-bundle",
@@ -511,7 +511,7 @@ def main() -> int:
     runtime = render_runtime(soul, projects)
     written.append(safe_write(target, "config/edena-runtime.yaml", yaml.safe_dump(runtime, sort_keys=False, allow_unicode=True)))
     gates = {
-        "version": "2.0.0-phase6",
+        "version": "2.0.0-phase7",
         "non_removable_for": ["green", "yellow"],
         "gates": {
             "every-output": "Nurse reviews every generated output before use.",

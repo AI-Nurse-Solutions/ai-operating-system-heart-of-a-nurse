@@ -58,13 +58,15 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 4 bundle manifest + checksums
-├── install.sh                      # Phase 4 installer (dry-run default; --apply renders target-only profile + execution templates)
+├── manifest.yaml                   # Phase 5 bundle manifest + checksums
+├── bootstrap.sh                    # Phase 5 one-line remote installer entrypoint
+├── install.sh                      # Phase 5 installer (dry-run default; --self-test; --apply renders target-only profile + execution templates)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
     ├── import-projects.py          # validates naio-projects.json
     ├── render-profile.py           # EDENA → Hermes-ready profile + skill/ritual renderer
+    ├── self-test.py                # Phase 5 smoke test harness
     ├── healthcheck.py              # verify-before-claim harness
     └── compute-checksums.sh        # writes manifest sha256 fields
 ```
@@ -84,11 +86,29 @@ Life & Projects    ──►  naio-projects.json ──┼──► install.sh
                                             EDENA runtime + human gates)
                                   Phase 4: add execution templates
                                            (tier-tagged skills + cron rituals)
+                                  Phase 5: one-line installer + self-test
+                                           (remote bootstrap + smoke harness)
 ```
 
-The SOUL Quiz produces human-readable Markdown and a machine-readable **`naio-soul.json`** (validated against `schema/naio-soul.schema.json`). The Life & Projects Quiz produces governed project prompts and **`naio-projects.json`** (validated against `schema/naio-projects.schema.json`). Phase 2 validates both and shows the exact plan. Phase 3 renders a personalized, governed Hermes-ready profile bundle into an explicit target directory — never directly into `~/.hermes`. **Phase 4 now adds the execution plane:** tier-tagged starter skills and cron ritual templates are rendered into that same target bundle for review-before-activation.
+The SOUL Quiz produces human-readable Markdown and a machine-readable **`naio-soul.json`** (validated against `schema/naio-soul.schema.json`). The Life & Projects Quiz produces governed project prompts and **`naio-projects.json`** (validated against `schema/naio-projects.schema.json`). Phase 2 validates both and shows the exact plan. Phase 3 renders a personalized, governed Hermes-ready profile bundle into an explicit target directory — never directly into `~/.hermes`. Phase 4 adds the execution plane: tier-tagged starter skills and cron ritual templates are rendered into that same target bundle for review-before-activation. **Phase 5 now adds the real UX:** a one-line remote bootstrap plus `--self-test` smoke harness that proves the bundle can validate, render, and refuse unsafe actions before a nurse applies anything.
 
-Example:
+Self-test before applying anything:
+
+```bash
+curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
+```
+
+One-line remote apply after downloading your quiz exports:
+
+```bash
+curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- \
+  --apply \
+  --soul ~/Downloads/naio-soul.json \
+  --projects ~/Downloads/naio-projects.json \
+  --target ./NAIO-Hermes-Profile
+```
+
+Local apply example:
 
 ```bash
 ./install.sh --apply \
@@ -97,7 +117,7 @@ Example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 4 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically.
+Phase 5 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -140,7 +160,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **2** | Bundle skeleton + `manifest.yaml` + dry-run `install.sh` | ✅ done — validates SOUL + Projects imports, checksums, healthcheck; no mutation |
 | **3** | EDENA policy → Hermes config mapping (human gates live) | ✅ done — `--apply --target` renders SOUL, project prompts, EDENA runtime, human gates, and profile overlay without mutating `~/.hermes` |
 | **4** | Tier-tagged skill pack + cron rituals | ✅ done — renders 5 EDENA-tagged starter skills and 4 reviewable cron ritual templates; nothing scheduled automatically |
-| **5** | Healthcheck harness + one-line installer | planned |
+| **5** | Healthcheck harness + one-line installer | ✅ done — `bootstrap.sh` remote entrypoint plus `install.sh --self-test`; verifies checksums, safe sample render, and refusal cases before apply |
 | **6** | Versioning, update channel, signed checksums | planned |
 
 ---

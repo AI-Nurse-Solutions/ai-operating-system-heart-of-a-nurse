@@ -1,4 +1,4 @@
-version: 2.0.0-phase4
+version: 2.0.0-phase5
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -6,7 +6,9 @@ policies:
   edena: edena-policy@2.0.0
   florence_x: florence-x@2.0.0
 entrypoints:
+  bootstrap: bootstrap.sh
   install: install.sh
+  self_test: scripts/self-test.py
   preflight: scripts/preflight.sh
   import_soul: scripts/import-soul.py
   import_projects: scripts/import-projects.py
@@ -43,26 +45,33 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 4d8b16e83868a7d030661ab46ed529244e710d34b2e28adf5d5836f3837d0dec
+  sha256: 49b06936315edb018736581cf4ecf034edf40d4ddaad5430e5e90e1fb12d4e14
+- path: scripts/self-test.py
+  role: self-test
+  sha256: 2ce94114ec8a6d930068d16fd9521b1552afe4d1f8f7b20765381b512cd293be
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: befb61a9b93b3451fc5c6e1162cef43877d3d3fc6b9c00a40745a8a064eeefac
+  sha256: 8b8b5c4cb230b54c58eb17a88aa3f0cc5a3e61f7b719a52fb9e5e64bc6fa4b5d
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: bab1bac13057821fd3415931d3007d4797129bac172e1d6e0bfa00e6f6d13764
+  sha256: 45595d0270a0ed833a1ac40157ad5b6f8ed1b7feac2e32460bafeb8c1e14ee86
+- path: bootstrap.sh
+  role: one-line-installer
+  sha256: 8af31e9119e831a04dd72c9320a97f83c1dea5e27bc825768a1a94a3101dc7a4
 - path: README.md
   role: spec
-  sha256: 7b3ffc0ac5ff807851ea0cc2fb01e5b115445bcd4445a60d04f2e7859357f88d
+  sha256: facef35966332c97a3fdacac86b9a1948ac2a87c43334e8794f34875bcaaa320
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
 safety_contract:
-  mode: dry-run-default_apply-target-only_templates-only-cron
+  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test
   idempotent: true
   mutation_scope: explicit_target_directory_only
+  bootstrap_scope: temporary_download_directory_only
   never_mutates:
   - ~/.hermes
   - user home directory
@@ -77,12 +86,19 @@ safety_contract:
   - 'apply_without_target              # apply requires explicit --target'
   - 'target_is_home_or_hermes_home     # never overwrite home or ~/.hermes directly'
 install_flow:
+- id: bootstrap-download
+  description: Optional one-line installer downloads manifest and listed artifacts into a temporary directory.
+  blocking: true
 - id: preflight
   description: Detect OS, bash, python3, core deps, optional Hermes presence.
   blocking: true
 - id: verify-checksums
   description: Every non-manifest file's sha256 must match manifest; refuse on mismatch.
   blocking: true
+- id: self-test
+  description: Phase 5 smoke test creates sample safe imports, dry-runs, applies to temp target, validates rendered outputs, and verifies refusal cases.
+  blocking: true
+  optional: true
 - id: validate-soul-import
   description: naio-soul.json validated against schema; boundaries + tier + PHI checked.
   blocking: true
@@ -93,13 +109,15 @@ install_flow:
   description: Show exactly what dry-run or apply will do.
   blocking: false
 - id: render-profile-and-execution-plane
-  description: Phase 4 apply writes governed profile, tier-tagged skills, and cron ritual templates to --target only.
+  description: Apply writes governed profile, tier-tagged skills, and cron ritual templates to --target only.
   blocking: true
   dry_run_skips: true
 - id: healthcheck
   description: Re-verify bundle state. Never claim success unverified.
   blocking: true
-phase4_outputs:
+phase5_outputs:
+- bootstrap.sh
+- scripts/self-test.py
 - README-FIRST.md
 - SOUL.md
 - spheres/*.SOUL.md
@@ -111,19 +129,22 @@ phase4_outputs:
 - config/human-gates.yaml
 - config/hermes-profile.patch.yaml
 - logs/render-report.json
-phase4_skill_pack:
+phase5_one_line_commands:
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --apply --soul ~/Downloads/naio-soul.json --projects ~/Downloads/naio-projects.json --target ./NAIO-Hermes-Profile
+phase5_skill_pack:
 - lamp-huddle-steward
 - weekly-ledger-review
 - project-next-action-brief
 - knowledge-inbox-digest
 - edena-tier-audit
-phase4_cron_rituals:
+phase5_cron_rituals:
 - weekly-lamp-huddle-review
 - monday-project-next-actions
 - monthly-edena-tier-audit
 - knowledge-inbox-digest
 not_yet:
 - Direct ~/.hermes mutation (deferred until explicit user-controlled installer hardening)
-- Automatic Hermes cron scheduling (templates only in Phase 4)
+- Automatic Hermes cron scheduling (templates only)
 - 'Cryptographic signatures (Phase 6: GPG/Cosign; checksums exist now)'
-- Network-side model routing enforcement (Phase 5+)
+- Network-side model routing enforcement (Phase 6+)

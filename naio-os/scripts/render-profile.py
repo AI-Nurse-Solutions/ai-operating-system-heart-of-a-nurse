@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-NAIO OS — render-profile.py (Phase 4)
+NAIO OS — render-profile.py (Phase 5)
 
 Renders a governed Hermes-ready profile bundle from naio-soul.json and optional
-naio-projects.json. Phase 4 adds the execution plane: tier-tagged starter skills
-and cron ritual templates. It writes only to an explicit --target directory,
-never directly to ~/.hermes.
+naio-projects.json. Phase 5 preserves the execution plane (tier-tagged starter
+skills and cron ritual templates) and aligns rendered runtime metadata with the
+one-line installer + self-test UX. It writes only to an explicit target directory.
+It never mutates ~/.hermes directly and never schedules cron jobs automatically.
 
 Outputs:
   README-FIRST.md
@@ -369,7 +370,7 @@ def render_phase4_execution_plane(target: Path) -> list[Path]:
     for skill in SKILL_PACK:
         written.append(safe_write(target, f"skills/{skill['name']}/SKILL.md", make_skill_md(skill)))
     rituals_doc = {
-        "version": "2.0.0-phase4",
+        "version": "2.0.0-phase5",
         "doctrine": "Agents propose. Humans judge. Nurses steward.",
         "mode": "templates_only_not_scheduled",
         "note": "These are reviewable cron templates. They are not installed into Hermes cron automatically.",
@@ -392,7 +393,7 @@ def render_runtime(soul: dict, projects: dict | None) -> dict:
     ceilings = soul.get("tier_ceilings", {})
     spheres = soul.get("spheres", list(ceilings.keys()))
     runtime = {
-        "version": "2.0.0-phase4",
+        "version": "2.0.0-phase5",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "doctrine": "Agents propose. Humans judge. Nurses steward.",
         "mode": "generated-profile-bundle",
@@ -511,7 +512,7 @@ def main() -> int:
     runtime = render_runtime(soul, projects)
     written.append(safe_write(target, "config/edena-runtime.yaml", yaml.safe_dump(runtime, sort_keys=False, allow_unicode=True)))
     gates = {
-        "version": "2.0.0-phase4",
+        "version": "2.0.0-phase5",
         "non_removable_for": ["green", "yellow"],
         "gates": {
             "every-output": "Nurse reviews every generated output before use.",

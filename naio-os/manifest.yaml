@@ -1,4 +1,4 @@
-version: 2.0.0-phase21
+version: 2.0.0-phase22
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -31,6 +31,7 @@ entrypoints:
   partner: scripts/partner.py
   stewardship: scripts/stewardship.py
   localization: scripts/localization.py
+  outcomes: scripts/outcomes.py
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
@@ -62,25 +63,25 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: ce8227d06d92420b225764cca286a0b7f7fe56d10a47ffb3019a2ebaeed45360
+  sha256: 96cffc832dda5fed90ee12aaa3ca5e4a804ae1dc4af0ca92768c7410a2c4c284
 - path: scripts/self-test.py
   role: self-test
-  sha256: b735e9de36f1b358cebd3bb4e03450758ac214d08d76cc7ac4c71fd6a42aa0ca
+  sha256: a68f6aec689b1f77b40812b9c6b33cfdccfb9d6d1139246bd4f432de38f41b26
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: 95e983971c829e352ec2de55f4478768f251feb6975afc709a039cb740d82e99
+  sha256: 98ee6c78fdd81feeb484096ed69b99ccc5f31cd239a544fd7e9baab2c8da3182
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: af94a00c9733368314ed56232e98f4b63ce954cdebe1d4aab87a04dc14343e6d
+  sha256: a18f99dd81e8f01fee9b90afd346c91b444f353976966cbfda5c7cf19c65ee2c
 - path: bootstrap.sh
   role: one-line-installer
   sha256: d51fada45f496d819c85655836ec085fec1116c3e4d49d17eb62771ff569e3b1
 - path: README.md
   role: spec
-  sha256: 4089bf45c65995ee42fea96d5dfd717b760916334b035c8e45f8c510eb99d7e4
+  sha256: 4785880c18ad4323165581c8b292259ef721eebb42a258cd8b04a485c914e8b0
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -89,10 +90,10 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: 3287508623e5dd97c8565721466e2dfebef1218ebb03f1594aa17ac3f5ac56a3
+  sha256: edc0f6e634944dcd48fb129d8254462745cc8f64dbac4d6af84ce4c8c6f3b2d6
 - path: release-history.json
   role: release-history
-  sha256: 7ba1d64faa60367e8ebdb197d685ec4667bc017367b65faed92170ee9b605373
+  sha256: 1903fa8b76b333ee088598d091788f840db3a9889d812df27d291517412b6565
 - path: scripts/check-update.py
   role: update-advisory
   sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
@@ -101,45 +102,48 @@ contents:
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 - path: scripts/activation.py
   role: activation-check
-  sha256: 72f09fe2141a332d30a4f4628cfdce1a2b4cce3906d75a0747c6a701e7a27794
+  sha256: 73fa9aa00d93b6f06dd75399cc68ce0e509b7f3080e9b14ab1755a88ce3df62f
 - path: scripts/launch.py
   role: public-launch-check
-  sha256: 24bd50811f7338f9bf6ba277a8a4a53ed3c513bea09fd37fbb1741dd08dd71c0
+  sha256: 010fc16e7405252b382b37c6c525901b02fffdd2c622ea3067a9864238a3dc33
 - path: scripts/cohort.py
   role: cohort-mode-check
-  sha256: 109e38ef1390a42ea21670c17d4faa95204c4536d2af2b2c9bb93bb5885f765f
+  sha256: e7ebcdb7ab07e236b9eb1b53d54cb46195e9095adc3f93dc9a9b42db6f2534bf
 - path: scripts/evidence.py
   role: evidence-trail-check
-  sha256: 320f50e0dcec7c142e8e837e7c21c5efb66a7da12bc4a2772d4019789f93c273
+  sha256: 6ecd7ca64df4527cef4ff95f9f889e1d0d5ac6055da843bcb02498f6ba882292
 - path: scripts/contribute.py
   role: contribution-flow-check
-  sha256: 0b469d46b9ec493294cee9bf36e274bcb7b07cacd28b37a3b22ced6d14c273eb
+  sha256: f4a0809a18cf46e1f6b16aa95bb37d93d40c9ca60c62391c50c9cbd3f5e5d684
 - path: scripts/pilot.py
   role: institutional-pilot-check
-  sha256: d021b45d760364ec63d638e23690ac0fca89c8b7dc331543bb0e649abdcd3993
+  sha256: 381b218bb0528476c6aece89b14f25236d4fca5faad1c7a7d8d6fed02920e8ef
 - path: scripts/readiness.py
   role: edena-readiness-check
-  sha256: 8de83881f62cd176aa478705e3d39a041cde385be3318c88ae4db457b3318e75
+  sha256: 416a31c474d20eb70623db921dcc4cab11bf17f35e0dcd23aab157785cfff0c9
 - path: scripts/registry.py
   role: agent-registry-check
-  sha256: bc5f6c5d11119abb5cb0f1d95ca66d0c6988482a7a80833eae469aaa4be61f59
+  sha256: 76045fc9819741ea5fba11f0f5a686556f5b06bb8ca6d700fa16dcf949f0d399
 - path: scripts/orchestration.py
   role: florence-x-orchestration-check
-  sha256: 31572a68ad63d2f7f760611ded144c71bcc117aaf2ad7bf8037fb071f7798ee7
+  sha256: 57af886af08b569ca6f68f48745e4fb1802f03595129cd2eae9e2bede2cb89f8
 - path: scripts/governance.py
   role: governance-board-check
-  sha256: 8d1dee38ded604dd52a54a57ce3d4dd0ba49013bd2a114c97fba2c918bc8194e
+  sha256: 425d829fe0b09331a4acbc4e1290389ad4048acf81fae3e6ec07157a8ce97385
 - path: scripts/partner.py
   role: partner-briefing-check
-  sha256: f635229ee6ef43379b69df9d0df3090221ff58db239b8ebac668b601803324bf
+  sha256: 7087c243e52c718bfbcfb14effc485a46084adbd8ad61436394b8a617cba07d3
 - path: scripts/stewardship.py
   role: stewardship-operating-model-check
-  sha256: 1246b11c3ff3138b90671f5e622a2f6ae7087cc47467fc1cc204c1893e9fd5e8
+  sha256: 0df9aa4998c775a82b3049eab4dcefec97ab9ea97a219f62682a163238b7bbef
 - path: scripts/localization.py
   role: localization-readiness-check
-  sha256: ed499204c38ad7de5a669ac62fbee77d136aa78e957aaea617c180f067661a17
+  sha256: 9a8418ecbc163e9c0355465b15338b3ecd2dbe784b1c429b7f03a09c251fc494
+- path: scripts/outcomes.py
+  role: adoption-outcomes-ledger-check
+  sha256: d5b532d90bc538e9fb051c2403970ebb18d8fbf226d31bb76f6b26a5d0b49e12
 safety_contract:
-  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready
+  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready_outcomes-ledger
   idempotent: true
   mutation_scope: explicit_target_directory_only
   bootstrap_scope: temporary_download_directory_only
@@ -179,6 +183,9 @@ safety_contract:
   - 'localization_phi_detected          # Phase 21 requires no-PHI localization readiness materials'
   - 'localization_authority_overclaim   # Phase 21 refuses legal/regulatory/compliance/translation/licensure/clinical/local approval claims'
   - 'automatic_localization_action      # Phase 21 drafts only; no automatic translation, publishing, outreach, steward assignment, regional data collection, or authority submission'
+  - 'outcomes_phi_detected          # Phase 22 requires no-PHI adoption/outcomes ledger materials'
+  - 'outcomes_impact_overclaim      # Phase 22 refuses clinical efficacy/patient outcome/ROI/staffing/compliance/certification claims'
+  - 'automatic_outcomes_action      # Phase 22 drafts only; no automatic scoring, dashboard publication, reporting, manager notification, escalation, badge, or credential issuance'
 install_flow:
 - id: bootstrap-download
   description: Optional one-line installer downloads manifest and listed artifacts into a temporary directory.
@@ -212,6 +219,10 @@ install_flow:
   dry_run_skips: false
 - id: activation-check
   description: Optional --activation-check verifies START-HERE.md, first-week path, EDENA runtime, no-PHI posture, and cron templates-only state without mutating Hermes.
+  blocking: false
+  dry_run_skips: false
+- id: outcomes-check
+  description: Optional --outcomes-check verifies no-PHI adoption signals and learning evidence without clinical, financial, staffing, compliance, certification, performance-evaluation, or automatic reporting claims.
   blocking: false
   dry_run_skips: false
 - id: plan
@@ -301,9 +312,11 @@ features:
   description: Optional --cohort-check verifies no-PHI cohort/instructor readiness, no certification claims, no auto-enrollment, and human-review posture without mutating Hermes.
 - id: evidence-check
   description: Optional --evidence-check verifies no-PHI EDENA evidence trail readiness, no certification claims, no automatic scoring/submission, and human-review posture without mutating Hermes.
+- id: outcomes-check
+  description: Optional --outcomes-check verifies Adoption & Outcomes Ledger signal-only posture without mutating Hermes.
 roadmap_next:
-- Localization / International Readiness Lane (Phase 21 shipped)
-- Post-localization field feedback / international steward pathway (Phase 22+)
+- Commercial activation / founding steward cohort (post-Phase 22)
+- Landing page + first cohort offer conversion pass
 phase11_outputs:
 - scripts/cohort.py
 - install.sh --cohort-check
@@ -524,3 +537,38 @@ phase21_localization_readiness:
   requires_human_local_steward_review: true
 phase21_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --localization-check --target ./NAIO-Hermes-Profile
+phase22_adoption_outcomes_ledger:
+  script: scripts/outcomes.py
+  path: 22-Adoption-Outcomes-Ledger/
+  safe_to_measure: true
+  outcomes_use: adoption_signal_and_learning_evidence_not_clinical_or_financial_outcomes_claims
+  clinical_efficacy_claim: false
+  patient_outcome_improvement_claim: false
+  patient_safety_validation: false
+  quality_measure_impact_claim: false
+  roi_guarantee: false
+  staffing_reduction_claim: false
+  compliance_validation: false
+  competency_certification: false
+  performance_evaluation: false
+  research_determination: false
+  irb_determination: false
+  quality_improvement_approval: false
+  billing_or_reimbursement_claim: false
+  procurement_approval: false
+  deployment_approval: false
+  auto_score: false
+  auto_publish_dashboard: false
+  auto_send_report: false
+  auto_notify_manager: false
+  auto_evaluate_performance: false
+  auto_escalate: false
+  auto_submit_to_institution: false
+  auto_issue_badge: false
+  auto_issue_credential: false
+  refuses_phi: true
+  refuses_patient_care: true
+  refuses_outcomes_overclaims: true
+  requires_human_steward_review: true
+phase22_one_line_commands:
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --outcomes-check --target ./NAIO-Hermes-Profile

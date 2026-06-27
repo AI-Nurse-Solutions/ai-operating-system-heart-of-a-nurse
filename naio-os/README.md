@@ -500,3 +500,44 @@ Phase 21 boundaries:
 - Human local steward review is required.
 
 Agents propose. Humans judge. Nurses steward.
+
+## Phase 22 — Adoption & Outcomes Ledger Pack
+
+Phase 22 gives Robert, nurse stewards, cohorts, and institutions a safe proof layer: **“What adoption signals and learning evidence can we responsibly track without claiming clinical efficacy, patient outcomes, ROI, staffing impact, compliance validation, certification, or performance evaluation?”**
+
+It renders `22-Adoption-Outcomes-Ledger/` with an adoption ledger overview, safe-use metrics map, time-saved estimate worksheet, human-gate pattern log, friction and risk register, nurse confidence pulse, workflow before-after capture, learning milestone ledger, cohort adoption summary, institutional signal brief, non-clinical outcome/no-efficacy-claim statement, and adoption decision record.
+
+It also adds:
+
+- `scripts/outcomes.py`
+- `install.sh --outcomes-check --target <rendered-profile-dir>`
+- `config/edena-runtime.yaml` outcomes metadata
+- signed release metadata for `2.0.0-phase22`
+
+Phase 22 boundaries:
+
+- No PHI.
+- No patient care use.
+- No clinical decision support.
+- Adoption signal and learning evidence only.
+- Not clinical efficacy.
+- Not patient outcome improvement.
+- Not patient safety validation.
+- Not quality-measure impact.
+- Not ROI guarantee.
+- Not staffing reduction.
+- Not compliance validation.
+- Not competency certification.
+- Not performance evaluation.
+- Not research determination, IRB determination, or quality-improvement approval.
+- Not billing, reimbursement, procurement, or deployment approval.
+- No automatic scoring.
+- No automatic dashboard publication.
+- No automatic institutional reporting.
+- No automatic manager notification.
+- No automatic performance evaluation.
+- No automatic escalation.
+- No automatic badge or credential issuance.
+- Human steward review is required.
+
+Agents propose. Humans judge. Nurses steward.

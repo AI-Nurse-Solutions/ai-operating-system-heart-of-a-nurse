@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 21)
+NAIO OS — self-test.py (Phase 22)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -300,6 +300,19 @@ def verify_target(target: Path) -> None:
         "21-Localization-Readiness/Cross-Border-Data-and-Privacy-Notes.md",
         "21-Localization-Readiness/Non-Authority-and-No-Localization-Approval-Statement.md",
         "21-Localization-Readiness/Localization-Decision-Record.md",
+        "22-Adoption-Outcomes-Ledger/README.md",
+        "22-Adoption-Outcomes-Ledger/Adoption-Ledger-Overview.md",
+        "22-Adoption-Outcomes-Ledger/Safe-Use-Metrics-Map.md",
+        "22-Adoption-Outcomes-Ledger/Time-Saved-Estimate-Worksheet.md",
+        "22-Adoption-Outcomes-Ledger/Human-Gate-Pattern-Log.md",
+        "22-Adoption-Outcomes-Ledger/Friction-and-Risk-Register.md",
+        "22-Adoption-Outcomes-Ledger/Nurse-Confidence-Pulse.md",
+        "22-Adoption-Outcomes-Ledger/Workflow-Before-After-Capture.md",
+        "22-Adoption-Outcomes-Ledger/Learning-Milestone-Ledger.md",
+        "22-Adoption-Outcomes-Ledger/Cohort-Adoption-Summary.md",
+        "22-Adoption-Outcomes-Ledger/Institutional-Signal-Brief.md",
+        "22-Adoption-Outcomes-Ledger/Non-Clinical-Outcome-and-No-Efficacy-Claim-Statement.md",
+        "22-Adoption-Outcomes-Ledger/Adoption-Decision-Record.md",
     ]
     for rel in expected:
         check(f"generated {rel}", (target / rel).is_file())
@@ -311,7 +324,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase21", runtime.get("version") == "2.0.0-phase21")
+    check("runtime version phase22", runtime.get("version") == "2.0.0-phase22")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -337,11 +350,11 @@ def verify_target(target: Path) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 21 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 22 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 21 self-test ===\n")
+    print("\n=== NAIO OS — Phase 22 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -393,6 +406,8 @@ def main() -> int:
             check("stewardship check reports ready and no mutation", stewardship.returncode == 0 and '"status": "ready"' in stewardship.stdout and '"stewardship_ready": true' in stewardship.stdout and '"safe_to_coordinate": true' in stewardship.stdout and '"no_mutation": true' in stewardship.stdout, f"exit={stewardship.returncode}")
             localization = run(["python3", "scripts/localization.py", "--profile", str(target), "--json"])
             check("localization check reports ready and no mutation", localization.returncode == 0 and '"status": "ready"' in localization.stdout and '"localization_ready": true' in localization.stdout and '"safe_to_localize": true' in localization.stdout and '"no_mutation": true' in localization.stdout, f"exit={localization.returncode}")
+            outcomes = run(["python3", "scripts/outcomes.py", "--profile", str(target), "--json"])
+            check("outcomes check reports ready and no mutation", outcomes.returncode == 0 and '"status": "ready"' in outcomes.stdout and '"outcomes_ready": true' in outcomes.stdout and '"safe_to_measure": true' in outcomes.stdout and '"no_mutation": true' in outcomes.stdout, f"exit={outcomes.returncode}")
         else:
             fail("target directory was not created")
 
@@ -417,7 +432,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 21 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 22 safety contract.")
     return 1 if FAIL else 0
 
 

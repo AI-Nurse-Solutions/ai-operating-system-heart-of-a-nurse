@@ -72,8 +72,8 @@ def check_launch(profile: Path) -> dict:
     else:
         failures.append("missing config/edena-runtime.yaml")
 
-    if runtime.get("version") != "2.0.0-phase21":
-        failures.append(f"runtime version is not 2.0.0-phase21: {runtime.get('version')}")
+    if runtime.get("version") != "2.0.0-phase22":
+        failures.append(f"runtime version is not 2.0.0-phase22: {runtime.get('version')}")
     launch = runtime.get("launch", {}) if isinstance(runtime, dict) else {}
     if launch.get("path") != "10-Public-Launch/":
         failures.append("runtime launch.path is not 10-Public-Launch/")

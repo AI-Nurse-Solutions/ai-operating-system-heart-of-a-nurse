@@ -1,17 +1,18 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase21",
-  "minimum_installer_phase": 21,
+  "latest_version": "2.0.0-phase22",
+  "minimum_installer_phase": 22,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "f893af4da0e2281bc09a0b11363e7e90165c7f05bba0919c404f815f0aab4653",
+    "sha256": "79aba4a548e5e00d76708504ea7c95efc8deef0f2f2f2f17eb4814c53b7b80c4",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
-    "key_id": "naio-os-release-key-2026-06"
+    "key_id": "naio-os-release-key-2026-06",
+    "minimum_installer_phase": 22
   },
   "release_history": {
     "path": "release-history.json",
@@ -39,7 +40,8 @@
     "governance": "scripts/governance.py",
     "partner": "scripts/partner.py",
     "stewardship": "scripts/stewardship.py",
-    "localization": "scripts/localization.py"
+    "localization": "scripts/localization.py",
+    "outcomes": "scripts/outcomes.py"
   },
   "safety_contract": [
     "no PHI",
@@ -136,5 +138,6 @@
     "no automatic local partner outreach",
     "human local steward review required"
   ],
-  "doctrine": "Agents propose. Humans judge. Nurses steward."
+  "doctrine": "Agents propose. Humans judge. Nurses steward.",
+  "summary": "Adoption & Outcomes Ledger Pack for adoption signals and learning evidence without clinical efficacy, patient outcome, ROI, staffing, compliance, certification, performance-evaluation, or automatic reporting claims."
 }

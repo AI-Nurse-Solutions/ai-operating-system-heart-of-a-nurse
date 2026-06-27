@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase21",
+  "latest_version": "2.0.0-phase22",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -124,6 +124,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 21,
       "summary": "Localization / International Readiness Lane Pack for adaptation readiness without legal, regulatory, compliance, official translation, licensure, immigration, clinical, local approval, or automatic localization claims."
+    },
+    {
+      "version": "2.0.0-phase22",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 22,
+      "summary": "Adoption & Outcomes Ledger Pack for safe adoption signals, learning evidence, time-saved estimates, human-gate patterns, friction, and cohort/institutional signal briefs without clinical, financial, staffing, compliance, certification, performance-evaluation, or automatic reporting claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

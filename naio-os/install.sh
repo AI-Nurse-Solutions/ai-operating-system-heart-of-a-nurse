@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — install.sh  (Phase 21: Localization / International Readiness Lane)
+# NAIO OS — install.sh  (Phase 22: Adoption & Outcomes Ledger)
 # =============================================================================
 # Default: dry-run validate + plan. Apply mode is real but safe:
 #   ./install.sh --apply --soul naio-soul.json --projects naio-projects.json --target ./NAIO-Hermes-Profile
@@ -33,10 +33,11 @@ GOVERNANCE_CHECK=0
 PARTNER_CHECK=0
 STEWARDSHIP_CHECK=0
 LOCALIZATION_CHECK=0
+OUTCOMES_CHECK=0
 
 print_help() {
   cat <<'EOF'
-NAIO OS installer (Phase 21 — Localization / International Readiness Lane + healthcheck/self-test harness)
+NAIO OS installer (Phase 22 — Adoption & Outcomes Ledger + healthcheck/self-test harness)
 
 Usage:
   ./install.sh [--dry-run] [--soul <path>] [--projects <path>] [--no-checksums]
@@ -57,6 +58,7 @@ Usage:
   ./install.sh --partner-check --target <rendered-profile-dir>
   ./install.sh --stewardship-check --target <rendered-profile-dir>
   ./install.sh --localization-check --target <rendered-profile-dir>
+  ./install.sh --outcomes-check --target <rendered-profile-dir>
 
 One-line remote self-test:
   curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
@@ -69,7 +71,7 @@ Options:
   --soul <path>      Path to naio-soul.json (from the SOUL Quiz). Required for --apply.
   --projects <path>  Path to naio-projects.json (from the Life & Projects Quiz).
   --no-checksums     Skip sha256 verification against the manifest (not recommended).
-  --self-test        Run the Phase 21 built-in smoke test and exit.
+  --self-test        Run the Phase 22 built-in smoke test and exit.
   --check-update     Verify release history and compare the advisory update channel; no install/mutation.
   --recovery-drill   Run a local-only recovery snapshot/verify/extract/plan drill for --target.
   --activation-check  Verify first-run START-HERE and 7-day activation readiness for --target.
@@ -85,6 +87,7 @@ Options:
   --partner-check       Verify Partner / Sponsor Briefing informational posture for --target.
   --stewardship-check   Verify Institutional Stewardship Operating Model advisory posture for --target.
   --localization-check   Verify Localization / International Readiness Lane adaptation posture for --target.
+  --outcomes-check       Verify Adoption & Outcomes Ledger signal-only posture for --target.
   --help             Show this help.
 
 Doctrine: Agents propose. Humans judge. Nurses steward.
@@ -122,6 +125,7 @@ while [[ $# -gt 0 ]]; do
     --partner-check) PARTNER_CHECK=1; shift ;;
     --stewardship-check) STEWARDSHIP_CHECK=1; shift ;;
     --localization-check) LOCALIZATION_CHECK=1; shift ;;
+    --outcomes-check) OUTCOMES_CHECK=1; shift ;;
     --help|-h) print_help; exit 0 ;;
     *) echo "Unknown option: $1" >&2; print_help; exit 1 ;;
   esac
@@ -130,7 +134,7 @@ done
 cat <<'BANNER'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   NAIO OS — Nurse AI Operating System (Phase 21)           ║
+  ║   NAIO OS — Nurse AI Operating System (Phase 22)           ║
   ║   One-line installer + healthcheck/self-test harness       ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -140,17 +144,17 @@ cat <<'BANNER'
 BANNER
 
 if [[ $SELF_TEST -eq 1 ]]; then
-  echo "▶ SELF-TEST — focused Phase 21 smoke test"
+  echo "▶ SELF-TEST — focused Phase 22 smoke test"
   exec python3 "$HERE/scripts/self-test.py"
 fi
 
 if [[ $CHECK_UPDATE -eq 1 ]]; then
-  echo "▶ CHECK UPDATE — Phase 21 advisory, no mutation"
+  echo "▶ CHECK UPDATE — Phase 22 advisory, no mutation"
   exec python3 "$HERE/scripts/check-update.py"
 fi
 
 if [[ $RECOVERY_DRILL -eq 1 ]]; then
-  echo "▶ RECOVERY DRILL — Phase 21 local-only snapshot/verify/extract/plan"
+  echo "▶ RECOVERY DRILL — Phase 22 local-only snapshot/verify/extract/plan"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --recovery-drill requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -159,7 +163,7 @@ if [[ $RECOVERY_DRILL -eq 1 ]]; then
 fi
 
 if [[ $ACTIVATION_CHECK -eq 1 ]]; then
-  echo "▶ ACTIVATION CHECK — Phase 21 first-run readiness, no mutation"
+  echo "▶ ACTIVATION CHECK — Phase 22 first-run readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --activation-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -168,7 +172,7 @@ if [[ $ACTIVATION_CHECK -eq 1 ]]; then
 fi
 
 if [[ $LAUNCH_CHECK -eq 1 ]]; then
-  echo "▶ LAUNCH CHECK — Phase 21 public launch readiness, no mutation"
+  echo "▶ LAUNCH CHECK — Phase 22 public launch readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --launch-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -177,7 +181,7 @@ if [[ $LAUNCH_CHECK -eq 1 ]]; then
 fi
 
 if [[ $COHORT_CHECK -eq 1 ]]; then
-  echo "▶ COHORT CHECK — Phase 21 instructor/cohort readiness, no mutation"
+  echo "▶ COHORT CHECK — Phase 22 instructor/cohort readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --cohort-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -186,7 +190,7 @@ if [[ $COHORT_CHECK -eq 1 ]]; then
 fi
 
 if [[ $EVIDENCE_CHECK -eq 1 ]]; then
-  echo "▶ EVIDENCE CHECK — Phase 21 EDENA evidence trail readiness, no mutation"
+  echo "▶ EVIDENCE CHECK — Phase 22 EDENA evidence trail readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --evidence-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -195,7 +199,7 @@ if [[ $EVIDENCE_CHECK -eq 1 ]]; then
 fi
 
 if [[ $CONTRIBUTION_CHECK -eq 1 ]]; then
-  echo "▶ CONTRIBUTION CHECK — Phase 21 NIN community contribution readiness, no mutation"
+  echo "▶ CONTRIBUTION CHECK — Phase 22 NIN community contribution readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --contribution-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -204,7 +208,7 @@ if [[ $CONTRIBUTION_CHECK -eq 1 ]]; then
 fi
 
 if [[ $PILOT_CHECK -eq 1 ]]; then
-  echo "▶ PILOT CHECK — Phase 21 institutional pilot readiness, no mutation"
+  echo "▶ PILOT CHECK — Phase 22 institutional pilot readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --pilot-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -213,7 +217,7 @@ if [[ $PILOT_CHECK -eq 1 ]]; then
 fi
 
 if [[ $READINESS_CHECK -eq 1 ]]; then
-  echo "▶ READINESS CHECK — Phase 21 EDENA readiness review, no mutation"
+  echo "▶ READINESS CHECK — Phase 22 EDENA readiness review, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --readiness-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -222,7 +226,7 @@ if [[ $READINESS_CHECK -eq 1 ]]; then
 fi
 
 if [[ $REGISTRY_CHECK -eq 1 ]]; then
-  echo "▶ REGISTRY CHECK — Phase 21 NAIO Agent Registry listing posture, no mutation"
+  echo "▶ REGISTRY CHECK — Phase 22 NAIO Agent Registry listing posture, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --registry-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -231,7 +235,7 @@ if [[ $REGISTRY_CHECK -eq 1 ]]; then
 fi
 
 if [[ $ORCHESTRATION_CHECK -eq 1 ]]; then
-  echo "▶ ORCHESTRATION CHECK — Phase 21 Florence-X dry-run preview, no mutation"
+  echo "▶ ORCHESTRATION CHECK — Phase 22 Florence-X dry-run preview, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --orchestration-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -240,7 +244,7 @@ if [[ $ORCHESTRATION_CHECK -eq 1 ]]; then
 fi
 
 if [[ $GOVERNANCE_CHECK -eq 1 ]]; then
-  echo "▶ GOVERNANCE CHECK — Phase 21 advisory Steward Council posture, no mutation"
+  echo "▶ GOVERNANCE CHECK — Phase 22 advisory Steward Council posture, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --governance-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -249,7 +253,7 @@ if [[ $GOVERNANCE_CHECK -eq 1 ]]; then
 fi
 
 if [[ $PARTNER_CHECK -eq 1 ]]; then
-  echo "▶ PARTNER CHECK — Phase 21 informational partner/sponsor briefing posture, no mutation"
+  echo "▶ PARTNER CHECK — Phase 22 informational partner/sponsor briefing posture, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --partner-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -258,7 +262,7 @@ if [[ $PARTNER_CHECK -eq 1 ]]; then
 fi
 
 if [[ $STEWARDSHIP_CHECK -eq 1 ]]; then
-  echo "▶ STEWARDSHIP CHECK — Phase 21 advisory institutional operating model posture, no mutation"
+  echo "▶ STEWARDSHIP CHECK — Phase 22 advisory institutional operating model posture, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --stewardship-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -267,12 +271,21 @@ if [[ $STEWARDSHIP_CHECK -eq 1 ]]; then
 fi
 
 if [[ $LOCALIZATION_CHECK -eq 1 ]]; then
-  echo "▶ LOCALIZATION CHECK — Phase 21 localization / international readiness posture, no mutation"
+  echo "▶ LOCALIZATION CHECK — Phase 22 localization / international readiness posture, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --localization-check requires --target <rendered-profile-dir>" >&2
     exit 2
   fi
   exec python3 "$HERE/scripts/localization.py" --profile "$TARGET"
+fi
+
+if [[ $OUTCOMES_CHECK -eq 1 ]]; then
+  echo "▶ OUTCOMES CHECK — Phase 22 adoption & outcomes ledger posture, no mutation"
+  if [[ -z "$TARGET" ]]; then
+    echo "❌ --outcomes-check requires --target <rendered-profile-dir>" >&2
+    exit 2
+  fi
+  exec python3 "$HERE/scripts/outcomes.py" --profile "$TARGET"
 fi
 
 echo "▶ STEP 1/8 — Preflight (environment check)"
@@ -342,7 +355,7 @@ fi
 echo ""
 echo "▶ STEP 6/8 — Plan"
 cat <<'PLAN'
-  Phase 21 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
+  Phase 22 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
     1. Core SOUL.md and per-sphere SOUL files.
     2. EDENA runtime mapping: sphere ceilings → toolsets → human gates.
     3. Project system prompts from naio-projects.json, if provided.
@@ -363,6 +376,7 @@ cat <<'PLAN'
     18. Partner / Sponsor Briefing Pack for informational collaboration conversations without solicitation, approval, funding, procurement, clinical deployment, or automatic outreach.
     19. Institutional Stewardship Operating Model Pack for advisory cadence without legal, compliance, procurement, staffing, clinical deployment, or automatic implementation authority.
     20. Localization / International Readiness Lane Pack for adaptation readiness without legal, regulatory, compliance, official translation, licensure, immigration, clinical, local approval, or automatic localization authority.
+    21. Adoption & Outcomes Ledger Pack for adoption signal and learning evidence without clinical efficacy, patient outcomes, ROI, staffing, compliance, certification, performance evaluation, or automatic reporting claims.
 
   Safety posture:
     • Writes only to --target when --apply is used.
@@ -383,7 +397,7 @@ if [[ $APPLY -eq 1 ]]; then
   if [[ $PROJECTS_PROVIDED -eq 1 ]]; then RENDER_ARGS+=("--projects" "$PROJECTS"); fi
   if [[ $FORCE -eq 1 ]]; then RENDER_ARGS+=("--force"); fi
   if ! python3 "$HERE/scripts/render-profile.py" "${RENDER_ARGS[@]}"; then
-    echo "❌ Phase 21 render failed." >&2
+    echo "❌ Phase 22 render failed." >&2
     exit 2
   fi
 else
@@ -407,7 +421,7 @@ if [[ $APPLY -eq 1 ]]; then
   cat <<DONE
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 21 apply complete.                     ║
+  ║   ✅  NAIO OS Phase 22 apply complete.                     ║
   ║   Governed profile + execution templates rendered.        ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -419,7 +433,7 @@ else
   cat <<'DONE'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 21 dry-run complete.                   ║
+  ║   ✅  NAIO OS Phase 22 dry-run complete.                   ║
   ║   Bundle and provided imports are safe. Nothing written.  ║
   ╚═══════════════════════════════════════════════════════════╝
 

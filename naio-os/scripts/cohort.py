@@ -77,8 +77,8 @@ def check_profile(profile: Path) -> dict:
     rituals = load_yaml(profile / "cron/rituals.yaml") or {}
     cohort = runtime.get("cohort", {}) if isinstance(runtime, dict) else {}
 
-    if runtime.get("version") != "2.0.0-phase21":
-        failures.append(f"runtime version is not 2.0.0-phase21: {runtime.get('version')}")
+    if runtime.get("version") != "2.0.0-phase22":
+        failures.append(f"runtime version is not 2.0.0-phase22: {runtime.get('version')}")
     if cohort.get("path") != "11-Cohort-Mode/":
         failures.append("runtime cohort.path is not 11-Cohort-Mode/")
     if cohort.get("auto_enrollment") is not False:

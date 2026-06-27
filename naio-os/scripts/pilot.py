@@ -65,7 +65,7 @@ def check_profile(profile: Path) -> dict:
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}
     rituals=load_yaml(profile/'cron/rituals.yaml') or {}
     pilot=runtime.get('pilot', {}) if isinstance(runtime, dict) else {}
-    if runtime.get('version') != '2.0.0-phase21': failures.append(f"runtime version is not 2.0.0-phase21: {runtime.get('version')}")
+    if runtime.get('version') != '2.0.0-phase22': failures.append(f"runtime version is not 2.0.0-phase22: {runtime.get('version')}")
     if pilot.get('path') != '14-Institutional-Pilot/': failures.append('runtime pilot.path is not 14-Institutional-Pilot/')
     if pilot.get('pilot_use') != 'non_clinical_learning_pilot_not_deployment': failures.append('runtime pilot.pilot_use must remain non-clinical learning, not deployment')
     for key in ['auto_report','auto_enroll','auto_escalate']:

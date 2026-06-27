@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — install.sh  (Phase 15: NIN community contribution flow)
+# NAIO OS — install.sh  (Phase 16: NIN community contribution flow)
 # =============================================================================
 # Default: dry-run validate + plan. Apply mode is real but safe:
 #   ./install.sh --apply --soul naio-soul.json --projects naio-projects.json --target ./NAIO-Hermes-Profile
@@ -27,10 +27,11 @@ EVIDENCE_CHECK=0
 CONTRIBUTION_CHECK=0
 PILOT_CHECK=0
 READINESS_CHECK=0
+REGISTRY_CHECK=0
 
 print_help() {
   cat <<'EOF'
-NAIO OS installer (Phase 15 — NIN contribution flow + healthcheck/self-test harness)
+NAIO OS installer (Phase 16 — NIN contribution flow + healthcheck/self-test harness)
 
 Usage:
   ./install.sh [--dry-run] [--soul <path>] [--projects <path>] [--no-checksums]
@@ -45,6 +46,7 @@ Usage:
   ./install.sh --contribution-check --target <rendered-profile-dir>
   ./install.sh --pilot-check --target <rendered-profile-dir>
   ./install.sh --readiness-check --target <rendered-profile-dir>
+  ./install.sh --registry-check --target <rendered-profile-dir>
 
 One-line remote self-test:
   curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
@@ -57,7 +59,7 @@ Options:
   --soul <path>      Path to naio-soul.json (from the SOUL Quiz). Required for --apply.
   --projects <path>  Path to naio-projects.json (from the Life & Projects Quiz).
   --no-checksums     Skip sha256 verification against the manifest (not recommended).
-  --self-test        Run the Phase 15 built-in smoke test and exit.
+  --self-test        Run the Phase 16 built-in smoke test and exit.
   --check-update     Verify release history and compare the advisory update channel; no install/mutation.
   --recovery-drill   Run a local-only recovery snapshot/verify/extract/plan drill for --target.
   --activation-check  Verify first-run START-HERE and 7-day activation readiness for --target.
@@ -67,6 +69,7 @@ Options:
   --contribution-check Verify no-PHI NIN contribution flow readiness for --target.
   --pilot-check        Verify non-clinical institutional pilot readiness for --target.
   --readiness-check    Verify EDENA readiness review posture for --target.
+  --registry-check     Verify NAIO Agent Registry listing posture for --target.
   --help             Show this help.
 
 Doctrine: Agents propose. Humans judge. Nurses steward.
@@ -98,6 +101,7 @@ while [[ $# -gt 0 ]]; do
     --contribution-check) CONTRIBUTION_CHECK=1; shift ;;
     --pilot-check) PILOT_CHECK=1; shift ;;
     --readiness-check) READINESS_CHECK=1; shift ;;
+    --registry-check) REGISTRY_CHECK=1; shift ;;
     --help|-h) print_help; exit 0 ;;
     *) echo "Unknown option: $1" >&2; print_help; exit 1 ;;
   esac
@@ -106,7 +110,7 @@ done
 cat <<'BANNER'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   NAIO OS — Nurse AI Operating System (Phase 15)           ║
+  ║   NAIO OS — Nurse AI Operating System (Phase 16)           ║
   ║   One-line installer + healthcheck/self-test harness       ║
   ╚═══════════════════════════════════════════════════════════╝
 
@@ -116,17 +120,17 @@ cat <<'BANNER'
 BANNER
 
 if [[ $SELF_TEST -eq 1 ]]; then
-  echo "▶ SELF-TEST — focused Phase 15 smoke test"
+  echo "▶ SELF-TEST — focused Phase 16 smoke test"
   exec python3 "$HERE/scripts/self-test.py"
 fi
 
 if [[ $CHECK_UPDATE -eq 1 ]]; then
-  echo "▶ CHECK UPDATE — Phase 15 advisory, no mutation"
+  echo "▶ CHECK UPDATE — Phase 16 advisory, no mutation"
   exec python3 "$HERE/scripts/check-update.py"
 fi
 
 if [[ $RECOVERY_DRILL -eq 1 ]]; then
-  echo "▶ RECOVERY DRILL — Phase 15 local-only snapshot/verify/extract/plan"
+  echo "▶ RECOVERY DRILL — Phase 16 local-only snapshot/verify/extract/plan"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --recovery-drill requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -135,7 +139,7 @@ if [[ $RECOVERY_DRILL -eq 1 ]]; then
 fi
 
 if [[ $ACTIVATION_CHECK -eq 1 ]]; then
-  echo "▶ ACTIVATION CHECK — Phase 15 first-run readiness, no mutation"
+  echo "▶ ACTIVATION CHECK — Phase 16 first-run readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --activation-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -144,7 +148,7 @@ if [[ $ACTIVATION_CHECK -eq 1 ]]; then
 fi
 
 if [[ $LAUNCH_CHECK -eq 1 ]]; then
-  echo "▶ LAUNCH CHECK — Phase 15 public launch readiness, no mutation"
+  echo "▶ LAUNCH CHECK — Phase 16 public launch readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --launch-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -153,7 +157,7 @@ if [[ $LAUNCH_CHECK -eq 1 ]]; then
 fi
 
 if [[ $COHORT_CHECK -eq 1 ]]; then
-  echo "▶ COHORT CHECK — Phase 15 instructor/cohort readiness, no mutation"
+  echo "▶ COHORT CHECK — Phase 16 instructor/cohort readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --cohort-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -162,7 +166,7 @@ if [[ $COHORT_CHECK -eq 1 ]]; then
 fi
 
 if [[ $EVIDENCE_CHECK -eq 1 ]]; then
-  echo "▶ EVIDENCE CHECK — Phase 15 EDENA evidence trail readiness, no mutation"
+  echo "▶ EVIDENCE CHECK — Phase 16 EDENA evidence trail readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --evidence-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -171,7 +175,7 @@ if [[ $EVIDENCE_CHECK -eq 1 ]]; then
 fi
 
 if [[ $CONTRIBUTION_CHECK -eq 1 ]]; then
-  echo "▶ CONTRIBUTION CHECK — Phase 15 NIN community contribution readiness, no mutation"
+  echo "▶ CONTRIBUTION CHECK — Phase 16 NIN community contribution readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --contribution-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -180,7 +184,7 @@ if [[ $CONTRIBUTION_CHECK -eq 1 ]]; then
 fi
 
 if [[ $PILOT_CHECK -eq 1 ]]; then
-  echo "▶ PILOT CHECK — Phase 15 institutional pilot readiness, no mutation"
+  echo "▶ PILOT CHECK — Phase 16 institutional pilot readiness, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --pilot-check requires --target <rendered-profile-dir>" >&2
     exit 2
@@ -189,12 +193,21 @@ if [[ $PILOT_CHECK -eq 1 ]]; then
 fi
 
 if [[ $READINESS_CHECK -eq 1 ]]; then
-  echo "▶ READINESS CHECK — Phase 15 EDENA readiness review, no mutation"
+  echo "▶ READINESS CHECK — Phase 16 EDENA readiness review, no mutation"
   if [[ -z "$TARGET" ]]; then
     echo "❌ --readiness-check requires --target <rendered-profile-dir>" >&2
     exit 2
   fi
   exec python3 "$HERE/scripts/readiness.py" --profile "$TARGET"
+fi
+
+if [[ $REGISTRY_CHECK -eq 1 ]]; then
+  echo "▶ REGISTRY CHECK — Phase 16 NAIO Agent Registry listing posture, no mutation"
+  if [[ -z "$TARGET" ]]; then
+    echo "❌ --registry-check requires --target <rendered-profile-dir>" >&2
+    exit 2
+  fi
+  exec python3 "$HERE/scripts/registry.py" --profile "$TARGET"
 fi
 
 echo "▶ STEP 1/8 — Preflight (environment check)"
@@ -264,7 +277,7 @@ fi
 echo ""
 echo "▶ STEP 6/8 — Plan"
 cat <<'PLAN'
-  Phase 15 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
+  Phase 16 maps EDENA into a Hermes-ready profile bundle and execution plane, with a one-line installer and built-in self-test:
     1. Core SOUL.md and per-sphere SOUL files.
     2. EDENA runtime mapping: sphere ceilings → toolsets → human gates.
     3. Project system prompts from naio-projects.json, if provided.
@@ -279,6 +292,7 @@ cat <<'PLAN'
     12. NIN Community Contribution Flow for sanitized, human-reviewed community submissions.
     13. Institutional Pilot Pack for non-clinical small-group adoption without deployment or endorsement claims.
     14. EDENA Micro-Credential Readiness Pack for formative human review without certification, badges, or clinical-readiness claims.
+    15. NAIO Agent Registry Pack for human-reviewed learning listings without endorsement, procurement, deployment, or clinical-readiness claims.
 
   Safety posture:
     • Writes only to --target when --apply is used.
@@ -299,7 +313,7 @@ if [[ $APPLY -eq 1 ]]; then
   if [[ $PROJECTS_PROVIDED -eq 1 ]]; then RENDER_ARGS+=("--projects" "$PROJECTS"); fi
   if [[ $FORCE -eq 1 ]]; then RENDER_ARGS+=("--force"); fi
   if ! python3 "$HERE/scripts/render-profile.py" "${RENDER_ARGS[@]}"; then
-    echo "❌ Phase 15 render failed." >&2
+    echo "❌ Phase 16 render failed." >&2
     exit 2
   fi
 else
@@ -323,19 +337,19 @@ if [[ $APPLY -eq 1 ]]; then
   cat <<DONE
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 15 apply complete.                     ║
+  ║   ✅  NAIO OS Phase 16 apply complete.                     ║
   ║   Governed profile + execution templates rendered.        ║
   ╚═══════════════════════════════════════════════════════════╝
 
   Target: $TARGET
-  Review README-FIRST.md, 10-Public-Launch/, 11-Cohort-Mode/, 12-Evidence-Trail/, and 13-Contribution-Flow/, and 14-Institutional-Pilot/, and 15-EDENA-Readiness/ before copying, sharing, facilitating, documenting, contributing, piloting, or requesting readiness review.
+  Review README-FIRST.md, 10-Public-Launch/, 11-Cohort-Mode/, 12-Evidence-Trail/, and 13-Contribution-Flow/, and 14-Institutional-Pilot/, and 15-EDENA-Readiness/, and 16-Agent-Registry/ before copying, sharing, facilitating, documenting, contributing, piloting, requesting readiness review, or drafting registry listings.
   Doctrine: Agents propose. Humans judge. Nurses steward.
 DONE
 else
   cat <<'DONE'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 15 dry-run complete.                   ║
+  ║   ✅  NAIO OS Phase 16 dry-run complete.                   ║
   ║   Bundle and provided imports are safe. Nothing written.  ║
   ╚═══════════════════════════════════════════════════════════╝
 

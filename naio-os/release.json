@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase15",
-  "minimum_installer_phase": 15,
+  "latest_version": "2.0.0-phase16",
+  "minimum_installer_phase": 16,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "590f09f9c16e4ad178cec1519a4de8e44df73098ae0536dbc2a8086faafc5632",
+    "sha256": "a5a2f289f351255916f4aa37277ff835ebc086880b9368185dcabd57f6984ce1",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -33,7 +33,8 @@
     "evidence": "scripts/evidence.py",
     "contribution": "scripts/contribute.py",
     "pilot": "scripts/pilot.py",
-    "readiness": "scripts/readiness.py"
+    "readiness": "scripts/readiness.py",
+    "registry": "scripts/registry.py"
   },
   "safety_contract": [
     "no PHI",
@@ -68,7 +69,15 @@
     "no automatic pass/fail",
     "no automatic credential issuance",
     "no automatic badge issuance",
-    "human steward review required"
+    "human steward review required",
+    "NAIO Agent Registry pack",
+    "human-reviewed learning registry only",
+    "no procurement approval claims",
+    "no deployment approval claims",
+    "no automatic vetting",
+    "no automatic listing",
+    "no automatic agent execution",
+    "human registry steward review required"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."
 }

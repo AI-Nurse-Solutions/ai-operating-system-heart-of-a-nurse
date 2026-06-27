@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — cohort.py (Phase 15)
+NAIO OS — cohort.py (Phase 16)
 
 Cohort / Instructor Mode checker for rendered NAIO Hermes profile bundles. It verifies
 that an instructor can safely facilitate a nurse cohort without PHI collection,
@@ -77,8 +77,8 @@ def check_profile(profile: Path) -> dict:
     rituals = load_yaml(profile / "cron/rituals.yaml") or {}
     cohort = runtime.get("cohort", {}) if isinstance(runtime, dict) else {}
 
-    if runtime.get("version") != "2.0.0-phase15":
-        failures.append(f"runtime version is not 2.0.0-phase15: {runtime.get('version')}")
+    if runtime.get("version") != "2.0.0-phase16":
+        failures.append(f"runtime version is not 2.0.0-phase16: {runtime.get('version')}")
     if cohort.get("path") != "11-Cohort-Mode/":
         failures.append("runtime cohort.path is not 11-Cohort-Mode/")
     if cohort.get("auto_enrollment") is not False:
@@ -94,7 +94,7 @@ def check_profile(profile: Path) -> dict:
     combined = "\n".join(combined_parts)
 
     required_phrases = [
-        "Phase 15 Cohort Mode",
+        "Phase 16 Cohort Mode",
         "Instructor Guide",
         "Cohort Launch Checklist",
         "Participant Readiness Rubric",
@@ -134,7 +134,7 @@ def check_profile(profile: Path) -> dict:
     status = "ready" if not failures else "blocked"
     return {
         "schema_version": "1.0.0",
-        "phase": 15,
+        "phase": 16,
         "status": status,
         "cohort_ready": not failures,
         "safe_to_facilitate": not failures,
@@ -156,7 +156,7 @@ def check_profile(profile: Path) -> dict:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Check Phase 15 Cohort / Instructor Mode readiness for a rendered NAIO profile bundle.")
+    ap = argparse.ArgumentParser(description="Check Phase 16 Cohort / Instructor Mode readiness for a rendered NAIO profile bundle.")
     ap.add_argument("--profile", required=True, help="rendered NAIO profile directory")
     ap.add_argument("--json", action="store_true", help="print machine-readable report")
     args = ap.parse_args()
@@ -169,7 +169,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        print("\n=== NAIO OS — Phase 15 cohort readiness check ===\n")
+        print("\n=== NAIO OS — Phase 16 cohort readiness check ===\n")
         print(json.dumps(report, indent=2))
         if report["status"] == "ready":
             print("\n✅ COHORT MODE READY — facilitate with no PHI, no clinical claims, and no certification claims.")

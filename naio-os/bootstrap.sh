@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — bootstrap.sh (Phase 15 signed cohort-mode installer)
+# NAIO OS — bootstrap.sh (Phase 16 signed cohort-mode installer)
 # =============================================================================
 # Remote-safe entrypoint. Downloads the release metadata and bundle files from
 # nurse-ai-os.org into a temporary directory, verifies the signed manifest and
@@ -40,7 +40,7 @@ need() {
 
 need python3
 
-printf '\n%s\n' "=== NAIO OS bootstrap (Phase 15) ==="
+printf '\n%s\n' "=== NAIO OS bootstrap (Phase 16) ==="
 echo "Source: $BASE_URL"
 echo "Download directory: $WORKDIR"
 echo "Doctrine: Agents propose. Humans judge. Nurses steward."
@@ -54,7 +54,7 @@ base = sys.argv[1].rstrip('/')
 root = Path(sys.argv[2])
 root.mkdir(parents=True, exist_ok=True)
 
-headers = {'User-Agent': 'naio-os-bootstrap/2.0.0-phase15', 'Cache-Control': 'no-cache'}
+headers = {'User-Agent': 'naio-os-bootstrap/2.0.0-phase16', 'Cache-Control': 'no-cache'}
 
 def fetch(rel: str) -> bytes:
     url = f"{base}/{rel}"

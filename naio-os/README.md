@@ -58,13 +58,13 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 15 bundle manifest + checksums
-├── release.json                    # Phase 15 current update-channel metadata
-├── release-history.json            # Phase 15 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 15 manifest digest
-├── manifest.sig                    # Phase 15 detached manifest signature
-├── bootstrap.sh                    # Phase 15 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 15 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --apply target-only)
+├── manifest.yaml                   # Phase 16 bundle manifest + checksums
+├── release.json                    # Phase 16 current update-channel metadata
+├── release-history.json            # Phase 16 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 16 manifest digest
+├── manifest.sig                    # Phase 16 detached manifest signature
+├── bootstrap.sh                    # Phase 16 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 16 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
@@ -132,7 +132,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 15 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 16 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -186,6 +186,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **13** | NIN Community Contribution Flow + sanitized contribution review | ✅ done — `13-Contribution-Flow/*.md`, `scripts/contribute.py`, and `install.sh --contribution-check` verify no-PHI, no secrets, no endorsement claims, and no automatic publishing/submission |
 | **14** | Institutional Pilot Pack + non-clinical pilot readiness | ✅ done — `14-Institutional-Pilot/*.md`, `scripts/pilot.py`, and `install.sh --pilot-check` verify no-PHI, no patient care, no institutional endorsement/compliance/certification claims, and no automatic reporting/enrollment |
 | **15** | EDENA Micro-Credential Readiness Pack + formative review | ✅ done — `15-EDENA-Readiness/*.md`, `scripts/readiness.py`, and `install.sh --readiness-check` verify no-PHI, no patient care, no certification/clinical-readiness claims, and no automatic scoring/pass-fail/badge/credential issuance |
+| **16** | NAIO Agent Registry Pack + steward review queue | ✅ done — `16-Agent-Registry/*.md`, `scripts/registry.py`, and `install.sh --registry-check` verify no-PHI, no patient care, no endorsement/procurement/deployment/clinical-readiness claims, and no automatic vetting/listing/agent execution |
 
 ---
 
@@ -333,9 +334,9 @@ curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --evidence-
 Evidence Trail is for evidence of learning, not certification. It verifies no PHI, no clinical-readiness claims, no automatic scoring, no automatic submission, no cron scheduling, and no direct `~/.hermes` mutation.
 
 
-## Phase 15 — NIN Community Contribution Flow
+## Phase 16 — NIN Community Contribution Flow
 
-Phase 15 answers the community question: **“How can nurses contribute safely without leaking PHI, implying endorsement, or turning learning artifacts into clinical claims?”**
+Phase 16 answers the community question: **“How can nurses contribute safely without leaking PHI, implying endorsement, or turning learning artifacts into clinical claims?”**
 
 It adds a governed contribution path for NIN:
 
@@ -348,9 +349,9 @@ This is a contribution workflow, not a public submission backend. Human stewards
 Agents propose. Humans judge. Nurses steward.
 
 
-## Phase 15 — Institutional Pilot Pack
+## Phase 16 — Institutional Pilot Pack
 
-Phase 15 answers the institutional question: **“How can a nurse leader or educator run a small non-clinical pilot safely without implying deployment, endorsement, compliance, or certification?”**
+Phase 16 answers the institutional question: **“How can a nurse leader or educator run a small non-clinical pilot safely without implying deployment, endorsement, compliance, or certification?”**
 
 It adds a governed 30–90 day pilot path:
 
@@ -363,9 +364,9 @@ This is an institutional learning pilot, not clinical deployment. Human governan
 Agents propose. Humans judge. Nurses steward.
 
 
-## Phase 15 — EDENA Micro-Credential Readiness Pack
+## Phase 16 — EDENA Micro-Credential Readiness Pack
 
-Phase 15 answers the credential question safely: **“How can a nurse organize evidence for human review without pretending NAIO is issuing certification or clinical AI-readiness?”**
+Phase 16 answers the credential question safely: **“How can a nurse organize evidence for human review without pretending NAIO is issuing certification or clinical AI-readiness?”**
 
 It adds a formative readiness path:
 
@@ -374,5 +375,20 @@ It adds a formative readiness path:
 - `install.sh --readiness-check` — local target-only readiness review check.
 
 This is readiness reflection for human steward review, not certification.
+
+Agents propose. Humans judge. Nurses steward.
+
+
+## Phase 16 — NAIO Agent Registry Pack
+
+Phase 16 opens the registry doorway safely: **“How can nurses discover and evaluate public agents without mistaking a listing for endorsement, procurement approval, deployment approval, or clinical readiness?”**
+
+It adds a human-reviewed registry path:
+
+- `16-Agent-Registry/*.md` — registry overview, agent intake card, source verification checklist, EDENA agent evaluation, risk review, nurse use-case fit, listing template, not-endorsement statement, review queue, change log, and retirement/recheck plan.
+- `scripts/registry.py` — registry posture checker for no-PHI, no patient-care use, no clinical decision support, no endorsement/procurement/deployment/clinical-readiness claims, no automatic vetting, no automatic listing, no automatic agent execution, and no direct mutation.
+- `install.sh --registry-check` — local target-only registry listing posture check.
+
+This is a human-reviewed learning registry, not endorsement.
 
 Agents propose. Humans judge. Nurses steward.

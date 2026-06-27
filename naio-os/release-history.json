@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase15",
+  "latest_version": "2.0.0-phase16",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -82,6 +82,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 15,
       "summary": "EDENA Micro-Credential Readiness Pack for formative human review without certification, badges, clinical-readiness, competency, or automatic scoring claims."
+    },
+    {
+      "version": "2.0.0-phase16",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 16,
+      "summary": "NAIO Agent Registry Pack for human-reviewed learning listings without endorsement, procurement, deployment, clinical-readiness, or automatic listing claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

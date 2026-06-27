@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 20)
+NAIO OS — self-test.py (Phase 21)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -288,6 +288,18 @@ def verify_target(target: Path) -> None:
         "20-Stewardship-Operating-Model/Adoption-Readiness-Conversation-Guide.md",
         "20-Stewardship-Operating-Model/Non-Authority-and-No-Deployment-Statement.md",
         "20-Stewardship-Operating-Model/Quarterly-Stewardship-Review.md",
+        "21-Localization-Readiness/README.md",
+        "21-Localization-Readiness/Localization-Readiness-Overview.md",
+        "21-Localization-Readiness/Region-and-Audience-Map.md",
+        "21-Localization-Readiness/Language-and-Tone-Adaptation-Guide.md",
+        "21-Localization-Readiness/Jurisdiction-Boundary-Checklist.md",
+        "21-Localization-Readiness/Cultural-Stewardship-Interview.md",
+        "21-Localization-Readiness/Local-Partner-Question-Prep.md",
+        "21-Localization-Readiness/Claim-vs-Local-Proof-Ledger.md",
+        "21-Localization-Readiness/Translation-Review-Workflow.md",
+        "21-Localization-Readiness/Cross-Border-Data-and-Privacy-Notes.md",
+        "21-Localization-Readiness/Non-Authority-and-No-Localization-Approval-Statement.md",
+        "21-Localization-Readiness/Localization-Decision-Record.md",
     ]
     for rel in expected:
         check(f"generated {rel}", (target / rel).is_file())
@@ -299,7 +311,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase20", runtime.get("version") == "2.0.0-phase20")
+    check("runtime version phase21", runtime.get("version") == "2.0.0-phase21")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -321,14 +333,15 @@ def verify_target(target: Path) -> None:
     check("governance board pack is present", "Phase 18 Governance Board / Steward Council Pack" in combined and "Governance Board Charter" in combined and "Non-Authority Statement" in combined and "no automatic approvals" in combined.lower())
     check("partner briefing pack is present", "Phase 19 Partner / Sponsor Briefing Pack" in combined and "One-Page Partner Brief" in combined and "Non-Solicitation and Non-Approval Statement" in combined and "no automatic outreach" in combined.lower())
     check("stewardship operating model pack is present", "Phase 20 Institutional Stewardship Operating Model Pack" in combined and "Human-Gate RACI" in combined and "Non-Authority and No-Deployment Statement" in combined and "no automatic implementation" in combined.lower())
+    check("localization readiness pack is present", "Phase 21 Localization / International Readiness Lane Pack" in combined and "Region and Audience Map" in combined and "Non-Authority and No-Localization-Approval Statement" in combined and "no automatic translation" in combined.lower())
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 20 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 21 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 20 self-test ===\n")
+    print("\n=== NAIO OS — Phase 21 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -378,6 +391,8 @@ def main() -> int:
             check("partner check reports ready and no mutation", partner.returncode == 0 and '"status": "ready"' in partner.stdout and '"partner_ready": true' in partner.stdout and '"safe_to_brief": true' in partner.stdout and '"no_mutation": true' in partner.stdout, f"exit={partner.returncode}")
             stewardship = run(["python3", "scripts/stewardship.py", "--profile", str(target), "--json"])
             check("stewardship check reports ready and no mutation", stewardship.returncode == 0 and '"status": "ready"' in stewardship.stdout and '"stewardship_ready": true' in stewardship.stdout and '"safe_to_coordinate": true' in stewardship.stdout and '"no_mutation": true' in stewardship.stdout, f"exit={stewardship.returncode}")
+            localization = run(["python3", "scripts/localization.py", "--profile", str(target), "--json"])
+            check("localization check reports ready and no mutation", localization.returncode == 0 and '"status": "ready"' in localization.stdout and '"localization_ready": true' in localization.stdout and '"safe_to_localize": true' in localization.stdout and '"no_mutation": true' in localization.stdout, f"exit={localization.returncode}")
         else:
             fail("target directory was not created")
 
@@ -402,7 +417,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 20 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 21 safety contract.")
     return 1 if FAIL else 0
 
 

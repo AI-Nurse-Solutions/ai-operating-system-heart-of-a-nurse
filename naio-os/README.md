@@ -454,3 +454,49 @@ It adds an advisory-only operating model path:
 This is an advisory operating model template, not legal advice, not compliance determination, not procurement approval, not budget approval, not contracting authority, not institutional policy authority, not clinical governance authority, not clinical deployment approval, not a staffing or labor decision, not credentialing, not certification, and not automatic implementation.
 
 Agents propose. Humans judge. Nurses steward.
+
+## Phase 21 — Localization / International Readiness Lane Pack
+
+Phase 21 gives Robert and future nurse stewards a safe international expansion doorway: **“How do we adapt NAIO OS for Philippines/SEA/global-English nurses without pretending we have local authority?”**
+
+It renders `21-Localization-Readiness/` with region/audience mapping, language and tone adaptation guidance, jurisdiction boundary checks, cultural stewardship interview prompts, local partner question prep, claim-vs-local-proof ledgers, translation review workflow, cross-border data/privacy questions, a non-authority/no-localization-approval statement, and a localization decision record.
+
+It also adds:
+
+- `scripts/localization.py`
+- `install.sh --localization-check --target <rendered-profile-dir>`
+- `config/edena-runtime.yaml` localization metadata
+- signed release metadata for `2.0.0-phase21`
+
+Phase 21 boundaries:
+
+- No PHI.
+- No patient care use.
+- No clinical decision support.
+- Readiness and adaptation only.
+- Not legal advice.
+- Not regulatory advice.
+- Not compliance determination.
+- Not official translation.
+- Not translation certification.
+- Not localization approval.
+- Not cultural validation.
+- Not jurisdictional approval.
+- Not ministry approval.
+- Not institutional endorsement.
+- Not procurement approval.
+- Not cross-border data transfer approval.
+- Not immigration advice.
+- Not licensure advice.
+- Not recruitment activity.
+- Not clinical governance authority.
+- Not clinical deployment approval.
+- No automatic translation.
+- No automatic localized publishing.
+- No automatic local partner outreach.
+- No automatic local steward assignment.
+- No automatic regional data collection.
+- No automatic authority submission.
+- Human local steward review is required.
+
+Agents propose. Humans judge. Nurses steward.

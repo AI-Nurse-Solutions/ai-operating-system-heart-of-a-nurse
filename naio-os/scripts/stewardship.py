@@ -63,7 +63,7 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append('missing required stewardship files: '+', '.join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; stewardship=runtime.get('stewardship',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase20': failures.append(f"runtime version is not 2.0.0-phase20: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase21': failures.append(f"runtime version is not 2.0.0-phase21: {runtime.get('version')}")
     if stewardship.get('path')!='20-Stewardship-Operating-Model/': failures.append('runtime stewardship.path is not 20-Stewardship-Operating-Model/')
     if stewardship.get('stewardship_use')!='advisory_operating_model_not_institutional_authority': failures.append('runtime stewardship_use must remain advisory operating model, not institutional authority')
     for key in ['legal_advice','compliance_determination','procurement_approval','budget_approval','contracting_authority','institutional_policy_authority','clinical_governance_authority','clinical_deployment_approval','staffing_decision','labor_relations_decision','credentialing','certification','auto_implement','auto_assign_owners','auto_notify_stakeholders','auto_escalate','auto_publish_dashboard']:

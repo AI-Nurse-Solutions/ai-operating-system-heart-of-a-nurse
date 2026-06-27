@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase20",
-  "minimum_installer_phase": 20,
+  "latest_version": "2.0.0-phase21",
+  "minimum_installer_phase": 21,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "eb993404cf3fa41c5a22aa921e952ebf016bc060b7a9b246e18a8754f669d7f9",
+    "sha256": "f893af4da0e2281bc09a0b11363e7e90165c7f05bba0919c404f815f0aab4653",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -38,7 +38,8 @@
     "orchestration": "scripts/orchestration.py",
     "governance": "scripts/governance.py",
     "partner": "scripts/partner.py",
-    "stewardship": "scripts/stewardship.py"
+    "stewardship": "scripts/stewardship.py",
+    "localization": "scripts/localization.py"
   },
   "safety_contract": [
     "no PHI",
@@ -121,7 +122,19 @@
     "no automatic owner assignment",
     "no automatic stakeholder notification",
     "no automatic escalation",
-    "human institutional steward review required"
+    "human institutional steward review required",
+    "Localization / International Readiness Lane Pack",
+    "readiness and adaptation only",
+    "no legal or regulatory advice",
+    "no official translation or translation certification",
+    "no localization approval or cultural validation",
+    "no jurisdictional or ministry approval",
+    "no cross-border data transfer approval",
+    "no immigration, licensure, or recruitment advice",
+    "no automatic translation",
+    "no automatic localized publishing",
+    "no automatic local partner outreach",
+    "human local steward review required"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase20",
+  "latest_version": "2.0.0-phase21",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -117,6 +117,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 20,
       "summary": "Institutional Stewardship Operating Model Pack for advisory cadence without legal, compliance, procurement, budget, contracting, staffing, clinical-deployment, credentialing, certification, or automatic implementation authority."
+    },
+    {
+      "version": "2.0.0-phase21",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 21,
+      "summary": "Localization / International Readiness Lane Pack for adaptation readiness without legal, regulatory, compliance, official translation, licensure, immigration, clinical, local approval, or automatic localization claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

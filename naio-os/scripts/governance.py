@@ -49,7 +49,7 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append("missing required governance files: "+", ".join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; governance=runtime.get('governance',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase20': failures.append(f"runtime version is not 2.0.0-phase20: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase21': failures.append(f"runtime version is not 2.0.0-phase21: {runtime.get('version')}")
     if governance.get('path')!='18-Governance-Board/': failures.append('runtime governance.path is not 18-Governance-Board/')
     if governance.get('governance_use')!='advisory_stewardship_council_not_institutional_authority': failures.append('runtime governance_use must remain advisory stewardship, not institutional authority')
     for key in ['legal_advice','compliance_determination','clinical_governance_authority','institutional_approval','institutional_endorsement','procurement_approval','certification','credentialing','disciplinary_action','auto_approve_policy','auto_enforce_policy','auto_assign_members','auto_publish_minutes','auto_escalate']:

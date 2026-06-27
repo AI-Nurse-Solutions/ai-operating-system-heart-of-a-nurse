@@ -38,7 +38,7 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append("missing required readiness files: "+", ".join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; readiness=runtime.get('readiness',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase20': failures.append(f"runtime version is not 2.0.0-phase20: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase21': failures.append(f"runtime version is not 2.0.0-phase21: {runtime.get('version')}")
     if readiness.get('path')!='15-EDENA-Readiness/': failures.append('runtime readiness.path is not 15-EDENA-Readiness/')
     if readiness.get('readiness_use')!='formative_human_review_not_certification': failures.append('runtime readiness_use must remain formative human review, not certification')
     for key in ['auto_score','auto_pass_fail','auto_issue_badge','auto_issue_credential']:

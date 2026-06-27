@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# NAIO OS — install.sh  (Phase 3: governed profile renderer)
+# NAIO OS — install.sh  (Phase 4: governed profile + execution-plane renderer)
 # =============================================================================
 # Default: dry-run validate + plan. Apply mode is real but safe:
 #   ./install.sh --apply --soul naio-soul.json --projects naio-projects.json --target ./NAIO-Hermes-Profile
@@ -20,7 +20,7 @@ WITH_CHECKSUMS=1
 
 print_help() {
   cat <<'EOF'
-NAIO OS installer (Phase 3 — governed profile renderer)
+NAIO OS installer (Phase 4 — governed profile + execution-plane renderer)
 
 Usage:
   ./install.sh [--dry-run] [--soul <path>] [--projects <path>] [--no-checksums]
@@ -63,8 +63,8 @@ done
 cat <<'BANNER'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   NAIO OS — Nurse AI Operating System (Phase 3)           ║
-  ║   EDENA → Hermes profile mapping with human gates         ║
+  ║   NAIO OS — Nurse AI Operating System (Phase 4)           ║
+  ║   EDENA → Hermes profile + execution-plane templates      ║
   ╚═══════════════════════════════════════════════════════════╝
 
   Doctrine: Agents propose. Humans judge. Nurses steward.
@@ -129,16 +129,18 @@ fi
 echo ""
 echo "▶ STEP 5/7 — Plan"
 cat <<'PLAN'
-  Phase 3 maps EDENA into a Hermes-ready profile bundle:
+  Phase 4 maps EDENA into a Hermes-ready profile bundle and execution plane:
     1. Core SOUL.md and per-sphere SOUL files.
     2. EDENA runtime mapping: sphere ceilings → toolsets → human gates.
     3. Project system prompts from naio-projects.json, if provided.
-    4. Human-gates config: Green every-output, Yellow before-external-use.
-    5. Suggested Hermes profile overlay, review-before-use.
+    4. Tier-tagged starter skills with EDENA frontmatter.
+    5. Cron ritual templates for Lamp Huddle, ledger review, tier audit, and knowledge digest.
+    6. Suggested Hermes profile overlay, review-before-use.
 
   Safety posture:
     • Writes only to --target when --apply is used.
     • Does NOT write to ~/.hermes directly.
+    • Does NOT schedule cron jobs automatically.
     • Onboarding remains Green/Yellow only.
     • No PHI. No clinical decisions. Irreversible actions remain human-executed.
 PLAN
@@ -178,8 +180,8 @@ if [[ $APPLY -eq 1 ]]; then
   cat <<DONE
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 3 apply complete.                     ║
-  ║   Governed profile bundle rendered to target only.        ║
+  ║   ✅  NAIO OS Phase 4 apply complete.                     ║
+  ║   Governed profile + execution templates rendered.        ║
   ╚═══════════════════════════════════════════════════════════╝
 
   Target: $TARGET
@@ -190,7 +192,7 @@ else
   cat <<'DONE'
 
   ╔═══════════════════════════════════════════════════════════╗
-  ║   ✅  NAIO OS Phase 3 dry-run complete.                   ║
+  ║   ✅  NAIO OS Phase 4 dry-run complete.                   ║
   ║   Bundle and provided imports are safe. Nothing written.  ║
   ╚═══════════════════════════════════════════════════════════╝
 

@@ -16,7 +16,7 @@ Downloads:
 - Hermes setup safety checklist: included in the starter kit and Week 2 workbook
 - macOS official .dmg installer path and day-one checklist: included in Week 2 and video script 2
 - Personal Projects and Personal Learning profile templates, knowledge inbox workflow, and weekly learning review prompts
-- Integration pathways for Apple Notes → Obsidian → Hermes, Google Workspace, GitHub, and GitHub Pages
+- Integration pathways for Apple Notes → Obsidian → Hermes, Notion Command Center, Google Workspace, GitHub, and GitHub Pages
 - macOS GitHub day-one walkthrough with private repo and public Pages prompts
 - Image and video generation prompts for personal sites and learning dashboards, with media safety gates
 - Knowledge graph dashboard prompt pack for static images, ambient loops, and image-to-video
@@ -28,6 +28,7 @@ Downloads:
 - Living and Thriving with AI module for nurse wellbeing, critical/systems thinking, digital wellness, ergonomics, leader/educator guidance, and a 90-minute workshop outline
 - Google Workspace HIPAA/BAA and safe AI one-pager, governance checklist, and nurse educator case-study flow
 - Obsidian + Hermes Second-Brain skill — sync your Obsidian vault with Hermes to turn notes and skills into living, editable, stewarded files
+- Notion Command Center — a no-PHI operations workspace for governance decisions, human review queues, agent intake, pilot tracking, content calendars, and template libraries
 - SOUL Interview Agent — guided interview framework + templates that help students, staff nurses, and leaders draft tailored SOUL.md files across all their spheres
 - SOUL Quiz (self-serve) — `/soul-quiz.html` — a browser-only multi-step quiz that drafts and downloads tailored SOUL.md files with no server or upload
 - Life & Projects Quiz — `/life-quiz.html` — maps a nurse's whole life across 3 spheres / 17 life domains and converts each active area into a governed project system prompt, with a completeness (coverage) check

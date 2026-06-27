@@ -41,8 +41,8 @@ mcp_servers:
   github:
     command: npx
     args: ["-y", "@modelcontextprotocol/server-github"]
-    env:
-      GITHUB_PERSONAL_ACCESS_TOKEN: "[REDACTED_OR_ENV_REFERENCE]"
+    # Auth: use `gh auth login` or a local environment variable.
+    # Do not paste tokens into public files.
 ```
 
 ## 4. Private repo prompt

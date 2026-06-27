@@ -25,8 +25,8 @@ mcp_servers:
   example:
     command: npx
     args: ["-y", "example-mcp-server"]
-    env:
-      EXAMPLE_API_KEY: "[REDACTED_OR_ENV_REFERENCE]"
+    # Auth: set required tokens only in your local environment.
+    # Do not paste API keys into public files.
     tools:
       include: ["safe_read_tool", "safe_search_tool"]
 ```

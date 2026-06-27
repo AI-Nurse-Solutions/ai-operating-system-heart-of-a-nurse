@@ -668,9 +668,9 @@ Named Human Owner:
 
 ---
 
-# Practical Integrations: Notes, Google Workspace, and GitHub
+# Practical Integrations: Notes, Notion, Google Workspace, and GitHub
 
-These integrations should be added only after your basic Hermes setup, no-PHI boundary, workspace folder, and manual workflows are working.
+These integrations should be added only after your basic Hermes setup, no-PHI boundary, workspace folder, and manual workflows are working. Notion belongs here as the human-facing operations layer: useful for visibility and coordination, but never a clinical system.
 
 Integration principle:
 
@@ -833,6 +833,53 @@ Read 05-Learning/knowledge-inbox.md, 03-Memory/decisions/, and any weekly review
 
 > Rule: Hermes may write in the ledger. Nurses steward it.
 
+## Notion Command Center
+
+Notion is the practical workspace layer for human coordination. Use it as a no-PHI cockpit for projects, review queues, governance notes, templates, and publishing operations — not as the AI runtime and not as a clinical system.
+
+Good uses:
+
+- Governance decisions and Steward Council agendas
+- Human review queue for Hermes or agent-generated drafts
+- Agent Registry intake and source verification
+- Non-PHI pilot tracking and weekly ledgers
+- Risk register and boundary incident templates
+- Content calendar for NIN / NAIO thought leadership
+- Template and SOP library
+- Reflection and evidence log for learning, without certification claims
+
+Do not use Notion for:
+
+- PHI, patient identifiers, EHR screenshots, or clinical documentation
+- Clinical decision support, care coordination, diagnosis, medication, or treatment recommendations
+- Passwords, API keys, OAuth tokens, or secrets
+- Credentialing, certification, disciplinary action, procurement approval, legal advice, or compliance determinations
+
+Suggested starter databases:
+
+| Database | Purpose |
+|---|---|
+| Governance Decisions | Advisory EDENA decisions, rationale, reviewer, next step |
+| Human Review Queue | AI outputs awaiting approve / revise / reject / defer |
+| AI Agent Intake | Tool source, evidence, risks, nurse use-case fit, recheck date |
+| Pilot Tracker | Non-PHI pilot objective, boundaries, stakeholders, weekly status |
+| Risk Register | Risk, severity, mitigation, owner, review date |
+| Content Calendar | Platform, campaign, CTA, claim-vs-proof status |
+| Template Library | Reusable SOPs, checklists, rubrics, prompt templates |
+| Reflection / Evidence Log | What AI proposed, what human checked, what boundary was applied |
+
+Safe first Notion prompt:
+
+```text
+Help me design a Notion Command Center for my Nurse AI OS.
+Include databases for Governance Decisions, Human Review Queue, AI Agent Intake, Pilot Tracker, Risk Register, Content Calendar, Template Library, and Reflection / Evidence Log.
+Keep the workspace no-PHI, non-clinical, advisory-only, and human-reviewed.
+Do not include patient data, clinical recommendations, credentials/secrets, certification claims, procurement approval, or compliance/legal determinations.
+Return the database names, fields, status options, and one safe example row for each.
+```
+
+> Rule: Notion carries the ledger. The nurse still carries the judgment.
+
 ## Google Workspace for a non-personal account
 
 Use Google Workspace only after the no-PHI boundary is clear.
@@ -941,8 +988,8 @@ mcp_servers:
   github:
     command: npx
     args: ["-y", "@modelcontextprotocol/server-github"]
-    env:
-      GITHUB_PERSONAL_ACCESS_TOKEN: "[REDACTED_OR_ENV_REFERENCE]"
+    # Auth: use `gh auth login` or a local environment variable.
+    # Do not paste tokens into public files.
 ```
 
 For most beginners, `gh auth login` plus Hermes GitHub skills is enough.
@@ -1207,8 +1254,8 @@ mcp_servers:
   perplexity:
     command: npx
     args: ["-y", "perplexity-mcp"]
-    env:
-      PERPLEXITY_API_KEY: "[REDACTED_OR_ENV_REFERENCE]"
+    # Auth: set the required API token only in your local environment.
+    # Do not paste API keys into public files.
     tools:
       include: ["search", "ask"]
 ```

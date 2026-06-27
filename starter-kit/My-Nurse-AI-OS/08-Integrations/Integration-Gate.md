@@ -1,6 +1,6 @@
 # Integration Gate
 
-Every connector is a doorway. Open only the doors you need, with the least privilege required, and keep a human owner responsible for review.
+Every connector is a doorway. Open only the doors you need, with the least privilege required, and keep a human owner responsible for review. Notion counts as a connector even when it starts manually: it can become the team's shared memory, so it needs the same no-PHI and human-review discipline.
 
 Before adding any integration, answer:
 
@@ -18,3 +18,7 @@ Before adding any integration, answer:
 Default boundary:
 
 > No PHI, patient-specific care, confidential employer systems, secrets, API keys, legal decisions, financial transactions, or public publishing without explicit review.
+
+Notion-specific boundary:
+
+> Use Notion for operations, learning, governance review, and coordination. Do not use it as an EHR, clinical documentation system, clinical decision support tool, credentialing authority, care coordination platform, or storage place for passwords, API keys, tokens, PHI, or patient-specific information.

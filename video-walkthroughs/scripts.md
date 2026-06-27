@@ -138,7 +138,7 @@ Cover:
 3. Loop Charter
 4. Stop conditions
 5. Monthly AI OS audit
-6. Integration Gate for Obsidian, Google Workspace, GitHub, and GitHub Pages
+6. Integration Gate for Obsidian, Notion, Google Workspace, GitHub, and GitHub Pages
 7. macOS GitHub setup: `brew install gh`, `gh auth login`, private repo first, public Pages only when publishable
 8. Image generation for learning dashboards, personal sites, and public-safe visual drafts
 9. Knowledge graph dashboard prompt pack: static image, ambient loop, and image-to-video patterns
@@ -153,9 +153,10 @@ Cover:
 18. YouTube transcripts into Hermes: lecture → timestamped chapters, Obsidian note, follow-up questions
 19. Living and thriving with AI: cognitive load, ergonomics, relationships, critical thinking, systems thinking, and leader/educator practice
 20. 90-minute workshop outline for nurses, leaders, educators, or students
-21. Google Workspace as a governed suite: Gmail, Drive, Docs, Sheets, Slides, Meet, Calendar, and core services under BAA only when eligible/configured/approved
-22. Safe AI with PHI: personal Gmail and generic AI are no-PHI; use fictional/de-identified/public/synthetic material unless explicitly approved
-23. Why every connector, media tool, messaging channel, screenshot, browser, Workspace service, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
+21. Notion as a no-PHI Command Center: governance decisions, human review queues, agent intake, pilot tracking, content calendars, and template libraries — never EHR, CDS, credentialing, procurement, legal/compliance, secrets, or PHI storage
+22. Google Workspace as a governed suite: Gmail, Drive, Docs, Sheets, Slides, Meet, Calendar, and core services under BAA only when eligible/configured/approved
+23. Safe AI with PHI: personal Gmail and generic AI are no-PHI; use fictional/de-identified/public/synthetic material unless explicitly approved
+24. Why every connector, media tool, messaging channel, screenshot, browser, Notion workspace, Workspace service, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
 
 Key line:
 

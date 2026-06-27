@@ -40,8 +40,8 @@ mcp_servers:
   perplexity:
     command: npx
     args: ["-y", "perplexity-mcp"]
-    env:
-      PERPLEXITY_API_KEY: "[REDACTED_OR_ENV_REFERENCE]"
+    # Auth: set the required API token only in your local environment.
+    # Do not paste API keys into public files.
     tools:
       include: ["search", "ask"]
 ```

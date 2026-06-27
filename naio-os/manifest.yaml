@@ -1,4 +1,4 @@
-version: 2.0.0-phase7
+version: 2.0.0-phase8
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -17,6 +17,7 @@ entrypoints:
   verify_release: scripts/verify-release.py
   release_channel: release.json
   check_update: scripts/check-update.py
+  recovery: scripts/recovery.py
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
@@ -48,25 +49,25 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 103594d6d1731501757350565bd5ca10c542c232ab8046f7e9cb3c98b37f44fa
+  sha256: 288ce9566dc1731aed80fb1aec8f203bd5ca2e590b74d9c67ed9b34a73162903
 - path: scripts/self-test.py
   role: self-test
-  sha256: 55a507064869df0b8ee64d3635010a1045cb87382f9f918908448bfe083b546d
+  sha256: b641beb148b39774ec8d6569e2c71c76dee263a2c5f6b1c2dd243fec8ddeb320
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: 3c511de4d875fc1c165538c1f7991024823d1a42b444dfb935cedc62ce4cc8ce
+  sha256: e3bc1ec365b981ce8d59993db13b11f9a1228840d378b23fc8239767eba952e0
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: 08ae3ab40e27522e1366371c2f0fbd990e751bf2ee77985b235cce665159ea2e
+  sha256: 3023739aba63bf0361000f871188a3c46f57468e91c32c2311d0ea6806c385ce
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: 9780e4f36144bdfa6bef3592971e12067aac8752f8a776ea577ea1a6f7420769
+  sha256: c92f7314954f2a807ac1d8de8f6c0c26b7559d4bd0cc7a663aca22e40378538f
 - path: README.md
   role: spec
-  sha256: 47683bedb5128b03466415231b2c574cb07e4024af67d7a0f544c2d18fdf0588
+  sha256: 6b71bd697bf0cd95d7987288b917743840e7f3bf607ebb06082a3c9c5d1e8591
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -75,15 +76,18 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: d0eeb83082dc21c4bce8b6ee3ebdc51b23d0c1e3a023e9143b27093ffe8361a8
+  sha256: e7bac9f24939eaf0181a6dc75945b9721861685919f7e301e45520c309493786
 - path: release-history.json
   role: release-history
-  sha256: 3dc4e98138b0d7775e89bc2d63bf3cf082d86557abd589cb68ecc28b3a08b2c2
+  sha256: d332875334e5bbcbe1d4dc238e5372f740504e068d605a3b3c2576a7beef1ddf
 - path: scripts/check-update.py
   role: update-advisory
-  sha256: d7454ce7e92958a10b9ef28ad88512db19da6dd73f5746f81933db697a691a75
+  sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
+- path: scripts/recovery.py
+  role: recovery-drill
+  sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 safety_contract:
-  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory
+  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill
   idempotent: true
   mutation_scope: explicit_target_directory_only
   bootstrap_scope: temporary_download_directory_only
@@ -105,6 +109,9 @@ safety_contract:
   - 'stale_update_channel              # release.json latest_version must equal manifest version'
   - 'release_history_rollback          # local/latest phase rank must not move backward'
   - 'untrusted_release_key_id          # release.json key_id must be listed in release-history.json'
+  - 'recovery_phi_detected          # recovery snapshots refuse PHI-like indicators'
+  - 'unsafe_recovery_archive       # restore snapshots must not contain absolute/path-traversal/link/device entries'
+  - 'automatic_restore_requested   # Phase 8 generates restore plans; humans copy intentionally'
 install_flow:
 - id: bootstrap-download
   description: Optional one-line installer downloads manifest and listed artifacts into a temporary directory.
@@ -123,7 +130,7 @@ install_flow:
   description: Every non-manifest file's sha256 must match manifest; refuse on mismatch.
   blocking: true
 - id: self-test
-  description: Phase 6 smoke test creates sample safe imports, verifies signed release metadata, dry-runs, applies to temp target, validates outputs, and verifies refusal cases.
+  description: Phase 8 smoke test creates safe imports, verifies signed release metadata, dry-runs, applies to temp target, validates outputs, runs recovery drill, and verifies refusal cases.
   blocking: true
   optional: true
 - id: validate-soul-import
@@ -132,6 +139,10 @@ install_flow:
 - id: validate-projects-import
   description: naio-projects.json validated against schema; project tiers/gates/paths + PHI checked.
   blocking: true
+- id: recovery-drill
+  description: Optional --recovery-drill snapshots a rendered target, verifies checksum sidecar, extracts to temp, compares inventory, and writes a human restore plan without mutating Hermes.
+  blocking: false
+  dry_run_skips: false
 - id: plan
   description: Show exactly what dry-run or apply will do.
   blocking: false
@@ -148,6 +159,8 @@ not_yet:
 - Network-side model routing enforcement (Phase 6+)
 - Automatic update/apply from remote channel (advisory only)
 - Multiple active signing keys / key rotation ceremonies (metadata-ready, not operationalized)
+- Automatic restore into ~/.hermes (Phase 8 only generates local snapshots and human restore plans)
+- Cloud backup/sync of recovery snapshots (local-only by default)
 signature_policy:
   algorithm: RSA-SHA256 detached signature
   public_key: config/naio-os-release-public.pem
@@ -156,12 +169,13 @@ signature_policy:
   digest: manifest.sha256
   release_channel: release.json
   fail_closed: true
-  note: Bootstrap, install, and check-update verify release metadata before trusting artifact checksums. Phase 7 adds key_id trust and rollback history.
+  note: Bootstrap, install, and check-update verify release metadata before trusting artifact checksums. Phase 8 adds local-only recovery snapshots and restore drills.
   key_id: naio-os-release-key-2026-06
   release_history: release-history.json
-phase7_outputs:
+phase8_outputs:
 - release-history.json
 - scripts/check-update.py
+- scripts/recovery.py
 - release.json
 - manifest.sha256
 - manifest.sig
@@ -180,28 +194,19 @@ phase7_outputs:
 - config/human-gates.yaml
 - config/hermes-profile.patch.yaml
 - logs/render-report.json
-phase7_update_channel:
-  current: release.json
-  history: release-history.json
-  signature: manifest.sig
-  digest: manifest.sha256
-  public_key: config/naio-os-release-public.pem
-  key_id: naio-os-release-key-2026-06
-  installer_gate: scripts/verify-release.py
-  advisory: scripts/check-update.py
-  auto_update: false
-phase7_one_line_commands:
+- NAIO-RECOVERY-MANIFEST.json
+- NAIO-RESTORE-PLAN.md
+phase8_recovery:
+  script: scripts/recovery.py
+  snapshot: local tar.gz only
+  sidecar: snapshot.tar.gz.sha256
+  restore: human restore plan only
+  auto_restore: false
+  mutates_hermes: false
+  refuses_phi: true
+  refuses_unsafe_archives: true
+phase8_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --self-test
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --check-update
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --recovery-drill --target ./NAIO-Hermes-Profile
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --apply --soul ~/Downloads/naio-soul.json --projects ~/Downloads/naio-projects.json --target ./NAIO-Hermes-Profile
-phase7_skill_pack:
-- lamp-huddle-steward
-- weekly-ledger-review
-- project-next-action-brief
-- knowledge-inbox-digest
-- edena-tier-audit
-phase7_cron_rituals:
-- weekly-lamp-huddle-review
-- monday-project-next-actions
-- monthly-edena-tier-audit
-- knowledge-inbox-digest

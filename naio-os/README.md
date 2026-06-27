@@ -58,21 +58,22 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 7 bundle manifest + checksums
-├── release.json                    # Phase 7 current update-channel metadata
-├── release-history.json            # Phase 7 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 7 manifest digest
-├── manifest.sig                    # Phase 7 detached manifest signature
-├── bootstrap.sh                    # Phase 7 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 7 installer (dry-run default; signed release gate; --self-test; --check-update; --apply target-only)
+├── manifest.yaml                   # Phase 8 bundle manifest + checksums
+├── release.json                    # Phase 8 current update-channel metadata
+├── release-history.json            # Phase 8 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 8 manifest digest
+├── manifest.sig                    # Phase 8 detached manifest signature
+├── bootstrap.sh                    # Phase 8 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 8 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
     ├── import-projects.py          # validates naio-projects.json
     ├── render-profile.py           # EDENA → Hermes-ready profile + skill/ritual renderer
-    ├── self-test.py                # Phase 7 smoke test harness
-    ├── verify-release.py           # Phase 7 release metadata + signature/history verifier
-    ├── check-update.py             # Phase 7 advisory update check; no mutation
+    ├── self-test.py                # Phase 8 smoke test + recovery drill harness
+    ├── verify-release.py           # Phase 8 release metadata + signature/history verifier
+    ├── check-update.py             # Phase 8 advisory update check; no mutation
+    ├── recovery.py                 # Phase 8 local-only snapshot, verify, restore-plan, and drill
     ├── healthcheck.py              # verify-before-claim harness
     └── compute-checksums.sh        # writes manifest sha256 fields
 ```
@@ -127,7 +128,7 @@ Local apply example:
   --target ./NAIO-Hermes-Profile
 ```
 
-Phase 7 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
+Phase 8 output includes `SOUL.md`, per-sphere SOUL files, project system prompts, `skills/*/SKILL.md`, `cron/rituals.yaml`, `cron/prompts/*.md`, `config/edena-runtime.yaml`, `config/human-gates.yaml`, and a suggested `config/hermes-profile.patch.yaml` for review-before-use. Cron rituals are **templates only**; they are not scheduled automatically. The bootstrap downloads into a temporary directory, verifies `release.json`, `release-history.json`, `manifest.sha256`, `manifest.sig`, rollback/key-id trust metadata, and artifact checksums, then runs the installer with the arguments you pass.
 
 Both JSON files contain **no PHI** by design. The installer refuses any SOUL import where `boundaries.no_phi_confirmed` or `boundaries.no_clinical_decisions_confirmed` is not `true`, and refuses either import if PHI indicators are detected.
 
@@ -173,6 +174,7 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **5** | Healthcheck harness + one-line installer | ✅ done — `bootstrap.sh` remote entrypoint plus `install.sh --self-test`; verifies checksums, safe sample render, and refusal cases before apply |
 | **6** | Versioning, update channel, signed checksums | ✅ done — `release.json`, `manifest.sha256`, detached `manifest.sig`, release public key, and fail-closed verifier gate before artifact checksums |
 | **7** | Release governance, rollback protection, advisory update check | ✅ done — `release-history.json`, trusted `key_id`, monotonic phase rollback refusal, and `install.sh --check-update` / `scripts/check-update.py` with no automatic mutation |
+| **8** | Local recovery snapshots, restore plans, recovery drill | ✅ done — `scripts/recovery.py`, explicit local snapshot directory, checksum sidecar, safe archive verification, `NAIO-RESTORE-PLAN.md`, and `install.sh --recovery-drill` with no automatic restore |
 
 ---
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — check-update.py (Phase 7)
+NAIO OS — check-update.py (Phase 8)
 
 Advisory update-channel check. It verifies the local signed release metadata,
 then compares release.json against release-history.json for rollback protection
@@ -26,7 +26,7 @@ DEFAULT_BASE_URL = "https://nurse-ai-os.org/naio-os"
 
 
 def version_rank(version: str) -> tuple[int, int]:
-    """Return sortable rank for versions shaped like 2.0.0-phase7."""
+    """Return sortable rank for versions shaped like 2.0.0-phase8."""
     if "-phase" not in version:
         return (0, 0)
     base, phase = version.rsplit("-phase", 1)
@@ -49,7 +49,7 @@ def verify_local_release() -> tuple[bool, str]:
 
 
 def fetch_json(url: str) -> dict:
-    req = urllib.request.Request(url, headers={"User-Agent": "naio-os-check-update/2.0.0-phase7", "Cache-Control": "no-cache"})
+    req = urllib.request.Request(url, headers={"User-Agent": "naio-os-check-update/2.0.0-phase8", "Cache-Control": "no-cache"})
     with urllib.request.urlopen(req, timeout=30) as r:
         if r.status != 200:
             raise RuntimeError(f"{url} returned HTTP {r.status}")
@@ -57,7 +57,7 @@ def fetch_json(url: str) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 7 advisory update check")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 8 advisory update check")
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL, help="release channel base URL")
     parser.add_argument("--local-only", action="store_true", help="verify only local release metadata and rollback history")
     parser.add_argument("--json", action="store_true", help="emit machine-readable result")
@@ -146,7 +146,7 @@ def main() -> int:
 
 def format_human(result: dict) -> str:
     icon = "✅" if result["status"] == "ok" else "ℹ️" if result["status"] == "update_available" else "❌"
-    lines = ["", "=== NAIO OS — Phase 7 update advisory ===", "", f"{icon} status: {result['status']}"]
+    lines = ["", "=== NAIO OS — Phase 8 update advisory ===", "", f"{icon} status: {result['status']}"]
     for key in ["local_version", "remote_version", "channel", "key_id"]:
         if result.get(key):
             lines.append(f"  {key}: {result[key]}")

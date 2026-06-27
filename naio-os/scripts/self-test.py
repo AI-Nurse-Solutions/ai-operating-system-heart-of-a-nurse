@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — self-test.py (Phase 7)
+NAIO OS — self-test.py (Phase 8)
 
 Focused verification harness for the downloadable Nurse AI OS bundle. This is
 not a substitute for a repository test suite; it is a user-facing smoke test
@@ -167,7 +167,7 @@ def verify_target(target: Path) -> None:
     rituals = yaml.safe_load((target / "cron/rituals.yaml").read_text(encoding="utf-8"))
     combined = "\n".join(p.read_text(errors="ignore") for p in target.rglob("*") if p.is_file())
 
-    check("runtime version phase7", runtime.get("version") == "2.0.0-phase7")
+    check("runtime version phase8", runtime.get("version") == "2.0.0-phase8")
     check("runtime includes 5 skills", len(runtime.get("skills", [])) == 5)
     check("runtime includes 4 cron rituals", len(runtime.get("cron_rituals", [])) == 4)
     check("cron rituals are templates only", rituals.get("mode") == "templates_only_not_scheduled")
@@ -179,11 +179,11 @@ def verify_target(target: Path) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 7 self-test harness")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 8 self-test harness")
     parser.add_argument("--keep-target", action="store_true", help="do not delete the generated temporary target")
     args = parser.parse_args()
 
-    print("\n=== NAIO OS — Phase 7 self-test ===\n")
+    print("\n=== NAIO OS — Phase 8 self-test ===\n")
     print("This is an ad-hoc smoke test for the downloadable bundle, not canonical suite green.\n")
 
     hc = run(["python3", "scripts/healthcheck.py"])
@@ -207,6 +207,8 @@ def main() -> int:
         check("target-only apply exits 0", applied.returncode == 0, f"exit={applied.returncode}")
         if target.exists():
             verify_target(target)
+            recovery = run(["python3", "scripts/recovery.py", "--drill", "--profile", str(target)])
+            check("recovery drill snapshots/verifies/extracts/plans with no mutation", recovery.returncode == 0 and '"status": "drill-passed"' in recovery.stdout and '"no_mutation": true' in recovery.stdout, f"exit={recovery.returncode}")
         else:
             fail("target directory was not created")
 
@@ -231,7 +233,7 @@ def main() -> int:
     if FAIL:
         print("\n❌ SELF-TEST FAILED — do not apply this bundle yet.")
     else:
-        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 7 safety contract.")
+        print("\n✅ SELF-TEST PASSED — bundle behavior is consistent with Phase 8 safety contract.")
     return 1 if FAIL else 0
 
 

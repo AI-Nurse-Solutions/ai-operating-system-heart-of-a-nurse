@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-NAIO OS — verify-release.py (Phase 7)
+NAIO OS — verify-release.py (Phase 8)
 
 Verifies the update-channel metadata and signed manifest before artifact
-checksums are trusted. Phase 7 adds release history, key-id trust metadata,
+checksums are trusted. Phase 8 adds release history, key-id trust metadata,
 and rollback protection.
 
 Contract:
@@ -65,7 +65,7 @@ def version_rank(version: str) -> tuple[int, int]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NAIO OS Phase 7 release verifier")
+    parser = argparse.ArgumentParser(description="NAIO OS Phase 8 release verifier")
     parser.add_argument("--allow-unsigned", action="store_true", help="warn instead of failing if signature verification cannot run")
     parser.add_argument("--quiet", action="store_true", help="print only failures/success summary")
     args = parser.parse_args()
@@ -82,7 +82,7 @@ def main() -> int:
     pub_p = ROOT / "config/naio-os-release-public.pem"
 
     failures = []
-    say("\n=== NAIO OS — release verification (Phase 7) ===\n")
+    say("\n=== NAIO OS — release verification (Phase 8) ===\n")
 
     for p in [release_p, history_p, manifest_p, sha_p, sig_p, pub_p]:
         if not p.is_file():
@@ -124,8 +124,8 @@ def main() -> int:
         failures.append(f"release latest_version {release.get('latest_version')} != manifest version {manifest.get('version')}")
     if release.get("channel") not in {"stable", "preview"}:
         failures.append("release channel must be stable or preview")
-    if release.get("minimum_installer_phase") != 7:
-        failures.append("release minimum_installer_phase must be 7")
+    if release.get("minimum_installer_phase") != 8:
+        failures.append("release minimum_installer_phase must be 8")
 
     releases = history.get("releases", [])
     history_versions = [r.get("version") for r in releases if r.get("version")]

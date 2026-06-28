@@ -90,6 +90,12 @@ Recommended use:
 
 > Broad strokes now, go deeper later. Build enough structure to serve your life — not another dashboard that judges it.
 
+## Local HTML fallback when Notion is unavailable
+
+If Notion is blocked, inaccessible, or too much friction, use the **Local HTML Life Dashboard** at `Local-HTML-Life-Dashboard/index.html` instead. It is a single-file browser dashboard covering health, finances, goals, habits, tasks, and routines. Keep it No PHI. Post-setup, create a browser bookmarks folder named **Dashboards** and save the local dashboard there.
+
+Use it for personal reflection, not clinical documentation, diagnosis, treatment, financial advice, account tracking, employer systems, or automated decisions. Export a JSON backup if you rely on it.
+
 ## EDENA boundary
 
 - **Green:** personal organization, learning dashboard, public-safe content calendar, template library.

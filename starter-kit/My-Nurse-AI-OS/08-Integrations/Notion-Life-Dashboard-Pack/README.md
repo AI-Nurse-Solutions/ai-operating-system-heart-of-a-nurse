@@ -61,6 +61,20 @@ Suggested sections:
 6. **Weekly Reset**
    - Review what drained you, what restored you, and what needs a human gate
 
+## If Notion is unavailable
+
+Use the **Local HTML Life Dashboard** fallback at `../Local-HTML-Life-Dashboard/index.html`.
+
+Post-setup suggestion:
+
+1. Open the local HTML dashboard in your browser.
+2. Create a browser bookmarks folder named **Dashboards**.
+3. Bookmark the local dashboard under **Dashboards**.
+4. Keep it browser-only, no-PHI, non-clinical, non-financial-advice, and manually reviewed.
+5. Export a JSON backup before clearing browser data or moving devices.
+
+This fallback includes the same core life areas: health, finances, goals, habits, tasks, and routines.
+
 ## EDENA tier
 
 - **Green:** personal organization, routines, habits, goals, budget categories, reflection.

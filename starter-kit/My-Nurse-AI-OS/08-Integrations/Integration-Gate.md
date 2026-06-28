@@ -26,4 +26,8 @@ Notion-specific boundary:
 
 Notion Life Dashboard Pack boundary:
 
-> The Notion Life Dashboard Pack for health, finances, goals, habits, tasks, and routines are Green only when they stay personal, no-PHI, and manually reviewed. Add a human gate before sharing, syncing wearables/banks/calendars, adding API automation, or using any trend to make health, financial, work, family, or clinical decisions.
+> The Notion Life Dashboard Pack for health, finances, goals, habits, tasks, and routines is Green only when it stays personal, no-PHI, and manually reviewed. Add a human gate before sharing, syncing wearables/banks/calendars, adding API automation, or using any trend to make health, financial, work, family, or clinical decisions.
+
+Local HTML Life Dashboard fallback boundary:
+
+> The local HTML dashboard is Green only when it stays browser-only, personal, no-PHI, no-secrets, and manually reviewed. Bookmark it under **Dashboards** for access, but do not use it as a clinical, financial, employer, family-surveillance, or automated decision system.

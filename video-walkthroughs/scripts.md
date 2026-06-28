@@ -77,8 +77,9 @@ Cover:
 
 1. Daily brief prompt
 2. Weekly review prompt
-3. Personal dashboard
-4. Energy and recovery protection
+3. Personal dashboard, with the Local HTML Life Dashboard fallback if Notion is unavailable
+4. Save the local dashboard as a browser bookmark under Dashboards
+5. Energy and recovery protection
 5. Decision ownership
 
 Demo prompt:
@@ -180,3 +181,14 @@ Show how to import the six CSV databases from `08-Integrations/Notion-Life-Dashb
 Boundary line:
 
 > This is a personal operations dashboard, not a clinical or financial decision system. No PHI, no patient care, no account numbers, no credentials, no automatic decisions.
+
+### Optional segment — Local HTML dashboard fallback
+
+If a learner cannot use Notion, open `08-Integrations/Local-HTML-Life-Dashboard/index.html` and show the browser-only template. Demonstrate:
+
+1. The post-setup step: create a browser bookmarks folder named **Dashboards**.
+2. Save the local dashboard as a bookmark under **Dashboards**.
+3. Edit the six sections: Health & Wellbeing, Finances, Goals, Habits, Tasks, and Routines.
+4. Click Save dashboard.
+5. Export a private JSON backup.
+6. Repeat the safety boundary: no PHI, no clinical advice, no account numbers, no credentials, no automatic decisions.

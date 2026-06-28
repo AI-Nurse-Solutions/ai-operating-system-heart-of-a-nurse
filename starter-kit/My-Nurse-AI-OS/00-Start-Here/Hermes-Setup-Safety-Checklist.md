@@ -62,7 +62,15 @@ Then:
 Create a new folder called Practice inside My-Nurse-AI-OS and write a short README explaining that this is a safe test folder.
 ```
 
-## 6. Sub-agent safety
+## 6. Post-setup dashboard bookmark
+
+- [ ] If I cannot use Notion, I opened the **Local HTML Life Dashboard** at `08-Integrations/Local-HTML-Life-Dashboard/index.html` in my browser for health, finances, goals, habits, tasks, and routines.
+- [ ] I created a browser bookmarks folder named **Dashboards**.
+- [ ] I saved the local dashboard as a bookmark under **Dashboards**.
+- [ ] I confirmed the dashboard contains no PHI, patient identifiers, employer secrets, account numbers, credentials, diagnosis, treatment, medication, or clinical advice.
+- [ ] I understand local browser storage can be cleared, so I will export a JSON backup if I begin relying on it.
+
+## 7. Sub-agent safety
 
 Sub-agents are useful for parallel research and comparison, but they still need boundaries.
 
@@ -78,7 +86,7 @@ No PHI. No clinical decisions.
 
 Avoid sub-agents for patient-specific care, confidential employer work, financial/legal/clinical decisions, or high-stakes recommendations without expert review.
 
-## 7. Connectors
+## 8. Connectors
 
 Before connecting Telegram, Discord, Slack, voice, or other channels, ask:
 

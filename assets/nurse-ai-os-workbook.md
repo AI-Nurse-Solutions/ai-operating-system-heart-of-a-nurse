@@ -923,6 +923,31 @@ Do not ask for patient data, employer secrets, bank credentials, account numbers
 
 > Broad strokes now, go deeper later. The dashboard serves the nurse; it does not judge the nurse.
 
+### Local HTML Life Dashboard fallback
+
+If Notion is unavailable, blocked, or too much friction, use the starter kit file:
+
+`08-Integrations/Local-HTML-Life-Dashboard/index.html`
+
+This is a single-file, browser-only dashboard template covering health, finances, goals, habits, tasks, and routines. It includes Today, This Week, Health & Energy, Money Stewardship, Goals & Projects, and Weekly Reset views. Edits are saved in browser local storage and can be exported as a private JSON backup.
+
+Post-setup suggested step:
+
+1. Open the local HTML dashboard in your browser.
+2. Create a browser bookmarks folder named **Dashboards**.
+3. Save the local dashboard as a bookmark under **Dashboards**.
+4. Keep it no-PHI, non-clinical, non-financial-advice, and manually reviewed.
+5. Export a JSON backup before changing devices or clearing browser data.
+
+Safe first prompt:
+
+```text
+Help me adapt the Local HTML Life Dashboard for my Nurse AI OS without adding PHI, employer secrets, bank account numbers, credentials, diagnosis, treatment, medication, or clinical advice.
+Suggest only personal-safe labels, weekly review prompts, and human-gate reminders.
+```
+
+> If Notion is the ledger, this local dashboard is the pocket notebook. The nurse still carries the judgment.
+
 ## Google Workspace for a non-personal account
 
 Use Google Workspace only after the no-PHI boundary is clear.

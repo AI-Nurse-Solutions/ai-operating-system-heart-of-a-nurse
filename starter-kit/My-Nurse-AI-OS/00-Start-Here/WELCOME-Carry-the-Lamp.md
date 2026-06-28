@@ -27,9 +27,10 @@ This starter kit hands you both instruments for today: **data science and AI, wi
 
 1. Read `MY-AI-VALUES.md`, `NO-PHI-BOUNDARY.md`, and `HUMAN-AGENCY-RULES.md` first.
 2. Set up Hermes safely with `Hermes-Setup-Safety-Checklist.md`.
-3. Build your spheres (Personal, Professional, Community) using folders 06–07.
-4. Add integrations, media, research, messaging, and visual workflows (folders 08–12) only after the no-PHI foundation is solid.
-5. Protect yourself and your team with folders 13–14 (wellbeing, Workspace + HIPAA).
+3. Post-setup suggested step: if Notion is unavailable, open the **Local HTML Life Dashboard** at `08-Integrations/Local-HTML-Life-Dashboard/index.html` for health, finances, goals, habits, tasks, and routines; keep it No PHI, create a browser bookmarks folder named **Dashboards**, and bookmark the local dashboard there.
+4. Build your spheres (Personal, Professional, Community) using folders 06–07.
+5. Add integrations, media, research, messaging, and visual workflows (folders 08–12) only after the no-PHI foundation is solid.
+6. Protect yourself and your team with folders 13–14 (wellbeing, Workspace + HIPAA).
 
 ## The line we keep
 

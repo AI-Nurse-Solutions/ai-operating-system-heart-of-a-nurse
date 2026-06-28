@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Local HTML Life Dashboard · Nurse AI OS</title>
+  <style>
+    :root{
+      --navy:#10213f; --teal:#0f766e; --gold:#b7791f; --amber:#fbbf24;
+      --cream:#f8fafc; --paper:#ffffff; --slate:#5b6678; --ink:#172033;
+      --line:#d9e2ec; --soft:#eef7f5; --rose:#fff7ed; --danger:#7f1d1d;
+      --shadow:0 18px 40px rgba(16,33,63,.10); --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f7fbfb 0%,#fff 38%,#fffaf0 100%);color:var(--ink);font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;line-height:1.55}
+    a{color:var(--teal);font-weight:750}.wrap{max-width:1180px;margin:0 auto;padding:28px 20px}.hero{background:radial-gradient(circle at 20% 0%,rgba(251,191,36,.28),transparent 34%),linear-gradient(135deg,#081427 0%,#10213f 58%,#0f766e 150%);color:white;padding:56px 0 42px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;background:rgba(251,191,36,.12);filter:blur(8px)}.hero .wrap{position:relative;z-index:1}.eyebrow{letter-spacing:.14em;text-transform:uppercase;font-size:.76rem;font-weight:900;color:var(--amber)}h1{font-size:clamp(2.4rem,6vw,5.8rem);line-height:.93;letter-spacing:-.055em;margin:.35rem 0 1rem;max-width:900px}h2{font-size:clamp(1.45rem,3vw,2.45rem);line-height:1;margin:0 0 .7rem;letter-spacing:-.035em;color:var(--navy)}h3{margin:.2rem 0 .5rem;color:var(--navy)}p{margin:.35rem 0 1rem}.lede{font-size:1.12rem;color:#dbeafe;max-width:780px}.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.chip{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);border-radius:999px;padding:8px 12px;font-weight:800;font-size:.84rem}.toolbar{position:sticky;top:0;z-index:5;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.toolbar .wrap{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}.btn{appearance:none;border:0;border-radius:999px;background:var(--navy);color:white;padding:10px 14px;font-weight:850;cursor:pointer;box-shadow:0 10px 22px rgba(16,33,63,.14)}.btn.alt{background:var(--teal)}.btn.gold{background:var(--gold)}.btn.light{background:#e6fffb;color:#07423e}.status{font-size:.88rem;color:var(--slate);font-weight:750}.grid{display:grid;gap:18px}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}.callout{background:#ecfdf5;border:1px solid #bbf7d0;border-left:6px solid var(--teal);border-radius:18px;padding:18px}.warning{background:#fff7ed;border-color:#fed7aa;border-left-color:var(--gold)}.danger{background:#fff1f2;border-color:#fecdd3;border-left-color:var(--danger)}.metric{font-size:2.25rem;font-weight:950;color:var(--teal);letter-spacing:-.06em}.label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);font-weight:900}.section{padding:28px 0}.section.alt{background:rgba(238,247,245,.5)}textarea,input{width:100%;border:1px solid var(--line);border-radius:16px;padding:13px 14px;font:inherit;background:white;color:var(--ink)}textarea{min-height:180px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;font-size:.92rem;line-height:1.5}.small textarea{min-height:120px}.row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.pill{display:inline-flex;border-radius:999px;background:var(--soft);color:#075c55;padding:6px 10px;font-size:.78rem;font-weight:900;margin:0 6px 6px 0}.view-list{padding-left:18px}.view-list li{margin:.35rem 0}.footer{background:#081427;color:#cbd5e1;margin-top:28px}.footer h2{color:white}.footer .wrap{padding-top:38px;padding-bottom:38px}.print-note{font-size:.82rem;color:var(--slate)}@media(max-width:900px){.three,.two{grid-template-columns:1fr}.hero{padding-top:38px}h1{letter-spacing:-.04em}.toolbar{position:relative}.toolbar .wrap{align-items:flex-start}.btn{width:100%}.row{align-items:flex-start}}@media print{.toolbar,.no-print{display:none!important}.hero{background:#10213f!important}.card{break-inside:avoid;box-shadow:none}.wrap{max-width:none}.section{padding:10px 0}}
+  </style>
+</head>
+<body data-dashboard-template="local-html-life-dashboard">
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Nurse AI OS · Local Dashboard Fallback</div>
+      <h1>Life Dashboard, even without Notion.</h1>
+      <p class="lede">A browser-only, no-PHI personal operations cockpit for health, finances, goals, habits, tasks, and routines. Save it locally, bookmark it under <strong>Dashboards</strong>, and keep human judgment in charge.</p>
+      <div class="chips" aria-label="Dashboard safety chips">
+        <span class="chip">Browser-only</span><span class="chip">No account needed</span><span class="chip">Local storage</span><span class="chip">No PHI</span><span class="chip">Human gate before acting</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="toolbar no-print">
+    <div class="wrap">
+      <div class="row"><button class="btn alt" id="saveBtn">Save dashboard</button><button class="btn" id="exportBtn">Export backup JSON</button><button class="btn light" id="importBtn">Import backup</button><button class="btn gold" id="printBtn">Print / Save PDF</button><button class="btn light" id="resetBtn">Reset sample rows</button><input type="file" id="importFile" accept="application/json" hidden></div>
+      <div class="status" id="status">Ready · saved in this browser only.</div>
+    </div>
+  </div>
+
+  <main>
+    <section class="section">
+      <div class="wrap grid two">
+        <div class="callout">
+          <h2>Post-setup step</h2>
+          <ol>
+            <li>Save this file somewhere simple, such as your Nurse AI OS folder.</li>
+            <li>Open it in your browser. It works without a server or Notion account.</li>
+            <li>Create a browser bookmarks folder named <strong>Dashboards</strong>.</li>
+            <li>Bookmark this local dashboard under <strong>Dashboards</strong> so it becomes one click away.</li>
+            <li>Use broad strokes now. Go deeper later once the dashboard has earned trust.</li>
+            <li>Export a JSON backup before changing devices or clearing browser data.</li>
+          </ol>
+        </div>
+        <div class="callout warning">
+          <h2>Safety boundary</h2>
+          <p><strong>No PHI. No patient identifiers. No employer secrets. No account numbers. No credentials. No diagnosis, treatment, medication, clinical decision support, financial advice, or automated life decisions.</strong></p>
+          <p>This page is a personal reflection and operations template. If a trend could change health, money, work, family, or clinical decisions, pause and add a human gate.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <h2>Dashboard at a glance</h2>
+        <div class="grid three">
+          <div class="card"><div class="label">Goals</div><div class="metric" id="goalsCount">0</div><p>Active outcomes with one visible next action.</p></div>
+          <div class="card"><div class="label">Tasks</div><div class="metric" id="tasksCount">0</div><p>Today / this week items that need human prioritization.</p></div>
+          <div class="card"><div class="label">Habits + routines</div><div class="metric" id="rhCount">0</div><p>Tiny repeats that support wellbeing without shame.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>Home dashboard views</h2>
+        <div class="grid three">
+          <div class="card"><h3>Today</h3><ul class="view-list"><li>Top 3 tasks</li><li>Daily habits</li><li>Minimum viable routine</li><li>One decision that remains mine</li></ul></div>
+          <div class="card"><h3>This Week</h3><ul class="view-list"><li>Active goals</li><li>Due tasks</li><li>Money stewardship check-in</li><li>One thing to simplify</li></ul></div>
+          <div class="card"><h3>Health &amp; Energy</h3><ul class="view-list"><li>Sleep / energy / movement reflection</li><li>Meal rhythm</li><li>Restorative routines</li><li>No diagnosis or treatment advice</li></ul></div>
+          <div class="card"><h3>Money Stewardship</h3><ul class="view-list"><li>Budget categories</li><li>Manual bill reminders</li><li>Savings or debt goals</li><li>No bank credentials or account numbers</li></ul></div>
+          <div class="card"><h3>Goals &amp; Projects</h3><ul class="view-list"><li>90-day outcomes</li><li>Related tasks</li><li>Supporting habits</li><li>Review date</li></ul></div>
+          <div class="card"><h3>Weekly Reset</h3><ul class="view-list"><li>What gave energy?</li><li>What drained energy?</li><li>What needs a human decision?</li><li>What should never be automated?</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <div class="row"><div><h2>Database-style sections</h2><p class="print-note">Edit each section in plain text. One row per line. Click Save dashboard when done.</p></div><span class="pill">Local only</span><span class="pill">Manual review</span><span class="pill">No sync</span></div>
+        <div class="grid two">
+          <div class="card"><h3>Health &amp; Wellbeing</h3><textarea data-field="health" aria-label="Health and wellbeing rows"></textarea></div>
+          <div class="card"><h3>Finances</h3><textarea data-field="finances" aria-label="Finance rows"></textarea></div>
+          <div class="card"><h3>Goals</h3><textarea data-field="goals" aria-label="Goal rows"></textarea></div>
+          <div class="card"><h3>Habits</h3><textarea data-field="habits" aria-label="Habit rows"></textarea></div>
+          <div class="card"><h3>Tasks</h3><textarea data-field="tasks" aria-label="Task rows"></textarea></div>
+          <div class="card"><h3>Routines</h3><textarea data-field="routines" aria-label="Routine rows"></textarea></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap grid two">
+        <div class="card small"><h2>Weekly reset notes</h2><textarea data-field="weeklyReset" aria-label="Weekly reset notes"></textarea></div>
+        <div class="card danger"><h2>Human gate</h2><p>Before sharing, syncing, automating, or acting on any trend, answer:</p><ol><li>Could this affect health, money, work, family, or clinical judgment?</li><li>Could it expose PHI, employer secrets, account numbers, or credentials?</li><li>Do I need a licensed professional, supervisor, mentor, or trusted human to review this?</li></ol><p><strong>Agents propose. Humans judge. Nurses steward.</strong></p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <h2>Carry the lamp. Keep the ledger.</h2>
+      <p>This local dashboard is a suggested tool, not a requirement. If Notion works for you, use the Notion Life Dashboard Pack. If Notion feels like friction, open this HTML file, save it as a bookmark under Dashboards, and start gently.</p>
+    </div>
+  </footer>
+
+  <script>
+    const STORAGE_ID = 'naio-local-html-life-dashboard-v1';
+    const defaultData = {
+      health: 'Date | Energy | Sleep | Movement | Meal rhythm | Mood | Reflection | Human gate\nToday | 3/5 | 7h | 10-minute walk | steady meals | calm | broad strokes only | no clinical interpretation',
+      finances: 'Month | Type | Category | Amount | Status | Related goal | Human gate\nThis month | Review | Budget categories | manual only | open | Founding-year savings | no account numbers',
+      goals: 'Goal | Sphere | Quarter | Outcome | Next action | Review date | Boundary\nProtect recovery rhythm | Personal | Q1 | sustainable energy | choose minimum evening routine | Friday | no shame scoring',
+      habits: 'Habit | Cadence | Tiny version | Full version | Energy cost | Related goal\nDrink water before first coffee | Daily | one glass | bottle filled by noon | low | recovery rhythm',
+      tasks: 'Task | Status | Priority | Due | Sphere | Related goal | Next step\nChoose dashboard bookmark folder | Today | High | Today | Personal | gentle setup | create Dashboards bookmark folder',
+      routines: 'Routine | Frequency | Time block | Purpose | Minimum viable version | Human gate\nEvening landing | Daily | PM | shutdown and recovery | clear one surface and name tomorrow\'s first step | no automation',
+      weeklyReset: 'What gave energy?\n\nWhat drained energy?\n\nWhat did I complete?\n\nWhat needs a human decision?\n\nWhat can be simplified next week?\n\nWhat should never be automated?\n'
+    };
+    function loadData(){
+      try { return {...defaultData, ...JSON.parse(localStorage.getItem(STORAGE_ID) || '{}')}; }
+      catch { return {...defaultData}; }
+    }
+    function rows(value){ return String(value || '').split('\n').filter(line => line.trim() && !line.toLowerCase().startsWith('goal |') && !line.toLowerCase().startsWith('task |') && !line.toLowerCase().startsWith('habit |') && !line.toLowerCase().startsWith('routine |') && !line.toLowerCase().startsWith('date |') && !line.toLowerCase().startsWith('month |')).length; }
+    function updateSummary(data){
+      document.getElementById('goalsCount').textContent = rows(data.goals);
+      document.getElementById('tasksCount').textContent = rows(data.tasks);
+      document.getElementById('rhCount').textContent = rows(data.habits) + rows(data.routines);
+    }
+    function setStatus(text){ document.getElementById('status').textContent = text; }
+    function fill(data){ document.querySelectorAll('[data-field]').forEach(el => { el.value = data[el.dataset.field] || ''; }); updateSummary(data); }
+    function collect(){ const data = {}; document.querySelectorAll('[data-field]').forEach(el => { data[el.dataset.field] = el.value; }); data.savedAt = new Date().toISOString(); return data; }
+    function save(){ const data = collect(); localStorage.setItem(STORAGE_ID, JSON.stringify(data)); updateSummary(data); setStatus('Saved locally at ' + new Date().toLocaleTimeString()); }
+    function exportBackup(){ const data = collect(); const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nurse-ai-os-local-life-dashboard-backup.json'; a.click(); URL.revokeObjectURL(a.href); setStatus('Backup exported. Store it somewhere private and no-PHI.'); }
+    function importBackup(file){ const reader = new FileReader(); reader.onload = () => { try { const incoming = JSON.parse(reader.result); const data = {...defaultData, ...incoming}; fill(data); localStorage.setItem(STORAGE_ID, JSON.stringify(data)); setStatus('Backup imported and saved locally.'); } catch { setStatus('Import failed. Choose a valid dashboard JSON backup.'); } }; reader.readAsText(file); }
+    document.getElementById('saveBtn').addEventListener('click', save);
+    document.getElementById('exportBtn').addEventListener('click', exportBackup);
+    document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+    document.getElementById('importFile').addEventListener('change', e => { if(e.target.files[0]) importBackup(e.target.files[0]); });
+    document.getElementById('resetBtn').addEventListener('click', () => { if(confirm('Reset to the sample no-PHI dashboard rows?')) { fill(defaultData); localStorage.setItem(STORAGE_ID, JSON.stringify(defaultData)); setStatus('Reset to sample rows.'); } });
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    document.querySelectorAll('[data-field]').forEach(el => el.addEventListener('input', () => updateSummary(collect())));
+    fill(loadData());
+  </script>
+</body>
+</html>

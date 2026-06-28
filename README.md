@@ -43,6 +43,7 @@ Downloads and access:
 - Founding Steward Cohort application CTA — `#founding-steward-cohort` — a small 6-week, no-PHI guided build for nurses who want to create a governed AI practice without handing over judgment; manual review via `great.ai.nurses@gmail.com` fallback
 - Trust section: `#proof` — public-facing “How we earn your trust” language with builder receipts for signed releases, refusal tests, and the standards crosswalk behind links.
 - Community ladder: `#community-ladder` — sequences belonging from Lamp Huddle → starter community → Builder Academy → Founding Steward Cohort → contribute/lead, with no-PHI and human-review boundaries.
+- Glossary: `#glossary` — plain-English definitions for NAIO, Hermes Desktop, SOUL, EDENA, Florence-X, No PHI, human gate, and steward, plus light first-use definitions in the page copy.
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.
 Stepwise communication realignment:
@@ -53,3 +54,4 @@ Stepwise communication realignment:
 - Step 4 — role-section rewrites: updated `#student`, `#staff`, and `#leader` cards to follow ache → becoming → one first step → reassurance; student AI is framed as tutor-not-crutch, staff AI as no-PHI admin support only, and leader AI as defensible governance method rather than vendor demo.
 - Step 5 — trust/proof translation: renamed the public proof nav to Trust and rewrote `#proof` as “How we earn your trust,” moving signed release, refusal-checker, and standards-crosswalk detail into builder receipt links.
 - Step 6 — community/program ladder: added `#community-ladder` to sequence Lamp Huddle → starter community → Builder Academy → Founding Steward Cohort → contribute/lead, and added a warm human-review expectation for cohort applications.
+- Step 7 — glossary and first-use definitions: added `#glossary` with plain-language definitions for NAIO, Hermes Desktop, SOUL, EDENA, Florence-X, No PHI, human gate, and steward; added light first-use definitions without introducing the mentor launcher.

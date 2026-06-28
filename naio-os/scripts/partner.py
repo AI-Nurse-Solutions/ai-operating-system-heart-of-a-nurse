@@ -65,7 +65,7 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append('missing required partner files: '+', '.join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; partner=runtime.get('partner',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase22': failures.append(f"runtime version is not 2.0.0-phase22: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase23': failures.append(f"runtime version is not 2.0.0-phase23: {runtime.get('version')}")
     if partner.get('path')!='19-Partner-Briefing/': failures.append('runtime partner.path is not 19-Partner-Briefing/')
     if partner.get('partner_use')!='informational_partner_briefing_not_solicitation_or_approval': failures.append('runtime partner_use must remain informational, not solicitation or approval')
     for key in ['fundraising_solicitation','investment_advice','grant_application','contracting_authority','partnership_approval','sponsor_approval','institutional_endorsement','procurement_approval','clinical_deployment_approval','legal_advice','compliance_determination','auto_contact_partners','auto_send_materials','auto_follow_up','auto_create_data_room','auto_accept_funding']:

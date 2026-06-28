@@ -83,8 +83,8 @@ def check_profile(profile: Path) -> dict:
     rituals = load_yaml(profile / "cron/rituals.yaml") or {}
     contribution = runtime.get("contribution", {}) if isinstance(runtime, dict) else {}
 
-    if runtime.get("version") != "2.0.0-phase22":
-        failures.append(f"runtime version is not 2.0.0-phase22: {runtime.get('version')}")
+    if runtime.get("version") != "2.0.0-phase23":
+        failures.append(f"runtime version is not 2.0.0-phase23: {runtime.get('version')}")
     if contribution.get("path") != "13-Contribution-Flow/":
         failures.append("runtime contribution.path is not 13-Contribution-Flow/")
     if contribution.get("community_use") != "human_reviewed_sanitized_learning_not_endorsement":

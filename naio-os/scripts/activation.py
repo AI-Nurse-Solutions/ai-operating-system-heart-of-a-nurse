@@ -108,8 +108,8 @@ def activation_report(profile: Path) -> tuple[dict, int]:
         except Exception as e:
             failures.append(f"cron/rituals.yaml malformed: {e}")
 
-    if runtime.get("version") != "2.0.0-phase22":
-        failures.append(f"runtime version is not 2.0.0-phase22: {runtime.get('version')}")
+    if runtime.get("version") != "2.0.0-phase23":
+        failures.append(f"runtime version is not 2.0.0-phase23: {runtime.get('version')}")
     if runtime.get("mutation_scope") != "target-directory-only":
         failures.append("runtime mutation_scope must be target-directory-only")
     if rituals.get("mode") != "templates_only_not_scheduled":

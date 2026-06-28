@@ -63,7 +63,7 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append('missing required localization files: '+', '.join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; localization=runtime.get('localization',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase22': failures.append(f"runtime version is not 2.0.0-phase22: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase23': failures.append(f"runtime version is not 2.0.0-phase23: {runtime.get('version')}")
     if localization.get('path')!='21-Localization-Readiness/': failures.append('runtime localization.path is not 21-Localization-Readiness/')
     if localization.get('localization_use')!='adaptation_readiness_not_official_localization_or_jurisdictional_approval': failures.append('runtime localization_use must remain readiness/adaptation only, not official localization or jurisdictional approval')
     for key in ['legal_advice','regulatory_advice','compliance_determination','official_translation','translation_certification','localization_approval','cultural_validation','jurisdictional_approval','ministry_approval','institutional_endorsement','clinical_governance_authority','clinical_deployment_approval','procurement_approval','cross_border_data_transfer_approval','immigration_advice','licensure_advice','recruitment_activity','fundraising_solicitation','auto_translate','auto_publish_localized_materials','auto_contact_local_partners','auto_assign_local_stewards','auto_collect_regional_data','auto_submit_to_authorities']:

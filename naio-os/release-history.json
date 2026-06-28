@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase22",
+  "latest_version": "2.0.0-phase23",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -131,6 +131,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 22,
       "summary": "Adoption & Outcomes Ledger Pack for safe adoption signals, learning evidence, time-saved estimates, human-gate patterns, friction, and cohort/institutional signal briefs without clinical, financial, staffing, compliance, certification, performance-evaluation, or automatic reporting claims."
+    },
+    {
+      "version": "2.0.0-phase23",
+      "date": "2026-06-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 23,
+      "summary": "Commercial Activation Pack for Founding Steward Cohort applications and pilot conversations without PHI, clinical decisions, certification, procurement/deployment approval, payment automation, or automatic outreach/reporting claims."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

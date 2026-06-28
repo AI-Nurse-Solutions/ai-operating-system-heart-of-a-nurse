@@ -1,18 +1,18 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase22",
-  "minimum_installer_phase": 22,
+  "latest_version": "2.0.0-phase23",
+  "minimum_installer_phase": 23,
   "published_at": "2026-06-27T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "79aba4a548e5e00d76708504ea7c95efc8deef0f2f2f2f17eb4814c53b7b80c4",
+    "sha256": "f2a8820382afadefe0330974401993d3f90e85263d4677d7f83b66b79655f84f",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
     "key_id": "naio-os-release-key-2026-06",
-    "minimum_installer_phase": 22
+    "minimum_installer_phase": 23
   },
   "release_history": {
     "path": "release-history.json",
@@ -41,7 +41,8 @@
     "partner": "scripts/partner.py",
     "stewardship": "scripts/stewardship.py",
     "localization": "scripts/localization.py",
-    "outcomes": "scripts/outcomes.py"
+    "outcomes": "scripts/outcomes.py",
+    "commercial": "scripts/commercial.py"
   },
   "safety_contract": [
     "no PHI",
@@ -136,8 +137,23 @@
     "no automatic translation",
     "no automatic localized publishing",
     "no automatic local partner outreach",
-    "human local steward review required"
+    "human local steward review required",
+    "Commercial Activation / Founding Steward Cohort Pack",
+    "founding cohort application path",
+    "pilot conversation charter path",
+    "manual application review",
+    "application is not acceptance",
+    "payment link only after human acceptance",
+    "no automatic enrollment",
+    "no automatic payment",
+    "no automatic invoicing",
+    "no automatic partner outreach",
+    "no automatic data room",
+    "no automatic institutional reporting",
+    "no automatic manager notification",
+    "no certification claim",
+    "no procurement or clinical deployment approval"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward.",
-  "summary": "Adoption & Outcomes Ledger Pack for adoption signals and learning evidence without clinical efficacy, patient outcome, ROI, staffing, compliance, certification, performance-evaluation, or automatic reporting claims."
+  "summary": "Commercial Activation Pack for Founding Steward Cohort applications and pilot conversations without PHI, clinical decisions, certification, procurement/deployment approval, payment automation, or automatic outreach/reporting claims."
 }

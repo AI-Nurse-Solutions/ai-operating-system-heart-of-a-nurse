@@ -64,7 +64,7 @@ def check_profile(profile):
     failures=[]; warnings=[]
     if missing: failures.append('missing required outcomes files: '+', '.join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}; rituals=load_yaml(profile/'cron/rituals.yaml') or {}; outcomes=runtime.get('outcomes',{}) if isinstance(runtime,dict) else {}
-    if runtime.get('version')!='2.0.0-phase22': failures.append(f"runtime version is not 2.0.0-phase22: {runtime.get('version')}")
+    if runtime.get('version')!='2.0.0-phase23': failures.append(f"runtime version is not 2.0.0-phase23: {runtime.get('version')}")
     if outcomes.get('path')!='22-Adoption-Outcomes-Ledger/': failures.append('runtime outcomes.path is not 22-Adoption-Outcomes-Ledger/')
     if outcomes.get('outcomes_use')!='adoption_signal_and_learning_evidence_not_clinical_or_financial_outcomes_claims': failures.append('runtime outcomes_use must remain adoption signal/learning evidence only')
     for key in ['clinical_efficacy_claim','patient_outcome_improvement_claim','patient_safety_validation','quality_measure_impact_claim','roi_guarantee','staffing_reduction_claim','compliance_validation','competency_certification','performance_evaluation','research_determination','irb_determination','quality_improvement_approval','billing_or_reimbursement_claim','procurement_approval','deployment_approval','auto_score','auto_publish_dashboard','auto_send_report','auto_notify_manager','auto_evaluate_performance','auto_escalate','auto_submit_to_institution','auto_issue_badge','auto_issue_credential']:

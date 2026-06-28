@@ -58,13 +58,13 @@ naio-os/
 └── schema/
     ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
     └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
-├── manifest.yaml                   # Phase 20 bundle manifest + checksums
-├── release.json                    # Phase 20 current update-channel metadata
-├── release-history.json            # Phase 20 rollback protection + trusted key ids
-├── manifest.sha256                 # Phase 20 manifest digest
-├── manifest.sig                    # Phase 20 detached manifest signature
-├── bootstrap.sh                    # Phase 20 signed one-line remote installer entrypoint
-├── install.sh                      # Phase 18 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --orchestration-check; --governance-check; --partner-check; --stewardship-check; --apply target-only)
+├── manifest.yaml                   # Phase 23 bundle manifest + checksums
+├── release.json                    # Phase 23 current update-channel metadata
+├── release-history.json            # Phase 23 rollback protection + trusted key ids
+├── manifest.sha256                 # Phase 23 manifest digest
+├── manifest.sig                    # Phase 23 detached manifest signature
+├── bootstrap.sh                    # Phase 23 signed one-line remote installer entrypoint
+├── install.sh                      # Phase 23 installer (dry-run default; signed release gate; --self-test; --check-update; --recovery-drill; --activation-check; --launch-check; --cohort-check; --evidence-check; --contribution-check; --pilot-check; --readiness-check; --registry-check; --orchestration-check; --governance-check; --partner-check; --stewardship-check; --localization-check; --outcomes-check; --commercial-check; --apply target-only)
 └── scripts/
     ├── preflight.sh                # OS/dependency/Hermes preflight
     ├── import-soul.py              # validates naio-soul.json
@@ -538,6 +538,35 @@ Phase 22 boundaries:
 - No automatic performance evaluation.
 - No automatic escalation.
 - No automatic badge or credential issuance.
+- Human steward review is required.
+
+Agents propose. Humans judge. Nurses steward.
+
+
+## Phase 23 — Commercial Activation / Founding Steward Cohort Pack
+
+Phase 23 gives Robert, nurse stewards, sponsors, and institutions a safe conversion layer: **“How do we turn launch awareness into reviewed applications, cohort seats, and pilot conversations without claiming certification, procurement approval, clinical deployment, or automatic commercial action?”**
+
+It renders `23-Commercial-Activation/` with a Founding Steward Cohort offer, application CTA and form copy, launch conversion path, pilot conversation deck guide, one-page pilot charter, warm invite and follow-up emails, seat/scholarship policy, manual review decision record, claim boundary/no-authority statement, and commercial activation decision record.
+
+It also adds:
+
+- `scripts/commercial.py`
+- `install.sh --commercial-check --target <rendered-profile-dir>`
+- `config/edena-runtime.yaml` commercial metadata
+- signed release metadata for `2.0.0-phase23`
+
+Phase 23 boundaries:
+
+- No PHI.
+- No patient care use.
+- No clinical decision support.
+- No certification claim, competency validation, credentialing, badge issuance, or CE credit claim.
+- Application is not acceptance.
+- Sponsor conversation is not sponsor approval.
+- Pilot charter is not procurement approval, deployment approval, compliance determination, legal advice, contracting authority, or institutional endorsement.
+- Payment link only after human acceptance.
+- No automatic enrollment, payment, invoicing, partner outreach, follow-up, data room, funding acceptance, dashboard publication, institutional reporting, manager notification, or escalation.
 - Human steward review is required.
 
 Agents propose. Humans judge. Nurses steward.

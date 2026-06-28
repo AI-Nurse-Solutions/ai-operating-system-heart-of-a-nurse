@@ -1,4 +1,4 @@
-version: 2.0.0-phase22
+version: 2.0.0-phase23
 bundle_id: naio-os
 created: '2026-06-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
@@ -32,6 +32,7 @@ entrypoints:
   stewardship: scripts/stewardship.py
   localization: scripts/localization.py
   outcomes: scripts/outcomes.py
+  commercial: scripts/commercial.py
 checksum_policy:
   algorithm: sha256
   manifest_self_hash: excluded
@@ -63,25 +64,25 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 96cffc832dda5fed90ee12aaa3ca5e4a804ae1dc4af0ca92768c7410a2c4c284
+  sha256: 95f3d5278ecd8b3f422511f01ac595a2002a0dbabe105710b085f8653ac876b9
 - path: scripts/self-test.py
   role: self-test
-  sha256: a68f6aec689b1f77b40812b9c6b33cfdccfb9d6d1139246bd4f432de38f41b26
+  sha256: 776146514e527c8f8a7a8ab5522980e22dd165bd1453386e2319f71d069e2fc3
 - path: scripts/healthcheck.py
   role: healthcheck
-  sha256: 98ee6c78fdd81feeb484096ed69b99ccc5f31cd239a544fd7e9baab2c8da3182
+  sha256: bde8b39b8a17aa9e017ff123cf7b249ae22afd098c9d9b084da8a2b0e63513de
 - path: scripts/compute-checksums.sh
   role: checksum-tool
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: a18f99dd81e8f01fee9b90afd346c91b444f353976966cbfda5c7cf19c65ee2c
+  sha256: 5d7602714eec08d1ff3a0c5204ac6dd9edd23efd3672f528ad274a19ea198b3d
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: d51fada45f496d819c85655836ec085fec1116c3e4d49d17eb62771ff569e3b1
+  sha256: e20ba7374ebf680b8e9e2fed42e490acb749ca52edcb1ba8e632cfb57c9f477a
 - path: README.md
   role: spec
-  sha256: 4785880c18ad4323165581c8b292259ef721eebb42a258cd8b04a485c914e8b0
+  sha256: 8c9185b2e10c7028d5fc5877d16f5816a89215557ace9d9e84ad28e102e6c024
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -90,10 +91,10 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: edc0f6e634944dcd48fb129d8254462745cc8f64dbac4d6af84ce4c8c6f3b2d6
+  sha256: b6dc334b00e8014c92cd2489ae99b6ff9354028c5f25a6788a1ae935658a645c
 - path: release-history.json
   role: release-history
-  sha256: 1903fa8b76b333ee088598d091788f840db3a9889d812df27d291517412b6565
+  sha256: 7282789f852a60b820f3c47a87f46ee59ad5d700348bc2cfc2bef67425656d99
 - path: scripts/check-update.py
   role: update-advisory
   sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
@@ -102,48 +103,51 @@ contents:
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 - path: scripts/activation.py
   role: activation-check
-  sha256: 73fa9aa00d93b6f06dd75399cc68ce0e509b7f3080e9b14ab1755a88ce3df62f
+  sha256: 970e05daaaa70305a5fd47ffe4f31950970652181887afe78b8382a4661bf9d6
 - path: scripts/launch.py
   role: public-launch-check
-  sha256: 010fc16e7405252b382b37c6c525901b02fffdd2c622ea3067a9864238a3dc33
+  sha256: 1dceb55909a01b02c5b7356da35b382a0bba72c452dd67934aae21427bb5aee8
 - path: scripts/cohort.py
   role: cohort-mode-check
-  sha256: e7ebcdb7ab07e236b9eb1b53d54cb46195e9095adc3f93dc9a9b42db6f2534bf
+  sha256: 85930740db2125ebd30e628c8e36d6dbea4ce0232728af3b0802ac3eb01d2c23
 - path: scripts/evidence.py
   role: evidence-trail-check
-  sha256: 6ecd7ca64df4527cef4ff95f9f889e1d0d5ac6055da843bcb02498f6ba882292
+  sha256: 1850ab6efb84033ad2437d2dacda4ab303b330e8602d0b75d32c8ab3591cb9b9
 - path: scripts/contribute.py
   role: contribution-flow-check
-  sha256: f4a0809a18cf46e1f6b16aa95bb37d93d40c9ca60c62391c50c9cbd3f5e5d684
+  sha256: 20dbfa19a1a1f535f34c21b591f02370909b2e732f03d482648ea5d0276e8641
 - path: scripts/pilot.py
   role: institutional-pilot-check
-  sha256: 381b218bb0528476c6aece89b14f25236d4fca5faad1c7a7d8d6fed02920e8ef
+  sha256: db139ee179f5053300632a9d3fb0748cb07653a248aa645303f69d1ad29e921b
 - path: scripts/readiness.py
   role: edena-readiness-check
-  sha256: 416a31c474d20eb70623db921dcc4cab11bf17f35e0dcd23aab157785cfff0c9
+  sha256: 5ef32359a07830bfdb0d4c69dc6b5d135b38f2d9b959c3d8b0dca54f4dc990a4
 - path: scripts/registry.py
   role: agent-registry-check
-  sha256: 76045fc9819741ea5fba11f0f5a686556f5b06bb8ca6d700fa16dcf949f0d399
+  sha256: 45d6ea8d44285eaaf2973149657175e7209ce35c7b2ac7ce6847443fe566c885
 - path: scripts/orchestration.py
   role: florence-x-orchestration-check
-  sha256: 57af886af08b569ca6f68f48745e4fb1802f03595129cd2eae9e2bede2cb89f8
+  sha256: cc5cc8b3b9a28e8cefd7bc1aecdd0ec3e0b6c058bfec5f4d9d510330360e7f31
 - path: scripts/governance.py
   role: governance-board-check
-  sha256: 425d829fe0b09331a4acbc4e1290389ad4048acf81fae3e6ec07157a8ce97385
+  sha256: 409e59b0b7510eedcb40fb0bb173fae88e7a2364900afeba7eaf79ee73411a31
 - path: scripts/partner.py
   role: partner-briefing-check
-  sha256: 7087c243e52c718bfbcfb14effc485a46084adbd8ad61436394b8a617cba07d3
+  sha256: 8194c00f74446115726c879bcbc989bc10f5c9d04676dba1606067f96316b2de
 - path: scripts/stewardship.py
   role: stewardship-operating-model-check
-  sha256: 0df9aa4998c775a82b3049eab4dcefec97ab9ea97a219f62682a163238b7bbef
+  sha256: 80fa2a3d09c6b51587f414aded325fd4c153fe2f8f60c25e999555a08ca4d919
 - path: scripts/localization.py
   role: localization-readiness-check
-  sha256: 9a8418ecbc163e9c0355465b15338b3ecd2dbe784b1c429b7f03a09c251fc494
+  sha256: eeb8318c418f970013c8fdfd274c4dd40ce957319cfb997575a0355773354030
 - path: scripts/outcomes.py
   role: adoption-outcomes-ledger-check
-  sha256: d5b532d90bc538e9fb051c2403970ebb18d8fbf226d31bb76f6b26a5d0b49e12
+  sha256: 02ddd71ad3f7b158d5eeb8a0c2cfcaf694d58ab77e90c2bcfb47f63e2808e67e
+- path: scripts/commercial.py
+  role: commercial-activation-check
+  sha256: 062bf6e4147eee71a2e6a398107a234c60aa603dd31d320aa4c9eb6e7ffb7bdd
 safety_contract:
-  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready_outcomes-ledger
+  mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready_outcomes-ledger_commercial-activation
   idempotent: true
   mutation_scope: explicit_target_directory_only
   bootstrap_scope: temporary_download_directory_only
@@ -186,6 +190,9 @@ safety_contract:
   - 'outcomes_phi_detected          # Phase 22 requires no-PHI adoption/outcomes ledger materials'
   - 'outcomes_impact_overclaim      # Phase 22 refuses clinical efficacy/patient outcome/ROI/staffing/compliance/certification claims'
   - 'automatic_outcomes_action      # Phase 22 drafts only; no automatic scoring, dashboard publication, reporting, manager notification, escalation, badge, or credential issuance'
+  - 'commercial_phi_detected          # Phase 23 requires no-PHI commercial activation materials'
+  - 'commercial_authority_overclaim   # Phase 23 refuses certification, procurement, clinical deployment, legal/compliance, sponsorship, or funding authority claims'
+  - 'automatic_commercial_action      # Phase 23 drafts only; no automatic enrollment, payment, invoicing, outreach, follow-up, reporting, or funding acceptance'
 install_flow:
 - id: bootstrap-download
   description: Optional one-line installer downloads manifest and listed artifacts into a temporary directory.
@@ -223,6 +230,10 @@ install_flow:
   dry_run_skips: false
 - id: outcomes-check
   description: Optional --outcomes-check verifies no-PHI adoption signals and learning evidence without clinical, financial, staffing, compliance, certification, performance-evaluation, or automatic reporting claims.
+  blocking: false
+  dry_run_skips: false
+- id: commercial-check
+  description: Optional --commercial-check verifies no-PHI founding cohort and pilot conversation activation without certification, procurement/deployment approval, payment automation, or automatic outreach/reporting claims.
   blocking: false
   dry_run_skips: false
 - id: plan
@@ -572,3 +583,35 @@ phase22_adoption_outcomes_ledger:
   requires_human_steward_review: true
 phase22_one_line_commands:
 - curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --outcomes-check --target ./NAIO-Hermes-Profile
+phase23_commercial_activation:
+  script: scripts/commercial.py
+  path: 23-Commercial-Activation/
+  safe_to_activate: true
+  commercial_use: founding_steward_cohort_and_pilot_conversation_activation_not_procurement_or_clinical_deployment
+  clinical_deployment_approval: false
+  procurement_approval: false
+  contracting_authority: false
+  legal_advice: false
+  compliance_determination: false
+  certification: false
+  credentialing: false
+  competency_validation: false
+  fundraising_solicitation: false
+  investment_advice: false
+  grant_application: false
+  auto_enroll: false
+  auto_accept_payment: false
+  auto_send_invoice: false
+  auto_contact_partners: false
+  auto_follow_up: false
+  auto_create_data_room: false
+  auto_accept_funding: false
+  auto_publish_dashboard: false
+  auto_report_to_institution: false
+  auto_notify_manager: false
+  refuses_phi: true
+  refuses_patient_care: true
+  refuses_commercial_overclaims: true
+  requires_human_steward_review: true
+phase23_one_line_commands:
+- curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --commercial-check --target ./NAIO-Hermes-Profile

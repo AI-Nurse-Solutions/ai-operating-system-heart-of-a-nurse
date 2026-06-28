@@ -40,3 +40,6 @@ Downloads:
 - Founding Steward Cohort application CTA — `#founding-steward-cohort` — a small 6-week, no-PHI guided build for nurses who want to create a governed AI practice without handing over judgment; manual review via `great.ai.nurses@gmail.com` fallback
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.
+Front-door communication realignment:
+
+- Step 1 — welcome sequencing: hero reduced to one primary CTA (`#choose-path`) plus one secondary SOUL Quiz CTA, with a new role chooser for student nurses, staff nurses, and nurse leaders/educators. Deeper downloads and proof remain available below instead of competing in the first screen.

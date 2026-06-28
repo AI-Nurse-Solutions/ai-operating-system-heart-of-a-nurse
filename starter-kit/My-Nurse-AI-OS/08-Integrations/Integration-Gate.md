@@ -22,3 +22,8 @@ Default boundary:
 Notion-specific boundary:
 
 > Use Notion for operations, learning, governance review, and coordination. Do not use it as an EHR, clinical documentation system, clinical decision support tool, credentialing authority, care coordination platform, or storage place for passwords, API keys, tokens, PHI, or patient-specific information.
+
+
+Notion Life Dashboard Pack boundary:
+
+> The Notion Life Dashboard Pack for health, finances, goals, habits, tasks, and routines are Green only when they stay personal, no-PHI, and manually reviewed. Add a human gate before sharing, syncing wearables/banks/calendars, adding API automation, or using any trend to make health, financial, work, family, or clinical decisions.

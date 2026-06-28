@@ -66,6 +66,30 @@ Do not include patient data, clinical recommendations, credentials/secrets, cert
 Return the database names, fields, status options, and one safe example row for each.
 ```
 
+
+## Notion Life Dashboard Pack
+
+For personal operations, the starter kit now includes `Notion-Life-Dashboard-Pack/` with six Notion-importable CSV databases. This Notion Life Dashboard Pack covers health, finances, goals, habits, tasks, and routines:
+
+- Health & Wellbeing
+- Finances
+- Goals
+- Habits
+- Tasks
+- Routines
+
+Use these as a **no-PHI personal life cockpit**. They are for self-organization, reflection, and weekly review — not diagnosis, treatment, medication advice, financial advice, patient care, employer systems, bank credentials, or automated decisions.
+
+Recommended use:
+
+1. Import the six CSV files into a new Notion page.
+2. Add relations from `Relation-Map.md`.
+3. Build Today, This Week, Health & Energy, Money Stewardship, Goals & Projects, and Weekly Reset views.
+4. Keep all examples non-PHI and personal-safe.
+5. Add a human gate before sharing, syncing, automating, or acting on any dashboard trend.
+
+> Broad strokes now, go deeper later. Build enough structure to serve your life — not another dashboard that judges it.
+
 ## EDENA boundary
 
 - **Green:** personal organization, learning dashboard, public-safe content calendar, template library.

@@ -153,7 +153,7 @@ Cover:
 18. YouTube transcripts into Hermes: lecture → timestamped chapters, Obsidian note, follow-up questions
 19. Living and thriving with AI: cognitive load, ergonomics, relationships, critical thinking, systems thinking, and leader/educator practice
 20. 90-minute workshop outline for nurses, leaders, educators, or students
-21. Notion as a no-PHI Command Center: governance decisions, human review queues, agent intake, pilot tracking, content calendars, and template libraries — never EHR, CDS, credentialing, procurement, legal/compliance, secrets, or PHI storage
+21. Notion as a no-PHI Command Center plus Notion Life Dashboard Pack: governance decisions, human review queues, agent intake, pilot tracking, content calendars, template libraries, and personal dashboards for health, finances, goals, habits, tasks, and routines — never EHR, CDS, patient-care coordination, credentialing, procurement, legal/compliance, secrets, PHI storage, bank credentials, or automated decisions
 22. Google Workspace as a governed suite: Gmail, Drive, Docs, Sheets, Slides, Meet, Calendar, and core services under BAA only when eligible/configured/approved
 23. Safe AI with PHI: personal Gmail and generic AI are no-PHI; use fictional/de-identified/public/synthetic material unless explicitly approved
 24. Why every connector, media tool, messaging channel, screenshot, browser, Notion workspace, Workspace service, and MCP server needs least privilege, cost awareness, approval gates, and a human owner
@@ -165,3 +165,18 @@ Key line:
 Close:
 
 > The goal is not a smarter machine. The goal is a stronger nurse.
+
+
+### Optional segment — Notion life dashboard walkthrough
+
+Show how to import the six CSV databases from `08-Integrations/Notion-Life-Dashboard-Pack/` and build a gentle home dashboard:
+
+1. Today — tasks, routines, and daily habits.
+2. This Week — goals, due tasks, and money stewardship check-in.
+3. Health & Energy — reflection, sleep, energy, movement, and routines.
+4. Goals & Projects — goals related to tasks, habits, and routines.
+5. Weekly Reset — what gave energy, what drained energy, what needs a human decision.
+
+Boundary line:
+
+> This is a personal operations dashboard, not a clinical or financial decision system. No PHI, no patient care, no account numbers, no credentials, no automatic decisions.

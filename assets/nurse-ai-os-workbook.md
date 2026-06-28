@@ -880,6 +880,49 @@ Return the database names, fields, status options, and one safe example row for 
 
 > Rule: Notion carries the ledger. The nurse still carries the judgment.
 
+
+### Notion Life Dashboard Pack
+
+The starter kit includes `08-Integrations/Notion-Life-Dashboard-Pack/`, a no-PHI database-style life dashboard template. This pack covers health, finances, goals, habits, tasks, and routines:
+
+- Health & wellbeing
+- Finances
+- Goals
+- Habits
+- Tasks
+- Routines
+
+Use it as a personal operations cockpit:
+
+| Dashboard | Use it for | Do not use it for |
+|---|---|---|
+| Health & Wellbeing | energy, sleep, movement, meals, reflection | diagnosis, treatment, medication advice, patient care, clinical documentation |
+| Finances | budget categories, bills, savings/debt goals, manual reviews | bank credentials, account numbers, automated transactions, financial advice |
+| Goals | 90-day outcomes, next actions, sphere alignment | performance evaluation, certification, manager reporting |
+| Habits | tiny habits, cadence, energy cost, reflection | shame, surveillance, automated scoring |
+| Tasks | today/this-week actions, blocked items, human gates | employer task systems, patient care coordination |
+| Routines | morning/evening/weekly reset rhythms | rigid compliance tracking or automated life decisions |
+
+Safe setup steps:
+
+1. Create a Notion page called `My Nurse AI OS · Life Dashboard`.
+2. Import the six CSV files from the starter kit.
+3. Add relation properties using `Relation-Map.md`.
+4. Create views for Today, This Week, Health & Energy, Money Stewardship, Goals & Projects, and Weekly Reset.
+5. Keep all examples personal-safe and no-PHI.
+6. Add a human gate before sharing, syncing, automating, or acting on a dashboard trend.
+
+Safe first prompt:
+
+```text
+Help me build a no-PHI Notion life dashboard using these six databases: Health & Wellbeing, Finances, Goals, Habits, Tasks, and Routines.
+Keep it personal, non-clinical, non-financial-advice, and human-reviewed.
+Suggest dashboard sections, database views, relation properties, and one weekly reset ritual.
+Do not ask for patient data, employer secrets, bank credentials, account numbers, passwords, API keys, diagnosis, treatment, medication, or clinical advice.
+```
+
+> Broad strokes now, go deeper later. The dashboard serves the nurse; it does not judge the nurse.
+
 ## Google Workspace for a non-personal account
 
 Use Google Workspace only after the no-PHI boundary is clear.
@@ -1406,22 +1449,18 @@ You primarily work through:
 4. Keep security, privacy, and safety at the center of all tool use.
 ```
 
-### Public-safe .env sketch
+### Public-safe environment sketch
 
 Do not paste real keys into course notes, screenshots, public repos, or shared chat.
 
-```bash
-# Messaging example: Telegram
-TELEGRAM_BOT_TOKEN=[REDACTED]
-TELEGRAM_ALLOWED_USERS=123456789,987654321,555555555
+```text
+Messaging configuration sketch:
+- Telegram bot auth: set the required token only in your local private environment file.
+- Telegram allowlist: list only approved user IDs in your local private environment file.
+- Optional Slack auth: set required Slack tokens only in your local private environment file.
+- Optional GitHub auth: set required GitHub token only in your local private environment file.
 
-# Optional Slack example
-SLACK_BOT_TOKEN=[REDACTED]
-SLACK_APP_TOKEN=[REDACTED]
-SLACK_ALLOWED_USERS=U12345,U67890
-
-# Optional GitHub token
-GITHUB_PERSONAL_ACCESS_TOKEN=[REDACTED]
+Do not paste tokens, API keys, passwords, chat IDs, or secrets into public files.
 ```
 
 ### Minimal team skills

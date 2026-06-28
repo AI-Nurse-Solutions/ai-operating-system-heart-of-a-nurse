@@ -2,18 +2,14 @@
 
 Do not paste real keys into course notes, screenshots, public repos, or shared chat.
 
-```bash
-# Messaging example: Telegram
-TELEGRAM_BOT_TOKEN=PASTE_REAL_TOKEN_ONLY_IN_PRIVATE_ENV_FILE
-TELEGRAM_ALLOWED_USERS=123456789,987654321,555555555
+```text
+Messaging configuration sketch:
+- Telegram bot auth: set the required token only in your local private environment file.
+- Telegram allowlist: list only approved user IDs in your local private environment file.
+- Optional Slack auth: set required Slack tokens only in your local private environment file.
+- Optional GitHub auth: set required GitHub token only in your local private environment file.
 
-# Optional Slack example
-SLACK_BOT_TOKEN=PASTE_REAL_TOKEN_ONLY_IN_PRIVATE_ENV_FILE
-SLACK_APP_TOKEN=PASTE_REAL_TOKEN_ONLY_IN_PRIVATE_ENV_FILE
-SLACK_ALLOWED_USERS=U12345,U67890
-
-# Optional GitHub token
-GITHUB_PERSONAL_ACCESS_TOKEN=PASTE_REAL_TOKEN_ONLY_IN_PRIVATE_ENV_FILE
+Do not paste tokens, API keys, passwords, chat IDs, or secrets into public files.
 ```
 
 ## Rule

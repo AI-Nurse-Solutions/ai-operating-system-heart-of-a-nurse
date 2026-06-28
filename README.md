@@ -7,8 +7,10 @@ Carry Florence Nightingale's lamp into the AI age. A nurse-centered course that 
 Live page: https://nurse-ai-os.org/
 GitHub Pages mirror: https://ai-nurse-solutions.github.io/ai-operating-system-heart-of-a-nurse/
 
-Downloads:
+Downloads and access:
 
+
+- Access & Pricing section: `#access-pricing` — says plainly that a comparable $1,500–$2,999 professional program is free this founding year for nurses and nursing students, with no credit card to start, no PHI, no auto-charge, and clear boundaries for later paid guided cohorts/institutional programs.
 - PDF workbook: `assets/nurse-ai-os-workbook.pdf`
 - Markdown workbook: `assets/nurse-ai-os-workbook.md`
 - Starter kit ZIP: `assets/nurse-ai-os-starter-kit.zip`
@@ -40,6 +42,7 @@ Downloads:
 - Founding Steward Cohort application CTA — `#founding-steward-cohort` — a small 6-week, no-PHI guided build for nurses who want to create a governed AI practice without handing over judgment; manual review via `great.ai.nurses@gmail.com` fallback
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.
-Front-door communication realignment:
+Stepwise communication realignment:
 
 - Step 1 — welcome sequencing: hero reduced to one primary CTA (`#choose-path`) plus one secondary SOUL Quiz CTA, with a new role chooser for student nurses, staff nurses, and nurse leaders/educators. Deeper downloads and proof remain available below instead of competing in the first screen.
+- Step 2 — access and pricing: added `#access-pricing` near the top of the page to remove the “what’s the catch?” trust gap with founding-year value, free core learning, no-credit-card/no-PHI/no-auto-charge boundaries, and paid-program clarity.

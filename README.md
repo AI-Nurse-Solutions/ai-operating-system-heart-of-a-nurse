@@ -11,6 +11,7 @@ Downloads and access:
 
 
 - Access & Pricing section: `#access-pricing` — says plainly that a comparable $1,500–$2,999 professional program is free this founding year for nurses and nursing students, with no credit card to start, no PHI, no auto-charge, and clear boundaries for later paid guided cohorts/institutional programs.
+- Getting Started section: `#getting-started` — frames setup as two safe doors: Door 1 no-install start with browser AI + SOUL Quiz + workbook/starter kit + Day 1 roadmap, and Door 2 optional full governed macOS build with self-test, dry-run, recovery, and manual approval.
 - PDF workbook: `assets/nurse-ai-os-workbook.pdf`
 - Markdown workbook: `assets/nurse-ai-os-workbook.md`
 - Starter kit ZIP: `assets/nurse-ai-os-starter-kit.zip`
@@ -46,3 +47,4 @@ Stepwise communication realignment:
 
 - Step 1 — welcome sequencing: hero reduced to one primary CTA (`#choose-path`) plus one secondary SOUL Quiz CTA, with a new role chooser for student nurses, staff nurses, and nurse leaders/educators. Deeper downloads and proof remain available below instead of competing in the first screen.
 - Step 2 — access and pricing: added `#access-pricing` near the top of the page to remove the “what’s the catch?” trust gap with founding-year value, free core learning, no-credit-card/no-PHI/no-auto-charge boundaries, and paid-program clarity.
+- Step 3 — getting started setup: added `#getting-started` to lead with Door 1 no-install setup and place the full Hermes Desktop/macOS build behind Door 2 with dry-run, self-test, undo/recovery, and human approval reassurance.

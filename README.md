@@ -4,7 +4,8 @@ Carry Florence Nightingale's lamp into the AI age. A nurse-centered course that 
 
 > Carry the lamp. Keep the ledger. Hermes supports. Humans judge. Nurses steward.
 
-Live page: https://ai-nurse-solutions.github.io/ai-operating-system-heart-of-a-nurse/
+Live page: https://nurse-ai-os.org/
+GitHub Pages mirror: https://ai-nurse-solutions.github.io/ai-operating-system-heart-of-a-nurse/
 
 Downloads:
 
@@ -33,5 +34,7 @@ Downloads:
 - SOUL Quiz (self-serve) — `/soul-quiz.html` — a browser-only multi-step quiz that drafts and downloads tailored SOUL.md files with no server or upload
 - Life & Projects Quiz — `/life-quiz.html` — maps a nurse's whole life across 3 spheres / 17 life domains and converts each active area into a governed project system prompt, with a completeness (coverage) check
 - AI Global Builder Incubator Academy — `/builder-academy.html` — public-facing landing page and browser-only interest form for the first country lane: Philippines implementation with nursing schools, associations, senior high learners, and diaspora mentors
+- Governed NAIO OS control plane — `/naio-os/` — signed v2.0.0 Phase 22 release with 22 governed packs live, including the Adoption & Outcomes Ledger proof layer
+- Phase 22 Adoption & Outcomes Ledger — `/naio-os/scripts/outcomes.py` and rendered `22-Adoption-Outcomes-Ledger/` pack — tracks adoption signals and learning evidence without clinical efficacy, patient outcome, ROI, staffing, compliance, certification, performance, or automatic-reporting claims
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

@@ -44,6 +44,7 @@ Downloads and access:
 - Trust section: `#proof` — public-facing “How we earn your trust” language with builder receipts for signed releases, refusal tests, and the standards crosswalk behind links.
 - Community ladder: `#community-ladder` — sequences belonging from Lamp Huddle → starter community → Builder Academy → Founding Steward Cohort → contribute/lead, with no-PHI and human-review boundaries.
 - Glossary: `#glossary` — plain-English definitions for NAIO, Hermes Desktop, SOUL, EDENA, Florence-X, No PHI, human gate, and steward, plus light first-use definitions in the page copy.
+- Mentor launcher: `#mentor-launcher` — floating no-PHI, client-side front-desk guide that routes nurses to Door 1, glossary, community, cohort, full build, or trust boundaries without collecting data.
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.
 Stepwise communication realignment:
@@ -55,3 +56,4 @@ Stepwise communication realignment:
 - Step 5 — trust/proof translation: renamed the public proof nav to Trust and rewrote `#proof` as “How we earn your trust,” moving signed release, refusal-checker, and standards-crosswalk detail into builder receipt links.
 - Step 6 — community/program ladder: added `#community-ladder` to sequence Lamp Huddle → starter community → Builder Academy → Founding Steward Cohort → contribute/lead, and added a warm human-review expectation for cohort applications.
 - Step 7 — glossary and first-use definitions: added `#glossary` with plain-language definitions for NAIO, Hermes Desktop, SOUL, EDENA, Florence-X, No PHI, human gate, and steward; added light first-use definitions without introducing the mentor launcher.
+- Step 8 — AI mentor launcher: added an always-present, client-side no-PHI front-desk guide with scripted route buttons for Door 1, glossary, community, cohort, full governed build, and trust/safety boundaries; no backend, storage, or form replacement.

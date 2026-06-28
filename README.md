@@ -36,5 +36,6 @@ Downloads:
 - AI Global Builder Incubator Academy — `/builder-academy.html` — public-facing landing page and browser-only interest form for the first country lane: Philippines implementation with nursing schools, associations, senior high learners, and diaspora mentors
 - Governed NAIO OS control plane — `/naio-os/` — signed v2.0.0 Phase 22 release with 22 governed packs live, including the Adoption & Outcomes Ledger proof layer
 - Phase 22 Adoption & Outcomes Ledger — `/naio-os/scripts/outcomes.py` and rendered `22-Adoption-Outcomes-Ledger/` pack — tracks adoption signals and learning evidence without clinical efficacy, patient outcome, ROI, staffing, compliance, certification, performance, or automatic-reporting claims
+- Founding Steward Cohort application CTA — `#founding-steward-cohort` — a small 6-week, no-PHI guided build for nurses who want to create a governed AI practice without handing over judgment; manual review via `great.ai.nurses@gmail.com` fallback
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.

@@ -42,6 +42,7 @@ Downloads and access:
 - Phase 23 Commercial Activation — `/naio-os/scripts/commercial.py` and rendered `23-Commercial-Activation/` pack — converts launch awareness into manual-review cohort applications and pilot conversations without PHI, certification, procurement/deployment approval, payment automation, or automatic outreach/reporting claims
 - Founding Steward Cohort application CTA — `#founding-steward-cohort` — a small 6-week, no-PHI guided build for nurses who want to create a governed AI practice without handing over judgment; manual review via `great.ai.nurses@gmail.com` fallback
 - Trust section: `#proof` — public-facing “How we earn your trust” language with builder receipts for signed releases, refusal tests, and the standards crosswalk behind links.
+- Community ladder: `#community-ladder` — sequences belonging from Lamp Huddle → starter community → Builder Academy → Founding Steward Cohort → contribute/lead, with no-PHI and human-review boundaries.
 
 Boundary: no PHI, no patient-specific clinical decisions, no replacement for licensed judgment.
 Stepwise communication realignment:
@@ -51,3 +52,4 @@ Stepwise communication realignment:
 - Step 3 — getting started setup: added `#getting-started` to lead with Door 1 no-install setup and place the full Hermes Desktop/macOS build behind Door 2 with dry-run, self-test, undo/recovery, and human approval reassurance.
 - Step 4 — role-section rewrites: updated `#student`, `#staff`, and `#leader` cards to follow ache → becoming → one first step → reassurance; student AI is framed as tutor-not-crutch, staff AI as no-PHI admin support only, and leader AI as defensible governance method rather than vendor demo.
 - Step 5 — trust/proof translation: renamed the public proof nav to Trust and rewrote `#proof` as “How we earn your trust,” moving signed release, refusal-checker, and standards-crosswalk detail into builder receipt links.
+- Step 6 — community/program ladder: added `#community-ladder` to sequence Lamp Huddle → starter community → Builder Academy → Founding Steward Cohort → contribute/lead, and added a warm human-review expectation for cohort applications.

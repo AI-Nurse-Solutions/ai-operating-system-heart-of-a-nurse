@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Care Intelligence — A Framework for AI Care Orchestrators &amp; Nurse Stewardship</title>
+<meta name="description" content="A white paper from the NAIO Institute. Healthcare does not merely need smarter tools — it needs a governed orchestration layer, stewarded by nurses. Read and download the full paper." />
+<meta name="author" content="Robert Domondon" />
+<link rel="canonical" href="https://nurse-ai-os.org/care-intelligence/" />
+
+<!-- Open Graph / LinkedIn / Facebook -->
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="NAIO Institute · Nurse Intelligence Network" />
+<meta property="og:title" content="Care Intelligence: AI Care Orchestration &amp; Nurse Stewardship" />
+<meta property="og:description" content="The public distrusts healthcare AI and trusts nurses more than any profession. That gap is the opportunity. A white paper on the governed orchestration layer healthcare needs." />
+<meta property="og:url" content="https://nurse-ai-os.org/care-intelligence/" />
+<meta property="og:image" content="https://nurse-ai-os.org/care-intelligence/og-care-intelligence.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Care Intelligence: AI Care Orchestration &amp; Nurse Stewardship" />
+<meta name="twitter:description" content="A white paper on the governed orchestration layer healthcare needs — stewarded by nurses, the most trusted profession." />
+<meta name="twitter:image" content="https://nurse-ai-os.org/care-intelligence/og-care-intelligence.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --navy:#142a44; --navy-2:#1d3a5c; --ink:#1b2733; --accent:#2e5a88;
+    --gold:#bd8a2c; --gold-soft:#e7cf94; --bg:#fbfaf6; --panel:#ffffff;
+    --muted:#586675; --line:#e7e2d6; --line-2:#eef0f2;
+    --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --wrap:1080px; --measure:68ch;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:17px; line-height:1.65;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:var(--wrap); margin:0 auto; padding:0 24px}
+  h1,h2,h3{font-family:var(--serif); font-weight:600; line-height:1.18; color:var(--navy); letter-spacing:-.01em}
+  a{color:var(--accent); text-underline-offset:3px}
+  a:focus-visible, button:focus-visible{outline:3px solid var(--gold-soft); outline-offset:2px; border-radius:4px}
+  .eyebrow{font-family:var(--sans); font-weight:600; font-size:.78rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold)}
+
+  /* ---- top bar ---- */
+  .topbar{position:sticky; top:0; z-index:20; background:rgba(20,42,68,.96); backdrop-filter:saturate(140%) blur(6px); color:#fff; border-bottom:1px solid rgba(255,255,255,.08)}
+  .topbar .wrap{display:flex; align-items:center; justify-content:space-between; height:60px}
+  .brand{display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none; font-weight:600; font-size:.95rem}
+  .brand .mark{width:26px; height:26px; flex:0 0 auto}
+  .brand small{display:block; font-weight:400; font-size:.7rem; letter-spacing:.04em; color:var(--gold-soft)}
+  .topbar nav a{color:#dce6f1; text-decoration:none; font-size:.9rem; margin-left:22px}
+  .topbar nav a:hover{color:#fff}
+  .topbar .cta{display:inline-block; margin-left:24px; background:var(--gold); color:#1a1303; font-weight:600; padding:8px 16px; border-radius:7px; text-decoration:none; font-size:.88rem}
+  .topbar nav .hide-sm{display:inline}
+
+  /* ---- hero ---- */
+  .hero{background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(189,138,44,.18), transparent 60%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%);
+    color:#eaf1f8; padding:74px 0 64px; border-bottom:3px solid var(--gold)}
+  .hero h1{color:#fff; font-size:clamp(2.5rem,6vw,4rem); margin:.35em 0 .2em; letter-spacing:-.02em}
+  .hero .sub{font-family:var(--serif); font-size:clamp(1.15rem,2.4vw,1.5rem); color:#cfe0f0; font-weight:400; max-width:30ch}
+  .hero .thesis{max-width:60ch; margin:26px 0 0; font-size:1.12rem; color:#e9f1f9; border-left:3px solid var(--gold); padding-left:18px}
+  .hero .meta{margin-top:26px; font-size:.92rem; color:#a9bdd2}
+  .hero .meta strong{color:#fff; font-weight:600}
+  .actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:30px}
+  .btn{display:inline-flex; align-items:center; gap:9px; font-weight:600; font-size:.98rem; padding:13px 22px; border-radius:9px; text-decoration:none; border:1.5px solid transparent; cursor:pointer}
+  .btn-primary{background:var(--gold); color:#1a1303}
+  .btn-primary:hover{background:#cf9b38}
+  .btn-ghost{background:transparent; color:#eaf1f8; border-color:rgba(255,255,255,.35)}
+  .btn-ghost:hover{border-color:#fff; background:rgba(255,255,255,.06)}
+  .btn svg{width:18px;height:18px}
+
+  /* ---- sections ---- */
+  section.band{padding:64px 0}
+  .band.alt{background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .lead-head{max-width:var(--measure)}
+  .lead-head .eyebrow{margin-bottom:10px; display:block}
+  .lead-head h2{font-size:clamp(1.7rem,3.5vw,2.3rem); margin:.1em 0 .5em}
+  .prose{max-width:var(--measure)}
+  .prose p{margin:0 0 1.05em}
+  .prose p.big{font-size:1.16rem; color:#2a3744}
+
+  /* ---- cards ---- */
+  .grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); margin-top:34px}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:24px 22px}
+  .band.alt .card{background:var(--bg)}
+  .card h3{font-size:1.12rem; margin:.1em 0 .4em}
+  .card p{margin:0; color:var(--muted); font-size:.97rem}
+  .card .num{font-family:var(--serif); color:var(--gold); font-weight:700; font-size:1.05rem}
+
+  /* ---- trust stat band ---- */
+  .stat-band{background:linear-gradient(180deg,#11243a,#16314e); color:#eaf1f8; padding:60px 0}
+  .stat-grid{display:grid; gap:26px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); align-items:start}
+  .stat .figure{font-family:var(--serif); font-weight:700; font-size:clamp(2.6rem,6vw,3.4rem); color:#fff; line-height:1}
+  .stat .figure span{color:var(--gold-soft)}
+  .stat .label{margin-top:8px; color:#bcd0e4; font-size:.96rem; max-width:26ch}
+  .stat-punch{max-width:62ch; margin:34px auto 0; text-align:center; font-family:var(--serif); font-size:clamp(1.2rem,2.6vw,1.55rem); color:#fff}
+  .stat-punch em{color:var(--gold-soft); font-style:normal}
+
+  /* ---- doctrines ---- */
+  .doctrines{counter-reset:d; display:grid; gap:14px 28px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); margin-top:30px}
+  .doctrine{position:relative; padding-left:50px}
+  .doctrine::before{counter-increment:d; content:counter(d,decimal-leading-zero); position:absolute; left:0; top:-2px; font-family:var(--serif); font-weight:700; color:var(--gold); font-size:1.15rem}
+  .doctrine b{display:block; color:var(--navy); font-family:var(--serif); font-size:1.05rem; margin-bottom:1px}
+  .doctrine span{color:var(--muted); font-size:.94rem}
+
+  /* ---- download ---- */
+  .dl-row{display:flex; flex-wrap:wrap; gap:14px; margin-top:26px}
+  .dl{display:flex; align-items:center; gap:14px; background:var(--panel); border:1px solid var(--line); border-radius:11px; padding:16px 20px; text-decoration:none; color:var(--ink); min-width:240px; flex:1}
+  .dl:hover{border-color:var(--accent)}
+  .dl .ic{width:38px;height:38px;flex:0 0 auto;color:var(--accent)}
+  .dl b{display:block; font-size:1rem; color:var(--navy)}
+  .dl small{color:var(--muted)}
+  .cite{margin-top:30px; background:var(--bg); border:1px solid var(--line); border-left:4px solid var(--gold); border-radius:8px; padding:18px 20px; font-size:.93rem; color:#33414f}
+  .cite code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86rem; color:#1b2733; display:block; margin-top:6px; line-height:1.55; word-break:break-word}
+
+  /* ---- about ---- */
+  .about{display:grid; grid-template-columns:1fr; gap:8px; max-width:var(--measure)}
+  .about p{color:var(--muted)}
+  .note{font-size:.86rem; color:var(--muted); max-width:var(--measure); margin-top:22px; padding-top:16px; border-top:1px solid var(--line)}
+
+  /* ---- footer ---- */
+  footer{background:var(--navy); color:#b9cadb; padding:46px 0 40px; border-top:3px solid var(--gold)}
+  footer .wrap{display:flex; flex-wrap:wrap; gap:20px; justify-content:space-between; align-items:center}
+  footer .tag{font-family:var(--serif); color:var(--gold-soft); font-size:1.05rem}
+  footer a{color:#cdddec}
+  footer small{display:block; color:#7e96ad; margin-top:8px; font-size:.82rem}
+
+  @media (max-width:680px){
+    .topbar nav .hide-sm{display:none}
+    .topbar .cta{margin-left:14px; padding:7px 12px}
+    section.band{padding:48px 0}
+    .hero{padding:54px 0 48px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="../" aria-label="Nurse AI OS home">
+      <svg class="mark" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+        <path d="M12 2c2.2 2.6 3.4 4.7 3.4 6.7A3.4 3.4 0 0 1 12 12a3.4 3.4 0 0 1-3.4-3.3C8.6 6.7 9.8 4.6 12 2z" fill="#e7cf94"/>
+        <path d="M8.5 12.4h7l-.7 5.2a2.2 2.2 0 0 1-2.2 1.9h-1.2a2.2 2.2 0 0 1-2.2-1.9l-.7-5.2z" fill="#bd8a2c"/>
+        <rect x="9.6" y="20.2" width="4.8" height="1.6" rx=".8" fill="#cdddec"/>
+      </svg>
+      <span>NAIO Institute<small>Nurse Intelligence Network</small></span>
+    </a>
+    <nav aria-label="Primary">
+      <a class="hide-sm" href="../">Nurse AI OS</a>
+      <a class="hide-sm" href="#abstract">Abstract</a>
+      <a class="hide-sm" href="#argument">The argument</a>
+      <a class="hide-sm" href="#doctrines">Doctrines</a>
+      <a class="cta" href="#download">Read the paper</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">NAIO Institute · A White Paper</span>
+    <h1>Care Intelligence</h1>
+    <p class="sub">A Framework for AI Care Orchestrators, Nurse Stewardship, and the Healthcare AI Operating Layer</p>
+    <p class="thesis">Healthcare does not merely need smarter tools. It needs a new layer of <strong>stewarded intelligence</strong> that can hold together care, workflow, governance, and human values.</p>
+    <p class="meta">By <strong>Robert Domondon</strong> — Founder, NAIO Institute / Nurse Intelligence Network &nbsp;·&nbsp; Version 1.0 · June 2026 &nbsp;·&nbsp; Open access</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="./Care-Intelligence-White-Paper.pdf">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" stroke="#1a1303" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download the PDF
+      </a>
+      <a class="btn btn-ghost" href="#abstract">Read the abstract</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABSTRACT ============ -->
+<section class="band" id="abstract">
+  <div class="wrap">
+    <div class="lead-head"><span class="eyebrow">Abstract</span><h2>What this paper argues</h2></div>
+    <div class="prose">
+      <p class="big">Healthcare is not transformed by isolated artificial-intelligence features. It is transformed by a <strong>governed orchestration layer</strong> that coordinates many kinds of intelligence — across models, workflows, people, and settings — into coherent, accountable, and humane action.</p>
+      <p>This paper names that orchestration capacity a distinct discipline, <strong>Care Intelligence</strong>, and argues that the profession already operating inside the orchestration loop of care — assessing, coordinating, escalating, monitoring, documenting, and sustaining continuity — is nursing. Building on established frameworks for care coordination (AHRQ), trustworthy and socio-technical AI (NIST), and the ethics and governance of AI for health (WHO), and on lifecycle controls for AI-enabled medical devices (FDA, IMDRF), it defines Care Intelligence operationally and sets out the mindset, the architecture, the administrative applications, the system configurations, and a staged roadmap by which institutions can build a trustworthy Care-Intelligence layer with nurses as its stewards.</p>
+      <p>It is deliberately confident about direction and design principles, and measured about enterprise return-on-investment claims, which require institution-specific evidence.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARGUMENT IN BRIEF ============ -->
+<section class="band alt" id="argument">
+  <div class="wrap">
+    <div class="lead-head"><span class="eyebrow">The argument in brief</span><h2>Six ideas at the center of the framework</h2></div>
+    <div class="grid">
+      <div class="card"><h3><span class="num">01 ·</span> The layer, not the feature</h3><p>Durable transformation comes from a governed orchestration layer that composes many intelligences — not from isolated AI tools that shift the burden of integration onto clinicians.</p></div>
+      <div class="card"><h3><span class="num">02 ·</span> The real danger is wrong optimization</h3><p>The deeper risk is not a wrong answer but a right answer to the wrong objective — a metric optimized while the whole degrades. Govern objectives, not only outputs.</p></div>
+      <div class="card"><h3><span class="num">03 ·</span> Nurses as stewards</h3><p>Nursing already runs the coordination loop, and the clinical reasoning cycle it teaches (ADPIE) is structurally the feedback loop modern agentic AI is built on.</p></div>
+      <div class="card"><h3><span class="num">04 ·</span> Five literacies</h3><p>The orchestrator's competence — clinical, systems, governance, metacognitive, and communication — organized as a competency ladder outside parties can inspect.</p></div>
+      <div class="card"><h3><span class="num">05 ·</span> The AI OS, defined</h3><p>A unified, sovereign orchestration layer — a governance-and-execution fabric across models and workflows — not a single model, and not a regulatory category.</p></div>
+      <div class="card"><h3><span class="num">06 ·</span> A bounded roadmap</h3><p>Start with one auditable use case, govern before scaling, layer the intelligence, and treat deployment as a continuous learning loop — consistent with NIST, WHO, FDA, and IMDRF.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUST BRIDGE ============ -->
+<section class="stat-band">
+  <div class="wrap">
+    <div class="lead-head" style="max-width:none"><span class="eyebrow" style="color:var(--gold-soft)">The credibility bridge</span></div>
+    <div class="stat-grid">
+      <div class="stat"><div class="figure">60<span>%</span></div><div class="label">of Americans are uncomfortable with AI in their own clinical care. <small style="color:#8fa8c0">(Pew, 2023)</small></div></div>
+      <div class="stat"><div class="figure">~66<span>%</span></div><div class="label">report low trust in their health system to use AI responsibly. <small style="color:#8fa8c0">(JAMA Network Open, 2025)</small></div></div>
+      <div class="stat"><div class="figure">76<span>%</span></div><div class="label">rate nurses most trusted — the 23rd consecutive year at #1. <small style="color:#8fa8c0">(Gallup, 2024)</small></div></div>
+    </div>
+    <p class="stat-punch">The public distrusts healthcare AI and trusts nurses more than any other profession. <em>That gap is the opportunity — nurses are the credibility bridge healthcare AI is missing.</em></p>
+  </div>
+</section>
+
+<!-- ============ DOCTRINES ============ -->
+<section class="band" id="doctrines">
+  <div class="wrap">
+    <div class="lead-head"><span class="eyebrow">The constitution</span><h2>The Ten Doctrines</h2><p class="prose" style="margin-top:8px;color:var(--muted)">Operating commitments meant to shape institutional culture before they shape technology.</p></div>
+    <div class="doctrines">
+      <div class="doctrine"><b>Care before automation</b><span>Automation is legitimate only when it strengthens safer, more effective, more humane care.</span></div>
+      <div class="doctrine"><b>Ethics by architecture</b><span>Ethics belongs in system design, roles, interfaces, and monitoring — not only in retrospective review.</span></div>
+      <div class="doctrine"><b>The human-AI team is the unit of performance</b><span>AI is judged in workflow context, not in benchmark isolation.</span></div>
+      <div class="doctrine"><b>Representative care is trustworthy care</b><span>Systems are evaluated across intended populations, contexts, and subgroups.</span></div>
+      <div class="doctrine"><b>Nurses are founding stewards</b><span>Not because they own every decision, but because they already live inside the coordination loop.</span></div>
+      <div class="doctrine"><b>Every AI system needs an escalation ladder</b><span>The more consequential the task, the more visible the human override and accountability path.</span></div>
+      <div class="doctrine"><b>Transparency is clinical infrastructure</b><span>Intended use, limits, failure modes, subgroup performance, and update history are part of safe care.</span></div>
+      <div class="doctrine"><b>Sovereignty where stakes demand it</b><span>High-consequence workflows reflect privacy, resilience, latency, and continuity — not default convenience.</span></div>
+      <div class="doctrine"><b>Apply the right intelligence to the task</b><span>Matching capability to task complexity is an ethical and economic duty.</span></div>
+      <div class="doctrine"><b>Optimize the whole, not the metric</b><span>Care Intelligence harmonizes competing objectives; it never collapses care into a single number.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DOWNLOAD ============ -->
+<section class="band alt" id="download">
+  <div class="wrap">
+    <div class="lead-head"><span class="eyebrow">Read &amp; cite</span><h2>Download the full white paper</h2><p class="prose" style="margin-top:8px;color:var(--muted)">A working paper, openly published for comment. External-standard citations are verified against current primary sources; figures are sourced and dated.</p></div>
+    <div class="dl-row">
+      <a class="dl" href="./Care-Intelligence-White-Paper.pdf">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 12.5h2.2a1.4 1.4 0 0 0 0-2.8H8v5.3M14 9.7v5.3h1.4a1.5 1.5 0 0 0 1.5-1.5v-2.3a1.5 1.5 0 0 0-1.5-1.5H14z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>PDF · 19 pages</b><small>The formatted paper for reading &amp; citation</small></span>
+      </a>
+      <a class="dl" href="./Care-Intelligence-White-Paper.docx">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 10l1.4 5 1.6-5 1.6 5 1.4-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Word (.docx)</b><small>Editable source for review</small></span>
+      </a>
+    </div>
+    <div class="cite">
+      <strong>How to cite</strong>
+      <code>Domondon, R. (2026). <em>Care Intelligence: A Framework for AI Care Orchestrators, Nurse Stewardship, and the Healthcare AI Operating Layer</em> (Version 1.0). NAIO Institute / Nurse Intelligence Network. https://nurse-ai-os.org/care-intelligence/</code>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="band" id="about">
+  <div class="wrap">
+    <div class="lead-head"><span class="eyebrow">About</span><h2>The author &amp; the institute</h2></div>
+    <div class="about prose">
+      <p><strong>Robert Domondon</strong> writes from a career that has spanned nearly every floor of the health system — bedside nursing, medicine, hospital administration, corporate strategy, public health, and healthcare communication. He is the founder of the <strong>NAIO Institute</strong> and the <strong>Nurse Intelligence Network</strong>, part of the Florence Media Network.</p>
+      <p>The institute's work advances a single conviction: that as intelligence becomes abundant, the judgment that governs it must become more capable — and that nurses, the most trusted profession and the natural stewards of the care process, are the ones to lead it.</p>
+    </div>
+    <p class="note">This is a working white paper published openly for comment and is not clinical, legal, or financial advice. Coined terms (“Care Intelligence,” “AI OS”) are defined in the paper and tethered to existing governance frameworks. Selected return-on-investment and market-size claims are kept deliberately measured pending institution-specific evidence.</p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="tag">Where Nightingale meets neural net.</div>
+      <small>© <span id="yr">2026</span> NAIO Institute · Nurse Intelligence Network (Florence Media Network). All rights reserved.</small>
+    </div>
+    <div style="text-align:right">
+      <a href="./Care-Intelligence-White-Paper.pdf">Download the paper</a><br/>
+      <a href="../" style="color:#cdddec">Back to Nurse AI OS</a><br/>
+      <small><a href="https://nurse-ai-os.org/" style="color:#9fb6cc">nurse-ai-os.org</a></small>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+</body>
+</html>

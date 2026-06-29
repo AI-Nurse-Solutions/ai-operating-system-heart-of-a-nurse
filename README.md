@@ -15,6 +15,7 @@ Downloads and access:
 - PDF workbook: `assets/nurse-ai-os-workbook.pdf`
 - Markdown workbook: `assets/nurse-ai-os-workbook.md`
 - Starter kit ZIP: `assets/nurse-ai-os-starter-kit.zip`
+- Care Intelligence white paper page: `/care-intelligence/` — hosts the open-access NAIO Institute working paper, PDF, Word source, and share image for AI care orchestration, nurse stewardship, and the healthcare AI operating layer.
 - Notion Life Dashboard Pack files: `starter-kit/My-Nurse-AI-OS/08-Integrations/Notion-Life-Dashboard-Pack/` — six Notion-importable CSV databases plus relation/view setup guides.
 - Local HTML Life Dashboard fallback: `starter-kit/My-Nurse-AI-OS/08-Integrations/Local-HTML-Life-Dashboard/index.html` — a browser-only dashboard for health, finances, goals, habits, tasks, and routines when Notion is unavailable; post-setup users should bookmark it under Dashboards.
 - Video walkthrough scripts: `video-walkthroughs/scripts.md`

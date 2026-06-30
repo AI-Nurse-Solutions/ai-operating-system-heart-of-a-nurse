@@ -12,6 +12,7 @@ Downloads and access:
 
 - Access & Pricing section: `#access-pricing` — says plainly that a comparable $1,500–$2,999 professional program is free this founding year for nurses and nursing students, with no credit card to start, no PHI, no auto-charge, and clear boundaries for later paid guided cohorts/institutional programs.
 - Getting Started section: `#getting-started` — frames setup as two safe doors: Door 1 no-install start with browser AI + SOUL Quiz + workbook/starter kit + Day 1 roadmap, and Door 2 optional full governed macOS build with self-test, dry-run, recovery, and manual approval.
+- After Setup section: `#after-setup` — routes nurses into next-path lanes after setup: Student Nurse AI Study OS, Bedside Nurse AI Chief of Staff, Nurse-Led AI Governance Sprint, Ascend Educator Pathway, Nurse AI Builder Lab, and Sovereign Nurse AI Systems Track, all under no-PHI and human-review boundaries.
 - PDF workbook: `assets/nurse-ai-os-workbook.pdf`
 - Markdown workbook: `assets/nurse-ai-os-workbook.md`
 - Starter kit ZIP: `assets/nurse-ai-os-starter-kit.zip`
@@ -61,3 +62,4 @@ Stepwise communication realignment:
 - Step 6 — community/program ladder: added `#community-ladder` to sequence Lamp Huddle → starter community → Builder Academy → Founding Steward Cohort → contribute/lead, and added a warm human-review expectation for cohort applications.
 - Step 7 — glossary and first-use definitions: added `#glossary` with plain-language definitions for NAIO, Hermes Desktop, SOUL, EDENA, Florence-X, No PHI, human gate, and steward; added light first-use definitions without introducing the mentor launcher.
 - Step 8 — AI mentor launcher: added an always-present, client-side no-PHI front-desk guide with scripted route buttons for Door 1, glossary, community, cohort, full governed build, and trust/safety boundaries; no backend, storage, or form replacement.
+- Step 9 — after-setup pathing: added `#after-setup` so nurses can choose a next lane after setup: student study OS, bedside chief of staff, leader governance sprint, Ascend educator pathway, builder lab, or sovereign systems track, with no-PHI and human-review boundaries.

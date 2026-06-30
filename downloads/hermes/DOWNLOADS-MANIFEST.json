@@ -1,0 +1,30 @@
+{
+  "title": "Hermes + Nurse AI OS Setup Downloads",
+  "boundary": "No PHI. Human review. Hermes Desktop is runtime; Nurse AI OS is the governed no-PHI stewardship layer.",
+  "files": [
+    {
+      "path": "downloads/hermes/Hermes-Setup.dmg",
+      "filename": "Hermes-Setup.dmg",
+      "size_bytes": 6752854,
+      "sha256": "b61e047efe3059faf1c55fec3252e661f2d2a993a7a3eebf5cc6a9aa5c1790f5"
+    },
+    {
+      "path": "downloads/hermes/Hermes-Setup.exe",
+      "filename": "Hermes-Setup.exe",
+      "size_bytes": 7597376,
+      "sha256": "505dfb4c2c1052b055e3fc694a76cb7ce093a64962c7713aa294f5549c6734f5"
+    },
+    {
+      "path": "downloads/hermes/Nurse-AI-OS-Hermes-Setup-Bundle.zip",
+      "filename": "Nurse-AI-OS-Hermes-Setup-Bundle.zip",
+      "size_bytes": 10904465,
+      "sha256": "9a84e50478ca215eea033a193f37a37749d2aab03b6921045abdfa7bd398475a"
+    },
+    {
+      "path": "downloads/hermes/README-Hermes-Setup-Downloads.md",
+      "filename": "README-Hermes-Setup-Downloads.md",
+      "size_bytes": 1153,
+      "sha256": "e4cdacb9cd4757448fb90306fd974f7d3ada1484eaef30e9c3fbe755646b79fc"
+    }
+  ]
+}

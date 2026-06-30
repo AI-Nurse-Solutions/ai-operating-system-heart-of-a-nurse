@@ -11,19 +11,24 @@ Downloads and access:
 
 
 - Access & Pricing section: `#access-pricing` — says plainly that a comparable $1,500–$2,999 professional program is free this founding year for nurses and nursing students, with no credit card to start, no PHI, no auto-charge, and clear boundaries for later paid guided cohorts/institutional programs.
-- Getting Started section: `#getting-started` — frames setup as two safe doors: Door 1 no-install start with browser AI + SOUL Quiz + workbook/starter kit + Day 1 roadmap, and Door 2 optional full governed macOS build with self-test, dry-run, recovery, and manual approval.
+- Getting Started section: `#getting-started` — frames setup as two safe doors: Door 1 no-install start with browser AI + SOUL Quiz + workbook/starter kit + Day 1 roadmap, and Door 2 optional Hermes Desktop + Nurse AI OS assets path with macOS/Windows installers, self-test, dry-run, recovery, and manual approval.
+- Hermes Download Center: `/hermes-downloads/` — hosts the macOS `.dmg`, Windows `.exe`, all-in-one Nurse AI OS setup bundle, checksum manifest, dashboard setup links, and no-PHI safety boundary.
 - After Setup section: `#after-setup` — routes nurses into next-path lanes after setup: Student Nurse AI Study OS, Bedside Nurse AI Chief of Staff, Nurse-Led AI Governance Sprint, Ascend Educator Pathway, Nurse AI Builder Lab, and Sovereign Nurse AI Systems Track, all under no-PHI and human-review boundaries.
 - ASCEND Program page: `/ascend/` — a separate post-setup page for nurses, educators, and managers showing how Nurse AI OS becomes a governed development layer: AI mentor, human mentorship, community, credential evidence, manager benefits, implementation roadmap, metrics, and downloadable 38-page PDF.
 - PDF workbook: `assets/nurse-ai-os-workbook.pdf`
 - Markdown workbook: `assets/nurse-ai-os-workbook.md`
 - Starter kit ZIP: `assets/nurse-ai-os-starter-kit.zip`
+- Hermes macOS installer: `downloads/hermes/Hermes-Setup.dmg`
+- Hermes Windows installer: `downloads/hermes/Hermes-Setup.exe`
+- Nurse AI OS Hermes setup bundle: `downloads/hermes/Nurse-AI-OS-Hermes-Setup-Bundle.zip`
+- Hermes download checksums: `downloads/hermes/SHA256SUMS.txt` and `downloads/hermes/DOWNLOADS-MANIFEST.json`
 - Care Intelligence white paper page: `/care-intelligence/` — hosts the open-access NAIO Institute working paper, PDF, Word source, and share image for AI care orchestration, nurse stewardship, and the healthcare AI operating layer.
 - Notion Life Dashboard Pack files: `starter-kit/My-Nurse-AI-OS/08-Integrations/Notion-Life-Dashboard-Pack/` — six Notion-importable CSV databases plus relation/view setup guides.
 - Local HTML Life Dashboard fallback: `starter-kit/My-Nurse-AI-OS/08-Integrations/Local-HTML-Life-Dashboard/index.html` — a browser-only dashboard for health, finances, goals, habits, tasks, and routines when Notion is unavailable; post-setup users should bookmark it under Dashboards.
 - Video walkthrough scripts: `video-walkthroughs/scripts.md`
 - Advanced Growth Map and Sovereign Systems pathway: included in the workbook and starter kit governance folder
 - Hermes setup safety checklist: included in the starter kit and Week 2 workbook
-- macOS official .dmg installer path and day-one checklist: included in Week 2 and video script 2
+- macOS and Windows Hermes Desktop installer downloads plus day-one checklist: linked from `/hermes-downloads/`, Door 2, and Downloads
 - Personal Projects and Personal Learning profile templates, knowledge inbox workflow, and weekly learning review prompts
 - Integration pathways for Apple Notes → Obsidian → Hermes, Notion Command Center, Notion Life Dashboard Pack, Local HTML Life Dashboard fallback, Google Workspace, GitHub, and GitHub Pages
 - macOS GitHub day-one walkthrough with private repo and public Pages prompts
@@ -65,3 +70,4 @@ Stepwise communication realignment:
 - Step 8 — AI mentor launcher: added an always-present, client-side no-PHI front-desk guide with scripted route buttons for Door 1, glossary, community, cohort, full governed build, and trust/safety boundaries; no backend, storage, or form replacement.
 - Step 9 — after-setup pathing: added `#after-setup` so nurses can choose a next lane after setup: student study OS, bedside chief of staff, leader governance sprint, Ascend educator pathway, builder lab, or sovereign systems track, with no-PHI and human-review boundaries.
 - Step 10 — ASCEND post-setup page: added `/ascend/` as the dedicated nurses-and-educators program page, linked it from homepage nav, After Setup, and Downloads, and hosted `ascend/The_ASCEND_Program_Evidence-Based.pdf` for download.
+- Step 11 — Hermes setup downloads: added `/hermes-downloads/` plus hosted macOS/Windows Hermes installers, an all-in-one Nurse AI OS setup bundle, checksums, README, homepage nav link, Door 2 CTA, and Downloads card.

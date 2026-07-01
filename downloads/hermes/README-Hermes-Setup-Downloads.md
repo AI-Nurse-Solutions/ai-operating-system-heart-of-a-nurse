@@ -21,3 +21,5 @@ No PHI. Do not paste patient names, charts, screenshots, identifiers, room numbe
 Hermes Desktop is the runtime. Nurse AI OS is the governed no-PHI learning and stewardship layer we provide around it. The macOS and Windows installers make Hermes easier to reach; the governed NAIO harness remains human-reviewed, dry-run-first, and bounded by the Nurse AI OS setup guides.
 
 Agents propose. Humans judge. Nurses steward.
+
+- `Nurse-AI-Side-Gig-Starter-Kit.zip` — first doorway into NIN/NAIO for validating one safe no-PHI nurse-AI side project.

@@ -2188,3 +2188,37 @@ Florence Nightingale did not choose between the heart and the evidence — she h
 Carry the lamp. Keep the ledger. Bring your light on the human condition — and let the system do the rest.
 
 > Agents propose. Humans judge. Nurses steward.
+
+---
+
+# Nurse AI Side-Gig Starter Kit — First Doorway into NIN/NAIO
+
+**Purpose:** help nurses explore one safe, no-PHI AI-enabled side project before stepping into the deeper NIN/NAIO community, Founding Steward Cohort, Builder Academy, or EDENA governance pathway.
+
+This is not a generic digital-product kit. It is a nurse-centered validation system for templates, prompt packs, workshops, content systems, study aids, dashboards, and community resources that stay outside patient-specific care.
+
+## What is included
+
+- EDENA no-PHI guardrails.
+- Side-Gig Offer Canvas.
+- 30-Day Validation Sprint.
+- Prompt Pack.
+- 30-Day Trust-Building Content Calendar.
+- Landing Page Copy.
+- Outreach Conversation Script.
+
+## Safe positioning
+
+> Build your first safe, no-PHI nurse-AI project in 30 days — with prompts, templates, guardrails, and a guided operating system.
+
+## Pathway
+
+Starter Kit → Lamp Huddle → NIN community → Founding Steward Cohort → Builder Academy → EDENA governance pathway.
+
+## Boundary
+
+No PHI. No patient-specific clinical decisions. No employer secrets. No certification claim. Human judgment first.
+
+## First action
+
+Open `03-Community-Entrepreneurship/Nurse-AI-Side-Gig-Starter-Kit/Side-Gig-Offer-Canvas.md`, choose one buyer, write one safe promise, and talk to 10 nurses before building a large product library.

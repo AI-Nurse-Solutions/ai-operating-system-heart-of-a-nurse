@@ -1,4 +1,4 @@
 b61e047efe3059faf1c55fec3252e661f2d2a993a7a3eebf5cc6a9aa5c1790f5  Hermes-Setup.dmg
 505dfb4c2c1052b055e3fc694a76cb7ce093a64962c7713aa294f5549c6734f5  Hermes-Setup.exe
-9a84e50478ca215eea033a193f37a37749d2aab03b6921045abdfa7bd398475a  Nurse-AI-OS-Hermes-Setup-Bundle.zip
-e4cdacb9cd4757448fb90306fd974f7d3ada1484eaef30e9c3fbe755646b79fc  README-Hermes-Setup-Downloads.md
+603307983aaa8c947870a508de5d4ce590a6f83a24bb477bdd4392256186fe69  Nurse-AI-OS-Hermes-Setup-Bundle.zip
+75473e113e28fe6b1fd9fa13670b2738b5e9fb174f37e1a0052ccc8c6e5f55a1  README-Hermes-Setup-Downloads.md

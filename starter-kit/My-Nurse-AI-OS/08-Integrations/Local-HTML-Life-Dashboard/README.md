@@ -1,6 +1,6 @@
 # Local HTML Life Dashboard
 
-Use this fallback when a Notion dashboard is not possible, too heavy, blocked by workplace policy, or simply not the right tool yet.
+Use this first when setting up your Nurse AI OS dashboard. It is the lowest-friction path: no account, no server, no database setup, and no dependency on Notion.
 
 Open `index.html` in a browser to use a **browser-only, no-PHI life dashboard** for:
 
@@ -28,14 +28,17 @@ This is a personal operations cockpit. It is not a clinical system, EHR, diagnos
 
 Do not enter PHI, patient identifiers, employer secrets, account numbers, credentials, diagnosis, treatment, medication, clinical decision support, or confidential work/family details.
 
-## When to choose this over Notion
+## Why start here before Notion
 
-Choose the local HTML dashboard when:
+Choose the local HTML dashboard first when:
 
-- you cannot access Notion,
-- your organization blocks Notion,
 - you want the simplest no-account path,
-- you need a private local dashboard before building a relational database,
+- you need momentum before learning another platform,
+- you want a private local dashboard before building a relational database,
+- your organization blocks or discourages Notion,
+- you want a visible no-PHI boundary before adding cloud tools,
 - or the best first step is just to begin gently.
+
+Use Notion later as an advanced option if you need linked databases, filters, shared views, or a more structured command center.
 
 Agents propose. Humans judge. Nurses steward.

@@ -26,8 +26,8 @@ This starter kit hands you both instruments for today: **data science and AI, wi
 ## How to use this kit
 
 1. Read `MY-AI-VALUES.md`, `NO-PHI-BOUNDARY.md`, and `HUMAN-AGENCY-RULES.md` first.
-2. Set up Hermes safely with `Hermes-Setup-Safety-Checklist.md`.
-3. Post-setup suggested step: if Notion is unavailable, open the **Local HTML Life Dashboard** at `08-Integrations/Local-HTML-Life-Dashboard/index.html` for health, finances, goals, habits, tasks, and routines; keep it No PHI, create a browser bookmarks folder named **Dashboards**, and bookmark the local dashboard there.
+2. Set up Hermes safely with `Hermes-Setup-Safety-Checklist.md` — start from the official Hermes Agent site, then return to this Nurse AI OS folder.
+3. Post-setup suggested step: open the **Local HTML Life Dashboard** first at `08-Integrations/Local-HTML-Life-Dashboard/index.html` for health, finances, goals, habits, tasks, and routines; keep it No PHI, create a browser bookmarks folder named **Dashboards**, and bookmark the local dashboard there. Use Notion later only if you want an advanced relational command center.
 4. Build your spheres (Personal, Professional, Community) using folders 06–07.
 5. Add integrations, media, research, messaging, and visual workflows (folders 08–12) only after the no-PHI foundation is solid.
 6. Protect yourself and your team with folders 13–14 (wellbeing, Workspace + HIPAA).

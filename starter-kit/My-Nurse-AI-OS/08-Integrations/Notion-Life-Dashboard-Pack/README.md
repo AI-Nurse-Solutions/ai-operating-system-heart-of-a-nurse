@@ -1,6 +1,6 @@
 # Notion Life Dashboard Pack
 
-Use this pack to build a **no-PHI, database-style life dashboard** in Notion for health, finances, goals, habits, tasks, and routines.
+Use this pack as an **advanced no-PHI, database-style life dashboard** in Notion for health, finances, goals, habits, tasks, and routines after the Local HTML Life Dashboard is stable.
 
 This is a personal operations cockpit. It is not a clinical system, diagnosis tool, treatment tracker, financial adviser, or automated decision-maker.
 
@@ -17,6 +17,19 @@ This is a personal operations cockpit. It is not a clinical system, diagnosis to
   - `Routines.csv`
 - A relation map: `Relation-Map.md`
 - A setup guide with suggested views, formulas, and safety boundaries.
+
+## Before you start
+
+The recommended first dashboard is the **Local HTML Life Dashboard** at `../Local-HTML-Life-Dashboard/index.html` because it is browser-only, requires no account, and can be bookmarked under **Dashboards** immediately.
+
+Move to Notion when you want:
+
+- relational databases,
+- filtered views,
+- linked tables,
+- a shared command center,
+- more durable dashboard structure,
+- or an advanced educator/leader/builder workspace.
 
 ## Setup in Notion
 
@@ -61,9 +74,9 @@ Suggested sections:
 6. **Weekly Reset**
    - Review what drained you, what restored you, and what needs a human gate
 
-## If Notion is unavailable
+## If Notion becomes too much
 
-Use the **Local HTML Life Dashboard** fallback at `../Local-HTML-Life-Dashboard/index.html`.
+Return to the **Local HTML Life Dashboard** at `../Local-HTML-Life-Dashboard/index.html`.
 
 Post-setup suggestion:
 

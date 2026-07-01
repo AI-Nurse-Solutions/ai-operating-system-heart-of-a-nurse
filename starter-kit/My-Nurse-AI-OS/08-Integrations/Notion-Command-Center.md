@@ -1,6 +1,6 @@
 # Notion Command Center
 
-Use Notion as the **human-facing operations and knowledge cockpit** for your Nurse AI OS. Hermes may draft, summarize, or prepare records for review; humans decide what enters Notion.
+Use Notion as the **advanced human-facing operations and knowledge cockpit** for your Nurse AI OS after the Local HTML dashboard is stable. Hermes may draft, summarize, or prepare records for review; humans decide what enters Notion.
 
 > Agents propose. Humans judge. Nurses steward.
 
@@ -67,9 +67,22 @@ Return the database names, fields, status options, and one safe example row for 
 ```
 
 
-## Notion Life Dashboard Pack
+## Local HTML Life Dashboard first
 
-For personal operations, the starter kit now includes `Notion-Life-Dashboard-Pack/` with six Notion-importable CSV databases. This Notion Life Dashboard Pack covers health, finances, goals, habits, tasks, and routines:
+Start with `Local-HTML-Life-Dashboard/index.html` when the goal is a simple, no-account, browser-only dashboard for health, finances, goals, habits, tasks, and routines.
+
+Advantages:
+
+- no Notion account required,
+- no cloud workspace setup,
+- stores edits locally in the browser,
+- exports a JSON backup,
+- easy to bookmark under **Dashboards**,
+- best for a tired nurse who just needs a first safe win.
+
+## Notion Life Dashboard Pack as advanced option
+
+For personal operations that need more structure, the starter kit includes `Notion-Life-Dashboard-Pack/` with six Notion-importable CSV databases. This Notion Life Dashboard Pack covers health, finances, goals, habits, tasks, and routines:
 
 - Health & Wellbeing
 - Finances
@@ -79,6 +92,15 @@ For personal operations, the starter kit now includes `Notion-Life-Dashboard-Pac
 - Routines
 
 Use these as a **no-PHI personal life cockpit**. They are for self-organization, reflection, and weekly review — not diagnosis, treatment, medication advice, financial advice, patient care, employer systems, bank credentials, or automated decisions.
+
+Use Notion when you need:
+
+- relational databases,
+- filtered views,
+- shared visibility,
+- educator/leader/builder workspaces,
+- governance records,
+- or a command center that has outgrown the local HTML file.
 
 Recommended use:
 
@@ -90,9 +112,9 @@ Recommended use:
 
 > Broad strokes now, go deeper later. Build enough structure to serve your life — not another dashboard that judges it.
 
-## Local HTML fallback when Notion is unavailable
+## If Notion is too much
 
-If Notion is blocked, inaccessible, or too much friction, use the **Local HTML Life Dashboard** at `Local-HTML-Life-Dashboard/index.html` instead. It is a single-file browser dashboard covering health, finances, goals, habits, tasks, and routines. Keep it No PHI. Post-setup, create a browser bookmarks folder named **Dashboards** and save the local dashboard there.
+If Notion is blocked, inaccessible, or too much friction, return to the **Local HTML Life Dashboard** at `Local-HTML-Life-Dashboard/index.html`. It is a single-file browser dashboard covering health, finances, goals, habits, tasks, and routines. Keep it No PHI. Post-setup, create a browser bookmarks folder named **Dashboards** and save the local dashboard there.
 
 Use it for personal reflection, not clinical documentation, diagnosis, treatment, financial advice, account tracking, employer systems, or automated decisions. Export a JSON backup if you rely on it.
 

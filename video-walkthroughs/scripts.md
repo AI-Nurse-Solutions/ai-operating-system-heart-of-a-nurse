@@ -27,29 +27,30 @@ Close:
 
 ---
 
-## Video 2 — Install Hermes Desktop and Set Safe Boundaries
+## Video 2 — Set Up Hermes from the Official Site and Set Safe Boundaries
 
 **Goal:** Walk through installation and safe orientation.
 
 Cover:
 
-1. Download/install Hermes Desktop from the official Hermes Agent site or official Nous Research release path
-2. On macOS: open the `.dmg`, drag Hermes into Applications, eject the DMG, and launch from Applications or Spotlight
-3. Complete first-run onboarding
-4. Open the UI: sessions, pinned messages, artifacts, skills, tools, messaging, settings
-5. Pick a provider/model; use Nous Portal or another supported provider if available, and remember that free/low-cost model availability can change
-6. Optional Terminal verification: `hermes --tui`
-7. Set the workspace to the course folder, not the whole computer
-8. Protect API keys: never place keys in public notes, screenshots, GitHub, or course forums
-9. Keep manual approval on for beginner use
-10. Explain memory as useful but governed: no PHI, no secrets, no confidential employer data
-11. Create a nurse-centered workspace folder
-12. Add `NO-PHI-BOUNDARY.md`
-13. Add `HUMAN-AGENCY-RULES.md`
-14. Run first safe prompt
-15. Demonstrate one bounded file task inside the course folder
-16. Create separated profiles: Personal Projects, Personal Learning, and Professional Non-PHI
-17. Explain that profiles separate config, SOUL, memory, sessions, skills, cron jobs, and identity — but do not replace privacy governance
+1. Start at the official Hermes Agent site: https://hermes-agent.nousresearch.com/
+2. Follow the current official setup instructions for the learner's device instead of using a copied installer from Nurse AI OS
+3. Complete first-run onboarding and verify one normal chat works
+4. Explain that Hermes Agent is the open-source runtime and Nurse AI OS is the governed nurse-facing layer around it
+5. Open the UI: sessions, pinned messages, artifacts, skills, tools, messaging, settings
+6. Pick a provider/model; use Nous Portal or another supported provider if available, and remember that free/low-cost model availability can change
+7. Optional Terminal verification: use the current official Hermes docs for the recommended command
+8. Set the workspace to the course folder, not the whole computer
+9. Protect API keys: never place keys in public notes, screenshots, GitHub, or course forums
+10. Keep manual approval on for beginner use
+11. Explain memory as useful but governed: no PHI, no secrets, no confidential employer data
+12. Create a nurse-centered workspace folder
+13. Add `NO-PHI-BOUNDARY.md`
+14. Add `HUMAN-AGENCY-RULES.md`
+15. Run first safe prompt
+16. Demonstrate one bounded file task inside the course folder
+17. Create separated profiles: Personal Projects, Personal Learning, and Professional Non-PHI
+18. Explain that profiles separate config, SOUL, memory, sessions, skills, cron jobs, and identity — but do not replace privacy governance
 
 Safe first prompt:
 
@@ -77,10 +78,11 @@ Cover:
 
 1. Daily brief prompt
 2. Weekly review prompt
-3. Personal dashboard, with the Local HTML Life Dashboard fallback if Notion is unavailable
+3. Personal dashboard, starting with the Local HTML Life Dashboard first
 4. Save the local dashboard as a browser bookmark under Dashboards
-5. Energy and recovery protection
-5. Decision ownership
+5. Use Notion later only if an advanced relational command center is needed
+6. Energy and recovery protection
+7. Decision ownership
 
 Demo prompt:
 
@@ -182,9 +184,9 @@ Boundary line:
 
 > This is a personal operations dashboard, not a clinical or financial decision system. No PHI, no patient care, no account numbers, no credentials, no automatic decisions.
 
-### Optional segment — Local HTML dashboard fallback
+### Recommended first dashboard — Local HTML
 
-If a learner cannot use Notion, open `08-Integrations/Local-HTML-Life-Dashboard/index.html` and show the browser-only template. Demonstrate:
+Open `08-Integrations/Local-HTML-Life-Dashboard/index.html` and show the browser-only template. Demonstrate:
 
 1. The post-setup step: create a browser bookmarks folder named **Dashboards**.
 2. Save the local dashboard as a bookmark under **Dashboards**.
@@ -192,3 +194,5 @@ If a learner cannot use Notion, open `08-Integrations/Local-HTML-Life-Dashboard/
 4. Click Save dashboard.
 5. Export a private JSON backup.
 6. Repeat the safety boundary: no PHI, no clinical advice, no account numbers, no credentials, no automatic decisions.
+
+> The local dashboard is the pocket notebook. Notion is the advanced relational ledger. The nurse still carries the judgment.

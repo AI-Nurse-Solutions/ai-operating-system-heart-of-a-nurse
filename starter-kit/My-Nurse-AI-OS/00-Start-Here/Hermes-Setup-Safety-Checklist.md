@@ -2,14 +2,14 @@
 
 Use this checklist before connecting models, tools, memory, voice, messaging, or sub-agents.
 
-## 0. macOS official installer path
+## 0. Official Hermes Agent setup path
 
-- [ ] I downloaded Hermes Desktop from the official Hermes Agent site: https://hermes-agent.nousresearch.com/ or an official Nous Research GitHub release path.
+- [ ] I started at the official Hermes Agent site: https://hermes-agent.nousresearch.com/ or the official Nous Research Hermes documentation/GitHub path.
 - [ ] I avoided third-party mirrors and unofficial download sites.
-- [ ] I opened the `.dmg`, dragged Hermes into Applications, ejected the DMG, and launched Hermes from Applications or Spotlight.
-- [ ] If macOS Gatekeeper warned me, I confirmed the download source before opening.
+- [ ] I followed the current official instructions for my operating system instead of relying on a copied installer from Nurse AI OS.
+- [ ] If my operating system warned me, I confirmed the source before opening or installing anything.
 - [ ] I completed first-run onboarding and verified one normal chat works.
-- [ ] Optional Terminal check: `hermes --tui` opens the terminal UI.
+- [ ] Optional Terminal check for technical users: `hermes --help` or the current official Hermes command opens without error.
 
 ## 1. Workspace
 
@@ -64,11 +64,12 @@ Create a new folder called Practice inside My-Nurse-AI-OS and write a short READ
 
 ## 6. Post-setup dashboard bookmark
 
-- [ ] If I cannot use Notion, I opened the **Local HTML Life Dashboard** at `08-Integrations/Local-HTML-Life-Dashboard/index.html` in my browser for health, finances, goals, habits, tasks, and routines.
+- [ ] I opened the **Local HTML Life Dashboard** first at `08-Integrations/Local-HTML-Life-Dashboard/index.html` in my browser for health, finances, goals, habits, tasks, and routines.
 - [ ] I created a browser bookmarks folder named **Dashboards**.
 - [ ] I saved the local dashboard as a bookmark under **Dashboards**.
 - [ ] I confirmed the dashboard contains no PHI, patient identifiers, employer secrets, account numbers, credentials, diagnosis, treatment, medication, or clinical advice.
 - [ ] I understand local browser storage can be cleared, so I will export a JSON backup if I begin relying on it.
+- [ ] I understand Notion is an advanced option for relational dashboards, filters, shared views, or command-center structure after the Local HTML dashboard is stable.
 
 ## 7. Sub-agent safety
 

@@ -1,11 +1,11 @@
 # NAIO OS — the Governed AI Operating System for Nurses
 
 > *Carry the lamp. Keep the ledger.*
-> A governed operating system around models — built over Hermes Desktop, with EDENA and Florence-X baked in.
+> A governed operating system around models — built over open-source Hermes Agent, with EDENA and Florence-X baked in.
 
-This directory is the **source of truth** for the Nurse AI Operating System: a downloadable, auto-installing, personalized governance layer over Hermes Desktop.
+This directory is the **source of truth** for the Nurse AI Operating System: a downloadable, personalized governance layer over Hermes Agent.
 
-It is **not** a new runtime. Hermes Desktop is the runtime. NAIO is the *control plane* that governs how that runtime thinks and acts — personalized to each nurse by the [SOUL Quiz](https://nurse-ai-os.org/soul-quiz.html).
+It is **not** a new runtime. Hermes Agent is the open-source runtime. NAIO is the *control plane* that governs how that runtime thinks and acts — personalized to each nurse by the [SOUL Quiz](https://nurse-ai-os.org/soul-quiz.html).
 
 ---
 

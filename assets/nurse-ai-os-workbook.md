@@ -130,13 +130,13 @@ Use clear language I can paste into my AI OS setup.
 
 ---
 
-## Week 2 — Set Up Hermes Desktop Safely
+## Week 2 — Set Up Hermes Agent Safely
 
-**Goal:** Install Hermes Desktop and create a nurse-centered AI workspace.
+**Goal:** Set up Hermes Agent from the official source and create a nurse-centered AI workspace.
 
 ### Build
 
-- Hermes Desktop installed
+- Hermes Agent installed from the official site
 - nurse-centered profile or working folder
 - starter markdown architecture
 - no-PHI safety boundary
@@ -161,31 +161,29 @@ Create a simple structure for personal, professional, and community / entreprene
 Include safety boundaries, human-agency rules, and weekly review templates.
 ```
 
-### Hermes Desktop Setup Walkthrough
+### Hermes Agent Setup Walkthrough
 
 Use the setup tutorial as a practical orientation, but translate it through the nurse-centered safety lens.
 
-#### 1. Install and launch Hermes
+#### 1. Install and launch Hermes from the official source
 
-For macOS, the easiest beginner path is the official Hermes Desktop installer.
+The safest beginner path is to start at the official Hermes Agent site and follow the current setup instructions for your device.
 
 - Go to the official Hermes Agent site: https://hermes-agent.nousresearch.com/
-- Download the macOS Desktop installer from the official site or official Nous Research GitHub release path.
+- Use the current official installation path from Nous Research, not a copied installer from Nurse AI OS.
 - Avoid third-party mirrors and unofficial download sites.
-- Open the downloaded `.dmg` file.
-- Drag Hermes into Applications when prompted.
-- Eject the DMG, then launch Hermes from Applications or Spotlight.
-- If Gatekeeper warns that the app came from the internet, confirm it came from the official Hermes/Nous source before opening.
+- If your operating system warns you, confirm the source before opening or installing anything.
+- Complete first-run onboarding and verify one normal chat works before adding Nurse AI OS workflows.
 
-The Desktop app and CLI share the same Hermes core: config, provider settings, sessions, skills, memory, and profiles. A setup completed in Desktop also prepares the underlying Hermes CLI for later advanced use.
+Hermes Agent is the open-source agent runtime: the engine that can use tools, files, memory, skills, and automations when configured. Nurse AI OS is the governed nurse-facing layer around it: SOUL files, no-PHI boundaries, dashboards, starter folders, EDENA gates, and human-review workflows.
 
-If you are comfortable with Terminal, you can verify the terminal UI after setup:
+If you are comfortable with Terminal, use the current official Hermes docs for the recommended verification command. A typical check may be:
 
 ```bash
-hermes --tui
+hermes --help
 ```
 
-If the command does not work, use the official docs path first: run Hermes Desktop onboarding, or use the official `hermes setup` flow to repair provider/config issues.
+If the command does not work, use the official docs path first: run Hermes onboarding, or use the official `hermes setup` flow to repair provider/config issues.
 
 Beginner note: current platform support and installer details can change. Always use the official Hermes Agent docs as the source of truth.
 
@@ -881,9 +879,43 @@ Return the database names, fields, status options, and one safe example row for 
 > Rule: Notion carries the ledger. The nurse still carries the judgment.
 
 
-### Notion Life Dashboard Pack
+### Local HTML Life Dashboard first
 
-The starter kit includes `08-Integrations/Notion-Life-Dashboard-Pack/`, a no-PHI database-style life dashboard template. This pack covers health, finances, goals, habits, tasks, and routines:
+The recommended first dashboard is the starter kit file:
+
+`08-Integrations/Local-HTML-Life-Dashboard/index.html`
+
+This is a single-file, browser-only dashboard template covering health, finances, goals, habits, tasks, and routines. It includes Today, This Week, Health & Energy, Money Stewardship, Goals & Projects, and Weekly Reset views. Edits are saved in browser local storage and can be exported as a private JSON backup.
+
+Start here because it is the lowest-friction path:
+
+- no account required,
+- no server or cloud workspace setup,
+- no database learning curve,
+- easy to bookmark under **Dashboards**,
+- useful even when Notion is blocked or too much,
+- and strong enough for the first 30 days of no-PHI practice.
+
+Post-setup suggested step:
+
+1. Open the local HTML dashboard in your browser.
+2. Create a browser bookmarks folder named **Dashboards**.
+3. Save the local dashboard as a bookmark under **Dashboards**.
+4. Keep it no-PHI, non-clinical, non-financial-advice, and manually reviewed.
+5. Export a JSON backup before changing devices or clearing browser data.
+
+Safe first prompt:
+
+```text
+Help me adapt the Local HTML Life Dashboard for my Nurse AI OS without adding PHI, employer secrets, bank account numbers, credentials, diagnosis, treatment, medication, or clinical advice.
+Suggest only personal-safe labels, weekly review prompts, and human-gate reminders.
+```
+
+> Broad strokes now, go deeper later. This local dashboard is the pocket notebook. The nurse still carries the judgment.
+
+### Notion Life Dashboard Pack as advanced option
+
+The starter kit also includes `08-Integrations/Notion-Life-Dashboard-Pack/`, an advanced no-PHI database-style life dashboard template. This pack covers health, finances, goals, habits, tasks, and routines:
 
 - Health & wellbeing
 - Finances
@@ -891,6 +923,14 @@ The starter kit includes `08-Integrations/Notion-Life-Dashboard-Pack/`, a no-PHI
 - Habits
 - Tasks
 - Routines
+
+Use Notion when the local dashboard has outgrown a simple file and you need relational structure:
+
+- linked databases,
+- filtered views,
+- shared visibility,
+- educator/leader/builder workspaces,
+- or a more structured command center.
 
 Use it as a personal operations cockpit:
 
@@ -915,38 +955,13 @@ Safe setup steps:
 Safe first prompt:
 
 ```text
-Help me build a no-PHI Notion life dashboard using these six databases: Health & Wellbeing, Finances, Goals, Habits, Tasks, and Routines.
+Help me build an advanced no-PHI Notion life dashboard using these six databases: Health & Wellbeing, Finances, Goals, Habits, Tasks, and Routines.
 Keep it personal, non-clinical, non-financial-advice, and human-reviewed.
 Suggest dashboard sections, database views, relation properties, and one weekly reset ritual.
 Do not ask for patient data, employer secrets, bank credentials, account numbers, passwords, API keys, diagnosis, treatment, medication, or clinical advice.
 ```
 
-> Broad strokes now, go deeper later. The dashboard serves the nurse; it does not judge the nurse.
-
-### Local HTML Life Dashboard fallback
-
-If Notion is unavailable, blocked, or too much friction, use the starter kit file:
-
-`08-Integrations/Local-HTML-Life-Dashboard/index.html`
-
-This is a single-file, browser-only dashboard template covering health, finances, goals, habits, tasks, and routines. It includes Today, This Week, Health & Energy, Money Stewardship, Goals & Projects, and Weekly Reset views. Edits are saved in browser local storage and can be exported as a private JSON backup.
-
-Post-setup suggested step:
-
-1. Open the local HTML dashboard in your browser.
-2. Create a browser bookmarks folder named **Dashboards**.
-3. Save the local dashboard as a bookmark under **Dashboards**.
-4. Keep it no-PHI, non-clinical, non-financial-advice, and manually reviewed.
-5. Export a JSON backup before changing devices or clearing browser data.
-
-Safe first prompt:
-
-```text
-Help me adapt the Local HTML Life Dashboard for my Nurse AI OS without adding PHI, employer secrets, bank account numbers, credentials, diagnosis, treatment, medication, or clinical advice.
-Suggest only personal-safe labels, weekly review prompts, and human-gate reminders.
-```
-
-> If Notion is the ledger, this local dashboard is the pocket notebook. The nurse still carries the judgment.
+> Notion carries the relational ledger. The nurse still carries the judgment.
 
 ## Google Workspace for a non-personal account
 

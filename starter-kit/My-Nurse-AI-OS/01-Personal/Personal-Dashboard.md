@@ -12,4 +12,4 @@ Money / logistics:
 
 One decision that remains mine:
 
-Optional post-setup tool: if Notion is unavailable, open `../08-Integrations/Local-HTML-Life-Dashboard/index.html` and bookmark it under a browser folder named **Dashboards**.
+First post-setup tool: open `../08-Integrations/Local-HTML-Life-Dashboard/index.html` and bookmark it under a browser folder named **Dashboards**. Use Notion later only if you need an advanced relational dashboard.

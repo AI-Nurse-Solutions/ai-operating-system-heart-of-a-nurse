@@ -119,6 +119,7 @@ a:hover { color: var(--navy-800); }
 .section-alt { background: var(--linen-100); }
 .section-navy { background: var(--navy-900); color: #dbe6ef; }
 .section-navy h2, .section-navy h3 { color: var(--white); }
+.section-navy .card h2, .section-navy .card h3 { color: var(--navy-900); }
 .eyebrow {
   color: var(--teal-600); text-transform: uppercase; letter-spacing: .13em;
   font-weight: 700; font-size: .82rem; margin-bottom: .4rem;

@@ -165,6 +165,18 @@ a:hover { color: var(--navy-800); }
 .step p { margin: .2rem 0 .6rem; color: var(--ink-600); }
 .step .step-cta { font-weight: 700; }
 
+/* ---------- Role icons ---------- */
+.role-icon {
+  width: 3.4rem; height: 3.4rem; border-radius: 50%;
+  background: var(--teal-100); border: 2px solid var(--teal-500);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: .85rem; flex-shrink: 0;
+}
+.role-icon svg {
+  width: 1.7rem; height: 1.7rem; stroke: var(--teal-600); fill: none;
+  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+
 /* ---------- Badges & boundary ---------- */
 .badge {
   display: inline-block; background: var(--teal-100); color: var(--teal-600);

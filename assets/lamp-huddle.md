@@ -4,9 +4,9 @@
 
 ## What it is
 
-A free, weekly, 45-minute live community call for nurses learning to build and steward their own AI Operating System. Open to **students, staff nurses, and leaders** — across all three spheres: **Personal, Professional, and Community / Entrepreneurial.**
+A free, weekly, 45-minute live community call for nurses learning to build and steward their own AI Operating System. Open to **students, staff nurses, leaders, and educators** — across all three spheres: **Personal, Professional, and Community / Entrepreneurial.**
 
-Whether you finished the 30-Day Roadmap, just downloaded the starter kit, or are still figuring out where to start — you belong at the Huddle.
+Whether you finished the 30-Day Roadmap, just took the SOUL Quiz, or are still deciding where to start — you belong at the Huddle.
 
 ## What we do
 
@@ -15,7 +15,7 @@ Each Huddle follows a calm, repeatable rhythm:
 | Time | Segment |
 |---|---|
 | 0–5 min | **Light the lamp** — opening reflection on stewardship and the week ahead |
-| 5–15 min | **One demo** — a nurse or facilitator shows one workflow or skill they shipped |
+| 5–15 min | **One demo** — a nurse or facilitator shows one workflow they run (a Morning Huddle, a Kardex, an evidence-first brief) |
 | 15–30 min | **Open Q&A** — bring your prompts, your stuck points, your safety questions |
 | 30–40 min | **Stewardship round** — share a win, a worry, or a lesson |
 | 40–45 min | **Close** — assign one micro-action for the week and the EDENA tier check |
@@ -24,7 +24,8 @@ Each Huddle follows a calm, repeatable rhythm:
 
 - **Student nurses** trying to use AI for learning without losing clinical reasoning
 - **Staff nurses** trying to reclaim time from charting and admin
-- **Nurse leaders, managers, and educators** implementing AI safely in their units
+- **Nurse leaders and managers** implementing AI safely in their units
+- **Nurse educators** designing AI-supported learning with integrity
 - **Nurse entrepreneurs and community advocates** building projects, content, or programs
 - Anyone curious about the **Heart of a Nurse** approach to AI
 
@@ -53,24 +54,24 @@ Each Huddle follows a calm, repeatable rhythm:
 
 ## How to join
 
-1. Visit [nurse-ai-os.org](https://nurse-ai-os.org/) and download the free starter kit.
+1. Visit [Start Here](https://nurse-ai-os.org/start-here.html), take the SOUL Quiz, and download the free starter kit.
 2. Add your email to the Huddle list (form coming July 4).
 3. You'll receive the calendar invite, Zoom link, and prep prompt 24 hours before each call.
 
 ## First Huddle agenda (post-launch week)
 
 - **Light the lamp:** Why we're here — Florence's two instruments
-- **Demo:** Setting up your first SOUL.md and the no-PHI boundary in 10 minutes
+- **Demo:** The SOUL Quiz and your first win in 10 minutes — Door 1, no installation
 - **Q&A:** Bring your setup questions
 - **Stewardship round:** What's one fear and one hope you have about AI in your work?
-- **Close:** Your one micro-action for Week 1 of the 30-Day Roadmap
+- **Close:** Your one micro-action — Day 1 of the [30-Day Roadmap](./30-day-roadmap.md)
 
 ## Bring with you
 
 - Your laptop or phone (camera optional, voice encouraged)
-- Your role and sphere (student / staff / leader; personal / professional / community)
+- Your role and sphere (student / staff / leader / educator; personal / professional / community)
 - One question, one win, or one worry
-- Your `MY-AI-VALUES.md` if you've drafted it
+- Your SOUL file if you've taken the [SOUL Quiz](https://nurse-ai-os.org/soul-quiz.html)
 
 ## A word on safety
 
@@ -86,8 +87,9 @@ Until then, email **[great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com
 
 Until then:
 
-- Download the [free course + starter kit](https://nurse-ai-os.org/)
+- Begin at [Start Here](https://nurse-ai-os.org/start-here.html)
 - Start the [30-Day Nurse AI OS Roadmap](./30-day-roadmap.md)
+- Make the system yours with the [six workflows](https://nurse-ai-os.org/personalize.html)
 - Tell one nurse. Stewardship begins with invitation.
 
 > **Carry the lamp. Keep the ledger. We meet at the Huddle.**

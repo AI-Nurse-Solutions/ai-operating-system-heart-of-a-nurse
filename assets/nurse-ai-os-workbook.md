@@ -12,7 +12,7 @@ That union — **the caring heart and the counting mind** — is the whole point
 
 **Course promise:** Build a nurse-centered AI operating system for personal, professional, and community / entrepreneurial use — governed by human agency, evidence-awareness, systems thinking, ethical stewardship, safety, and dignity.
 
-**Default posture:** Hermes becomes your nurse-centered Chief of Staff, Learning OS, strategic advisor, and stewardship partner.
+**Default posture:** Your AI assistant — a browser AI through the No-Install Start, or Hermes Agent through the full governed build — becomes your nurse-centered Chief of Staff, Learning OS, strategic advisor, and stewardship partner.
 
 **Core line:**
 
@@ -22,7 +22,7 @@ That union — **the caring heart and the counting mind** — is the whole point
 
 ## Who This Is For: The Same Lamp, at Every Stage
 
-Whether you are learning the profession, carrying a full assignment, or shaping a whole unit, you face the same modern ache: too much information, too little time, and a quiet fear that the documentation is crowding out the patient. This course meets you where you are — and points you toward who you want to become.
+Whether you are learning the profession, carrying a full assignment, or shaping a whole unit, you face the same modern ache: too much information, too little time, and a quiet fear that the documentation is crowding out the patient. This course meets you where you are — and points you toward who you want to become. Choose your track and begin with the guided onboarding at https://nurse-ai-os.org/start-here.html.
 
 ### The student nurse
 
@@ -30,19 +30,25 @@ Whether you are learning the profession, carrying a full assignment, or shaping 
 - **What the course gives you:** A Learning OS that turns lectures, articles, and videos into clear study notes and self-tests; "think first, then consult AI" habits that build real clinical reasoning; and a calm system for deadlines, energy, and wellbeing so school does not consume you.
 - **Who you become:** A nurse who learns deeply, reasons independently, and trusts her own judgment — using AI as a tutor, never a crutch.
 
-### The staff nurse
+### The staff / bedside nurse
 
 - **The ache:** Buried in charting, hand-offs, emails, and policy updates. Cognitive overload, alert fatigue, and the heartbreak of having less time at the bedside than the work on the screen.
 - **What the course gives you:** A Chief-of-Staff OS for daily briefs, weekly review, and energy protection; safe, no-PHI workflows that draft, summarize, and organize the non-clinical load; and ergonomics, focus blocks, and shutdown rituals that defend your body and attention.
 - **Who you become:** A nurse who reclaims time and presence — letting the system carry the busywork so you can carry the patient.
 
-### The nurse leader / educator
+### The nurse leader / manager
 
-- **The ache:** Asked to "do AI" without a method. Worried about safety, privacy, equity, and adoption — and about protecting staff and students from one more tool that adds burden instead of removing it.
-- **What the course gives you:** A governance method (HERMES, EDENA, profiles, approval gates, connector boundaries); Team Lab and workshop blueprints to train staff and faculty safely; and evaluation questions that judge any tool by workload, safety, equity, and human connection.
+- **The ache:** Asked to "do AI" without a method. Worried about safety, privacy, equity, and adoption — and about protecting staff from one more tool that adds burden instead of removing it.
+- **What the course gives you:** A governance method (HERMES, EDENA, profiles, approval gates, connector boundaries); Team Lab blueprints to pilot AI with your team safely; and evaluation questions that judge any tool by workload, safety, equity, and human connection.
 - **Who you become:** A Nightingale for your unit — bringing evidence-led, dignity-first AI to your team without losing the heart of nursing.
 
-**One promise across all three:** by the end you do not just "use AI" — you steward it. You hold the lamp and you keep the ledger, exactly as Florence did, so technology serves the human in the bed and the human giving the care.
+### The nurse educator (Ascend)
+
+- **The ache:** Expected to teach with AI and about AI — while protecting students from shortcuts that hollow out clinical reasoning, and carrying your own prep burden on top of it.
+- **What the course gives you:** Workshop blueprints and teaching workflows to train students and faculty safely; "think first, then consult AI" pedagogy; and fictional-case, no-PHI patterns for AI-assisted curriculum, case studies, and assessment drafts.
+- **Who you become:** An educator who models stewarded AI — forming nurses who reason independently and know how to critique the machine.
+
+**One promise across all four tracks:** by the end you do not just "use AI" — you steward it. You hold the lamp and you keep the ledger, exactly as Florence did, so technology serves the human in the bed and the human giving the care.
 
 ---
 
@@ -60,6 +66,15 @@ It is **not** for:
 - replacing licensed judgment or institutional policy
 
 If the work could affect patient care, expose PHI, or create clinical accountability, pause and route through appropriate human and institutional governance.
+
+---
+
+## Course Companion Pages
+
+- **Start Here — guided onboarding:** https://nurse-ai-os.org/start-here.html
+- **Setup — two doors + safety rules:** https://nurse-ai-os.org/setup.html
+- **Make It Yours — six personalization workflows:** https://nurse-ai-os.org/personalize.html
+- **Resource Hub:** https://nurse-ai-os.org/resources.html
 
 ---
 
@@ -130,13 +145,19 @@ Use clear language I can paste into my AI OS setup.
 
 ---
 
-## Week 2 — Set Up Hermes Agent Safely
+## Week 2 — Set Up Your AI Workspace Safely (Two Doors)
 
-**Goal:** Set up Hermes Agent from the official source and create a nurse-centered AI workspace.
+**Goal:** Choose your setup door, create a nurse-centered AI workspace, and put the no-PHI boundary in place before any tool grows more powerful.
+
+Setup has two doors (full walkthrough and safety rules: https://nurse-ai-os.org/setup.html):
+
+- **Door 1 — No-Install Start (default, recommended):** Use a browser AI you already have (ChatGPT, Claude, or similar). Load your SOUL file and the starter kit, apply the no-PHI boundary, and begin working the course today. Nothing to install.
+- **Door 2 — Full Governed Hermes Build (optional, later):** Install Hermes Agent from the official Hermes Agent site (https://hermes-agent.nousresearch.com/), then return to Nurse AI OS for the governed nursing layer. Choose this only when your Door 1 workflows are proven and you want files, skills, memory, and automations.
 
 ### Build
 
-- Hermes Agent installed from the official site
+- Door 1: a browser AI (ChatGPT, Claude, or similar) with your SOUL file and starter kit loaded
+- Door 2 (optional, later): Hermes Agent installed from the official site
 - nurse-centered profile or working folder
 - starter markdown architecture
 - no-PHI safety boundary
@@ -163,6 +184,8 @@ Include safety boundaries, human-agency rules, and weekly review templates.
 
 ### Hermes Agent Setup Walkthrough
 
+The rest of this week's walkthrough covers Door 2, the full governed Hermes build. If you are starting through Door 1, skim it now and return when you are ready for the full build.
+
 Use the setup tutorial as a practical orientation, but translate it through the nurse-centered safety lens.
 
 #### 1. Install and launch Hermes from the official source
@@ -170,7 +193,7 @@ Use the setup tutorial as a practical orientation, but translate it through the 
 The safest beginner path is to start at the official Hermes Agent site and follow the current setup instructions for your device.
 
 - Go to the official Hermes Agent site: https://hermes-agent.nousresearch.com/
-- Use the current official installation path from Nous Research, not a copied installer from Nurse AI OS.
+- Use the current official installation path from Nous Research. Nurse AI OS does not host Hermes installers or downloads — install from the official site, then return to Nurse AI OS for the governed nursing layer.
 - Avoid third-party mirrors and unofficial download sites.
 - If your operating system warns you, confirm the source before opening or installing anything.
 - Complete first-run onboarding and verify one normal chat works before adding Nurse AI OS workflows.
@@ -237,6 +260,8 @@ Do not store:
 - secrets, passwords, or API keys
 - sensitive family information
 - anything you would not want resurfacing later
+
+For continuity you can see and audit, pair governed memory with a digital Kardex — a `KARDEX.md` handoff-notes file that keeps a searchable record between sessions (see the Make It Yours guide: https://nurse-ai-os.org/personalize.html).
 
 #### 5. Configure models and providers
 
@@ -444,6 +469,8 @@ Skill rule:
 
 > Save repeated procedures as skills only after the workflow has proven useful. Do not create a skill for every one-off prompt.
 
+This is the teach-it-once loop: when you correct the AI, turn the correction into a standing rule or skill so you never have to teach it twice (see the Make It Yours guide: https://nurse-ai-os.org/personalize.html).
+
 #### Weekly review cron — only after the manual workflow works
 
 Cron jobs run in fresh sessions, so prompts must be self-contained. Do not assume the cron job remembers the current chat.
@@ -473,6 +500,8 @@ Cron boundary:
 **Goal:** Create a daily and weekly operating rhythm.
 
 ### Daily Brief Prompt
+
+This daily brief is the Morning Huddle — a daily #1-priority check-in (see the Make It Yours guide: https://nurse-ai-os.org/personalize.html).
 
 ```text
 Act as my nurse-centered Chief of Staff.
@@ -535,6 +564,8 @@ Build a learning pathway that includes:
 **Goal:** Map career growth, contribution, and nurse-led innovation.
 
 ### Career Map Prompt
+
+For big goals like this, use the admission-assessment meta-prompt: have the AI interview you first — history, constraints, resources — before it plans anything (see the Make It Yours guide: https://nurse-ai-os.org/personalize.html).
 
 ```text
 Act as my nurse-centered career strategist.
@@ -668,7 +699,7 @@ Named Human Owner:
 
 # Practical Integrations: Notes, Notion, Google Workspace, and GitHub
 
-These integrations should be added only after your basic Hermes setup, no-PHI boundary, workspace folder, and manual workflows are working. Notion belongs here as the human-facing operations layer: useful for visibility and coordination, but never a clinical system.
+These integrations belong to the Door 2 (full governed Hermes build) pathway. They should be added only after your basic Hermes setup, no-PHI boundary, workspace folder, and manual workflows are working. Notion belongs here as the human-facing operations layer: useful for visibility and coordination, but never a clinical system.
 
 Integration principle:
 
@@ -885,7 +916,7 @@ The recommended first dashboard is the starter kit file:
 
 `08-Integrations/Local-HTML-Life-Dashboard/index.html`
 
-This is a single-file, browser-only dashboard template covering health, finances, goals, habits, tasks, and routines. It includes Today, This Week, Health & Energy, Money Stewardship, Goals & Projects, and Weekly Reset views. Edits are saved in browser local storage and can be exported as a private JSON backup.
+This is a single-file, browser-only dashboard template covering health, finances, goals, habits, tasks, and routines. It includes Today, This Week, Health & Energy, Money Stewardship, Goals & Projects, and Weekly Reset views. Edits are saved in browser local storage and can be exported as a private JSON backup. In the Make It Yours workflows this dashboard is your station board — the at-a-glance view of your day and week (https://nurse-ai-os.org/personalize.html).
 
 Start here because it is the lowest-friction path:
 
@@ -1264,6 +1295,8 @@ Best for papers, guidelines, white papers, reports, and evidence summaries.
 - Tools: `web_search`, `web_extract`, PDF URL extraction, and browser only when needed.
 - Skills to create after the workflow works: `read-paper`, `summarize-guideline`, `compare-studies`, `evidence-brief`.
 - Output: question, population, intervention/exposure, findings, limitations, confidence, practical takeaway, and original source link.
+
+Lane 2 outputs follow the evidence-first brief pattern: collect → filter → compare → recommend, with sources cited (see the Make It Yours guide: https://nurse-ai-os.org/personalize.html).
 
 Boundary:
 

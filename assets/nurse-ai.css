@@ -213,6 +213,8 @@ a:hover { color: var(--navy-800); }
 /* ---------- Offer table ---------- */
 .offer-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
 .offer-table th, .offer-table td { text-align: left; padding: .85rem 1.1rem; border-bottom: 1px solid var(--linen-100); font-size: 1rem; }
+.offer-table td { color: var(--ink-900); }
+.offer-table td strong { color: var(--navy-900); }
 .offer-table th { background: var(--navy-900); color: var(--gold-300); font-family: var(--font-display); }
 .offer-table tr:last-child td { border-bottom: none; background: var(--gold-100); font-weight: 700; }
 .offer-table td:last-child { text-align: right; white-space: nowrap; }

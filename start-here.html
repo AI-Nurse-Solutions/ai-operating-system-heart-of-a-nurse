@@ -4,11 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Start Here — Nurse AI OS</title>
-<meta name="description" content="Your guided first hour with Nurse AI OS: assessment first, installation later. Six gentle steps from the SOUL Quiz to your weekly Lamp Huddle.">
+<meta name="description" content="Five steps to your Nurse AI OS: install Hermes with the cheat sheet, take the SOUL Quiz and load it in, add your starter kit, build your dashboard, and run your first prompts.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+.prompt-block {
+  background: #10233a; color: #dbe6ef; border-radius: 10px;
+  padding: 1.1rem 1.3rem; font-family: "SF Mono", "Consolas", monospace;
+  font-size: .88rem; line-height: 1.55; white-space: pre-wrap;
+  border-left: 4px solid var(--gold-500); margin: .8rem 0 1.2rem;
+}
+.prompt-label {
+  font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--teal-600); margin: 1rem 0 .2rem;
+}
+details.cheat {
+  background: var(--linen-100); border-radius: 10px; margin-bottom: .6rem; padding: 0;
+  border-left: 4px solid var(--teal-500);
+}
+details.cheat summary {
+  cursor: pointer; font-weight: 700; padding: .8rem 1.1rem; list-style: none; color: var(--navy-900);
+}
+details.cheat summary::-webkit-details-marker { display: none; }
+details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-size: .98rem; }
+</style>
 </head>
 <body>
 
@@ -18,7 +39,6 @@
     <div class="nav-links">
       <a href="start-here.html" class="active">Start Here</a>
       <a href="pathways.html">Pathways</a>
-      <a href="setup.html">Setup</a>
       <a href="resources.html">Resources</a>
       <a href="about.html">About</a>
       <a href="index.html#founding-year">Free Founding Year</a>
@@ -30,17 +50,17 @@
 
 <section class="hero" style="padding:3.2rem 0;">
   <div class="container narrow">
-    <p class="kicker">Start gently</p>
-    <h1>Assessment first. Installation later.</h1>
-    <p class="lede">You would never start a care plan without an assessment — so we won't either. This page is your whole first week, in six gentle steps. No downloads, no code, no patient data. About 15 minutes to your first win.</p>
+    <p class="kicker">The whole setup, nothing extra</p>
+    <h1>Five steps. One evening. Done.</h1>
+    <p class="lede">This page is the entire onboarding — install, personalize, build your dashboard, run your first prompts. Everything else on this site is optional depth for later. If you only ever read one page, make it this one.</p>
   </div>
 </section>
 
 <section class="section">
   <div class="container narrow">
 
-    <!-- VIDEO SLOT #2: Welcome video — "A System with the Heart of a Nurse" (60–90 sec, face to camera).
-    Replace with: <iframe class="video-embed" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" title="Welcome to Nurse AI OS" allowfullscreen></iframe>
+    <!-- VIDEO SLOT #2: Welcome video — "A System with the Heart of a Nurse" (60–90 sec).
+    <iframe class="video-embed" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" title="Welcome to Nurse AI OS" allowfullscreen></iframe>
     -->
     <div class="video-slot" style="margin-bottom:2.5rem;">
       <div class="play">▶</div>
@@ -49,61 +69,105 @@
     </div>
 
     <div class="boundary">
-      <strong>A word before you start — especially if you're a student:</strong> some of this may feel over your head at first. SOUL files, operating systems, acronyms — it's a lot. That's normal, and it isn't a test. You only ever need the <em>next</em> step, never the whole map. Skip what confuses you, come back to it later, and bring questions to the Lamp Huddle — every nurse there started exactly where you are.
+      <strong>A word before you start — especially if you're a student:</strong> some of this may feel over your head at first. That's normal, and it isn't a test. You only ever need the <em>next</em> step, never the whole map. Skip what confuses you, come back later, and bring questions to the <a href="assets/lamp-huddle.md">Lamp Huddle</a> — every nurse there started exactly where you are. And the one rule that never changes: <strong>no patient data, ever</strong> — this system runs on your life, never your patients. <a href="#safety">The safety rules →</a>
     </div>
 
     <div class="steps">
 
+      <!-- ============ STEP 1 ============ -->
       <div class="step">
-        <h3>Take the 2-Minute SOUL Quiz</h3>
-        <p><strong>Why first:</strong> your values and boundaries — not your tech skills — decide how AI should support you. The quiz asks about what matters to you, what stresses you, and what AI must never touch. Then it does a gentle <strong>review of systems</strong> across your whole life: studying, time, documentation habits, family logistics, wellness, a community project, a business idea — so AI helps where your real life actually needs it, and nothing important gets missed. It drafts your personal SOUL file. Nothing leaves your browser.</p>
-        <p style="font-size:.95rem;"><em>New to all this?</em> There are no wrong answers and nothing to prepare. If a question doesn't fit your season yet — skip it. The quiz meets you where you are.</p>
-        <a class="step-cta btn btn-primary btn-sm" href="soul-quiz.html">Begin the SOUL Quiz →</a>
-      </div>
-
-      <div class="step">
-        <h3>Name your role, receive your care plan</h3>
-        <p>Student, staff nurse, leader/manager, or educator — your quiz results point to a role-based track inside the free 30-Day Roadmap. About 20 minutes a day. Day 1 is a real win, not a setup chore.</p>
-        <p style="font-size:.95rem;"><em>Example result:</em> "You are a values-driven bedside nurse seeking practical support without losing your professional judgment. Your first 30 days focus on cognitive load, digital workflow, and recovery after work."</p>
-        <a class="step-cta btn btn-quiet btn-sm" href="assets/30-day-roadmap.pdf">Open the 30-Day Roadmap →</a>
-      </div>
-
-      <div class="step">
-        <h3>Download the workbook and starter kit</h3>
-        <p>The PDF workbook holds the modules, prompts, and frameworks. The starter kit gives you a ready-made folder architecture — the bones of your personal Nurse AI OS. Both free, both yours to keep.</p>
+        <h3>Install Hermes</h3>
+        <p>Hermes is the free, open-source AI engine your Nurse AI OS runs on. Install it from the official site, open it, and say hello — it works like a chat, and you cannot break anything.</p>
         <p>
-          <a class="btn btn-quiet btn-sm" href="assets/nurse-ai-os-workbook.pdf">Workbook (PDF)</a>&nbsp;
-          <a class="btn btn-quiet btn-sm" href="assets/nurse-ai-os-starter-kit.zip">Starter Kit (ZIP)</a>
+          <a class="btn btn-primary btn-sm" href="https://hermes-agent.nousresearch.com/">Get Hermes (official site) →</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="assets/hermes-cheat-sheet.md">Download the cheat sheet</a>
         </p>
+        <p style="margin-top:.8rem;"><strong>The cheat sheet, right here:</strong></p>
+        <details class="cheat">
+          <summary>Install &amp; first launch</summary>
+          <div class="cheat-body">Download from the official site for your computer (Mac or Windows) and follow their steps. Open it. If it asks about an AI model or provider, the default is fine — you can change it later. Menus move as Hermes updates; when in doubt, their <a href="https://hermes-agent.nousresearch.com/docs">official docs</a> are the truth.</div>
+        </details>
+        <details class="cheat">
+          <summary>Your first conversation</summary>
+          <div class="cheat-body">Type like you'd text a colleague. Start with: <em>"I'm a nurse setting up my Nurse AI OS. I'll give you my SOUL file next — treat it as my standing instructions."</em></div>
+        </details>
+        <details class="cheat">
+          <summary>The five phrases that do most of the work</summary>
+          <div class="cheat-body">"Run my morning huddle." · "Give me a Kardex entry for this session." · "Make that correction permanent." · "Before you start, interview me like an admission assessment." · "Show me your plan before you do anything." — that last one keeps your hand on every decision.</div>
+        </details>
+        <p style="font-size:.92rem; color:var(--ink-600); margin-top:.6rem;"><em>Rather not install anything yet? You can do steps 2–5 in the browser AI you already use (ChatGPT or Claude) — paste instead of upload. Hermes just makes it permanent.</em></p>
       </div>
 
+      <!-- ============ STEP 2 ============ -->
       <div class="step">
-        <h3>Set up your Nurse AI OS — the gentle way</h3>
-        <p>Most nurses start with <strong>Door 1</strong>: the browser AI you already use (ChatGPT or Claude) plus your SOUL file and starter kit. No installation. The full governed build (Door 2, with the open-source Hermes runtime) is optional and can wait as long as you like.</p>
-        <a class="step-cta btn btn-quiet btn-sm" href="setup.html">See both setup doors →</a>
+        <h3>Take the SOUL Quiz, then give Hermes your SOUL file</h3>
+        <p>The 2-minute SOUL Quiz asks about your values, boundaries, and where your real life needs help — no wrong answers, nothing to prepare. It downloads your personal <strong>SOUL.md</strong> file. Already took it? Just find your file.</p>
+        <a class="step-cta btn btn-primary btn-sm" href="soul-quiz.html">Take the SOUL Quiz →</a>
+        <p class="prompt-label">Then attach or paste the file into Hermes and say:</p>
+        <div class="prompt-block">This is my SOUL file. Treat it as my standing instructions for how to support me. Confirm what you understood about my values and my boundaries — especially what I will never delegate.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);">Read its summary back. Correct anything wrong — from now on, corrections stick.</p>
       </div>
 
+      <!-- ============ STEP 3 ============ -->
       <div class="step">
-        <h3>Join the weekly Lamp Huddle</h3>
-        <p>A 45-minute live call each week for nurses building the same thing. Bring one question, one friction point, or one small win. This is your evaluation loop — and your reminder that you're not doing this alone.</p>
-        <a class="step-cta btn btn-quiet btn-sm" href="assets/lamp-huddle.md">See the Lamp Huddle schedule →</a>
+        <h3>Download the Starter Kit and show Hermes where it lives</h3>
+        <p>The Starter Kit is the folder skeleton of your system — a home for your SOUL file, notes, and projects. Unzip it somewhere you'll find again (Documents is perfect).</p>
+        <a class="step-cta btn btn-primary btn-sm" href="assets/nurse-ai-os-starter-kit.zip">Download the Starter Kit (ZIP) →</a>
+        <p class="prompt-label">Then tell Hermes:</p>
+        <div class="prompt-block">My Nurse AI OS folder is at [where you unzipped it]. This is where my files live — my SOUL file, my notes in 03-Memory, my projects in 04-Projects. Keep your work for me inside this folder.</div>
       </div>
 
+      <!-- ============ STEP 4 ============ -->
       <div class="step">
-        <h3>Make it truly know you</h3>
-        <p>Once the basics work, build the six workflows that turn "a chatbot I ask things" into a system trained by you: the Morning Huddle, your digital Kardex, evidence-first briefs, guided goals, your station board, and the teach-it-once loop. One per week.</p>
-        <a class="step-cta btn btn-quiet btn-sm" href="personalize.html">Open the personalization guide →</a>
+        <h3>Build your dashboard — one prompt — and bookmark it</h3>
+        <p>Your starter kit includes a private, browser-only dashboard. This prompt has Hermes personalize it from your SOUL Quiz answers — your name, your priorities, your first goals — automatically:</p>
+        <div class="prompt-block">Using my SOUL file, personalize the Local HTML Life Dashboard in my starter kit (08-Integrations/Local-HTML-Life-Dashboard). Fill in my name, my top priorities in each sphere, and my first goals and habits from my quiz answers. Save it as My-Dashboard.html in my Nurse AI OS folder and tell me exactly where it is.</div>
+        <p><strong>Open the file it creates and bookmark it.</strong> That's your station board — everything you're building, one glance, nothing uploaded anywhere.</p>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>Later, if you ever want more:</em> a Notion version, messaging access, and sovereign/on-premise setups exist in <a href="resources.html">advanced topics</a>. Not now. The bookmark is enough.</p>
       </div>
 
-    </div>
+      <!-- ============ STEP 5 ============ -->
+      <div class="step">
+        <h3>Run your first prompts</h3>
+        <p>You're set up. Now make it earn its keep — pick whichever fits tonight:</p>
+        <p class="prompt-label">The daily rhythm (start tomorrow morning)</p>
+        <div class="prompt-block">Run my morning huddle. Ask me one question: "What is your number one priority today?" Then suggest three specific ways you can help — drafts, research, summaries, planning — never clinical decisions or anything with patient data. Ask which to start.</div>
+        <p class="prompt-label">Students — one lecture, tamed</p>
+        <div class="prompt-block">Here are my lecture notes on [topic]. Build me a plain-language study map, then quiz me Socratically — five questions, one at a time. Don't give me the answer until I've reasoned through it.</div>
+        <p class="prompt-label">Staff — get one thing off your plate</p>
+        <div class="prompt-block">Build me a shift-recovery checklist based on my SOUL file — what helps me decompress, in order, for the first hour after I get home.</div>
+        <p class="prompt-label">Leaders — your first governance move</p>
+        <div class="prompt-block">Help me map one workflow on my unit (no patient data — just the process): what burden AI could reduce, what harm it could introduce, and where a human must stay in the loop.</div>
+        <p style="margin-top:1rem;">When these feel natural, the <a href="personalize.html">six workflows</a> take you the rest of the way — one per week, until the system truly knows you.</p>
+      </div>
 
-    <div class="boundary" style="margin-top:2.5rem;">
-      <strong>The one rule that never changes:</strong> no patient names, no charts, no screenshots of clinical systems, no patient-identifying details — ever, in any step, at any level. Your license and your patients come first. <a href="setup.html#safety">Read the plain-language safety rules →</a>
     </div>
 
     <p style="text-align:center; margin-top:2.5rem;">
-      <a class="btn btn-primary" href="soul-quiz.html">I'm ready — start the SOUL Quiz →</a>
+      <a class="btn btn-primary" href="soul-quiz.html">Start now — the SOUL Quiz is step 2 →</a>
+      <br><span style="font-size:.93rem; color:var(--ink-600);">Questions along the way? The weekly <a href="assets/lamp-huddle.md">Lamp Huddle</a> is free, and a human answers <a href="mailto:great.ai.nurses@gmail.com">email</a>.</span>
     </p>
+  </div>
+</section>
+
+<!-- ============ SAFETY ============ -->
+<section class="section section-alt" id="safety">
+  <div class="container narrow">
+    <p class="eyebrow">The rules that protect everyone</p>
+    <h2>Plain-language safety rules</h2>
+    <p class="section-intro">You memorized the rights of medication administration. These are shorter, and they protect your patients, your license, and you.</p>
+    <div class="steps">
+      <div class="step"><h3>No patient data. Ever.</h3><p>No names, charts, screenshots, room numbers, record numbers, dates, or stories that could identify a patient — in any AI tool, at any level. If you're unsure whether something counts: it counts. Leave it out.</p></div>
+      <div class="step"><h3>AI drafts. You decide.</h3><p>Every AI output is a draft until a human reviews it. Nothing gets sent, published, or acted on without your judgment.</p></div>
+      <div class="step"><h3>Your license is not outsourceable.</h3><p>No AI here supports clinical decisions, assessments, or patient-specific care questions. It carries your busywork — never your judgment.</p></div>
+      <div class="step"><h3>Employer systems stay at work.</h3><p>No EHR screens, no confidential policies, no identifiable staff or student data. Public, fictional, or personal material only — unless your organization's compliance team has explicitly approved a tool and workflow.</p></div>
+      <div class="step"><h3>When in doubt, ask a human.</h3><p>Bring gray areas to the <a href="assets/lamp-huddle.md">Lamp Huddle</a> or email <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a>. A question asked early beats an incident reported late.</p></div>
+    </div>
+    <p style="margin-top:2rem;">These rules have a name: <strong>EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</strong> — the governance framework in every layer of Nurse AI OS. Every action gets classified before it runs:
+      <span class="badge" style="background:#e5f3e6; color:#2c6e31;">🟢 Green — may proceed</span>
+      <span class="badge" style="background:#fdf3d7; color:#8a6420;">🟡 Yellow — you approve first</span>
+      <span class="badge" style="background:#fbe4e4; color:#a33a3a;">🔴 Red — human authorization mandatory</span>
+      You'll meet it formally in the <a href="assets/nurse-ai-os-workbook.pdf">workbook</a> — for now, the five rules above are all you need.</p>
   </div>
 </section>
 
@@ -113,7 +177,6 @@
     <div class="footer-links">
       <a href="index.html">Home</a>
       <a href="pathways.html">Pathways</a>
-      <a href="setup.html">Setup</a>
       <a href="resources.html">Resources</a>
       <a href="about.html">About</a>
       <a href="faq.html">FAQ</a>

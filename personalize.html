@@ -47,7 +47,7 @@
     <p class="kicker">After setup · Personalization</p>
     <h1>Make it truly know you</h1>
     <p class="lede">The difference between "a chatbot I ask things" and "a system that knows me" is not a smarter AI. It's six small workflows — the same rhythm you already run on your unit: huddle, Kardex, evidence, care plan, station board, and teaching what you learned. Build one per week. By week six, it knows you.</p>
-    <p><span class="badge gold">Works in Door 1 (browser AI)</span> <span class="badge gold">Deeper in Door 2 (Hermes)</span> <span class="badge gold">No PHI, ever</span></p>
+    <p><span class="badge gold">Built for Hermes</span> <span class="badge gold">Works in any browser AI too</span> <span class="badge gold">No PHI, ever</span></p>
   </div>
 </section>
 
@@ -83,9 +83,9 @@
     <h2>The Morning Huddle</h2>
     <p>Every shift starts with a huddle — one clear look at what matters today. Give your AI the same job. Each morning it asks you a single question: <em>"What is your number one priority today?"</em> Then — and this is the part that makes it feel alive — it connects your answer to work it can actually take off your plate, and asks permission before starting any of it.</p>
     <p>Say your priority is a certification exam: it offers a study map, practice questions, and a review of your weak topics. Say it's a family day: it offers to plan the logistics and protect the time. Say it's a committee meeting: it offers agenda prep and a summary template. You keep the judgment. It carries the grunt work.</p>
-    <p class="prompt-label"><span class="door-tag d1">Door 1</span> Paste at the start of your day, after your SOUL file:</p>
+    <p class="prompt-label"><span class="door-tag d1">Browser AI</span> Paste at the start of your day, after your SOUL file:</p>
     <div class="prompt-block">Run my morning huddle. Ask me one question: "What is your number one priority today?" After I answer: (1) restate what I'm trying to accomplish in one line, (2) suggest three specific ways you can help — drafts, research, summaries, planning — never clinical decisions or anything with patient data, (3) ask which to start. If my answer reveals a lasting preference or recurring duty, ask if I want it noted in my SOUL file. Keep it short. The goal is leverage, not more work.</div>
-    <p class="prompt-label"><span class="door-tag d2">Door 2</span> In Hermes, schedule it once and it runs itself:</p>
+    <p class="prompt-label"><span class="door-tag d2">Hermes</span> In Hermes, schedule it once and it runs itself:</p>
     <div class="prompt-block">hermes cron create "0 7 * * *" "Run the morning huddle: ask my #1 priority today, connect it to three ways you can help within my no-PHI boundaries, ask before starting anything, suggest a SOUL update only if it will still matter next month."</div>
     <p>Set the time to fit your shifts — <code>0 7 * * *</code> is 7:00 a.m. daily. Night shifter? Make it 5 p.m. The rhythm matters more than the hour.</p>
   </div>
@@ -98,9 +98,9 @@
     <h2>Your digital Kardex</h2>
     <p>You already know why report and the Kardex exist: care falls apart when knowledge lives only in someone's head — or in yesterday's conversation. AI has the same failure mode. Decisions, research, and plans disappear into chat history, and next week you're asking, "what did we decide about that?"</p>
     <p>The fix is a running notes file — call it your Kardex. One document (in your starter kit folder, a note app, or Obsidian) where the AI writes short entries after meaningful sessions: what was decided, what worked, what's still open. Not transcripts — <strong>handoff notes</strong>. Searchable continuity, so no session starts from zero.</p>
-    <p class="prompt-label"><span class="door-tag d1">Door 1</span> End any session that mattered with:</p>
+    <p class="prompt-label"><span class="door-tag d1">Browser AI</span> End any session that mattered with:</p>
     <div class="prompt-block">Give me a Kardex entry for this session: date, topic, what we decided, what we produced, what's still open, and anything you learned about how I like to work. Five lines maximum — a handoff note, not a transcript. I'll save it to my Kardex file, and I'll paste that file at the start of future sessions so you can pick up where we left off.</div>
-    <p class="prompt-label"><span class="door-tag d2">Door 2</span> Hermes keeps memory across sessions natively — point it at your starter-kit folder and tell it:</p>
+    <p class="prompt-label"><span class="door-tag d2">Hermes</span> Hermes keeps memory across sessions natively — point it at your starter-kit folder and tell it:</p>
     <div class="prompt-block">Maintain a KARDEX.md file in my Nurse AI OS folder. After any session where we decide something, produce something, or I correct you, append a five-line handoff entry. Before starting new work, check the Kardex first and tell me where we left off.</div>
   </div>
 </section>
@@ -112,9 +112,9 @@
     <h2>Evidence-based briefs, not brainstorms</h2>
     <p>You were trained to distrust opinion without evidence — hold your AI to the same standard. The weak version of AI help is "give me study tips" or "summarize sepsis." Generic in, generic out. The strong version starts from <em>your</em> materials and real sources: your lecture notes, your certification blueprint, the actual public guideline, the transcript of the video you watched.</p>
     <p>The rule: <strong>collect, filter, compare — then recommend.</strong> Make the AI gather the evidence before it's allowed to have an opinion. And keep the chain visible: every claim in the output should say where it came from, so you can verify what matters. AI summarizes; you judge.</p>
-    <p class="prompt-label"><span class="door-tag d1">Door 1</span> A study brief that actually knows your situation:</p>
+    <p class="prompt-label"><span class="door-tag d1">Browser AI</span> A study brief that actually knows your situation:</p>
     <div class="prompt-block">Build me an evidence-first study brief. First, work only from what I give you: [paste lecture notes / cert exam blueprint / public guideline / video transcript]. (1) Extract the key concepts and rank them by how heavily my exam or source weights them. (2) Compare against what I've told you I already know — check my Kardex — and flag my likely weak spots. (3) Only then create the plan: study map, five self-test questions per weak topic, and one teach-back question I should be able to answer out loud. Cite which source each item came from.</div>
-    <p class="prompt-label"><span class="door-tag d2">Door 2</span> The same pattern becomes a nightly certification coach:</p>
+    <p class="prompt-label"><span class="door-tag d2">Hermes</span> The same pattern becomes a nightly certification coach:</p>
     <div class="prompt-block">hermes cron create "0 20 * * *" "Certification coach: from my cert-prep folder and Kardex, quiz me on my three weakest topics using spaced repetition. Five questions, NCLEX-style rationale after each answer. Update the Kardex with what I got wrong. No made-up references — cite the source file for every question."</div>
   </div>
 </section>
@@ -126,7 +126,7 @@
     <h2>Let it interview you first — like an admission assessment</h2>
     <p>You'd never write a care plan from a one-line chief complaint. So don't hand your AI a one-line goal — "help me get my CCRN," "build my committee presentation," "plan my side project" — and expect a fitting result. Big tasks fail from vague hand-offs, not weak tools.</p>
     <p>Instead, make the AI do an <strong>admission assessment on your goal</strong>: it interviews you first, then writes the full plan. This is the single highest-leverage habit in this whole guide — five minutes of answering questions buys you output that actually fits your life.</p>
-    <p class="prompt-label"><span class="door-tag d1">Door 1</span> <span class="door-tag d2">Door 2</span> Works identically in both:</p>
+    <p class="prompt-label"><span class="door-tag d2">Hermes</span> <span class="door-tag d1">Browser AI</span> Works identically in both:</p>
     <div class="prompt-block">I have a big goal, but before you start, interview me like an admission assessment. Ask me everything you need about: what success looks like, my deadline and weekly time budget, what I've already done, what materials exist, my constraints (shifts, family, energy), what you must never do (no PHI, no clinical decisions, nothing sent or published without my review), and how we'll verify it worked. Then write the complete plan back to me for approval before doing anything. Goal: [your goal].</div>
     <p>Answer its questions honestly — voice-to-text works well if you're tired. When the plan comes back, edit it like you'd edit a care plan. Then let it run.</p>
   </div>
@@ -140,7 +140,7 @@
     <p>Every unit has a board — census, assignments, what's pending. Once you're running a few workflows, you need the same thing: one place that shows your goals, habits, tasks, and what the system produced lately, without scrolling through chats.</p>
     <p>You already have it: the <a href="starter-kit/My-Nurse-AI-OS/08-Integrations/Local-HTML-Life-Dashboard/index.html">Local HTML Life Dashboard</a> in your starter kit. It runs in your browser only — no account, no server, nothing uploaded. Save it, bookmark it, and make it the home for what your workflows produce: Kardex highlights, roadmap progress, study streaks, project status.</p>
     <p>Two rules, learned the hard way: <strong>never put secrets or anything sensitive on a dashboard</strong>, and <strong>anything risky stays approval-only</strong> — the board shows state; it doesn't act. When the local board feels tight, the <a href="starter-kit/My-Nurse-AI-OS/08-Integrations/Notion-Life-Dashboard-Pack/README.md">Notion pack</a> is the advanced upgrade.</p>
-    <p class="prompt-label"><span class="door-tag d1">Door 1</span> Make the AI feed your board:</p>
+    <p class="prompt-label"><span class="door-tag d1">Browser AI</span> Make the AI feed your board:</p>
     <div class="prompt-block">From my Kardex and this week's sessions, give me a station-board update: three wins, current focus, anything stalled, and my next single action for each active project. Format it so I can paste it into my dashboard in under a minute.</div>
   </div>
 </section>
@@ -151,9 +151,9 @@
     <p class="eyebrow">Workflow 6 · The compounding loop</p>
     <h2>Teach it once — the way you precept</h2>
     <p>Here is the real secret to a system that feels like it knows you: <strong>it should never make the same mistake twice.</strong> When you correct a new grad, the correction sticks — that's precepting. Do the same with your AI. Every time you fix its output — "shorter," "cite the source," "that tone is wrong for my manager," "always give rationale with answers" — turn the correction into a standing procedure.</p>
-    <p class="prompt-label"><span class="door-tag d1">Door 1</span> After any correction:</p>
+    <p class="prompt-label"><span class="door-tag d1">Browser AI</span> After any correction:</p>
     <div class="prompt-block">That correction should be permanent. Write it as a one-line standing rule for my SOUL file, phrased so it applies to all future work of this type, not just this task.</div>
-    <p class="prompt-label"><span class="door-tag d2">Door 2</span> In Hermes, corrections become <em>skills</em> — reusable procedures. Example, adapted for the unit:</p>
+    <p class="prompt-label"><span class="door-tag d2">Hermes</span> In Hermes, corrections become <em>skills</em> — reusable procedures. Example, adapted for the unit:</p>
     <div class="prompt-block">Create a skill called Huddle Script Builder.
 Input: topic, source policy or transcript (public/de-identified only), audience, time limit.
 Steps: (1) extract key practice points, (2) convert to a plain-language 2-minute huddle script, (3) add 3 teach-back questions, (4) add one safety pearl, (5) flag anything needing verification against the current official policy.
@@ -166,7 +166,7 @@ When I correct the output, update this skill so the correction applies next time
 <!-- ============ PROFILES ============ -->
 <section class="section section-navy">
   <div class="container">
-    <p class="eyebrow">Going further · Door 2</p>
+    <p class="eyebrow">Going further in Hermes</p>
     <h2>One system, many hats — nurse profiles</h2>
     <p class="section-intro">You are a different professional at 0700 than at your kitchen table. Hermes profiles let each hat have its own identity, memory, and boundaries — its own SOUL file — so your certification coach never mixes state with your family planner. Start with three; add others only when a real need shows up.</p>
     <div class="card-grid cols-3">
@@ -195,7 +195,7 @@ When I correct the output, update this skill so the correction applies next time
   <div class="container">
     <p class="eyebrow">The blueprint library</p>
     <h2>Routines you can install today</h2>
-    <p class="section-intro">Each blueprint is a schedule plus a prompt. Door 2 users: one <code>hermes cron create</code> command each. Door 1 users: same prompt, run by hand with your morning coffee — the habit matters more than the automation.</p>
+    <p class="section-intro">Each blueprint is a schedule plus a prompt. In Hermes: one <code>hermes cron create</code> command each. In a browser AI: same prompt, run by hand with your morning coffee — the habit matters more than the automation.</p>
     <div class="card-grid cols-2">
       <div class="card">
         <h3>☀️ Daily Nurse Brief <span class="door-tag d2">cron: 0 6 * * *</span></h3>

@@ -34,8 +34,9 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 - Take the [2-minute SOUL Quiz](https://nurse-ai-os.org/soul-quiz.html). It drafts your **SOUL file** — your values, boundaries, and how you want AI to support you. Nothing leaves your browser. Save it.
 - Then the win: open your browser AI, paste your SOUL file, and give it **one real task from your actual week** (never a patient task — a *you* task). A study map, a certification renewal plan, a shift-recovery checklist. Notice it already sounds like it knows how you want to be helped. It does — you told it.
 
-### Day 2 — Map your Life & Projects (Green)
-- Take the [Life & Projects Quiz](https://nurse-ai-os.org/life-quiz.html) — your review of systems across Personal, Professional, and Community life. This decides where AI helps *first*.
+### Day 2 — Review your whole life with your SOUL file (Green)
+- Reread the SOUL file your quiz drafted, and do a gentle review of systems across your three spheres — Personal, Professional, and Community. Where is your real life asking for help first: studying, time, family logistics, wellness, a project? Write one line per sphere. This decides where AI helps *first*.
+- Feeling over your head? Normal. There are no wrong answers, and you only ever need the next step — never the whole map.
 
 ### Day 3 — Set the no-PHI boundary (Green)
 - Read the [plain-language safety rules](https://nurse-ai-os.org/setup.html#safety). Identify which accounts/devices are PHI-free and which are not.
@@ -194,7 +195,7 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 ## Your 30-day completion checklist
 
 - [ ] SOUL file written (via the SOUL Quiz) and refined with standing rules
-- [ ] Life & Projects map completed
+- [ ] Three-sphere life review completed (one line per sphere)
 - [ ] No-PHI boundary defined + delegation map drawn
 - [ ] Morning Huddle running daily
 - [ ] Digital Kardex (`KARDEX.md`) carrying continuity between sessions

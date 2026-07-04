@@ -4,18 +4,21 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Nurse AI Side-Gig Starter Kit | NIN/NAIO</title>
-  <meta name="description" content="The first doorway into NIN/NAIO for nurses exploring safe, no-PHI AI side projects, templates, workshops, and community resources." />
+  <meta name="description" content="Build your first safe, no-PHI nurse-AI side project in 30 days — then step into the NIN/NAIO Nurse Entrepreneur Program, formally launching September 15–17." />
   <style>
     :root{--navy:#10213f;--teal:#0f766e;--gold:#b7791f;--ink:#111827;--muted:#5b6678;--bg:#f8fafc;--card:#fff;--line:#dbe4ee;--soft:#ecfdf5;--warm:#fff7ed}
     *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);line-height:1.6;background:linear-gradient(180deg,#f8fbff,#fff 45%,#f8fafc)}
     .wrap{max-width:1120px;margin:0 auto;padding:0 22px} .hero{padding:74px 0 56px;background:radial-gradient(circle at 12% 18%,rgba(15,118,110,.35),transparent 34%),linear-gradient(135deg,#0b1220,var(--navy) 58%,#0f766e);color:#fff}
     .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-weight:900;color:#bff7ee;font-size:.78rem} h1{font-size:clamp(2.25rem,5.2vw,4.7rem);line-height:1;margin:14px 0} h2{font-size:clamp(1.7rem,3vw,2.5rem);line-height:1.12;color:var(--navy)} h3{color:var(--navy);margin-bottom:6px} .subtitle{max-width:850px;font-size:clamp(1.05rem,2vw,1.35rem);color:#e9f3ff}
     .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px} .btn{display:inline-block;text-decoration:none;border-radius:999px;padding:12px 18px;font-weight:900} .btn.primary{background:#fbbf24;color:#0b1220} .btn.secondary{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.32);color:#fff} .btn.teal{background:var(--teal);color:#fff}
-    .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px} .chip{border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:7px 12px;font-weight:850;font-size:.88rem}
+    .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px} .chip{border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:7px 12px;font-weight:850;font-size:.88rem} .chip.gold{background:rgba(251,191,36,.22);border-color:rgba(251,191,36,.5);color:#ffe9ad}
     nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10} nav .wrap{display:flex;gap:16px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px} nav a{color:var(--teal);font-weight:850;text-decoration:none}
-    .section{padding:58px 0} .grid{display:grid;gap:22px} .two{grid-template-columns:repeat(2,minmax(0,1fr))} .three{grid-template-columns:repeat(3,minmax(0,1fr))} .card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 10px 28px rgba(16,33,63,.07)} .callout{border-radius:24px;padding:24px;background:var(--soft);border-left:6px solid var(--teal)} .warm{background:var(--warm);border-left-color:#fbbf24} .badge{display:inline-block;border-radius:999px;background:#eef6ff;color:var(--navy);padding:6px 10px;font-weight:900;font-size:.82rem} .lede{max-width:760px;color:var(--muted);font-size:1.08rem}
+    .section{padding:58px 0} .grid{display:grid;gap:22px} .two{grid-template-columns:repeat(2,minmax(0,1fr))} .three{grid-template-columns:repeat(3,minmax(0,1fr))} .four{grid-template-columns:repeat(4,minmax(0,1fr))} .card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 10px 28px rgba(16,33,63,.07)} .callout{border-radius:24px;padding:24px;background:var(--soft);border-left:6px solid var(--teal)} .warm{background:var(--warm);border-left-color:#fbbf24} .badge{display:inline-block;border-radius:999px;background:#eef6ff;color:var(--navy);padding:6px 10px;font-weight:900;font-size:.82rem} .lede{max-width:760px;color:var(--muted);font-size:1.08rem}
     ol,ul{padding-left:1.25rem} li{margin:.4rem 0} .path{display:flex;flex-wrap:wrap;gap:8px;align-items:center} .path span{padding:8px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:850} footer{padding:36px 0;background:#0b1220;color:#dbeafe} footer a{color:#bff7ee}
-    @media(max-width:850px){.two,.three{grid-template-columns:1fr} nav{position:static}}
+    .launch{display:flex;align-items:center;gap:14px;border-radius:24px;padding:18px 22px;background:linear-gradient(120deg,#0b1220,var(--navy) 60%,#0f766e);color:#fff;margin:26px 0} .launch strong{font-size:1.15rem} .launch .date{color:#ffe9ad;font-weight:900}
+    .figure{margin:26px 0;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px} .figure svg{display:block;width:100%;height:auto} .figcap{text-align:center;color:var(--muted);font-size:.9rem;margin:8px 0 0}
+    .phase{display:flex;gap:10px;align-items:baseline;margin:.45rem 0} .phase b{color:var(--teal);white-space:nowrap} .phase em{color:var(--muted);font-style:normal}
+    @media(max-width:850px){.two,.three,.four{grid-template-columns:1fr} nav{position:static}}
   </style>
 </head>
 <body>
@@ -23,19 +26,100 @@
     <div class="wrap">
       <div class="eyebrow">First doorway into NIN/NAIO</div>
       <h1>Nurse AI Side-Gig Starter Kit</h1>
-      <p class="subtitle">Build your first safe, no-PHI nurse-AI side project in 30 days — with prompts, templates, guardrails, and a guided operating system. Start with one useful artifact, then step into NIN/NAIO when you are ready.</p>
-      <div class="chips"><span class="chip">No PHI</span><span class="chip">No clinical decisions</span><span class="chip">Human judgment first</span><span class="chip">Nurse entrepreneurship</span></div>
-      <div class="cta"><a class="btn primary" href="../assets/nurse-ai-side-gig-starter-kit.zip">Download the kit →</a><a class="btn secondary" href="../#community-ladder">Join the next circle</a><a class="btn secondary" href="../">Back to Nurse AI OS</a></div>
+      <p class="subtitle">Build your first safe, no-PHI nurse-AI side project in 30 days — with prompts, templates, guardrails, and a guided operating system. Start with one useful artifact, then step into the Nurse Entrepreneur Program when you are ready.</p>
+      <div class="chips"><span class="chip">No PHI</span><span class="chip">No clinical decisions</span><span class="chip">Human judgment first</span><span class="chip gold">Nurse Entrepreneur Program launches Sep 15–17</span></div>
+      <div class="cta"><a class="btn primary" href="../assets/nurse-ai-side-gig-starter-kit.zip">Download the kit →</a><a class="btn secondary" href="#pathway">The Nurse Entrepreneur Program</a><a class="btn secondary" href="../">Back to Nurse AI OS</a></div>
     </div>
   </header>
-  <nav><div class="wrap"><a href="#what">What it is</a><a href="#inside">Inside</a><a href="#sprint">30-day sprint</a><a href="#pathway">NIN/NAIO pathway</a><a href="#apply">Get feedback</a></div></nav>
+  <nav><div class="wrap"><a href="#what">What it is</a><a href="#inside">Inside</a><a href="#sprint">30-day sprint</a><a href="#pathway">Entrepreneur Program</a><a href="#apply">Get feedback</a></div></nav>
   <main>
     <section id="what" class="section"><div class="wrap grid two"><div><div class="eyebrow" style="color:var(--teal)">Build one small safe thing</div><h2>Not another generic prompt pack.</h2><p class="lede">This is a trust-first starter system for nurses who want to explore AI-enabled templates, workshops, content, study aids, dashboards, or community resources — without pretending to build clinical AI.</p></div><div class="callout"><p><strong>Boundary:</strong> No PHI. No patient-specific clinical decisions. No employer secrets. No certification claim. Human judgment first.</p><p>If the idea touches patient care, PHI, employer secrets, institutional approval, procurement, certification, or clinical deployment, stop and route through governance.</p></div></div></section>
     <section id="inside" class="section"><div class="wrap"><h2>What is inside the starter kit</h2><div class="grid three"><div class="card"><span class="badge">01</span><h3>EDENA guardrails</h3><p>Green, Yellow, Orange, and Red boundaries so nurses know what is safe to explore and what must stop.</p></div><div class="card"><span class="badge">02</span><h3>Offer canvas</h3><p>A one-page way to define buyer, burden, safe promise, format, proof, and next smallest step.</p></div><div class="card"><span class="badge">03</span><h3>30-day validation sprint</h3><p>A practical path from idea to 10 nurse conversations, one minimum useful artifact, and a clear go/no-go call.</p></div><div class="card"><span class="badge">04</span><h3>Prompt pack</h3><p>Prompts for ideation, EDENA review, landing-page drafting, content planning, and human review before publishing.</p></div><div class="card"><span class="badge">05</span><h3>Content calendar</h3><p>30 days of trust-building posts that educate first and sell gently only after usefulness is clear.</p></div><div class="card"><span class="badge">06</span><h3>Landing page + outreach</h3><p>Simple launch copy and human conversation script for validating without automation or hype.</p></div></div></div></section>
     <section id="sprint" class="section"><div class="wrap grid two"><div class="card"><h2>The 30-day sprint</h2><ol><li><strong>Week 1:</strong> Listen before building.</li><li><strong>Week 2:</strong> Build the minimum useful kit.</li><li><strong>Week 3:</strong> Test in public, gently.</li><li><strong>Week 4:</strong> Package the doorway and decide the next circle.</li></ol></div><div class="card"><h2>Validated means</h2><ul><li>10 nurses say the problem is real.</li><li>5 nurses request the kit.</li><li>1 nurse pays, pre-orders, or commits to a workshop.</li><li>A leader or educator asks how to bring it to a group.</li></ul><p>No ROI guarantees. No clinical efficacy claims. Adoption signals and learning evidence only.</p></div></div></section>
-    <section id="pathway" class="section"><div class="wrap"><h2>The doorway into NIN/NAIO</h2><p class="lede">The kit is the first step, not the destination. It turns curiosity into one safe artifact, then routes nurses into the right circle of stewardship.</p><div class="path"><span>Starter Kit</span><span>→ Lamp Huddle</span><span>→ NIN community</span><span>→ Founding Steward Cohort</span><span>→ Builder Academy</span><span>→ EDENA governance pathway</span></div><div class="callout warm" style="margin-top:24px"><p><strong>Positioning line:</strong> A no-PHI first doorway for nurse entrepreneurs who want to build with AI without losing the heart, ethics, or judgment of nursing.</p></div></div></section>
+
+    <section id="pathway" class="section"><div class="wrap">
+      <div class="eyebrow" style="color:var(--teal)">Where the side gig leads</div>
+      <h2>The NIN/NAIO Nurse Entrepreneur Program</h2>
+      <div class="launch">
+        <svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"><rect x="4" y="8" width="38" height="34" rx="6" fill="#fff" opacity=".12"/><rect x="4" y="8" width="38" height="10" rx="6" fill="#fbbf24"/><rect x="12" y="3" width="4" height="10" rx="2" fill="#ffe9ad"/><rect x="30" y="3" width="4" height="10" rx="2" fill="#ffe9ad"/><text x="23" y="35" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="12" font-weight="900" fill="#ffe9ad">15–17</text></svg>
+        <div><strong>Formal launch: <span class="date">September 15–17</span></strong><br>Founding enrollment opens at launch. Kit builders get first invitation.</div>
+      </div>
+      <p class="lede">The starter kit is Phase 0 in miniature. The full program is a guided, phase-based journey that turns nurses and healthcare professionals into <strong>AI-native founders</strong> — people who design, govern, and scale AI-enabled ventures, rather than just use AI tools. It is model-agnostic by design, impact-first by conviction, and governed by EDENA from day one — not as compliance, but as your competitive advantage.</p>
+      <div class="path" style="margin-top:16px"><span>Develop the steward</span><span>→ Learn AI orchestration</span><span>→ Build your own AI OS</span><span>→ Launch a governed venture</span><span>→ Scale an organization that benefits people and the planet</span></div>
+
+      <div class="figure">
+        <svg viewBox="0 0 1080 340" role="img" aria-label="The Growth Ladder: ten levels from Steward to Steward Leader">
+          <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0f766e"/><stop offset="1" stop-color="#b7791f"/></linearGradient></defs>
+          <text x="540" y="30" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="20" font-weight="900" fill="#10213f">The Growth Ladder</text>
+          <g font-family="Inter,system-ui,sans-serif">
+            <rect x="30"  y="270" width="88" height="40"  rx="8" fill="url(#lg)" opacity=".55"/><text x="74"  y="262" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">Steward</text><text x="74"  y="295" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">0</text>
+            <rect x="134" y="248" width="88" height="62"  rx="8" fill="url(#lg)" opacity=".6"/><text x="178" y="240" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">Explorer</text><text x="178" y="284" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">1</text>
+            <rect x="238" y="226" width="88" height="84"  rx="8" fill="url(#lg)" opacity=".65"/><text x="282" y="218" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">AI Native</text><text x="282" y="273" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">2</text>
+            <rect x="342" y="204" width="88" height="106" rx="8" fill="url(#lg)" opacity=".7"/><text x="386" y="196" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">Orchestrator</text><text x="386" y="262" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">3</text>
+            <rect x="446" y="182" width="88" height="128" rx="8" fill="url(#lg)" opacity=".75"/><text x="490" y="174" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">Builder</text><text x="490" y="251" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">4</text>
+            <rect x="550" y="160" width="88" height="150" rx="8" fill="url(#lg)" opacity=".8"/><text x="594" y="152" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">Entrepreneur</text><text x="594" y="240" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">5</text>
+            <rect x="654" y="138" width="88" height="172" rx="8" fill="url(#lg)" opacity=".85"/><text x="698" y="130" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">Operator</text><text x="698" y="229" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">6</text>
+            <rect x="758" y="116" width="88" height="194" rx="8" fill="url(#lg)" opacity=".9"/><text x="802" y="108" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">Founder</text><text x="802" y="218" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">7</text>
+            <rect x="862" y="94"  width="88" height="216" rx="8" fill="url(#lg)" opacity=".95"/><text x="906" y="86" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">Architect</text><text x="906" y="207" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">8</text>
+            <rect x="966" y="72"  width="88" height="238" rx="8" fill="url(#lg)"/><text x="1010" y="64" text-anchor="middle" font-size="12.5" font-weight="800" fill="#b7791f">Steward Leader</text><text x="1010" y="196" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">9</text>
+          </g>
+        </svg>
+        <p class="figcap">Ten levels, each earned by finishing a phase and passing its EDENA gate — from Steward (identity and values) to Steward Leader (scaling organizations that benefit society).</p>
+      </div>
+
+      <h3 style="font-size:1.35rem;margin-top:34px">The journey, phase by phase</h3>
+      <div class="grid four" style="margin-top:14px">
+        <div class="card"><span class="badge">Foundations · Phases 0–2</span>
+          <div class="phase"><b>0 · Identity</b></div><p style="margin:.2rem 0 .6rem">Before building AI, build the founder: mission, personal constitution, values, and your EDENA profile.</p>
+          <div class="phase"><b>1 · Opportunity</b></div><p style="margin:.2rem 0 .6rem">Ask "what human problem deserves solving?" — interviews, market maps, validated evidence.</p>
+          <div class="phase"><b>2 · AI-Native Founder</b></div><p style="margin:.2rem 0">Learn AI thinking, not coding: prompting, research, memory, and your first founder AI assistant.</p>
+        </div>
+        <div class="card"><span class="badge">Founder OS · Phases 3–5</span>
+          <div class="phase"><b>3 · AI Chief of Staff</b></div><p style="margin:.2rem 0 .6rem">Build your own Hermes-powered chief of staff — dashboard, knowledge vault, decision and reflection systems. The unique core of the program.</p>
+          <div class="phase"><b>4 · AI Workforce</b></div><p style="margin:.2rem 0 .6rem">Hire agents, not people yet: an AI Company of One with governed departments.</p>
+          <div class="phase"><b>5 · Workflow Engineering</b></div><p style="margin:.2rem 0">Every business becomes inputs → decisions → actions → outputs → learning, with human gates.</p>
+        </div>
+        <div class="card"><span class="badge">Venture · Phases 6–7</span>
+          <div class="phase"><b>6 · Build Your MVP</b></div><p style="margin:.2rem 0 .6rem">From idea to working product — course, kit, consultancy, community, SaaS, or media.</p>
+          <div class="phase"><b>7 · First Revenue</b></div><p style="margin:.2rem 0">Pricing, offers, and real customers — solving real problems, gathering testimonials, iterating.</p>
+        </div>
+        <div class="card"><span class="badge">Scale &amp; Stewardship · Phases 8–10</span>
+          <div class="phase"><b>8 · Scale</b></div><p style="margin:.2rem 0 .6rem">When demand exceeds capacity: AI departments and an executive agent staff.</p>
+          <div class="phase"><b>9 · Sovereignty</b></div><p style="margin:.2rem 0 .6rem">Choose your deployment — cloud, local, self-hosted, institutional — and own your stack.</p>
+          <div class="phase"><b>10 · Scale Good</b></div><p style="margin:.2rem 0">Some organizations maximize impact, not profit. Healthcare, education, climate, community.</p>
+        </div>
+      </div>
+
+      <div class="figure">
+        <svg viewBox="0 0 960 300" role="img" aria-label="How the program fits the ecosystem: Florence-X orchestrates, Hermes executes and remembers, EDENA governs, on NIN and FMN foundations">
+          <g font-family="Inter,system-ui,sans-serif">
+            <rect x="330" y="18" width="300" height="58" rx="14" fill="#10213f"/><text x="480" y="42" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">Nurse Entrepreneur Pathway</text><text x="480" y="62" text-anchor="middle" font-size="11.5" fill="#bff7ee">curriculum + deliverables, Phases 0–10</text>
+            <line x1="400" y1="76" x2="185" y2="126" stroke="#dbe4ee" stroke-width="2.5"/><line x1="480" y1="76" x2="480" y2="126" stroke="#dbe4ee" stroke-width="2.5"/><line x1="560" y1="76" x2="775" y2="126" stroke="#dbe4ee" stroke-width="2.5"/>
+            <rect x="60"  y="126" width="250" height="70" rx="14" fill="#0f766e"/><text x="185" y="154" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">Florence-X</text><text x="185" y="176" text-anchor="middle" font-size="11.5" fill="#d9fbf4">orchestrates agents, workflows, decisions</text>
+            <rect x="355" y="126" width="250" height="70" rx="14" fill="#0f766e"/><text x="480" y="154" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">HERMES</text><text x="480" y="176" text-anchor="middle" font-size="11.5" fill="#d9fbf4">executes, remembers, keeps your knowledge</text>
+            <rect x="650" y="126" width="250" height="70" rx="14" fill="#b7791f"/><text x="775" y="154" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">EDENA</text><text x="775" y="176" text-anchor="middle" font-size="11.5" fill="#fff3d6">governs every phase gate, day one</text>
+            <line x1="185" y1="196" x2="330" y2="246" stroke="#dbe4ee" stroke-width="2.5"/><line x1="480" y1="196" x2="420" y2="246" stroke="#dbe4ee" stroke-width="2.5"/><line x1="775" y1="196" x2="630" y2="246" stroke="#dbe4ee" stroke-width="2.5"/>
+            <rect x="180" y="246" width="290" height="42" rx="12" fill="#fff" stroke="#dbe4ee" stroke-width="2"/><text x="325" y="272" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">NIN · nursing &amp; healthcare depth</text>
+            <rect x="490" y="246" width="290" height="42" rx="12" fill="#fff" stroke="#dbe4ee" stroke-width="2"/><text x="635" y="272" text-anchor="middle" font-size="12.5" font-weight="800" fill="#10213f">FMN · education, community, audience</text>
+          </g>
+        </svg>
+        <p class="figcap">You are never handed a tool and left alone: Florence-X coordinates, Hermes does the work and remembers, EDENA keeps it governed — all rooted in nursing credibility (NIN) and a learning community (FMN).</p>
+      </div>
+
+      <div class="grid two" style="margin-top:10px">
+        <div class="callout"><p><strong>The EDENA gate, every phase:</strong> Is it ethical? Is it defensible? Is it explainable? Does it respect privacy? Does it preserve human accountability? Does it create long-term value? No phase is complete until the answer is yes.</p></div>
+        <div class="callout warm"><p><strong>Not every company should maximize profit. Some maximize impact.</strong> The program treats impact enterprises — healthcare, education, climate, community, humanitarian — as first-class ventures, not afterthoughts.</p></div>
+      </div>
+
+      <div class="cta" style="margin-top:26px">
+        <a class="btn teal" href="mailto:great.ai.nurses@gmail.com?subject=Nurse%20Entrepreneur%20Program%20%E2%80%94%20Founding%20Interest&body=Name%3A%0ARole%3A%0ACountry%20/%20region%3A%0AWhere%20are%20you%20on%20the%20journey%20%28idea%2C%20side%20gig%2C%20venture%29%3F%3A%0AWhat%20would%20you%20build%20if%20it%20worked%3F%20%28no%20PHI%29%3A">Ask to be invited at launch →</a>
+        <a class="btn secondary" style="background:#eef6ff;border:1px solid var(--line);color:var(--navy)" href="../assets/nurse-ai-side-gig-starter-kit.zip">Start with the kit today →</a>
+      </div>
+      <p style="color:var(--muted);font-size:.95rem;margin-top:14px">Interest notes are read by a human. No PHI, no automatic enrollment, no payment collected before launch. The full program outline is included in the starter kit download.</p>
+    </div></section>
+
     <section id="apply" class="section"><div class="wrap grid two"><div><h2>Want feedback on your first idea?</h2><p class="lede">Send a short, no-PHI note. A human reviews it. This is not automatic enrollment, payment, certification, or clinical approval.</p><p><a class="btn teal" href="mailto:great.ai.nurses@gmail.com?subject=Nurse%20AI%20Side-Gig%20Starter%20Kit%20Interest&body=Name%3A%0ARole%3A%0ACountry%20/%20region%3A%0AWhat%20nurse-AI%20side%20project%20are%20you%20exploring%3F%20%28no%20PHI%29%3A%0AWho%20would%20it%20help%3F%3A%0AWhat%20do%20you%20want%20feedback%20on%20first%3F%3A%0AI%20understand%20this%20is%20no-PHI%2C%20non-clinical%2C%20not%20certification%2C%20and%20human-reviewed%3A%20Yes/No">Ask for side-gig feedback →</a></p></div><div class="callout"><p><strong>Include:</strong> your role, country/region, the nurse-AI side project you are exploring, who it would help, and what feedback you need first.</p><p><strong>Do not include:</strong> patient stories, employer secrets, chart details, screenshots, or confidential operational information.</p></div></div></section>
   </main>
-  <footer><div class="wrap"><p><strong>Carry the lamp. Keep the ledger.</strong> Agents propose. Humans judge. Nurses steward.</p><p><a href="../">Nurse AI OS</a> · <a href="../#community-ladder">NIN/NAIO pathway</a> · <a href="../#downloads">All downloads</a></p></div></footer>
+  <footer><div class="wrap"><p><strong>Carry the lamp. Keep the ledger.</strong> Agents propose. Humans judge. Nurses steward.</p><p><a href="../">Nurse AI OS</a> · <a href="#pathway">Nurse Entrepreneur Program</a> · <a href="../resources.html">All downloads</a></p></div></footer>
 </body>
 </html>

@@ -1,10 +1,10 @@
-# The Lamp Huddle — Weekly Live Call for Nurses Building Their AI OS
+# The Lamp Huddle — Monthly Live Call for Nurses Building Their AI OS
 
 > *"She was the lady with the lamp. We carry it together now."*
 
 ## What it is
 
-A free, weekly, 45-minute live community call for nurses learning to build and steward their own AI Operating System. Open to **students, staff nurses, leaders, and educators** — across all three spheres: **Personal, Professional, and Community / Entrepreneurial.**
+A free, monthly, 45-minute live community call for nurses learning to build and steward their own AI Operating System. Open to **students, staff nurses, leaders, and educators** — across all three spheres: **Personal, Professional, and Community / Entrepreneurial.**
 
 Whether you finished the 30-Day Roadmap, just took the SOUL Quiz, or are still deciding where to start — you belong at the Huddle.
 
@@ -14,11 +14,11 @@ Each Huddle follows a calm, repeatable rhythm:
 
 | Time | Segment |
 |---|---|
-| 0–5 min | **Light the lamp** — opening reflection on stewardship and the week ahead |
+| 0–5 min | **Light the lamp** — opening reflection on stewardship and the month ahead |
 | 5–15 min | **One demo** — a nurse or facilitator shows one workflow they run (a Morning Huddle, a Kardex, an evidence-first brief) |
 | 15–30 min | **Open Q&A** — bring your prompts, your stuck points, your safety questions |
 | 30–40 min | **Stewardship round** — share a win, a worry, or a lesson |
-| 40–45 min | **Close** — assign one micro-action for the week and the EDENA tier check |
+| 40–45 min | **Close** — assign one micro-action for the month and the EDENA tier check |
 
 ## Who it's for
 
@@ -32,7 +32,7 @@ Each Huddle follows a calm, repeatable rhythm:
 ## What you'll bring home
 
 - A clearer next step in your AI OS journey
-- One workflow you can use this week
+- One workflow you can use this month
 - A community of nurses who share your values
 - Direct answers to your governance, safety, and setup questions
 
@@ -46,25 +46,25 @@ Each Huddle follows a calm, repeatable rhythm:
 
 ## Schedule
 
-**Inaugural Huddle:** *Date and time TBA on the [course site](https://nurse-ai-os.org/) — published the week of July 4, 2026 alongside the launch.*
+**Cadence:** Monthly at first, 45 minutes — we'll add sessions as the community grows.
 
-**Cadence after launch:** Weekly, 45 minutes.
+**Dates:** Announced by email to the community list. Join the list and every invitation finds you.
 
-**Format:** Live video call, recorded for members who can't attend live. Recordings live in the NAIO community space.
+**Format:** Live video call, recorded for members who can't attend live. Recordings will live in our community home, opening soon.
 
 ## How to join
 
 1. Visit [Start Here](https://nurse-ai-os.org/start-here.html), take the SOUL Quiz, and download the free starter kit.
-2. Add your email to the Huddle list (form coming July 4).
-3. You'll receive the calendar invite, Zoom link, and prep prompt 24 hours before each call.
+2. Email **[great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com?subject=Join%20the%20Nurse%20AI%20OS%20community)** with your name and role — you'll be added to the newsletter and the Huddle invite list. A human adds every name personally.
+3. You'll receive the calendar invite, video link, and prep prompt before each call.
 
-## First Huddle agenda (post-launch week)
+## First Huddle agenda
 
 - **Light the lamp:** Why we're here — Florence's two instruments
-- **Demo:** The SOUL Quiz and your first win in 10 minutes — Door 1, no installation
+- **Demo:** The SOUL Quiz and your first win in 10 minutes
 - **Q&A:** Bring your setup questions
 - **Stewardship round:** What's one fear and one hope you have about AI in your work?
-- **Close:** Your one micro-action — Day 1 of the [30-Day Roadmap](./30-day-roadmap.md)
+- **Close:** Your one micro-action — Day 1 of the [30-Day Roadmap](./30-day-roadmap.pdf)
 
 ## Bring with you
 
@@ -79,16 +79,10 @@ The Lamp Huddle is a learning and stewardship space — **not** clinical guidanc
 
 ---
 
-## RSVP / Stay informed
-
-The Huddle list goes live July 4, 2026 at https://nurse-ai-os.org.
-
-Until then, email **[great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com?subject=Lamp%20Huddle%20Invite)** with your name, role, and active spheres to be added to the manual invite list.
-
-Until then:
+## While you wait for the next Huddle
 
 - Begin at [Start Here](https://nurse-ai-os.org/start-here.html)
-- Start the [30-Day Nurse AI OS Roadmap](./30-day-roadmap.md)
+- Start the [30-Day Nurse AI OS Roadmap](./30-day-roadmap.pdf)
 - Make the system yours with the [six workflows](https://nurse-ai-os.org/personalize.html)
 - Tell one nurse. Stewardship begins with invitation.
 

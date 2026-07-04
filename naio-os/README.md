@@ -55,9 +55,9 @@ naio-os/
 ├── config/
 │   ├── edena-policy.yaml           # autonomy tiers + functionality + permissions + reversibility (the WHAT-is-allowed)
 │   └── florence-x.yaml             # build/quality doctrine + rituals (the HOW-it-behaves)
-└── schema/
-    ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
-    └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
+├── schema/
+│   ├── naio-soul.schema.json       # identity/personalization bridge contract (SOUL Quiz → installer)
+│   └── naio-projects.schema.json   # project prompt bridge contract (Life & Projects Quiz → installer)
 ├── manifest.yaml                   # Phase 23 bundle manifest + checksums
 ├── release.json                    # Phase 23 current update-channel metadata
 ├── release-history.json            # Phase 23 rollback protection + trusted key ids
@@ -76,7 +76,7 @@ naio-os/
     ├── recovery.py                 # Phase 12 local-only snapshot, verify, restore-plan, and drill
     ├── activation.py               # Phase 12 first-run START-HERE + 7-day readiness check
     ├── launch.py                   # Phase 12 public launch pack readiness check
-    ├── cohort.py                   # Phase 12 cohort/instructor readiness check
+    ├── cohort.py                   # Phase 11 cohort/instructor readiness check
     ├── evidence.py                 # Phase 12 EDENA evidence trail readiness check
     ├── healthcheck.py              # verify-before-claim harness
     └── compute-checksums.sh        # writes manifest sha256 fields
@@ -191,6 +191,9 @@ Expressed as machine policy in `florence-x.yaml`, including the installer contra
 | **18** | Governance Board / Steward Council Pack | ✅ done — `18-Governance-Board/*.md`, `scripts/governance.py`, and `install.sh --governance-check` verify advisory-only stewardship, no legal/compliance/institutional/clinical/procurement/certification/credentialing authority, and no automatic approvals or policy enforcement |
 | **19** | Partner / Sponsor Briefing Pack | ✅ done — `19-Partner-Briefing/*.md`, `scripts/partner.py`, and `install.sh --partner-check` verify informational-only partner conversations, no fundraising/investment/legal/compliance/procurement/clinical-deployment/approval claims, and no automatic outreach or follow-up |
 | **20** | Institutional Stewardship Operating Model Pack | ✅ done — `20-Stewardship-Operating-Model/*.md`, `scripts/stewardship.py`, and `install.sh --stewardship-check` verify advisory operating cadence, no legal/compliance/procurement/budget/contracting/staffing/clinical-deployment authority, and no automatic implementation, owner assignment, stakeholder notification, escalation, or dashboard publication |
+| **21** | Localization / International Readiness Lane Pack | ✅ done — `21-Localization-Readiness/*.md`, `scripts/localization.py`, and `install.sh --localization-check` verify readiness-and-adaptation-only posture, no legal/regulatory/compliance/translation-certification/localization-approval claims, and no automatic translation, localized publishing, or local partner outreach |
+| **22** | Adoption & Outcomes Ledger Pack | ✅ done — `scripts/outcomes.py`, `22-Adoption-Outcomes-Ledger/*.md`, and `install.sh --outcomes-check` verify adoption-signal and learning-evidence-only posture, no clinical-efficacy/patient-outcome/ROI/compliance-validation claims, and no automatic scoring, reporting, or escalation |
+| **23** | Commercial Activation / Founding Steward Cohort Pack | ✅ done — `23-Commercial-Activation/*.md`, `scripts/commercial.py`, and `install.sh --commercial-check` verify human-reviewed applications and pilot conversations, no certification/procurement/deployment-approval claims, and no automatic enrollment, payment, or outreach |
 
 ---
 
@@ -268,9 +271,9 @@ curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --launch-ch
 Safety posture remains unchanged: no PHI, no clinical decisions, no direct `~/.hermes` mutation, no automatic cron scheduling, no automatic restore, no automatic publishing, and no clinical-readiness claims.
 
 
-## Phase 12 — Cohort / Instructor Mode
+## Phase 11 — Cohort / Instructor Mode
 
-Phase 12 answers the cohort question: **“How do I teach this safely without becoming a premature certification body?”**
+Phase 11 answers the cohort question: **“How do I teach this safely without becoming a premature certification body?”**
 
 Rendered profiles include:
 
@@ -338,9 +341,9 @@ curl -fsSL https://nurse-ai-os.org/naio-os/bootstrap.sh | bash -s -- --evidence-
 Evidence Trail is for evidence of learning, not certification. It verifies no PHI, no clinical-readiness claims, no automatic scoring, no automatic submission, no cron scheduling, and no direct `~/.hermes` mutation.
 
 
-## Phase 17 — NIN Community Contribution Flow
+## Phase 13 — NIN Community Contribution Flow
 
-Phase 17 answers the community question: **“How can nurses contribute safely without leaking PHI, implying endorsement, or turning learning artifacts into clinical claims?”**
+Phase 13 answers the community question: **“How can nurses contribute safely without leaking PHI, implying endorsement, or turning learning artifacts into clinical claims?”**
 
 It adds a governed contribution path for NIN:
 
@@ -353,9 +356,9 @@ This is a contribution workflow, not a public submission backend. Human stewards
 Agents propose. Humans judge. Nurses steward.
 
 
-## Phase 17 — Institutional Pilot Pack
+## Phase 14 — Institutional Pilot Pack
 
-Phase 17 answers the institutional question: **“How can a nurse leader or educator run a small non-clinical pilot safely without implying deployment, endorsement, compliance, or certification?”**
+Phase 14 answers the institutional question: **“How can a nurse leader or educator run a small non-clinical pilot safely without implying deployment, endorsement, compliance, or certification?”**
 
 It adds a governed 30–90 day pilot path:
 
@@ -368,9 +371,9 @@ This is an institutional learning pilot, not clinical deployment. Human governan
 Agents propose. Humans judge. Nurses steward.
 
 
-## Phase 17 — EDENA Micro-Credential Readiness Pack
+## Phase 15 — EDENA Micro-Credential Readiness Pack
 
-Phase 17 answers the credential question safely: **“How can a nurse organize evidence for human review without pretending NAIO is issuing certification or clinical AI-readiness?”**
+Phase 15 answers the credential question safely: **“How can a nurse organize evidence for human review without pretending NAIO is issuing certification or clinical AI-readiness?”**
 
 It adds a formative readiness path:
 
@@ -383,9 +386,9 @@ This is readiness reflection for human steward review, not certification.
 Agents propose. Humans judge. Nurses steward.
 
 
-## Phase 17 — NAIO Agent Registry Pack
+## Phase 16 — NAIO Agent Registry Pack
 
-Phase 17 opens the registry doorway safely: **“How can nurses discover and evaluate public agents without mistaking a listing for endorsement, procurement approval, deployment approval, or clinical readiness?”**
+Phase 16 opens the registry doorway safely: **“How can nurses discover and evaluate public agents without mistaking a listing for endorsement, procurement approval, deployment approval, or clinical readiness?”**
 
 It adds a human-reviewed registry path:
 

@@ -1,162 +1,158 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hermes Setup Guide | Nurse AI OS</title>
-  <meta name="description" content="Start at the official Hermes Agent site, then return to Nurse AI OS for the governed no-PHI setup layer, Local HTML dashboard, starter kit, SOUL Quiz, and roadmap." />
-  <link rel="canonical" href="https://nurse-ai-os.org/hermes-downloads/" />
-  <meta property="og:title" content="Hermes Setup Guide | Nurse AI OS" />
-  <meta property="og:description" content="Hermes is the open-source agent runtime. Nurse AI OS is the governed nurse-facing layer that teaches safe no-PHI use." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://nurse-ai-os.org/hermes-downloads/" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="theme-color" content="#10213f" />
-  <style>
-    :root{--navy:#10213f;--deep:#0b1220;--teal:#0f766e;--gold:#b7791f;--amber:#fbbf24;--ink:#111827;--muted:#5b6678;--card:#fff;--line:#dbe4ee;--soft:#ecfdf5;--warm:#fff7ed}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(180deg,#f8fbff,#fff 46%,#f8fafc);line-height:1.6}a{color:var(--teal);font-weight:900}.wrap{max-width:1140px;margin:0 auto;padding:0 22px}.hero{padding:78px 0 58px;background:radial-gradient(circle at 10% 12%,rgba(251,191,36,.24),transparent 34%),radial-gradient(circle at 90% 10%,rgba(15,118,110,.34),transparent 36%),linear-gradient(135deg,var(--deep),var(--navy) 58%,var(--teal));color:white}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-weight:950;color:#bff7ee;font-size:.78rem}.eyebrow.dark{color:var(--teal)}h1,h2,h3{color:var(--navy);line-height:1.08}h1{font-size:clamp(2.5rem,5.6vw,5.1rem);margin:14px 0 16px;color:white;letter-spacing:-.045em}h2{font-size:clamp(1.9rem,4vw,3.1rem);margin:8px 0 14px;letter-spacing:-.035em}h3{font-size:1.18rem;margin:0 0 10px}.subtitle{max-width:920px;font-size:clamp(1.08rem,2.1vw,1.38rem);color:#e9f3ff}.subtitle strong{color:#fff7bf}.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.chip,.badge{display:inline-block;border-radius:999px;padding:7px 12px;font-weight:900;font-size:.86rem}.chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:white}.badge{background:var(--soft);border:1px solid #b7ead1;color:#065f46;margin-bottom:10px}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-block;text-decoration:none;border-radius:999px;padding:12px 18px;font-weight:950}.btn.primary{background:var(--amber);color:#0b1220}.btn.secondary{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.34);color:white}.btn.light{background:white;color:var(--navy);border:1px solid var(--line)}.nav{position:sticky;top:0;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:10}.nav .wrap{display:flex;gap:14px;overflow-x:auto;white-space:nowrap;padding-top:12px;padding-bottom:12px}.nav a{text-decoration:none;color:var(--navy);font-size:.9rem}.section{padding:70px 0}.section.alt{background:linear-gradient(180deg,#fff7ed,#fff)}.section.tint{background:linear-gradient(180deg,#fff,#f1fbf9)}.lede{font-size:1.12rem;color:var(--muted);max-width:900px}.grid{display:grid;gap:20px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 16px 40px rgba(16,33,63,.07)}.card.highlight{border-color:#f7d58c;background:linear-gradient(180deg,#fffaf0,#fff)}.callout{border-radius:26px;padding:24px;border-left:6px solid var(--teal);background:var(--soft);box-shadow:0 12px 32px rgba(15,118,110,.08)}.callout.gold{background:var(--warm);border-left-color:var(--gold)}.callout.navy{background:linear-gradient(135deg,var(--navy),var(--deep));border-left-color:var(--amber);color:white}.callout.navy h2,.callout.navy h3{color:white}.callout.navy p{color:#e9f3ff}.steps{counter-reset:step;list-style:none;margin:22px 0 0;padding:0;display:grid;gap:14px}.steps li{counter-increment:step;background:white;border:1px solid var(--line);border-radius:20px;padding:18px 18px 18px 64px;position:relative;box-shadow:0 10px 26px rgba(16,33,63,.06)}.steps li:before{content:counter(step);position:absolute;left:18px;top:18px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:white;display:grid;place-items:center;font-weight:950}.compare{overflow-x:auto;border:1px solid var(--line);border-radius:22px;background:white;box-shadow:0 12px 32px rgba(16,33,63,.06)}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--navy);color:white}tr:last-child td{border-bottom:0}code{background:#eef2f7;border:1px solid #dbe4ee;border-radius:8px;padding:2px 5px}.footer{padding:36px 0;background:#0b1220;color:#dbeafe}.footer a{color:#fde68a}.mini{font-size:.91rem;color:var(--muted)}@media(max-width:900px){.grid.three,.grid.two{grid-template-columns:1fr}.section{padding:56px 0}.hero{padding:58px 0 46px}h1{letter-spacing:-.03em}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hermes Install Guide — Nurse AI OS</title>
+<meta name="description" content="The optional deep dive for Step 1 of the five-step Nurse AI OS setup: installing Hermes from the official Nous Research site, platform by platform, with the safety rules that never change.">
+<link rel="canonical" href="https://nurse-ai-os.org/hermes-downloads/">
+<meta property="og:title" content="Hermes Install Guide — Nurse AI OS">
+<meta property="og:description" content="Install Hermes from the official site, then return to Start Here for the rest of your five-step setup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nurse-ai-os.org/hermes-downloads/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
 </head>
 <body>
-  <header class="hero">
-    <div class="wrap">
-      <div class="eyebrow">Hermes Agent · Nurse AI OS setup</div>
-      <h1>Start at the official Hermes site. Then build your Nurse AI OS around it.</h1>
-      <p class="subtitle">Because some users had trouble with mirrored installer downloads, Nurse AI OS no longer hosts Hermes setup files. The safest first step is to go directly to the official Hermes Agent site, install from there, and then return here for the nurse-centered, no-PHI setup layer.</p>
-      <p class="subtitle"><strong>Hermes is the open-source agent runtime.</strong> Nurse AI OS is the governed learning, dashboard, workflow, and stewardship layer that helps nurses use that runtime without handing over judgment.</p>
-      <div class="chips"><span class="chip">Official Hermes site first</span><span class="chip">Open-source runtime</span><span class="chip">Nurse AI OS layer</span><span class="chip">Local HTML dashboard first</span><span class="chip">No PHI</span><span class="chip">Human judgment</span></div>
-      <div class="cta"><a class="btn primary" href="https://hermes-agent.nousresearch.com/">Go to official Hermes site →</a><a class="btn secondary" href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">Read Hermes installation docs</a><a class="btn secondary" href="../index.html">Back to Nurse AI OS</a></div>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="../index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="../start-here.html" class="active">Start Here</a>
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../about.html">About</a>
+      <a href="../index.html#founding-year">Free Founding Year</a>
+      <a href="../faq.html">FAQ</a>
+      <a class="nav-cta" href="../soul-quiz.html">Take the SOUL Quiz</a>
     </div>
-  </header>
+  </nav>
+</header>
 
-  <nav class="nav" aria-label="Hermes setup navigation"><div class="wrap">
-    <a href="#official-first">Official first</a><a href="#what-hermes-is">What Hermes is</a><a href="#nurse-ai-os-layer">Nurse AI OS layer</a><a href="#steps">Setup sequence</a><a href="#dashboard">Dashboard choice</a><a href="#boundaries">Boundaries</a>
-  </div></nav>
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Optional deep dive · Start Here, Step 1</p>
+    <h1>Hermes Install Guide</h1>
+    <p class="lede">Hermes is the free, open-source AI engine your Nurse AI OS runs on. This page is only about getting it installed — from the official site, safely, on your computer. Nothing here replaces your onboarding.</p>
+  </div>
+</section>
 
-  <main>
-    <section id="official-first" class="section">
-      <div class="wrap grid two">
-        <div>
-          <div class="eyebrow dark">Step 1</div>
-          <h2>Use the official Hermes Agent site for installation.</h2>
-          <p class="lede">Do not start by downloading Hermes from Nurse AI OS. Start with the current Hermes site and follow the current official setup path for your device.</p>
-          <p><a class="btn primary" href="https://hermes-agent.nousresearch.com/">Open official Hermes site →</a></p>
-          <p><a class="btn light" href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">Open installation docs →</a> <a class="btn light" href="https://github.com/NousResearch/hermes-agent">View open-source GitHub repo →</a></p>
-        </div>
-        <div class="callout gold">
-          <h3>Why this changed</h3>
-          <p>Hosted copies of the Hermes installers created friction for some users. For launch, the cleanest path is: official Hermes site first, then Nurse AI OS setup guidance, dashboard, SOUL Quiz, and starter kit.</p>
-          <p>This reduces stale-download risk and keeps Hermes installation aligned with the source maintained by Nous Research.</p>
-        </div>
+<section class="section">
+  <div class="container narrow">
+
+    <div class="boundary">
+      <strong>Your whole setup is the five steps on <a href="../start-here.html">Start Here</a></strong> — this page is the optional deep dive for Step&nbsp;1, installing Hermes from the official site. If installation went smoothly for you, you don't need this page at all. When Hermes is running, <a href="../start-here.html">return to Start Here</a> and continue with Step&nbsp;2.
+    </div>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">The one rule of installation</p>
+    <h2>Always install from the official Hermes site.</h2>
+    <p class="section-intro">Nurse AI OS does not host Hermes installers, and neither should anyone else. Mirrored copies go stale, break, and can't be trusted the way the source can. Get Hermes directly from Nous Research — the team that builds and maintains it — and you'll always have the current version and the current instructions.</p>
+    <p>
+      <a class="btn btn-primary" href="https://hermes-agent.nousresearch.com/">Get Hermes (official site) →</a>&nbsp;
+      <a class="btn btn-quiet" href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">Official installation docs</a>
+    </p>
+    <p style="font-size:.95rem; color:var(--ink-600); margin-top:.8rem;">Hermes is open source — you can <a href="https://github.com/NousResearch/hermes-agent">read the code on GitHub</a> anytime. Prefer paper at your elbow? The <a href="../assets/hermes-cheat-sheet.pdf">one-page cheat sheet</a> covers install and first launch.</p>
+
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">Platform by platform</p>
+    <h2>Install details for your computer</h2>
+    <p class="section-intro">Menus and buttons move as Hermes updates — when this page and the official docs disagree, the <a href="https://hermes-agent.nousresearch.com/docs">official docs</a> are the truth. These notes cover what stays constant.</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>Mac</h3>
+        <p>Download the Mac installer from the <a href="https://hermes-agent.nousresearch.com/">official site</a> and open it like any other app. If macOS asks whether you're sure about an app downloaded from the internet, that's a standard prompt — confirm it only because you downloaded it from the official site yourself.</p>
+        <p>First launch: if Hermes asks about an AI model or provider, <strong>the default is fine</strong> — you can change it later.</p>
       </div>
-    </section>
-
-    <section id="what-hermes-is" class="section alt">
-      <div class="wrap">
-        <div class="eyebrow dark">Plain language</div>
-        <h2>What open-source Hermes is to Nurse AI OS</h2>
-        <p class="lede">Hermes Agent is an open-source AI agent framework by Nous Research. It can run in a terminal, desktop workflow, messaging platforms, and tool-enabled environments. It can use memory, skills, tools, web access, files, and automations depending on how the user configures it.</p>
-        <div class="grid three" style="margin-top:24px">
-          <div class="card"><span class="badge">Engine</span><h3>Hermes is the runtime</h3><p>Think of Hermes as the engine that can read, write, search, remember, call tools, and carry out tasks when a human permits it.</p></div>
-          <div class="card"><span class="badge">Stewardship</span><h3>Nurse AI OS is the governed layer</h3><p>Nurse AI OS gives Hermes a nursing-centered purpose: no-PHI boundaries, SOUL files, EDENA gates, dashboards, prompts, starter folders, and post-setup pathways.</p></div>
-          <div class="card"><span class="badge">Human gate</span><h3>The nurse remains the judge</h3><p>Hermes may propose, organize, summarize, or draft. The nurse decides what is true, safe, appropriate, and ready to use.</p></div>
-        </div>
-        <div class="callout" style="margin-top:24px"><p><strong>The simplest metaphor:</strong> Hermes is the capable open-source assistant. Nurse AI OS is the nurse-led operating discipline that tells the assistant what it may do, what it must never do, and how to serve human dignity.</p></div>
+      <div class="card">
+        <h3>Windows</h3>
+        <p>Download the Windows installer from the <a href="https://hermes-agent.nousresearch.com/">official site</a> and run it. If Windows shows a security prompt for a newly downloaded app, the same rule applies: proceed only because the download came straight from the official site.</p>
+        <p>First launch: accept the defaults, open Hermes, and say hello. It works like a chat — you cannot break anything.</p>
       </div>
-    </section>
-
-    <section id="nurse-ai-os-layer" class="section">
-      <div class="wrap grid two">
-        <div>
-          <div class="eyebrow dark">What we provide</div>
-          <h2>After Hermes is installed, Nurse AI OS gives it a safe bedside posture.</h2>
-          <p class="lede">Nurse AI OS is not a replacement for Hermes and not a separate clinical system. It is the nurse-centered harness around your AI work: values, boundaries, folders, dashboards, prompts, weekly review, and governance language.</p>
-        </div>
-        <div class="card">
-          <h3>Nurse AI OS setup assets</h3>
-          <ul>
-            <li><a href="../soul-quiz.html">SOUL Quiz</a> — drafts your personal AI operating posture.</li>
-            <li><a href="../assets/nurse-ai-os-starter-kit.zip">Starter Kit ZIP</a> — folders, prompts, dashboard links, and safety checklists.</li>
-            <li><a href="../assets/nurse-ai-os-workbook.pdf">Workbook PDF</a> — guided learning and setup context.</li>
-            <li><a href="../assets/30-day-roadmap.md">30-Day Roadmap</a> — one gentle step per day.</li>
-            <li><a href="../starter-kit/My-Nurse-AI-OS/08-Integrations/Local-HTML-Life-Dashboard/index.html">Local HTML Dashboard</a> — the recommended first dashboard.</li>
-          </ul>
-        </div>
+      <div class="card gold">
+        <h3>Your first conversation</h3>
+        <p>Type like you'd text a colleague. A good opener: <em>"I'm a nurse setting up my Nurse AI OS. I'll give you my SOUL file next — treat it as my standing instructions."</em> (Your SOUL file is Step&nbsp;2, back on <a href="../start-here.html">Start Here</a>.)</p>
+        <p>The phrase that keeps your hand on every decision: <em>"Show me your plan before you do anything."</em></p>
       </div>
-    </section>
-
-    <section id="steps" class="section alt">
-      <div class="wrap">
-        <div class="eyebrow dark">Recommended sequence</div>
-        <h2>Set it up in this order.</h2>
-        <ol class="steps">
-          <li><strong>Open the official Hermes Agent site.</strong> Install Hermes using the current official instructions from Nous Research. <a href="https://hermes-agent.nousresearch.com/">Go to Hermes →</a></li>
-          <li><strong>Return to Nurse AI OS.</strong> Do not try to customize everything at once. Start with the nurse-facing setup path, not random online prompts.</li>
-          <li><strong>Take the SOUL Quiz.</strong> It drafts how you want AI to work with you, where your boundaries are, and what judgment must remain human. <a href="../soul-quiz.html">Take the SOUL Quiz →</a></li>
-          <li><strong>Download the Nurse AI OS starter kit.</strong> Use it for folder structure, no-PHI boundaries, starter prompts, dashboard files, and first-week steps. <a href="../assets/nurse-ai-os-starter-kit.zip">Download starter kit →</a></li>
-          <li><strong>Open the Local HTML dashboard first.</strong> Save it locally, bookmark it under <strong>Dashboards</strong>, and use broad strokes now. <a href="../starter-kit/My-Nurse-AI-OS/08-Integrations/Local-HTML-Life-Dashboard/index.html">Open HTML dashboard →</a></li>
-          <li><strong>Use Notion later if you need a relational command center.</strong> Notion is powerful, but it is an advanced option after the local dashboard makes sense.</li>
-          <li><strong>Only then explore the governed OS path.</strong> Advanced harnesses, dry runs, recovery, and institutional workflows come after the no-PHI foundation is stable. <a href="../naio-os/README.md">Read the governed OS guide →</a></li>
-        </ol>
+      <div class="card">
+        <h3>If something goes wrong</h3>
+        <p>Check the <a href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">official installation docs</a> first — they track the current version. Still stuck? Bring it to the monthly <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> or email <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a> — a human answers.</p>
+        <p style="font-size:.95rem; color:var(--ink-600);"><em>Rather not install anything yet?</em> You can do steps 2–5 in the browser AI you already use (ChatGPT or Claude) — paste instead of upload. Hermes just makes it permanent.</p>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <section id="dashboard" class="section tint">
-      <div class="wrap">
-        <div class="eyebrow dark">Dashboard choice</div>
-        <h2>Start with Local HTML. Move to Notion only when you need more structure.</h2>
-        <p class="lede">The dashboard should lower cognitive load, not become another system to maintain. For launch, the Local HTML dashboard is the first recommendation because it is the least fragile path for tired nurses.</p>
-        <div class="grid two" style="margin-top:22px">
-          <div class="card highlight">
-            <span class="badge">Recommended first</span>
-            <h3>Local HTML Life Dashboard</h3>
-            <p>A single-file, browser-only dashboard for health, finances, goals, habits, tasks, and routines.</p>
-            <h3>Advantages</h3>
-            <ul>
-              <li>No account required.</li>
-              <li>No server, cloud workspace, or database setup.</li>
-              <li>Works as a simple local file in the browser.</li>
-              <li>Fastest path for users who are new to AI tools.</li>
-              <li>Easy to bookmark under <strong>Dashboards</strong>.</li>
-              <li>Exports/imports a JSON backup when the user is ready.</li>
-            </ul>
-            <p><a class="btn primary" href="../starter-kit/My-Nurse-AI-OS/08-Integrations/Local-HTML-Life-Dashboard/index.html">Open Local HTML dashboard →</a></p>
-          </div>
-          <div class="card">
-            <span class="badge">Advanced option</span>
-            <h3>Notion Life Dashboard Pack</h3>
-            <p>A database-style no-PHI dashboard pack for users who want relational views, linked tables, and more structured operations.</p>
-            <h3>Advantages</h3>
-            <ul>
-              <li>Better for users already comfortable with Notion.</li>
-              <li>Supports linked databases, filters, views, and relations.</li>
-              <li>Useful for educators, leaders, or builders managing multiple projects.</li>
-              <li>Easier to expand into a shared command center with explicit governance.</li>
-              <li>Stronger when the user needs dashboards across goals, content, pilots, and reviews.</li>
-            </ul>
-            <p><a class="btn light" href="../starter-kit/My-Nurse-AI-OS/08-Integrations/Notion-Life-Dashboard-Pack/README.md">Open Notion setup guide →</a></p>
-          </div>
-        </div>
-        <div class="callout" style="margin-top:22px"><p><strong>Rule of thumb:</strong> Local HTML is for first safety and momentum. Notion is for advanced structure after the user knows what they actually need to track.</p></div>
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Plain language</p>
+    <h2>What Hermes is — and what Nurse AI OS adds around it</h2>
+    <p class="section-intro">Hermes Agent is an open-source AI agent framework by Nous Research. Depending on how you configure it, it can use memory, skills, tools, files, and automations. Nurse AI OS is not a replacement for Hermes — it's the nurse-led layer you build around it.</p>
+    <div class="card-grid cols-3">
+      <div class="card">
+        <span class="badge">Engine</span>
+        <h3>Hermes is the runtime</h3>
+        <p>Think of Hermes as the engine that can read, write, search, remember, and carry out tasks when a human permits it.</p>
       </div>
-    </section>
-
-    <section id="boundaries" class="section alt">
-      <div class="wrap">
-        <div class="callout navy">
-          <div class="eyebrow">The safety perimeter</div>
-          <h2>No PHI. No clinical decisions. No silent automation.</h2>
-          <p>Do not enter patient names, charts, screenshots, identifiers, room numbers, employer secrets, passwords, account numbers, or patient-specific clinical details into Hermes, the quizzes, dashboards, or any AI tool unless an approved institutional environment and accountable governance explicitly allow it.</p>
-          <p>Hermes can help with learning, organization, drafting, research support, project planning, and reflection. It does not carry a license, validate competency, approve clinical deployment, replace educators, or make patient-care decisions.</p>
-          <p><strong>Agents propose. Humans judge. Nurses steward.</strong></p>
-        </div>
+      <div class="card">
+        <span class="badge gold">Stewardship</span>
+        <h3>Nurse AI OS is the governed layer</h3>
+        <p>Nurse AI OS gives Hermes a nursing-centered purpose: no-PHI boundaries, your SOUL file, EDENA gates, dashboards, prompts, and starter folders.</p>
       </div>
-    </section>
-  </main>
+      <div class="card">
+        <span class="badge">Human gate</span>
+        <h3>The nurse remains the judge</h3>
+        <p>Hermes may propose, organize, summarize, or draft. The nurse decides what is true, safe, appropriate, and ready to use.</p>
+      </div>
+    </div>
+    <div class="boundary" style="margin-top:1.8rem;">
+      <strong>The simplest metaphor:</strong> Hermes is the capable open-source assistant. Nurse AI OS is the nurse-led operating discipline that tells the assistant what it may do, what it must never do, and how to serve human dignity.
+    </div>
+  </div>
+</section>
 
-  <footer class="footer"><div class="wrap">
-    <p><strong>Hermes Setup Guide · Nurse AI OS</strong></p>
-    <p>Go to the official Hermes site first. Then return here to carry the lamp, keep the ledger, and set up the no-PHI nurse-facing layer.</p>
-    <p><a href="../index.html">Back to Nurse AI OS</a> · <a href="https://hermes-agent.nousresearch.com/">Official Hermes site</a> · <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a></p>
-  </div></footer>
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">You're done here</p>
+    <h2>Hermes installed? Return to Start Here.</h2>
+    <p class="section-intro">Everything after installation — the SOUL Quiz, your Starter Kit, your dashboard, your first prompts — is steps 2–5 of the same page you came from. One evening, and you're done.</p>
+    <p><a class="btn btn-primary" href="../start-here.html">Continue with Step 2 on Start Here →</a></p>
+    <p style="margin-top:1.6rem; font-size:.97rem; color:var(--ink-600);">Two pointers for later, so you don't hunt for them: your Starter Kit includes a private, browser-only <a href="../starter-kit/My-Nurse-AI-OS/08-Integrations/Local-HTML-Life-Dashboard/index.html">Local HTML Life Dashboard</a> — you'll personalize it in Step&nbsp;4, and it's the recommended first dashboard because it needs no account, no server, and no setup. A Notion version and other advanced options live in <a href="../resources.html">Resources</a> once the local one feels too small — not before.</p>
+  </div>
+</section>
+
+<section class="section section-navy">
+  <div class="container narrow">
+    <p class="eyebrow">The safety perimeter</p>
+    <h2>No PHI. No clinical decisions. No silent automation.</h2>
+    <p>Do not enter patient names, charts, screenshots, identifiers, room numbers, employer secrets, passwords, account numbers, or patient-specific clinical details into Hermes, the quizzes, dashboards, or any AI tool — unless an approved institutional environment and accountable governance explicitly allow it.</p>
+    <p>Hermes can help with learning, organization, drafting, research support, project planning, and reflection. It does not carry a license, validate competency, approve clinical deployment, replace educators, or make patient-care decisions.</p>
+    <p><strong>Agents propose. Humans judge. Nurses steward.</strong> Gray areas? Bring them to the monthly <a href="../assets/lamp-huddle.pdf" style="color:var(--gold-300);">Lamp Huddle</a> — a question asked early beats an incident reported late.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="../index.html">Home</a>
+      <a href="../start-here.html">Start Here</a>
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../about.html">About</a>
+      <a href="../faq.html">FAQ</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
+
 </body>
 </html>

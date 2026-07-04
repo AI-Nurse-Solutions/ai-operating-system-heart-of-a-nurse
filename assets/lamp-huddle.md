@@ -46,11 +46,20 @@ Each Huddle follows a calm, repeatable rhythm:
 
 ## Schedule
 
+**First Huddle:** **Sunday, July 13, 2026** — one call, join from your time zone:
+
+| Time zone | Local time |
+|---|---|
+| Eastern (ET) | 8:00 PM |
+| Central (CT) | 7:00 PM |
+| Mountain (MT) | 6:00 PM |
+| Pacific (PT) | 5:00 PM |
+
+**Agenda:** tips and tricks from real nurse setups · open issues, worked through together · wins, celebrated properly.
+
 **Cadence:** Monthly at first, 45 minutes — we'll add sessions as the community grows.
 
-**Dates:** Announced by email to the community list. Join the list and every invitation finds you.
-
-**Format:** Live video call, recorded for members who can't attend live. Recordings will live in our community home, opening soon.
+**Format:** Live video call, **recorded** so you can catch up if you can't attend live (the sharing round can go off-record on request). Recordings will live in our community home, opening soon. The video link arrives by email — join the list below.
 
 ## How to join
 

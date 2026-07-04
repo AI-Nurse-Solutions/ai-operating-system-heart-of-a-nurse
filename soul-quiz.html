@@ -1,81 +1,120 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SOUL Quiz — Nurse AI OS</title>
-<meta name="description" content="A free, self-serve quiz that helps you draft tailored SOUL.md files for your Nurse AI OS — Personal, Professional, Community, Side Gig, and Interests. No PHI. Runs entirely in your browser." />
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon-lamp.svg" />
+<meta name="description" content="The SOUL Quiz drafts your values-and-boundaries files for your Nurse AI OS. It lives entirely in your browser — nothing is uploaded, no account, no tracking. No PHI, ever.">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon-lamp.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
 <style>
+/* Quiz-scoped styles — legacy engine class names, light site theme */
 :root{
-  --navy:#10213f; --navy-2:#0c1830; --teal:#0f766e; --teal-2:#14b8a6;
-  --gold:#b7791f; --gold-2:#fbbf24; --ink:#e7eef7; --muted:#9fb0c8;
-  --card:#13294b; --line:#22365e;
+  --gold-2:#8a6420; --teal-2:var(--teal-600); --muted:var(--ink-600);
+  --line:#e4ddcf; --ink:var(--ink-900);
 }
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--navy);color:var(--ink);font:16px/1.55 -apple-system,Segoe UI,Inter,system-ui,sans-serif}
-a{color:var(--teal-2)}
-header{padding:28px 20px 8px;text-align:center}
-header h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px}
-header p{margin:0;color:var(--muted);max-width:720px;margin:6px auto 0}
-.wrap{max-width:780px;margin:0 auto;padding:18px 18px 80px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px;margin:14px 0;box-shadow:0 8px 24px rgba(0,0,0,.18)}
-.card h2{margin:0 0 4px;font-size:20px;color:var(--gold-2)}
-.card .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
-label{display:block;margin:10px 0 6px;color:#cfe1ff;font-weight:600}
-input[type=text],input[type=email],select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0a1830;color:var(--ink);font:inherit}
-textarea{min-height:80px;resize:vertical}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:640px){.row{grid-template-columns:1fr}}
-.checks label, .radios label{display:flex;align-items:flex-start;gap:8px;background:#0a1830;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;cursor:pointer;font-weight:500;color:#e7eef7}
-.checks input, .radios input{margin-top:3px}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.btn{display:inline-block;padding:11px 16px;border-radius:10px;border:1px solid var(--line);background:var(--teal);color:#fff;text-decoration:none;font-weight:600;cursor:pointer;font:inherit}
-.btn.secondary{background:transparent;color:var(--teal-2);border-color:var(--teal-2)}
-.btn.ghost{background:transparent;color:var(--muted);border-color:var(--line)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.progress{height:6px;background:#0a1830;border-radius:99px;overflow:hidden;margin:8px 0 18px;border:1px solid var(--line)}
-.progress > div{height:100%;background:linear-gradient(90deg,var(--teal-2),var(--gold-2));width:0;transition:width .3s}
-.kicker{display:inline-block;background:#0a1830;border:1px solid var(--line);color:var(--gold-2);padding:3px 10px;border-radius:99px;font-size:12px;letter-spacing:.4px;margin-bottom:6px;text-transform:uppercase}
-.help{color:var(--muted);font-size:13px;margin-top:6px}
-.footer{color:var(--muted);text-align:center;font-size:13px;margin-top:30px}
-.banner{background:linear-gradient(180deg,#0a1830,#13294b);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--muted);font-size:14px;margin:10px 0 16px}
-.banner strong{color:var(--gold-2)}
-.dl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media (max-width:640px){.dl{grid-template-columns:1fr}}
-.dl a{display:block;padding:12px 14px;background:#0a1830;border:1px solid var(--line);border-radius:10px;color:var(--ink);text-decoration:none}
-.dl a:hover{border-color:var(--teal-2)}
-.dl a small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
-.mirror{background:#0a1830;border-left:3px solid var(--teal-2);padding:10px 12px;border-radius:8px;color:#cfe1ff;font-style:italic;margin-top:8px;display:none}
-.mirror.show{display:block}
-.spheretag{display:inline-block;background:#0a1830;border:1px solid var(--line);color:var(--gold-2);padding:2px 8px;border-radius:99px;font-size:12px;margin-left:8px}
-hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
-.nav-back{color:var(--muted);background:transparent;border:none;cursor:pointer;font:inherit;padding:6px 0}
-.nav-back:hover{color:var(--ink)}
+.quiz .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:1.7rem 1.6rem;margin:1rem 0;box-shadow:var(--shadow-sm)}
+.quiz .card h2{margin:.25rem 0 .3rem;font-size:1.45rem}
+.quiz .kicker{display:inline-block;background:var(--gold-100);color:var(--gold-2);padding:3px 11px;border-radius:99px;font-size:.74rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.quiz .sub{color:var(--ink-600);font-size:.97rem;margin-bottom:14px}
+.quiz label{display:block;margin:12px 0 6px;color:var(--navy-800);font-weight:600}
+.quiz input[type=text],.quiz input[type=email],.quiz select,.quiz textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #d8d0c0;background:var(--white);color:var(--ink-900);font:inherit;box-sizing:border-box}
+.quiz input:focus,.quiz select:focus,.quiz textarea:focus{outline:2px solid var(--teal-500);outline-offset:1px}
+.quiz textarea{min-height:80px;resize:vertical}
+.quiz .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.quiz .row{grid-template-columns:1fr}}
+.quiz .checks label,.quiz .radios label{display:flex;align-items:flex-start;gap:9px;background:var(--linen-100);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;cursor:pointer;font-weight:500;color:var(--ink-900)}
+.quiz .checks input,.quiz .radios input{margin-top:3px;accent-color:var(--teal-600)}
+.quiz .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.quiz .btn{display:inline-block;padding:.68rem 1.35rem;border-radius:99px;border:none;background:var(--teal-600);color:#fff;text-decoration:none;font-weight:700;cursor:pointer;font:inherit}
+.quiz .btn:hover{background:var(--teal-500);transform:translateY(-1px)}
+.quiz .btn.secondary{background:transparent;color:var(--teal-600);border:2px solid var(--teal-600)}
+.quiz .btn.secondary:hover{color:var(--navy-800);border-color:var(--navy-800);background:transparent}
+.quiz .btn.ghost{background:transparent;color:var(--ink-600);border:1px solid #d8d0c0}
+.quiz .btn:disabled{opacity:.5;cursor:not-allowed}
+.quiz .nav-back{color:var(--ink-600);background:transparent;border:none;cursor:pointer;font:inherit;padding:6px 0}
+.quiz .nav-back:hover{color:var(--navy-900)}
+.quiz .progress{height:7px;background:var(--linen-100);border-radius:99px;overflow:hidden;margin:8px 0 18px;border:1px solid var(--line)}
+.quiz .progress > div{height:100%;background:linear-gradient(90deg,var(--teal-500),var(--gold-500));width:0;transition:width .3s}
+.quiz .help{color:var(--ink-600);font-size:.87rem;margin-top:6px}
+.quiz .banner{background:var(--teal-100);border-left:5px solid var(--teal-600);border-radius:10px;padding:1rem 1.1rem;color:var(--ink-900);font-size:.97rem;margin:10px 0 16px}
+.quiz .banner strong{color:var(--navy-900)}
+.quiz .dl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:640px){.quiz .dl{grid-template-columns:1fr}}
+.quiz .dl a{display:block;padding:12px 14px;background:var(--white);border:1px solid var(--line);border-radius:10px;color:var(--navy-900);text-decoration:none;font-weight:600}
+.quiz .dl a:hover{border-color:var(--teal-500)}
+.quiz .dl a small{display:block;color:var(--ink-600);font-weight:400;margin-top:2px}
+.quiz .mirror{background:var(--linen-100);border-left:3px solid var(--teal-500);padding:10px 12px;border-radius:8px;color:var(--navy-800);font-style:italic;margin-top:8px;display:none}
+.quiz .mirror.show{display:block}
+.quiz .spheretag{display:inline-block;background:var(--gold-100);border:1px solid var(--line);color:var(--gold-2);padding:2px 8px;border-radius:99px;font-size:.78rem;margin-left:8px}
+.quiz hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
+.quiz h3{margin-bottom:.2rem}
 </style>
 </head>
 <body>
-<header>
-  <h1>The SOUL Quiz</h1>
-  <p>Start in two minutes — a full, careful draft takes about fifteen. Runs entirely in your browser. No data leaves your device.</p>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="index.html#founding-year">Free Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
 </header>
 
-<div class="wrap">
-  <div class="banner">
-    <strong>Stewardship first.</strong> No PHI. No clinical decisions. Your answers stay on this page — nothing is uploaded. At the end you'll download files you can drop straight into your Starter Kit folder (or Obsidian, or any AI host).
+<section class="hero" style="padding:2.6rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Step 2 of your five-step setup</p>
+    <h1>The SOUL Quiz</h1>
+    <p class="lede">Your values, boundaries, and the life you actually live — drafted into the files that make AI truly yours. Start in two minutes; a full, careful draft takes about fifteen. No wrong answers.</p>
   </div>
+</section>
 
-  <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+<section class="section" style="padding:2rem 0 3.5rem;">
+  <div class="container narrow quiz">
 
-  <div id="app"></div>
+    <div class="banner">
+      <strong>This quiz lives entirely in your browser.</strong> Your answers never leave your device — nothing is uploaded, no account, no cookies, no tracking. At the end <em>you</em> download your SOUL files; we never see them. Close the tab and it's gone. And as everywhere here: <strong>no PHI, no clinical decisions, ever.</strong>
+    </div>
 
-  <p class="footer">© NAIO Institute · <a href="start-here.html">← Back to the five steps</a> · <a href="mailto:great.ai.nurses@gmail.com?subject=Join%20the%20Nurse%20AI%20OS%20community">Join the community list</a></p>
-</div>
+    <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+
+    <div id="app"></div>
+
+    <p style="text-align:center;margin-top:1.6rem;font-size:.93rem;color:var(--ink-600);">Not sure why you're here? The whole journey is <a href="start-here.html">five steps on one page</a> — this is step 2.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO Institute · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
 
 <script>
 /* ============================================================
    SOUL Quiz — client-side only.
    Mirrors the 6-stage SOUL Interview Agent framework.
+   Everything runs in your browser. Nothing is uploaded.
    ============================================================ */
 
 const SPHERES = [
@@ -396,14 +435,13 @@ function stepTiers(){
 function stepDone(){
   return {
     title:'Stage 6 · Your SOUL files',
-    sub:'Generated locally in your browser. Download and drop into your Starter Kit folder (My-Nurse-AI-OS/01-SOUL/ and 00-Start-Here/) — then tell Hermes where they live.',
+    sub:'Generated locally in your browser — we never see them. Download and drop into your Starter Kit folder (My-Nurse-AI-OS/01-SOUL/ and 00-Start-Here/), then tell Hermes where they live.',
     render(){
       const files = buildAllFiles();
       const downloads = files.map(f=>`
         <a href="#" data-name="${esc(f.name)}" data-content="${encodeURIComponent(f.content)}" class="dlfile">
           ${esc(f.name)}<small>${esc(f.path)}</small>
         </a>`).join('');
-      const bundleHref = '#bundle';
       return `
         <div class="banner"><strong>Carry the lamp.</strong> Agents propose. Humans judge. Nurses steward. Welcome.</div>
         <p>Click any file to download, or grab everything as a single bundle:</p>

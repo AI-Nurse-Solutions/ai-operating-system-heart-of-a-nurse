@@ -57,19 +57,19 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
 <body>
 <header>
   <h1>The SOUL Quiz</h1>
-  <p>Draft your tailored Nurse AI OS soul files in ~15 minutes. Runs entirely in your browser. No data leaves your device.</p>
+  <p>Start in two minutes — a full, careful draft takes about fifteen. Runs entirely in your browser. No data leaves your device.</p>
 </header>
 
 <div class="wrap">
   <div class="banner">
-    <strong>Stewardship first.</strong> No PHI. No clinical decisions. Your answers stay on this page — nothing is uploaded. At the end you'll download Markdown files you can drop into Obsidian or any AI host.
+    <strong>Stewardship first.</strong> No PHI. No clinical decisions. Your answers stay on this page — nothing is uploaded. At the end you'll download files you can drop straight into your Starter Kit folder (or Obsidian, or any AI host).
   </div>
 
   <div class="progress" aria-hidden="true"><div id="bar"></div></div>
 
   <div id="app"></div>
 
-  <p class="footer">© NAIO Institute · <a href="index.html">← Back to course</a> · <a href="assets/lamp-huddle.md">Join the Lamp Huddle</a></p>
+  <p class="footer">© NAIO Institute · <a href="start-here.html">← Back to the five steps</a> · <a href="mailto:great.ai.nurses@gmail.com?subject=Join%20the%20Nurse%20AI%20OS%20community">Join the community list</a></p>
 </div>
 
 <script>
@@ -396,7 +396,7 @@ function stepTiers(){
 function stepDone(){
   return {
     title:'Stage 6 · Your SOUL files',
-    sub:'Generated locally in your browser. Download and drop into your Obsidian vault under 01-SOUL/ and 00-Start-Here/.',
+    sub:'Generated locally in your browser. Download and drop into your Starter Kit folder (My-Nurse-AI-OS/01-SOUL/ and 00-Start-Here/) — then tell Hermes where they live.',
     render(){
       const files = buildAllFiles();
       const downloads = files.map(f=>`
@@ -405,16 +405,16 @@ function stepDone(){
         </a>`).join('');
       const bundleHref = '#bundle';
       return `
-        <div class="banner"><strong>Carry the lamp.</strong> Hermes supports. Humans judge. Nurses steward. Welcome.</div>
+        <div class="banner"><strong>Carry the lamp.</strong> Agents propose. Humans judge. Nurses steward. Welcome.</div>
         <p>Click any file to download, or grab everything as a single bundle:</p>
         <div class="dl">${downloads}</div>
         <div class="btnrow">
           <button class="btn" id="dlAll">Download all (bundle .md)</button>
           <button class="btn" id="dlOsConfig">⚙️ Export OS Config (naio-soul.json)</button>
-          <a class="btn secondary" href="index.html">Back to the course</a>
-          <a class="btn ghost" href="assets/lamp-huddle.md">Join the Lamp Huddle</a>
+          <a class="btn secondary" href="start-here.html">Back to Start Here — step 3 →</a>
+          <a class="btn ghost" href="assets/lamp-huddle.pdf">About the Lamp Huddle</a>
         </div>
-        <p class="help">The OS Config is a machine-readable file (no PHI) the NAIO installer uses to set up a personalized, governed Hermes — your spheres, voice, boundaries, and EDENA tier ceilings. <a href="naio-os/README.md">What is this?</a></p>
+        <p class="help">The OS Config is a machine-readable file (no PHI) the NAIO installer uses to set up a personalized, governed Hermes — your spheres, voice, boundaries, and EDENA tier ceilings — an advanced option you can ignore for now.</p>
         <hr class="sep" />
         <h3 style="color:var(--gold-2);margin:0 0 4px">Share your tier map</h3>
         <p class="help">A one-image card you can post on LinkedIn or save for your records. Generated entirely in your browser. No data uploaded.</p>
@@ -428,10 +428,10 @@ function stepDone(){
         <p class="help">LinkedIn doesn't accept image uploads through a share URL — clicking "Share on LinkedIn" pre-fills a post with the course link and suggested caption. Download the card first, then attach it manually to the post.</p>
 
         <hr class="sep" />
-        <label for="email">Get the next Lamp Huddle invite</label>
-        <p class="help">A real signup form lands the week of July 4. For now, click the button below — it will open your mail app with a pre-filled email to <strong>great.ai.nurses@gmail.com</strong>. Add your name and role, hit send, and you're on the list.</p>
+        <label>Join the community — newsletter + monthly Lamp Huddle invites</label>
+        <p class="help">One email gets you the newsletter, every monthly Lamp Huddle invitation, and founding-member status in our community home when it opens soon. The button opens your mail app pre-filled — add your name and role, hit send, and a human adds you personally.</p>
         <div class="btnrow">
-          <a id="mailtoBtn" class="btn" href="#">📧 Email me the Lamp Huddle invite</a>
+          <a id="mailtoBtn" class="btn" href="#">📧 Join the community list</a>
           <button class="btn secondary" id="copyEmail" type="button">Copy email address</button>
         </div>
         <p class="help" id="copyMsg" style="display:none;color:var(--teal-2)">Copied — paste it into your mail app.</p>
@@ -595,8 +595,8 @@ ${created}
 - Hermes never crosses your EDENA tier without your approval.
 
 ## Next steps
-1. Start the [30-Day Nurse AI OS Roadmap](https://nurse-ai-os.org/assets/30-day-roadmap.md).
-2. Join the [Lamp Huddle](https://nurse-ai-os.org/assets/lamp-huddle.md).
+1. Start the [30-Day Nurse AI OS Roadmap](https://nurse-ai-os.org/assets/30-day-roadmap.pdf).
+2. Join the community list — email great.ai.nurses@gmail.com for the newsletter and monthly [Lamp Huddle](https://nurse-ai-os.org/assets/lamp-huddle.pdf) invites.
 3. Add one **skill** this week. Audit your tier map at the end of the month.
 
 ## Stewardship line
@@ -958,11 +958,11 @@ function render(){
     const role = state.data.role || '(your role)';
     const name = state.data.name || '(your name)';
     const spheres = state.data.spheres.map(k=>SPHERES.find(s=>s.key===k).label.split(' (')[0]).join(', ') || '(none specified)';
-    const subject = encodeURIComponent('Lamp Huddle invite request');
+    const subject = encodeURIComponent('Join the Nurse AI OS community');
     const body = encodeURIComponent(
 `Hi NAIO team,
 
-I just finished the SOUL Quiz and would like the next Lamp Huddle invite.
+I just finished the SOUL Quiz. Please add me to the newsletter and the monthly Lamp Huddle invite list.
 
 Name: ${name}
 Role: ${role}

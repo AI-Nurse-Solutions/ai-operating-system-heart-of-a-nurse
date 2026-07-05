@@ -86,11 +86,24 @@
     <div class="steps">
       <div class="step">
         <h3>Install Hermes</h3>
-        <p>Go to the official site — <a href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener">hermes-agent.nousresearch.com</a> — download for your computer, and follow their steps. Open it. If it asks about an AI model or provider, the default is fine to start.</p>
+        <p>Go to the official site — <a href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener">hermes-agent.nousresearch.com</a> — download for your computer, and follow their steps. Open it. When setup asks about an AI model or provider, see the next step first — there are free and low-cost routes.</p>
       </div>
       <div class="step">
         <h3>Permissions — give it a room, not the house</h3>
         <p>When Hermes asks for file access, <strong>grant access ONLY to your My-Nurse-AI-OS folder</strong>. Decline anything broader — full disk, Desktop, Downloads, Photos. Think of a float nurse's badge: the assigned unit, not every floor of the hospital. Granted too much by accident? Remove it in your computer's privacy settings.</p>
+      </div>
+      <div class="step">
+        <h3>Choose how your AI is powered — there are free and low-cost routes</h3>
+        <p><strong>Hermes itself is free and open-source.</strong> Any cost comes from the AI model that powers it — think of Hermes as the IV pump, free, and the model as what runs through it, metered by use. You have two routes:</p>
+        <p><strong>Route A — the Nous subscription.</strong> The simplest: one subscription, everything handled. Choose it during setup and skip the rest of this step.</p>
+        <p><strong>Route B — Bring Your Own Keys.</strong> The most cost-effective, and how you run Hermes nearly free. In Hermes setup, choose <strong>Full Setup</strong> (not the default subscription option), then <strong>Bring Your Own Keys</strong>. We recommend <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a> — one free account, one API key, and a whole menu of models, including free and very low-cost ones. Then:</p>
+        <ol style="margin:.4rem 0 1rem 1.2rem; line-height:1.7;">
+          <li>Create an account at <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a> and generate an API key from your dashboard.</li>
+          <li><strong>Set a spending limit in OpenRouter first</strong> — your safety rail against surprise bills. Start at a few dollars; you can always raise it.</li>
+          <li>In Hermes setup, choose OpenRouter as your provider and paste your key.</li>
+          <li>Pick a model — start with a free or low-cost one. Ask Hermes for something simple to confirm it works; if the answers feel weak, switch to a stronger model. Trying models costs nothing but the tokens you use.</li>
+        </ol>
+        <p style="font-size:.93rem;color:var(--ink-600);"><strong>One caution:</strong> a ChatGPT Plus or Grok subscription usually does <em>not</em> include API access — that's billed separately. The safest setup is a dedicated OpenRouter key with a spending limit you set yourself.</p>
       </div>
       <div class="step">
         <h3>Your first conversation</h3>

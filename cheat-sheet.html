@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pre-Procedure Checklist &amp; Hermes Cheat Sheet — Nurse AI OS</title>
+<meta name="description" content="The Pre-Procedure Checklist for setting up your Nurse AI OS: verify your equipment, prep the field, install Hermes with the right permissions, and give the system the heart of a nurse.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+.checkitem{display:flex;gap:.8rem;align-items:flex-start;background:var(--white);border:1px solid var(--linen-100);border-radius:10px;padding:.9rem 1.1rem;margin:.6rem 0;box-shadow:var(--shadow-sm);}
+.checkitem input[type=checkbox]{margin-top:.3rem;width:1.15rem;height:1.15rem;accent-color:var(--teal-600);flex:none;cursor:pointer;}
+.checkitem label{cursor:pointer;}
+.checkitem strong{color:var(--navy-800);}
+.checkitem .why{display:block;color:var(--ink-600);font-size:.93rem;margin-top:.15rem;}
+.prompt-block{background:#10233a;color:#dbe6ef;border-radius:10px;padding:1.1rem 1.3rem;font-family:"SF Mono","Consolas",monospace;font-size:.88rem;line-height:1.55;white-space:pre-wrap;border-left:4px solid var(--gold-500);margin:.8rem 0 1.2rem;}
+.phrase-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin:1rem 0 1.5rem;}
+.phrase-table th{background:var(--navy-900);color:var(--gold-300);font-family:var(--font-display);text-align:left;padding:.6rem .9rem;}
+.phrase-table td{padding:.55rem .9rem;border-top:1px solid var(--linen-100);font-size:.95rem;vertical-align:top;}
+.phrase-table td:first-child{font-weight:700;color:var(--teal-600);width:44%;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="index.html#founding-year">Free Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Setup Step 1 · Read before you install</p>
+    <h1>The Pre-Procedure Checklist</h1>
+    <p class="lede">You'd never start a procedure without the time-out: right patient, right site, right equipment. Give your AI setup the same respect — five checks before you install, then the procedure itself. Two minutes here saves an hour of frustration later.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="assets/hermes-cheat-sheet.pdf">Download the checklist + cheat sheet (PDF) →</a>
+      <a class="btn btn-secondary" href="start-here.html">Back to the five steps</a>
+    </div>
+    <p class="hero-note">Print it, pin it, check the boxes. The boxes on this page tick — but they're for you; nothing is saved or sent.</p>
+  </div>
+</section>
+
+<!-- ============ THE TIME-OUT ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Before you scrub in</p>
+    <h2>The time-out — verify before you begin</h2>
+
+    <div class="checkitem"><input type="checkbox" id="c1"><label for="c1"><strong>Right equipment: a desktop or laptop — Mac or Windows.</strong><span class="why">Not a phone, tablet, or Chromebook. On your own computer, your files and your AI's memory stay <strong>local — on your machine, not in someone's cloud</strong>. That's the whole point of owning your system.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c2"><label for="c2"><strong>Specs verified.</strong><span class="why">Rough guide: a computer from the last ~5 years with at least 8&nbsp;GB of memory and a few GB free usually does fine — the <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">official Hermes site</a> lists current requirements. If Hermes won't install, it's the machine's specs — <em>not you, and not a mistake you made</em>. A cloud option (the VPS path) is coming; meanwhile, see "While you wait" below.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c3"><label for="c3"><strong>Field prepped: one dedicated folder, nothing private inside.</strong><span class="why">Like clearing a sterile field. Your system lives in one folder — <em>My-Nurse-AI-OS</em>, which the Starter Kit builds (Documents is the perfect home). No tax documents, no family photos, no work files inside it — only what you'd be comfortable letting an assistant read, because that's exactly what it is.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c4"><label for="c4"><strong>Shared family computer? Separate user account.</strong><span class="why">Your own med cart instead of a shared one — your AI work stays in its own space.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c5"><label for="c5"><strong>Smart habit: a fresh Gmail for your AI life.</strong><span class="why">You don't do personal banking from the unit's charting station. A free, separate account (like <em>yourname.ai@gmail.com</em>) keeps your personal and family email private — and its free Google Drive and Docs pair beautifully with your system later.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c6"><label for="c6"><strong>The one rule, memorized: no patient data. Ever.</strong><span class="why">No names, charts, screenshots, room numbers, or stories that could identify a patient. This system runs on <em>your</em> life — never your patients.</span></label></div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>All boxes checked? You're cleared for the procedure.</strong> Not all? Fix what you can, and remember — even without a qualifying computer, the <a href="ai-mentors.html">free course and 55 AI mentors</a>, the <a href="soul-quiz.html">SOUL Quiz</a>, the monthly Lamp Huddle, and the community are open to you today.
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PROCEDURE ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">Cleared? Proceed.</p>
+    <h2>The procedure — install and configure</h2>
+    <p style="color:var(--ink-600);">Menus move as Hermes updates — when something looks different, the <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">official docs</a> are the truth.</p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>Install Hermes</h3>
+        <p>Go to the official site — <a href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener">hermes-agent.nousresearch.com</a> — download for your computer, and follow their steps. Open it. If it asks about an AI model or provider, the default is fine to start.</p>
+      </div>
+      <div class="step">
+        <h3>Permissions — give it a room, not the house</h3>
+        <p>When Hermes asks for file access, <strong>grant access ONLY to your My-Nurse-AI-OS folder</strong>. Decline anything broader — full disk, Desktop, Downloads, Photos. Think of a float nurse's badge: the assigned unit, not every floor of the hospital. Granted too much by accident? Remove it in your computer's privacy settings.</p>
+      </div>
+      <div class="step">
+        <h3>Your first conversation</h3>
+        <p>Hermes works like a chat: type, press enter. You cannot break anything by chatting.</p>
+        <div class="prompt-block">I'm a nurse setting up my Nurse AI OS. I'll give you my SOUL file next — treat it as my standing instructions.</div>
+      </div>
+      <div class="step">
+        <h3>Give Hermes your SOUL file</h3>
+        <p>From the <a href="soul-quiz.html">SOUL Quiz</a> (downloads as Core-SOUL.md, or the whole bundle). Attach, drag, or paste it, then say:</p>
+        <div class="prompt-block">This is my SOUL file. Treat it as my standing instructions for how to support me. Confirm what you understood about my values and boundaries.</div>
+        <p style="font-size:.93rem;color:var(--ink-600);">Read its summary back. Correct anything wrong — corrections stick.</p>
+      </div>
+      <div class="step">
+        <h3>Give Hermes your Starter Kit</h3>
+        <p>Unzip the <a href="assets/nurse-ai-os-starter-kit.zip">Starter Kit</a> somewhere you'll find again (Documents is perfect), then tell Hermes:</p>
+        <div class="prompt-block">My Nurse AI OS folder is at [location]. This is where my files live: my SOUL file, my notes (03-Memory), my projects (04-Projects). Keep your work for me inside it.</div>
+      </div>
+      <div class="step">
+        <h3>Build your dashboard — and bookmark it</h3>
+        <div class="prompt-block">Using my SOUL file, personalize the Local HTML Life Dashboard in my starter kit (08-Integrations/Local-HTML-Life-Dashboard). Fill in my name, my top priorities in each sphere, and my first goals and habits from my quiz answers. Save it as My-Dashboard.html in my Nurse AI OS folder and tell me exactly where it is.</div>
+        <p>Open the file it creates in your browser and <strong>bookmark it</strong> — that's your station board.</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="background:var(--teal-100); border-left-color:var(--teal-600);">
+      <strong>Why the SOUL file and Starter Kit matter more than everything else:</strong> a powerful AI is like a powerful horse — magnificent, and dangerous without a harness. These two files <strong>are the harness</strong>. The SOUL file gives the engine your values, your boundaries, the lines it may never cross; the Starter Kit gives it a home and a structure. Together they give the system <strong>the heart of a nurse</strong> — and keep the horse from running away with you. Skipping them doesn't make you faster; it makes you a passenger.
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIVE PHRASES ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Post-procedure orders</p>
+    <h2>Five phrases that do most of the work</h2>
+    <table class="phrase-table">
+      <thead><tr><th>You say</th><th>Hermes does</th></tr></thead>
+      <tbody>
+        <tr><td>"Run my morning huddle."</td><td>Asks your #1 priority, offers three ways to help</td></tr>
+        <tr><td>"Give me a Kardex entry for this session."</td><td>Writes a 5-line handoff note to save in 03-Memory</td></tr>
+        <tr><td>"Make that correction permanent."</td><td>Turns your feedback into a standing rule</td></tr>
+        <tr><td>"Before you start, interview me like an admission assessment."</td><td>Asks questions before big tasks instead of guessing</td></tr>
+        <tr><td>"Show me your plan before you do anything."</td><td>Keeps your hand on every decision</td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:2rem;">While you wait — no qualifying computer yet? You're still in.</h2>
+    <p>If your current computer can't run Hermes, you've lost nothing but the installation step. The <a href="ai-mentors.html">free AI course and 55 free AI mentors</a> run in any browser, the monthly Lamp Huddle and community are open, and the <a href="soul-quiz.html">SOUL Quiz</a> will have your SOUL file ready the day your system is.</p>
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500);">
+      <strong>And hear this plainly:</strong> your participation and your voice matter to us now — not after you buy hardware. AI is coming to healthcare with or without nursing at the table. The nurses preparing today will lead that change instead of being led by it. <strong>You are the future Florence Nightingales — the ones who will decide how care intelligence is born.</strong>
+    </div>
+
+    <p style="margin-top:2rem;"><strong>If you feel lost:</strong> normal. You only need the next step, never the whole map. Skip what confuses you, and bring questions to the monthly Lamp Huddle — every nurse there started exactly where you are.</p>
+
+    <p style="text-align:center; margin-top:2rem;">
+      <a class="btn btn-primary" href="assets/hermes-cheat-sheet.pdf">Download the checklist + cheat sheet (PDF) →</a>&nbsp;
+      <a class="btn btn-quiet" href="start-here.html">Continue to step 2 — the SOUL Quiz →</a>
+    </p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO Institute · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
+
+</body>
+</html>

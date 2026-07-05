@@ -1,11 +1,11 @@
-# Hermes Basics — The Nurse's Cheat Sheet
+# The Pre-Procedure Checklist & Hermes Cheat Sheet
 
-> Keep this beside you for your first week. Menus move as Hermes updates — when something looks different, the official docs are the truth: https://hermes-agent.nousresearch.com/docs
+> You'd never start a procedure without the time-out: right patient, right site, right equipment. Give your AI setup the same respect. Keep this beside you for your first week. Menus move as Hermes updates — when something looks different, the official docs are the truth: https://hermes-agent.nousresearch.com/docs
 
 ## The one rule before anything
 **No patient data. Ever.** No names, charts, screenshots, room numbers, or stories that could identify a patient. Hermes works on *your* life — learning, schedule, projects — never your patients.
 
-## 0 · Before you install — the readiness check
+## The time-out — verify before you begin
 You check your equipment at the start of every shift. Same here — two minutes now saves an hour of frustration later.
 
 **You need a desktop or laptop** — Mac or Windows. Not a phone, tablet, or Chromebook. Here's why it's worth it: on your own computer, your files and your AI's memory stay **local — on your machine, not in someone's cloud**. That's the whole point of owning your system.

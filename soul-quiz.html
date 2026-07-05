@@ -469,10 +469,9 @@ function stepDone(){
 
         <hr class="sep" />
         <label>Join the community — newsletter + monthly Lamp Huddle invites</label>
-        <p class="help">One email gets you the newsletter, every monthly Lamp Huddle invitation, and founding-member status in our community home when it opens soon. The button opens your mail app pre-filled — add your name and role, hit send, and a human adds you personally.</p>
+        <p class="help">One signup gets you the newsletter, every monthly Lamp Huddle invitation, and founding-member status in our community home when it opens soon.</p>
         <div class="btnrow">
-          <a id="mailtoBtn" class="btn" href="#">📧 Join the community list</a>
-          <button class="btn secondary" id="copyEmail" type="button">Copy email address</button>
+          <a id="mailtoBtn" class="btn" href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">🕯️ Join the community</a>
         </div>
         <p class="help" id="copyMsg" style="display:none;color:var(--teal-2)">Copied — paste it into your mail app.</p>
       `;
@@ -1009,7 +1008,7 @@ Role: ${role}
 Active spheres: ${spheres}
 
 Thanks!`);
-    mailtoBtn.href = `mailto:great.ai.nurses@gmail.com?subject=${subject}&body=${body}`;
+    // Community joins go through the Kajabi signup page (href set in markup).
   }
   const copyBtn = document.getElementById('copyEmail');
   if (copyBtn) {

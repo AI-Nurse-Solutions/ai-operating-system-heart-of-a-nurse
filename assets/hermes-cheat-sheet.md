@@ -78,6 +78,25 @@ Paste this:
 
 Open the file it creates in your browser and **bookmark it**. That's your station board.
 
+## Post-procedure care — working the system until it's muscle memory
+You don't memorize features. You see the routine once in your mind, and your hands follow. Seven habits:
+
+**1 · Triage the task, then pick the model.** Simple work — quick questions, summaries, rewrites, brainstorming — gets a free or cheap model. Heavy work — multi-step planning, long documents, coding, deep troubleshooting — gets a stronger reasoning model. Need it to look at a screenshot or diagram? Pick a vision-capable one. You don't call the code team for a splinter: start cheap, escalate when the task needs it.
+
+**2 · One session per topic — one chart per patient.** Don't mix the budget, the side gig, and the CCRN plan in one conversation — details blend and answers get muddy. New topic, new session.
+
+**3 · Projects are care plans; sessions are shifts.** A session is one conversation. For anything ongoing — a course you're building, a business plan, a family project — use a Project: a workspace where files, goals, and conversations stay together, so you never start from scratch.
+
+**4 · Call a consult — use personas.** Tell Hermes who to be, and the depth and style of the answer change with it: *"Act as a plain-language tutor and explain this error step by step."* · *"Act as a startup strategist and review my plan for risks and next moves."*
+
+**5 · When unsure, ask the assistant itself.** You never need the perfect prompt: *"What's the best next step?"* · *"Ask me the questions you need before we continue."* · *"Break this into simple steps."* · *"Which model should I use for this task?"*
+
+**6 · Troubleshoot with screenshots — show, don't describe.** Hand over the telemetry strip instead of describing it. Share the screenshot plus: what you were trying to do, what happened instead, the exact error, and what you've already tried. **Never include API keys or passwords in a screenshot** — crop or blur them first.
+
+**7 · Steward the spend.** Watch usage the way you watch supplies: spending limits on, drafts on cheap models, strong models saved for final reasoning, no huge files unless the task truly needs them.
+
+> **The everyday routine — say it until your hands know it:** right model for the task · new session for a new topic · a project for ongoing work · a persona for specialist output · ask when unsure · show a screenshot when stuck · escalate the model only when needed.
+
 ## Five phrases that do most of the work
 | You say | Hermes does |
 |---|---|

@@ -42,7 +42,7 @@ Whether you are learning the profession, carrying a full assignment, or shaping 
 - **What the course gives you:** A governance method (HERMES, EDENA, profiles, approval gates, connector boundaries); Team Lab blueprints to pilot AI with your team safely; and evaluation questions that judge any tool by workload, safety, equity, and human connection.
 - **Who you become:** A Nightingale for your unit — bringing evidence-led, dignity-first AI to your team without losing the heart of nursing.
 
-### The nurse educator (Ascend)
+### The nurse educator (NAIO)
 
 - **The ache:** Expected to teach with AI and about AI — while protecting students from shortcuts that hollow out clinical reasoning, and carrying your own prep burden on top of it.
 - **What the course gives you:** Workshop blueprints and teaching workflows to train students and faculty safely; "think first, then consult AI" pedagogy; and fictional-case, no-PHI patterns for AI-assisted curriculum, case studies, and assessment drafts.

@@ -1,0 +1,26 @@
+{
+  "skill_name": "architect-mode",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "build-vs-buy-decision-memo",
+      "prompt": "my team (12 people, small healthcare staffing company) keeps arguing about whether to build our own shift-scheduling tool or just buy one. budget is about $50k/year either way. can you write me a recommendation memo I can bring to leadership? save it as a markdown file.",
+      "expected_output": "A memo with clear scope/definition of done, explicit assumptions and evidence gaps flagged, a self-critique of the recommendation, a confidence level, limitations, and next actions.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "eval_name": "revenue-summary-with-data-trap",
+      "prompt": "Please read the file h1_revenue.csv (path provided) and tell me: did we hit our $500k H1 revenue target? Write a short summary I can paste into our board update.",
+      "expected_output": "Catches that the stated Total row (512,000) does not match the sum of the months (503,000), recomputes programmatically, reports the discrepancy, and answers the target question from verified numbers (503k, target met) with appropriate caveats.",
+      "files": ["h1_revenue.csv"]
+    },
+    {
+      "id": 2,
+      "eval_name": "repeatable-ai-process-design",
+      "prompt": "every product launch, my marketing team writes the announcement email, blog post, and social posts from scratch with ChatGPT and the quality is all over the place. design a repeatable process for us — we want consistent quality without paying for the most expensive model for everything.",
+      "expected_output": "A process that separates planning/review (high-capability model) from execution (cheaper models), includes verification/review gates, and produces reusable assets (templates, SOPs, prompt library) the team owns.",
+      "files": []
+    }
+  ]
+}

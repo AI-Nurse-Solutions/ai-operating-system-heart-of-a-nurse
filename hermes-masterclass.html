@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hermes Masterclass — Nurse AI OS</title>
+<meta name="description" content="The Nurse AI OS deep track: 10 modules and 73 lessons that take you from first install to a governed, always-on personal AI system — plus a 7-day fast track. Free during the founding year.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+.module {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  margin-bottom: .9rem; border-left: 5px solid var(--teal-500);
+}
+.module.gold { border-left-color: var(--gold-500); }
+.module summary {
+  cursor: pointer; list-style: none; position: relative;
+  padding: 1.05rem 3rem 1.05rem 1.3rem;
+  display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap;
+}
+.module summary::-webkit-details-marker { display: none; }
+.module summary::after {
+  content: "+"; position: absolute; right: 1.2rem; top: 1rem;
+  color: var(--gold-500); font-size: 1.35rem; font-weight: 400;
+}
+.module[open] summary::after { content: "–"; }
+.module .m-num {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+  color: var(--gold-500); flex: none;
+}
+.module .m-title { font-family: var(--font-display); font-weight: 600; font-size: 1.12rem; color: var(--navy-900); }
+.module .m-count { font-size: .82rem; font-weight: 700; color: var(--teal-600); text-transform: uppercase; letter-spacing: .08em; }
+.module .m-body { padding: 0 1.3rem 1.3rem; }
+.module .m-lede { color: var(--ink-600); margin: 0 0 .9rem; font-size: .99rem; }
+.lesson-list { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: .45rem; }
+.lesson-list li {
+  padding: .5rem .8rem .5rem 2.6rem; position: relative; background: var(--linen-50);
+  border-radius: 8px; font-size: .97rem; color: var(--ink-900);
+}
+.lesson-list li b { color: var(--navy-900); }
+.lesson-list li .l-num {
+  position: absolute; left: .7rem; top: .55rem; font-weight: 700; font-size: .82rem;
+  color: var(--teal-600); font-family: var(--font-display);
+}
+.lesson-list li span.l-desc { color: var(--ink-600); }
+.m-resources { font-size: .92rem; color: var(--ink-600); border-top: 1px solid var(--linen-100); padding-top: .8rem; }
+.m-resources strong { color: var(--navy-900); }
+.day-tag {
+  display: inline-block; background: rgba(236, 200, 127, .16); color: var(--gold-300);
+  border: 1px solid rgba(236, 200, 127, .45); border-radius: 999px;
+  padding: .18rem .75rem; font-size: .8rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; margin-bottom: .5rem;
+}
+.day-card { background: var(--white); border-radius: var(--radius); padding: 1.4rem 1.4rem; box-shadow: var(--shadow-sm); }
+.day-card h3 { margin-bottom: .25rem; }
+.day-card .done { font-size: .92rem; color: var(--teal-600); font-weight: 700; margin-top: .6rem; }
+.day-card .done::before { content: "✓ "; }
+.day-card p { color: var(--ink-600); font-size: .98rem; margin: .3rem 0 0; }
+@media (min-width: 621px) { .lesson-list.two-col { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="index.html#founding-year">Free Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a href="nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <p class="kicker">The deep track — for nurses who want to operate, not just use</p>
+        <h1>The Hermes Masterclass</h1>
+        <p class="lede">Start Here gets your system running in an evening. This is everything after that evening: ten modules that take you from first install to a governed, always-on personal AI system — memory, connections, scheduled work, an operator console, and the discipline to run it all safely.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#curriculum">See the curriculum →</a>
+          <a class="btn btn-secondary" href="#fast-track">The 7-day fast track</a>
+        </div>
+        <p class="hero-note"><strong>10 modules · 73 lessons · self-paced.</strong> Written lessons and guides are live now; video walkthroughs are being added throughout the founding year. Free for nurses and nursing students — like everything here.</p>
+      </div>
+      <div>
+        <div class="video-slot">
+          <div class="play">▶</div>
+          <div class="vtitle">Masterclass orientation — 3 minutes</div>
+          <div class="vnote">How the ten modules fit together, and where to start</div>
+        </div>
+        <!-- When the orientation video is recorded, replace the placeholder above with:
+        <iframe class="video-embed" src="https://www.youtube.com/embed/VIDEO_ID"
+                title="Hermes Masterclass orientation" allowfullscreen></iframe>
+        -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+    <div class="boundary">
+      <strong>Before you enroll yourself:</strong> finish the <a href="start-here.html">five-step setup</a> first — this masterclass assumes Hermes is installed and your SOUL file is loaded. And the rule that never changes anywhere on this site: <strong>no patient data, ever.</strong> This system runs on your life, your studies, and your projects — never your patients. <a href="start-here.html#safety">The safety rules →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE MENTAL MODEL ============ -->
+<section class="section" style="padding-top:1rem;">
+  <div class="container">
+    <p class="eyebrow">One mental model before anything else</p>
+    <h2>Agent, not a chatbot — and you already know how to delegate</h2>
+    <p class="section-intro">A chatbot explains how to build a study plan. An agent builds it, schedules it, and checks on you Tuesday. Everything in this masterclass rests on a three-part model — and it maps to something nursing school already taught you: safe delegation.</p>
+    <div class="card-grid cols-3">
+      <div class="card">
+        <p class="role-tag">Workflows</p>
+        <h3>The care plan</h3>
+        <p>A workflow is a written, repeatable process: what happens, in what order, and what "done" looks like. You've been writing these your whole career — they were called care plans and protocols.</p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Agent</p>
+        <h3>The delegate</h3>
+        <p>Hermes reads the plan, interprets it, and carries it out — the way you delegate to capable assistive personnel. It acts within the boundaries you set, reports back, and improves from your corrections.</p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Tools</p>
+        <h3>The equipment</h3>
+        <p>Email, files, calendars, spreadsheets, the web — the instruments the agent actually works with. Each connection is granted deliberately, like equipment checked out and signed for.</p>
+      </div>
+    </div>
+    <p style="margin-top:1.6rem; max-width:760px; color:var(--ink-600);">And the part that never gets delegated: <strong style="color:var(--navy-900);">accountability</strong>. You remain the licensed judgment in the loop. The agent proposes; you approve what matters. That principle — the human gate — is built into every module below, not saved for a safety lecture at the end.</p>
+  </div>
+</section>
+
+<!-- ============ CURRICULUM ============ -->
+<section class="section section-alt" id="curriculum">
+  <div class="container narrow">
+    <p class="eyebrow">The curriculum</p>
+    <h2>Ten modules, in the order your system grows</h2>
+    <p class="section-intro">The sequence follows the nursing process you already trust: assess the foundations, plan the setup, implement power and memory, evaluate with governance — then extend into earning and building. Open any module to see its lessons. Work top to bottom, or jump to what tonight needs.</p>
+
+    <details class="module">
+      <summary><span class="m-num">01</span><span class="m-title">Foundations — what you're actually running</span><span class="m-count">8 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">What an agent is, why it's different from the chat window you've used, and why nurses — trained in process, delegation, and documentation — are unusually good at this.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">1.1</span><b>Agent, not a chatbot</b> — <span class="l-desc">the difference in one evening of examples</span></li>
+          <li><span class="l-num">1.2</span><b>What Hermes is — and what it will never be</b> — <span class="l-desc">a free, open-source engine; never a clinical tool</span></li>
+          <li><span class="l-num">1.3</span><b>The system that learns you</b> — <span class="l-desc">why corrections stick, and what "self-improving" really means</span></li>
+          <li><span class="l-num">1.4</span><b>The anatomy</b> — <span class="l-desc">brain, body, memory, loop — the four parts of every agent</span></li>
+          <li><span class="l-num">1.5</span><b>One brain, every doorway</b> — <span class="l-desc">the same system in your terminal, your dashboard, your phone</span></li>
+          <li><span class="l-num">1.6</span><b>SOUL.md, deeply</b> — <span class="l-desc">your standing instructions: values, boundaries, what you never delegate</span></li>
+          <li><span class="l-num">1.7</span><b>The engine and the builder</b> — <span class="l-desc">how Hermes and coding agents like Claude Code divide the work</span></li>
+          <li><span class="l-num">1.8</span><b>The nurse's unfair advantage</b> — <span class="l-desc">process thinking, delegation discipline, and the ledger habit</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="soul-quiz.html">SOUL Quiz</a> and <a href="soul-quiz-guide.html">Companion Guide</a> · the <a href="assets/nurse-ai-os-workbook.pdf">Workbook</a> modules 1–2</p>
+      </div>
+    </details>
+
+    <details class="module">
+      <summary><span class="m-num">02</span><span class="m-title">Set it up — from laptop to always-on</span><span class="m-count">7 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">Start Here put Hermes on your laptop. This module makes the setup deliberate: where it lives, how it authenticates, how it survives a crash, and — when you're ready — how it stays awake while you sleep.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">2.1</span><b>Pick where it lives</b> — <span class="l-desc">your laptop first; the cloud only when you have a reason</span></li>
+          <li><span class="l-num">2.2</span><b>The pre-procedure install, revisited</b> — <span class="l-desc">a clean field, a dedicated folder, scoped permissions</span></li>
+          <li><span class="l-num">2.3</span><b>Accounts &amp; keys</b> — <span class="l-desc">OAuth vs. API keys in plain language, and which to choose when</span></li>
+          <li><span class="l-num">2.4</span><b>Always-on: the VPS path</b> — <span class="l-desc">a small rented computer that never clocks out (optional)</span></li>
+          <li><span class="l-num">2.5</span><b>Docker, if you want it</b> — <span class="l-desc">containers explained like isolation rooms; skip freely</span></li>
+          <li><span class="l-num">2.6</span><b>Standing orders</b> — <span class="l-desc">schedules and triggers: work that starts without you asking</span></li>
+          <li><span class="l-num">2.7</span><b>Back it up</b> — <span class="l-desc">your SOUL, memory, and skills — recoverable in ten minutes</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="cheat-sheet.html">Pre-Procedure Checklist</a> · the <a href="hermes-downloads/">Hermes setup guide</a> · the <a href="assets/hermes-essentials-guide.pdf">Essentials Guide (PDF)</a></p>
+      </div>
+    </details>
+
+    <details class="module">
+      <summary><span class="m-num">03</span><span class="m-title">Power it — models, routing, and cost</span><span class="m-count">9 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">The agent is yours; the intelligence behind it is swappable. Learn to route the right model to the right task — the way you triage acuity — and to run near-free, fully private, or maximum-power on purpose.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">3.1</span><b>The connections that matter</b> — <span class="l-desc">wiring your engine to a brain, step by step</span></li>
+          <li><span class="l-num">3.2</span><b>Keep the agent, swap the brain</b> — <span class="l-desc">why your system outlives any one model</span></li>
+          <li><span class="l-num">3.3</span><b>Model triage by task acuity</b> — <span class="l-desc">cheap models for routine work, strong models for judgment calls</span></li>
+          <li><span class="l-num">3.4</span><b>OpenRouter, mastered</b> — <span class="l-desc">one key, every model, spending limits set first</span></li>
+          <li><span class="l-num">3.5</span><b>Fully private</b> — <span class="l-desc">local models on your own machine: what they can and can't do</span></li>
+          <li><span class="l-num">3.6</span><b>Open models</b> — <span class="l-desc">when free and open is genuinely enough</span></li>
+          <li><span class="l-num">3.7</span><b>One model per job</b> — <span class="l-desc">a roster of specialists instead of one generalist</span></li>
+          <li><span class="l-num">3.8</span><b>Plan, execute, critique</b> — <span class="l-desc">three-model patterns that mirror plan-of-care → intervention → evaluation</span></li>
+          <li><span class="l-num">3.9</span><b>Your configuration</b> — <span class="l-desc">assemble the stack that fits your budget and your values</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="assets/hermes-essentials-guide.pdf">Essentials Guide</a> (budget path) · <a href="assets/hermes-power-guide.pdf">The Power Guide</a> (routing &amp; profiles)</p>
+      </div>
+    </details>
+
+    <details class="module">
+      <summary><span class="m-num">04</span><span class="m-title">Memory — the chart your system keeps</span><span class="m-count">7 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">A system that forgets you every morning is a tool. A system that remembers is a colleague. Build the three layers of memory — and audit them with the same discipline you bring to a chart.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">4.1</span><b>The three-tier stack</b> — <span class="l-desc">working memory, session notes, long-term record — report, shift notes, the chart</span></li>
+          <li><span class="l-num">4.2</span><b>memory.md + recall</b> — <span class="l-desc">where facts live and how they come back at the right moment</span></li>
+          <li><span class="l-num">4.3</span><b>External memory</b> — <span class="l-desc">your Nurse AI OS folder as the system of record</span></li>
+          <li><span class="l-num">4.4</span><b>The self-improving wiki</b> — <span class="l-desc">a knowledge base that updates itself as you work</span></li>
+          <li><span class="l-num">4.5</span><b>The knowledge graph, on a schedule</b> — <span class="l-desc">connections drawn overnight, reviewed by you</span></li>
+          <li><span class="l-num">4.6</span><b>Memory hygiene</b> — <span class="l-desc">regular audits: prune the stale, correct the wrong, keep the true</span></li>
+          <li><span class="l-num">4.7</span><b>Memory poisoning</b> — <span class="l-desc">how bad facts get planted, and how to catch them — your first security lesson</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="assets/nurse-ai-os-starter-kit.zip">Starter Kit</a> folder architecture (03-Memory) · <a href="personalize.html">Make It Yours</a> workflows</p>
+      </div>
+    </details>
+
+    <details class="module">
+      <summary><span class="m-num">05</span><span class="m-title">Connect — your apps, deliberately</span><span class="m-count">6 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">Connectors are how the agent reaches your real life — email, files, calendar. Each one multiplies usefulness and risk together, so each one is granted like equipment signed out: deliberately, and no wider than needed.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">5.1</span><b>MCP in plain English</b> — <span class="l-desc">the universal plug standard, explained without jargon</span></li>
+          <li><span class="l-num">5.2</span><b>Add any connector</b> — <span class="l-desc">the repeatable procedure for wiring a new service</span></li>
+          <li><span class="l-num">5.3</span><b>Gmail + Drive first</b> — <span class="l-desc">your separate AI-life account becomes the system's workspace</span></li>
+          <li><span class="l-num">5.4</span><b>The connectors you'll actually use</b> — <span class="l-desc">calendar, notes, tasks — a nurse's shortlist</span></li>
+          <li><span class="l-num">5.5</span><b>When you need a custom one</b> — <span class="l-desc">recognizing the moment, and what to ask a builder for</span></li>
+          <li><span class="l-num">5.6</span><b>Connector security</b> — <span class="l-desc">least privilege: a room, not the house — and how tools can lie</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="assets/hermes-power-guide.pdf">Power Guide</a> · the fresh-Gmail habit from <a href="start-here.html">Start Here, step 1</a></p>
+      </div>
+    </details>
+
+    <details class="module">
+      <summary><span class="m-num">06</span><span class="m-title">Power features — the daily practice</span><span class="m-count">6 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">This is where the system stops being a project and starts being a practice: a morning huddle that runs itself, goals under active management, and delegation to a small team of sub-agents — with stopping conditions you set.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">6.1</span><b>The daily command set</b> — <span class="l-desc">morning huddle, Kardex entries, "make that permanent"</span></li>
+          <li><span class="l-num">6.2</span><b>Goals &amp; Mission Control</b> — <span class="l-desc">your priorities tracked and advanced, not just listed</span></li>
+          <li><span class="l-num">6.3</span><b>The overnight review</b> — <span class="l-desc">the Dream engine: reflection while you sleep, gated by your rules</span></li>
+          <li><span class="l-num">6.4</span><b>Make it proactive</b> — <span class="l-desc">useful nudges without noise: the difference is design</span></li>
+          <li><span class="l-num">6.5</span><b>Sub-agents</b> — <span class="l-desc">delegate like a charge nurse: scoped tasks, clear report-back</span></li>
+          <li><span class="l-num">6.6</span><b>Loops with limits</b> — <span class="l-desc">recurring work with alerts, budgets, and human approval points</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> <a href="personalize.html">Make It Yours — six workflows</a> · the <a href="assets/hermes-power-guide.pdf">Power Guide</a> (profiles &amp; cron)</p>
+      </div>
+    </details>
+
+    <details class="module">
+      <summary><span class="m-num">07</span><span class="m-title">The operator console — see your whole system</span><span class="m-count">7 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">Pilots get cockpits; charge nurses get station boards. You get both: a read-only console over your entire AI system — memory, activity, goals, and spend — that can watch everything and touch nothing.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">7.1</span><b>Why read-only is the point</b> — <span class="l-desc">a console that observes can't be tricked into acting</span></li>
+          <li><span class="l-num">7.2</span><b>The dashboard tour</b> — <span class="l-desc">what a healthy system looks like at a glance</span></li>
+          <li><span class="l-num">7.3</span><b>Living memory, visualized</b> — <span class="l-desc">watch what the system knows, and what it's learning</span></li>
+          <li><span class="l-num">7.4</span><b>Goals and overnight work, visualized</b> — <span class="l-desc">Mission Control and the Dream log on screen</span></li>
+          <li><span class="l-num">7.5</span><b>Install and run it</b> — <span class="l-desc">from your starter kit's local dashboard to the full console</span></li>
+          <li><span class="l-num">7.6</span><b>The builder bridge</b> — <span class="l-desc">how the console and your coding agent share one brain</span></li>
+          <li><span class="l-num">7.7</span><b>Make it yours</b> — <span class="l-desc">rename, retheme, and rearrange until it reads like your unit</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="starter-kit/My-Nurse-AI-OS/08-Integrations/Local-HTML-Life-Dashboard/index.html">Local HTML Life Dashboard</a> · the <a href="assets/nurse-ai-os-starter-kit.zip">Starter Kit</a></p>
+      </div>
+    </details>
+
+    <details class="module gold">
+      <summary><span class="m-num">08</span><span class="m-title">Safety &amp; governance — EDENA in depth</span><span class="m-count">7 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">Everywhere else, safety appears one rule at a time. Here it becomes a system: risk tiers, approval gates, kill switches, spend protection, and a ledger — the module that makes everything else trustworthy. If you lead people, start here.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">8.1</span><b>Risk tiering</b> — <span class="l-desc">🟢 proceed, 🟡 you approve, 🔴 human authorization mandatory</span></li>
+          <li><span class="l-num">8.2</span><b>The always-gate list</b> — <span class="l-desc">actions that never run unattended, no matter what</span></li>
+          <li><span class="l-num">8.3</span><b>Approval gates &amp; kill switches</b> — <span class="l-desc">the human gate, wired in — and the big red stop</span></li>
+          <li><span class="l-num">8.4</span><b>Spend &amp; loop protection</b> — <span class="l-desc">budgets, caps, and runaway-loop alarms before you need them</span></li>
+          <li><span class="l-num">8.5</span><b>Secrets management</b> — <span class="l-desc">keys and passwords handled like controlled substances: counted, locked, logged</span></li>
+          <li><span class="l-num">8.6</span><b>Observability &amp; the ledger</b> — <span class="l-desc">if it isn't logged, it didn't happen — auditability as a habit</span></li>
+          <li><span class="l-num">8.7</span><b>Privacy &amp; the law</b> — <span class="l-desc">the no-PHI boundary, employer systems, and where regulation is heading</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="assets/governance-kit.zip">Governance Kit (ZIP)</a> · <a href="assets/safety-rules-edena.pdf">Safety Rules + EDENA poster</a> · <a href="naio-os/README.md">NAIO OS architecture</a></p>
+      </div>
+    </details>
+
+    <details class="module">
+      <summary><span class="m-num">09</span><span class="m-title">Earn with it — carefully, and on your terms</span><span class="m-count">9 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">First the system pays you back in hours; then, if you want, in income. A nurse-safe path to earning with AI — no patient data, no scope creep, no pretending to be a startup founder if you don't want to be one.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">9.1</span><b>Your own life first</b> — <span class="l-desc">the honest ROI: hours back per week before any invoice exists</span></li>
+          <li><span class="l-num">9.2</span><b>The no-PHI side-gig menu</b> — <span class="l-desc">tutoring, writing, resumes, small-business help — what's safely on the table</span></li>
+          <li><span class="l-num">9.3</span><b>Sell the outcome, not the hours</b> — <span class="l-desc">value-based pricing in plain language</span></li>
+          <li><span class="l-num">9.4</span><b>Serve local businesses</b> — <span class="l-desc">the non-clinical work every main street needs done</span></li>
+          <li><span class="l-num">9.5</span><b>Set up systems for other nurses</b> — <span class="l-desc">the skill you now have that your colleagues will ask for</span></li>
+          <li><span class="l-num">9.6</span><b>Productize it</b> — <span class="l-desc">turn what you built once into templates and kits</span></li>
+          <li><span class="l-num">9.7</span><b>Content &amp; audience</b> — <span class="l-desc">teach what you know; carry the lamp in public</span></li>
+          <li><span class="l-num">9.8</span><b>Guard your license while you earn</b> — <span class="l-desc">boundaries, disclosure, and what stays out of every offer</span></li>
+          <li><span class="l-num">9.9</span><b>The 30-day validation sprint</b> — <span class="l-desc">one small offer, one month, real evidence</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="side-gig-starter-kit/">Side-Gig Starter Kit</a> · <a href="https://ai-nurse-solutions.github.io/nin-nurse-career-navigator/" target="_blank" rel="noopener">NIN Career Navigator</a></p>
+      </div>
+    </details>
+
+    <details class="module">
+      <summary><span class="m-num">10</span><span class="m-title">The builder track — make things, ship things</span><span class="m-count">7 lessons</span></summary>
+      <div class="m-body">
+        <p class="m-lede">The companion track: using a coding agent to build real websites and small apps — the same way this site was built. For nurses who discover, module by module, that they like building.</p>
+        <ol class="lesson-list two-col">
+          <li><span class="l-num">10.1</span><b>Build a real website</b> — <span class="l-desc">from blank folder to a live page you can send people</span></li>
+          <li><span class="l-num">10.2</span><b>Build a small app</b> — <span class="l-desc">forms, data, and logic — still in plain language</span></li>
+          <li><span class="l-num">10.3</span><b>Builder power features</b> — <span class="l-desc">plans, checkpoints, and letting the agent verify its own work</span></li>
+          <li><span class="l-num">10.4</span><b>Design systems</b> — <span class="l-desc">why everything on this site looks like one hand made it</span></li>
+          <li><span class="l-num">10.5</span><b>Wire in your agent's memory</b> — <span class="l-desc">the builder and the operator sharing one source of truth</span></li>
+          <li><span class="l-num">10.6</span><b>Ship it safely</b> — <span class="l-desc">review gates and backups before anything goes public</span></li>
+          <li><span class="l-num">10.7</span><b>Build &amp; sell</b> — <span class="l-desc">where the builder track meets Module 9 — and the Builder Academy</span></li>
+        </ol>
+        <p class="m-resources"><strong>Work with:</strong> the <a href="setup-kit.html">Setup Kit — Architect Mode</a> · <a href="builder-academy.html">Builder Academy (Philippines)</a> · <a href="builder-academy-canada.html">Builder Academy (Canada)</a></p>
+      </div>
+    </details>
+
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>Which module gets its video first? You decide.</strong> Founding-year members set the recording order. <a href="mailto:great.ai.nurses@gmail.com?subject=Masterclass%20vote%20%E2%80%94%20record%20this%20module%20first&body=The%20module%20I%20want%20on%20video%20first%3A%0A%0AWhy%20%2F%20what%20I%27m%20stuck%20on%3A%0A%0AMy%20role%20(student%20%2F%20staff%20%2F%20leader%20%2F%20educator)%3A%20">Vote for a module →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7-DAY FAST TRACK ============ -->
+<section class="section section-navy" id="fast-track">
+  <div class="container">
+    <p class="eyebrow">In a hurry? Prove it to yourself in a week</p>
+    <h2>The 7-Day Fast Track</h2>
+    <p class="section-intro">You don't need all ten modules to feel the change. Seven days, about an hour a day, one visible win per day — each day borrows exactly what it needs from the curriculum above. At the end you have a working system and the confidence to go deeper.</p>
+    <div class="card-grid cols-2" style="margin-top:1.5rem;">
+      <div class="day-card">
+        <span class="day-tag" style="color:#8a6420; background:var(--gold-100); border-color:var(--gold-300);">Day 1</span>
+        <h3>Ship your first workflow</h3>
+        <p>Set up (if you haven't), load your SOUL file, and run the morning huddle — then make one correction and watch it stick. <em>Draws on Modules 1–2.</em></p>
+        <p class="done">Done when: your huddle ran, and one correction became permanent</p>
+      </div>
+      <div class="day-card">
+        <span class="day-tag" style="color:#8a6420; background:var(--gold-100); border-color:var(--gold-300);">Day 2</span>
+        <h3>Connect one real source</h3>
+        <p>Wire your separate AI-life Gmail or Drive. Inspect exactly what the agent can now see and do, and write down what you granted. <em>Draws on Module 5.</em></p>
+        <p class="done">Done when: one connector works, and its permissions are documented</p>
+      </div>
+      <div class="day-card">
+        <span class="day-tag" style="color:#8a6420; background:var(--gold-100); border-color:var(--gold-300);">Day 3</span>
+        <h3>Make it reusable</h3>
+        <p>Turn Day 1's workflow into a saved skill and run it on a second, different input. One build, many uses — that's the whole trick. <em>Draws on Modules 4 &amp; 6.</em></p>
+        <p class="done">Done when: the same skill worked twice without re-explaining</p>
+      </div>
+      <div class="day-card">
+        <span class="day-tag" style="color:#8a6420; background:var(--gold-100); border-color:var(--gold-300);">Day 4</span>
+        <h3>Make it reliable</h3>
+        <p>Move your keys out of chat and into proper secrets, check the logs, and set a spending cap before you need one. <em>Draws on Modules 2 &amp; 8.</em></p>
+        <p class="done">Done when: secrets are stored properly and a budget cap exists</p>
+      </div>
+      <div class="day-card">
+        <span class="day-tag" style="color:#8a6420; background:var(--gold-100); border-color:var(--gold-300);">Day 5</span>
+        <h3>Stand up your station board</h3>
+        <p>Personalize the local dashboard from your starter kit and bookmark it — your whole system, one glance, nothing uploaded anywhere. <em>Draws on Module 7.</em></p>
+        <p class="done">Done when: your dashboard opens from a bookmark with your real priorities on it</p>
+      </div>
+      <div class="day-card">
+        <span class="day-tag" style="color:#8a6420; background:var(--gold-100); border-color:var(--gold-300);">Day 6</span>
+        <h3>Schedule it — with limits</h3>
+        <p>Put one job on a schedule (a weekly review works beautifully), add an alert, and decide where a human — you — must approve. <em>Draws on Modules 6 &amp; 8.</em></p>
+        <p class="done">Done when: one job runs on its own, inside limits you chose</p>
+      </div>
+    </div>
+    <div class="day-card" style="margin-top:1.4rem; border-left:5px solid var(--gold-500);">
+      <span class="day-tag" style="color:#8a6420; background:var(--gold-100); border-color:var(--gold-300);">Day 7 — the capstone</span>
+      <h3>Assemble your chief of staff</h3>
+      <p>Connect the pieces — email, calendar, tasks, memory, schedule — into one working assistant, and write a one-page operating guide for it: what it does daily, what it asks before doing, what it never touches. That guide is your proof you're an operator now, not a user.</p>
+      <p class="done">Done when: the operating guide is written and tomorrow's huddle runs without you starting it</p>
+    </div>
+    <p style="margin-top:1.8rem; color:#b7c7d4;">Finish a day? Tell someone. Bring your win — and one thing you'd improve — to the monthly <a href="assets/lamp-huddle.pdf" style="color:var(--gold-300);">Lamp Huddle</a>, or share it with the <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener" style="color:var(--gold-300);">community</a>. Teaching one colleague what you built is Day 8.</p>
+  </div>
+</section>
+
+<!-- ============ HOW LESSONS WORK ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">The method behind every lesson</p>
+    <h2>How every lesson works</h2>
+    <p class="section-intro">Every lesson in this masterclass follows the same seven-beat pattern — the same way every good skills lab follows one. You always know where you are and what "done" means.</p>
+    <div class="steps">
+      <div class="step"><h3>The real-world job</h3><p>Every lesson opens with the problem it removes from your actual week — never with the technology.</p></div>
+      <div class="step"><h3>One mental model</h3><p>A single idea, usually borrowed from nursing, before any clicking. If you can give report, you can learn this.</p></div>
+      <div class="step"><h3>A starter artifact</h3><p>A prompt, checklist, file, or kit you copy instead of writing from scratch. Nobody here starts from a blank page.</p></div>
+      <div class="step"><h3>A complete build</h3><p>The full procedure with a visible done-state — you'll know it worked because you'll be looking at the result.</p></div>
+      <div class="step"><h3>A quick self-check</h3><p>A few questions to confirm the idea landed — a self-review, not a test. Nothing is graded; everything is learnable twice.</p></div>
+      <div class="step"><h3>Share one win, one improvement</h3><p>Say it out loud — at the Lamp Huddle, in the community, or to the colleague at the next locker. Teaching it seals it.</p></div>
+      <div class="step"><h3>The bridge to the next lesson</h3><p>Each lesson ends by naming exactly what the next one assumes — so you never open a page unprepared.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ENTRY POINTS ============ -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">Three honest entry points</p>
+    <h2>Where should you personally start?</h2>
+    <div class="card-grid cols-3">
+      <div class="card">
+        <p class="role-tag">Brand new</p>
+        <h3>Not set up yet</h3>
+        <p>Skip this page entirely for now. The five-step setup is one evening, and this masterclass will still be here — free — when your system is running.</p>
+        <p class="cta-line"><a href="start-here.html">Start Here →</a></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Set up &amp; curious</p>
+        <h3>Running, and hungry for more</h3>
+        <p>Take the 7-Day Fast Track above. One hour a day, one visible win a day — and by Sunday you'll know which modules you want in depth.</p>
+        <p class="cta-line"><a href="#fast-track">Start Day 1 →</a></p>
+      </div>
+      <div class="card gold">
+        <p class="role-tag">Leaders &amp; the responsible</p>
+        <h3>Accountable for others</h3>
+        <p>Read Module 8 first — governance before power is the whole point. Then work Modules 1–7 knowing what the guardrails are for.</p>
+        <p class="cta-line"><a href="#curriculum">Open Module 8 →</a></p>
+      </div>
+    </div>
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>The masterclass is free during the founding year</strong> — every written lesson, guide, and kit, no card, no auto-enrollment. What we ask in return is what we always ask: your feedback, your questions at the Lamp Huddle, and — when it helps you — your story. <a href="index.html#founding-year">The founding-year offer, in writing →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="section">
+  <div class="container narrow" style="text-align:center;">
+    <h2>Ten modules. One operator: you.</h2>
+    <p class="section-intro" style="margin:0 auto 1.8rem;">The nurses who learn to run these systems — safely, on their own terms — will be the ones deciding how care intelligence is born. That was always the plan.</p>
+    <p>
+      <a class="btn btn-primary" href="#curriculum">Open Module 1 →</a>&nbsp;
+      <a class="btn btn-quiet" href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">Join the community list</a>
+    </p>
+    <p style="font-size:.93rem; color:var(--ink-600); margin-top:1.2rem;">Stuck on a lesson? A human answers <a href="mailto:great.ai.nurses@gmail.com?subject=Masterclass%20question&body=Module%20%2F%20lesson%20I%27m%20on%3A%0A%0AWhere%20I%20got%20stuck%3A%0A%0AWhat%20I%20tried%3A%20">email</a>, and the monthly <a href="assets/lamp-huddle.pdf">Lamp Huddle</a> is free.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
+
+</body>
+</html>

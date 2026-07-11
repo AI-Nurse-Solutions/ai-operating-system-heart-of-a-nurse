@@ -8,6 +8,8 @@
 ## The time-out — verify before you begin
 You check your equipment at the start of every shift. Same here — two minutes now saves an hour of frustration later.
 
+**Time-out means pause, not panic.** This is the nurse's habit of checking the setup before the work starts: right machine, right folder, right permissions, right boundaries. If one item is not ready, you have not failed — you just found the next safe fix.
+
 **You need a desktop or laptop** — Mac or Windows. Not a phone, tablet, or Chromebook. Here's why it's worth it: on your own computer, your files and your AI's memory stay **local — on your machine, not in someone's cloud**. That's the whole point of owning your system.
 
 **Rough guide:** a computer from the last ~5 years with at least 8 GB of memory and a few GB of free disk space usually does fine. The official Hermes site lists current requirements — check there before downloading.
@@ -20,6 +22,13 @@ Before any sterile procedure, you clear the field. Do the same for your AI:
 - Create one dedicated home for this system (your `My-Nurse-AI-OS` folder — the Starter Kit builds it for you, and Documents is the perfect place for it).
 - Make sure **nothing private lives inside that folder** — no tax documents, no family photos, no saved work files. The folder should contain only what you'd be comfortable letting an assistant read, because that's exactly what it is.
 - If your computer is a family computer, consider a separate user account for your AI work — like having your own med cart instead of sharing one.
+
+## 0.7 · Docker decision — optional for beginners, useful for services
+If this system is just yours, you do **not** need to put Hermes, Obsidian, your browser, or normal documents inside Docker.
+
+Use Docker later for services: databases, vector stores, local APIs, n8n, test web apps, and anything you may want to rebuild cleanly on a new laptop.
+
+The simple rule: **if it runs like a service, Docker can help; if it is a human-facing desktop tool, skip the ceremony.** Docker is for keeping the machine clean, repeatable, and recoverable — not for making a beginner setup harder.
 
 ## 1 · Install
 1. Go to the official Hermes site: https://hermes-agent.nousresearch.com/

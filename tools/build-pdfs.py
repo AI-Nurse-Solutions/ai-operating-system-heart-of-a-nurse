@@ -2,8 +2,8 @@
 """Regenerate the downloadable PDFs from their markdown sources.
 
 Usage:
-    python3 tools/build-pdfs.py            # rebuilds all three
-    python3 tools/build-pdfs.py roadmap    # rebuilds one (cheat|roadmap|workbook)
+    python3 tools/build-pdfs.py            # rebuilds every target in DOCS
+    python3 tools/build-pdfs.py roadmap    # rebuilds one (any key in DOCS below)
 
 Requires: `pip install markdown` and a Chromium/Chrome binary (set CHROME_BIN,
 otherwise common locations are tried). Keep this script in sync with DOCS

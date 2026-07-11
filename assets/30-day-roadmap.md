@@ -119,7 +119,7 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 - Save to `Skills/professional/socratic-tutor.md`.
 
 ### Day 17 — Research appraisal (Green)
-- Use the EDENA-AS evidence rubric: source, methodology, bias, applicability.
+- Use the EDENA evidence rubric: source, methodology, bias, applicability.
 - Ask AI to summarize a paper using the rubric. Always verify the citation yourself.
 
 ### Day 18 — Meeting / handoff prep (Yellow)

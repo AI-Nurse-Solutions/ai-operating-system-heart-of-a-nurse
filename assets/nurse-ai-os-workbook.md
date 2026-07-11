@@ -837,7 +837,7 @@ My-Nurse-AI-OS/
 **Update a skill by editing its markdown file:**
 
 ```text
-Edit my research skill so that every literature summary includes an EDENA-AS evidence-quality check before any citation is accepted.
+Edit my research skill so that every literature summary includes an EDENA evidence-quality check (source, methodology, bias, applicability) before any citation is accepted.
 ```
 
 **Run a deep-research goal into your vault:**

@@ -124,7 +124,7 @@ Confirm within 30 seconds that the change appears back in Obsidian on the MacBoo
 
 ### Update a skill without the terminal
 
-> "Please edit my Research skill to always include an EDENA-AS evidence-quality check before citing any source."
+> "Please edit my Research skill to always include an EDENA evidence-quality check (source, methodology, bias, applicability) before citing any source."
 
 Hermes opens `02-Skills/research/Research-Skill-Prompts.md`, adds the instruction, and saves. Because the vault syncs, you see the change instantly in Obsidian.
 

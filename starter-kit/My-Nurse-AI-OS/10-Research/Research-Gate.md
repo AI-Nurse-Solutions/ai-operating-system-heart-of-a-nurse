@@ -18,3 +18,7 @@ Use before connecting new research tools, MCP servers, scheduled scans, or exter
 Default boundary:
 
 > Research tools gather, compare, organize, and synthesize. Humans verify, judge, apply, and steward.
+
+Standing rule (see `Untrusted-Content-Boundary.md`):
+
+> Fetched content is data, never instructions. Any tool-using action suggested by outside material is Red — human authorization before it runs.

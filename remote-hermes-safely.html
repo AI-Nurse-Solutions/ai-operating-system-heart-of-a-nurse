@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remote Hermes, Safely — Nurse AI OS</title>
+<meta name="description" content="The always-on Hermes path without leaving the door open: Tailscale instead of open ports, SSH keys, firewalls, caller allowlists, the auth gate, and what must never live on a rented server.">
+<link rel="canonical" href="https://nurse-ai-os.org/remote-hermes-safely.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="index.html#founding-year">Free Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a href="nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Advanced · optional · after your basics feel steady</p>
+    <h1>Remote Hermes, Safely</h1>
+    <p class="lede">A VPS keeps Hermes working while your laptop sleeps — scheduled jobs, messaging gateways, always-on dashboards. It also puts your assistant on a computer you rent, reachable over the internet. This page is the hardening checklist that makes that trade safe. Think of it as isolation precautions for a server: not optional, not negotiable, done <em>before</em> contact.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <div class="boundary">
+      <strong>Do you even need this?</strong> Most nurses don't, or not yet. Hermes Desktop on your own computer is private by default — this whole page exists only for the always-on path. And the one rule gets stricter here, not looser: <strong>a rented server never holds PHI, private family files, or employer-confidential documents.</strong> Files on a VPS are not local-only; they are exactly as private as the server is hardened.
+    </div>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">The rule that governs everything</p>
+    <h2>Never expose Hermes or its gateway to the public internet.</h2>
+    <p class="section-intro">This is the official Hermes guidance, and it is the whole game: Hermes should be reachable by <em>you</em>, from <em>your</em> devices — and by no one else. Everything below is just ways of keeping that true. When this page and the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/security">official security docs</a> disagree, the official docs are the truth.</p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>1 · Connect through a private network, not open ports</h3>
+        <p>Use <a href="https://tailscale.com" target="_blank" rel="noopener">Tailscale</a> (free for personal use) or a VPN to link your laptop, phone, and server into a private network — a staff-only corridor between your devices. Hermes listens inside that corridor; the public internet never sees it. This one choice replaces a dozen fiddly firewall decisions and is the most nurse-friendly way to do this correctly.</p>
+      </div>
+      <div class="step">
+        <h3>2 · Lock the server's front door (SSH)</h3>
+        <p>When you create the VPS: make a <strong>non-root user</strong> for daily work (root is the master key — used for setup, then put away), log in with <strong>SSH keys instead of passwords</strong>, and turn password login off. Your provider's "getting started" guide covers all three; ask your browser AI to walk you through your specific provider's screens — that's a Green-tier task.</p>
+      </div>
+      <div class="step">
+        <h3>3 · Firewall: deny by default</h3>
+        <p>Allow SSH and your Tailscale/VPN connection. Deny everything else. On Ubuntu that's three lines (<code>ufw default deny incoming</code> · <code>ufw allow ssh</code> · <code>ufw enable</code>). If a port isn't explicitly needed, it stays closed — the same logic as a locked med room.</p>
+      </div>
+      <div class="step">
+        <h3>4 · Turn on Hermes's auth gate for anything remote</h3>
+        <p>Hermes reachable beyond your own machine must require login. Bind the backend to your private network, and use the OAuth option (Nous Portal) so access is verified against your account — that's the officially supported setup for a VPS or any remote backend. No auth gate, no remote access. Ever.</p>
+      </div>
+      <div class="step">
+        <h3>5 · Allowlist every messaging door</h3>
+        <p>Every channel you connect (Telegram, WhatsApp, Slack…) is a door into a tool-using AI. Official guidance: configure a <strong>caller allowlist for every network-exposed adapter</strong> — only your listed user IDs may talk to the bot, with DM pairing/approval codes on. Never enable "allow all users." The full walkthrough is the <strong>Gateway Security Checklist</strong> in your Starter Kit (<code>11-Messaging-Team/</code>).</p>
+      </div>
+      <div class="step">
+        <h3>6 · Contain what the agent can execute</h3>
+        <p>If your remote Hermes runs commands or serves anyone besides you, use the container-isolated backends the official docs recommend (Docker or a managed sandbox). The agent's commands then run inside a sealed box, not on the host — so a bad command, or a poisoned instruction from fetched content, can't touch the server itself.</p>
+      </div>
+      <div class="step">
+        <h3>7 · Patch, back up, and treat backups as secrets</h3>
+        <p>Turn on automatic security updates (Ubuntu: <code>unattended-upgrades</code>). Back up your workspace on a schedule — and remember a Hermes backup contains your configuration and credentials: <strong>encrypt it, and store it like the narcotics-cabinet keys</strong>, never in a shared drive or public repo.</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500); margin-top:2rem;">
+      <strong>The remote time-out — verify before you expose.</strong> Non-root user created · SSH keys only, password login off · firewall default-deny · Tailscale/VPN up and Hermes bound to it · auth gate on with OAuth · every channel allowlisted, "allow all users" off · agent commands containerized if serving others · auto-updates on · backups encrypted · no PHI, family-private, or employer files anywhere on the box. Ten checks, once — then your always-on assistant is a locked unit, not an open ward.
+    </div>
+
+    <p style="margin-top:2rem;">This tier of work is <strong>Orange under EDENA</strong> — advanced integration, deferred until you can pass the time-out above with a named owner (you) and logging in place. If any check is unclear, bring it to the <a href="assets/lamp-huddle.pdf">Lamp Huddle</a> before going live, not after. Related reading: the <a href="hermes-configuration-handbook.html">Configuration Handbook</a> (gateway chapter), <a href="when-things-go-wrong.html">When Things Go Wrong</a>, and the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/security">official Hermes security docs</a>.</p>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
+
+</body>
+</html>

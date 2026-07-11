@@ -4,6 +4,7 @@ Every connector is a doorway. Open only the doors you need, with the least privi
 
 Before adding any integration, answer:
 
+0. Has it passed the Skill & MCP Vetting Checklist (`Skill-and-MCP-Vetting-Checklist.md`) — named publisher, pinned version, read before run?
 1. What account or folder is being connected?
 2. What data can Hermes read?
 3. What data can Hermes write or modify?

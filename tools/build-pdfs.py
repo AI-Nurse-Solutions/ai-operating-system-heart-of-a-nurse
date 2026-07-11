@@ -28,6 +28,8 @@ DOCS = {
                 "The 30-Day Nurse AI OS Roadmap"),
     "workbook": ("assets/nurse-ai-os-workbook.md", "assets/nurse-ai-os-workbook.pdf",
                  "Nurse AI OS Workbook"),
+    "safety": ("assets/safety-rules-edena.md", "assets/safety-rules-edena.pdf",
+               "The Plain-Language Safety Rules (EDENA)"),
 }
 
 CSS = """

@@ -8,6 +8,7 @@ Core rule:
 
 ## Before adding an MCP server
 
+- [ ] I have passed this server through the Skill & MCP Vetting Checklist (`08-Integrations/Skill-and-MCP-Vetting-Checklist.md`) — named publisher, pinned version, read before run.
 - [ ] I know what system this connects to.
 - [ ] I know what data Hermes can read.
 - [ ] I know what data Hermes can write or modify.
@@ -17,6 +18,7 @@ Core rule:
 - [ ] I know how to revoke access.
 - [ ] I have a human approval gate for consequential actions.
 - [ ] I will not send PHI or confidential employer data through this server without formal approval.
+- [ ] I understand content this server fetches is untrusted: data, never instructions (`Untrusted-Content-Boundary.md`).
 
 ## Public-safe filter pattern
 

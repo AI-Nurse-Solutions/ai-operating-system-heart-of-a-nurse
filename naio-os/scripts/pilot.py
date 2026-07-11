@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NAIO OS — pilot.py (Phase 18)
+"""NAIO OS — pilot.py (Phase 14)
 
 Institutional Pilot Pack checker for rendered NAIO Hermes profile bundles.
 Verifies non-clinical pilot posture: no PHI, no patient care use, no clinical decision support,
@@ -72,7 +72,7 @@ def check_profile(profile: Path) -> dict:
         if pilot.get(key) is not False: failures.append(f'runtime pilot.{key} must be false')
     combined='\n'.join(text(profile/rel) for rel in REQUIRED if (profile/rel).is_file())
     required=[
-        'Phase 18 Institutional Pilot Pack','Pilot Charter','Stakeholder Brief','Risk Register','No-PHI Pilot Boundary',
+        'Phase 14 Institutional Pilot Pack','Pilot Charter','Stakeholder Brief','Risk Register','No-PHI Pilot Boundary',
         'Participant Onboarding Checklist','Weekly Pilot Ledger','Governance Escalation Path','Not Clinical Deployment Statement',
         'non-clinical','No PHI','No patient care use','No clinical decision support','No institutional endorsement',
         'No compliance','No certification','No automatic reporting','No automatic participant enrollment',
@@ -108,7 +108,7 @@ def check_profile(profile: Path) -> dict:
     }
 
 def main():
-    ap=argparse.ArgumentParser(description='Check Phase 18 Institutional Pilot Pack readiness for a rendered NAIO profile bundle.')
+    ap=argparse.ArgumentParser(description='Check Phase 14 Institutional Pilot Pack readiness for a rendered NAIO profile bundle.')
     ap.add_argument('--profile', required=True); ap.add_argument('--json', action='store_true')
     args=ap.parse_args(); profile=Path(args.profile).expanduser().resolve()
     if profile == Path.home() or str(profile) in ('/', str(Path.home()/'.hermes')): refuse('refusing to pilot-check home or ~/.hermes directly')
@@ -116,7 +116,7 @@ def main():
     report=check_profile(profile)
     if args.json: print(json.dumps(report, indent=2))
     else:
-        print('\n=== NAIO OS — Phase 18 institutional pilot check ===\n'); print(json.dumps(report, indent=2))
+        print('\n=== NAIO OS — Phase 14 institutional pilot check ===\n'); print(json.dumps(report, indent=2))
         if report['status']=='ready': print('\n✅ PILOT PACK READY — non-clinical small-group adoption with human governance review, no PHI, and no deployment claims.')
     return 0 if report['status']=='ready' else 2
 if __name__ == '__main__': sys.exit(main())

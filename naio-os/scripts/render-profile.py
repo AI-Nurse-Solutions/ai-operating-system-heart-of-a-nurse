@@ -373,7 +373,7 @@ def public_launch_files(soul: dict, projects: dict | None) -> dict[str, str]:
     project_count = len((projects or {}).get("projects", []))
     boundary = "No PHI. No patient-specific clinical decisions. This is not clinical decision support. Agents propose. Humans judge. Nurses steward."
     return {
-        "10-Public-Launch/README.md": f"""# Phase 18 Public Launch Pack
+        "10-Public-Launch/README.md": f"""# Phase 10 Public Launch Pack
 
 This folder helps {name} share NAIO OS safely and plainly.
 
@@ -401,7 +401,7 @@ Carry the lamp. Keep the ledger.
 ## Technical checks
 
 - [ ] Live site returns HTTP 200.
-- [ ] Live content check confirms Phase 18 text appears on the page or file you are sharing.
+- [ ] Live content check confirms Phase 10 text appears on the page or file you are sharing.
 - [ ] Download links work before posting.
 - [ ] No draft says or implies automatic clinical readiness.
 
@@ -598,7 +598,7 @@ def cohort_mode_files(soul: dict, projects: dict | None) -> dict[str, str]:
     project_count = len((projects or {}).get("projects", []))
     boundary = "No PHI. No patient-specific clinical decisions. This is not clinical decision support and not certification. No auto-enrollment. Agents propose. Humans judge. Nurses steward."
     return {
-        "11-Cohort-Mode/README.md": f"""# Phase 18 Cohort Mode
+        "11-Cohort-Mode/README.md": f"""# Phase 11 Cohort Mode
 
 This folder helps {name} facilitate a small Nurse AI OS cohort safely.
 
@@ -631,7 +631,7 @@ Carry the lamp. Keep the ledger.
 
 {boundary}
 """,
-        "11-Cohort-Mode/Instructor-Guide.md": f"""# Instructor Guide — Phase 18 Cohort Mode
+        "11-Cohort-Mode/Instructor-Guide.md": f"""# Instructor Guide — Phase 11 Cohort Mode
 
 Role: {role}
 
@@ -868,7 +868,7 @@ def evidence_trail_files(soul: dict, projects: dict | None) -> dict[str, str]:
     project_count = len((projects or {}).get("projects", []))
     boundary = "No PHI. No patient-specific clinical decisions. This is not clinical decision support and not certification. No automatic scoring. No automatic submission. Agents propose. Humans judge. Nurses steward."
     return {
-        "12-Evidence-Trail/README.md": f"""# Phase 18 EDENA Evidence Trail
+        "12-Evidence-Trail/README.md": f"""# Phase 12 EDENA Evidence Trail
 
 This folder helps {name} document learning, reflection, and stewardship practice without creating a premature certification claim.
 
@@ -1097,7 +1097,7 @@ No automatic scoring. No automatic submission. Human review first.
 """,
         "12-Evidence-Trail/Not-Certification-Statement.md": f"""# Not Certification Statement
 
-Use this statement wherever Phase 18 evidence is shared:
+Use this statement wherever Phase 12 evidence is shared:
 
 > This EDENA Evidence Trail documents learning, reflection, and human-gated practice in governed AI stewardship. It is not certification, not clinical credentialing, not a statement of clinical AI readiness, and not clinical decision support. No PHI is included. Agents propose. Humans judge. Nurses steward.
 
@@ -1129,11 +1129,11 @@ def contribution_flow_files(soul: dict, projects: dict | None) -> dict[str, str]
     project_count = len((projects or {}).get("projects", []))
     boundary = "No PHI. No patient-specific clinical decisions. No employer-confidential data. Contributions are reviewed before community use and are not endorsement, not certification, not clinical readiness, and not clinical decision support. Agents propose. Humans judge. Nurses steward."
     return {
-        "13-Contribution-Flow/README.md": f"""# Phase 18 NIN Community Contribution Flow
+        "13-Contribution-Flow/README.md": f"""# Phase 13 NIN Community Contribution Flow
 
 This folder helps {name} share sanitized learning artifacts, prompt ideas, template improvements, and community signals with NIN safely.
 
-Phase 18 turns evidence and cohort learning into a **governed contribution pathway**. It is not a submission portal, not automatic publishing, not peer review, not endorsement, not certification, and not clinical decision support.
+Phase 13 turns evidence and cohort learning into a **governed contribution pathway**. It is not a submission portal, not automatic publishing, not peer review, not endorsement, not certification, and not clinical decision support.
 
 ## What is inside
 
@@ -1441,11 +1441,11 @@ def pilot_pack_files(soul: dict, projects: dict | None) -> dict[str, str]:
     project_count = len((projects or {}).get("projects", []))
     boundary = "No PHI. No patient care use. No clinical decision support. No institutional endorsement claim. No compliance claim. No certification. No automatic reporting. No automatic participant enrollment. Human governance review is required before anything leaves the pilot group. Agents propose. Humans judge. Nurses steward."
     return {
-        "14-Institutional-Pilot/README.md": f"""# Phase 18 Institutional Pilot Pack
+        "14-Institutional-Pilot/README.md": f"""# Phase 14 Institutional Pilot Pack
 
 This folder helps {name} prepare a safe 30–90 day **non-clinical** institutional pilot for Nurse AI OS.
 
-Phase 18 is a doorway for nurse leaders, educators, and innovation champions. It is not clinical deployment, not institutional approval, not compliance validation, not certification, and not permission to use AI for patient care.
+Phase 14 is a doorway for nurse leaders, educators, and innovation champions. It is not clinical deployment, not institutional approval, not compliance validation, not certification, and not permission to use AI for patient care.
 
 ## What is inside
 
@@ -1758,11 +1758,11 @@ def readiness_pack_files(soul: dict, projects: dict | None) -> dict[str, str]:
     project_count = len((projects or {}).get("projects", []))
     boundary = "No PHI. No patient care use. No clinical decision support. Not certification. Not clinical AI readiness. Not competency validation. No automatic scoring. No automatic pass or fail. No automatic credential issuance. No automatic badge issuance. Human steward review is required. Agents propose. Humans judge. Nurses steward."
     return {
-        "15-EDENA-Readiness/README.md": f"""# Phase 18 EDENA Micro-Credential Readiness Pack
+        "15-EDENA-Readiness/README.md": f"""# Phase 15 EDENA Micro-Credential Readiness Pack
 
 This folder helps {name} prepare for **human-reviewed EDENA readiness reflection**. It is a readiness pack, not a certification product.
 
-Phase 18 does not grant a credential, badge, certificate, license privilege, clinical AI readiness, competency validation, or institutional approval. It helps a nurse organize evidence for later human review.
+Phase 15 does not grant a credential, badge, certificate, license privilege, clinical AI readiness, competency validation, or institutional approval. It helps a nurse organize evidence for later human review.
 
 ## What is inside
 
@@ -1961,7 +1961,7 @@ Remediation is support, not failure. The goal is safer stewardship.
 """,
         "15-EDENA-Readiness/Non-Certification-Statement.md": f"""# Non-Certification Statement
 
-Use this statement on all Phase 18 materials:
+Use this statement on all Phase 15 materials:
 
 > The EDENA readiness pack is a formative evidence and reflection pathway. It does not issue certification, badges, credentials, continuing education credit, clinical AI readiness, clinical competency validation, institutional approval, compliance validation, safety validation, efficacy validation, or permission to use AI for patient care. Evidence must contain no PHI and must be reviewed by a human steward. Agents propose. Humans judge. Nurses steward.
 
@@ -2003,7 +2003,7 @@ Automated badges are intentionally deferred.
 
 ## Why
 
-A badge can look like certification, endorsement, competency validation, or clinical AI readiness. Phase 18 is not ready to make those claims. The safer path is human-reviewed readiness reflection with clear limits.
+A badge can look like certification, endorsement, competency validation, or clinical AI readiness. Phase 15 is not ready to make those claims. The safer path is human-reviewed readiness reflection with clear limits.
 
 ## What can be said now
 
@@ -2032,11 +2032,11 @@ def registry_pack_files(soul: dict, projects: dict | None) -> dict[str, str]:
     project_count = len((projects or {}).get("projects", []))
     boundary = "No PHI. No patient care use. No clinical decision support. Not endorsement. Not certification. Not clinical AI readiness. Not procurement approval. Not deployment approval. Not safety validation. Not efficacy validation. No automatic vetting. No automatic listing. No automatic agent execution. Human registry steward review is required. Agents propose. Humans judge. Nurses steward."
     return {
-        "16-Agent-Registry/README.md": f"""# Phase 18 NAIO Agent Registry Pack
+        "16-Agent-Registry/README.md": f"""# Phase 16 NAIO Agent Registry Pack
 
 This folder helps {name} evaluate public or open-source AI agents for possible inclusion in a nurse-centered learning registry.
 
-Phase 18 is a **registry-readiness workflow**, not an endorsement engine. It does not approve agents for patient care, clinical decision support, procurement, institutional deployment, certification, clinical AI readiness, safety, or efficacy.
+Phase 16 is a **registry-readiness workflow**, not an endorsement engine. It does not approve agents for patient care, clinical decision support, procurement, institutional deployment, certification, clinical AI readiness, safety, or efficacy.
 
 ## What is inside
 
@@ -2240,7 +2240,7 @@ This listing is not endorsement, certification, clinical AI readiness, procureme
 """,
         "16-Agent-Registry/Not-Endorsement-Statement.md": f"""# Not-Endorsement Statement
 
-Use this statement on all Phase 18 registry materials:
+Use this statement on all Phase 16 registry materials:
 
 > The NAIO Agent Registry is a learning and governance-literacy resource. Inclusion or review does not mean endorsement, certification, clinical AI readiness, procurement approval, institutional deployment approval, compliance validation, safety validation, efficacy validation, or permission to use an agent with PHI or patient care. All listings require human registry steward review. Agents propose. Humans judge. Nurses steward.
 
@@ -2324,11 +2324,11 @@ def orchestration_pack_files(soul: dict, projects: dict | None) -> dict[str, str
     project_count = len((projects or {}).get("projects", []))
     boundary = "No PHI. No patient care use. No clinical decision support. Preview only. Dry-run templates only. Not autonomous orchestration. Not multi-agent runtime enablement. No shared memory runtime. Shared memory is Orange-deferred until governed review. No automatic handoffs. No automatic agent execution. No automatic routing. No automatic escalation. Human orchestrator review is required. Agents propose. Humans judge. Nurses steward."
     return {
-        "17-Florence-X-Orchestration/README.md": f"""# Phase 18 Florence-X Orchestration Preview Pack
+        "17-Florence-X-Orchestration/README.md": f"""# Phase 17 Florence-X Orchestration Preview Pack
 
 This folder helps {name} sketch safe multi-agent coordination before any runtime, shared memory, or autonomous handoff is enabled.
 
-Phase 18 is a **preview-only orchestration design pack**. It creates shared intent, shared context, handoff, and trace templates. It does not enable an autonomous multi-agent runtime.
+Phase 17 is a **preview-only orchestration design pack**. It creates shared intent, shared context, handoff, and trace templates. It does not enable an autonomous multi-agent runtime.
 
 ## What is inside
 
@@ -2358,7 +2358,7 @@ Role context: {role}
 
 Florence-X orchestration means coordinating proposed agent roles, shared intent, and reviewable handoffs under human stewardship.
 
-## Phase 18 means
+## Phase 17 means
 
 - Shared intent is written before any agent role is assigned.
 - Shared context is explicitly bounded.
@@ -2367,7 +2367,7 @@ Florence-X orchestration means coordinating proposed agent roles, shared intent,
 - A human orchestrator reviews every proposed step.
 - Trace ledgers capture what changed and why.
 
-## Phase 18 does not mean
+## Phase 17 does not mean
 
 - Autonomous multi-agent runtime.
 - Shared memory runtime.
@@ -2419,7 +2419,7 @@ Shared context must be bounded before any orchestration draft.
 
 ## Shared memory rule
 
-Shared memory is Orange-deferred until governed review. Phase 18 uses a written card only. It does not create, sync, persist, or reuse runtime memory.
+Shared memory is Orange-deferred until governed review. Phase 17 uses a written card only. It does not create, sync, persist, or reuse runtime memory.
 
 {boundary}
 """,
@@ -2525,7 +2525,7 @@ Disposition:
 
 - [ ] Safe for dry-run rehearsal.
 - [ ] Needs more boundary work.
-- [ ] Stop; unsafe for Phase 18.
+- [ ] Stop; unsafe for Phase 17.
 
 {boundary}
 """,
@@ -2581,7 +2581,7 @@ The ledger is the proof that agents proposed and humans judged. Do not treat it 
 """,
         "17-Florence-X-Orchestration/Non-Deployment-Statement.md": f"""# Non-Deployment Statement
 
-Use this statement on all Phase 18 materials:
+Use this statement on all Phase 17 materials:
 
 > The Florence-X Orchestration Preview Pack is a dry-run design and governance rehearsal. It does not enable autonomous multi-agent orchestration, shared memory runtime, clinical orchestration, patient-care coordination, production deployment, procurement approval, safety validation, efficacy validation, or permission to use agents with PHI. Shared memory is treated as Orange-deferred until governed review. Human orchestrator review is required. Agents propose. Humans judge. Nurses steward.
 
@@ -4996,11 +4996,13 @@ def main() -> int:
     validate_projects(projects)
 
     target = Path(args.target).expanduser().resolve()
+    home = Path.home().resolve()
+    hermes_dir = home / ".hermes"
+    if target == home or target == Path("/") or target == hermes_dir or hermes_dir in target.parents:
+        refuse("refusing to write to home, /, or anywhere under ~/.hermes")
     if target.exists():
         if not args.force:
             refuse(f"target already exists; pass --force to replace: {target}")
-        if target == Path.home() or str(target) in ("/", str(Path.home() / ".hermes")):
-            refuse("refusing to overwrite home or ~/.hermes directly")
         shutil.rmtree(target)
     target.mkdir(parents=True, exist_ok=True)
 

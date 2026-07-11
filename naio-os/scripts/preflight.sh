@@ -55,13 +55,13 @@ if [ "$PY_OK" = "1" ] 2>/dev/null; then
   if python3 -c 'import yaml' 2>/dev/null;      then ok "python pyyaml";     else warn "python pyyaml missing — YAML parsing will be skipped"; fi
 fi
 
-# --- shasum / sha256sum ---
-if command -v shasum >/dev/null 2>&1; then
-  ok "shasum (checksum verification available)"
-elif command -v sha256sum >/dev/null 2>&1; then
-  ok "sha256sum (checksum verification available)"
+# --- openssl (release signature verification) ---
+# Content checksums are computed with python3's hashlib (required above);
+# openssl is what verify-release.py needs to check manifest.sig.
+if command -v openssl >/dev/null 2>&1; then
+  ok "openssl (signature verification available)"
 else
-  fail "Neither shasum nor sha256sum found — cannot verify checksums"
+  fail "openssl not found — cannot verify the signed release (manifest.sig)"
 fi
 
 # --- curl (for one-line install) ---

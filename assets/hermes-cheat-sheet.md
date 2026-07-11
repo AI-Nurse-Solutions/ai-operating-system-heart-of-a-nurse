@@ -37,6 +37,8 @@ Use a VPS when you need always-on access: gateways, scheduled jobs, webhooks, da
 
 But be honest about privacy: files on a VPS are **not local-only**. They live on rented infrastructure and are private only if the server is secured, backed up, patched, and governed. For beginners, start with Hermes Desktop on your own computer. Use VPS later for always-on, no-PHI services — **not patient data, not private family files, and not employer-confidential documents.**
 
+When you're ready for that path, harden the server *first* with the ten-check time-out in **Remote Hermes, Safely**: nurse-ai-os.org/remote-hermes-safely.html — private network (Tailscale) instead of open ports, SSH keys, default-deny firewall, the auth gate, and allowlists on every messaging door.
+
 ## 1 · Install
 1. Go to the official Hermes site: https://hermes-agent.nousresearch.com/
 2. Download Hermes for your computer (Mac or Windows) and follow their install steps.

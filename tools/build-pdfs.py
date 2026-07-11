@@ -30,6 +30,8 @@ DOCS = {
                  "Nurse AI OS Workbook"),
     "safety": ("assets/safety-rules-edena.md", "assets/safety-rules-edena.pdf",
                "The Plain-Language Safety Rules (EDENA)"),
+    "architecture": ("assets/nurse-ai-os-architecture-report.md", "assets/nurse-ai-os-architecture-report.pdf",
+                     "Nurse AI OS Architecture Report"),
 }
 
 CSS = """

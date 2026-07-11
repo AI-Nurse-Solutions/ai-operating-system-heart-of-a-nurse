@@ -4,6 +4,8 @@ Copy this scaffold whenever you (or your AI, via `/learn`) create a new skill. I
 
 Why the self-audit: research on a real chatbot failure (the NEDA "Tessa" incident) showed that standing instructions alone blocked only ~22% of harmful requests in testing, while requiring the model to end each response with a strict machine-checkable safety verdict — and discarding the response if the verdict is negative *or malformed* — caught the rest at modest cost. Instructions ask; audits check.
 
+One honest note before you rely on it: in that research the discarding was done by a separate checker outside the model. In this kit, the footer is an **instruction the model follows** — there is no runtime filter that can withhold a response after it's generated. That is exactly why every Yellow+ skill pairs the self-audit with a **human gate**: the verdict line exists for *you* to check (and for scripts to grep). Treat any response with a missing, malformed, or failing verdict as discarded at your gate — don't use it, note it in your Human Review Log.
+
 ---
 
 ```markdown

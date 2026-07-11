@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When Things Go Wrong — Troubleshooting Hermes — Nurse AI OS</title>
+<meta name="description" content="A nurse's approach to Hermes problems: triage the situation, describe it in SBAR, fix it with a screenshot and a chatbot or the terminal, understand hermes doctor, reinstall safely, and protect your files from accidental deletion.">
+<link rel="canonical" href="https://nurse-ai-os.org/when-things-go-wrong.html">
+<meta property="og:title" content="When Things Go Wrong — Troubleshooting Hermes">
+<meta property="og:description" content="Triage the problem, describe it like a nurse, fix it with a screenshot or the terminal — and keep your files safe along the way.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nurse-ai-os.org/when-things-go-wrong.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+.setting-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin:1rem 0 1.5rem;}
+.setting-table th{background:var(--navy-900);color:var(--gold-300);font-family:var(--font-display);text-align:left;padding:.6rem .9rem;}
+.setting-table td{padding:.55rem .9rem;border-top:1px solid var(--linen-100);font-size:.95rem;vertical-align:top;}
+.setting-table td:first-child{font-weight:700;color:var(--teal-600);width:30%;}
+.value-chip{display:inline-block;background:#10233a;color:#dbe6ef;border-radius:6px;padding:.1rem .55rem;font-family:"SF Mono","Consolas",monospace;font-size:.85rem;white-space:nowrap;}
+.nurse-frame{background:var(--white);border-left:4px solid var(--gold-500);border-radius:0 10px 10px 0;padding:.9rem 1.2rem;margin:1rem 0 1.4rem;box-shadow:var(--shadow-sm);font-style:italic;color:var(--navy-800);}
+.nurse-frame::before{content:"🕯️ Nurse framing — ";font-style:normal;font-weight:700;color:var(--teal-600);}
+.setting-block{background:var(--white);border:1px solid var(--linen-100);border-radius:12px;padding:1.2rem 1.4rem;margin:1rem 0 1.4rem;box-shadow:var(--shadow-sm);}
+.setting-block h4{margin:0 0 .35rem;color:var(--navy-800);font-family:var(--font-display);font-size:1.12rem;}
+.setting-block .plainlang{color:var(--ink-600);font-style:italic;margin:.2rem 0 .6rem;}
+.toc-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 .4rem;}
+.toc-pills a{display:inline-block;background:var(--white);border:1px solid var(--linen-100);border-radius:999px;padding:.35rem .9rem;font-size:.9rem;font-weight:600;color:var(--navy-800);text-decoration:none;box-shadow:var(--shadow-sm);}
+.toc-pills a:hover{border-color:var(--teal-600);color:var(--teal-600);}
+.chapter-num{display:inline-block;background:var(--teal-600);color:#fff;border-radius:999px;width:1.9rem;height:1.9rem;line-height:1.9rem;text-align:center;font-weight:700;margin-right:.5rem;font-family:var(--font-display);}
+.prompt-block{background:#10233a;color:#dbe6ef;border-radius:10px;padding:1.1rem 1.3rem;font-family:"SF Mono","Consolas",monospace;font-size:.88rem;line-height:1.55;white-space:pre-wrap;border-left:4px solid var(--gold-500);margin:.8rem 0 1.2rem;}
+.sbar{border-left:4px solid var(--teal-600);}
+.sbar td:first-child{width:20%;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="index.html#founding-year">Free Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a href="nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Optional deep dive · Troubleshooting</p>
+    <h1>When Things Go Wrong</h1>
+    <p class="lede">Every nurse has had a shift go sideways — and every Hermes user eventually has a day where nothing responds, something looks broken, or a file isn't where it should be. None of that is an emergency, and none of it means you did something wrong. This page is how to approach it: assess first, one intervention at a time, and know exactly when to escalate.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <div class="boundary">
+      <strong>Nothing on this page is a code.</strong> A misbehaving Hermes can't hurt a patient, can't lose your license, and almost never loses your work. Most problems resolve with a restart, an update, a reconnection, or — at worst — a reinstall that keeps your data. When this page and the <a href="https://hermes-agent.nousresearch.com/docs/reference/faq">official FAQ &amp; troubleshooting docs</a> disagree, the official docs are the truth.
+    </div>
+
+    <div class="toc-pills" style="margin-top:2rem;">
+      <a href="#triage">1 · The triage mindset</a>
+      <a href="#firstresponse">2 · First response checks</a>
+      <a href="#sbar">3 · SBAR for tech problems</a>
+      <a href="#screenshot">4 · The screenshot method</a>
+      <a href="#terminal">5 · The terminal, if you know how</a>
+      <a href="#doctor">6 · Reading hermes doctor</a>
+      <a href="#reinstall">7 · Setting up again</a>
+      <a href="#files">8 · Protecting your files</a>
+      <a href="#help">9 · Asking for help</a>
+    </div>
+
+  </div>
+</section>
+
+<section class="section section-alt" id="triage">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">1</span>The triage mindset</p>
+    <h2>Assess before you intervene</h2>
+    <p class="section-intro">You already know how to do this. When a patient deteriorates, you don't try five interventions at once and hope — you assess, you act on the most likely cause, you reassess. Broken software responds to exactly the same discipline.</p>
+
+    <div class="setting-block">
+      <h4>Three habits that solve most problems</h4>
+      <p><strong>Ask "what changed last?"</strong> Most breakage follows a change: an update, a new setting, a new provider key, a new skill. The last thing you changed is the first suspect.</p>
+      <p><strong>One change at a time, then reassess.</strong> If you flip four settings and it starts working, you don't know which one fixed it — or which of the other three will bite you later. Titrate.</p>
+      <p><strong>Chart as you go.</strong> Keep a scratch note of what you tried and what happened. It keeps you from repeating steps, and it becomes your report if you need to ask for help.</p>
+      <div class="nurse-frame">Assess, intervene, reassess, document. The nursing process works on software too — it just charts faster.</div>
+    </div>
+
+    <p class="eyebrow" style="margin-top:2rem;">The escalation ladder</p>
+    <h3>Start at the bottom rung, every time</h3>
+    <p>Work up this ladder in order. Most problems never make it past the second rung.</p>
+
+    <div class="steps">
+      <div class="step"><strong>1 · Start a new chat.</strong> Long sessions accumulate state — a fresh session clears it. Cheapest fix there is.</div>
+      <div class="step"><strong>2 · Restart Hermes</strong> (quit fully, reopen). Then, if needed, restart the computer. Unglamorous; effective.</div>
+      <div class="step"><strong>3 · Run the first response checks</strong> — chapter 2. App, backend, connection.</div>
+      <div class="step"><strong>4 · Diagnose:</strong> the <a href="#screenshot">screenshot method</a> for everyone, or <a href="#doctor"><span class="value-chip">hermes doctor</span></a> if you're comfortable in the terminal.</div>
+      <div class="step"><strong>5 · Set up again</strong> — chapter 7. Reconfigure or reinstall, gentlest level first.</div>
+      <div class="step"><strong>6 · Ask for help</strong> — chapter 9. With your SBAR ready, this goes fast.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="firstresponse">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">2</span>First response checks</p>
+    <h2>The ABCs of a misbehaving Hermes</h2>
+    <p class="section-intro">Before diagnosing anything exotic, check the basics — in order, like any primary survey.</p>
+
+    <table class="setting-table">
+      <tr><th>Check</th><th>What to look for</th></tr>
+      <tr><td>A · App</td><td>Is Hermes actually running, and current? Quit fully and reopen. Check the About screen — if an update is waiting, take it (release notes tell you what changed).</td></tr>
+      <tr><td>B · Backend</td><td>Is the gateway alive? If chats won't start at all, open Settings → Gateway and use <strong>Open logs</strong> — the last few lines usually name the problem. On a remote gateway, test the connection.</td></tr>
+      <tr><td>C · Connection</td><td>Internet up? Provider working? A surprising number of "Hermes is broken" days are actually a provider outage, an expired key, or a spending limit quietly reached. Check your provider's status page and your account's billing/credits.</td></tr>
+    </table>
+
+    <div class="setting-block">
+      <h4>And one nurse-specific vital sign</h4>
+      <p>If Hermes is responding but <em>acting strangely</em> — wrong folder, weird command behavior — remember the persistent shell from the <a href="hermes-configuration-handbook.html#workspace">configuration handbook</a>: the terminal remembers its last setup, and the handoff may be stale. A new session clears it, or ask Hermes directly: <em>"Check what directory you're in and what's active before we continue."</em></p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="sbar">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">3</span>Describe the problem</p>
+    <h2>SBAR works on software too</h2>
+    <p class="section-intro">The hardest part of getting help — from a chatbot, a forum, or a friend — is describing the problem well. You already own the best tool for that. Give SBAR to a technical problem and helpers can actually help.</p>
+
+    <table class="setting-table sbar">
+      <tr><th>SBAR</th><th>For a tech problem, that means</th></tr>
+      <tr><td>S · Situation</td><td>What were you doing, and what happened? <em>"I asked Hermes to edit a file and it froze with a spinning icon."</em></td></tr>
+      <tr><td>B · Background</td><td>What changed recently? Updates, new settings, new providers, new skills. <em>"This started after yesterday's update. I also added a new API key last week."</em></td></tr>
+      <tr><td>A · Assessment</td><td>The exact error message, word for word (or a screenshot). Does it happen every time or only sometimes? Only in one chat or all of them?</td></tr>
+      <tr><td>R · Request</td><td>What do you want? <em>"Explain what this error means, then give me the smallest, safest next step — one step at a time."</em></td></tr>
+    </table>
+
+    <p>Write your SBAR once and it works everywhere: pasted into a chatbot, posted in a community, or handed to the tech-comfortable friend who asks "okay, what exactly happened?"</p>
+    <div class="nurse-frame">You'd never call a provider with "the patient seems off, fix it." Don't hand a chatbot "Hermes is broken" and expect a targeted answer.</div>
+  </div>
+</section>
+
+<section class="section" id="screenshot">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">4</span>The screenshot method</p>
+    <h2>No terminal required — just capture, check, paste</h2>
+    <p class="section-intro">This is the troubleshooting path for everyone. Modern chatbots read screenshots well — an error message you don't understand is an error message you can photograph.</p>
+
+    <div class="steps">
+      <div class="step"><strong>1 · Capture the error.</strong> Mac: <span class="value-chip">Shift + ⌘ + 4</span> and drag around the error. Windows: <span class="value-chip">Win + Shift + S</span>. Capture just the relevant window or region — not your whole desktop.</div>
+      <div class="step"><strong>2 · Check before you paste.</strong> Look at the capture like it's about to be posted on a break-room wall: no patient information anywhere (including background windows and browser tabs), no API keys or password fields, nothing from your employer. Settings screens often show partial keys — crop them out.</div>
+      <div class="step"><strong>3 · Paste it into a chatbot</strong> — Claude, ChatGPT, or another assistant you trust — along with your SBAR. If Hermes itself is still working and the problem is elsewhere, you can ask Hermes; when Hermes <em>is</em> the problem, an outside chatbot is your second opinion.</div>
+      <div class="step"><strong>4 · Take the steps one at a time.</strong> Do the first suggested step, report what happened, then take the next. If a suggestion feels drastic — deleting things, running long commands — ask "is there a gentler option first?" There usually is.</div>
+    </div>
+
+    <p><strong>A prompt that works.</strong> Copy this, adjust the brackets, attach your screenshot:</p>
+    <div class="prompt-block">I'm a nurse using Hermes Desktop (an AI agent app) on [Mac/Windows]. I'm not a programmer.
+
+Here's a screenshot of the error, and my SBAR:
+S: [what you were doing and what happened]
+B: [what changed recently]
+A: [when it happens — every time? one chat?]
+R: Explain in plain language what's wrong. Then give me the smallest, safest next step — ONE step at a time, and tell me what I should see if it worked. Don't suggest deleting anything without warning me first.</div>
+
+    <div class="nurse-frame">One step at a time, with a read-back after each. It's a verbal order — treat it like one.</div>
+  </div>
+</section>
+
+<section class="section section-alt" id="terminal">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">5</span>The terminal, if you know how</p>
+    <h2>Four commands cover almost everything</h2>
+    <p class="section-intro">Entirely optional — if the terminal isn't your comfort zone, the screenshot method above does the job and you can skip to <a href="#reinstall">chapter 7</a>. If you're willing to open Terminal (Mac) or PowerShell (Windows), these four commands are the whole troubleshooting kit.</p>
+
+    <table class="setting-table">
+      <tr><th>Command</th><th>What it does</th></tr>
+      <tr><td><span class="value-chip">hermes status</span></td><td>The vital signs: a quick visual overview of your install — what's running, what's connected.</td></tr>
+      <tr><td><span class="value-chip">hermes doctor</span></td><td>The head-to-toe assessment: checks configuration and dependencies and reports findings. Chapter 6 is how to read it.</td></tr>
+      <tr><td><span class="value-chip">hermes logs</span></td><td>The chart: views and follows Hermes' log files, where errors explain themselves. The last lines before a failure are the interesting ones.</td></tr>
+      <tr><td><span class="value-chip">hermes update --check</span></td><td>Asks whether a newer version exists without installing it. Drop the <span class="value-chip">--check</span> to actually update.</td></tr>
+    </table>
+
+    <p>And when you need to <em>show</em> someone your setup, <span class="value-chip">hermes dump</span> prints a compact, copy-pasteable summary designed for exactly that — version, model, which keys are set (as <em>set / not set</em>, not the keys themselves), gateway status. It's the hand-off sheet for your install.</p>
+
+    <div class="boundary">
+      <strong>The never-run-blind rule.</strong> Never run a command you don't understand — no matter who gave it to you, including a chatbot or a helpful stranger in a forum. First paste it into a chatbot and ask: <em>"What does this command do, step by step? Can it delete anything? Is there a safer version?"</em> Be extra suspicious of anything containing <span class="value-chip">rm</span>, <span class="value-chip">sudo</span>, or <span class="value-chip">curl … | bash</span> — those delete, escalate, or download-and-run. Thirty seconds of checking beats an afternoon of recovery.
+    </div>
+  </div>
+</section>
+
+<section class="section" id="doctor">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">6</span>Reading the assessment</p>
+    <h2>Understanding what <span style="white-space:nowrap;">hermes doctor</span> is saying</h2>
+    <p class="section-intro">Run <span class="value-chip">hermes doctor</span> and Hermes examines its own install — configuration, dependencies, connections — then reports findings. It looks technical. It reads exactly like an assessment sheet.</p>
+
+    <div class="setting-block">
+      <h4>Triage the findings, don't read them as one verdict</h4>
+      <p>Doctor output is a list of individual checks. Sort them the way you'd sort assessment findings:</p>
+      <table class="setting-table">
+        <tr><th>Finding type</th><th>What it means</th><th>What to do</th></tr>
+        <tr><td>Passing checks ✓</td><td>Within normal limits.</td><td>Nothing. Don't let a long list of passes intimidate you — that's a healthy chart.</td></tr>
+        <tr><td>Warnings ⚠</td><td>Chronic conditions: not what's hurting you today, but worth noting. Often version or configuration nags.</td><td>Note them. Address when convenient.</td></tr>
+        <tr><td>Errors / failures ✗</td><td>Acute findings: missing dependencies, broken config, a provider that can't authenticate.</td><td>These are your problem list. Treat these — usually the first one first, since later failures often cascade from it.</td></tr>
+      </table>
+    </div>
+
+    <div class="setting-block">
+      <h4>The usual suspects</h4>
+      <p>Exact checks change between versions, but failures tend to fall into families: a <strong>version</strong> that's behind (fix: update) · an <strong>API key or provider</strong> that's missing, expired, or out of credit (fix: reconnect in Settings → Providers) · a <strong>gateway</strong> that isn't running (fix: restart Hermes, then check gateway logs) · a <strong>config file</strong> problem or missing <strong>dependency</strong> (fix: let doctor try, or escalate to chapter 7).</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Let the doctor treat — carefully</h4>
+      <p><span class="value-chip">hermes doctor --fix</span> attempts automatic repairs where possible. It's reasonable to let it — that's what it's for — but read what it says it did afterward, and re-run plain <span class="value-chip">hermes doctor</span> to confirm the finding cleared. One intervention, then reassess.</p>
+      <p>And if the output might as well be another language? You already know the move: screenshot or copy the whole output, paste it into a chatbot with your SBAR, and ask: <em>"Explain each finding in plain language. Which one is most likely causing [my problem]? Smallest safe step first."</em></p>
+    </div>
+
+    <div class="nurse-frame">Doctor tells you the findings. It doesn't tell you the priority — that's the nurse's job, and now it's yours: acute before chronic, one problem at a time.</div>
+  </div>
+</section>
+
+<section class="section section-alt" id="reinstall">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">7</span>Setting up again</p>
+    <h2>Reconfigure first, reinstall second — and gently</h2>
+    <p class="section-intro">When the ladder's lower rungs haven't worked, or the install feels deeply tangled, you rebuild. The important thing to know: <strong>rebuilding is routine, not defeat</strong> — and it almost never has to cost you your data.</p>
+
+    <div class="setting-block">
+      <h4>Before anything else: secure your valuables</h4>
+      <p>Copy your working folder (your <span class="value-chip">My-Nurse-AI-OS</span> folder) somewhere safe — an external drive or your cloud drive. Know where your provider accounts live (you'll reconnect with a login or a fresh key — you never need to have "saved" the old key). Two minutes of packing before any demolition.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step"><strong>1 · Re-run setup without reinstalling.</strong> Terminal-comfortable users can run <span class="value-chip">hermes setup --reconfigure</span> to walk the setup wizard again — often that's all a confused install needs. In the app, revisiting Settings → Providers and Gateway accomplishes much of the same.</div>
+      <div class="step"><strong>2 · Reinstall the app only.</strong> The gentlest uninstall level — removes the desktop app, keeps the agent, config, chats, and secrets. Reinstall from the <a href="https://hermes-agent.nousresearch.com/">official site</a> (always the official site), and you're usually back.</div>
+      <div class="step"><strong>3 · Reinstall app + agent, keep data.</strong> The middle level: a cleaner rebuild that still preserves config, chats, and secrets for the fresh install to find.</div>
+      <div class="step"><strong>4 · Uninstall everything — last resort only.</strong> This erases config, chats, scheduled jobs, secrets, logs. Only with backups made, only when you truly want a blank slate. The <a href="hermes-configuration-handbook.html#housekeeping">handbook's danger zone chapter</a> covers all three levels.</div>
+      <div class="step"><strong>5 · After any reinstall:</strong> reconnect one provider, then re-check the <a href="hermes-configuration-handbook.html#five">five settings that matter most</a> — working directory, Smart approvals, Redact Secrets, File Checkpoints, blank sudo. Five minutes, and you're configured like a nurse set it up again.</div>
+    </div>
+
+    <p style="font-size:.95rem;color:var(--ink-600);">Advanced note: if you ever made a Hermes backup zip, <span class="value-chip">hermes import &lt;backup.zip&gt;</span> restores it — it overwrites current config, so it's a deliberate act, done with the gateway stopped.</p>
+  </div>
+</section>
+
+<section class="section" id="files">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">8</span>Protecting your files</p>
+    <h2>Before a deletion — and the moment after one</h2>
+    <p class="section-intro">Sometimes a file gets deleted that shouldn't have been — by a tool call that went wide, an approval clicked too fast, or plain human error. Two halves to this: the protection you set up <em>before</em>, and the calm sequence you follow <em>after</em>.</p>
+
+    <p class="eyebrow">Prevention</p>
+    <h3>Five layers, from the handbook you've already read</h3>
+    <table class="setting-table">
+      <tr><th>Layer</th><th>What it protects</th></tr>
+      <tr><td>1 · The assigned unit</td><td>Working directory scoped to one folder (<a href="hermes-configuration-handbook.html#workspace">handbook ch. 1</a>). Hermes can't delete what it never reaches.</td></tr>
+      <tr><td>2 · File Checkpoints ON</td><td>The before photo (<a href="hermes-configuration-handbook.html#safety">handbook ch. 4</a>). Hermes snapshots files before edits — and the in-session <span class="value-chip">/rollback</span> command restores them.</td></tr>
+      <tr><td>3 · Smart approvals, actually read</td><td>Deletions should always ask. When an approval prompt contains the words <em>delete, remove,</em> or <span class="value-chip">rm</span> — stop, read it twice, and make sure you know exactly which files it means before approving.</td></tr>
+      <tr><td>4 · Real backups</td><td>Time Machine (Mac) or File History (Windows) covering your working folder, or a cloud-synced folder with version history. This is the layer that saves you when everything else didn't.</td></tr>
+      <tr><td>5 · The two-copies rule</td><td>Anything you'd grieve — course work, your SOUL file, months of notes — exists in at least two places. A file that exists in one place is one accident away from existing in none.</td></tr>
+    </table>
+
+    <p class="eyebrow" style="margin-top:2rem;">Recovery</p>
+    <h3>If a file just vanished</h3>
+    <div class="steps">
+      <div class="step"><strong>1 · Stop.</strong> Don't run more commands, don't let the current task keep going — pause it. Recovery gets harder with every new write. (You'd hold the infusion the moment a reaction starts; hold this one too.)</div>
+      <div class="step"><strong>2 · Check the Trash / Recycle Bin.</strong> Files deleted through the desktop usually land there. Terminal deletions (<span class="value-chip">rm</span>) usually don't — which is exactly why that word gets extra scrutiny at approval time.</div>
+      <div class="step"><strong>3 · Ask Hermes to roll back.</strong> If checkpoints were on, say: <em>"A file was just deleted — restore it from your file checkpoints"</em> (or use <span class="value-chip">/rollback</span> in the session). This is the moment that toggle was for.</div>
+      <div class="step"><strong>4 · Restore from backup.</strong> Time Machine / File History / your cloud drive's version history for that folder. Even a day-old copy beats none.</div>
+      <div class="step"><strong>5 · If it's truly gone, close the loop.</strong> Rebuild what you can — then treat it like an incident review, not a guilt session: which layer was missing, and set it up today. One accident is a lesson; the same accident twice is a system problem.</div>
+    </div>
+
+    <div class="boundary">
+      <strong>One warning while recovering:</strong> never run cleanup commands like <span class="value-chip">hermes checkpoints clear</span> during a recovery — that deletes the checkpoint store itself, irreversibly. When in doubt, restore first; tidy up never.
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="help">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">9</span>Escalation</p>
+    <h2>Asking for help is stewardship, not surrender</h2>
+    <p class="section-intro">On a unit, the nurse who asks early looks better in the morbidity review than the one who soldiered on. Same here.</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>Where to ask</h3>
+        <p>The official <a href="https://hermes-agent.nousresearch.com/docs/reference/faq">FAQ &amp; troubleshooting docs</a> first — your problem is probably in there. Then the Hermes community (<a href="https://discord.gg/NousResearch">Discord</a>, <a href="https://github.com/NousResearch/hermes-agent/issues">GitHub issues</a>). And bring recurring or gray-area problems to the monthly <a href="assets/lamp-huddle.pdf">Lamp Huddle</a> — if it happened to you, it's happening to other nurses.</p>
+      </div>
+      <div class="card">
+        <h3>What to bring</h3>
+        <p>Your <a href="#sbar">SBAR</a>, the exact error text or a PHI-checked screenshot, and — if you're terminal-comfortable — the output of <span class="value-chip">hermes dump</span>, which was built for exactly this and shows <em>whether</em> keys are set, never the keys themselves. A well-packaged question usually gets answered in minutes.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:1.4rem;">And a closing word: a Hermes that misbehaves is an inconvenience, not an incident — <strong>the perimeter is what keeps mistakes small.</strong> No PHI in the system means no PHI in the error message, the screenshot, the logs, or the support thread. Keep the perimeter, and every problem on this page is just a fixable, forgettable Tuesday.</p>
+
+    <p><strong>Companions to this page:</strong> <a href="hermes-configuration-handbook.html">Understanding Hermes Configuration — The Handbook</a> (the settings this page keeps pointing at) · the <a href="assets/hermes-cheat-sheet.pdf">one-page cheat sheet</a> · <a href="start-here.html">Start Here</a> if you're rebuilding from scratch.</p>
+  </div>
+</section>
+
+<section class="section section-navy">
+  <div class="container narrow">
+    <p class="eyebrow">The safety perimeter</p>
+    <h2>No PHI. No clinical decisions. No silent automation.</h2>
+    <p>Do not enter patient names, charts, screenshots, identifiers, room numbers, employer secrets, passwords, account numbers, or patient-specific clinical details into Hermes, the quizzes, dashboards, or any AI tool — unless an approved institutional environment and accountable governance explicitly allow it. That includes troubleshooting: check every screenshot before it leaves your screen, and never paste secrets into a support thread.</p>
+    <p>Hermes can help with learning, organization, drafting, research support, project planning, and reflection. It does not carry a license, validate competency, approve clinical deployment, replace educators, or make patient-care decisions.</p>
+    <p><strong>Agents propose. Humans judge. Nurses steward.</strong> Gray areas? Bring them to the monthly <a href="assets/lamp-huddle.pdf" style="color:var(--gold-300);">Lamp Huddle</a> — a question asked early beats an incident reported late.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
+
+</body>
+</html>

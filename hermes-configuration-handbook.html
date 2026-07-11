@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Understanding Hermes Configuration — The Handbook — Nurse AI OS</title>
+<meta name="description" content="Every Hermes settings screen explained in nurse language: workspace scope, models, safety and approvals, voice, providers, gateways, tool keys, and advanced limits — with the safe defaults for Nurse AI OS.">
+<link rel="canonical" href="https://nurse-ai-os.org/hermes-configuration-handbook.html">
+<meta property="og:title" content="Understanding Hermes Configuration — The Handbook">
+<meta property="og:description" content="Every Hermes settings screen, explained in nurse language, with safe defaults for Nurse AI OS.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nurse-ai-os.org/hermes-configuration-handbook.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+.setting-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin:1rem 0 1.5rem;}
+.setting-table th{background:var(--navy-900);color:var(--gold-300);font-family:var(--font-display);text-align:left;padding:.6rem .9rem;}
+.setting-table td{padding:.55rem .9rem;border-top:1px solid var(--linen-100);font-size:.95rem;vertical-align:top;}
+.setting-table td:first-child{font-weight:700;color:var(--teal-600);width:34%;}
+.value-chip{display:inline-block;background:#10233a;color:#dbe6ef;border-radius:6px;padding:.1rem .55rem;font-family:"SF Mono","Consolas",monospace;font-size:.85rem;white-space:nowrap;}
+.nurse-frame{background:var(--white);border-left:4px solid var(--gold-500);border-radius:0 10px 10px 0;padding:.9rem 1.2rem;margin:1rem 0 1.4rem;box-shadow:var(--shadow-sm);font-style:italic;color:var(--navy-800);}
+.nurse-frame::before{content:"🕯️ Nurse framing — ";font-style:normal;font-weight:700;color:var(--teal-600);}
+.setting-block{background:var(--white);border:1px solid var(--linen-100);border-radius:12px;padding:1.2rem 1.4rem;margin:1rem 0 1.4rem;box-shadow:var(--shadow-sm);}
+.setting-block h4{margin:0 0 .35rem;color:var(--navy-800);font-family:var(--font-display);font-size:1.12rem;}
+.setting-block .plainlang{color:var(--ink-600);font-style:italic;margin:.2rem 0 .6rem;}
+.toc-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 .4rem;}
+.toc-pills a{display:inline-block;background:var(--white);border:1px solid var(--linen-100);border-radius:999px;padding:.35rem .9rem;font-size:.9rem;font-weight:600;color:var(--navy-800);text-decoration:none;box-shadow:var(--shadow-sm);}
+.toc-pills a:hover{border-color:var(--teal-600);color:var(--teal-600);}
+.dont-list li{margin:.35rem 0;}
+.chapter-num{display:inline-block;background:var(--teal-600);color:#fff;border-radius:999px;width:1.9rem;height:1.9rem;line-height:1.9rem;text-align:center;font-weight:700;margin-right:.5rem;font-family:var(--font-display);}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="index.html#founding-year">Free Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a href="nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Optional deep dive · Configuration</p>
+    <h1>Understanding Hermes Configuration — The Handbook</h1>
+    <p class="lede">Hermes has a lot of settings screens, and none of them were written for nurses. This handbook walks every one of them, in plain language, and tells you the safe default — so you can configure with confidence instead of clicking with crossed fingers.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <div class="boundary">
+      <strong>You do not need to change most of these settings.</strong> Hermes works out of the box, and your whole setup is still the five steps on <a href="start-here.html">Start Here</a>. This handbook exists for the day you open Settings and wonder what a toggle means. Menus move as Hermes updates — when this page and the <a href="https://hermes-agent.nousresearch.com/docs">official docs</a> disagree, the official docs are the truth.
+    </div>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">How to use this handbook</p>
+    <h2>One screen at a time, three questions each</h2>
+    <p class="section-intro">For every setting, this handbook answers the same three questions: <strong>What is it, in plain language? What would a nurse call it? What should I set it to?</strong> Read it front to back once if you like, or jump straight to the screen you're staring at.</p>
+
+    <div class="toc-pills">
+      <a href="#glance">Safe defaults at a glance</a>
+      <a href="#workspace">1 · Workspace &amp; tool scope</a>
+      <a href="#models">2 · Models &amp; reasoning</a>
+      <a href="#moa">3 · Mixture of Agents</a>
+      <a href="#safety">4 · Safety &amp; approvals</a>
+      <a href="#voice">5 · Voice</a>
+      <a href="#providers">6 · Provider accounts</a>
+      <a href="#gateway">7 · Gateway connection</a>
+      <a href="#keys">8 · Tools &amp; keys</a>
+      <a href="#advanced">9 · Advanced limits &amp; subagents</a>
+      <a href="#housekeeping">10 · Housekeeping</a>
+      <a href="#five">The five that matter most</a>
+    </div>
+
+  </div>
+</section>
+
+<section class="section section-alt" id="glance">
+  <div class="container narrow">
+    <p class="eyebrow">Before anything else</p>
+    <h2>Safe defaults at a glance</h2>
+    <p class="section-intro">If you only keep one thing from this handbook, keep this table. It's the one-glance med sheet: the settings that matter, and the values that keep a beginner's Hermes useful enough to work and scoped enough to stay safe.</p>
+
+    <table class="setting-table">
+      <tr><th>Setting</th><th>Safe value</th><th>Why</th></tr>
+      <tr><td>Working Directory</td><td><span class="value-chip">your My-Nurse-AI-OS folder</span></td><td>Hermes works in one assigned unit, not the whole hospital.</td></tr>
+      <tr><td>Code Execution Mode</td><td><span class="value-chip">Project</span></td><td>Keeps code runs inside the current project.</td></tr>
+      <tr><td>Environment Passthrough</td><td><span class="value-chip">blank</span></td><td>Hand over only the medication this patient needs — never the whole med room.</td></tr>
+      <tr><td>Approval Mode</td><td><span class="value-chip">Smart</span></td><td>Routine things proceed; risky actions still ask a human.</td></tr>
+      <tr><td>Redact Secrets</td><td><span class="value-chip">ON</span></td><td>The privacy curtain. Non-negotiable.</td></tr>
+      <tr><td>File Checkpoints</td><td><span class="value-chip">ON</span></td><td>The "before photo" — lets you roll back if an edit goes wrong.</td></tr>
+      <tr><td>Sudo Password</td><td><span class="value-chip">blank — never store it</span></td><td>Don't leave the narcotics cabinet unlocked to save a few seconds.</td></tr>
+      <tr><td>Gateway</td><td><span class="value-chip">Local</span></td><td>Hermes runs on your own computer, close to you.</td></tr>
+    </table>
+
+    <p>Everything else on the pages that follow is context, so those rows make sense — and so nothing in Settings ever feels like a mystery switch again.</p>
+  </div>
+</section>
+
+<section class="section" id="workspace">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">1</span>Workspace &amp; tool scope</p>
+    <h2>Where Hermes is allowed to work</h2>
+    <p class="section-intro">This screen decides how Hermes may use your computer when it runs tools — terminal commands, file reads and writes, code. Think of it as the scope of Hermes' work area: when Hermes opens its toolbox, what room is it standing in?</p>
+
+    <div class="setting-block">
+      <h4>Working Directory</h4>
+      <p class="plainlang">"When Hermes opens its toolbox, what room is it standing in?"</p>
+      <p>This is the default folder Hermes uses for terminal commands and file work. If it's not set, Hermes uses whatever folder it happens to start in — which can be confusing, and lets it wander. Set it to one dedicated, safe, no-PHI folder, for example <span class="value-chip">~/My-Nurse-AI-OS</span>.</p>
+      <p><strong>Do not</strong> point it at your home folder, Desktop, Downloads, Documents, or <span class="value-chip">/</span> — those contain unrelated private files. One dedicated folder, and Hermes stays inside it.</p>
+      <div class="nurse-frame">This is the assigned unit. Hermes should work its assigned unit, not roam every floor of the hospital.</div>
+    </div>
+
+    <div class="setting-block">
+      <h4>Code Execution Mode</h4>
+      <p class="plainlang">"When Hermes runs code, should it stay inside the current project?"</p>
+      <p>Keep it on <span class="value-chip">Project</span> — the beginner-safe setting. It tells Hermes: work inside the project; don't treat the whole computer as the workspace. A stricter sandboxed mode, if your version offers one, is fine too. Avoid global or unrestricted modes.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Persistent Shell</h4>
+      <p class="plainlang">"Does the terminal remember what the last command set up?"</p>
+      <p>Keep it <span class="value-chip">ON</span>. It means things like the current folder and environment carry over between commands — convenient, because setup steps don't have to repeat. The one catch: if something behaves strangely, the shell may be remembering old state. Start a new session, or ask Hermes to check where it is and what's active.</p>
+      <div class="nurse-frame">It's like a shift handoff. Helpful — but only if the handoff is accurate.</div>
+    </div>
+
+    <div class="setting-block">
+      <h4>Environment Passthrough</h4>
+      <p class="plainlang">"Which of my computer's variables — including secret keys — get handed to tools?"</p>
+      <p>Leave it <span class="value-chip">blank</span>. Some environment variables are secrets (API keys, tokens). If you pass too many through, tools may access keys you never meant to expose. If a tool genuinely needs one later, pass <em>only</em> that specific variable by name — never <span class="value-chip">*</span> or "all".</p>
+      <div class="nurse-frame">Only hand over the medication needed for this patient — not the whole med room.</div>
+    </div>
+
+    <div class="setting-block">
+      <h4>File Read Limit</h4>
+      <p class="plainlang">"How much of a file can Hermes read in one request?"</p>
+      <p>The default (around <span class="value-chip">100000</span> characters — roughly 15,000–25,000 words) is right. It protects performance, your context window, and your privacy from accidental giant reads. Raise it only if Hermes repeatedly tells you a file was truncated and you intentionally want more.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="section section-alt" id="models">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">2</span>Models &amp; reasoning</p>
+    <h2>The staffing assignment board</h2>
+    <p class="section-intro">This screen chooses which AI model Hermes uses. At the top you pick the main brain; below that, whether smaller helper tasks use the same brain or a cheaper one. Note the fine print: changes here apply to <em>new</em> sessions — to switch the chat you're already in, use the model picker in the message composer.</p>
+
+    <div class="setting-block">
+      <h4>Main model</h4>
+      <p class="plainlang">"Who is the charge nurse for this conversation?"</p>
+      <p>The main model handles the actual work — planning, writing, coding, tool calls, decisions. This is the most important choice on the screen. Pick one strong, current model you trust and stay with it; the default Hermes offers is a fine starting point. Don't shop models daily — consistency beats novelty.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Reasoning level</h4>
+      <p class="plainlang">"How much thinking budget does the model get?"</p>
+      <p><span class="value-chip">Medium</span> is right for normal serious work. Low is for quick answers and simple rewrites. Reach for High only when you'd say things like "take your time," "deep review," or "find what we're missing" — it's slower and costs more. For daily work, Medium is enough.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Auxiliary models</h4>
+      <p class="plainlang">"Do the helper tasks get their own staff, or share the charge nurse?"</p>
+      <p>Behind the scenes, Hermes runs helper jobs — reading images, summarizing web pages, compressing long conversations, naming sessions. The default, <span class="value-chip">auto · use main model</span>, sends them all to your main model. <strong>Keep it that way while you're learning.</strong> It's the simplest, highest-quality setup. Don't over-optimize yet.</p>
+      <p>Later, if cost matters, downgrade only the disposable jobs — and never the safety-critical ones:</p>
+      <table class="setting-table">
+        <tr><th>Helper task</th><th>What it does</th><th>Cheaper model OK?</th></tr>
+        <tr><td>Title gen</td><td>Names your sessions</td><td>Yes — lowest risk</td></tr>
+        <tr><td>Skills hub</td><td>Searches available skills</td><td>Yes</td></tr>
+        <tr><td>Web extract</td><td>Summarizes web pages</td><td>Yes, if research volume grows</td></tr>
+        <tr><td>Vision</td><td>Reads your screenshots</td><td>Keep strong — especially for setup/security screenshots</td></tr>
+        <tr><td>Compression</td><td>Condenses long chats so context survives</td><td><strong>No.</strong> Weak compression loses important decisions</td></tr>
+        <tr><td>Approval</td><td>Judges whether commands are safe to auto-run</td><td><strong>No.</strong> This is part of the safety perimeter</td></tr>
+        <tr><td>MCP</td><td>Routes external tool calls</td><td>No — keep strong</td></tr>
+        <tr><td>Curator</td><td>Maintains your skills</td><td>Medium at least — a careless curator misfiles useful skills</td></tr>
+      </table>
+      <div class="nurse-frame">Use the strongest nurse for judgment, safety, handoff, and escalation. Use cheaper helpers for filing labels and routine paperwork.</div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="moa">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">3</span>Mixture of Agents</p>
+    <h2>The interdisciplinary huddle</h2>
+    <p class="section-intro">Mixture of Agents lets Hermes ask several AI models for their opinions, then have one stronger model act as the synthesizer that combines them into a final answer. Reference model 1 is one consultant, reference model 2 is another, and the aggregator is the lead nurse who writes the final organized note. The aggregator is the acting model — the one Hermes treats as in charge.</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>Use it for</h3>
+        <p>Big decisions worth a second and third opinion: strategy, governance review, "what are we missing?" checks, complex debugging, comparing options, high-stakes writing you're about to publish.</p>
+      </div>
+      <div class="card">
+        <h3>Don't use it for</h3>
+        <p>Routine work — quick questions, simple summaries, small rewrites, casual chat. You're paying several models instead of one, and waiting on all of them. It's boardroom mode, not daily mode.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:1.2rem;">Two practical notes. First, <strong>name your preset for its purpose</strong> — something like <span class="value-chip">deep-review</span> or <span class="value-chip">stewardship-council</span> instead of <span class="value-chip">default</span>, so future-you knows what it's for. Leave Context Window at <span class="value-chip">0</span> (auto-detect) unless you have a specific reason. Second, and more important:</p>
+
+    <div class="boundary">
+      <strong>Privacy grows with every model you add.</strong> In Mixture of Agents, your prompt may be sent to <em>every</em> configured provider — all the consultants in the huddle see the chart. Never use it with content you wouldn't send to each of those companies: no PHI, no patient data, no employer-confidential material, and be thoughtful even with private personal details. Use sanitized summaries when possible.
+    </div>
+
+    <p><strong>Best rule:</strong> single model for routine work; Mixture of Agents for decisions worth a second and third opinion.</p>
+  </div>
+</section>
+
+<section class="section section-alt" id="safety">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">4</span>Safety &amp; approvals</p>
+    <h2>Standing orders with escalation</h2>
+    <p class="section-intro">For Nurse AI OS, this is the most important screen in Hermes. It controls how much Hermes may do automatically, when it must ask you first, how it handles secrets, and whether file edits can be rolled back.</p>
+
+    <div class="setting-block">
+      <h4>Approval Mode</h4>
+      <p class="plainlang">"Which actions can proceed on standing orders, and which need a human signature?"</p>
+      <p><span class="value-chip">Smart</span> is the right default: low-risk commands proceed; risky ones — deleting files, install scripts, changing system settings, deploying, anything destructive — still ask you. Switch to <span class="value-chip">Manual</span> when you're handling secrets, doing server setup, working near private files, or simply feeling unsure. <strong>Never use fully-automatic / "YOLO" mode</strong> for anything involving your files, installs, credentials, or a public site.</p>
+      <div class="nurse-frame">Smart approval is standing orders with escalation. Routine things can proceed; risky actions still require human judgment.</div>
+    </div>
+
+    <div class="setting-block">
+      <h4>Approval Timeout</h4>
+      <p class="plainlang">"How long does Hermes wait for my yes or no?"</p>
+      <p>The default is often 60 seconds. If you multitask or step away — most of us do — set it to <span class="value-chip">120</span> so approval prompts don't expire while you're still reading them.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Confirm MCP Reloads</h4>
+      <p class="plainlang">"Should Hermes ask before reloading its external tool connections?"</p>
+      <p>Keep <span class="value-chip">ON</span>. MCP servers can connect Hermes to files, databases, browsers, and online services — reloading can change what Hermes is able to reach. That should stay governed, with you in the loop.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Command Allowlist</h4>
+      <p class="plainlang">"Which commands skip approval entirely?"</p>
+      <p>Leave it <span class="value-chip">blank</span>. Every command you allowlist is a command that bypasses your safety gate. In particular, never allowlist deletion, admin (<span class="value-chip">sudo</span>), download, install, or permission-changing commands — those have real side effects.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Redact Secrets</h4>
+      <p class="plainlang">"Should detected passwords and keys be hidden from the model?"</p>
+      <p>Keep <span class="value-chip">ON</span>, always. This is non-negotiable. It hides API keys, tokens, and password-looking strings from model-visible content when possible.</p>
+      <div class="nurse-frame">Redact Secrets is the privacy curtain.</div>
+    </div>
+
+    <div class="setting-block">
+      <h4>Private URLs — three related toggles</h4>
+      <p class="plainlang">"May Hermes reach addresses inside my own network, like localhost?"</p>
+      <p><strong>Allow Private URLs</strong>, <strong>Browser Private URLs</strong>, and <strong>Local Browser For Private URLs</strong> control whether Hermes and its browser tool can reach private addresses — local dev servers, internal dashboards. If you're building and testing pages on your own machine, turn them on together (local browser is the safer pairing when private URLs are allowed). <strong>If you're not doing that kind of work, keep them OFF</strong> — less surface area is safer, and most beginners never need them.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>File Checkpoints</h4>
+      <p class="plainlang">"Does Hermes take a snapshot before it edits my files?"</p>
+      <p>Turn this <span class="value-chip">ON</span> — it often ships off, and it's the single biggest improvement you can make on this screen. Checkpoints are rollback snapshots taken before edits: if something goes wrong, you restore. For anyone whose folders hold real work, this is essential.</p>
+      <div class="nurse-frame">File checkpoints are the "before photo" — the baseline charted before an intervention, so you can always tell what changed and undo it.</div>
+    </div>
+
+    <table class="setting-table">
+      <tr><th>Setting</th><th>Beginner-safe value</th></tr>
+      <tr><td>Approval Mode</td><td>Smart (Manual when unsure)</td></tr>
+      <tr><td>Approval Timeout</td><td>120 seconds</td></tr>
+      <tr><td>Confirm MCP Reloads</td><td>ON</td></tr>
+      <tr><td>Command Allowlist</td><td>blank</td></tr>
+      <tr><td>Redact Secrets</td><td>ON — always</td></tr>
+      <tr><td>Private URLs (all three)</td><td>OFF unless you build/test locally</td></tr>
+      <tr><td>File Checkpoints</td><td>ON</td></tr>
+    </table>
+
+  </div>
+</section>
+
+<section class="section" id="voice">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">5</span>Voice</p>
+    <h2>Bedside notes and read-backs</h2>
+    <p class="section-intro">Two things live here: speech-to-text (you talk, Hermes types) and text-to-speech (Hermes reads answers aloud). Voice is wonderful for capturing a thought before you lose it — and it deserves the same discipline as anything else you say near a chart.</p>
+
+    <div class="setting-block">
+      <h4>Speech to Text &amp; the local option</h4>
+      <p>Turn <strong>Speech to Text</strong> on if you like dictating. If your Hermes offers a <span class="value-chip">Local</span> speech-to-text provider, choose it — transcription happens on your own machine instead of being sent to a cloud service. That's the stronger privacy choice. A <span class="value-chip">Base</span>-size local model is fine to start; step up to <span class="value-chip">Small</span> or <span class="value-chip">Medium</span> if it keeps missing words (larger models handle noise, accents, and medical vocabulary better). Set the transcription language explicitly so the model doesn't guess.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Echo Transcripts</h4>
+      <p class="plainlang">"Show me exactly what Hermes heard."</p>
+      <p>Keep <span class="value-chip">ON</span>, at least while you're new — Hermes posts the raw transcript into the chat so you can catch mishears before they become mistakes. Turn it off later if it clutters.</p>
+      <div class="nurse-frame">Echo transcript is the read-back. You wouldn't take a verbal order without one.</div>
+    </div>
+
+    <div class="setting-block">
+      <h4>Read Responses Aloud</h4>
+      <p>Keep <span class="value-chip">OFF</span>. Otherwise every answer is spoken out loud — distracting, and potentially private if others are nearby. Ask for audio when you want it instead.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Recording length &amp; the one-thought rule</h4>
+      <p>A max recording length around <span class="value-chip">120</span> seconds is right. Better practice than long recordings: <strong>one voice note = one thought, one decision, or one task.</strong> Long rambles are harder for both of you to act on.</p>
+    </div>
+
+    <div class="boundary">
+      <strong>Voice is convenient, not automatically private.</strong> Transcripts become part of your chat history. Never dictate patient names, room numbers, chart details, identifiable clinical stories, passwords, or API keys — local transcription or not. Same perimeter, spoken instead of typed.
+    </div>
+
+  </div>
+</section>
+
+<section class="section section-alt" id="providers">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">6</span>Provider accounts</p>
+    <h2>Who Hermes can call on</h2>
+    <p class="section-intro">The "Connect an account" screen lists the AI providers Hermes may use, so you're not pasting keys every time. Some connect through a browser sign-in, some through an API key you paste once. The trash icon beside each one disconnects it — don't click it casually.</p>
+
+    <div class="setting-block">
+      <h4>How many providers do you need?</h4>
+      <p>Fewer than you think. One solid provider is enough to start; two or three give you a fallback if one fails or gets expensive. A router-style provider that offers many models through one key is the most practical single addition once you're comfortable — useful for fallbacks, comparing models, and Mixture of Agents setups.</p>
+      <p><strong>Resist overconnecting.</strong> Every provider you add is another account, another bill, another credential to protect, and another company that may see your prompts. Connect a provider when it has a real role, not because the button is there.</p>
+      <div class="nurse-frame">Consultants are wonderful — but you don't put every specialist in the hospital on one patient's case.</div>
+    </div>
+
+    <div class="setting-block">
+      <h4>What "connected" means for privacy</h4>
+      <p>A connected provider is a <em>possible destination</em> for your prompts — not an automatic one. Content generally goes only to the model you select. But once connected, that provider's models can be chosen for main work, helper tasks, vision, and Mixture of Agents — so the perimeter still applies everywhere: no PHI, no patient screenshots, no employer-confidential files, no secrets pasted into prompts.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Credential care</h4>
+      <p>Use low-permission keys where possible, set spending limits with each provider, never store keys in public places, and rotate any key that may have been exposed. Watch for connectors whose fine print says a subscription needs extra usage credits — connecting it doesn't always mean it will work without them.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="gateway">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">7</span>Gateway connection</p>
+    <h2>Bedside workstation or central command</h2>
+    <p class="section-intro">This screen answers one question: is Hermes running on this computer, or is this desktop app a remote control for a Hermes running somewhere else, like a rented server?</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>Local gateway — keep this one</h3>
+        <p>Hermes runs privately on your own machine, works offline, and your files stay local unless you explicitly send content to a model. This is the default, and the right choice for learning, personal files, and anything private.</p>
+        <p><em>The bedside workstation: private, close to the patient, works even when the network is down.</em></p>
+      </div>
+      <div class="card">
+        <h3>Remote gateway — later, maybe</h3>
+        <p>The desktop app becomes a front-end for a Hermes backend on another machine — useful for always-on jobs that run while your laptop sleeps. That backend is cloud infrastructure and must be treated like it: locked-down access, and no-PHI operational work only.</p>
+        <p><em>Central command: powerful for coordination, but it needs access control and stricter rules.</em></p>
+      </div>
+    </div>
+
+    <p style="margin-top:1.2rem;">If your Hermes supports <strong>profiles</strong>, don't point all of them at a remote gateway. Keep personal and private profiles local, and give remote work its own dedicated profile — especially any profile tied to your employer, which should stay local and extra careful. Before saving a remote URL, use <strong>Test remote</strong>; prefer "Save for next restart" until you've confirmed the connection works. If a gateway won't connect, <strong>Open logs</strong> is where the answer lives.</p>
+
+    <div class="boundary">
+      <strong>Best rule:</strong> personal and private Hermes = local gateway. Always-on, no-PHI operations = remote gateway, on its own profile, only when you actually need one.
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="keys">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">8</span>Tools &amp; keys</p>
+    <h2>The supply room</h2>
+    <p class="section-intro">The Tools &amp; Keys pages are Hermes' supply room: optional service keys for web search, page crawling, media generation, voice, code publishing, memory, and observability. Each key you add gives Hermes a capability — and creates a credential to protect.</p>
+
+    <div class="setting-block">
+      <h4>The stocking rule</h4>
+      <p>Only stock what you use. A useful working set for research and building is: one <strong>web search</strong> service, one <strong>page extraction/crawling</strong> service, a <strong>code platform</strong> connection if you publish, and a <strong>voice</strong> service if you use audio. Media generation is optional. Cloud-browser and automation services are advanced — leave them empty unless a real workflow demands them.</p>
+      <div class="nurse-frame">Don't stock every medication just because the pharmacy offers it. Stock what your unit actually uses, label it clearly, keep it locked, and rotate it if exposed.</div>
+    </div>
+
+    <div class="setting-block">
+      <h4>Memory and observability services</h4>
+      <p>A <strong>memory provider</strong> gives Hermes continuity between sessions — preferences, project context, durable patterns. Valuable, with one discipline: memory is persistence, so never let PHI, secrets, patient stories, or employer-confidential material into it. One memory provider is enough; don't stack several.</p>
+      <p><strong>Observability / tracing</strong> services record logs of model calls — prompts, outputs, costs. Powerful for debugging and evaluation later; unnecessary for beginners. If you ever enable one, know where traces are stored, set retention deliberately, and keep it no-PHI.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Two settings to treat as hard lines</h4>
+      <ul class="dont-list">
+        <li><strong>Sudo Password — leave blank, always.</strong> Storing it lets Hermes run administrator-level commands without asking you. If a command truly needs admin rights, you should approve and type it yourself, every time. <em>Don't leave the narcotics cabinet unlocked because it saves a few seconds.</em></li>
+        <li><strong>Gateway Allow All Users — leave off/unset.</strong> This would let anyone message a Hermes gateway. If you ever enable messaging channels (SMS or workplace chat), list specific allowed users explicitly. Never run an open channel.</li>
+      </ul>
+    </div>
+
+    <div class="setting-block">
+      <h4>The advanced leftovers</h4>
+      <p>Ephemeral system prompts, prefill message files, messaging-channel settings, proxy URLs, custom endpoints: if you don't recognize a field, the safe setting is <span class="value-chip">blank</span>. These exist for specific advanced deployments, and the people running those deployments know they need them. Blank is not a gap — blank is a choice.</p>
+    </div>
+
+    <div class="boundary">
+      <strong>Screenshots of these pages are sensitive.</strong> Even with keys masked, they reveal which services you use and can expose fragments. Don't post settings screenshots publicly or drop them into course materials — and if a full key is ever exposed, rotate it that day.
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="advanced">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">9</span>Advanced limits &amp; subagents</p>
+    <h2>Already tuned — mostly leave it alone</h2>
+    <p class="section-intro">The Advanced screen sets limits on tool output, how many steps Hermes may take, and how delegated helper agents behave. The shipped defaults are well-balanced. Here's what each group means, so the numbers don't intimidate you.</p>
+
+    <div class="setting-block">
+      <h4>Output and read limits</h4>
+      <p>Terminal output limit (~<span class="value-chip">50000</span> characters), file page limit (~<span class="value-chip">2000</span> lines), and line length limit (~<span class="value-chip">2000</span> characters) all exist to stop huge logs and giant files from flooding a conversation. Keep them. Checkpoint limit (~<span class="value-chip">20</span>) is how many rollback snapshots are retained — plenty.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Steps, retries, and enforcement</h4>
+      <p><strong>Max agent steps</strong> (~<span class="value-chip">60</span>) caps how many tool-using turns Hermes takes in one run — raise it only if long multi-step jobs keep stopping partway and you trust the workflow. <strong>API retries</strong> at <span class="value-chip">3</span> is right. <strong>Service tier</strong>: leave blank/default unless your provider account has a specific tier. <strong>Tool-use enforcement</strong>: keep <span class="value-chip">auto</span> — Hermes decides when tools are needed.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Subagents — the delegated assistants</h4>
+      <p class="plainlang">"Hermes' float pool: helpers it can send off to work in parallel."</p>
+      <p>Subagents are helper agents Hermes spawns for parallel work — one inspecting documents, one reviewing code, one researching, findings synthesized at the end. Sensible defaults: model and provider <span class="value-chip">Not set</span> (they inherit the main model — simplest), turn limit around <span class="value-chip">50</span>, parallel subagents around <span class="value-chip">3</span>, timeout around <span class="value-chip">600</span> seconds. Lower the parallel count if costs spike or your machine slows; pin a cheaper subagent model only once you know what you'd use it for.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>In-app update: local changes</h4>
+      <p>If Hermes updates itself while there are local source edits, <span class="value-chip">Stash</span> preserves them and <span class="value-chip">Discard</span> throws them away. Keep <strong>Stash</strong> — it's the safer choice.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="section section-alt" id="housekeeping">
+  <div class="container narrow">
+    <p class="eyebrow"><span class="chapter-num">10</span>Housekeeping</p>
+    <h2>Default folders, archived chats, updates — and the danger zone</h2>
+
+    <div class="setting-block">
+      <h4>Default project directory</h4>
+      <p>If unset, new sessions default to your entire home folder — a broader starting point than Hermes needs. Set it to your dedicated workspace, e.g. <span class="value-chip">~/My-Nurse-AI-OS</span>, so every new session starts in a safe, organized place. (Yes — this is the same principle as the Working Directory in chapter 1. Assigned unit, always.)</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>Archived chats</h4>
+      <p>Archiving hides a chat from the sidebar without deleting anything — every message is kept. Use it for finished experiments, completed setup threads, and stale conversations you might want again. On a Mac, <span class="value-chip">⌘-click</span> a chat in the sidebar to archive it (Ctrl-click elsewhere).</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>About &amp; updates</h4>
+      <p>The About screen shows your version and whether you're current. Automatic update checks are on by default — leave them. Release notes are worth a skim after updates, since settings screens move.</p>
+    </div>
+
+    <div class="setting-block">
+      <h4>The danger zone: three uninstall levels</h4>
+      <p>If you ever need to remove Hermes, there are three levels — always try them in this order:</p>
+      <table class="setting-table">
+        <tr><th>Option</th><th>What's removed</th><th>When</th></tr>
+        <tr><td>1 · Uninstall Chat GUI only</td><td>Just the desktop app. Agent, config, chats, secrets all stay.</td><td>GUI misbehaving; reinstalling the app. Safest — start here.</td></tr>
+        <tr><td>2 · GUI + agent, keep data</td><td>App and agent runtime. Config, chats, secrets kept for reinstall.</td><td>The agent itself is broken; you want a cleaner reinstall.</td></tr>
+        <tr><td>3 · Uninstall everything</td><td>App, agent, and <strong>all data</strong> — config, chats, scheduled jobs, secrets, logs.</td><td>Only for a deliberate full wipe, with backups made first.</td></tr>
+      </table>
+      <p><strong>Never click "Uninstall everything" casually.</strong> Your Hermes holds provider connections, keys, chats, memory, and project history. Level 3 takes all of it.</p>
+      <p>Reaching for uninstall because something's broken? Read <a href="when-things-go-wrong.html">When Things Go Wrong</a> first — most problems resolve several rungs below a reinstall.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="five">
+  <div class="container narrow">
+    <p class="eyebrow">If you remember nothing else</p>
+    <h2>The five settings that matter most</h2>
+    <p class="section-intro">Every screen above earns its place, but these five carry most of the safety. Check them once, and your Hermes is configured like a nurse set it up.</p>
+
+    <div class="steps">
+      <div class="step"><strong>1 · Set the Working Directory</strong> (and the default project directory) to one dedicated no-PHI folder. The assigned unit — not the whole hospital.</div>
+      <div class="step"><strong>2 · Approval Mode: Smart.</strong> Standing orders for the routine; a human signature for the risky. Never "YOLO."</div>
+      <div class="step"><strong>3 · Redact Secrets: ON.</strong> The privacy curtain stays closed. Non-negotiable.</div>
+      <div class="step"><strong>4 · File Checkpoints: ON.</strong> Take the before photo. Rollback is charting you'll be grateful for exactly once — and that once matters.</div>
+      <div class="step"><strong>5 · Sudo Password: blank. Environment Passthrough: blank.</strong> Hand over single medications on request, and keep the narcotics cabinet locked.</div>
+    </div>
+
+    <p style="margin-top:1.4rem;">Configuration isn't a test you can fail — every setting here can be changed again tomorrow. Set the five above, leave the rest at their defaults, and get back to the real work: learning what Hermes can do beside you. When a screen confuses you, this handbook will be here, and so will the <a href="https://hermes-agent.nousresearch.com/docs">official docs</a>.</p>
+
+    <p><strong>Companions to this handbook:</strong> the <a href="assets/hermes-cheat-sheet.pdf">one-page cheat sheet</a> for install and first launch · the <a href="assets/hermes-essentials-guide.pdf">Hermes Essentials Guide (PDF)</a> · the <a href="assets/hermes-power-guide.pdf">Hermes Power Guide (PDF)</a> for profiles, scheduled jobs, and model routing · <a href="when-things-go-wrong.html">When Things Go Wrong</a>, the troubleshooting companion for the day something breaks · and <a href="start-here.html">Start Here</a>, which is still your actual setup path.</p>
+  </div>
+</section>
+
+<section class="section section-navy">
+  <div class="container narrow">
+    <p class="eyebrow">The safety perimeter</p>
+    <h2>No PHI. No clinical decisions. No silent automation.</h2>
+    <p>Do not enter patient names, charts, screenshots, identifiers, room numbers, employer secrets, passwords, account numbers, or patient-specific clinical details into Hermes, the quizzes, dashboards, or any AI tool — unless an approved institutional environment and accountable governance explicitly allow it. That perimeter holds in every chapter above: in prompts, in voice notes, in memory, in Mixture of Agents, on every provider.</p>
+    <p>Hermes can help with learning, organization, drafting, research support, project planning, and reflection. It does not carry a license, validate competency, approve clinical deployment, replace educators, or make patient-care decisions.</p>
+    <p><strong>Agents propose. Humans judge. Nurses steward.</strong> Gray areas? Bring them to the monthly <a href="assets/lamp-huddle.pdf" style="color:var(--gold-300);">Lamp Huddle</a> — a question asked early beats an incident reported late.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
+
+</body>
+</html>

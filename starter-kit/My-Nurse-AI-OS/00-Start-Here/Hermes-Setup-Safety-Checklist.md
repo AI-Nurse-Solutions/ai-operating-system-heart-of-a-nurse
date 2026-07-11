@@ -19,8 +19,8 @@ Use this checklist before connecting models, tools, memory, voice, messaging, or
 
 ## 2. Safety controls
 
-- [ ] Manual approval is on for beginner use.
-- [ ] Autonomous or smart approval is off unless I understand the risk.
+- [ ] Manual approval is on for my first week — I see and approve every action before it runs.
+- [ ] I will move to Smart approval (the working default in the Configuration Handbook) only once actions feel predictable and I understand what it auto-approves. Fully-automatic / "YOLO" approval stays off.
 - [ ] I know how to decline, stop, or cancel a tool action.
 - [ ] I will start with small safe tasks first.
 

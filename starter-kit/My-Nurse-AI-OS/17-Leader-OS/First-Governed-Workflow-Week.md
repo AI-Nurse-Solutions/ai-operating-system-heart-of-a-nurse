@@ -6,13 +6,13 @@ The default first workflow is the **weekly unit brief** (`Weekly-Brief.SKILL.md`
 
 ## The week
 
-**Day 1 — Name the workflow and its risk.** With `Governance-Facilitator`, classify your chosen workflow: what task, whose data, what happens on failure, proposed EDENA tier. Output: the one-page classification. (New to the tiers? The 90-minute workshop in `13-Living-Thriving-AI/` is the unit-grade orientation — schedule it for your team this month, not this week.)
+**Day 1 — Name the workflow and its risk.** With `Governance-Facilitator`, classify your chosen workflow: what task, whose data, what happens on failure, proposed EDENA tier. Output: the one-page classification. (New to the tiers? The 90-minute workshop in `../13-Living-Thriving-AI/` is the unit-grade orientation — schedule it for your team this month, not this week.)
 
-**Day 2 — Write the Loop Charter.** Fill `04-Governance/Loop-Charter.md` for the workflow: leash, log, limit, human owner, stop condition, rollback. Twenty minutes, honestly answered, especially "what does *contain* look like?" (see the incident one-pager).
+**Day 2 — Write the Loop Charter.** Fill `../04-Governance/Loop-Charter.md` for the workflow: leash, log, limit, human owner, stop condition, rollback. Twenty minutes, honestly answered, especially "what does *contain* look like?" (see the incident one-pager).
 
 **Day 3 — Set the memory boundary.** Confirm your Do-Not-Remember rules with the Manager/Leader extension are in your Governance boot; tell your AI what this workflow may keep (unit priorities, project states) and must not (anything on the extension list). Test it: paste something borderline and watch it refuse.
 
-**Day 4 — First supervised run.** Run the workflow start to finish with the skill, reviewing every step. Edit hard — your edits are training *you* on where the tool is weak, and they're gate-health data. Log the run in `04-Governance/Human-Review-Log.md`.
+**Day 4 — First supervised run.** Run the workflow start to finish with the skill, reviewing every step. Edit hard — your edits are training *you* on where the tool is weak, and they're gate-health data. Log the run in `../04-Governance/Human-Review-Log.md`.
 
 **Day 5 — Run the Five Rights pre-flight and go live.** Right task, right data, right tier, right human, right review — any "no" is a redesign, not a footnote. Passing: schedule the cron (for a weekly brief: draft lands Thursday, you approve Friday).
 

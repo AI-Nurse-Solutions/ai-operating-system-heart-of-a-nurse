@@ -1,6 +1,6 @@
 # Leader OS — the Governance Sprint, made agentic
 
-The leader pathway's promise is a nurse manager with a **defensible method** — not a vendor demo. This pack is that method as a working system: skills that draft your unit communications for your approval, scaffold QI work, analyze only what's safe to analyze, keep a decision ledger, and make you the unit's AI-governance leader with the review-gate machinery from the Governance Kit at your fingertips (`governance-kit/` — grab it from the Resource Hub's Safety & governance section if you don't have it yet).
+The leader pathway's promise is a nurse manager with a **defensible method** — not a vendor demo. This pack is that method as a working system: skills that draft your unit communications for your approval, scaffold QI work, analyze only what's safe to analyze, keep a decision ledger, and make you the unit's AI-governance leader with the review-gate machinery from the Governance Kit at your fingertips. The Governance Kit is a separate download: grab `governance-kit.zip` from the Resource Hub's Safety & governance section and unzip it into your `My-Nurse-AI-OS/` folder, so it sits alongside this pack as `../governance-kit/`.
 
 **What's inside**
 

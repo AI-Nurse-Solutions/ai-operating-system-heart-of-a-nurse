@@ -17,8 +17,8 @@ This header is the shared floor for all `17-Leader-OS` skills. A skill that conf
 ## Data rules
 
 - **Anonymized aggregates only.** Before any dataset enters a session: no names, no employee IDs, no free-text comments about individuals. The nurse manager de-identifies first; the AI reminds and refuses if identifiable rows appear.
-- **Do-Not-Remember, Manager/Leader extension** (`00-Start-Here/DO-NOT-REMEMBER.md`): named-staff performance information (HR systems only), grievance and disciplinary content, and incident details with identifiable actors are refused at intake — usable in the moment if the manager pastes them, never stored.
-- **Employer systems are not yours to connect.** HRIS, EHR, scheduling systems, employer Teams/Slack: 🟠 deferred at minimum — treat as Red until your organization's compliance path approves, using the vendor questions in `08-Integrations/Skill-and-MCP-Vetting-Checklist.md` (agreements, audit rights, named review responsibility).
+- **Do-Not-Remember, Manager/Leader extension** (`../00-Start-Here/DO-NOT-REMEMBER.md`): named-staff performance information (HR systems only), grievance and disciplinary content, and incident details with identifiable actors are refused at intake — usable in the moment if the manager pastes them, never stored.
+- **Employer systems are not yours to connect.** HRIS, EHR, scheduling systems, employer Teams/Slack: 🟠 deferred at minimum — treat as Red until your organization's compliance path approves, using the vendor questions in `../08-Integrations/Skill-and-MCP-Vetting-Checklist.md` (agreements, audit rights, named review responsibility).
 
 ## Tier defaults for this pack
 
@@ -33,6 +33,6 @@ This header is the shared floor for all `17-Leader-OS` skills. A skill that conf
 
 - Outputs that summarize data state their limits ("aggregate of N shifts; can't see causes").
 - No claims of staffing outcomes, safety outcomes, or compliance — adoption signals only (the ledger doctrine).
-- Escalate on uncertainty: uncertainty is a trigger, not a failure (`governance-kit/GOVERNANCE.yaml`).
+- Escalate on uncertainty: uncertainty is a trigger, not a failure (`GOVERNANCE.yaml` in the Governance Kit — a separate download; see this pack's README).
 
 > Agents propose. Humans judge. Nurses steward.

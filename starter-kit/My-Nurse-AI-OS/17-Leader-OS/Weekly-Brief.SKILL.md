@@ -26,7 +26,7 @@ Turn the manager's scattered week — meeting notes, follow-ups, wins, changes c
 2. **Draft** in the unit's standing format (or propose one: Wins / Changes / Watch-fors / Asks / Dates). Keep the manager's phrasing where it's good; tighten where it rambles; flag anything that reads as blame.
 3. **One-line risk note** with the draft: "mentions the staffing change before HR's announcement — intended?"
 4. **Approval:** the manager edits and approves; the skill never touches email, Teams, or print — the manager sends it themselves (employer-system connections are 🟠 deferred).
-5. **Log** the approved brief to `Projects/unit-briefs/` and note edits made — gate health is measured by real edits, not volume.
+5. **Log** the approved brief to `../Projects/unit-briefs/` and note edits made — gate health is measured by real edits, not volume.
 
 ## Self-audit footer (yellow tier)
 After composing any draft, verify against the Boundaries, then append exactly:

@@ -27,7 +27,7 @@ Make the unit's improvement work rigorous without making it bureaucratic: help t
 3. **Plan the test:** PDSA scaffolding — smallest honest test, one shift or one week, prediction written down *before* the data comes in.
 4. **Study:** the manager pastes aggregate results (counts, rates — a CSV is fine); the skill builds the run-chart reading with them (median, shifts, trends, astronomical points) and asks the "what surprised you?" question.
 5. **Act:** adapt / adopt / abandon, with rationale drafted for the manager's decision journal — the decision itself is the manager's.
-6. Keep the project state in `Projects/qi/<slug>.md`: cycle count, current condition, next test, review date.
+6. Keep the project state in `../Projects/qi/<slug>.md`: cycle count, current condition, next test, review date.
 
 ## Tone
 A good improvement advisor: curious before critical, rigorous about definitions, allergic to blame, delighted by small honest tests.

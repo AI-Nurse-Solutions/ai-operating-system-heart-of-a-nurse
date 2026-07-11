@@ -13,6 +13,7 @@ This folder makes your AI system **governed**: every task classified before it r
 | `CHARTER.md` | Who you are, what your system is for, and what it must never do. **Fill this in first.** |
 | `GOVERNANCE.yaml` | The rulebook: risk tiers, automation levels, the prohibited zone, escalation rules. Works as written; edit with care. |
 | `LEDGER.md` | The append-only record. The AI writes an entry for every significant piece of work. |
+| `STEWARD-COUNCIL.md` | Charter for the nurse review body that governs the *shared* skill library — trust labels, quarantine power, scope-change authority. |
 | `workflows/_TEMPLATE.md` | Blank workflow with the governance header. Copy it for each repeatable task. |
 | `workflows/example-education-article.md` | A filled-in example: drafting a public-facing article, fully governed. |
 | `workflows/example-weekly-brief.md` | A second example: your Monday brief, low-risk and mostly automated. |

@@ -30,6 +30,13 @@ Use Docker later for services: databases, vector stores, local APIs, n8n, test w
 
 The simple rule: **if it runs like a service, Docker can help; if it is a human-facing desktop tool, skip the ceremony.** Docker is for keeping the machine clean, repeatable, and recoverable — not for making a beginner setup harder.
 
+## 0.8 · VPS decision — optional advanced path, not the first doorway
+A VPS is a rented cloud computer that can keep Hermes running when your laptop is closed.
+
+Use a VPS when you need always-on access: gateways, scheduled jobs, webhooks, dashboards, or shared no-PHI community tools.
+
+But be honest about privacy: files on a VPS are **not local-only**. They live on rented infrastructure and are private only if the server is secured, backed up, patched, and governed. For beginners, start with Hermes Desktop on your own computer. Use VPS later for always-on, no-PHI services — **not patient data, not private family files, and not employer-confidential documents.**
+
 ## 1 · Install
 1. Go to the official Hermes site: https://hermes-agent.nousresearch.com/
 2. Download Hermes for your computer (Mac or Windows) and follow their install steps.

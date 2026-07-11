@@ -116,7 +116,7 @@ ET
 endstream
 endobj
 3 0 obj
-<< /Length 3524 >>
+<< /Length 3679 >>
 stream
 BT
 /F1 10 Tf
@@ -124,6 +124,30 @@ BT
 (  tool, skip the ceremony. Docker is for keeping the machine clean, repeatable, and) Tj
 0 -13 Td
 (  recoverable - not for making a beginner setup harder.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(0.8 - VPS decision - optional advanced path, not the first doorway) Tj
+0 -13 Td
+(A VPS is a rented cloud computer that can keep Hermes running when your laptop is closed.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Use a VPS when you need always-on access: gateways, scheduled jobs, webhooks, dashboards, or) Tj
+0 -13 Td
+(  shared no-PHI community tools.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(But be honest about privacy: files on a VPS are not local-only. They live on rented) Tj
+0 -13 Td
+(  infrastructure and are private only if the server is secured, backed up, patched, and) Tj
+0 -13 Td
+(  governed. For beginners, start with Hermes Desktop on your own computer. Use VPS later for) Tj
+0 -13 Td
+(  always-on, no-PHI services - not patient data, not private family files, and not employer-) Tj
+0 -13 Td
+(  confidential documents.) Tj
 0 -13 Td
 () Tj
 0 -13 Td
@@ -200,7 +224,15 @@ BT
 (4. Pick a model - start with a free or low-cost one. Ask Hermes for something simple to) Tj
 0 -13 Td
 (  confirm it works; if the answers feel weak, switch to a stronger model. Trying models) Tj
-0 -13 Td
+ET
+endstream
+endobj
+4 0 obj
+<< /Length 3658 >>
+stream
+BT
+/F1 10 Tf
+54 742 Td
 (  costs nothing but the tokens you use.) Tj
 0 -13 Td
 () Tj
@@ -224,15 +256,7 @@ BT
 (- You cannot break anything by chatting.) Tj
 0 -13 Td
 () Tj
-ET
-endstream
-endobj
-4 0 obj
-<< /Length 3921 >>
-stream
-BT
-/F1 10 Tf
-54 742 Td
+0 -13 Td
 (3 - Give Hermes your SOUL file) Tj
 0 -13 Td
 (Your SOUL file comes from the SOUL Quiz at nurse-ai-os.org \(it downloads as Core-SOUL.md, or) Tj
@@ -312,7 +336,15 @@ BT
 (Open the file it creates in your browser and bookmark it. That's your station board.) Tj
 0 -13 Td
 () Tj
-0 -13 Td
+ET
+endstream
+endobj
+5 0 obj
+<< /Length 3795 >>
+stream
+BT
+/F1 10 Tf
+54 742 Td
 (Post-procedure care - working the system until it's muscle memory) Tj
 0 -13 Td
 (You don't memorize features. You see the routine once in your mind, and your hands follow.) Tj
@@ -336,15 +368,7 @@ BT
 (2 - One session per topic - one chart per patient. Don't mix the budget, the side gig, and) Tj
 0 -13 Td
 (  the CCRN plan in one conversation - details blend and answers get muddy. New topic, new) Tj
-ET
-endstream
-endobj
-5 0 obj
-<< /Length 3773 >>
-stream
-BT
-/F1 10 Tf
-54 742 Td
+0 -13 Td
 (  session.) Tj
 0 -13 Td
 () Tj
@@ -424,7 +448,15 @@ BT
 (While you wait - no qualifying computer yet? You're still in.) Tj
 0 -13 Td
 (If your current computer can't run Hermes, you've lost nothing but the installation step.) Tj
-0 -13 Td
+ET
+endstream
+endobj
+6 0 obj
+<< /Length 1325 >>
+stream
+BT
+/F1 10 Tf
+54 742 Td
 (  Everything else is open to you today:) Tj
 0 -13 Td
 () Tj
@@ -448,15 +480,7 @@ BT
 (  the future Florence Nightingales - the ones who will decide how care intelligence is born.) Tj
 0 -13 Td
 () Tj
-ET
-endstream
-endobj
-6 0 obj
-<< /Length 401 >>
-stream
-BT
-/F1 10 Tf
-54 742 Td
+0 -13 Td
 (If you feel lost) Tj
 0 -13 Td
 (Normal. You only need the next step, never the whole map. Skip what confuses you, and bring) Tj
@@ -494,8 +518,22 @@ endobj
 endobj
 xref
 0 14
-0000000000 65535 f\n0000000043 00000 n\n0000000113 00000 n\n0000003774 00000 n\n0000007350 00000 n\n0000011323 00000 n\n0000015148 00000 n\n0000015600 00000 n\n0000015727 00000 n\n0000015854 00000 n\n0000015981 00000 n\n0000016109 00000 n\n0000016237 00000 n\n0000016321 00000 n\ntrailer
+0000000000 65535 f
+0000000043 00000 n
+0000000113 00000 n
+0000003774 00000 n
+0000007505 00000 n
+0000011215 00000 n
+0000015062 00000 n
+0000016439 00000 n
+0000016566 00000 n
+0000016693 00000 n
+0000016820 00000 n
+0000016948 00000 n
+0000017076 00000 n
+0000017160 00000 n
+trailer
 << /Size 14 /Root 13 0 R >>
 startxref
-16372
+17211
 %%EOF

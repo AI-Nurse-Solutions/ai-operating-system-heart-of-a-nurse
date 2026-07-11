@@ -13,4 +13,4 @@ Projects/
 
 Start each project by asking your AI: *"Create a new project folder in Projects called [name]. Interview me like an admission assessment, then write a one-page project brief inside it."*
 
-No patient data, ever — projects run on your life and work, never your patients.
+The boundary here matches the Setup Safety Checklist: no patient data, ever — and no sensitive family information, confidential employer files, passwords, or API keys inside project folders. Projects run on your life and work, never your patients and never your secrets.

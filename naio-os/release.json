@@ -7,7 +7,7 @@
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "689bdba26da9ecb7bef41e9ebbf1fc0432cbaa0fb4c6c3277a0ba034cbb4d1bd",
+    "sha256": "29f4bc5bfaea80b9577e9905beae755017a83cb8d29fd1275fcb39ec3c5fc1b4",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",

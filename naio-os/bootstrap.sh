@@ -118,7 +118,9 @@ if [[ ! -f "$PUBKEY_FILE" ]]; then
   echo "❌ Release public key missing from download: config/naio-os-release-public.pem" >&2
   exit 2
 fi
-ACTUAL_PUBKEY_SHA256="$(openssl dgst -sha256 -r "$PUBKEY_FILE" | awk '{print $1}')"
+# hashlib rather than `openssl dgst -r`: the -r flag is missing from some
+# LibreSSL builds (macOS's default openssl), and python3 is already required.
+ACTUAL_PUBKEY_SHA256="$(python3 -c "import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" "$PUBKEY_FILE")"
 if [[ "$ACTUAL_PUBKEY_SHA256" != "$NAIO_OS_PUBKEY_SHA256" ]]; then
   echo "❌ RELEASE KEY MISMATCH — refusing to run anything downloaded." >&2
   echo "   pinned:     $NAIO_OS_PUBKEY_SHA256" >&2

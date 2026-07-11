@@ -51,7 +51,7 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 
 ### Day 6 — Draw your delegation map (Green)
 - One page, one line down the middle. Left: what stays human — judgment, relationships, assessments, approvals, your license. Right: what the system may carry — research, drafts, summaries, reminders, repetition.
-- Save to `00-Start-Here/delegation-map.md`, next to your SOUL file. Every workflow you ever build must respect this line.
+- Save to `00-Start-Here/delegation-map.md`, next to your SOUL file (`00-Start-Here/Core-SOUL.md` — if your quiz download is still in Downloads, move it there now). Every workflow you ever build must respect this line.
 
 ### Day 7 — Weekly review (Green)
 - 15 minutes. What worked? What felt unsafe? What do you want next week?

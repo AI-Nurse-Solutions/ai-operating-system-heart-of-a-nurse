@@ -79,7 +79,7 @@ contents:
   sha256: 64751cb576f4cfbdd2b7a20363a678d8b1c81cca9af1029f3dcc14d26a2d3973
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: e57978f7388c20fb6958c476c92b1b60b4352ce86bf129aefa8670634eecd3bb
+  sha256: 5d412c925802f77455cb79d80a1d69632dcfdf6bf0a5deb7c4364ca3db871517
 - path: README.md
   role: spec
   sha256: ec1f18a517dd7685d11796d46a242d677607d1bd9e089e1eb9da82ca398ee6dd

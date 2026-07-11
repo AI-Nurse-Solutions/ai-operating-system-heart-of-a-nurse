@@ -34,6 +34,50 @@ DOCS = {
                      "Nurse AI OS Architecture Report"),
     "media": ("assets/nurse-ai-os-media-packet.md", "assets/nurse-ai-os-media-packet.pdf",
               "Nurse AI OS Media Packet"),
+    "media-fr": ("assets/nurse-ai-os-media-packet-fr.md", "assets/nurse-ai-os-media-packet-fr.pdf",
+                 "Nurse AI OS — Dossier de presse"),
+    "media-es": ("assets/nurse-ai-os-media-packet-es.md", "assets/nurse-ai-os-media-packet-es.pdf",
+                 "Nurse AI OS — Dossier de prensa"),
+    "media-ar": ("assets/nurse-ai-os-media-packet-ar.md", "assets/nurse-ai-os-media-packet-ar.pdf",
+                 "Nurse AI OS — الملف الإعلامي"),
+    "media-ru": ("assets/nurse-ai-os-media-packet-ru.md", "assets/nurse-ai-os-media-packet-ru.pdf",
+                 "Nurse AI OS — Пресс-кит"),
+    "media-zh": ("assets/nurse-ai-os-media-packet-zh.md", "assets/nurse-ai-os-media-packet-zh.pdf",
+                 "Nurse AI OS — 媒体资料包"),
+    "media-hi": ("assets/nurse-ai-os-media-packet-hi.md", "assets/nurse-ai-os-media-packet-hi.pdf",
+                 "Nurse AI OS — मीडिया किट"),
+}
+
+# Per-language rendering config for translated documents: html lang/dir, extra
+# Google-Fonts stylesheets for the script, and CSS overriding the default
+# Latin font stacks. Latin-script languages (fr, es) need no entry.
+LANG_META = {
+    "media-ar": {
+        "lang": "ar", "dir": "rtl",
+        "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">',
+        "css": ("body,h1,h2,h3,h4{font-family:'Noto Naskh Arabic',serif;}"
+                "body{direction:rtl;}th,td{text-align:right;}"
+                "ul,ol{padding-right:1.4em;padding-left:0;}"
+                "blockquote{border-left:none;border-right:4px solid var(--gold);}"),
+    },
+    "media-ru": {
+        "lang": "ru", "dir": "ltr",
+        "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">',
+        # Source Sans 3 covers Cyrillic for body text; Fraunces does not, so headings switch to Noto Serif.
+        "css": "h1,h2,h3,h4{font-family:'Noto Serif',Georgia,serif;}",
+    },
+    "media-zh": {
+        "lang": "zh-Hans", "dir": "ltr",
+        "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">',
+        "css": "body{font-family:'Noto Sans SC',sans-serif;}h1,h2,h3,h4{font-family:'Noto Serif SC',Georgia,serif;}",
+    },
+    "media-hi": {
+        "lang": "hi", "dir": "ltr",
+        "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Serif+Devanagari:wght@700&display=swap" rel="stylesheet">',
+        "css": "body{font-family:'Noto Sans Devanagari',sans-serif;}h1,h2,h3,h4{font-family:'Noto Serif Devanagari',Georgia,serif;}",
+    },
+    "media-fr": {"lang": "fr", "dir": "ltr"},
+    "media-es": {"lang": "es", "dir": "ltr"},
 }
 
 CSS = """
@@ -83,11 +127,13 @@ def find_chrome() -> str:
 
 def build(key: str, chrome: str) -> None:
     src_rel, out_rel, title = DOCS[key]
+    meta = LANG_META.get(key, {})
     src, out = ROOT / src_rel, ROOT / out_rel
     body = markdown.markdown(src.read_text(encoding="utf-8"),
                              extensions=["tables", "fenced_code", "sane_lists", "smarty"])
-    html = (f'<!DOCTYPE html><html><head><meta charset="utf-8"><title>{title}</title>'
-            f'{FONTS}<style>{CSS}</style></head><body>{body}'
+    html = (f'<!DOCTYPE html><html lang="{meta.get("lang", "en")}" dir="{meta.get("dir", "ltr")}">'
+            f'<head><meta charset="utf-8"><title>{title}</title>'
+            f'{FONTS}{meta.get("font_links", "")}<style>{CSS}{meta.get("css", "")}</style></head><body>{body}'
             f'<div class="doc-footer">nurse-ai-os.org · No PHI, ever · AI drafts, humans judge, '
             f'nurses steward · This PDF is generated from {src_rel} — the web copy is canonical.'
             f'</div></body></html>')

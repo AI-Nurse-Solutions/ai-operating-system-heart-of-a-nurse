@@ -32,6 +32,8 @@ DOCS = {
                "The Plain-Language Safety Rules (EDENA)"),
     "architecture": ("assets/nurse-ai-os-architecture-report.md", "assets/nurse-ai-os-architecture-report.pdf",
                      "Nurse AI OS Architecture Report"),
+    "media": ("assets/nurse-ai-os-media-packet.md", "assets/nurse-ai-os-media-packet.pdf",
+              "Nurse AI OS Media Packet"),
 }
 
 CSS = """

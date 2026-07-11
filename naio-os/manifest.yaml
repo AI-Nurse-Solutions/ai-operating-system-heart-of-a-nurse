@@ -61,7 +61,7 @@ contents:
   sha256: c5c1d69754e960e68aeb46fde7a9918cc9ce83a4637a935ccd423f3a82bbdd0f
 - path: scripts/import-projects.py
   role: import-projects
-  sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
+  sha256: 41502978031d7fe162e276c94e7b2b83a7ea077ae6e1252a92719dccaf24fab1
 - path: scripts/render-profile.py
   role: render-profile
   sha256: 394b3d7de116758f50b404e73b4821de2ab72c67061c2916d1fdeac57f65fc2c
@@ -118,34 +118,34 @@ contents:
   sha256: 912b31993d6cd9e0b19d931a0628c57e24f866d2942df5145af62842d1647c61
 - path: scripts/pilot.py
   role: institutional-pilot-check
-  sha256: 764cb808f68cb9cd32bbc91224e8be04d1ba2810ac9aeb1e4e2569ed4c7f5092
+  sha256: 01ff675963181da11289af2dfa5cfbbd50c3299d7540e897c0307284a439b088
 - path: scripts/readiness.py
   role: edena-readiness-check
-  sha256: 3dd2cff5a52a9b034135650ce9cc1899ddcf10ccf62fd2e70cf2a2731ece40b6
+  sha256: 57486c80005267375598b79178ba6363d16c463e519834b07da7675ed7111536
 - path: scripts/registry.py
   role: agent-registry-check
-  sha256: 6a36d7d4643dc432bc08b753ff2b90af09960aae88b193f210201d8d42cfcf08
+  sha256: f7f8c18b5279fadb339b531c3ad030c0b12bd01eb1a54d8adee52311e1ba7297
 - path: scripts/orchestration.py
   role: florence-x-orchestration-check
-  sha256: b61fda28694276eb239f16124d0d52ed7b10d5d7501e84a2681bef8be9d4c5e6
+  sha256: 7ede44e64f667ba2b76e5a85948098b19a15c1a84e0bb0d003ad9bf77f923921
 - path: scripts/governance.py
   role: governance-board-check
-  sha256: 409e59b0b7510eedcb40fb0bb173fae88e7a2364900afeba7eaf79ee73411a31
+  sha256: e540005a7ace853f8b23c01d7cabb24f449eb661c733d6482c2ca17647a8f336
 - path: scripts/partner.py
   role: partner-briefing-check
-  sha256: 8194c00f74446115726c879bcbc989bc10f5c9d04676dba1606067f96316b2de
+  sha256: 1fd09a940a8021893743a07f9bf1d49e914368b0701237065d779f0c1da87ce8
 - path: scripts/stewardship.py
   role: stewardship-operating-model-check
-  sha256: 80fa2a3d09c6b51587f414aded325fd4c153fe2f8f60c25e999555a08ca4d919
+  sha256: 5861dbad1becfd638861ecb1f761e0656535870ccae24051fa215b9838c97201
 - path: scripts/localization.py
   role: localization-readiness-check
-  sha256: eeb8318c418f970013c8fdfd274c4dd40ce957319cfb997575a0355773354030
+  sha256: cca3b116fa8b81057b1860e40236ba2a0eee7043ca90095cd4b092472857d2b9
 - path: scripts/outcomes.py
   role: adoption-outcomes-ledger-check
-  sha256: 02ddd71ad3f7b158d5eeb8a0c2cfcaf694d58ab77e90c2bcfb47f63e2808e67e
+  sha256: 5b694c06d88a5e324d0b9a793e0e818cd11d415eaf25a1c6341d8ce1175cba84
 - path: scripts/commercial.py
   role: commercial-activation-check
-  sha256: 062bf6e4147eee71a2e6a398107a234c60aa603dd31d320aa4c9eb6e7ffb7bdd
+  sha256: 3dff685463f293af2f90520335a886d86cf225e8848791f27f703e2547c88523
 safety_contract:
   mode: dry-run-default_apply-target-only_templates-only-cron_remote-bootstrap-self-test_signed-update-channel_rollback-protected_update-advisory_recovery-drill_activation-ready_public-launch-ready_outcomes-ledger_commercial-activation
   idempotent: true

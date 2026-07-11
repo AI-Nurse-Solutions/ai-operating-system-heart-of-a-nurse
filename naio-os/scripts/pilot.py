@@ -41,35 +41,47 @@ SECRET_PATTERNS = [
 ]
 
 def refuse(msg):
-    print(f"❌ REFUSED: {msg}", file=sys.stderr); sys.exit(2)
+    print(f"❌ REFUSED: {msg}", file=sys.stderr)
+    sys.exit(2)
 
 def text(path: Path) -> str:
-    try: return path.read_text(encoding="utf-8")
-    except Exception: return ""
+    try:
+        return path.read_text(encoding="utf-8")
+    except Exception:
+        return ""
 
 def load_yaml(path: Path):
-    try: return yaml.safe_load(path.read_text(encoding="utf-8"))
-    except Exception: return None
+    try:
+        return yaml.safe_load(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
 
 def hits(patterns, blob):
     out=[]
     for pat,label in patterns:
         m=pat.search(blob)
-        if m: out.append(f"{label}: {m.group(0)[:32]!r}")
+        if m:
+            out.append(f"{label}: {m.group(0)[:32]!r}")
     return out
 
 def check_profile(profile: Path) -> dict:
     missing=[rel for rel in REQUIRED if not (profile/rel).is_file()]
-    failures=[]; warnings=[]
-    if missing: failures.append("missing required pilot files: "+", ".join(missing))
+    failures=[]
+    warnings=[]
+    if missing:
+        failures.append("missing required pilot files: "+", ".join(missing))
     runtime=load_yaml(profile/'config/edena-runtime.yaml') or {}
     rituals=load_yaml(profile/'cron/rituals.yaml') or {}
     pilot=runtime.get('pilot', {}) if isinstance(runtime, dict) else {}
-    if runtime.get('version') != '2.0.0-phase23': failures.append(f"runtime version is not 2.0.0-phase23: {runtime.get('version')}")
-    if pilot.get('path') != '14-Institutional-Pilot/': failures.append('runtime pilot.path is not 14-Institutional-Pilot/')
-    if pilot.get('pilot_use') != 'non_clinical_learning_pilot_not_deployment': failures.append('runtime pilot.pilot_use must remain non-clinical learning, not deployment')
+    if runtime.get('version') != '2.0.0-phase23':
+        failures.append(f"runtime version is not 2.0.0-phase23: {runtime.get('version')}")
+    if pilot.get('path') != '14-Institutional-Pilot/':
+        failures.append('runtime pilot.path is not 14-Institutional-Pilot/')
+    if pilot.get('pilot_use') != 'non_clinical_learning_pilot_not_deployment':
+        failures.append('runtime pilot.pilot_use must remain non-clinical learning, not deployment')
     for key in ['auto_report','auto_enroll','auto_escalate']:
-        if pilot.get(key) is not False: failures.append(f'runtime pilot.{key} must be false')
+        if pilot.get(key) is not False:
+            failures.append(f'runtime pilot.{key} must be false')
     combined='\n'.join(text(profile/rel) for rel in REQUIRED if (profile/rel).is_file())
     required=[
         'Phase 14 Institutional Pilot Pack','Pilot Charter','Stakeholder Brief','Risk Register','No-PHI Pilot Boundary',
@@ -79,7 +91,8 @@ def check_profile(profile: Path) -> dict:
         'Human governance review','Agents propose. Humans judge. Nurses steward.'
     ]
     for phrase in required:
-        if phrase.lower() not in combined.lower(): failures.append(f'pilot pack missing phrase: {phrase}')
+        if phrase.lower() not in combined.lower():
+            failures.append(f'pilot pack missing phrase: {phrase}')
     for line in combined.splitlines():
         stripped=line.strip().lower()
         if not stripped or stripped.startswith('-') or stripped.startswith('>') or 'avoid' in stripped or 'not clinical' in stripped or 'does not' in stripped or 'out of scope' in stripped or 'no institutional endorsement' in stripped or 'no automatic participant enrollment' in stripped or 'no one is auto-enrolled' in stripped or 'no automatic reporting' in stripped or 'not deployment' in stripped or 'not certification' in stripped or 'not permission' in stripped or 'not imply' in stripped or 'not claim' in stripped:
@@ -87,13 +100,19 @@ def check_profile(profile: Path) -> dict:
         for phrase in ['approved clinical pilot','validated ai workflow','hipaa-compliant deployment','certified nurse ai operator','ready for patient care','institutional endorsement','compliance validated','safety validated','efficacy validated','automatic reporting to leadership','auto-enrolled']:
             if phrase in stripped:
                 failures.append(f'pilot pack contains unsupported institutional overclaim: {phrase}')
-    phi=hits(PHI_PATTERNS, combined); secrets=hits(SECRET_PATTERNS, combined)
-    if phi: failures.append('PHI-like content detected in pilot pack: '+'; '.join(phi))
-    if secrets: failures.append('secret-like content detected in pilot pack: '+'; '.join(secrets))
-    if rituals.get('mode') != 'templates_only_not_scheduled': failures.append('cron rituals mode is not templates_only_not_scheduled')
+    phi=hits(PHI_PATTERNS, combined)
+    secrets=hits(SECRET_PATTERNS, combined)
+    if phi:
+        failures.append('PHI-like content detected in pilot pack: '+'; '.join(phi))
+    if secrets:
+        failures.append('secret-like content detected in pilot pack: '+'; '.join(secrets))
+    if rituals.get('mode') != 'templates_only_not_scheduled':
+        failures.append('cron rituals mode is not templates_only_not_scheduled')
     scheduled=[]
-    if isinstance(runtime.get('cron_rituals'), list): scheduled=[r.get('id') for r in runtime['cron_rituals'] if r.get('scheduled') is not False]
-    if scheduled: failures.append('cron rituals appear scheduled: '+', '.join(str(x) for x in scheduled))
+    if isinstance(runtime.get('cron_rituals'), list):
+        scheduled=[r.get('id') for r in runtime['cron_rituals'] if r.get('scheduled') is not False]
+    if scheduled:
+        failures.append('cron rituals appear scheduled: '+', '.join(str(x) for x in scheduled))
     status='ready' if not failures else 'blocked'
     return {
         'schema_version':'1.0.0','phase':14,'status':status,'pilot_ready':not failures,'safe_to_pilot':not failures,
@@ -109,14 +128,22 @@ def check_profile(profile: Path) -> dict:
 
 def main():
     ap=argparse.ArgumentParser(description='Check Phase 14 Institutional Pilot Pack readiness for a rendered NAIO profile bundle.')
-    ap.add_argument('--profile', required=True); ap.add_argument('--json', action='store_true')
-    args=ap.parse_args(); profile=Path(args.profile).expanduser().resolve()
-    if profile == Path.home() or str(profile) in ('/', str(Path.home()/'.hermes')): refuse('refusing to pilot-check home or ~/.hermes directly')
-    if not profile.is_dir(): refuse(f'profile directory not found: {profile}')
+    ap.add_argument('--profile', required=True)
+    ap.add_argument('--json', action='store_true')
+    args=ap.parse_args()
+    profile=Path(args.profile).expanduser().resolve()
+    if profile == Path.home() or str(profile) in ('/', str(Path.home()/'.hermes')):
+        refuse('refusing to pilot-check home or ~/.hermes directly')
+    if not profile.is_dir():
+        refuse(f'profile directory not found: {profile}')
     report=check_profile(profile)
-    if args.json: print(json.dumps(report, indent=2))
+    if args.json:
+        print(json.dumps(report, indent=2))
     else:
-        print('\n=== NAIO OS — Phase 14 institutional pilot check ===\n'); print(json.dumps(report, indent=2))
-        if report['status']=='ready': print('\n✅ PILOT PACK READY — non-clinical small-group adoption with human governance review, no PHI, and no deployment claims.')
+        print('\n=== NAIO OS — Phase 14 institutional pilot check ===\n')
+        print(json.dumps(report, indent=2))
+        if report['status']=='ready':
+            print('\n✅ PILOT PACK READY — non-clinical small-group adoption with human governance review, no PHI, and no deployment claims.')
     return 0 if report['status']=='ready' else 2
-if __name__ == '__main__': sys.exit(main())
+if __name__ == '__main__':
+    sys.exit(main())

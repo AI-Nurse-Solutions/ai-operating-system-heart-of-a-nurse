@@ -98,7 +98,7 @@
       <tr><td>Working Directory</td><td><span class="value-chip">your My-Nurse-AI-OS folder</span></td><td>Hermes works in one assigned unit, not the whole hospital.</td></tr>
       <tr><td>Code Execution Mode</td><td><span class="value-chip">Project</span></td><td>Keeps code runs inside the current project.</td></tr>
       <tr><td>Environment Passthrough</td><td><span class="value-chip">blank</span></td><td>Hand over only the medication this patient needs — never the whole med room.</td></tr>
-      <tr><td>Approval Mode</td><td><span class="value-chip">Smart</span></td><td>Routine things proceed; risky actions still ask a human.</td></tr>
+      <tr><td>Approval Mode</td><td><span class="value-chip">Manual</span> week one, then <span class="value-chip">Smart</span></td><td>See every action first; graduate to standing orders once they feel predictable.</td></tr>
       <tr><td>Redact Secrets</td><td><span class="value-chip">ON</span></td><td>The privacy curtain. Non-negotiable.</td></tr>
       <tr><td>File Checkpoints</td><td><span class="value-chip">ON</span></td><td>The "before photo" — lets you roll back if an edit goes wrong.</td></tr>
       <tr><td>Sudo Password</td><td><span class="value-chip">blank — never store it</span></td><td>Don't leave the narcotics cabinet unlocked to save a few seconds.</td></tr>
@@ -228,8 +228,8 @@
     <div class="setting-block">
       <h4>Approval Mode</h4>
       <p class="plainlang">"Which actions can proceed on standing orders, and which need a human signature?"</p>
-      <p><span class="value-chip">Smart</span> is the right default: low-risk commands proceed; risky ones — deleting files, install scripts, changing system settings, deploying, anything destructive — still ask you. Switch to <span class="value-chip">Manual</span> when you're handling secrets, doing server setup, working near private files, or simply feeling unsure. <strong>Never use fully-automatic / "YOLO" mode</strong> for anything involving your files, installs, credentials, or a public site.</p>
-      <div class="nurse-frame">Smart approval is standing orders with escalation. Routine things can proceed; risky actions still require human judgment.</div>
+      <p>Start on <span class="value-chip">Manual</span> for your first week — you see and approve every action before it runs, which is how you learn what Hermes actually does (this matches the Setup Safety Checklist in your Starter Kit). Once its actions feel predictable, <span class="value-chip">Smart</span> becomes the right working default: low-risk commands proceed; risky ones — deleting files, install scripts, changing system settings, deploying, anything destructive — still ask you. Drop back to <span class="value-chip">Manual</span> any time you're handling secrets, doing server setup, working near private files, or simply feeling unsure. <strong>Never use fully-automatic / "YOLO" mode</strong> for anything involving your files, installs, credentials, or a public site.</p>
+      <div class="nurse-frame">Manual is orientation week — you co-sign everything. Smart is standing orders with escalation: routine things proceed; risky actions still require human judgment.</div>
     </div>
 
     <div class="setting-block">
@@ -272,7 +272,7 @@
 
     <table class="setting-table">
       <tr><th>Setting</th><th>Beginner-safe value</th></tr>
-      <tr><td>Approval Mode</td><td>Smart (Manual when unsure)</td></tr>
+      <tr><td>Approval Mode</td><td>Manual for week one → Smart (Manual when unsure)</td></tr>
       <tr><td>Approval Timeout</td><td>120 seconds</td></tr>
       <tr><td>Confirm MCP Reloads</td><td>ON</td></tr>
       <tr><td>Command Allowlist</td><td>blank</td></tr>
@@ -484,7 +484,7 @@
 
     <div class="steps">
       <div class="step"><strong>1 · Set the Working Directory</strong> (and the default project directory) to one dedicated no-PHI folder. The assigned unit — not the whole hospital.</div>
-      <div class="step"><strong>2 · Approval Mode: Smart.</strong> Standing orders for the routine; a human signature for the risky. Never "YOLO."</div>
+      <div class="step"><strong>2 · Approval Mode: Manual for week one, then Smart.</strong> Co-sign everything while you learn; then standing orders for the routine, a human signature for the risky. Never "YOLO."</div>
       <div class="step"><strong>3 · Redact Secrets: ON.</strong> The privacy curtain stays closed. Non-negotiable.</div>
       <div class="step"><strong>4 · File Checkpoints: ON.</strong> Take the before photo. Rollback is charting you'll be grateful for exactly once — and that once matters.</div>
       <div class="step"><strong>5 · Sudo Password: blank. Environment Passthrough: blank.</strong> Hand over single medications on request, and keep the narcotics cabinet locked.</div>

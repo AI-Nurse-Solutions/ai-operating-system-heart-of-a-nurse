@@ -77,7 +77,7 @@ Your SOUL file comes from the SOUL Quiz at nurse-ai-os.org (it downloads as `Cor
 ## 4 · Give Hermes your Starter Kit
 The Starter Kit (ZIP from nurse-ai-os.org) is the folder skeleton of your system.
 - Unzip it somewhere you'll find again (Documents is perfect). The folder is `My-Nurse-AI-OS`.
-- Tell Hermes: *"My Nurse AI OS folder is at [location]. This is where my files live: my SOUL file, my notes (03-Memory), my projects (04-Projects). Keep your work for me inside it."*
+- Tell Hermes: *"My Nurse AI OS folder is at [location]. This is where my files live: my SOUL file, my notes (Memory), my projects (Projects), my reusable prompts (Skills). If any of those folders are missing, create them. Keep your work for me inside it."*
 
 > **Why these two files matter more than everything else:** a powerful AI is like a powerful horse — magnificent, and dangerous without a harness. The Starter Kit and your SOUL file **are the harness.** The SOUL file gives the engine your values, your boundaries, the lines it may never cross. The Starter Kit gives it a home and a structure. Together they give the system **the heart of a nurse** — and keep the horse from running away with you. Skipping them doesn't make you faster; it makes you a passenger.
 
@@ -117,7 +117,7 @@ You don't memorize features. You see the routine once in your mind, and your han
 | You say | Hermes does |
 |---|---|
 | "Run my morning huddle." | Asks your #1 priority, offers three ways to help |
-| "Give me a Kardex entry for this session." | Writes a 5-line handoff note to save in 03-Memory |
+| "Give me a Kardex entry for this session." | Writes a 5-line handoff note to save in your Memory folder |
 | "Make that correction permanent." | Turns your feedback into a standing rule |
 | "Before you start, interview me like an admission assessment." | Asks questions before big tasks instead of guessing |
 | "Show me your plan before you do anything." | Keeps your hand on every decision |

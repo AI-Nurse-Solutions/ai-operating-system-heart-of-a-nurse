@@ -301,6 +301,9 @@ if [[ $COMMERCIAL_CHECK -eq 1 ]]; then
   exec python3 "$HERE/scripts/commercial.py" --profile "$TARGET"
 fi
 
+NAIO_TMPDIR="$(mktemp -d "${TMPDIR:-/tmp}/naio-install.XXXXXX")"
+trap 'rm -rf "$NAIO_TMPDIR"' EXIT
+
 echo "▶ STEP 1/8 — Preflight (environment check)"
 if ! bash "$HERE/scripts/preflight.sh"; then
   echo "❌ Preflight blocked installation. Fix the issues above and re-run." >&2
@@ -309,10 +312,10 @@ fi
 
 echo ""
 echo "▶ STEP 2/8 — Verify signed release metadata"
-if python3 "$HERE/scripts/verify-release.py" >/tmp/naio-release-verify.out 2>&1; then
-  tail -n 4 /tmp/naio-release-verify.out
+if python3 "$HERE/scripts/verify-release.py" >"$NAIO_TMPDIR/release-verify.out" 2>&1; then
+  tail -n 4 "$NAIO_TMPDIR/release-verify.out"
 else
-  cat /tmp/naio-release-verify.out
+  cat "$NAIO_TMPDIR/release-verify.out"
   echo "❌ Release signature verification failed. Refusing to proceed." >&2
   exit 2
 fi
@@ -320,10 +323,10 @@ fi
 echo ""
 echo "▶ STEP 3/8 — Verify checksums"
 if [[ $WITH_CHECKSUMS -eq 1 ]]; then
-  if python3 "$HERE/scripts/healthcheck.py" --checksums-only >/tmp/naio-hc-checksums.out 2>&1; then
-    tail -n 5 /tmp/naio-hc-checksums.out
+  if python3 "$HERE/scripts/healthcheck.py" --checksums-only >"$NAIO_TMPDIR/hc-checksums.out" 2>&1; then
+    tail -n 5 "$NAIO_TMPDIR/hc-checksums.out"
   else
-    cat /tmp/naio-hc-checksums.out
+    cat "$NAIO_TMPDIR/hc-checksums.out"
     echo "❌ Checksum verification failed. Refusing to proceed." >&2
     exit 2
   fi
@@ -422,10 +425,10 @@ fi
 
 echo ""
 echo "▶ STEP 8/8 — Final healthcheck"
-if python3 "$HERE/scripts/healthcheck.py" >/tmp/naio-hc-final.out 2>&1; then
-  tail -n 4 /tmp/naio-hc-final.out
+if python3 "$HERE/scripts/healthcheck.py" >"$NAIO_TMPDIR/hc-final.out" 2>&1; then
+  tail -n 4 "$NAIO_TMPDIR/hc-final.out"
 else
-  cat /tmp/naio-hc-final.out
+  cat "$NAIO_TMPDIR/hc-final.out"
   echo "❌ Final healthcheck failed." >&2
   exit 1
 fi

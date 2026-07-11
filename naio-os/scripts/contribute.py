@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — contribute.py (Phase 18)
+NAIO OS — contribute.py (Phase 13)
 
 NIN Community Contribution Flow checker for rendered NAIO Hermes profile bundles.
 It verifies that a nurse can prepare sanitized community contributions safely:
@@ -104,7 +104,7 @@ def check_profile(profile: Path) -> dict:
     combined = "\n".join(combined_parts)
 
     required_phrases = [
-        "Phase 18 NIN Community Contribution Flow",
+        "Phase 13 NIN Community Contribution Flow",
         "Contribution Intake Guide",
         "Sanitization Checklist",
         "Contribution Template",
@@ -160,7 +160,7 @@ def check_profile(profile: Path) -> dict:
     status = "ready" if not failures else "blocked"
     return {
         "schema_version": "1.0.0",
-        "phase": 18,
+        "phase": 13,
         "status": status,
         "contribution_ready": not failures,
         "safe_to_contribute": not failures,
@@ -186,7 +186,7 @@ def check_profile(profile: Path) -> dict:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Check Phase 18 NIN Community Contribution Flow readiness for a rendered NAIO profile bundle.")
+    ap = argparse.ArgumentParser(description="Check Phase 13 NIN Community Contribution Flow readiness for a rendered NAIO profile bundle.")
     ap.add_argument("--profile", required=True, help="rendered NAIO profile directory")
     ap.add_argument("--json", action="store_true", help="print machine-readable report")
     args = ap.parse_args()
@@ -199,7 +199,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        print("\n=== NAIO OS — Phase 18 NIN community contribution check ===\n")
+        print("\n=== NAIO OS — Phase 13 NIN community contribution check ===\n")
         print(json.dumps(report, indent=2))
         if report["status"] == "ready":
             print("\n✅ CONTRIBUTION FLOW READY — share sanitized learning with human review, no PHI, and no endorsement claims.")

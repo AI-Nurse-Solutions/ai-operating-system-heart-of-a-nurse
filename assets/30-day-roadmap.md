@@ -47,15 +47,15 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 - **Door 2 (optional, later):** the full governed Hermes build — official Hermes site first, then our nursing layer. Don't feel behind for skipping this; most nurses do.
 
 ### Day 5 — Build your folder home (Green)
-- Unzip the starter kit. This folder architecture (`00-Start-Here`, `01-SOUL`, `02-Skills`, `03-Memory`, `04-Projects`, `05-Learning`) is the bones of your OS. Obsidian is a lovely home for it, but any folder works.
+- Unzip the starter kit. Its numbered folders (`00-Start-Here` through `14-Google-Workspace-HIPAA`) are your library — guides, templates, and checklists to read. Its three working folders — `Memory`, `Projects`, and `Skills` — are the bones of your OS: the rest of this roadmap saves into them. (Older download without the three folders? Ask your AI to create them.) Obsidian is a lovely home for it all, but any folder works.
 
 ### Day 6 — Draw your delegation map (Green)
 - One page, one line down the middle. Left: what stays human — judgment, relationships, assessments, approvals, your license. Right: what the system may carry — research, drafts, summaries, reminders, repetition.
-- Save to `01-SOUL/delegation-map.md`. Every workflow you ever build must respect this line.
+- Save to `00-Start-Here/delegation-map.md`, next to your SOUL file (`00-Start-Here/Core-SOUL.md` — if your quiz download is still in Downloads, move it there now). Every workflow you ever build must respect this line.
 
 ### Day 7 — Weekly review (Green)
 - 15 minutes. What worked? What felt unsafe? What do you want next week?
-- Save to `03-Memory/weekly-reviews/W1.md`.
+- Save to `Memory/weekly-reviews/W1.md`.
 
 **Week 1 checkpoint:** You have a SOUL file, a life map, a locked boundary, a delegation map, a folder home — and you've already had one win.
 
@@ -81,12 +81,12 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 - Copy the Morning Huddle prompt from [Make It Yours](https://nurse-ai-os.org/personalize.html). Door 2 users can schedule it with one cron command.
 
 ### Days 10–11 — Open your digital Kardex (Green)
-- Create `03-Memory/KARDEX.md`. End every meaningful session by asking for a five-line handoff entry: what was decided, what was produced, what's still open. Paste the Kardex back in at the start of new sessions.
+- Create `Memory/KARDEX.md`. End every meaningful session by asking for a five-line handoff entry: what was decided, what was produced, what's still open. Paste the Kardex back in at the start of new sessions.
 - This is searchable continuity — no session starts from zero again.
 
 ### Days 12–13 — Wellbeing prompt (Green)
 - Build a daily reflection prompt: mood, energy, gratitude, friction.
-- Save to `02-Skills/personal/daily-reflection.md`.
+- Save to `Skills/personal/daily-reflection.md`.
 
 ### Day 14 — Weekly review (Green)
 - What time did you reclaim? Where did AI overreach? Make one correction a **standing rule** in your SOUL file — that's the teach-it-once loop starting.
@@ -116,7 +116,7 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 
 ### Day 16 — Clinical reasoning, not clinical answers (Green)
 - Build a Socratic tutor prompt: *"Ask me questions about this topic. Do not give me the answer until I've reasoned through it."*
-- Save to `02-Skills/professional/socratic-tutor.md`.
+- Save to `Skills/professional/socratic-tutor.md`.
 
 ### Day 17 — Research appraisal (Green)
 - Use the EDENA-AS evidence rubric: source, methodology, bias, applicability.
@@ -124,7 +124,7 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 
 ### Day 18 — Meeting / handoff prep (Yellow)
 - Use only non-PHI inputs: agendas, topics, your own notes.
-- Build a reusable prep skill in `02-Skills/professional/meeting-prep.md`.
+- Build a reusable prep skill in `Skills/professional/meeting-prep.md`.
 
 ### Day 19 — Track task (Yellow for Leaders; Green for others)
 - **Leaders:** draft a one-page brief on an AI tool using the EDENA tier framework.
@@ -160,11 +160,11 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 ### Day 22 — Choose one community project — and let AI interview you first (Green)
 - Pick one: a LinkedIn post series, a community event, a unit pilot, a grant application.
 - Before any work: use the **admission-assessment prompt** from [Make It Yours](https://nurse-ai-os.org/personalize.html) — the AI interviews you about success criteria, constraints, time budget, and boundaries, then writes the plan back for your approval. Never hand it a one-line goal.
-- Create `04-Projects/<project-name>/`.
+- Create `Projects/<project-name>/`.
 
 ### Day 23 — Voice + audience prompt (Green)
 - Define your audience, voice, and non-negotiables.
-- Save to `02-Skills/community/voice.md`.
+- Save to `Skills/community/voice.md`.
 
 ### Day 24 — Content / proposal draft (Yellow)
 - Ask AI to draft the first version. You edit, you decide, you publish.

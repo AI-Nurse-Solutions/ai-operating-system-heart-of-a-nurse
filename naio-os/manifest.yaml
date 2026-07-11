@@ -55,7 +55,7 @@ contents:
   sha256: 022f12f1fec33c8e4c7381ac58fb0c314b4d6234afe8e068e705704e15705fe0
 - path: scripts/preflight.sh
   role: preflight
-  sha256: cc112a0586f53501c647dad9463f28addc671160226e76883e980cdf529c6713
+  sha256: c2b01c44dbe67444096e3c9d13f61c31f5c89900f3c39a4e118e0704a2ef8f7e
 - path: scripts/import-soul.py
   role: import-soul
   sha256: c5c1d69754e960e68aeb46fde7a9918cc9ce83a4637a935ccd423f3a82bbdd0f
@@ -64,10 +64,10 @@ contents:
   sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 95f3d5278ecd8b3f422511f01ac595a2002a0dbabe105710b085f8653ac876b9
+  sha256: 394b3d7de116758f50b404e73b4821de2ab72c67061c2916d1fdeac57f65fc2c
 - path: scripts/self-test.py
   role: self-test
-  sha256: 776146514e527c8f8a7a8ab5522980e22dd165bd1453386e2319f71d069e2fc3
+  sha256: d41cad5b3b466ffa6ec34eacf562842eaa7ea40f5bc42fb21606fe412c1f1444
 - path: scripts/healthcheck.py
   role: healthcheck
   sha256: bde8b39b8a17aa9e017ff123cf7b249ae22afd098c9d9b084da8a2b0e63513de
@@ -76,13 +76,13 @@ contents:
   sha256: 1f3ed5168a4bf3ac85371245f6a60c578f5340a153fa6bc5718ba0655d3246e4
 - path: install.sh
   role: entrypoint
-  sha256: 5d7602714eec08d1ff3a0c5204ac6dd9edd23efd3672f528ad274a19ea198b3d
+  sha256: 64751cb576f4cfbdd2b7a20363a678d8b1c81cca9af1029f3dcc14d26a2d3973
 - path: bootstrap.sh
   role: one-line-installer
-  sha256: e20ba7374ebf680b8e9e2fed42e490acb749ca52edcb1ba8e632cfb57c9f477a
+  sha256: 5d412c925802f77455cb79d80a1d69632dcfdf6bf0a5deb7c4364ca3db871517
 - path: README.md
   role: spec
-  sha256: 8c9185b2e10c7028d5fc5877d16f5816a89215557ace9d9e84ad28e102e6c024
+  sha256: ec1f18a517dd7685d11796d46a242d677607d1bd9e089e1eb9da82ca398ee6dd
 - path: GOVERNANCE-RESEARCH.md
   role: evidence
   sha256: b8790f33df36791c585c04783a634717bf618276ce2dd812817293e0385a013b
@@ -103,31 +103,31 @@ contents:
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead
 - path: scripts/activation.py
   role: activation-check
-  sha256: 970e05daaaa70305a5fd47ffe4f31950970652181887afe78b8382a4661bf9d6
+  sha256: 60ca4b68041722705b282daf072fc1e89ab3d1917bba976f4653434a179a9a38
 - path: scripts/launch.py
   role: public-launch-check
-  sha256: 1dceb55909a01b02c5b7356da35b382a0bba72c452dd67934aae21427bb5aee8
+  sha256: 9803da39780653357f33826c60cbf2813b337b5296407dfc2a7f39f7319b810a
 - path: scripts/cohort.py
   role: cohort-mode-check
-  sha256: 85930740db2125ebd30e628c8e36d6dbea4ce0232728af3b0802ac3eb01d2c23
+  sha256: 778ea388314e8bdcc00ff02d76f04902e47d8a0824332851d42c7839dc10503d
 - path: scripts/evidence.py
   role: evidence-trail-check
-  sha256: 1850ab6efb84033ad2437d2dacda4ab303b330e8602d0b75d32c8ab3591cb9b9
+  sha256: fea9a8b126f69c6052b2953e221b48150d59c2521e01862e2bcc9dc4c784f604
 - path: scripts/contribute.py
   role: contribution-flow-check
-  sha256: 20dbfa19a1a1f535f34c21b591f02370909b2e732f03d482648ea5d0276e8641
+  sha256: 912b31993d6cd9e0b19d931a0628c57e24f866d2942df5145af62842d1647c61
 - path: scripts/pilot.py
   role: institutional-pilot-check
-  sha256: db139ee179f5053300632a9d3fb0748cb07653a248aa645303f69d1ad29e921b
+  sha256: 764cb808f68cb9cd32bbc91224e8be04d1ba2810ac9aeb1e4e2569ed4c7f5092
 - path: scripts/readiness.py
   role: edena-readiness-check
-  sha256: 5ef32359a07830bfdb0d4c69dc6b5d135b38f2d9b959c3d8b0dca54f4dc990a4
+  sha256: 3dd2cff5a52a9b034135650ce9cc1899ddcf10ccf62fd2e70cf2a2731ece40b6
 - path: scripts/registry.py
   role: agent-registry-check
-  sha256: 45d6ea8d44285eaaf2973149657175e7209ce35c7b2ac7ce6847443fe566c885
+  sha256: 6a36d7d4643dc432bc08b753ff2b90af09960aae88b193f210201d8d42cfcf08
 - path: scripts/orchestration.py
   role: florence-x-orchestration-check
-  sha256: cc5cc8b3b9a28e8cefd7bc1aecdd0ec3e0b6c058bfec5f4d9d510330360e7f31
+  sha256: b61fda28694276eb239f16124d0d52ed7b10d5d7501e84a2681bef8be9d4c5e6
 - path: scripts/governance.py
   role: governance-board-check
   sha256: 409e59b0b7510eedcb40fb0bb173fae88e7a2364900afeba7eaf79ee73411a31

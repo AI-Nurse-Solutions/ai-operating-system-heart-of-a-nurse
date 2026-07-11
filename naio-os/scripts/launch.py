@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NAIO OS — launch.py (Phase 18)
+NAIO OS — launch.py (Phase 10)
 
 Public Launch Pack checker for rendered NAIO Hermes profile bundles. It verifies
 that a nurse has the shareable, no-PHI, nurse-facing public launch assets needed
@@ -120,7 +120,7 @@ def check_launch(profile: Path) -> dict:
             warnings.append(f"launch checklist should mention {marker}")
 
     return {
-        "phase": 18,
+        "phase": 10,
         "status": "ready" if not failures else "blocked",
         "safe_to_share": not failures,
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -139,7 +139,7 @@ def check_launch(profile: Path) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Check Phase 18 Public Launch Pack readiness for a rendered NAIO profile bundle.")
+    parser = argparse.ArgumentParser(description="Check Phase 10 Public Launch Pack readiness for a rendered NAIO profile bundle.")
     parser.add_argument("--profile", required=True, help="rendered NAIO Hermes profile directory")
     parser.add_argument("--json", action="store_true", help="emit JSON only")
     args = parser.parse_args()
@@ -152,7 +152,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(result, indent=2))
     else:
-        print("\n=== NAIO OS — Phase 18 public launch check ===\n")
+        print("\n=== NAIO OS — Phase 10 public launch check ===\n")
         print(json.dumps(result, indent=2))
         if result["safe_to_share"]:
             print("\n✅ LAUNCH PACK READY — review, personalize, and share without PHI or clinical claims.")

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nurse AI OS Architecture Report — for AI architects and CNOs</title>
+<meta name="description" content="Nurse AI OS architecture is the architecture professional bodies are asking for: how ANA, NCSBN, and AAN guidance maps to EDENA tiers, human gates, signed releases, and refuse-at-intake memory — for AI architects and Chief Nursing Officers.">
+<link rel="canonical" href="https://nurse-ai-os.org/architecture-report.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+.report-table { width:100%; border-collapse:collapse; margin:1.2rem 0; font-size:.95rem; }
+.report-table th { background:var(--navy-900); color:#fff; text-align:left; padding:.55rem .8rem; }
+.report-table td { border:1px solid var(--linen-100); padding:.55rem .8rem; vertical-align:top; }
+.report-table tr:nth-child(even) td { background:var(--linen-50, #f7f5f0); }
+.report-table-wrap { overflow-x:auto; }
+.design-list li { margin:.55rem 0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="index.html#founding-year">Free Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a href="nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Reference architecture · for AI architects and Chief Nursing Officers</p>
+    <h1>Nurse AI OS Architecture Report</h1>
+    <p class="lede"><em>Nurse AI OS architecture is the architecture professional bodies are asking for.</em> How ANA, NCSBN, and AAN guidance maps — statement by statement, verified against primary sources — onto EDENA risk tiers, human gates, signed releases, and refuse-at-intake memory.</p>
+    <p style="margin-top:1.2rem;"><a class="btn btn-primary" href="assets/nurse-ai-os-architecture-report.pdf">Download the PDF →</a></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <p class="eyebrow">Executive summary</p>
+    <h2>One design problem, solved by structure</h2>
+    <p class="section-intro">Nurse AI OS is a governed personal-AI operating layer for nurses, built on the open-source Hermes Agent runtime. It exists to solve one design problem well: <strong>give an individual nurse a genuinely useful personal AI system that is mechanically incapable of drifting into clinical practice, patient data, or unaccountable autonomy.</strong></p>
+    <p>This report addresses two readers at once. For the <strong>AI architect</strong>, it is a case study in governance <em>enforced by structure</em> — tiers, gates, signed releases, refuse-at-intake memory rules, and fail-closed output checks — rather than requested in a system prompt. For the <strong>CNO</strong>, it is evidence that when nurses adopt personal AI (and they are adopting it, with or without guidance), there is a disciplined, profession-aligned way to do it that never touches PHI, never enters the clinical record, and teaches every user the governance instincts your organization needs them to have.</p>
+    <p>The central claim is deliberately conservative and was adversarially verified against primary sources: <strong>the profession's own bodies have already specified what safe nursing AI must look like, and this architecture operationalizes their guidance.</strong> The ANA holds that assistive technologies are <em>adjunct to, not replacements for, the nurse's knowledge and skill</em>, that nurses remain accountable <em>even when the technology fails</em>, and that nurses integrating AI carry an ongoing duty to verify its validity and reliability. NCSBN's regulatory journal insists human clinical judgment remain the final arbiter. The American Academy of Nursing requires testing before deployment and funded post-deployment surveillance. ANA explicitly directs nurse <em>leaders</em> to establish responsibility-and-accountability measures for AI use. Each statement maps to a load-bearing component of this system.</p>
+    <p>What no professional body supplies — and what this project genuinely contributes — is the <strong>mechanical layer</strong>: the working system that turns published guidance into daily practice for one nurse at a time.</p>
+    <div class="boundary">
+      <strong>A note on method, because it is itself an architectural feature:</strong> the research behind this report used three-vote adversarial verification against primary sources. Twenty-four of twenty-five verified claims survived; one — an early framing that nursing AI operates in a "regulatory vacuum" — was refuted and publicly corrected. A system whose marketing survives its own verification discipline is the system this report describes.
+    </div>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">Section 1</p>
+    <h2>The design problem</h2>
+    <p>Nurses are already using consumer AI tools, on personal devices, without governance. The naive institutional response — prohibition — does not stop the use; it removes it from view. The naive product response — "an AI for nurses" with clinical features — walks straight into the failure record: clinical AI that degraded in the real world, laundered bias through proxy metrics, or was expensively abandoned (the Epic sepsis model's external-validation collapse, Watson for Oncology, the Obermeyer bias findings — cited here as the widely reported cautionary record).</p>
+    <p>Nurse AI OS takes the third path: a <strong>practice-adjacent</strong> personal system. It carries the professional life <em>around</em> the work — study, certification upkeep, portfolios, teaching materials, unit-operations drafting, quality-improvement scaffolding, side-business discipline — and treats the clinical core as permanently out of scope. The boundary is not a usage policy; it is the architecture's first invariant: <strong>no PHI, ever; if it could identify a patient, it counts.</strong></p>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">Section 2</p>
+    <h2>Architecture overview</h2>
+    <p>The system is four layers, each with a distinct trust model:</p>
+    <div class="report-table-wrap"><table class="report-table">
+      <tr><th>Layer</th><th>What it is</th><th>Trust mechanism</th></tr>
+      <tr><td><strong>Runtime</strong></td><td>Hermes Agent (open source, MIT): SOUL.md standing instructions loaded first in the system prompt, skills as markdown files, persistent memory, cron, messaging gateways, MCP tools</td><td>Upstream security features: skill security scanning, staged <code>write_approval</code> for agent-authored skills, command approval, container isolation</td></tr>
+      <tr><td><strong>Governance layer</strong></td><td>EDENA risk tiers · human-review gates · no-PHI boundary · Do-Not-Remember memory rules · prompt-injection and untrusted-content boundaries · skill/MCP vetting checklist</td><td>Rules rendered into the system prompt <em>plus</em> mechanical enforcement points (gates, staging queues, fail-closed self-audits)</td></tr>
+      <tr><td><strong>Distribution</strong></td><td>The naio-os signed-release installer</td><td>Pinned public-key fingerprint → RSA-signed manifest → per-file checksums, verified before any downloaded byte executes; fail-closed</td></tr>
+      <tr><td><strong>Audience modules</strong></td><td>Four packs on one spine: Student Study OS, Builder OS (entrepreneurs), Leader OS (managers), Bedside OS (staff/APRN)</td><td>Shared boundary headers per pack; per-skill EDENA frontmatter; Yellow-tier skills carry fail-closed self-audit footers</td></tr>
+    </table></div>
+    <p><strong>EDENA tiers measure risk, not privilege:</strong> 🟢 Green — proceed, human reviews output; 🟡 Yellow — human approves before use; 🟠 Orange — deferred advanced integrations, treated as Red until governed review; 🔴 Red — stop, human authorization mandatory (and for some categories, permanently human: patient-adjacent work, personnel decisions, policy adoption, payments).</p>
+    <p>Roughly 70% of the system is this shared spine; the audience modules are the remaining 30% — skills, personas, knowledge sources, and tier defaults specialized per audience.</p>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">Section 3</p>
+    <h2>The professional mandate, mapped to structure</h2>
+    <p>Every row pairs a professional-body position — verified against the primary source by three adversarial votes — with the component that operationalizes it.</p>
+    <div class="report-table-wrap"><table class="report-table">
+      <tr><th>Professional guidance (verified)</th><th>Architectural response</th></tr>
+      <tr><td>ANA: assistive technology is <em>adjunct to, not a replacement for</em>, the nurse's knowledge and skill; nurses accountable even in technology failure</td><td>The doctrine "AI drafts, humans judge, nurses steward" as system-prompt invariant; the accountability line quoted verbatim in the Bedside module's boundary header</td></tr>
+      <tr><td>NCSBN (<em>Journal of Nursing Regulation</em>): human clinical judgment must remain the final arbiter; guard against overreliance on algorithms</td><td>Human gates on every consequential tier; the Judgment-First anti-anchoring pattern (nurse states their own assessment before seeing any draft)</td></tr>
+      <tr><td>ANA: ongoing duty to verify AI validity, application, transparency, and continued reliability, with traceability</td><td>Skill vetting as a lifecycle: review logs, 90-day re-review of shared skills, ledger-recorded decisions — never one-time approval</td></tr>
+      <tr><td>AAN: test before deployment; fund post-market surveillance of deployed AI</td><td>The Orange tier (integrations deferred until governed review) and adoption-signal outcome tracking in every module — with explicit <em>non-claims</em> (no patient-outcome or performance claims)</td></tr>
+      <tr><td>ANA: nurse leaders <em>must</em> establish responsibility-and-accountability measures for AI</td><td>The Leader OS module: governance-facilitator skill, Loop Charters, Human Review Logs, a one-week sprint ending in a signed Unit AI Accountability Charter</td></tr>
+      <tr><td>ANA: patients wrongly assume consumer health tools are legally protected; clinician endorsement compounds the misconception</td><td>The strict no-PHI boundary plus explicit "this is a personal, non-HIPAA-covered tool" framing throughout; FTC-aware Do-Not-Remember rules that treat <em>inferential</em> health data as sensitive</td></tr>
+      <tr><td>NCSBN: the Clinical Judgment Measurement Model is a <em>measurement</em> framework (Layer 3 = the measurable cognitive operations), not by itself a pedagogy</td><td>The Student module scaffolds NCJMM Layer-3 operations in-scenario and pairs them with Tanner's model for structured reflection — measurement and teaching kept distinct</td></tr>
+      <tr><td>Nursing-education research: AI-detection tools have unacceptable false-positive behavior; detection scores alone are an unjust enforcement basis</td><td>Integrity-by-design: process transparency, draft provenance, disclosure templates, and an educator process of detection <em>plus</em> review <em>plus</em> student interview — never automated accusation</td></tr>
+      <tr><td>Hermes runtime (primary docs): the agent autonomously creates and improves skills and curates memory</td><td>Agent-authored artifacts treated as a first-class supply-chain surface: <code>write_approval</code> staging gate on by default, security scanning regardless of origin, Do-Not-Remember enforced against automatic memory persistence</td></tr>
+    </table></div>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">Section 4</p>
+    <h2>Six design decisions AI architects should note</h2>
+    <ol class="design-list">
+      <li><strong>Gates, not vibes.</strong> Standing instructions alone are treated as insufficient for redline enforcement (the NEDA/Tessa forensic analysis — source-reported — found a strict refusal-first system prompt blocked only a fraction of adversarial prompts, while a fail-closed post-generation self-audit achieved full recall on its test set). Every redline here has a mechanical enforcement point: staged skill writes, command approval, installer refusal checks, and — on every Yellow-tier skill — a <strong>fail-closed self-audit footer</strong>: the skill appends a machine-checkable JSON verdict to its own output and discards the output if the verdict is false or malformed.</li>
+      <li><strong>Memory is refuse-at-intake, not store-then-redact.</strong> The Do-Not-Remember system (a global baseline plus per-audience extensions) rejects prohibited categories at the moment of intake — PHI, credentials, third-party personal data, named-staff performance information, inferential health data. A deletion policy protects against yesterday's mistake; a refusal policy prevents tomorrow's.</li>
+      <li><strong>The supply chain is signed and pinned.</strong> The installer verifies a pinned public-key fingerprint, then an RSA-signed manifest, then per-file checksums — before executing anything it downloaded. Any byte change fails closed until a human re-signs. The same discipline extends to <em>agent-authored</em> skills via the staging queue: in a runtime that writes its own tools, the agent is part of its own supply chain.</li>
+      <li><strong>Judgment-first sequencing.</strong> Wherever a request resembles decision support, the human's own assessment is elicited <em>before</em> any AI material is shown — an anti-anchoring control encoded as skill structure rather than advice.</li>
+      <li><strong>Tier the task, not the tool.</strong> EDENA tiers attach to <em>work</em> (drafting vs. sending; analysis vs. people-decisions; reading evidence vs. applying it), so the same runtime safely spans a student's flashcards and a manager's staffing analysis — with the risky end of each spectrum gated or permanently human.</li>
+      <li><strong>Four modules, one spine.</strong> Audience specialization lives in skills, boundary headers, and tier defaults — not in forks of the governance layer. This keeps every safety property global: a fix to the memory rules or the vetting checklist propagates to all four audiences at once.</li>
+    </ol>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">Section 5</p>
+    <h2>What this offers a CNO</h2>
+    <p><strong>What it is:</strong> a personal, no-PHI, non-covered tool that your nurses may adopt as individuals — the governed alternative to the ungoverned consumer-AI use already happening. It is deliberately <em>not</em> a clinical system: nothing here connects to your EHR, scheduling, or messaging systems without your organization's formal approval (the architecture defers those integrations at the Orange tier and teaches users to route them through institutional vetting — agreements, audit rights, named review responsibility).</p>
+    <p><strong>Why it may interest you anyway:</strong></p>
+    <ul class="design-list">
+      <li><strong>It builds the workforce capability the guidance assumes.</strong> Every user works daily inside risk tiers, human gates, review logs, and escalation rules — the exact governance instincts AI-era nursing practice requires. The Leader OS module goes further: it operationalizes ANA's leader-accountability directive as templates a unit manager can actually sign and post.</li>
+      <li><strong>It models the questions to ask vendors.</strong> The same vetting checklist users apply to skills and integrations — provenance, least privilege, tier honesty, boundaries present, named reviewer — is a serviceable first screen for any clinical-AI procurement conversation.</li>
+      <li><strong>Its outcome claims are disciplined.</strong> The system reports adoption and learning signals (time reclaimed by self-estimate, CE progress, gate health, governed-workflow counts) and explicitly refuses patient-outcome, safety-outcome, or compliance claims. A tool that does not overclaim for itself is likelier to teach users not to overclaim for others.</li>
+      <li><strong>The boundary protects you.</strong> "No PHI, ever — refused at intake, and if it could identify a patient, it counts" is a stricter rule than most consumer-tool policies your staff currently operate under, and it is enforced in the tool's own memory architecture, not just requested of the user.</li>
+    </ul>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">Section 6</p>
+    <h2>Evidence discipline</h2>
+    <p>The research program behind this architecture distinguishes three evidence grades — <strong>verified</strong> (survived three-vote adversarial verification against the primary source), <strong>source-reported</strong> (quoted from a primary source, not yet adversarially verified), and <strong>design judgment</strong> (architectural reasoning, labeled as such). In the most recent verification pass, 24 of 25 top claims were confirmed unanimously; the single refuted claim (the "regulatory vacuum" framing) was corrected in place and in public. The failure cases in §1 and the Tessa forensics in §4 are source-reported; every professional-guidance row in §3 is verified.</p>
+    <p>This is the report's last argument to both audiences: the architecture's deepest habit — <em>drafts are checked, claims are gated, and refutations are corrections rather than embarrassments</em> — is applied to the project's own literature. That habit, more than any single component, is what professional bodies are asking software to have.</p>
+
+    <p class="eyebrow" style="margin-top:2.4rem;">Citations, summarized</p>
+    <h2>Sources</h2>
+    <p><strong>Professional-body guidance (verified against primary sources):</strong></p>
+    <ol>
+      <li><strong>American Nurses Association</strong>, <em>The Ethical Use of Artificial Intelligence in Nursing Practice</em> — Board-approved position statement (Dec 2022 PDF) and OJIN 30(2) May 2025 revision; ANA Code of Ethics Provision 4.1 — <em>adjunct-not-replacement; accountability in technology failure; ongoing validity-verification duty; leader accountability directive; patient data-protection misconception.</em></li>
+      <li><strong>NCSBN</strong> — Zhong et al., <em>Journal of Nursing Regulation</em> (2025), incl. the Wolters Kluwer/NLN survey of 307 nursing-school deans and faculty (17% currently use/teach generative AI; 60%/46% of larger/smaller programs plan adoption by ~2029) — <em>human judgment as final arbiter; the AI-literacy gap.</em></li>
+      <li><strong>NCSBN</strong>, Clinical Judgment Measurement Model — nclex.com official pages — <em>NCJMM as measurement model; Layer 3 cognitive operations.</em></li>
+      <li><strong>American Academy of Nursing</strong> — AI policy position; March 7, 2025 letter to HHS (HIPAA Security Rule NPRM, regulations.gov docket); March 14, 2025 NSF AI Action Plan letter (nitrd.gov) — <em>test-before-advance; post-market surveillance; HIPAA-and-AI clarification requests.</em></li>
+    </ol>
+    <p><strong>Pedagogy and academic integrity (verified):</strong> Sessions, <em>Nursing Education Perspectives</em> 47(1) — CJMM-whiteboard simulation paired with Tanner's model (feasibility evidence) · Grimm et al., <em>Nurse Educator</em> (2025) and the DNP detection-rubric reliability pilot (PMC12539509) — detector false-positive risk; detection+review+interview process · Golchini et al., "Socratic AI" (medRxiv preprint, 2025) — gated case phases, guidance tiers, five-dimension feedback; <em>explicitly emerging/experimental, no learner-outcome data.</em></p>
+    <p><strong>Comparable products (verified as vendor-stated design):</strong> UWorld UAsk launch materials (June 2026) — in-workflow embedded tutoring grounded in a proprietary nurse-authored corpus.</p>
+    <p><strong>Runtime (verified against official documentation):</strong> Hermes Agent docs and repository (Nous Research) — SOUL.md system-prompt position, skills model, autonomous skill creation and memory curation, <code>write_approval</code> staging, skill security scanning.</p>
+    <p><strong>Source-reported context (quoted from primary/secondary sources; not adversarially verified in this pass):</strong> NEDA/Tessa guardrail forensics (arXiv 2509.07022); Epic Sepsis Model external validation; Watson for Oncology retrospectives; Obermeyer et al., <em>Science</em> (2019); ambient-scribe legal analyses (ABA Health Law 2026); NIST AI 600-1 Generative AI Profile; WHO guidance on large multi-modal models (Jan 2024); FTC health-information guidance and enforcement record; nurse-manager qualitative study (PMC12174894); Hippocratic AI Nurse Advisory Council reporting.</p>
+
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>Take it with you:</strong> <a href="assets/nurse-ai-os-architecture-report.pdf">Download this report as a PDF</a> — generated from the same source as this page, so the two never drift.
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
+
+</body>
+</html>

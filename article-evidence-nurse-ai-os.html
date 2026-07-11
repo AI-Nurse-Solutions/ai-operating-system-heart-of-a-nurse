@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Governance You Can Refute: The Evidence Behind Nurse AI OS — Nurse AI OS</title>
+<meta name="description" content="For the AI-governance community: how Nurse AI OS grounds a personal-AI harness in verified professional guidance — three-vote adversarial verification, 24 of 25 claims confirmed, one refuted and publicly corrected — and why mechanical gates beat prompt-level policy.">
+<link rel="canonical" href="https://nurse-ai-os.org/article-evidence-nurse-ai-os.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="index.html#founding-year">Free Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a href="nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Article · for the AI-governance community · by Robert Domondon</p>
+    <h1>Governance You Can Refute: The Evidence Behind Nurse AI OS</h1>
+    <p class="lede">We ran three-vote adversarial verification against our own research program. Twenty-four of twenty-five claims survived. The one that didn't was in our marketing — so we corrected the marketing. This article is about what a small, domain-specific AI harness can teach the governance conversation, starting with that habit.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <p>Nurse AI OS is a governed personal-AI layer for nurses, built on an open-source agent runtime (Hermes, by Nous Research). It is deliberately small: one profession, one hard boundary — no patient data, ever — and four audience modules on a shared governance spine. What makes it interesting to the governance community isn't scale. It's that the project treats <strong>its own claims as a governed surface</strong>, and its safety properties as things to enforce mechanically rather than request politely.</p>
+
+    <h2>The evidence pipeline</h2>
+
+    <p>The research program behind the architecture works like this: fan-out searches across five angles → 23 primary sources fetched → 114 falsifiable claims extracted, each with a direct quote → the top 25 claims ranked by importance and source quality → <strong>three independent adversarial verifiers per claim</strong>, each prompted to refute, with two refutations killing a claim and uncertainty defaulting toward refutation.</p>
+
+    <p>Results: 24 of 25 claims confirmed unanimously. One claim was refuted 0–3: the assertion that U.S. nursing has <em>no</em> AI-specific guidance — a "regulatory vacuum" our early framing leaned on. The verifiers were right: the American Nurses Association has a board-approved position statement on AI ethics (2022, revised 2025), NCSBN's regulatory journal has published clear positions, and the American Academy of Nursing has formal policy and active regulatory engagement. So the positioning changed, in the report and in public: <strong>Nurse AI OS does not fill a regulatory vacuum; it operationalizes existing professional guidance.</strong> The mechanical layer is the contribution — the guidance existed; the working system that turns it into daily practice did not.</p>
+
+    <p>Every claim in our literature carries one of three marks: <em>verified</em> (survived adversarial verification), <em>source-reported</em> (quoted from a primary source, not yet verified), or <em>design judgment</em> (labeled architectural reasoning). Readers can tell which is which on every page. We think this should be table stakes for anyone publishing AI-governance claims — including about their own products.</p>
+
+    <h2>What the verified evidence supports</h2>
+
+    <p>The confirmed claim set converges on something the governance community will recognize: <strong>the professional bodies have already written the requirements document.</strong> ANA: AI is adjunct to, never a replacement for, nursing judgment; nurses remain accountable even in technology failure; those who integrate AI carry an <em>ongoing</em> duty to verify validity and reliability. NCSBN: human clinical judgment stays the final arbiter; guard against algorithmic overreliance. AAN: test before deployment, fund post-market surveillance. ANA again, on leadership: nurse leaders <em>must</em> establish responsibility-and-accountability measures for AI use.</p>
+
+    <p>Each requirement maps to a component: human-approval tiers and review gates ("AI drafts, humans judge, nurses steward"); a deferred-integration tier that keeps unvetted capabilities gated; skill vetting as a 90-day re-review lifecycle rather than one-time approval; a leader module whose deliverable is a signed, unit-level AI accountability charter; and an anti-anchoring pattern that elicits the human's own assessment <em>before</em> showing any AI draft.</p>
+
+    <h2>Mechanical gates, not prompt-level policy</h2>
+
+    <p>The design bet, stated plainly: <strong>standing instructions are necessary and insufficient.</strong> The forensic literature on the NEDA/Tessa chatbot failure (source-reported) found a strict refusal-first system prompt blocked only a fraction of adversarial prompts, while a fail-closed post-generation self-audit caught what the prompt missed. Accordingly, every redline in this system has an enforcement point that isn't prose: agent-authored skill changes land in a staging queue for human approval; every yellow-tier skill appends a machine-checkable self-audit verdict and <em>discards its own output</em> if the verdict fails; memory prohibitions are refused at intake rather than cleaned up afterward; and the installer verifies a pinned key fingerprint, a signed manifest, and per-file checksums before executing anything it downloaded — any byte change fails closed until a human re-signs.</p>
+
+    <p>One more, because agent runtimes are converging on self-modification: Hermes autonomously writes and improves its own skills and curates its own memory. We treat that as a supply-chain surface — <strong>the agent is a contributor to its own codebase, and it gets a reviewer</strong> like any other contributor.</p>
+
+    <h2>Honest limits</h2>
+
+    <p>Discipline cuts both ways, so: the entrepreneur module and the named healthcare-deployment comparables rest on source-reported evidence, not verified claims. The system makes no patient-outcome, safety-outcome, or compliance claims — its outcome measures are adoption and learning signals, self-reported. It is a personal, non-HIPAA-covered tool by design, and it says so prominently rather than implying otherwise. And the pedagogy patterns it encodes from the literature are marked feasibility-grade where that's all the evidence supports.</p>
+
+    <p>If you work in AI governance, the takeaway we'd offer is small and portable: <em>run adversarial verification against your own claims, publish the refutations as corrections, and give every safety property a mechanical enforcement point.</em> A nursing-shaped system arrived at those habits because nursing already had them — the checklist, the second signature, the incident report without blame. The professions that have been managing risk for a century are not the audience for the governance conversation. They're a source of it.</p>
+
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>Go deeper:</strong> the full <a href="architecture-report.html">Nurse AI OS Architecture Report</a> (with the guidance-to-structure mapping and summarized citations, HTML and PDF) · the <a href="naio-os/GOVERNANCE-RESEARCH.md">standards crosswalk</a> for technical reviewers.
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Free for nurses and nursing students during the founding year.</p>
+  </div>
+</footer>
+
+</body>
+</html>

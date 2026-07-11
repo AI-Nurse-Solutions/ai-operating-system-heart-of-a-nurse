@@ -20,6 +20,10 @@
 6. `Landing-Page-Copy.md` — simple launch-page copy for a first offer.
 7. `Outreach-Conversation-Script.md` — human-first validation script.
 
+## Make it agentic — the Builder OS
+
+This kit is the content spine; the **Builder OS pack** (`16-Builder-OS/` in the full starter kit) turns it into a working system: an offer-canvas coach, a cron-scheduled validation-sprint runner, a claims-checked content studio, governed market research, a boundary counsel that reviews everything before it ships, and lightweight books — plus the FTC & health-data primer every nurse entrepreneur should read before their first client.
+
 ## The doorway
 
 This kit is not the whole NAIO journey. It is the gentle first doorway:

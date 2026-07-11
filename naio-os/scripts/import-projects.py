@@ -108,7 +108,12 @@ def main():
         if not safe_project_path(fpath):
             log(False, f"{name}: unsafe path {fpath}")
             refuse("project file paths must stay under 04-Projects/*.md")
-    log(True, "all project tiers, gates, and file paths are safe")
+    paths = [pr.get("file_path", "") for pr in projects]
+    dupes = sorted({p for p in paths if paths.count(p) > 1})
+    if dupes:
+        log(False, f"duplicate file_path values: {', '.join(dupes)}")
+        refuse("duplicate project file_path values — the renderer would silently overwrite; give each project a unique name/slug")
+    log(True, "all project tiers, gates, and file paths are safe and unique")
 
     print("\n[4] PHI heuristic screen...")
     blob = json.dumps(data)

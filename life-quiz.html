@@ -316,8 +316,27 @@ function projectRecord(d){
   };
 }
 
+function buildProjectRecords(){
+  // Deduplicate slugs: two projects renamed to the same (or same-truncating)
+  // name would otherwise share a file_path and silently overwrite each other
+  // in the installer's rendered bundle.
+  const recs = activeDomains().map(projectRecord);
+  const counts = {};
+  recs.forEach(r=>{
+    let s = r.slug;
+    while (counts[s]) {
+      counts[r.slug] = (counts[r.slug]||1) + 1;
+      const n = counts[r.slug];
+      s = `${r.slug.slice(0, 80 - String(n).length - 1)}-${n}`;
+    }
+    counts[s] = 1;
+    if (s !== r.slug){ r.slug = s; r.file_path = `04-Projects/${s}.md`; }
+  });
+  return recs;
+}
+
 function buildProjectsJson(){
-  const projects = activeDomains().map(projectRecord);
+  const projects = buildProjectRecords();
   return {
     schema_version: '1.0.0',
     generated_at: new Date().toISOString(),
@@ -359,10 +378,9 @@ ${p.goal_90_days || '(not set yet — help me define one measurable, humane win)
 }
 
 function buildProjectFiles(){
-  return activeDomains().map(d=>{
-    const p = projectRecord(d);
-    return { name:`${p.slug}.md`, pathNote:`Projects/${p.slug}.md · EDENA ${p.edena_tier}`, content:fileProjectMd(p) };
-  });
+  return buildProjectRecords().map(p=>(
+    { name:`${p.slug}.md`, pathNote:`Projects/${p.slug}.md · EDENA ${p.edena_tier}`, content:fileProjectMd(p) }
+  ));
 }
 
 function downloadOne(name, content, mime){

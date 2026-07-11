@@ -61,7 +61,7 @@ contents:
   sha256: c5c1d69754e960e68aeb46fde7a9918cc9ce83a4637a935ccd423f3a82bbdd0f
 - path: scripts/import-projects.py
   role: import-projects
-  sha256: 3fe22b6f675f3d559bce6591da8ccbe883166414934477624e43c3d5c687f022
+  sha256: 41502978031d7fe162e276c94e7b2b83a7ea077ae6e1252a92719dccaf24fab1
 - path: scripts/render-profile.py
   role: render-profile
   sha256: 394b3d7de116758f50b404e73b4821de2ab72c67061c2916d1fdeac57f65fc2c

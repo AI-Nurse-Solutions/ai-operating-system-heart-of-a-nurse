@@ -12,9 +12,14 @@ meta:
   invariant: "Tasks delegate. Judgment does not. Accountability never moves."
 
 # ---------------------------------------------------------------------------
-# RISK TIERS (EDENA) — classify every task BEFORE starting it.
+# RISK TIERS (EDENA — Ethical Design & Enablement for Nursing Augmentation).
+# Classify every task BEFORE starting it.
 # Tier is decided by the USE (audience, reversibility, subject), never the tool.
 # If two tiers could apply, the higher one applies.
+# Some Nurse AI OS materials show a fourth tier, Orange, for deferred advanced
+# integrations (APIs, shared memory, external automations). Under this charter,
+# treat Orange as Red — stop and escalate — until a governed review has defined
+# that integration's scope, logging, and named owner.
 # ---------------------------------------------------------------------------
 tiers:
   green:

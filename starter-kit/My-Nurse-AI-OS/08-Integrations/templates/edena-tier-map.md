@@ -4,10 +4,12 @@
 
 ## Tier definitions (short)
 
-- **Green** — Hermes drafts and suggests. I review all output before any use.
-- **Yellow** — Hermes assists with structured tasks. Human review required before external use.
-- **Orange** — Hermes can act inside a tightly defined scope with logging. *(Earned after course governance module.)*
-- **Red** — Hermes can act semi-autonomously inside a verified scope with audit. *(Reserved.)*
+Tiers measure **risk, not privilege** — the higher the color, the more human control is required. This matches the Governance Kit and the safety rules on nurse-ai-os.org.
+
+- **Green — may proceed.** Low-risk, private, reversible. Hermes drafts and suggests; I review all output before any use.
+- **Yellow — I approve first.** A person is referenced, a claim needs evidence, or the output may leave my system. Hermes drafts only; nothing is used or sent without my sign-off.
+- **Orange — deferred.** Advanced integrations and automation: APIs, shared memory, agents writing into external tools. Not assigned during onboarding. Before any Orange use, a governed review (after the course governance module) must define its scope, logging, and named owner — until then, treat Orange as Red.
+- **Red — stop.** Human authorization is mandatory before any work begins: anything external-facing, irreversible, patient-adjacent, or touching license, employer, legal, or money. Red is never a standing autonomy grant.
 
 ## My current tier per sphere
 

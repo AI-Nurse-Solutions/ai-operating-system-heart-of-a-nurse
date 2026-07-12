@@ -61,6 +61,29 @@ body.clinical-sketch-page .section-navy {
   background: var(--navy-900);
 }
 
+/* More-visible calm nurse portrait for Start Here and Resources. The source
+   artwork is already pale; a lighter veil preserves its presence without
+   competing with headings, controls, or opaque content cards. */
+body.calm-clinical-page {
+  background-color: var(--linen-50);
+  background-image:
+    linear-gradient(rgba(250, 247, 241, .58), rgba(250, 247, 241, .58)),
+    url("img/nurse-calm-clinical-background.jpg");
+  background-position: center top, center top;
+  background-size: auto, min(920px, 100vw) auto;
+  background-repeat: repeat, repeat;
+  background-attachment: scroll, fixed;
+}
+body.calm-clinical-page .section {
+  background-color: transparent;
+}
+body.calm-clinical-page .section-alt {
+  background: rgba(243, 238, 228, .34);
+}
+body.calm-clinical-page .section-navy {
+  background: var(--navy-900);
+}
+
 img { max-width: 100%; height: auto; border-radius: var(--radius); }
 
 h1, h2, h3 { font-family: var(--font-display); color: var(--navy-900); line-height: 1.2; }
@@ -295,6 +318,10 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
   .section { padding: 2.6rem 0; }
   body.clinical-sketch-page {
     background-size: auto, 620px auto;
+    background-attachment: scroll, scroll;
+  }
+  body.calm-clinical-page {
+    background-size: auto, 680px auto;
     background-attachment: scroll, scroll;
   }
 }

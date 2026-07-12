@@ -68,7 +68,7 @@ body.calm-clinical-page {
   background-color: var(--linen-50);
   background-image:
     linear-gradient(rgba(250, 247, 241, .58), rgba(250, 247, 241, .58)),
-    url("img/nurse-calm-clinical-background.jpg");
+    url("img/nurse-calm-clinical-background-v2.jpg");
   background-position: center top, center top;
   background-size: auto, min(920px, 100vw) auto;
   background-repeat: repeat, repeat;

@@ -38,6 +38,29 @@ body {
   background: var(--linen-50);
 }
 
+/* Decorative nursing-sketch background for the public front door and pathways.
+   A strong cream veil keeps the supplied clinical collage contextual—not
+   instructional—and protects text contrast while the artwork stays visible. */
+body.clinical-sketch-page {
+  background-color: var(--linen-50);
+  background-image:
+    linear-gradient(rgba(250, 247, 241, .78), rgba(250, 247, 241, .78)),
+    url("img/nurse-clinical-sketch-background.jpg");
+  background-position: center top, center top;
+  background-size: auto, min(880px, 100vw) auto;
+  background-repeat: repeat, repeat;
+  background-attachment: scroll, fixed;
+}
+body.clinical-sketch-page .section {
+  background-color: transparent;
+}
+body.clinical-sketch-page .section-alt {
+  background: rgba(243, 238, 228, .54);
+}
+body.clinical-sketch-page .section-navy {
+  background: var(--navy-900);
+}
+
 img { max-width: 100%; height: auto; border-radius: var(--radius); }
 
 h1, h2, h3 { font-family: var(--font-display); color: var(--navy-900); line-height: 1.2; }
@@ -270,4 +293,8 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
   .cols-2, .cols-3, .cols-4, .resource-list { grid-template-columns: 1fr; }
   .nav-links { gap: .75rem; font-size: .9rem; }
   .section { padding: 2.6rem 0; }
+  body.clinical-sketch-page {
+    background-size: auto, 620px auto;
+    background-attachment: scroll, scroll;
+  }
 }

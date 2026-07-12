@@ -84,6 +84,29 @@ body.calm-clinical-page .section-navy {
   background: var(--navy-900);
 }
 
+/* Clinical judgment background for FAQ and Nurse Station. The requested 40%
+   cream veil leaves the artwork prominent; white FAQ and bulletin cards carry
+   the reading surface while navy heroes and footers remain solid. */
+body.judgment-clinical-page {
+  background-color: var(--linen-50);
+  background-image:
+    linear-gradient(rgba(250, 247, 241, .40), rgba(250, 247, 241, .40)),
+    url("img/nurse-judgment-station-background.jpg");
+  background-position: center top, center top;
+  background-size: auto, min(960px, 100vw) auto;
+  background-repeat: repeat, repeat;
+  background-attachment: scroll, fixed;
+}
+body.judgment-clinical-page .section {
+  background-color: transparent;
+}
+body.judgment-clinical-page .section-alt {
+  background: rgba(243, 238, 228, .22);
+}
+body.judgment-clinical-page .section-navy {
+  background: var(--navy-900);
+}
+
 img { max-width: 100%; height: auto; border-radius: var(--radius); }
 
 h1, h2, h3 { font-family: var(--font-display); color: var(--navy-900); line-height: 1.2; }
@@ -322,6 +345,11 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
   }
   body.calm-clinical-page {
     background-size: auto, 680px auto;
+    background-attachment: scroll, scroll;
+  }
+  body.judgment-clinical-page {
+    background-position: center top, 66% top;
+    background-size: auto, 720px auto;
     background-attachment: scroll, scroll;
   }
 }

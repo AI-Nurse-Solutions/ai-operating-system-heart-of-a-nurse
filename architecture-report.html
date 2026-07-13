@@ -3,20 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nurse AI OS Architecture Report — for AI architects and CNOs</title>
-<meta name="description" content="Nurse AI OS architecture is the architecture professional bodies are asking for: how ANA, NCSBN, and AAN guidance maps to EDENA tiers, human gates, signed releases, and refuse-at-intake memory — for AI architects and Chief Nursing Officers.">
+<title>Nurse AI OS Governed Harness — Latest Architecture Report</title>
+<meta name="description" content="The latest verified Nurse AI OS architecture report: signed Governed Harness, active shadow governance, five live post-setup role packages, control boundaries, residual risks, and solo-founder roadmap.">
 <link rel="canonical" href="https://nurse-ai-os.org/architecture-report.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/nurse-ai.css">
 <style>
-.report-table { width:100%; border-collapse:collapse; margin:1.2rem 0; font-size:.95rem; }
-.report-table th { background:var(--navy-900); color:#fff; text-align:left; padding:.55rem .8rem; }
-.report-table td { border:1px solid var(--linen-100); padding:.55rem .8rem; vertical-align:top; }
-.report-table tr:nth-child(even) td { background:var(--linen-50, #f7f5f0); }
-.report-table-wrap { overflow-x:auto; }
-.design-list li { margin:.55rem 0; }
+.report-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.report-actions .btn-secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.7)}
+.report-actions .btn-secondary:hover{background:rgba(255,255,255,.1)}
+.hero .boundary{color:#10213f}
+.hero .boundary code{color:#0f766e}
+.status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.4rem 0}
+.status-card{background:#fff;border:1px solid var(--linen-100);border-top:4px solid var(--teal-600);border-radius:12px;padding:1rem}
+.status-card strong{display:block;color:var(--navy-900);font-size:1.05rem;margin-bottom:.25rem}
+.status-card.warn{border-top-color:#b7791f}
+.report-table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.95rem}
+.report-table th{background:var(--navy-900);color:#fff;text-align:left;padding:.65rem .8rem}
+.report-table td{border:1px solid var(--linen-100);padding:.65rem .8rem;vertical-align:top}
+.report-table tr:nth-child(even) td{background:var(--linen-50,#f7f5f0)}
+.report-table-wrap{overflow-x:auto}
+.priority{font-weight:700;color:#9a3412}
+.digest{overflow-wrap:anywhere;font-size:.86rem}
+.version-note{font-size:.95rem;color:var(--slate-600,#5b6678)}
+@media(max-width:760px){.status-grid{grid-template-columns:1fr}.report-actions .btn{width:100%;text-align:center}}
 </style>
 </head>
 <body>
@@ -28,119 +40,128 @@
       <a href="start-here.html">Start Here</a>
       <a href="pathways.html">Pathways</a>
       <a href="resources.html">Resources</a>
-      <a href="about.html">About</a>
-      <a href="index.html#founding-year">Free Founding Year</a>
-      <a href="faq.html">FAQ</a>
-      <a href="nurse-station.html">Nurse Station</a>
+      <a href="governed-harness.html">Governed Harness</a>
+      <a href="post-setup/">Post-Setup Packs</a>
       <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
     </div>
   </nav>
 </header>
 
+<main>
 <section class="hero" style="padding:3.2rem 0;">
   <div class="container narrow">
-    <p class="kicker">Reference architecture · for AI architects and Chief Nursing Officers</p>
-    <h1>Nurse AI OS Architecture Report</h1>
-    <p class="lede"><em>Nurse AI OS architecture is the architecture professional bodies are asking for.</em> How ANA, NCSBN, and AAN guidance maps — statement by statement, verified against primary sources — onto EDENA risk tiers, human gates, signed releases, and refuse-at-intake memory.</p>
-    <div class="boundary" style="margin-top:1.2rem;"><strong>Implementation update · July 13, 2026:</strong> This report documents the professional-guidance foundation and signed Phase 23 architecture. The subsequent comparative audit found that some Phase 23 controls were declarative rather than runtime-enforced. <a href="governed-harness.html">Governed Harness 2.0</a> adds tested capability compilation, Hermes-native runtime gates, provenance, evaluations, restart-safe proposals, trust cells, budgets, and connector controls. It is a tested but unsigned candidate and is not yet activated in the default profile.</div>
-    <p style="margin-top:1.2rem;"><a class="btn btn-primary" href="assets/nurse-ai-os-architecture-report.pdf">Download the PDF →</a></p>
+    <p class="kicker">Latest verified architecture · July 13, 2026 · 34 pages</p>
+    <h1>Nurse AI OS Governed Harness</h1>
+    <p class="lede">Current-state architecture, control boundaries, and a solo-founder roadmap for a nurse-governed control plane over Hermes.</p>
+    <div class="boundary" style="margin-top:1.2rem;">
+      <strong>Current posture:</strong> signed implementation candidate · <code>active_shadow</code> · live post-setup distribution · no canary enforcement · no clinical or PHI authorization.
+    </div>
+    <div class="report-actions">
+      <a class="btn btn-primary" href="assets/nurse-ai-os-architecture-report.pdf">Download the latest PDF →</a>
+      <a class="btn btn-secondary" href="assets/nurse-ai-os-architecture-report.md">Read the Markdown source</a>
+    </div>
   </div>
 </section>
 
-<section class="section">
+<section class="section" id="decision">
   <div class="container narrow">
+    <p class="eyebrow">Executive decision</p>
+    <h2>Keep the default profile in shadow mode</h2>
+    <p class="section-intro">Nurse AI OS now has a signed Hermes-native governance runtime and a live five-role post-setup distribution. It does <strong>not</strong> yet have a coherent end-to-end enforcement architecture.</p>
+    <p>Do not activate canary enforcement until EDENA semantics are unified, the five-role handoff is explicit, shadow evidence is adjudicated, pre-tool and post-generation pathways are threat-modeled, rollback is exercised, and the exact canary scope receives human authorization.</p>
 
-    <p class="eyebrow">Executive summary</p>
-    <h2>One design problem, solved by structure</h2>
-    <p class="section-intro">Nurse AI OS is a governed personal-AI operating layer for nurses, built on the open-source Hermes Agent runtime. It exists to solve one design problem well: <strong>give an individual nurse a useful no-PHI personal AI system with explicit technical and human controls against drift into clinical practice, patient data, or unaccountable autonomy.</strong></p>
-    <p>This report addresses two readers at once. For the <strong>AI architect</strong>, it is a case study in governance implemented through tiers, gates, signed releases, refuse-at-intake memory rules, and progressively hardened runtime checks—not merely requested in a prompt. For the <strong>CNO</strong>, it documents a disciplined, profession-aligned no-PHI approach to personal AI and the governance habits it is designed to teach. It does not establish that every deployment is mechanically incapable of boundary failure; that requires the runtime evidence, adversarial evaluation, host controls, and human review described in the <a href="governed-harness.html">Harness 2.0 update</a>.</p>
-    <p>The central claim is deliberately conservative and was adversarially verified against primary sources: <strong>the profession's own bodies have already specified what safe nursing AI must look like, and this architecture operationalizes their guidance.</strong> The ANA holds that assistive technologies are <em>adjunct to, not replacements for, the nurse's knowledge and skill</em>, that nurses remain accountable <em>even when the technology fails</em>, and that nurses integrating AI carry an ongoing duty to verify its validity and reliability. NCSBN's regulatory journal insists human clinical judgment remain the final arbiter. The American Academy of Nursing requires testing before deployment and funded post-deployment surveillance. ANA explicitly directs nurse <em>leaders</em> to establish responsibility-and-accountability measures for AI use. Each statement maps to a load-bearing component of this system.</p>
-    <p>What no professional body supplies — and what this project genuinely contributes — is the <strong>mechanical layer</strong>: the working system that turns published guidance into daily practice for one nurse at a time.</p>
-    <div class="boundary">
-      <strong>A note on method, because it is itself an architectural feature:</strong> the research behind this report used three-vote adversarial verification against primary sources. Twenty-four of twenty-five verified claims survived; one — an early framing that nursing AI operates in a "regulatory vacuum" — was refuted and publicly corrected. A system whose marketing survives its own verification discipline is the system this report describes.
+    <div class="status-grid" aria-label="Current architecture status">
+      <div class="status-card"><strong>Signed and verified</strong><span>46/46 unit tests, 8/8 synthetic evaluations, detached signature verified.</span></div>
+      <div class="status-card"><strong>Active shadow</strong><span>The plugin observes policy decisions but does not block tool execution.</span></div>
+      <div class="status-card"><strong>Five live role packs</strong><span>Checksummed, review-first downloads with status <code>not_installed</code>.</span></div>
+      <div class="status-card warn"><strong>No canary enforcement</strong><span>Promotion remains unauthorized and must use a dedicated profile.</span></div>
+      <div class="status-card warn"><strong>No PHI authorization</strong><span>The system is not authorized to accept patient data or provide patient-specific clinical support.</span></div>
+      <div class="status-card warn"><strong>No institutional approval</strong><span>Signing proves integrity and provenance—not clinical readiness, HIPAA compliance, or deployment approval.</span></div>
     </div>
-
-    <p class="eyebrow" style="margin-top:2.4rem;">Section 1</p>
-    <h2>The design problem</h2>
-    <p>Nurses are already using consumer AI tools, on personal devices, without governance. The naive institutional response — prohibition — does not stop the use; it removes it from view. The naive product response — "an AI for nurses" with clinical features — walks straight into the failure record: clinical AI that degraded in the real world, laundered bias through proxy metrics, or was expensively abandoned (the Epic sepsis model's external-validation collapse, Watson for Oncology, the Obermeyer bias findings — cited here as the widely reported cautionary record).</p>
-    <p>Nurse AI OS takes the third path: a <strong>practice-adjacent</strong> personal system. It carries the professional life <em>around</em> the work — study, certification upkeep, portfolios, teaching materials, unit-operations drafting, quality-improvement scaffolding, side-business discipline — and treats the clinical core as permanently out of scope. The boundary is not a usage policy; it is the architecture's first invariant: <strong>no PHI, ever; if it could identify a patient, it counts.</strong></p>
-
-    <p class="eyebrow" style="margin-top:2.4rem;">Section 2</p>
-    <h2>Architecture overview</h2>
-    <p>The system is four layers, each with a distinct trust model:</p>
-    <div class="report-table-wrap"><table class="report-table">
-      <tr><th>Layer</th><th>What it is</th><th>Trust mechanism</th></tr>
-      <tr><td><strong>Runtime</strong></td><td>Hermes Agent (open source, MIT): SOUL.md standing instructions loaded first in the system prompt, skills as markdown files, persistent memory, cron, messaging gateways, MCP tools</td><td>Upstream security features: skill security scanning, staged <code>write_approval</code> for agent-authored skills, command approval, container isolation</td></tr>
-      <tr><td><strong>Governance layer</strong></td><td>EDENA risk tiers · human-review gates · no-PHI boundary · Do-Not-Remember memory rules · prompt-injection and untrusted-content boundaries · skill/MCP vetting checklist</td><td>Rules rendered into the system prompt <em>plus</em> enforcement points — mechanical where the runtime provides them (approval gates, staging queues, signed releases) and model-followed fail-closed self-audits reviewed at the human gate (see §4)</td></tr>
-      <tr><td><strong>Distribution</strong></td><td>The naio-os signed-release installer</td><td>Pinned public-key fingerprint → RSA-signed manifest → per-file checksums, verified before any downloaded byte executes; fail-closed</td></tr>
-      <tr><td><strong>Audience modules</strong></td><td>Four packs on one spine: Student Study OS, Builder OS (entrepreneurs), Leader OS (managers), Bedside OS (staff/APRN)</td><td>Shared boundary headers per pack; per-skill EDENA frontmatter; Yellow-tier skills carry fail-closed self-audit footers (model-followed, audited at the human gate)</td></tr>
-    </table></div>
-    <p><strong>EDENA tiers measure risk, not privilege:</strong> 🟢 Green — proceed, human reviews output; 🟡 Yellow — human approves before use; 🟠 Orange — deferred advanced integrations, treated as Red until governed review; 🔴 Red — stop, human authorization mandatory (and for some categories, permanently human: patient-adjacent work, personnel decisions, policy adoption, payments).</p>
-    <p>Roughly 70% of the system is this shared spine; the audience modules are the remaining 30% — skills, personas, knowledge sources, and tier defaults specialized per audience.</p>
-
-    <p class="eyebrow" style="margin-top:2.4rem;">Section 3</p>
-    <h2>The professional mandate, mapped to structure</h2>
-    <p>Every row pairs a professional-body position — verified against the primary source by three adversarial votes — with the component that operationalizes it.</p>
-    <div class="report-table-wrap"><table class="report-table">
-      <tr><th>Professional guidance (verified)</th><th>Architectural response</th></tr>
-      <tr><td>ANA: assistive technology is <em>adjunct to, not a replacement for</em>, the nurse's knowledge and skill; nurses accountable even in technology failure</td><td>The doctrine "AI drafts, humans judge, nurses steward" as system-prompt invariant; the accountability line quoted verbatim in the Bedside module's boundary header</td></tr>
-      <tr><td>NCSBN (<em>Journal of Nursing Regulation</em>): human clinical judgment must remain the final arbiter; guard against overreliance on algorithms</td><td>Human gates on every consequential tier; the Judgment-First anti-anchoring pattern (nurse states their own assessment before seeing any draft)</td></tr>
-      <tr><td>ANA: ongoing duty to verify AI validity, application, transparency, and continued reliability, with traceability</td><td>Skill vetting as a lifecycle: review logs, 90-day re-review of shared skills, ledger-recorded decisions — never one-time approval</td></tr>
-      <tr><td>AAN: test before deployment; fund post-market surveillance of deployed AI</td><td>The Orange tier (integrations deferred until governed review) and adoption-signal outcome tracking in every module — with explicit <em>non-claims</em> (no patient-outcome or performance claims)</td></tr>
-      <tr><td>ANA: nurse leaders <em>must</em> establish responsibility-and-accountability measures for AI</td><td>The Leader OS module: governance-facilitator skill, Loop Charters, Human Review Logs, a one-week sprint ending in a signed Unit AI Accountability Charter</td></tr>
-      <tr><td>ANA: patients wrongly assume consumer health tools are legally protected; clinician endorsement compounds the misconception</td><td>The strict no-PHI boundary plus explicit "this is a personal, non-HIPAA-covered tool" framing throughout; FTC-aware Do-Not-Remember rules that treat <em>inferential</em> health data as sensitive</td></tr>
-      <tr><td>NCSBN: the Clinical Judgment Measurement Model is a <em>measurement</em> framework (Layer 3 = the measurable cognitive operations), not by itself a pedagogy</td><td>The Student module scaffolds NCJMM Layer-3 operations in-scenario and pairs them with Tanner's model for structured reflection — measurement and teaching kept distinct</td></tr>
-      <tr><td>Nursing-education research: AI-detection tools have unacceptable false-positive behavior; detection scores alone are an unjust enforcement basis</td><td>Integrity-by-design: process transparency, draft provenance, disclosure templates, and an educator process of detection <em>plus</em> review <em>plus</em> student interview — never automated accusation</td></tr>
-      <tr><td>Hermes runtime (primary docs): the agent autonomously creates and improves skills and curates memory</td><td>Agent-authored artifacts treated as a first-class supply-chain surface: <code>write_approval</code> staging gate on by default, security scanning regardless of origin, Do-Not-Remember enforced against automatic memory persistence</td></tr>
-    </table></div>
-
-    <p class="eyebrow" style="margin-top:2.4rem;">Section 4</p>
-    <h2>Six design decisions AI architects should note</h2>
-    <ol class="design-list">
-      <li><strong>Gates, not vibes.</strong> Standing instructions alone are treated as insufficient for redline enforcement (the NEDA/Tessa forensic analysis — source-reported — found a strict refusal-first system prompt blocked only a fraction of adversarial prompts, while a fail-closed post-generation self-audit achieved full recall on its test set). The <em>mechanically enforced</em> points here belong to the runtime and installer: staged skill writes requiring human approval, command approval, and signed-release refusal checks. Every Yellow-tier skill adds a <strong>fail-closed self-audit footer</strong> — an in-context requirement that the model append a machine-checkable JSON verdict and withhold its own draft when the verdict is false or malformed. Stated precisely, because precision is this report's product: in the current kit that footer is <strong>model-followed, not runtime-enforced</strong> — there is no separate output verifier that can withhold a response after generation. Its verdict line is visible and auditable at the human approval gate every Yellow-tier skill already carries (a response missing or failing its verdict is treated as discarded at that gate), and a delivery-gating output verifier is the identified next hardening step.</li>
-      <li><strong>Memory is refuse-at-intake, not store-then-redact.</strong> The Do-Not-Remember system (a global baseline plus per-audience extensions) rejects prohibited categories at the moment of intake — PHI, credentials, third-party personal data, named-staff performance information, inferential health data. A deletion policy protects against yesterday's mistake; a refusal policy prevents tomorrow's.</li>
-      <li><strong>The supply chain is signed and pinned.</strong> The installer verifies a pinned public-key fingerprint, then an RSA-signed manifest, then per-file checksums — before executing anything it downloaded. Any byte change fails closed until a human re-signs. The same discipline extends to <em>agent-authored</em> skills via the staging queue: in a runtime that writes its own tools, the agent is part of its own supply chain.</li>
-      <li><strong>Judgment-first sequencing.</strong> Wherever a request resembles decision support, the human's own assessment is elicited <em>before</em> any AI material is shown — an anti-anchoring control encoded as skill structure rather than advice.</li>
-      <li><strong>Tier the task, not the tool.</strong> EDENA tiers attach to <em>work</em> (drafting vs. sending; analysis vs. people-decisions; reading evidence vs. applying it), so the same runtime safely spans a student's flashcards and a manager's staffing analysis — with the risky end of each spectrum gated or permanently human.</li>
-      <li><strong>Four modules, one spine.</strong> Audience specialization lives in skills, boundary headers, and tier defaults — not in forks of the governance layer. This keeps every safety property global: a fix to the memory rules or the vetting checklist propagates to all four audiences at once.</li>
-    </ol>
-
-    <p class="eyebrow" style="margin-top:2.4rem;">Section 5</p>
-    <h2>What this offers a CNO</h2>
-    <p><strong>What it is:</strong> a personal, no-PHI, non-covered tool that your nurses may adopt as individuals — the governed alternative to the ungoverned consumer-AI use already happening. It is deliberately <em>not</em> a clinical system: nothing here connects to your EHR, scheduling, or messaging systems without your organization's formal approval (the architecture defers those integrations at the Orange tier and teaches users to route them through institutional vetting — agreements, audit rights, named review responsibility).</p>
-    <p><strong>Why it may interest you anyway:</strong></p>
-    <ul class="design-list">
-      <li><strong>It builds the workforce capability the guidance assumes.</strong> Every user works daily inside risk tiers, human gates, review logs, and escalation rules — the exact governance instincts AI-era nursing practice requires. The Leader OS module goes further: it operationalizes ANA's leader-accountability directive as templates a unit manager can actually sign and post.</li>
-      <li><strong>It models the questions to ask vendors.</strong> The same vetting checklist users apply to skills and integrations — provenance, least privilege, tier honesty, boundaries present, named reviewer — is a serviceable first screen for any clinical-AI procurement conversation.</li>
-      <li><strong>Its outcome claims are disciplined.</strong> The system reports adoption and learning signals (time reclaimed by self-estimate, CE progress, gate health, governed-workflow counts) and explicitly refuses patient-outcome, safety-outcome, or compliance claims. A tool that does not overclaim for itself is likelier to teach users not to overclaim for others.</li>
-      <li><strong>The boundary protects you.</strong> "No PHI, ever — refused at intake, and if it could identify a patient, it counts" is a stricter rule than most consumer-tool policies your staff currently operate under, and it is enforced in the tool's own memory architecture, not just requested of the user.</li>
-    </ul>
-
-    <p class="eyebrow" style="margin-top:2.4rem;">Section 6</p>
-    <h2>Evidence discipline</h2>
-    <p>The research program behind this architecture distinguishes three evidence grades — <strong>verified</strong> (survived three-vote adversarial verification against the primary source), <strong>source-reported</strong> (quoted from a primary source, not yet adversarially verified), and <strong>design judgment</strong> (architectural reasoning, labeled as such). In the most recent verification pass, 24 of 25 top claims were confirmed unanimously; the single refuted claim (the "regulatory vacuum" framing) was corrected in place and in public. The failure cases in §1 and the Tessa forensics in §4 are source-reported; every professional-guidance row in §3 is verified.</p>
-    <p>This is the report's last argument to both audiences: the architecture's deepest habit — <em>drafts are checked, claims are gated, and refutations are corrections rather than embarrassments</em> — is applied to the project's own literature. That habit, more than any single component, is what professional bodies are asking software to have.</p>
-
-    <p class="eyebrow" style="margin-top:2.4rem;">Citations, summarized</p>
-    <h2>Sources</h2>
-    <p><strong>Professional-body guidance (verified against primary sources):</strong></p>
-    <ol>
-      <li><strong>American Nurses Association</strong>, <em>The Ethical Use of Artificial Intelligence in Nursing Practice</em> — Board-approved position statement (Dec 2022 PDF) and OJIN 30(2) May 2025 revision; ANA Code of Ethics Provision 4.1 — <em>adjunct-not-replacement; accountability in technology failure; ongoing validity-verification duty; leader accountability directive; patient data-protection misconception.</em></li>
-      <li><strong>NCSBN</strong> — Zhong et al., <em>Journal of Nursing Regulation</em> (2025), incl. the Wolters Kluwer/NLN survey of 307 nursing-school deans and faculty (17% currently use/teach generative AI; 60%/46% of larger/smaller programs plan adoption by ~2029) — <em>human judgment as final arbiter; the AI-literacy gap.</em></li>
-      <li><strong>NCSBN</strong>, Clinical Judgment Measurement Model — nclex.com official pages — <em>NCJMM as measurement model; Layer 3 cognitive operations.</em></li>
-      <li><strong>American Academy of Nursing</strong> — AI policy position; March 7, 2025 letter to HHS (HIPAA Security Rule NPRM, regulations.gov docket); March 14, 2025 NSF AI Action Plan letter (nitrd.gov) — <em>test-before-advance; post-market surveillance; HIPAA-and-AI clarification requests.</em></li>
-    </ol>
-    <p><strong>Pedagogy and academic integrity (verified):</strong> Sessions, <em>Nursing Education Perspectives</em> 47(1) — CJMM-whiteboard simulation paired with Tanner's model (feasibility evidence) · Grimm et al., <em>Nurse Educator</em> (2025) and the DNP detection-rubric reliability pilot (PMC12539509) — detector false-positive risk; detection+review+interview process · Golchini et al., "Socratic AI" (medRxiv preprint, 2025) — gated case phases, guidance tiers, five-dimension feedback; <em>explicitly emerging/experimental, no learner-outcome data.</em></p>
-    <p><strong>Comparable products (verified as vendor-stated design):</strong> UWorld UAsk launch materials (June 2026) — in-workflow embedded tutoring grounded in a proprietary nurse-authored corpus.</p>
-    <p><strong>Runtime (verified against official documentation):</strong> Hermes Agent docs and repository (Nous Research) — SOUL.md system-prompt position, skills model, autonomous skill creation and memory curation, <code>write_approval</code> staging, skill security scanning.</p>
-    <p><strong>Source-reported context (quoted from primary/secondary sources; not adversarially verified in this pass):</strong> NEDA/Tessa guardrail forensics (arXiv 2509.07022); Epic Sepsis Model external validation; Watson for Oncology retrospectives; Obermeyer et al., <em>Science</em> (2019); ambient-scribe legal analyses (ABA Health Law 2026); NIST AI 600-1 Generative AI Profile; WHO guidance on large multi-modal models (Jan 2024); FTC health-information guidance and enforcement record; nurse-manager qualitative study (PMC12174894); Hippocratic AI Nurse Advisory Council reporting.</p>
-
-    <div class="boundary" style="margin-top:2rem;">
-      <strong>Take it with you:</strong> <a href="assets/nurse-ai-os-architecture-report.pdf">Download this report as a PDF</a> — generated from the same source as this page, so the two never drift.
-    </div>
-
   </div>
 </section>
+
+<section class="section" id="architecture" style="background:var(--linen-50,#f7f5f0);">
+  <div class="container narrow">
+    <p class="eyebrow">Architecture</p>
+    <h2>One runtime, layered authority</h2>
+    <div class="report-table-wrap"><table class="report-table">
+      <tr><th>Layer</th><th>Responsibility</th><th>Current state</th></tr>
+      <tr><td><strong>Human authority</strong></td><td>Nurse, learner, steward, or authorized owner decides and remains accountable.</td><td>Required</td></tr>
+      <tr><td><strong>SOUL</strong></td><td>Identity, values, voice, spheres, and personal boundaries.</td><td>Implemented</td></tr>
+      <tr><td><strong>EDENA</strong></td><td>Risk, autonomy ceiling, data class, reversibility, capability, and human gates.</td><td>Signed evaluator active in shadow</td></tr>
+      <tr><td><strong>Hermes</strong></td><td>Sole horizontal runtime for tools, skills, profiles, memory, cron, delegation, and gateways.</td><td>Operational substrate</td></tr>
+      <tr><td><strong>Florence-X</strong></td><td>Verification, coordination, typed handoffs, budgets, and stop conditions.</td><td>Build and operating discipline</td></tr>
+      <tr><td><strong>Evidence</strong></td><td>Metadata-only hash-chained events, tests, evaluations, and release evidence.</td><td>Active local evidence plane</td></tr>
+      <tr><td><strong>Distribution</strong></td><td>Signed Harness release and five checksummed, review-first post-setup packages.</td><td>Live; role packs not installed</td></tr>
+    </table></div>
+    <div class="boundary"><strong>Governing rule:</strong> every layer may narrow authority. No downstream layer may restore a capability denied upstream.</div>
+  </div>
+</section>
+
+<section class="section" id="evidence">
+  <div class="container narrow">
+    <p class="eyebrow">Verified evidence snapshot</p>
+    <h2>Implemented is not the same as enforced</h2>
+    <div class="report-table-wrap"><table class="report-table">
+      <tr><th>Evidence</th><th>Verified state</th></tr>
+      <tr><td>Harness release</td><td>Signed implementation candidate; RSA-SHA256 verification returned <code>Verified OK</code>.</td></tr>
+      <tr><td>Runtime plugin</td><td><code>naio-edena-runtime 2.0.0-canary.2</code>, enabled in <code>active_shadow</code>; tool override false.</td></tr>
+      <tr><td>Tests</td><td>46/46 unit tests and 8/8 synthetic trajectory evaluations passed.</td></tr>
+      <tr><td>Shadow ledger snapshot</td><td>345 chain-verified events at 2026-07-13 21:54 UTC: 198 observed allows and 147 observed blocks.</td></tr>
+      <tr><td>Payload flag</td><td>Zero events with <code>payload_captured=true</code> at the report snapshot.</td></tr>
+      <tr><td>Post-setup distribution</td><td>Five live role ZIPs; eight governed files each; checksum verification passed; status <code>not_installed</code>.</td></tr>
+    </table></div>
+    <p>A “would block” shadow event is evidence only. It does not mean the action was mechanically prevented.</p>
+  </div>
+</section>
+
+<section class="section" id="risks" style="background:var(--linen-50,#f7f5f0);">
+  <div class="container narrow">
+    <p class="eyebrow">Priority architecture gaps</p>
+    <h2>Four P0 issues must be closed before enforcement</h2>
+    <div class="report-table-wrap"><table class="report-table">
+      <tr><th>Priority</th><th>Gap</th><th>Required response</th></tr>
+      <tr><td class="priority">P0</td><td>The repository EDENA policy conflicts with the signed Harness semantics; Red cannot mean both stop and high autonomy.</td><td>Adopt one two-axis risk/autonomy schema and enforce it in CI.</td></tr>
+      <tr><td class="priority">P0</td><td>SOUL normalizes four roles while the post-setup layer has five lanes, separating Educator from Leader/Manager.</td><td>Add an explicit, user-controlled post-setup lane resolver.</td></tr>
+      <tr><td class="priority">P0</td><td>PHI or live-care content can enter before a tool call or through memory, media, channels, delegation, or model output.</td><td>Produce an end-to-end no-PHI threat model and adversarial path tests.</td></tr>
+      <tr><td class="priority">P0</td><td>Enforce-capable configuration could be promoted without valid governance authorization.</td><td>Require a dedicated profile, startup attestation, exact-artifact/scope approval, promotion record, and tested rollback.</td></tr>
+    </table></div>
+    <p>The full report also documents incomplete tool mapping, the absence of a demonstrated general post-generation delivery gate, local-ledger tamper limits, authority-laundering risk, multi-user isolation requirements, Council status, and the separate private-corpus consent discrepancy.</p>
+  </div>
+</section>
+
+<section class="section" id="boundaries">
+  <div class="container narrow">
+    <p class="eyebrow">Non-claims</p>
+    <h2>What this report does not establish</h2>
+    <ul>
+      <li>Clinical safety, patient outcomes, or clinical readiness</li>
+      <li>HIPAA compliance, a BAA, or permission to process PHI</li>
+      <li>Institutional, procurement, legal, regulatory, or deployment approval</li>
+      <li>Nursing licensure, employment, competency, or authority from role selection</li>
+      <li>Complete mediation of every input, memory, tool, channel, or output path</li>
+      <li>Nurse Steward Council approval or external security certification</li>
+    </ul>
+    <div class="boundary"><strong>Bedside test:</strong> The system can help prepare the work. It is not authorized to take a nurse’s judgment, accept patient data, or act beyond the approved scope. Today, the governor is watching and learning; it is not yet blocking.</div>
+  </div>
+</section>
+
+<section class="section" id="download" style="background:var(--navy-900);color:#fff;">
+  <div class="container narrow">
+    <p class="eyebrow" style="color:#7dd3c7;">Latest report version</p>
+    <h2 style="color:#fff;">Read the complete evidence, risks, and roadmap</h2>
+    <p>The publication report includes the full architecture diagrams, component-status matrix, runtime flows, role handoff, trust boundaries, residual risk register, acceptance criteria, confidence limits, and appendices.</p>
+    <div class="report-actions">
+      <a class="btn btn-primary" href="assets/nurse-ai-os-architecture-report.pdf">Download latest PDF</a>
+      <a class="btn btn-secondary" href="assets/nurse-ai-os-architecture-report.md">Download Markdown</a>
+      <a class="btn btn-secondary" href="assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf">Versioned PDF</a>
+      <a class="btn btn-secondary" href="assets/2026-07-13-nurse-ai-os-updated-architecture-report.md">Versioned Markdown</a>
+    </div>
+    <p class="version-note" style="color:#dbe7f3;margin-top:1.2rem;">Version date: 2026-07-13 · 34 pages · stable and versioned copies are byte-identical<br>PDF SHA-256 (both copies): <code class="digest">152f1c0a8e7fd02a0c6cdb9ed41bd7602690f7cd69fde1f378e2b2e9bcbbb733</code><br>Markdown SHA-256 (both copies): <code class="digest">423ef04a865a10327784573f550c57dca900c6c165fc83e0123e5dbf1dd01293</code></p>
+  </div>
+</section>
+</main>
 
 <footer class="site-footer">
   <div class="container">
@@ -149,13 +170,12 @@
       <a href="index.html">Home</a>
       <a href="pathways.html">Pathways</a>
       <a href="resources.html">Resources</a>
-      <a href="about.html">About</a>
-      <a href="faq.html">FAQ</a>
+      <a href="governed-harness.html">Governed Harness</a>
       <a href="privacy.html">Privacy</a>
       <a href="terms.html">Terms</a>
-      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+      <a href="mailto:managers@nurse-ai-os.help">Contact</a>
     </div>
-    <p>© 2026 Nurse AI OS · Free for nurses and nursing students during the founding year.</p>
+    <p>© 2026 Nurse AI OS · Governed, no-PHI AI for nurses.</p>
   </div>
 </footer>
 

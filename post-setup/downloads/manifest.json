@@ -1,0 +1,53 @@
+{
+  "installation_status": "not_installed",
+  "packages": [
+    {
+      "bytes": 482613,
+      "download": "downloads/nurse-ai-os-post-setup-student-nurse.zip",
+      "folder": "01-Student-Nurse",
+      "install_on_download": false,
+      "intended_stage": "after_soul_files_and_hermes_setup",
+      "role": "Student Nurse",
+      "sha256": "e66fba7d3f3f9939e7ad61b1d4d9019d13e83793b84c420970ac35f545b822b0"
+    },
+    {
+      "bytes": 495687,
+      "download": "downloads/nurse-ai-os-post-setup-staff-nurse.zip",
+      "folder": "02-Staff-Nurse",
+      "install_on_download": false,
+      "intended_stage": "after_soul_files_and_hermes_setup",
+      "role": "Staff Nurse",
+      "sha256": "16edae2244308e4b149c41fbb5d3cf66108c18a3589d2173fcc6f00a13e39b4c"
+    },
+    {
+      "bytes": 466350,
+      "download": "downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip",
+      "folder": "03-Nurse-Leader-and-Manager",
+      "install_on_download": false,
+      "intended_stage": "after_soul_files_and_hermes_setup",
+      "role": "Nurse Leader and Manager",
+      "sha256": "b9765fbec10bd426625b4e5a84ea6a1eb9ab775e2a8957bb2fa4a0bdf67443a5"
+    },
+    {
+      "bytes": 494733,
+      "download": "downloads/nurse-ai-os-post-setup-nurse-educator.zip",
+      "folder": "04-Nurse-Educator",
+      "install_on_download": false,
+      "intended_stage": "after_soul_files_and_hermes_setup",
+      "role": "Nurse Educator",
+      "sha256": "d4538b7053e6de7daf5e573d1adff466cc49eda79ee5caa3cd6f2e306a01b88e"
+    },
+    {
+      "bytes": 500635,
+      "download": "downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip",
+      "folder": "05-Nurse-Connected-Ally",
+      "install_on_download": false,
+      "intended_stage": "after_soul_files_and_hermes_setup",
+      "role": "Nurse-Connected Ally",
+      "sha256": "cf53582bff9d2136c1adc9a211c0b98d75b1472c3b9953055fe161f62447b4d8"
+    }
+  ],
+  "purpose": "role-specific Nurse AI OS post-setup downloads",
+  "release": "2026.07.13.1",
+  "schema_version": "1.0"
+}

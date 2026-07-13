@@ -1,0 +1,44 @@
+{
+  "activation": "user_initiated_two_step_review_and_explicit_approval",
+  "automatic_connectors": false,
+  "automatic_cron": false,
+  "automatic_external_actions": false,
+  "automatic_memory": false,
+  "clinical_decisions": false,
+  "install_on_download": false,
+  "intended_stage": "after_soul_files_and_hermes_setup",
+  "no_phi": true,
+  "onboarding_edena_ceiling": "yellow",
+  "package_id": "naio-post-setup-student-nurse",
+  "package_version": "2026.07.13.1",
+  "role": "Student Nurse",
+  "role_selection_verifies_credentials_or_authority": false,
+  "schema_version": "1.0",
+  "source_files": [
+    {
+      "bytes": 213708,
+      "packaged_path": "Nursing-Student-AI-OS-Life-and-Learning-Guide.docx",
+      "source_sha256": "be32cba74f0bb6a2d6a84f26b4c8f5c505104b17c792ac20abff374ed7cf5eb4"
+    },
+    {
+      "bytes": 49674,
+      "packaged_path": "Nursing-Student-Life-and-Learning-Hermes-Program.md",
+      "source_sha256": "980d1416bdc4d1204ddca10b7ab895622d3226ad2620ab0358453019dd58014b"
+    },
+    {
+      "bytes": 241237,
+      "packaged_path": "SuperPowers-After-Setup/Hermes-Nurse-AI-OS-SuperPowers-Pack-User-Guide.docx",
+      "source_sha256": "d2f083f1718e7d800a416ddcdaa5cea900d9148eae693fc808509f339519411b"
+    },
+    {
+      "bytes": 20127,
+      "packaged_path": "SuperPowers-After-Setup/MASTER-INSTALLER.md",
+      "source_sha256": "c7debff684da7ebe910be089355545d1c9aa5fa45168500da4e84156c2e3ea53"
+    },
+    {
+      "bytes": 5950,
+      "packaged_path": "SuperPowers-After-Setup/README.md",
+      "source_sha256": "383c73489e54735cd5bc5e7ad15ee28c1a5b7de16f3349318d3b33e9e71df5f8"
+    }
+  ]
+}

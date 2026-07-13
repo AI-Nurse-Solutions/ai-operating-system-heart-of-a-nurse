@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post-Setup Role Packs — Nurse AI OS</title>
+<meta name="description" content="Download the Nurse AI OS post-setup pack for a student nurse, staff nurse, nurse leader or manager, nurse educator, or nurse-connected ally. Review first; nothing installs automatically.">
+<link rel="canonical" href="https://nurse-ai-os.org/post-setup/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+  .role-pack-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.25rem;margin-top:1.75rem}
+  .role-pack-card{display:flex;flex-direction:column}
+  .role-pack-card .cta-line{margin-top:auto;padding-top:1rem}
+  .role-pack-card:last-child{grid-column:1/-1}
+  .sequence{counter-reset:poststep;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.5rem}
+  .sequence .card{position:relative;padding-top:3.3rem}
+  .sequence .card::before{counter-increment:poststep;content:counter(poststep);position:absolute;top:1rem;left:1.2rem;width:1.75rem;height:1.75rem;border-radius:50%;display:grid;place-items:center;background:var(--navy-900,#10213f);color:#fff;font-weight:700}
+  .review-prompt{white-space:pre-wrap;overflow-wrap:anywhere;background:#10213f;color:#f8fafc;border-radius:var(--radius);padding:1.25rem;font:500 .95rem/1.55 "Source Sans 3",sans-serif;box-shadow:var(--shadow-sm)}
+  .pack-meta{font-size:.88rem;color:var(--ink-600);margin:.7rem 0 0}
+  @media(max-width:780px){.role-pack-grid,.sequence{grid-template-columns:1fr}.role-pack-card:last-child{grid-column:auto}}
+</style>
+</head>
+<body class="clinical-sketch-page">
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="../index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="../start-here.html">Start Here</a>
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../about.html">About</a>
+      <a href="../faq.html">FAQ</a>
+      <a class="nav-cta" href="../soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.5rem 0;">
+  <div class="container narrow">
+    <p class="kicker">After your SOUL files and Hermes setup</p>
+    <h1>Your role pack comes next—not first.</h1>
+    <p class="lede">Choose the folder that fits your role or relationship to nursing. Downloading it changes nothing. When you are ready, give the unzipped folder to Nurse AI OS for a governed review before you approve any setup changes.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#choose-role">Choose your role pack →</a>
+      <a class="btn btn-secondary" href="../start-here.html">I still need to finish setup</a>
+    </div>
+    <p class="hero-note"><strong>No PHI. No automatic installation. No role verification by download. No connectors, cron jobs, memory, or external actions are enabled.</strong></p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">The safe order</p>
+    <h2>Finish the foundation before adding the role overlay</h2>
+    <div class="sequence">
+      <div class="card"><h3>Complete your SOUL files</h3><p>Review the values, boundaries, spheres, voice, and goals that Nurse AI OS should respect.</p></div>
+      <div class="card"><h3>Complete Hermes setup</h3><p>Establish your private workspace, no-PHI boundary, approvals, and safe recovery path.</p></div>
+      <div class="card"><h3>Choose one role pack</h3><p>Select the lane that fits your current season. “Other” routes to Nurse-Connected Ally.</p></div>
+      <div class="card"><h3>Download and unzip</h3><p>Open <code>00-READ-FIRST.md</code>. The folder itself does not run or install anything.</p></div>
+      <div class="card"><h3>Request review first</h3><p>Give the folder to Nurse AI OS and require a proposed plan, risks, permissions, conflicts, and rollback.</p></div>
+      <div class="card"><h3>Humans approve changes</h3><p>Approve, revise, defer, or reject each proposed change. Role selection never creates authority.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="choose-role">
+  <div class="container">
+    <p class="eyebrow">Five post-setup lanes</p>
+    <h2>Download the folder for your role</h2>
+    <p class="section-intro">Each ZIP contains a role-specific Hermes program and guide, the shared SuperPowers references, a machine-readable role manifest, the review-first message, and checksums.</p>
+    <div class="role-pack-grid">
+      <article class="card role-pack-card">
+        <p class="role-tag">01 · Student Nurse</p>
+        <h3>Life, learning, and nursing formation</h3>
+        <p>For study planning, deep learning, reflection, capacity, and safe AI use without replacing faculty, preceptors, academic standards, or your own reasoning.</p>
+        <p class="pack-meta">ZIP · approximately 0.48 MB · post-setup only</p>
+        <p class="cta-line"><a class="btn btn-primary btn-sm" href="downloads/nurse-ai-os-post-setup-student-nurse.zip" download>Download Student Nurse Pack →</a></p>
+      </article>
+      <article class="card role-pack-card">
+        <p class="role-tag">02 · Staff Nurse</p>
+        <h3>Life, practice, and sustainable capacity</h3>
+        <p>For no-PHI preparation, organization, learning, reflection, and personal capacity—never patient-specific care or clinical decisions.</p>
+        <p class="pack-meta">ZIP · approximately 0.50 MB · post-setup only</p>
+        <p class="cta-line"><a class="btn btn-primary btn-sm" href="downloads/nurse-ai-os-post-setup-staff-nurse.zip" download>Download Staff Nurse Pack →</a></p>
+      </article>
+      <article class="card role-pack-card">
+        <p class="role-tag">03 · Nurse Leader &amp; Manager</p>
+        <h3>Leadership preparation and governed follow-through</h3>
+        <p>For briefs, approved-source retrieval, communication drafts, aggregate analysis, governance preparation, and accountable follow-through.</p>
+        <p class="pack-meta">ZIP · approximately 0.47 MB · post-setup only</p>
+        <p class="cta-line"><a class="btn btn-primary btn-sm" href="downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip" download>Download Leader &amp; Manager Pack →</a></p>
+      </article>
+      <article class="card role-pack-card">
+        <p class="role-tag">04 · Nurse Educator</p>
+        <h3>Teaching preparation and learning stewardship</h3>
+        <p>For no-PHI teaching preparation, fictional or de-identified learning materials, academic-integrity support, and educator capacity.</p>
+        <p class="pack-meta">ZIP · approximately 0.49 MB · post-setup only</p>
+        <p class="cta-line"><a class="btn btn-primary btn-sm" href="downloads/nurse-ai-os-post-setup-nurse-educator.zip" download>Download Nurse Educator Pack →</a></p>
+      </article>
+      <article class="card role-pack-card">
+        <p class="role-tag">05 · Nurse-Connected Ally</p>
+        <h3>For “Other” users who support nurses</h3>
+        <p>For a non-nurse family member, collaborator, technologist, advocate, educator, entrepreneur, or community partner who wants to support nurse-led work without claiming nursing or institutional authority.</p>
+        <p class="pack-meta">ZIP · approximately 0.50 MB · post-setup only</p>
+        <p class="cta-line"><a class="btn btn-primary btn-sm" href="downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip" download>Download Nurse-Connected Ally Pack →</a></p>
+      </article>
+    </div>
+    <div class="boundary" style="margin-top:1.5rem;">
+      <strong>A role choice is personalization—not verification.</strong> These downloads do not prove nursing licensure, enrollment, employment, faculty status, managerial authority, institutional approval, or permission to access patient or personnel information.
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="review-first">
+  <div class="container narrow">
+    <p class="eyebrow">Copy this after you unzip</p>
+    <h2>Ask Nurse AI OS to review before changing anything</h2>
+    <div class="review-prompt">Review this post-setup role pack for my selected role. Do not install, activate, schedule, connect, or change my Hermes profile yet. First show me: (1) the files you found; (2) proposed skills, workflows, memory, permissions, and external actions; (3) EDENA risk tiers and autonomy ceilings; (4) no-PHI and role-authority checks; (5) conflicts with my SOUL files or current Hermes setup; and (6) the rollback/removal plan. Wait for my explicit approval before applying any change.</div>
+    <p style="margin-top:1rem;">After the review, you may approve the whole plan, approve only selected changes, revise it, defer it, or reject it.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Integrity and stewardship</p>
+    <h2>Inspect before you trust</h2>
+    <div class="card-grid cols-3">
+      <div class="card"><h3>Download manifest</h3><p>Role, stage, file size, installation status, and SHA-256 for every ZIP.</p><p class="cta-line"><a href="downloads/manifest.json">Open manifest →</a></p></div>
+      <div class="card"><h3>Checksum ledger</h3><p>Use the SHA-256 ledger to verify that a downloaded ZIP has not changed.</p><p class="cta-line"><a href="downloads/CHECKSUMS.sha256">Open checksums →</a></p></div>
+      <div class="card"><h3>Browse package folders</h3><p>Every package remains visible and inspectable before download or post-setup review.</p><p class="cta-line"><a href="https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse/tree/main/post-setup/packages">Browse source folders on GitHub →</a></p></div>
+    </div>
+    <div class="boundary" style="margin-top:1.5rem;">
+      <strong>Boundary:</strong> No PHI. No patient-specific clinical decisions. No automatic memory, connectors, cron, external actions, or profile changes. AI prepares; authorized humans decide and act.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p><strong>Carry the lamp. Keep the ledger.</strong></p>
+    <p>Agents propose. Humans judge. Nurses steward.</p>
+    <p><a href="../index.html">Home</a> · <a href="../start-here.html">Start Here</a> · <a href="../pathways.html">Pathways</a> · <a href="../faq.html">FAQ</a></p>
+  </div>
+</footer>
+</body>
+</html>

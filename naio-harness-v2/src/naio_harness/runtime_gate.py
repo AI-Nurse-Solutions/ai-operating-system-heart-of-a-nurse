@@ -10,6 +10,7 @@ from typing import Any
 
 from .capabilities import compile_capabilities, load_manifests
 from .config_store import load_runtime_config
+from .ledger import ProvenanceLedger
 from .models import CapabilityLayer, CompilationContext, RiskTier
 
 SENSITIVE_KEYS = {
@@ -146,9 +147,7 @@ class RuntimeGate:
         }
 
     def _append(self, event: dict[str, Any]) -> None:
-        self.log_path.parent.mkdir(parents=True, exist_ok=True)
-        with self.log_path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(event, sort_keys=True, separators=(",", ":")) + "\n")
+        ProvenanceLedger(self.log_path).append(event)
 
 
 ShadowGate = RuntimeGate

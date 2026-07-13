@@ -2,9 +2,11 @@
 
 ## Executive architecture and evidence statement
 
-**Published:** July 13, 2026  
-**Audience:** Chief Nursing Officers, Chief Information Officers, Chief Technology Officers, Chief Medical Information Officers, Chief Information Security Officers, CEOs, nurse informaticists, AI architects, and Nurse Steward Councils  
-**Status:** Tested, unsigned implementation candidate — not activated in the default Hermes profile  
+**Published:** July 13, 2026
+
+**Audience:** Chief Nursing Officers, Chief Information Officers, Chief Technology Officers, Chief Medical Information Officers, Chief Information Security Officers, CEOs, nurse informaticists, AI architects, and Nurse Steward Councils
+
+**Status:** Tested, unsigned implementation candidate — not activated in the default Hermes profile
 
 > **Architectural statement:** Nurse AI OS is a no-PHI, nurse-governed control plane over the Hermes Agent runtime. Hermes supplies the horizontal agent runtime; EDENA supplies deterministic risk and autonomy semantics; Florence-X supplies bounded orchestration; human approval remains the authority boundary; and tamper-evident evidence makes the system's claims inspectable. The architecture does not authorize patient-specific clinical decisions, EHR access, personnel decisions, payments, credential handling, or unreviewed external action.
 

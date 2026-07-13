@@ -169,7 +169,7 @@ Harness 2.0 is not:
 ## Inspection links
 
 - Machine-readable release evidence: `../naio-harness-v2/evidence/release-evidence.json`
-- Harness source, tests, schemas, policies, plugin, and documentation: `../naio-harness-v2/`
+- Harness source, tests, schemas, policies, plugin, and documentation: https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse/tree/main/naio-harness-v2
 - Previous professional-guidance architecture report: `../architecture-report.html`
 
 *Agents propose. Humans judge. Nurses steward.*

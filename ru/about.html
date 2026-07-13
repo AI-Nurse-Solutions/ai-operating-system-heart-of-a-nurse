@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Об основателе — Nurse AI OS</title>
+<meta name="description" content="Роберт Домондон, RN, MBA — медбрат с 22-летним опытом работы в отделении интенсивной терапии, 13-летним опытом управления в здравоохранении, врач (Филиппины), бывший администратор военно-морского госпиталя США и архитектор экосистемы управления ИИ под руководством специалистов сестринского дела, лежащей в основе Nurse AI OS.">
+<link rel="alternate" hreflang="en" href="https://nurse-ai-os.org/about.html">
+<link rel="alternate" hreflang="ru" href="https://nurse-ai-os.org/ru/about.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+.zone { display:inline-block; border-radius:8px; padding:.3rem .8rem; font-weight:700; font-size:.9rem; margin:0 .4rem .5rem 0; }
+.zone.green { background:#e5f3e6; color:#2c6e31; }
+.zone.yellow { background:#fdf3d7; color:#8a6420; }
+.zone.red { background:#fbe4e4; color:#a33a3a; }
+.ladder { display:grid; gap:.9rem; grid-template-columns:repeat(4,1fr); }
+.rung { background:var(--white); border-radius:10px; box-shadow:var(--shadow-sm); padding:1.1rem 1rem; border-top:4px solid var(--gold-500); }
+.rung .lvl { font-family:var(--font-display); font-weight:700; color:var(--teal-600); font-size:1.05rem; }
+.rung p { font-size:.92rem; color:var(--ink-600); margin:.3rem 0 0; }
+.timeline { border-left:3px solid var(--gold-500); padding-left:1.4rem; display:grid; gap:1.1rem; margin:1.5rem 0; }
+.timeline .tl-item strong { color:var(--navy-900); font-family:var(--font-display); }
+.timeline .tl-item p { margin:.15rem 0 0; color:var(--ink-600); }
+@media (max-width:900px){ .ladder{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:620px){ .ladder{ grid-template-columns:1fr;} }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "ProfilePage",
+ "mainEntity": {
+  "@type": "Person",
+  "@id": "https://nurse-ai-os.org/about.html#robert",
+  "name": "Robert Domondon",
+  "jobTitle": "Дипломированный специалист сестринского дела (RN, CCRN, CSC, CMC)",
+  "image": "https://avatars.githubusercontent.com/u/161920594?v=4",
+  "worksFor": {
+   "@id": "https://nurse-ai-os.org/#org"
+  },
+  "url": "https://nurse-ai-os.org/about.html",
+  "knowsAbout": [
+   "Сестринское дело в интенсивной терапии",
+   "Управление ИИ в здравоохранении",
+   "Сестринское образование"
+  ]
+ }
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Основная навигация">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Начните здесь</a>
+      <a href="../pathways.html">Направления</a>
+      <a href="resources.html">Ресурсы</a>
+      <a href="about.html" class="active">Об основателе</a>
+      <a href="index.html#founding-year">Бесплатно в год основания</a>
+      <a href="faq.html">Вопросы и ответы</a>
+      <a href="../nurse-station.html">Nurse Station</a>
+      <a href="../about.html" hreflang="en" lang="en">English</a>
+      <a class="nav-cta" href="../soul-quiz.html">Пройти тест SOUL</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" style="padding:3.6rem 0;">
+  <div class="container hero-grid">
+    <div>
+      <p class="kicker">Об основателе</p>
+      <h1>Роберт Домондон</h1>
+      <p style="font-family:var(--font-display); font-size:1.25rem; color:var(--gold-300); letter-spacing:.06em; margin:-.2rem 0 0;">RN, CCRN, CSC, CMC</p>
+      <p class="lede">Двадцать два года у постели пациента в отделении интенсивной терапии. Тринадцать лет в управлении здравоохранением. Врачебная подготовка, опыт администратора, добытый на практике, и одно убеждение, проходящее через весь этот путь: <strong style="color:var(--gold-300);">специалисты сестринского дела должны не просто пользоваться ИИ — они должны участвовать в управлении им.</strong></p>
+      <p style="margin-top:1.4rem;"><span class="badge gold">Медбрат ОИТ с 22-летним стажем</span> <span class="badge gold">Врач (Филиппины)</span> <span class="badge gold">Бывший администратор военно-морского госпиталя США</span> <span class="badge gold">13 лет управления в здравоохранении</span></p>
+    </div>
+    <div>
+      <!-- To self-host instead: save the photo as assets/img/robert-domondon.jpg and swap the src -->
+      <img src="https://avatars.githubusercontent.com/u/161920594?v=4" alt="Роберт Домондон, RN, MBA — основатель Nurse AI OS" style="max-width:340px; border-radius:50%; display:block; margin:0 auto;">
+    </div>
+  </div>
+</section>
+
+<!-- ============ MEDIA PACKET ============ -->
+<section class="section" style="padding-bottom:0;">
+  <div class="container narrow">
+    <div style="display:flex;gap:1.4rem;align-items:center;background:var(--white);border:1px solid var(--linen-100);border-left:4px solid var(--gold-500);border-radius:var(--radius);padding:1.4rem 1.6rem;box-shadow:var(--shadow-sm);flex-wrap:wrap;">
+      <span aria-hidden="true" style="flex:none;font-size:2.6rem;">📰</span>
+      <span style="flex:1;min-width:240px;">
+        <span style="display:block;font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--navy-800);margin-bottom:.25rem;">Материалы для СМИ <span class="badge gold" style="font-size:.72rem;vertical-align:2px;">Новое · июль 2026</span></span>
+        <span style="display:block;color:var(--ink-600);line-height:1.55;">Пишете о Nurse AI OS? В одном PDF собрано всё, что можно цитировать: краткое описание бесплатной управляемой операционной системы персонального ИИ, созданной медбратом с 22-летним опытом работы в ОИТ, — с уровнями риска, обязательными этапами проверки человеком и неизменной границей «никаких данных пациентов», — а также готовые формулировки для широкой аудитории, сестринских организаций и архитекторов ИИ, ключевые факты, биографии основателя, примечания о точности и контакты для прессы.</span>
+        <a href="../assets/nurse-ai-os-media-packet.pdf" style="display:inline-block;margin-top:.6rem;font-weight:700;color:var(--teal-600);text-decoration:none;">Скачать материалы для СМИ (PDF) →</a>
+        <span style="display:block;margin-top:.55rem;color:var(--ink-600);font-size:.93rem;">Также доступны на других языках:
+          <a href="../assets/nurse-ai-os-media-packet-fr.pdf" style="font-weight:600;">Français</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-es.pdf" style="font-weight:600;">Español</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-ar.pdf" style="font-weight:600;" lang="ar">العربية</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-ru.pdf" style="font-weight:600;" lang="ru">Русский</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-zh.pdf" style="font-weight:600;" lang="zh-Hans">中文</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-hi.pdf" style="font-weight:600;" lang="hi">हिन्दी</a>
+        </span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE STORY ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Путь к сегодняшнему дню</p>
+    <h2>Карьера там, где система встречается с человеком у больничной койки</h2>
+    <p>Профессиональный путь Роберта необычен — и это осознанный выбор. Он получил врачебную подготовку на Филиппинах, руководил больницей на территории бывшей военно-морской базы США, тринадцать лет управлял процессами в здравоохранении, стал соучредителем института естественных методов оздоровления, консультировал по внедрению ИИ и развитию бизнеса. А затем выбрал работу специалиста сестринского дела в интенсивной терапии в США и посвятил ей более двух десятилетий: у постели пациента, в ночные смены, в палатах, где успех или сбой системы каждый раз отражается на конкретном человеке.</p>
+    <p>Именно это сочетание — клинический взгляд врача, системное мышление администратора и практический опыт медбрата — определило облик Nurse AI OS. Систему создал человек, который утверждал бюджеты, писал регламенты <em>и</em> держал за руку пациента, ради которого эти регламенты создавались.</p>
+
+    <div class="timeline">
+      <div class="tl-item"><strong>Врач, Филиппины</strong><p>Клиническая подготовка и практика: обучение медицине там, где ресурсов не хватало, а профессиональное суждение было особенно важно.</p></div>
+      <div class="tl-item"><strong>Администратор больницы на территории бывшей военно-морской базы США</strong><p>Управление процессами, безопасностью и персоналом — системный взгляд на оказание помощи.</p></div>
+      <div class="tl-item"><strong>Руководитель в здравоохранении · консультант по внедрению ИИ · соучредитель Institute for Natural Healing</strong><p>Тринадцать лет на стыке управления, новых технологий и помощи, ориентированной на человека.</p></div>
+      <div class="tl-item"><strong>Медбрат ОИТ, США — 22 года и продолжает работать</strong><p>Интенсивная терапия у постели пациента. Именно перед этой практической реальностью отвечает каждая представленная ниже концепция.</p></div>
+      <div class="tl-item"><strong>Основатель — Nurse Intelligence Network, NAIO Institute, Nurse AI OS</strong><p>Создаёт экосистему, в которой специалисты сестринского дела управляют эпохой ИИ, а не становятся объектом такого управления.</p></div>
+    </div>
+
+    <div class="boundary">
+      <strong>Основополагающая доктрина:</strong> «Управление закладывается при проектировании. Ясность и ценности важнее скорости». Добро не масштабируется само собой — его необходимо целенаправленно организовывать, направлять и бережно поддерживать.
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE ECOSYSTEM ============ -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">Что он создаёт</p>
+    <h2>Одна экосистема, пять инструментов</h2>
+    <p class="section-intro">Каждая организация отвечает на отдельный вопрос: кто задаёт стандарты, кто принимает решения, что обеспечивает соблюдение этических норм, где объединяются специалисты сестринского дела и что воплощает работу на практике. Вместе они образуют единую архитектуру управления ИИ под руководством сестринского сообщества — от постели пациента до медицинской организации.</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <p class="role-tag">Центр управления</p>
+        <h3>NAIO Institute</h3>
+        <p>Nurse AI Orchestration Institute определяет стандарты, развивает систему профессиональной сертификации и создаёт механизмы соответствия требованиям для систем на базе ИИ в здравоохранении. Его ориентир — стать <strong>аналогом FAA для ИИ в здравоохранении</strong>: ни один агент не должен работать без регистрации, классификации риска и назначенного специалиста, отвечающего за человеческий надзор.</p>
+        <p><em>Основной принцип: управление прежде автономии.</em></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Контур управления оркестрацией</p>
+        <h3>Florence-X</h3>
+        <p>Центр управления рабочими группами ИИ-агентов: распределяет задачи, обеспечивает соблюдение политик управления, направляет запросы к моделям и инструментам, контролирует границы памяти и координирует агентов как единую рабочую силу — в суверенной собственной инфраструктуре, а не в зависимости от облачных сервисов.</p>
+        <p><em>На каждом уровне окончательное право принятия решений остаётся за человеком.</em></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Этическое ядро</p>
+        <h3>EDENA</h3>
+        <p><strong>Ethical Design &amp; Enablement for Nursing Augmentation</strong> («этичное проектирование и создание условий для усиления сестринской практики») — классифицирует действия ИИ, устанавливает контрольные точки и проверяет каждое действие до выполнения. Этика становится исполняемой инфраструктурой: ИИ может выполнять рабочие процессы, но ответственность за профессиональное суждение остаётся за людьми.</p>
+        <p><span class="zone green">🟢 Зелёный — низкий риск, можно продолжить</span><span class="zone yellow">🟡 Жёлтый — требуется проверка человеком</span><span class="zone red">🔴 Красный — действие запрещено без решения человека</span></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Управляемая операционная система агентов</p>
+        <h3>Nurse AI OS</h3>
+        <p>Система, которой вы пользуетесь сейчас, — управляемый NAIO операционный уровень, где вся архитектура становится персональной. Nurse AI OS работает под центром управления Florence-X, применяет классификацию рисков EDENA и управляемую память, а также использует открытый движок <strong>Hermes</strong>, чтобы сложные рабочие процессы превращались в развивающиеся, многократно используемые навыки, чья ценность накапливается от задачи к задаче и со временем.</p>
+        <p><em>Florence-X принимает решения и задаёт правила управления. Nurse AI OS маршрутизирует, обеспечивает соблюдение правил и персонализирует. Hermes учится и адаптируется. Специалисты сестринского дела отвечают за надзор над всей системой.</em></p>
+        <p class="cta-line"><a href="start-here.html">Создайте свою систему →</a></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Уровень человеческого интеллекта</p>
+        <h3>Nurse Intelligence Network</h3>
+        <p>Глобальное профессиональное сообщество, где специалисты сестринского дела развивают компетенции в области ИИ, формируют подходы к управлению и запускают собственные проекты. Это интеллектуальная сеть, в которой <strong>участие формирует управление</strong>, а её опорными площадками служат ежегодный NIN Summit и Nurse Intelligence Podcast.</p>
+        <p class="cta-line"><a href="https://www.nurseintelligence.com/">Посетить NIN →</a></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Медиадвижок</p>
+        <h3>Florence Media Network</h3>
+        <p>Многоканальная система создания и распространения контента на базе ИИ, выпускающая в масштабе материалы, соответствующие строгим стандартам управления. Каждый материал классифицируется по EDENA и проходит проверку человеком перед публикацией. Контент управляется как клиническая инфраструктура, потому что главный продукт — доверие.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREDENTIALING LADDER ============ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Профессиональная сертификация</p>
+    <h2>Ступени программы NAIO Fellowship</h2>
+    <p class="section-intro">Формирование уровня человеческой ответственности и полномочий для систем ИИ — от базовой грамотности до руководства управлением на высшем уровне, с наставничеством, совместными исследованиями и участием в совете по управлению на всём пути.</p>
+    <div class="ladder">
+      <div class="rung"><span class="lvl">1 · NAIO-C</span><p>Базовая грамотность в области ИИ и основы управления</p></div>
+      <div class="rung"><span class="lvl">2 · NAIO-A</span><p>Продвинутая оркестрация и проектирование рабочих процессов</p></div>
+      <div class="rung"><span class="lvl">3 · NAIO-F</span><p>Архитектура институционального управления и стратегия экосистемы</p></div>
+      <div class="rung"><span class="lvl">4 · CAIOS</span><p>Chief AI Orchestration Steward — руководство управлением ИИ на высшем уровне</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 WORLD PROJECTS ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">Стратегическая инициатива</p>
+    <h2>13 глобальных проектов для расширения возможностей специалистов сестринского дела</h2>
+    <p class="section-intro">Долгосрочная программа — намеренно амбициозная и столь же намеренно управляемая. Проекты сгруппированы по тому, что каждый из них призван защищать.</p>
+
+    <details class="faq">
+      <summary>Управление и основополагающие нормы (проекты 1–3)</summary>
+      <div class="faq-body"><strong>01 · Nightingale Protocol</strong> — глобальная конституционная ассамблея специалистов сестринского дела по вопросам ИИ, которая разрабатывает, утверждает и обеспечивает соблюдение обязательных стандартов управления.<br><strong>02 · EDENA Sentient Shield</strong> — развитие EDENA в механизм контроля границ в реальном времени, способный выявлять смещение уверенности и незаметное расширение сферы применения до того, как они затронут пациента.<br><strong>03 · Nurse Data Cooperative &amp; Ethics Council</strong> — коллективный контроль специалистов сестринского дела над тем, как обезличенные клинические данные используются для обучения ИИ, под надзором практикующих специалистов, пациентов и сообществ.</div>
+    </details>
+    <details class="faq">
+      <summary>Инфраструктура и суверенность (проекты 4–6)</summary>
+      <div class="faq-body"><strong>04 · Florence Sovereign Mesh</strong> — распределённые вычислительные ресурсы под контролем специалистов сестринского дела, чтобы управление никогда не зависело от разрешения крупных технологических компаний.<br><strong>05 · Judgment Vault &amp; Knowledge Graph</strong> — преобразование незримой интеллектуальной работы в сестринском деле в структурированные знания, которые можно цитировать и использовать для обучения.<br><strong>06 · Compassion Engine</strong> — архитектура ограничений, обеспечивающая сохранение терапевтического присутствия и отношений заботы при использовании передового ИИ, где сострадание выступает измеримым требованием к управлению.</div>
+    </details>
+    <details class="faq">
+      <summary>Клиническая практика и безопасность (проекты 7–8)</summary>
+      <div class="faq-body"><strong>07 · CAIRLN &amp; Guardian Commons</strong> — система сообщения об инцидентах с ИИ под руководством специалистов сестринского дела, созданная по образцу авиационной ASRS: едва предотвращённые инциденты, сбои и сигналы риска становятся общим ресурсом знаний о безопасности.<br><strong>08 · Simulation &amp; ICU Co-Pilot</strong> — тестирование инструментов ИИ в наихудших условиях (три часа ночи, нехватка персонала, пациенты в тяжёлом состоянии), то есть там, где системы действительно дают сбой, прежде чем эти инструменты попадут в реальные отделения.</div>
+    </details>
+    <details class="faq">
+      <summary>Кадровый потенциал и развитие проектов (проекты 9–10)</summary>
+      <div class="faq-body"><strong>09 · Conductor &amp; Builder Guild (NINE²)</strong> — инкубатор, который превращает идеи в области ИИ, предложенные специалистами сестринского дела, в управляемые действующие продукты через когортную программу развития основателей.<br><strong>10 · Context Bundles &amp; Mentor Network</strong> — готовые к применению информационные продукты со встроенными сведениями о происхождении, распространяемые через глобальную сеть региональных отделений и наставников.</div>
+    </details>
+    <details class="faq">
+      <summary>Глобальное развитие и равенство возможностей (проекты 11–13)</summary>
+      <div class="faq-body"><strong>11 · Philippine Bridge</strong> — суверенный доступ к ИИ для специалистов сестринского дела Глобального Юга, превращающий утечку кадров в распределённое лидерство в сфере управления.<br><strong>12 · Climate-Health Sentinel Network</strong> — климатическая аналитика в здравоохранении под руководством специалистов сестринского дела, позволяющая предвидеть обусловленные климатом угрозы здоровью, а не только реагировать на них.<br><strong>13 · Nurse Robotics Governance Authority</strong> — стандарты управления для роботов с ИИ, входящих в клиническую среду, чтобы к появлению физического ИИ сестринское сообщество уже располагало собственной архитектурой надзора.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ NORTH STAR ============ -->
+<section class="section section-navy">
+  <div class="container narrow" style="text-align:center;">
+    <p class="eyebrow">NIN Summit 2026</p>
+    <h2>«Что, если мы сможем масштабировать добро?»</h2>
+    <p class="section-intro" style="margin:0 auto 1.8rem;">Вопрос, стоящий за всем вышесказанным: можно ли целенаправленно организовать интеллект, технологии и экспертные знания так, чтобы безопасность пациентов, человеческое достоинство и устойчивость кадров росли в масштабе — без причинения вреда?</p>
+    <p>
+      <span class="badge gold">Сначала реальность — честно о том, что ИИ может и чего не может</span>
+      <span class="badge gold">Защитные ограничения — функция, а не помеха</span>
+      <span class="badge gold">Управление закладывается при проектировании, а не добавляется позднее</span>
+      <span class="badge gold">Доверие нужно заслужить; оно условно и может быть отозвано</span>
+    </p>
+    <p style="margin-top:1.6rem; font-family:var(--font-display); font-size:1.2rem; color:var(--gold-300);">Масштабировать интеллект. Сохранять человечность. Оставлять системы лучше, чем они были до нас.</p>
+  </div>
+</section>
+
+<!-- ============ WHITE PAPER ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <a href="../assets/care-intelligence-white-paper.pdf" style="display:flex;gap:1.4rem;align-items:center;background:var(--white);border:1px solid var(--linen-100);border-left:4px solid var(--gold-500);border-radius:var(--radius);padding:1.4rem 1.6rem;text-decoration:none;box-shadow:var(--shadow-sm);flex-wrap:wrap;">
+      <img src="../assets/img/care-intelligence-cover.jpg" alt="Обложка аналитического доклада Care Intelligence" width="96" height="124" style="flex:none;border-radius:6px;box-shadow:var(--shadow-sm);object-fit:cover;">
+      <span style="flex:1;min-width:240px;">
+        <span style="display:block;font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--navy-800);margin-bottom:.25rem;">Аналитический доклад Care Intelligence <span class="badge gold" style="font-size:.72rem;vertical-align:2px;">июнь 2026</span></span>
+        <span style="display:block;color:var(--ink-600);line-height:1.55;">Концепция координаторов помощи с ИИ — идеи, лежащие в основе всего, что представлено на этой странице, в одном профессионально оформленном и удобном для чтения документе. Автор: Robert Domondon, CCRN CMC CSC.</span>
+        <span style="display:inline-block;margin-top:.6rem;font-weight:700;color:var(--teal-600);">Скачать аналитический доклад (PDF) →</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="section">
+  <div class="container narrow" style="text-align:center;">
+    <h2>Лучший способ понять эту работу — воспользоваться её результатами</h2>
+    <p class="section-intro" style="margin:0 auto 1.6rem;">Nurse AI OS — вход во всю эту экосистему; в год основания система бесплатна для специалистов и студентов сестринского дела. Начните с того, с чего начинает каждый специалист сестринского дела: с оценки.</p>
+    <a class="btn btn-primary" href="../soul-quiz.html">Пройти двухминутный тест SOUL →</a>
+    <p style="margin-top:1.2rem; color:var(--ink-600); font-size:.95rem;">По вопросам выступлений, сотрудничества или управления: <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a> · <a href="https://www.nurseintelligence.com/">Nurse Intelligence Network</a> · <a href="https://www.youtube.com/@NurseIntelligence">YouTube</a></p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">Агенты предлагают. Люди решают. Специалисты сестринского дела обеспечивают ответственное применение.</p>
+    <div class="footer-links">
+      <a href="index.html">Главная</a>
+      <a href="start-here.html">Начните здесь</a>
+      <a href="../pathways.html">Направления</a>
+      <a href="resources.html">Ресурсы</a>
+      <a href="about.html" class="active">Об основателе</a>
+      <a href="faq.html">Вопросы и ответы</a>
+      <a href="../privacy.html">Конфиденциальность</a>
+      <a href="../terms.html">Условия</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Связаться</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO / NIN · Бесплатно для специалистов и студентов сестринского дела в течение года основания.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

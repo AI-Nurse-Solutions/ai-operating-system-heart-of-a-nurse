@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>С чего начать — Nurse AI OS</title>
+<meta name="description" content="Пять шагов к вашему Nurse AI OS: установите Hermes по памятке, пройдите тест SOUL и загрузите файл, добавьте стартовый набор, создайте панель и запустите первые промпты.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<link rel="alternate" hreflang="en" href="https://nurse-ai-os.org/start-here.html">
+<link rel="alternate" hreflang="ru" href="https://nurse-ai-os.org/ru/start-here.html">
+<style>
+.prompt-block {
+  background: #10233a; color: #dbe6ef; border-radius: 10px;
+  padding: 1.1rem 1.3rem; font-family: "SF Mono", "Consolas", monospace;
+  font-size: .88rem; line-height: 1.55; white-space: pre-wrap;
+  border-left: 4px solid var(--gold-500); margin: .8rem 0 1.2rem;
+}
+.prompt-label {
+  font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--teal-600); margin: 1rem 0 .2rem;
+}
+details.cheat {
+  background: var(--linen-100); border-radius: 10px; margin-bottom: .6rem; padding: 0;
+  border-left: 4px solid var(--teal-500);
+}
+details.cheat summary {
+  cursor: pointer; font-weight: 700; padding: .8rem 1.1rem; list-style: none; color: var(--navy-900);
+}
+details.cheat summary::-webkit-details-marker { display: none; }
+details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-size: .98rem; }
+</style>
+</head>
+<body class="calm-clinical-page">
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Основная навигация">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html" class="active">С чего начать</a>
+      <a href="../pathways.html">Маршруты</a>
+      <a href="resources.html">Ресурсы</a>
+      <a href="about.html">О нас</a>
+      <a href="index.html#founding-year">Бесплатный первый год</a>
+      <a href="faq.html">Частые вопросы</a>
+      <a href="../nurse-station.html">Сестринская станция</a>
+      <a class="nav-cta" href="../soul-quiz.html">Пройти тест SOUL</a>
+      <a href="../start-here.html" lang="en" hreflang="en">English</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Вся настройка — ничего лишнего</p>
+    <h1>Пять шагов. Один вечер. Готово.</h1>
+    <p class="lede">На этой странице — весь процесс знакомства с системой: установка, персонализация, создание панели и первые промпты. Остальные материалы сайта можно изучить позже, когда захочется углубиться. Если вы прочитаете только одну страницу, пусть это будет она.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <iframe class="video-embed" style="margin-bottom:2.5rem;" src="https://www.youtube.com/embed/Qm3Kp51F5O8?si=nyXR0r_VIuZBK-ep" title="Добро пожаловать: система с сердцем специалиста сестринского дела" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    <div class="boundary">
+      <strong>Несколько слов перед началом — особенно для студентов и студенток:</strong> поначалу некоторые вещи могут показаться слишком сложными. Это нормально, и здесь никто вас не проверяет. Вам нужен только <em>следующий</em> шаг, а не вся карта целиком. Пропускайте непонятное, возвращайтесь к нему позже и приносите вопросы на <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> — каждый специалист сестринского дела там когда-то начинал с того же места. И одно правило неизменно: <strong>никаких данных пациентов — никогда</strong>. Эта система помогает в вашей жизни и не работает с информацией о пациентах. <a href="#safety">Правила безопасности →</a>
+    </div>
+
+    <!-- ============ STEP 0 · READINESS ============ -->
+    <div class="step" style="border-left:4px solid var(--gold-500); margin-bottom:.4rem;">
+      <h3>Шаг 0 — проверка готовности (2 минуты)</h3>
+      <p>В начале каждой смены вы проверяете всё необходимое. Здесь так же: две минуты сейчас могут сэкономить час лишних хлопот позже.</p>
+      <p><strong>Вам понадобится настольный компьютер или ноутбук</strong> — Mac или Windows, но не телефон, планшет или Chromebook. Преимущество собственного компьютера в том, что файлы и память вашего ИИ остаются <strong>локально — на вашем устройстве, а не в чужом облаке</strong>. Примерный ориентир: обычно подходит компьютер не старше пяти лет, минимум с 8&nbsp;ГБ оперативной памяти и несколькими свободными гигабайтами. Актуальные требования указаны в <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">официальной документации Hermes</a>.</p>
+      <p><strong>Подготовьте отдельное пространство</strong>: система будет храниться в одной специальной папке, которую создаёт стартовый набор. В ней не должно быть ничего конфиденциального — налоговых документов, семейных фотографий или рабочих файлов. Если компьютером пользуется вся семья, лучше создать отдельную учётную запись пользователя: личное рабочее пространство вместо общего.</p>
+      <p style="font-size:.93rem; color:var(--ink-600);">Если Hermes не устанавливается из-за характеристик компьютера, дело <em>не в вас и не в вашей ошибке</em>. Готовится облачный вариант через VPS, чтобы полную систему можно было запускать с любого устройства.</p>
+    </div>
+
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500); margin-bottom:2rem;">
+      <strong>Подходящего компьютера пока нет? Вы всё равно можете начать сегодня.</strong> Пройдите <a href="../ai-mentors.html">бесплатный курс по ИИ и познакомьтесь с 55 бесплатными ИИ-наставниками</a> — они работают в любом браузере. Приходите на ежемесячный Lamp Huddle, <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">подпишитесь на новости сообщества</a> и уже сейчас пройдите <a href="../soul-quiz.html">тест SOUL</a>: файл SOUL будет ждать дня, когда вы запустите систему. Ваши участие и голос важны для нас <em>сейчас</em>, а не только после покупки техники. ИИ придёт в здравоохранение независимо от того, будет ли сестринское сообщество участвовать в этом процессе. Те, кто готовится сегодня, смогут направлять перемены, а не просто следовать за ними. Именно вам — новым продолжателям дела Florence Nightingale — предстоит влиять на то, как будет формироваться интеллектуальная поддержка ухода.
+    </div>
+
+    <div class="boundary" style="margin-bottom:2rem;">
+      <strong>Два пути, одна система — выберите свой перед шагом 1.</strong> <strong>Путь 1 — с него начинает большинство:</strong> пропустите установку и уже сегодня выполните шаги 2–5 в знакомом браузерном ИИ, например ChatGPT или Claude; текст можно вставлять вместо загрузки файлов. <strong>Путь 2:</strong> установите Hermes на шаге 1, чтобы получить полную систему с постоянной памятью и локальными файлами. Оба пути безопасны, при переходе ничего не пропадёт, а путь 2 можно выбрать в любое удобное время. <a href="../setup.html">Подробнее о двух путях →</a>
+    </div>
+
+    <div class="steps">
+
+      <!-- ============ STEP 1 ============ -->
+      <div class="step">
+        <h3>Только для пути 2 — пройдите проверку перед настройкой, затем установите Hermes</h3>
+        <p>Hermes — бесплатный ИИ-движок с открытым исходным кодом, на котором работает Nurse AI OS. Установите его с официального сайта, откройте и поздоровайтесь: интерфейс похож на обычный чат, и случайной фразой вы ничего не сломаете.</p>
+        <p>
+          <a class="btn btn-primary btn-sm" href="cheat-sheet.html">Проверка перед настройкой →</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="https://hermes-agent.nousresearch.com/">Скачать Hermes с официального сайта</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="../assets/hermes-cheat-sheet.pdf">Скачать PDF</a>
+        </p>
+        <p style="font-size:.93rem; color:var(--ink-600);">Эта памятка — ваша пауза безопасности перед настройкой: компьютер, отдельная папка, разрешения и главное правило. Всего две минуты, чтобы спокойно всё перепроверить.</p>
+        <p style="font-size:.93rem; color:var(--ink-600);"><strong>Затем выберите руководство:</strong> <a href="../assets/hermes-essentials-guide.pdf"><strong>Hermes Essentials Guide</strong></a> подойдёт студентам, студенткам и всем, кто внимательно относится к расходам: систему можно использовать почти бесплатно. <a href="../assets/hermes-power-guide.pdf"><strong>Hermes Power Guide</strong></a> пригодится, когда вы будете готовы к профилям, задачам по расписанию, управлению и надзору на уровне руководителя. В обоих руководствах показано, как EDENA — этический слой системы — работает в вашей архитектуре.</p>
+        <p style="margin-top:.8rem;"><strong>Краткая памятка прямо здесь:</strong></p>
+        <details class="cheat">
+          <summary>Установка и первый запуск</summary>
+          <div class="cheat-body">Скачайте с официального сайта версию для вашего компьютера — Mac или Windows — и следуйте инструкциям. Откройте Hermes. Когда система предложит выбрать модель или поставщика ИИ, есть два варианта: <strong>подписка Nous</strong> — вариант по умолчанию, самый простой, с одним счётом — или <strong>Full Setup → Bring Your Own Keys</strong>. Второй вариант обычно экономичнее и может обходиться почти бесплатно с ключом OpenRouter и лимитом расходов; раздел §1.7 <a href="cheat-sheet.html">проверки перед настройкой</a> объясняет порядок действий. Оба варианта подходят, и позже выбор можно изменить. Меню Hermes обновляются, поэтому при любых сомнениях сверяйтесь с <a href="https://hermes-agent.nousresearch.com/docs">официальной документацией</a>.</div>
+        </details>
+        <details class="cheat">
+          <summary>Ваш первый диалог</summary>
+          <div class="cheat-body">Пишите так, как написали бы коллеге. Начните с фразы: <em>«Я работаю в сестринском деле и настраиваю свой Nurse AI OS. Далее я передам вам файл SOUL — считайте его моими постоянными инструкциями».</em></div>
+        </details>
+        <details class="cheat">
+          <summary>Разрешения: откройте одну комнату, а не весь дом</summary>
+          <div class="cheat-body">Когда Hermes запросит доступ к файлам, разрешите доступ <strong>только к папке My-Nurse-AI-OS</strong>, созданной стартовым набором. Отклоните более широкий доступ — ко всему диску, рабочему столу, загрузкам или фотографиям. Это как рабочий пропуск: доступ только в нужную зону, а не повсюду. Случайно дали лишние разрешения? Отзовите их в настройках конфиденциальности компьютера.</div>
+        </details>
+        <details class="cheat">
+          <summary>Полезная привычка: отдельный Gmail для работы с ИИ</summary>
+          <div class="cheat-body">Создайте бесплатный отдельный адрес Gmail, например <em>yourname.ai@gmail.com</em>, только для работы с ИИ, курсов и сообщества. Так личная и семейная почта останется отдельно, а бесплатные Google Drive и Docs нового аккаунта позже удобно дополнят вашу систему.</div>
+        </details>
+        <details class="cheat">
+          <summary>Пять фраз, которые выполняют большую часть работы</summary>
+          <div class="cheat-body">«Проведи мою утреннюю встречу». · «Сделай запись Kardex по этой сессии». · «Сохрани это исправление как постоянное». · «Перед началом задай мне уточняющие вопросы, как при первичном сборе информации». · «Покажи план, прежде чем что-либо делать». Последняя фраза помогает сохранять контроль над каждым решением.</div>
+        </details>
+        <p style="font-size:.92rem; color:var(--ink-600); margin-top:.6rem;"><em>Вы выбрали путь 1? Полностью пропустите этот шаг и выполните шаги 2–5 в знакомом браузерном ИИ — ChatGPT или Claude, — вставляя текст вместо загрузки файлов. Hermes лишь сохраняет всё на постоянной основе и будет доступен, когда вы захотите перейти к нему. <a href="../setup.html">Подробнее о двух путях →</a></em></p>
+      </div>
+
+      <!-- ============ STEP 2 ============ -->
+      <div class="step">
+        <h3>Пройдите тест SOUL, затем передайте Hermes свой файл SOUL</h3>
+        <p>Двухминутный тест SOUL спрашивает о ваших ценностях, границах и о том, где вам нужна помощь в повседневной жизни. Неправильных ответов нет, готовиться не нужно. В конце вы скачаете личный файл <strong>SOUL.md</strong>. Уже прошли тест? Просто найдите этот файл.</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../soul-quiz.html">Пройти тест SOUL →</a>&nbsp; <a class="btn btn-quiet btn-sm" href="../soul-quiz-guide.html">Сопроводительное руководство: как отвечать</a>
+        <p class="prompt-label">Затем прикрепите файл в Hermes или вставьте его содержимое и напишите:</p>
+        <div class="prompt-block">Это мой файл SOUL. Считайте его моими постоянными инструкциями о том, как меня поддерживать. Подтвердите, что вы поняли мои ценности и границы, особенно то, что я никогда не буду делегировать.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);">Внимательно прочитайте ответное резюме. Исправьте неточности — отныне система будет учитывать эти исправления.</p>
+      </div>
+
+      <!-- ============ STEP 3 ============ -->
+      <div class="step">
+        <h3>Скачайте стартовый набор и покажите Hermes, где он находится</h3>
+        <p>Стартовый набор — это готовая структура папок вашей системы: место для файла SOUL, заметок и проектов. Распакуйте архив туда, где легко найдёте его снова, например в папку «Документы».</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../assets/nurse-ai-os-starter-kit.zip">Скачать стартовый набор (ZIP) →</a>
+        <p class="prompt-label">Затем напишите Hermes:</p>
+        <div class="prompt-block">Папка моего Nurse AI OS находится здесь: [укажите, куда вы распаковали архив]. Здесь хранятся мои файлы: файл SOUL, заметки в папке Memory, проекты в папке Projects и многоразовые промпты в папке Skills. Если какой-либо из этих трёх каталогов отсутствует, создайте его. Храните всю работу для меня внутри этой папки.</div>
+      </div>
+
+      <!-- ============ STEP 4 ============ -->
+      <div class="step">
+        <h3>Создайте панель одним промптом и добавьте её в закладки</h3>
+        <p>В стартовом наборе есть приватная панель, которая работает только в браузере. С помощью этого промпта Hermes автоматически персонализирует её по ответам из теста SOUL: добавит ваше имя, приоритеты и первые цели.</p>
+        <div class="prompt-block">Используя мой файл SOUL, персонализируйте Local HTML Life Dashboard в моём стартовом наборе (08-Integrations/Local-HTML-Life-Dashboard). Укажите моё имя, главные приоритеты в каждой сфере, а также первые цели и привычки из моих ответов на тест. Сохраните файл под именем My-Dashboard.html в папке Nurse AI OS и точно сообщите, где он находится.</div>
+        <p><strong>Откройте созданный файл и добавьте его в закладки.</strong> Это ваша обзорная панель: всё, что вы создаёте, видно сразу, и ничего не загружается в интернет.</p>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>Позже, если захотите большего,</em> в <a href="resources.html">расширенных материалах</a> есть версия для Notion, доступ через мессенджеры и автономные локальные решения. Но не сейчас: пока достаточно закладки.</p>
+      </div>
+
+      <!-- ============ STEP 5 ============ -->
+      <div class="step">
+        <h3>Запустите первые промпты</h3>
+        <p>Подготовка завершена. Теперь выберите то, что пригодится вам сегодня:</p>
+        <p class="prompt-label">Ежедневный ритм — начните завтра утром</p>
+        <div class="prompt-block">Проведи мою утреннюю встречу. Задай мне один вопрос: «Какой у вас сегодня главный приоритет?» Затем предложи три конкретных способа помочь: подготовить черновики, провести поиск информации, сделать резюме или составить план. Никогда не принимай клинические решения и не используй данные пациентов. Спроси, с чего начать.</div>
+        <p class="prompt-label">Для студентов и студенток: разобраться с одной лекцией</p>
+        <div class="prompt-block">Вот мои конспекты лекции по теме [тема]. Составь понятную карту материала, а затем проведи сократический опрос: пять вопросов по одному. Не сообщай ответ, пока я не объясню ход своих рассуждений.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>Для студентов и студенток: теперь в стартовый набор входит полный пакет <strong>Study OS</strong> — папка <code>15-Student-Study-OS</code>. В нём есть сократический наставник, задания в стиле NGN, смоделированные случаи с разбором под руководством системы и карточки для интервального повторения; во все инструменты встроены правила академической добросовестности. Напишите ИИ: «Загрузи навыки из 15-Student-Study-OS».</em></p>
+        <p class="prompt-label">Для практикующих специалистов: снимите с себя одну задачу</p>
+        <div class="prompt-block">На основе моего файла SOUL составь для меня план восстановления после смены: по порядку перечисли, что помогает мне переключиться и отдохнуть в течение первого часа после возвращения домой.</div>
+        <p class="prompt-label">Для руководителей: первый шаг в управлении и надзоре</p>
+        <div class="prompt-block">Помоги описать один рабочий процесс в моём подразделении — без данных пациентов, только сам процесс. Определи, какую нагрузку мог бы снизить ИИ, какой вред он может причинить и где необходима контрольная точка с обязательной проверкой человеком.</div>
+        <p style="margin-top:1rem;">Когда эти действия станут привычными, <a href="../personalize.html">шесть рабочих процессов</a> помогут двигаться дальше — по одному в неделю, пока система действительно не узнает вас. А когда вы будете готовы освоить память, расписания, управление и надзор и всю систему целиком, переходите к бесплатному углублённому курсу <a href="../hermes-masterclass.html">Hermes Masterclass</a>.</p>
+      </div>
+
+    </div>
+
+    <p style="text-align:center; margin-top:2.5rem;">
+      <a class="btn btn-primary" href="../soul-quiz.html">Готовы? Продолжайте. Тест SOUL — это шаг 2 →</a>
+      <br><span style="font-size:.93rem; color:var(--ink-600);">Возникли вопросы? Ежемесячный <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> бесплатен, а на <a href="mailto:great.ai.nurses@gmail.com">электронные письма</a> отвечает человек.</span>
+    </p>
+
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>Завершили пять шагов? Закрепите результат.</strong> Подпишитесь на список сообщества: одна регистрация даст вам рассылку, приглашения на ежемесячный Lamp Huddle и статус участника-основателя в пространстве сообщества, когда оно откроется. <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">Подписаться на новости сообщества →</a>
+    </div>
+
+    <div class="boundary" style="margin-top:1.2rem;">
+      <strong>Куда двигаться после сегодняшней настройки:</strong> <a href="../hermes-masterclass.html">Hermes Masterclass</a> — бесплатный углублённый курс. Десять модулей превращают начальную настройку в управляемую постоянно действующую систему: память, подключения, работа по расписанию, операторская консоль и подробное управление и надзор EDENA. Хотите сохранить темп? Начните с <a href="../hermes-masterclass.html#fast-track">семидневного ускоренного маршрута</a> — один заметный результат каждый день.
+    </div>
+
+    <p style="text-align:center; margin-top:1.5rem; font-size:.93rem; color:var(--ink-600);">Что-то в пяти шагах осталось непонятным? <a href="mailto:great.ai.nurses@gmail.com?subject=Site%20feedback%20%E2%80%94%20Start%20Here&body=Which%20step%20I%20was%20on%3A%0A%0AWhat%20was%20confusing%20or%20broken%3A%0A%0AWhat%20would%20have%20helped%3A%20">Напишите нам</a> — отзывы первого года помогают развивать проект.
+    </p>
+  </div>
+</section>
+
+<!-- ============ VIDEO ============ -->
+<section class="section">
+  <div class="container narrow">
+    <iframe class="video-embed" src="https://www.youtube.com/embed/0MDiFVbgR6U" title="Nurse AI OS: как начать работу — видео" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</section>
+
+<!-- ============ SAFETY ============ -->
+<section class="section section-alt" id="safety">
+  <div class="container narrow">
+    <p class="eyebrow">Правила, которые защищают всех</p>
+    <h2>Простые правила безопасности</h2>
+    <p class="section-intro">Вы знаете правила безопасного введения лекарств. Эти правила ещё короче: они защищают пациентов, вашу профессиональную ответственность и вас самих.</p>
+    <div class="steps">
+      <div class="step"><h3>Никаких данных пациентов. Никогда.</h3><p>Не вводите в инструменты ИИ имена, медицинские записи, снимки экрана, номера палат или карт, даты и любые истории, по которым можно распознать пациента. Если вы сомневаетесь, относятся ли сведения к данным пациентов, считайте, что относятся, и не используйте их.</p></div>
+      <div class="step"><h3>ИИ готовит черновик. Решение принимаете вы.</h3><p>Любой результат ИИ остаётся черновиком: проверка человеком обязательна. Ничего нельзя отправлять, публиковать или применять без вашего профессионального суждения.</p></div>
+      <div class="step"><h3>Профессиональную ответственность нельзя передать ИИ.</h3><p>Представленные здесь инструменты ИИ не предназначены для клинических решений, оценок состояния или вопросов об уходе за конкретным пациентом. Они могут взять на себя рутинную работу, но не ваше суждение.</p></div>
+      <div class="step"><h3>Рабочие системы остаются на работе.</h3><p>Не используйте экраны электронной медицинской карты, конфиденциальные внутренние документы и идентифицируемые данные сотрудников, студентов или студенток. Допустимы только общедоступные, вымышленные или ваши личные материалы — если только служба вашей организации, отвечающая за соблюдение требований, явно не одобрила конкретный инструмент и рабочий процесс.</p></div>
+      <div class="step"><h3>Если сомневаетесь, спросите человека.</h3><p>Обсудите неоднозначную ситуацию на <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> или напишите по адресу <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a>. Лучше задать вопрос заранее, чем разбираться с последствиями позже.</p></div>
+    </div>
+    <p style="margin-top:2rem;">У этих правил есть название: <strong>EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</strong>. Это система управления и надзора, встроенная в каждый уровень Nurse AI OS. Каждое действие классифицируется до запуска:
+      <span class="badge" style="background:#e5f3e6; color:#2c6e31;">🟢 Зелёный — можно продолжать</span>
+      <span class="badge" style="background:#fdf3d7; color:#8a6420;">🟡 Жёлтый — сначала требуется ваше одобрение</span>
+      <span class="badge" style="background:#fbe4e4; color:#a33a3a;">🔴 Красный — требуется разрешение человека</span>
+      Подробно вы познакомитесь с EDENA в <a href="../assets/nurse-ai-os-workbook.pdf">рабочей тетради</a>, а пока достаточно пяти правил выше. Когда будете готовы сделать так, чтобы ИИ автоматически <em>соблюдал</em> их в каждой сессии, скачайте <a href="../assets/governance-kit.zip">Governance Kit</a> — набор файлов с правилами, которые система загружает при каждом запуске.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Несите лампу. Ведите журнал. Агенты предлагают. Люди решают. Специалисты сестринского дела обеспечивают ответственное применение.</p>
+    <div class="footer-links">
+      <a href="index.html">Главная</a>
+      <a href="../pathways.html">Маршруты</a>
+      <a href="resources.html">Ресурсы</a>
+      <a href="about.html">О нас</a>
+      <a href="faq.html">Частые вопросы</a>
+      <a href="../privacy.html">Конфиденциальность</a>
+      <a href="../terms.html">Условия использования</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Связаться</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Бесплатно для специалистов сестринского дела и студентов в течение первого года проекта.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

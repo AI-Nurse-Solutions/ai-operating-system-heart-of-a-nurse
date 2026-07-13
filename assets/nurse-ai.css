@@ -185,6 +185,7 @@ a:hover { color: var(--navy-800); }
 .language-tl { background: #0f766e; }
 .language-zh { background: #a65b18; }
 .language-ar { background: #6f3f63; }
+.language-vi { background: #3f6b4f; }
 
 html[lang="ar"] body {
   font-family: "Noto Sans Arabic", var(--font-body);
@@ -379,11 +380,12 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
   .cols-3, .cols-4 { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 620px) {
+  .site-header { position: static; }
   .cols-2, .cols-3, .cols-4, .resource-list { grid-template-columns: 1fr; }
   .nav-links { gap: .75rem; font-size: .9rem; }
-  .language-nav-inner { justify-content: center; overflow-x: visible; padding: .55rem .35rem; gap: .25rem; }
+  .language-nav-inner { justify-content: center; overflow-x: visible; padding: .55rem .3rem; gap: .2rem; }
   .language-nav-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-  .language-chip { flex: 1 1 0; min-width: 0; padding: .4rem .28rem; font-size: .72rem; text-align: center; }
+  .language-chip { flex: 1 1 0; min-width: 0; padding: .4rem .18rem; font-size: .68rem; text-align: center; }
   .section { padding: 2.6rem 0; }
   body.clinical-sketch-page {
     background-size: auto, 620px auto;

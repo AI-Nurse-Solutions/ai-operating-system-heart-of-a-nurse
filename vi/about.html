@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Về nhà sáng lập — Nurse AI OS</title>
+<meta name="description" content="Robert Domondon, RN, MBA — điều dưỡng ICU 22 năm, nhà quản lý y tế 13 năm, bác sĩ y khoa được đào tạo tại Philippines, cựu quản trị viên bệnh viện Hải quân Hoa Kỳ và kiến trúc sư của hệ sinh thái quản trị AI do điều dưỡng dẫn dắt phía sau Nurse AI OS.">
+<link rel="alternate" hreflang="en" href="../about.html">
+<link rel="alternate" hreflang="vi" href="about.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+.zone { display:inline-block; border-radius:8px; padding:.3rem .8rem; font-weight:700; font-size:.9rem; margin:0 .4rem .5rem 0; }
+.zone.green { background:#e5f3e6; color:#2c6e31; }
+.zone.yellow { background:#fdf3d7; color:#8a6420; }
+.zone.red { background:#fbe4e4; color:#a33a3a; }
+.ladder { display:grid; gap:.9rem; grid-template-columns:repeat(4,1fr); }
+.rung { background:var(--white); border-radius:10px; box-shadow:var(--shadow-sm); padding:1.1rem 1rem; border-top:4px solid var(--gold-500); }
+.rung .lvl { font-family:var(--font-display); font-weight:700; color:var(--teal-600); font-size:1.05rem; }
+.rung p { font-size:.92rem; color:var(--ink-600); margin:.3rem 0 0; }
+.timeline { border-left:3px solid var(--gold-500); padding-left:1.4rem; display:grid; gap:1.1rem; margin:1.5rem 0; }
+.timeline .tl-item strong { color:var(--navy-900); font-family:var(--font-display); }
+.timeline .tl-item p { margin:.15rem 0 0; color:var(--ink-600); }
+@media (max-width:900px){ .ladder{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:620px){ .ladder{ grid-template-columns:1fr;} }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "ProfilePage",
+ "mainEntity": {
+  "@type": "Person",
+  "@id": "https://nurse-ai-os.org/about.html#robert",
+  "name": "Robert Domondon",
+  "jobTitle": "Điều dưỡng đã đăng ký (RN, CCRN, CSC, CMC)",
+  "image": "https://avatars.githubusercontent.com/u/161920594?v=4",
+  "worksFor": {
+   "@id": "https://nurse-ai-os.org/#org"
+  },
+  "url": "https://nurse-ai-os.org/about.html",
+  "knowsAbout": [
+   "Điều dưỡng chăm sóc tích cực",
+   "Quản trị AI trong y tế",
+   "Giáo dục điều dưỡng"
+  ]
+ }
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Điều hướng chính">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Bắt đầu tại đây</a>
+      <a href="../pathways.html">Lộ trình</a>
+      <a href="resources.html">Tài nguyên</a>
+      <a href="about.html" class="active" aria-current="page">Giới thiệu</a>
+      <a href="index.html#founding-year">Năm sáng lập miễn phí</a>
+      <a href="faq.html">Câu hỏi thường gặp</a>
+      <a href="../nurse-station.html">Trạm điều dưỡng</a>
+      <a class="nav-cta" href="../soul-quiz.html">Làm SOUL Quiz</a>
+      <a href="../about.html" lang="en" hreflang="en">English</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" style="padding:3.6rem 0;">
+  <div class="container hero-grid">
+    <div>
+      <p class="kicker">Về nhà sáng lập</p>
+      <h1>Robert Domondon</h1>
+      <p style="font-family:var(--font-display); font-size:1.25rem; color:var(--gold-300); letter-spacing:.06em; margin:-.2rem 0 0;">RN, CCRN, CSC, CMC</p>
+      <p class="lede">Hai mươi hai năm bên giường bệnh trong ICU. Mười ba năm quản lý y tế. Nền tảng đào tạo của một bác sĩ, những bài học xương máu của một nhà quản trị, cùng một niềm tin xuyên suốt tất cả: <strong style="color:var(--gold-300);">điều dưỡng không nên chỉ sử dụng AI — họ phải tham gia quản trị AI.</strong></p>
+      <p style="margin-top:1.4rem;"><span class="badge gold">Điều dưỡng ICU 22 năm</span> <span class="badge gold">MD (Philippines)</span> <span class="badge gold">Cựu quản trị viên bệnh viện Hải quân Hoa Kỳ</span> <span class="badge gold">Nhà quản lý y tế, 13 năm</span></p>
+    </div>
+    <div>
+      <!-- To self-host instead: save the photo as assets/img/robert-domondon.jpg and swap the src -->
+      <img src="https://avatars.githubusercontent.com/u/161920594?v=4" alt="Robert Domondon, RN, MBA — nhà sáng lập Nurse AI OS" style="max-width:340px; border-radius:50%; display:block; margin:0 auto;">
+    </div>
+  </div>
+</section>
+
+<!-- ============ MEDIA PACKET ============ -->
+<section class="section" style="padding-bottom:0;">
+  <div class="container narrow">
+    <div style="display:flex;gap:1.4rem;align-items:center;background:var(--white);border:1px solid var(--linen-100);border-left:4px solid var(--gold-500);border-radius:var(--radius);padding:1.4rem 1.6rem;box-shadow:var(--shadow-sm);flex-wrap:wrap;">
+      <span aria-hidden="true" style="flex:none;font-size:2.6rem;">📰</span>
+      <span style="flex:1;min-width:240px;">
+        <span style="display:block;font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--navy-800);margin-bottom:.25rem;">Bộ tài liệu truyền thông <span class="badge gold" style="font-size:.72rem;vertical-align:2px;">Mới · Tháng 7 năm 2026</span></span>
+        <span style="display:block;color:var(--ink-600);line-height:1.55;">Bạn đang viết về Nurse AI OS? Mọi nội dung có thể trích dẫn đều nằm trong một tệp PDF: bản tóm tắt điều hành về một hệ điều hành AI cá nhân miễn phí, có quản trị, do một điều dưỡng ICU với 22 năm kinh nghiệm xây dựng; hệ thống có các tầng rủi ro, điểm kiểm soát bắt buộc có con người và ranh giới tuyệt đối không dùng dữ liệu người bệnh. Tài liệu còn có cách diễn đạt sẵn cho công chúng, các tổ chức điều dưỡng và kiến trúc sư AI, cùng thông tin nhanh, tiểu sử nhà sáng lập, lưu ý về độ chính xác và thông tin liên hệ báo chí.</span>
+        <a href="../assets/nurse-ai-os-media-packet.pdf" style="display:inline-block;margin-top:.6rem;font-weight:700;color:var(--teal-600);text-decoration:none;">Tải bộ tài liệu truyền thông (PDF) →</a>
+        <span style="display:block;margin-top:.55rem;color:var(--ink-600);font-size:.93rem;">Cũng có các bản:
+          <a href="../assets/nurse-ai-os-media-packet-fr.pdf" style="font-weight:600;">Français</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-es.pdf" style="font-weight:600;">Español</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-ar.pdf" style="font-weight:600;" lang="ar">العربية</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-ru.pdf" style="font-weight:600;" lang="ru">Русский</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-zh.pdf" style="font-weight:600;" lang="zh-Hans">中文</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-hi.pdf" style="font-weight:600;" lang="hi">हिन्दी</a>
+        </span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE STORY ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Con đường đến hôm nay</p>
+    <h2>Một sự nghiệp gắn với nơi hệ thống chạm đến con người trên giường bệnh</h2>
+    <p>Con đường của Robert khác thường vì ông chủ động chọn như vậy. Ông được đào tạo làm bác sĩ tại Philippines, điều hành một bệnh viện trên căn cứ hải quân Hoa Kỳ trước đây, quản lý hoạt động y tế trong mười ba năm, đồng sáng lập một viện chữa lành tự nhiên, làm tư vấn triển khai AI và phát triển kinh doanh — rồi chọn dành hơn hai thập niên làm điều dưỡng chăm sóc tích cực tại Hoa Kỳ, trực tiếp bên giường bệnh, trong các ca đêm, tại những căn phòng nơi một hệ thống thành công hay thất bại với từng người bệnh.</p>
+    <p>Sự kết hợp giữa góc nhìn lâm sàng của bác sĩ, tầm nhìn hệ thống của nhà quản trị và đôi tay của người điều dưỡng đã định hình Nurse AI OS như ngày nay. Hệ thống được xây dựng bởi một người từng ký ngân sách, viết chính sách <em>và</em> nắm tay người bệnh mà chính sách ấy được viết để phục vụ.</p>
+
+    <div class="timeline">
+      <div class="tl-item"><strong>Bác sĩ, Philippines</strong><p>Đào tạo và hành nghề lâm sàng — học cách làm y khoa trong điều kiện nguồn lực khan hiếm, nơi năng lực phán đoán có ý nghĩa quyết định.</p></div>
+      <div class="tl-item"><strong>Quản trị viên bệnh viện, căn cứ hải quân Hoa Kỳ trước đây</strong><p>Điều hành hoạt động, an toàn và nhân sự — góc nhìn hệ thống về chăm sóc.</p></div>
+      <div class="tl-item"><strong>Nhà quản lý y tế · tư vấn triển khai AI · đồng sáng lập Institute for Natural Healing</strong><p>Mười ba năm kết nối quản lý, công nghệ mới nổi và hoạt động chăm sóc lấy con người làm trung tâm.</p></div>
+      <div class="tl-item"><strong>Điều dưỡng ICU, Hoa Kỳ — 22 năm và vẫn tiếp tục</strong><p>Chăm sóc tích cực bên giường bệnh. Đây là điểm nhìn mà mọi khuôn khổ bên dưới phải chịu trách nhiệm trước.</p></div>
+      <div class="tl-item"><strong>Nhà sáng lập — Nurse Intelligence Network, NAIO Institute, Nurse AI OS</strong><p>Xây dựng hệ sinh thái để điều dưỡng quản trị kỷ nguyên AI thay vì bị kỷ nguyên ấy chi phối.</p></div>
+    </div>
+
+    <div class="boundary">
+      <strong>Học thuyết quản trị:</strong> “Quản trị ngay từ khâu thiết kế. Rõ ràng và coi trọng các giá trị trước khi chạy theo tốc độ.” Điều tốt không tự nhiên lan rộng — cần được tổ chức, quản trị và giám sát một cách có chủ đích.
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE ECOSYSTEM ============ -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">Điều ông đang xây dựng</p>
+    <h2>Một hệ sinh thái, năm công cụ</h2>
+    <p class="section-intro">Mỗi tổ chức trả lời một câu hỏi riêng: ai đặt ra tiêu chuẩn, ai quyết định, điều gì thực thi các nguyên tắc đạo đức, điều dưỡng tập hợp ở đâu và điều gì đưa công việc đi tiếp. Khi kết hợp, chúng tạo thành một kiến trúc thống nhất: quản trị AI do điều dưỡng dẫn dắt, từ giường bệnh đến cấp tổ chức.</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <p class="role-tag">Cơ quan quản trị</p>
+        <h3>NAIO Institute</h3>
+        <p>Nurse AI Orchestration Institute đặt ra tiêu chuẩn, phát triển hệ thống chứng nhận và xây dựng các khuôn khổ tuân thủ cho lực lượng tác nhân AI trong y tế — hướng đến vai trò như <strong>FAA của AI trong y tế</strong>: không tác nhân nào được hoạt động nếu chưa đăng ký, phân loại rủi ro và chỉ định một người chịu trách nhiệm giám sát.</p>
+        <p><em>Nguyên tắc cốt lõi: quản trị trước quyền tự chủ.</em></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Mặt phẳng điều khiển phối hợp</p>
+        <h3>Florence-X</h3>
+        <p>Trung tâm chỉ huy cho lực lượng tác nhân AI: giao nhiệm vụ, thực thi chính sách quản trị, định tuyến mô hình và công cụ, quản lý ranh giới bộ nhớ, đồng thời phối hợp các tác nhân như một lực lượng thống nhất — trên hạ tầng tự chủ, thuộc quyền sở hữu thay vì phụ thuộc vào đám mây.</p>
+        <p><em>Con người giữ quyền quyết định cuối cùng ở mọi tầng.</em></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Tầng lương tri</p>
+        <h3>EDENA</h3>
+        <p><strong>Ethical Design &amp; Enablement for Nursing Augmentation</strong> — phân loại, đặt điểm kiểm soát và kiểm tra mọi hành động AI trước khi thực hiện. Đạo đức được triển khai thành hạ tầng có thể thực thi: AI có thể thực hiện quy trình công việc, nhưng con người vẫn chịu trách nhiệm phán đoán.</p>
+        <p><span class="zone green">🟢 Xanh — rủi ro thấp, có thể tiến hành</span><span class="zone yellow">🟡 Vàng — phê duyệt có điều kiện</span><span class="zone red">🔴 Đỏ — bắt buộc có con người cho phép</span></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Hệ điều hành tác nhân có quản trị</p>
+        <h3>Nurse AI OS</h3>
+        <p>Đây là hệ thống bạn đang dùng — tầng vận hành do NAIO quản trị, nơi toàn bộ kiến trúc trở thành của riêng bạn. Nurse AI OS nằm dưới trung tâm chỉ huy Florence-X, áp dụng phân loại rủi ro của EDENA và bộ nhớ có quản trị, đồng thời sử dụng công cụ mã nguồn mở <strong>Hermes</strong> để biến các quy trình phức tạp thành những kỹ năng không ngừng phát triển, có thể tái sử dụng và tích lũy giá trị qua nhiều nhiệm vụ, nhiều giai đoạn.</p>
+        <p><em>Florence-X quyết định và quản trị. Nurse AI OS định tuyến, thực thi và cá nhân hóa. Hermes học hỏi và thích nghi. Điều dưỡng chịu trách nhiệm giám sát tất cả.</em></p>
+        <p class="cta-line"><a href="start-here.html">Bắt đầu hệ thống của bạn →</a></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Tầng trí tuệ con người</p>
+        <h3>Nurse Intelligence Network</h3>
+        <p>Cộng đồng nghề nghiệp toàn cầu nơi điều dưỡng phát triển năng lực AI, định hình hoạt động quản trị và khởi tạo các dự án kinh doanh — một mạng lưới trí tuệ trong đó <strong>sự tham gia tạo nên hoạt động quản trị</strong>, với NIN Summit thường niên và Nurse Intelligence Podcast làm điểm tựa.</p>
+        <p class="cta-line"><a href="https://www.nurseintelligence.com/">Truy cập NIN →</a></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Công cụ nội dung</p>
+        <h3>Florence Media Network</h3>
+        <p>Một hệ thống sản xuất và phân phối nội dung đa kênh, ứng dụng AI để tạo nội dung đạt chuẩn quản trị ở quy mô lớn — mỗi sản phẩm đều được phân loại theo EDENA và có con người rà soát trước khi phát hành. Nội dung được quản trị như hạ tầng lâm sàng, vì niềm tin chính là sản phẩm.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREDENTIALING LADDER ============ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Chứng nhận</p>
+    <h2>Lộ trình NAIO Fellowship</h2>
+    <p class="section-intro">Phát triển tầng thẩm quyền con người cho các hệ thống AI — từ hiểu biết nền tảng đến năng lực lãnh đạo quản trị ở cấp điều hành, cùng hoạt động cố vấn, hợp tác nghiên cứu và tham gia hội đồng quản trị trên suốt lộ trình.</p>
+    <div class="ladder">
+      <div class="rung"><span class="lvl">1 · NAIO-C</span><p>Kiến thức AI cốt lõi và nền tảng quản trị</p></div>
+      <div class="rung"><span class="lvl">2 · NAIO-A</span><p>Phối hợp nâng cao và thiết kế quy trình công việc</p></div>
+      <div class="rung"><span class="lvl">3 · NAIO-F</span><p>Kiến trúc quản trị cấp tổ chức và chiến lược hệ sinh thái</p></div>
+      <div class="rung"><span class="lvl">4 · CAIOS</span><p>Chief AI Orchestration Steward — lãnh đạo quản trị AI ở cấp điều hành</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 WORLD PROJECTS ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">Sáng kiến chiến lược</p>
+    <h2>13 dự án toàn cầu trao quyền cho điều dưỡng</h2>
+    <p class="section-intro">Chương trình dài hạn — tham vọng có chủ đích và được quản trị có chủ đích. Các dự án được nhóm theo điều mà mỗi dự án bảo vệ.</p>
+
+    <details class="faq">
+      <summary>Quản trị &amp; hiến chương (Dự án 1–3)</summary>
+      <div class="faq-body"><strong>01 · Nightingale Protocol</strong> — một đại hội hiến chương AI toàn cầu của điều dưỡng, có nhiệm vụ soạn thảo, phê chuẩn và thực thi các tiêu chuẩn quản trị mang tính ràng buộc.<br><strong>02 · EDENA Sentient Shield</strong> — phát triển EDENA thành một công cụ thực thi ranh giới theo thời gian thực, phát hiện độ tin cậy bị lệch và phạm vi dần nới rộng trước khi chúng tác động đến người bệnh.<br><strong>03 · Nurse Data Cooperative &amp; Ethics Council</strong> — điều dưỡng cùng kiểm soát cách dữ liệu lâm sàng đã khử định danh được dùng để huấn luyện AI, dưới sự giám sát của điều dưỡng tuyến đầu, người bệnh và cộng đồng.</div>
+    </details>
+    <details class="faq">
+      <summary>Hạ tầng &amp; chủ quyền (Dự án 4–6)</summary>
+      <div class="faq-body"><strong>04 · Florence Sovereign Mesh</strong> — năng lực điện toán phân tán do điều dưỡng kiểm soát, để hoạt động quản trị không bao giờ phụ thuộc vào sự cho phép của các tập đoàn công nghệ lớn.<br><strong>05 · Judgment Vault &amp; Knowledge Graph</strong> — ghi nhận phần lao động nhận thức vô hình của điều dưỡng thành tri thức có cấu trúc, có thể trích dẫn và dùng cho đào tạo.<br><strong>06 · Compassion Engine</strong> — kiến trúc ràng buộc bảo đảm AI tiên tiến giữ được sự hiện diện trị liệu và chăm sóc dựa trên mối quan hệ, trong đó lòng trắc ẩn là một yêu cầu quản trị có thể đo lường.</div>
+    </details>
+    <details class="faq">
+      <summary>Lâm sàng &amp; an toàn (Dự án 7–8)</summary>
+      <div class="faq-body"><strong>07 · CAIRLN &amp; Guardian Commons</strong> — hệ thống báo cáo sự cố AI do điều dưỡng dẫn dắt, lấy mô hình ASRS của ngành hàng không: các sự cố suýt xảy ra, lỗi và tín hiệu an toàn trở thành nguồn tri thức an toàn dùng chung.<br><strong>08 · Simulation &amp; ICU Co-Pilot</strong> — thử nghiệm công cụ AI trong những điều kiện khắc nghiệt nhất (3 giờ sáng, thiếu nhân lực, ca bệnh nặng) — nơi chúng thực sự bộc lộ lỗi — trước khi được đưa vào các đơn vị thực tế.</div>
+    </details>
+    <details class="faq">
+      <summary>Lực lượng lao động &amp; nguồn phát triển nhân lực (Dự án 9–10)</summary>
+      <div class="faq-body"><strong>09 · Conductor &amp; Builder Guild (NINE²)</strong> — vườn ươm biến ý tưởng AI do điều dưỡng dẫn dắt thành sản phẩm có quản trị và có thể vận hành, thông qua chương trình phát triển nhà sáng lập theo nhóm.<br><strong>10 · Context Bundles &amp; Mentor Network</strong> — các sản phẩm tri thức có thông tin nguồn gốc tích hợp sẵn, được phân phối qua mạng lưới chi hội và cố vấn toàn cầu.</div>
+    </details>
+    <details class="faq">
+      <summary>Toàn cầu &amp; công bằng (Dự án 11–13)</summary>
+      <div class="faq-body"><strong>11 · Philippine Bridge</strong> — quyền tiếp cận AI có chủ quyền cho điều dưỡng ở Global South, chuyển tình trạng chảy máu chất xám thành năng lực lãnh đạo quản trị phân tán.<br><strong>12 · Climate-Health Sentinel Network</strong> — mạng lưới thông tin khí hậu do điều dưỡng dẫn dắt, dự báo các mối đe dọa sức khỏe do khí hậu gây ra thay vì chỉ phản ứng khi chúng xảy đến.<br><strong>13 · Nurse Robotics Governance Authority</strong> — tiêu chuẩn quản trị cho robot ứng dụng AI khi đi vào môi trường lâm sàng, để khi AI hiện thân xuất hiện, điều dưỡng đã làm chủ kiến trúc giám sát.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ NORTH STAR ============ -->
+<section class="section section-navy">
+  <div class="container narrow" style="text-align:center;">
+    <p class="eyebrow">NIN Summit 2026</p>
+    <h2>“Điều gì sẽ xảy ra nếu chúng ta có thể lan tỏa điều tốt?”</h2>
+    <p class="section-intro" style="margin:0 auto 1.8rem;">Câu hỏi phía sau mọi điều ở trên: liệu trí tuệ, công nghệ và chuyên môn có thể được tổ chức có chủ đích để an toàn người bệnh, phẩm giá con người và sức bền của lực lượng lao động cùng được nhân rộng mà không gây hại hay không?</p>
+    <p>
+      <span class="badge gold">Thực tế là trước hết — trung thực về điều AI có thể và không thể làm</span>
+      <span class="badge gold">Rào chắn là tính năng, không phải hạn chế</span>
+      <span class="badge gold">Quản trị ngay từ khâu thiết kế, không bổ sung về sau</span>
+      <span class="badge gold">Niềm tin phải được tạo dựng, luôn có điều kiện và có thể bị thu hồi</span>
+    </p>
+    <p style="margin-top:1.6rem; font-family:var(--font-display); font-size:1.2rem; color:var(--gold-300);">Nhân rộng trí tuệ. Gìn giữ tính người. Để lại những hệ thống tốt hơn khi chúng ta tiếp nhận.</p>
+  </div>
+</section>
+
+<!-- ============ WHITE PAPER ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <a href="../assets/care-intelligence-white-paper.pdf" style="display:flex;gap:1.4rem;align-items:center;background:var(--white);border:1px solid var(--linen-100);border-left:4px solid var(--gold-500);border-radius:var(--radius);padding:1.4rem 1.6rem;text-decoration:none;box-shadow:var(--shadow-sm);flex-wrap:wrap;">
+      <img src="../assets/img/care-intelligence-cover.jpg" alt="Bìa báo cáo chuyên đề Care Intelligence" width="96" height="124" style="flex:none;border-radius:6px;box-shadow:var(--shadow-sm);object-fit:cover;">
+      <span style="flex:1;min-width:240px;">
+        <span style="display:block;font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--navy-800);margin-bottom:.25rem;">Báo cáo chuyên đề Care Intelligence <span class="badge gold" style="font-size:.72rem;vertical-align:2px;">Tháng 6 năm 2026</span></span>
+        <span style="display:block;color:var(--ink-600);line-height:1.55;">Khuôn khổ dành cho người phối hợp chăm sóc bằng AI — toàn bộ tư duy phía sau trang này, gói gọn trong một báo cáo được trình bày chỉn chu, dễ đọc. Tác giả: Robert Domondon, CCRN CMC CSC.</span>
+        <span style="display:inline-block;margin-top:.6rem;font-weight:700;color:var(--teal-600);">Tải báo cáo chuyên đề (PDF) →</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="section">
+  <div class="container narrow" style="text-align:center;">
+    <h2>Cách tốt nhất để hiểu công việc này là trực tiếp sử dụng</h2>
+    <p class="section-intro" style="margin:0 auto 1.6rem;">Nurse AI OS là cửa ngõ vào toàn bộ hệ sinh thái này — miễn phí cho điều dưỡng và sinh viên điều dưỡng trong năm sáng lập. Hãy bắt đầu như mọi điều dưỡng khác: bằng một bài đánh giá.</p>
+    <a class="btn btn-primary" href="../soul-quiz.html">Làm SOUL Quiz trong 2 phút →</a>
+    <p style="margin-top:1.2rem; color:var(--ink-600); font-size:.95rem;">Liên hệ về diễn thuyết, hợp tác hoặc quản trị: <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a> · <a href="https://www.nurseintelligence.com/">Nurse Intelligence Network</a> · <a href="https://www.youtube.com/@NurseIntelligence">YouTube</a></p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Hãy mang theo ngọn đèn. Hãy gìn giữ sổ ghi chép. Các tác nhân đề xuất. Con người phán đoán. Điều dưỡng chịu trách nhiệm giám sát.</p>
+    <div class="footer-links">
+      <a href="index.html">Trang chủ</a>
+      <a href="start-here.html">Bắt đầu tại đây</a>
+      <a href="../pathways.html">Lộ trình</a>
+      <a href="resources.html">Tài nguyên</a>
+      <a href="about.html" class="active" aria-current="page">Giới thiệu</a>
+      <a href="faq.html">Câu hỏi thường gặp</a>
+      <a href="../privacy.html">Quyền riêng tư</a>
+      <a href="../terms.html">Điều khoản</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Liên hệ</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO / NIN · Miễn phí cho điều dưỡng và sinh viên điều dưỡng trong năm sáng lập.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Danh sách kiểm tra trước khi thiết lập &amp; Hướng dẫn nhanh về Hermes — Nurse AI OS</title>
+<meta name="description" content="Danh sách kiểm tra trước khi thiết lập Nurse AI OS: xác minh thiết bị, chuẩn bị không gian làm việc, cài Hermes với quyền phù hợp và trao cho hệ thống trái tim của người điều dưỡng.">
+<link rel="alternate" hreflang="en" href="https://nurse-ai-os.org/cheat-sheet.html">
+<link rel="alternate" hreflang="vi" href="https://nurse-ai-os.org/vi/cheat-sheet.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+.checkitem{display:flex;gap:.8rem;align-items:flex-start;background:var(--white);border:1px solid var(--linen-100);border-radius:10px;padding:.9rem 1.1rem;margin:.6rem 0;box-shadow:var(--shadow-sm);}
+.checkitem input[type=checkbox]{margin-top:.3rem;width:1.15rem;height:1.15rem;accent-color:var(--teal-600);flex:none;cursor:pointer;}
+.checkitem label{cursor:pointer;}
+.checkitem strong{color:var(--navy-800);}
+.checkitem .why{display:block;color:var(--ink-600);font-size:.93rem;margin-top:.15rem;}
+.prompt-block{background:#10233a;color:#dbe6ef;border-radius:10px;padding:1.1rem 1.3rem;font-family:"SF Mono","Consolas",monospace;font-size:.88rem;line-height:1.55;white-space:pre-wrap;border-left:4px solid var(--gold-500);margin:.8rem 0 1.2rem;}
+.phrase-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin:1rem 0 1.5rem;}
+.phrase-table th{background:var(--navy-900);color:var(--gold-300);font-family:var(--font-display);text-align:left;padding:.6rem .9rem;}
+.phrase-table td{padding:.55rem .9rem;border-top:1px solid var(--linen-100);font-size:.95rem;vertical-align:top;}
+.phrase-table td:first-child{font-weight:700;color:var(--teal-600);width:44%;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Điều hướng chính">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Bắt đầu tại đây</a>
+      <a href="../pathways.html">Lộ trình</a>
+      <a href="resources.html">Tài nguyên</a>
+      <a href="about.html">Giới thiệu</a>
+      <a href="index.html#founding-year">Năm sáng lập miễn phí</a>
+      <a href="faq.html">Câu hỏi thường gặp</a>
+      <a href="../nurse-station.html">Trạm điều dưỡng</a>
+      <a class="nav-cta" href="../soul-quiz.html">Làm SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Bước thiết lập 1 · Đọc trước khi cài đặt</p>
+    <h1>Danh sách kiểm tra trước khi thiết lập</h1>
+    <p class="lede">Trước khi bắt đầu một công việc quan trọng, bạn luôn dành một điểm dừng an toàn để xác nhận đúng người, đúng nơi và đúng thiết bị. Hãy dành sự cẩn trọng tương tự cho việc thiết lập AI: hoàn thành tám mục kiểm tra trước khi cài đặt, rồi mới cấu hình hệ thống. Hai phút ở đây có thể giúp bạn tránh hàng giờ bối rối về sau.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="../assets/hermes-cheat-sheet.pdf">Tải danh sách kiểm tra + hướng dẫn nhanh (PDF) →</a>
+      <a class="btn btn-secondary" href="start-here.html">Quay lại năm bước</a>
+      <a class="btn btn-quiet" href="../cheat-sheet.html" lang="en" hreflang="en">Return to English</a>
+    </div>
+    <p class="hero-note">Hãy in ra, ghim ở nơi dễ thấy và đánh dấu từng ô. Bạn có thể đánh dấu trực tiếp trên trang này — nhưng các lựa chọn chỉ dành cho bạn; không có dữ liệu nào được lưu hoặc gửi đi.</p>
+  </div>
+</section>
+
+<!-- ============ ĐIỂM DỪNG AN TOÀN ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Trước khi bắt đầu thiết lập</p>
+    <h2>Điểm dừng an toàn — xác minh trước khi bắt đầu</h2>
+    <p style="color:var(--ink-600);"><strong>Điểm dừng an toàn có nghĩa là tạm dừng để kiểm tra, không phải hoảng hốt.</strong> Đây là thói quen của người điều dưỡng: kiểm tra cách bố trí trước khi công việc bắt đầu — đúng máy, đúng thư mục, đúng quyền, đúng ranh giới. Nếu một mục chưa sẵn sàng, bạn không hề thất bại; bạn vừa tìm ra bước khắc phục an toàn tiếp theo.</p>
+
+    <div class="checkitem"><input type="checkbox" id="c1"><label for="c1"><strong>Đúng thiết bị: máy tính để bàn hoặc máy tính xách tay — Mac hoặc Windows.</strong><span class="why">Không dùng điện thoại, máy tính bảng hay Chromebook. Trên máy tính của chính bạn, các tệp và bộ nhớ AI được giữ <strong>cục bộ — trên máy của bạn, không nằm trên đám mây của người khác</strong>. Đó là ý nghĩa cốt lõi của việc sở hữu hệ thống riêng.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c2"><label for="c2"><strong>Đã xác minh cấu hình.</strong><span class="why">Gợi ý chung: máy tính sản xuất trong khoảng 5 năm gần đây, có ít nhất 8&nbsp;GB bộ nhớ và còn trống vài GB thường hoạt động tốt — <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">trang Hermes chính thức</a> liệt kê các yêu cầu hiện hành. Nếu không cài được Hermes, nguyên nhân có thể là cấu hình máy — <em>không phải do bạn hay một lỗi bạn gây ra</em>. Lựa chọn trên đám mây (lộ trình VPS) sẽ có sau; trong lúc đó, hãy xem phần “Trong khi chờ đợi” bên dưới.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c3"><label for="c3"><strong>Đã chuẩn bị không gian làm việc: một thư mục riêng, không chứa nội dung riêng tư.</strong><span class="why">Hãy hình dung như dọn một khu vực làm việc sạch và rõ ràng. Hệ thống của bạn nằm trong một thư mục — <em>My-Nurse-AI-OS</em>, do Starter Kit tạo ra (thư mục Documents là nơi phù hợp). Không để hồ sơ thuế, ảnh gia đình hay tệp công việc vào đó — chỉ đặt những gì bạn thấy thoải mái khi cho một trợ lý đọc, vì đó chính là vai trò của hệ thống.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c4"><label for="c4"><strong>Dùng chung máy tính với gia đình? Hãy tạo tài khoản người dùng riêng.</strong><span class="why">Giống như có xe thuốc riêng thay vì dùng chung — công việc AI của bạn được giữ trong không gian riêng.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c5"><label for="c5"><strong>Thói quen thông minh: tạo một Gmail mới cho các hoạt động AI.</strong><span class="why">Bạn không thực hiện giao dịch ngân hàng cá nhân trên máy dùng để ghi hồ sơ tại đơn vị. Một tài khoản miễn phí, tách biệt (chẳng hạn <em>yourname.ai@gmail.com</em>) giúp bảo vệ email cá nhân và gia đình — đồng thời Google Drive và Docs miễn phí của tài khoản đó có thể kết hợp thuận tiện với hệ thống về sau.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c6"><label for="c6"><strong>Ghi nhớ một quy tắc: tuyệt đối không dùng dữ liệu người bệnh.</strong><span class="why">Không có tên, hồ sơ, ảnh chụp màn hình, số phòng hay câu chuyện có thể nhận diện người bệnh. Hệ thống này phục vụ cuộc sống của <em>bạn</em> — không bao giờ dùng thông tin của người bệnh. Không nhập thông tin sức khỏe được bảo vệ (PHI), không dùng hệ thống để đưa ra quyết định lâm sàng và luôn yêu cầu con người rà soát.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c7"><label for="c7"><strong>Quyết định về Docker: không bắt buộc với người mới, hữu ích cho các dịch vụ.</strong><span class="why">Nếu hệ thống này chỉ dành cho bạn, bạn <em>không</em> cần đặt Hermes, Obsidian, trình duyệt hay tài liệu thông thường vào Docker. Sau này, hãy dùng Docker cho các dịch vụ nền — cơ sở dữ liệu, kho vector, API cục bộ, n8n, ứng dụng web thử nghiệm — khi bạn muốn một cách thiết lập gọn gàng, có thể lặp lại và dựng lại trên máy tính mới. Quy tắc dễ nhớ: nếu nó chạy như một dịch vụ, Docker có thể hữu ích; nếu đó là công cụ máy tính để bàn dành cho con người, hãy bỏ qua phần thiết lập không cần thiết.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c8"><label for="c8"><strong>Quyết định về VPS: lộ trình nâng cao không bắt buộc, không phải điểm khởi đầu.</strong><span class="why">VPS là máy tính đám mây thuê ngoài, có thể duy trì Hermes hoạt động khi máy tính xách tay của bạn đã đóng. VPS hữu ích cho gateway, công việc theo lịch, webhook và công cụ cộng đồng dùng chung không có PHI. Tuy nhiên, tệp trên VPS không còn <em>chỉ nằm cục bộ</em>; chúng nằm trên hạ tầng thuê ngoài và mức riêng tư phụ thuộc vào cách máy chủ được bảo mật, sao lưu, cập nhật bản vá và quản trị. Người mới nên bắt đầu với Hermes Desktop trên máy tính của mình. Chỉ dùng VPS về sau cho các dịch vụ luôn hoạt động và không có PHI — tuyệt đối không dùng dữ liệu người bệnh, tệp gia đình riêng tư hay tài liệu mật của nơi làm việc.</span></label></div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>Đã đánh dấu đủ tám ô? Đã chuẩn bị xong.</strong> Nếu chưa, hãy khắc phục những gì có thể. Và hãy nhớ: ngay cả khi chưa có máy tính phù hợp, <a href="../ai-mentors.html">khóa học miễn phí cùng 55 cố vấn AI</a>, <a href="../soul-quiz.html">SOUL Quiz</a>, Lamp Huddle hằng tháng và cộng đồng đều đang chào đón bạn ngay hôm nay.
+    </div>
+  </div>
+</section>
+
+<!-- ============ CÀI ĐẶT VÀ CẤU HÌNH ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">Bạn đã sẵn sàng? Hãy tiếp tục.</p>
+    <h2>Cài đặt và cấu hình hệ thống</h2>
+    <p style="color:var(--ink-600);">Các trình đơn có thể thay đổi khi Hermes được cập nhật — nếu thấy điều gì khác với hướng dẫn này, <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">tài liệu chính thức</a> là nguồn đáng tin cậy nhất.</p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>Cài đặt Hermes</h3>
+        <p>Hãy truy cập trang chính thức — <a href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener">hermes-agent.nousresearch.com</a> — tải phiên bản dành cho máy tính của bạn và làm theo các bước tại đó. Mở ứng dụng. Khi phần thiết lập hỏi về mô hình hoặc nhà cung cấp AI, hãy đọc bước tiếp theo trước — có cả lựa chọn miễn phí và chi phí thấp.</p>
+      </div>
+      <div class="step">
+        <h3>Quyền truy cập — chỉ trao một căn phòng, không trao cả ngôi nhà</h3>
+        <p>Khi Hermes yêu cầu quyền truy cập tệp, <strong>CHỈ cấp quyền cho thư mục My-Nurse-AI-OS</strong>. Từ chối phạm vi rộng hơn như toàn bộ ổ đĩa, Desktop, Downloads hoặc Photos. Hãy hình dung thẻ ra vào của điều dưỡng hỗ trợ: chỉ vào đơn vị được phân công, không phải mọi tầng trong bệnh viện. Nếu vô tình cấp quá nhiều quyền, hãy thu hồi trong phần cài đặt quyền riêng tư của máy tính.</p>
+      </div>
+      <div class="step">
+        <h3>Chọn cách cung cấp sức mạnh cho AI — có lựa chọn miễn phí và chi phí thấp</h3>
+        <p><strong>Bản thân Hermes là phần mềm miễn phí và mã nguồn mở.</strong> Chi phí, nếu có, đến từ dịch vụ mô hình AI mà bạn chọn và thường được tính theo mức sử dụng. Bạn có hai lựa chọn:</p>
+        <p><strong>Lựa chọn A — gói đăng ký Nous.</strong> Đây là cách đơn giản nhất: một gói đăng ký và mọi thứ được xử lý sẵn. Chọn phương án này trong khi thiết lập rồi bỏ qua phần còn lại của bước này.</p>
+        <p><strong>Lựa chọn B — Bring Your Own Keys.</strong> Đây là cách tiết kiệm nhất và có thể giúp bạn vận hành Hermes gần như miễn phí. Trong phần thiết lập Hermes, chọn <strong>Full Setup</strong> (không chọn gói đăng ký mặc định), sau đó chọn <strong>Bring Your Own Keys</strong>. Chúng tôi đề xuất <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a> — một tài khoản miễn phí, một khóa API và nhiều mô hình để lựa chọn, gồm cả mô hình miễn phí hoặc có chi phí rất thấp. Sau đó:</p>
+        <ol style="margin:.4rem 0 1rem 1.2rem; line-height:1.7;">
+          <li>Tạo tài khoản tại <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a> và tạo khóa API từ bảng điều khiển của bạn.</li>
+          <li><strong>Đặt giới hạn chi tiêu trong OpenRouter trước</strong> — đây là hàng rào bảo vệ khỏi hóa đơn bất ngờ. Hãy bắt đầu với vài đô la; bạn luôn có thể tăng sau.</li>
+          <li>Trong phần thiết lập Hermes, chọn OpenRouter làm nhà cung cấp rồi dán khóa của bạn.</li>
+          <li>Chọn một mô hình — bắt đầu bằng mô hình miễn phí hoặc chi phí thấp. Yêu cầu Hermes làm một việc đơn giản để xác nhận hệ thống hoạt động; nếu câu trả lời chưa đủ tốt, hãy đổi sang mô hình mạnh hơn. Việc thử mô hình chỉ tốn lượng token bạn thực sự sử dụng.</li>
+        </ol>
+        <p style="font-size:.93rem;color:var(--ink-600);"><strong>Một lưu ý:</strong> gói ChatGPT Plus hoặc Grok thường <em>không</em> bao gồm quyền truy cập API — API được tính phí riêng. Cách an toàn nhất là dùng khóa OpenRouter riêng với giới hạn chi tiêu do chính bạn đặt.</p>
+      </div>
+      <div class="step">
+        <h3>Cuộc trò chuyện đầu tiên</h3>
+        <p>Hermes hoạt động như một cuộc trò chuyện: nhập nội dung rồi nhấn Enter. Chỉ trò chuyện sẽ không làm hỏng hệ thống.</p>
+        <div class="prompt-block">Tôi là điều dưỡng đang thiết lập Nurse AI OS. Tiếp theo, tôi sẽ cung cấp tệp SOUL — hãy xem đó là các chỉ dẫn thường trực của tôi.</div>
+      </div>
+      <div class="step">
+        <h3>Cung cấp tệp SOUL cho Hermes</h3>
+        <p>Từ <a href="../soul-quiz.html">SOUL Quiz</a> (tải xuống dưới dạng Core-SOUL.md hoặc toàn bộ gói tệp), hãy đính kèm, kéo thả hoặc dán nội dung, rồi nói:</p>
+        <div class="prompt-block">Đây là tệp SOUL của tôi. Hãy xem đây là các chỉ dẫn thường trực về cách hỗ trợ tôi. Hãy xác nhận những gì bạn hiểu về các giá trị và ranh giới của tôi.</div>
+        <p style="font-size:.93rem;color:var(--ink-600);">Hãy đọc lại phần tóm tắt. Sửa bất cứ điểm nào chưa đúng — các chỉnh sửa đó sẽ được ghi nhớ.</p>
+      </div>
+      <div class="step">
+        <h3>Cung cấp Starter Kit cho Hermes</h3>
+        <p>Giải nén <a href="../assets/nurse-ai-os-starter-kit.zip">Starter Kit</a> vào nơi bạn dễ tìm lại (Documents là lựa chọn phù hợp), rồi nói với Hermes:</p>
+        <div class="prompt-block">Thư mục Nurse AI OS của tôi nằm tại [vị trí]. Đây là nơi lưu các tệp của tôi: tệp SOUL, ghi chú (Memory), dự án (Projects) và các prompt có thể tái sử dụng (Skills). Nếu thiếu thư mục nào, hãy tạo thư mục đó. Hãy giữ mọi công việc bạn làm cho tôi bên trong thư mục này.</div>
+      </div>
+      <div class="step">
+        <h3>Tạo bảng điều khiển — và đánh dấu trang</h3>
+        <div class="prompt-block">Dựa trên tệp SOUL của tôi, hãy cá nhân hóa Local HTML Life Dashboard trong starter kit (08-Integrations/Local-HTML-Life-Dashboard). Điền tên tôi, các ưu tiên hàng đầu trong từng phạm vi, cùng những mục tiêu và thói quen đầu tiên từ câu trả lời trong bài trắc nghiệm. Lưu tệp với tên My-Dashboard.html trong thư mục Nurse AI OS và cho tôi biết chính xác tệp nằm ở đâu.</div>
+        <p>Mở tệp vừa tạo trong trình duyệt và <strong>đánh dấu trang</strong> — đó là bảng theo dõi trung tâm của bạn.</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="background:var(--teal-100); border-left-color:var(--teal-600);">
+      <strong>Vì sao tệp SOUL và Starter Kit quan trọng hơn mọi thứ khác:</strong> một AI mạnh giống như một con ngựa khỏe — tuyệt vời nhưng nguy hiểm nếu không có dây cương. Hai tệp này <strong>chính là dây cương</strong>. Tệp SOUL trao cho hệ thống các giá trị, ranh giới và những giới hạn không bao giờ được vượt qua; Starter Kit cho hệ thống một mái nhà và cấu trúc. Cùng nhau, chúng trao cho hệ thống <strong>trái tim của người điều dưỡng</strong> — và giúp bạn luôn là người cầm cương. Bỏ qua chúng không giúp bạn đi nhanh hơn; điều đó chỉ biến bạn thành hành khách.
+    </div>
+    <div class="boundary" style="margin-top:1rem;">
+      <strong>Tìm hiểu sâu hơn với hai tài liệu thiết lập:</strong> <a href="../assets/hermes-essentials-guide.pdf"><strong>Hermes Essentials Guide</strong></a> (dành cho sinh viên và nhân viên muốn kiểm soát chi phí — có thể vận hành gần như miễn phí) và <a href="../assets/hermes-power-guide.pdf"><strong>The Hermes Power Guide</strong></a> (dành cho người dùng chuyên sâu và lãnh đạo — hồ sơ, công việc theo lịch, định tuyến mô hình). Cả hai đều trình bày EDENA — Ethical Design &amp; Enablement for Nursing Augmentation, lớp lương tri vận hành trong kiến trúc của bạn.
+    </div>
+  </div>
+</section>
+
+<!-- ============ DUY TRÌ SAU THIẾT LẬP ============ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Duy trì sau thiết lập</p>
+    <h2>Làm việc với hệ thống — cho đến khi trở thành thói quen</h2>
+    <p class="section-intro">Bạn không cần học thuộc mọi tính năng. Hãy hình dung quy trình một lần, rồi đôi tay sẽ dần làm theo — giống như mọi kỹ năng bạn đã thành thạo đều trở nên tự nhiên. Bảy thói quen:</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>1 · Phân loại nhiệm vụ, rồi chọn mô hình</h3>
+        <p>Công việc đơn giản — câu hỏi nhanh, tóm tắt, viết lại, tìm ý tưởng — phù hợp với <strong>mô hình miễn phí hoặc chi phí thấp</strong>. Công việc nặng — lập kế hoạch nhiều bước, tài liệu dài, lập trình, khắc phục sự cố chuyên sâu — cần <strong>mô hình suy luận mạnh hơn</strong>. Cần xem ảnh chụp màn hình hoặc sơ đồ? Hãy chọn mô hình <strong>có khả năng xử lý hình ảnh</strong>. Không cần huy động cả nhóm chuyên sâu cho một vấn đề nhỏ: bắt đầu tiết kiệm, chỉ nâng cấp khi nhiệm vụ thực sự cần.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Mỗi chủ đề một phiên — mỗi việc một không gian riêng</h3>
+        <p>Đừng trộn ngân sách, dự án phụ và kế hoạch CCRN trong cùng một cuộc trò chuyện — chi tiết sẽ lẫn vào nhau và câu trả lời trở nên thiếu rõ ràng. Một phiên tập trung sẽ tạo ra kết quả sạch hơn. <strong>Chủ đề mới, phiên mới.</strong></p>
+      </div>
+      <div class="card">
+        <h3>3 · Dự án là kế hoạch chăm sóc; phiên là ca làm việc</h3>
+        <p>Một phiên là một cuộc trò chuyện. Với mọi việc kéo dài — khóa học bạn đang xây dựng, kế hoạch kinh doanh, dự án gia đình — hãy dùng <strong>Project</strong>: không gian làm việc giữ các tệp, mục tiêu và cuộc trò chuyện ở cùng một nơi để bạn không phải bắt đầu lại từ đầu.</p>
+      </div>
+      <div class="card">
+        <h3>4 · Mời chuyên gia tư vấn — dùng vai trò</h3>
+        <p>Hãy nói rõ bạn muốn Hermes đóng vai ai; độ sâu và phong cách câu trả lời sẽ thay đổi theo: <em>“Hãy đóng vai người hướng dẫn dùng ngôn ngữ dễ hiểu và giải thích lỗi này từng bước.”</em> · <em>“Hãy đóng vai chiến lược gia khởi nghiệp và rà soát kế hoạch của tôi để tìm rủi ro cùng bước đi tiếp theo.”</em></p>
+      </div>
+      <div class="card">
+        <h3>5 · Khi chưa chắc chắn, hãy hỏi chính trợ lý</h3>
+        <p>Bạn không bao giờ cần một prompt hoàn hảo. <em>“Bước tiếp theo tốt nhất là gì?”</em> · <em>“Hãy hỏi tôi những câu bạn cần trước khi chúng ta tiếp tục.”</em> · <em>“Chia việc này thành các bước đơn giản.”</em> · <em>“Tôi nên dùng mô hình nào cho nhiệm vụ này?”</em></p>
+      </div>
+      <div class="card">
+        <h3>6 · Khắc phục sự cố bằng ảnh chụp màn hình — cho xem thay vì chỉ mô tả</h3>
+        <p>Hãy cung cấp ảnh trực tiếp thay vì cố diễn tả mọi chi tiết. Gửi ảnh chụp màn hình cùng với: điều bạn đang cố làm, điều đã xảy ra, thông báo lỗi chính xác và những gì bạn đã thử. <strong>Không bao giờ để khóa API hoặc mật khẩu xuất hiện trong ảnh chụp màn hình</strong> — hãy cắt hoặc làm mờ trước.</p>
+      </div>
+      <div class="card gold">
+        <h3>7 · Quản lý chi tiêu có trách nhiệm</h3>
+        <p>Theo dõi mức sử dụng như cách bạn quản lý vật tư: bật giới hạn chi tiêu, dùng mô hình rẻ cho bản nháp, dành mô hình mạnh cho phần suy luận cuối và không tải tệp quá lớn trừ khi nhiệm vụ thực sự cần.</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>Quy trình hằng ngày — nhắc lại cho đến khi trở thành phản xạ:</strong> đúng mô hình cho nhiệm vụ · chủ đề mới thì mở phiên mới · việc dài hạn thì dùng Project · cần góc nhìn chuyên môn thì chỉ định vai trò · chưa chắc thì hỏi · gặp vướng mắc thì cung cấp ảnh chụp màn hình · chỉ nâng cấp mô hình khi cần.
+    </div>
+  </div>
+</section>
+
+<!-- ============ NĂM CÂU LỆNH ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">Gợi ý sau thiết lập</p>
+    <h2>Năm câu lệnh làm được phần lớn công việc</h2>
+    <table class="phrase-table">
+      <thead><tr><th>Bạn nói</th><th>Hermes thực hiện</th></tr></thead>
+      <tbody>
+        <tr><td>“Bắt đầu buổi họp nhanh buổi sáng của tôi.”</td><td>Hỏi ưu tiên số một của bạn và đề xuất ba cách hỗ trợ</td></tr>
+        <tr><td>“Tạo một mục Kardex cho phiên này.”</td><td>Viết ghi chú bàn giao gồm 5 dòng để lưu trong thư mục Memory</td></tr>
+        <tr><td>“Hãy biến chỉnh sửa đó thành quy tắc thường trực.”</td><td>Chuyển phản hồi của bạn thành một quy tắc lâu dài</td></tr>
+        <tr><td>“Trước khi bắt đầu, hãy hỏi tôi như khi thu thập thông tin ban đầu.”</td><td>Đặt câu hỏi trước các nhiệm vụ lớn thay vì tự đoán</td></tr>
+        <tr><td>“Cho tôi xem kế hoạch trước khi bạn làm bất cứ điều gì.”</td><td>Giữ quyền quyết định ở trong tay bạn qua điểm kiểm soát bắt buộc có con người rà soát</td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:2rem;">Trong khi chờ đợi — chưa có máy tính phù hợp? Bạn vẫn có thể tham gia.</h2>
+    <p>Nếu máy tính hiện tại không chạy được Hermes, bạn chỉ chưa thể thực hiện bước cài đặt. <a href="../ai-mentors.html">Khóa học AI miễn phí và 55 cố vấn AI miễn phí</a> hoạt động trong mọi trình duyệt; Lamp Huddle hằng tháng và cộng đồng luôn rộng mở; còn <a href="../soul-quiz.html">SOUL Quiz</a> sẽ giúp tệp SOUL sẵn sàng cho ngày bạn có thể thiết lập hệ thống.</p>
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500);">
+      <strong>Và xin nói thật rõ:</strong> sự tham gia và tiếng nói của bạn có ý nghĩa với chúng tôi ngay từ bây giờ — không phải sau khi bạn mua thiết bị. AI sẽ đến với y tế dù điều dưỡng có hiện diện tại bàn thảo luận hay không. Những điều dưỡng chuẩn bị từ hôm nay sẽ dẫn dắt thay đổi thay vì bị thay đổi dẫn dắt. <strong>Bạn là những Florence Nightingale của tương lai — những người sẽ góp phần định hình cách trí tuệ chăm sóc được hình thành.</strong>
+    </div>
+
+    <p style="margin-top:2rem;"><strong>Nếu bạn thấy lạc hướng:</strong> điều đó hoàn toàn bình thường. Bạn chỉ cần bước tiếp theo, không cần toàn bộ bản đồ. Hãy tạm bỏ qua điều khiến bạn bối rối và mang câu hỏi đến Lamp Huddle hằng tháng — mọi điều dưỡng ở đó đều từng bắt đầu từ chính nơi bạn đang đứng.</p>
+
+    <p style="text-align:center; margin-top:2rem;">
+      <a class="btn btn-primary" href="../assets/hermes-cheat-sheet.pdf">Tải danh sách kiểm tra + hướng dẫn nhanh (PDF) →</a>&nbsp;
+      <a class="btn btn-quiet" href="start-here.html">Tiếp tục bước 2 — SOUL Quiz →</a>
+    </p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Hãy mang theo ngọn đèn. Hãy gìn giữ sổ ghi chép. Các tác nhân đề xuất. Con người phán đoán. Điều dưỡng chịu trách nhiệm giám sát.</p>
+    <div class="footer-links">
+      <a href="index.html">Trang chủ</a>
+      <a href="start-here.html">Bắt đầu tại đây</a>
+      <a href="../pathways.html">Lộ trình</a>
+      <a href="resources.html">Tài nguyên</a>
+      <a href="about.html">Giới thiệu</a>
+      <a href="faq.html">Câu hỏi thường gặp</a>
+      <a href="../privacy.html">Quyền riêng tư</a>
+      <a href="../terms.html">Điều khoản</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Liên hệ</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO Institute · Miễn phí cho điều dưỡng và sinh viên điều dưỡng trong năm sáng lập.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

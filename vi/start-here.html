@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bắt đầu tại đây — Nurse AI OS</title>
+<meta name="description" content="Năm bước để có Nurse AI OS của bạn: cài đặt Hermes theo hướng dẫn nhanh, làm SOUL Quiz và nạp tệp vào hệ thống, thêm Starter Kit, tạo bảng điều khiển và chạy những prompt đầu tiên.">
+<link rel="alternate" hreflang="en" href="../start-here.html">
+<link rel="alternate" hreflang="vi" href="start-here.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+.prompt-block {
+  background: #10233a; color: #dbe6ef; border-radius: 10px;
+  padding: 1.1rem 1.3rem; font-family: "SF Mono", "Consolas", monospace;
+  font-size: .88rem; line-height: 1.55; white-space: pre-wrap;
+  border-left: 4px solid var(--gold-500); margin: .8rem 0 1.2rem;
+}
+.prompt-label {
+  font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--teal-600); margin: 1rem 0 .2rem;
+}
+details.cheat {
+  background: var(--linen-100); border-radius: 10px; margin-bottom: .6rem; padding: 0;
+  border-left: 4px solid var(--teal-500);
+}
+details.cheat summary {
+  cursor: pointer; font-weight: 700; padding: .8rem 1.1rem; list-style: none; color: var(--navy-900);
+}
+details.cheat summary::-webkit-details-marker { display: none; }
+details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-size: .98rem; }
+</style>
+</head>
+<body class="calm-clinical-page">
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Điều hướng chính">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html" class="active" aria-current="page">Bắt đầu tại đây</a>
+      <a href="../pathways.html">Lộ trình</a>
+      <a href="resources.html">Tài nguyên</a>
+      <a href="about.html">Giới thiệu</a>
+      <a href="index.html#founding-year">Năm sáng lập miễn phí</a>
+      <a href="faq.html">Câu hỏi thường gặp</a>
+      <a href="../nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="../soul-quiz.html">Làm SOUL Quiz</a>
+      <a href="../start-here.html" lang="en" hreflang="en">English</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Toàn bộ phần thiết lập, không thêm điều gì thừa</p>
+    <h1>Năm bước. Một buổi tối. Đã chuẩn bị xong.</h1>
+    <p class="lede">Trang này là toàn bộ quá trình bắt đầu — cài đặt, cá nhân hóa, tạo bảng điều khiển và chạy những prompt đầu tiên. Mọi nội dung khác trên trang web chỉ là phần đào sâu tùy chọn để bạn xem sau. Nếu bạn chỉ đọc một trang, hãy chọn trang này.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <iframe class="video-embed" style="margin-bottom:2.5rem;" src="https://www.youtube.com/embed/Qm3Kp51F5O8?si=nyXR0r_VIuZBK-ep" title="Chào mừng — một hệ thống mang trái tim của người điều dưỡng" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    <div class="boundary">
+      <strong>Một lời trước khi bạn bắt đầu — đặc biệt nếu bạn là sinh viên:</strong> lúc đầu, một số nội dung có thể khiến bạn thấy khó hiểu. Điều đó hoàn toàn bình thường và đây không phải là bài kiểm tra. Bạn chỉ cần làm bước <em>tiếp theo</em>, không cần nắm toàn bộ bản đồ. Hãy bỏ qua điều chưa rõ, quay lại sau và mang câu hỏi đến <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> — mọi điều dưỡng ở đó đều từng bắt đầu đúng tại nơi bạn đang đứng. Và có một quy tắc không bao giờ thay đổi: <strong>tuyệt đối không dùng dữ liệu người bệnh</strong> — hệ thống này vận hành dựa trên cuộc sống của bạn, không bao giờ dựa trên người bệnh của bạn. <a href="#safety">Xem các quy tắc an toàn →</a>
+    </div>
+
+    <!-- ============ STEP 0 · READINESS ============ -->
+    <div class="step" style="border-left:4px solid var(--gold-500); margin-bottom:.4rem;">
+      <h3>Bước 0 — kiểm tra mức độ sẵn sàng trước khi thiết lập (2 phút)</h3>
+      <p>Bạn kiểm tra thiết bị khi bắt đầu mỗi ca trực. Ở đây cũng vậy — dành hai phút bây giờ sẽ giúp bạn tránh một giờ bực bội về sau.</p>
+      <p><strong>Bạn cần máy tính để bàn hoặc máy tính xách tay</strong> — Mac hoặc Windows; không phải điện thoại, máy tính bảng hay Chromebook. Lý do đáng để làm: trên máy tính của chính bạn, các tệp và bộ nhớ AI của bạn được lưu <strong>cục bộ — trên máy của bạn, không phải trên đám mây của người khác</strong>. Hướng dẫn sơ bộ: máy tính được sản xuất trong khoảng 5 năm gần đây, có ít nhất 8&nbsp;GB bộ nhớ và còn trống vài GB thường sẽ chạy ổn — <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">trang Hermes chính thức</a> có các yêu cầu hiện hành.</p>
+      <p><strong>Chuẩn bị không gian làm việc</strong> — giống như sắp xếp một khu vực làm việc gọn gàng và an toàn trước khi bắt đầu: hệ thống của bạn sẽ nằm trong một thư mục riêng (Starter Kit sẽ tạo cấu trúc đó), và không nên có nội dung riêng tư nào trong thư mục này — không giấy tờ thuế, ảnh gia đình hay tệp công việc. Nếu dùng chung máy tính với gia đình, hãy cân nhắc tạo tài khoản người dùng riêng: giống như có xe thuốc riêng thay vì dùng chung.</p>
+      <p style="font-size:.93rem; color:var(--ink-600);">Nếu Hermes không cài đặt được, nguyên nhân nằm ở cấu hình máy tính — <em>không phải do bạn, cũng không phải vì bạn làm sai</em>. Một lựa chọn trên đám mây (lộ trình VPS) đang được phát triển để mọi thiết bị đều có thể chạy một hệ thống đầy đủ.</p>
+    </div>
+
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500); margin-bottom:2rem;">
+      <strong>Chưa có máy tính phù hợp? Hôm nay bạn vẫn có thể tham gia.</strong> Học <a href="../ai-mentors.html">khóa AI miễn phí và dùng 55 AI mentor miễn phí</a> (chạy trên mọi trình duyệt), tham gia Lamp Huddle hằng tháng, <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">đăng ký danh sách cộng đồng</a>, và làm <a href="../soul-quiz.html">SOUL Quiz</a> ngay bây giờ — tệp SOUL của bạn sẽ sẵn sàng vào ngày hệ thống của bạn sẵn sàng. Sự tham gia và tiếng nói của bạn có ý nghĩa với chúng tôi <em>ngay lúc này</em>, không phải chỉ sau khi bạn mua thiết bị. AI sẽ đi vào y tế dù điều dưỡng có mặt tại bàn thảo luận hay không — những điều dưỡng chuẩn bị từ hôm nay sẽ dẫn dắt thay đổi ấy thay vì bị thay đổi dẫn dắt. Các bạn là những Florence Nightingale của tương lai, những người sẽ góp phần quyết định cách trí tuệ chăm sóc được hình thành.
+    </div>
+
+    <div class="boundary" style="margin-bottom:2rem;">
+      <strong>Hai cửa, một hệ thống — hãy chọn trước Bước 1.</strong> <strong>Cửa 1 (đa số điều dưỡng bắt đầu tại đây):</strong> bỏ qua hoàn toàn phần cài đặt và làm các bước 2–5 tối nay trong công cụ AI trên trình duyệt mà bạn đang dùng (ChatGPT hoặc Claude) — dán nội dung thay vì tải tệp lên. <strong>Cửa 2:</strong> cài Hermes ở Bước 1 để có bản thiết lập đầy đủ — bộ nhớ lâu dài và tệp cục bộ. Cả hai đều an toàn, không có nội dung nào bạn tạo ra bị lãng phí nếu đổi cửa, và bạn có thể chờ bao lâu tùy thích trước khi chọn Cửa 2. <a href="../setup.html">Giải thích về hai cửa →</a>
+    </div>
+
+    <div class="steps">
+
+      <!-- ============ STEP 1 ============ -->
+      <div class="step">
+        <h3>Chỉ dành cho Cửa 2 — xem hướng dẫn kiểm tra mức độ sẵn sàng trước khi thiết lập, rồi cài Hermes</h3>
+        <p>Hermes là công cụ AI mã nguồn mở, miễn phí mà Nurse AI OS của bạn sử dụng. Hãy cài đặt từ trang chính thức, mở ứng dụng và chào một câu — cách dùng giống như trò chuyện, và bạn không thể làm hỏng hệ thống chỉ bằng việc trò chuyện.</p>
+        <p>
+          <a class="btn btn-primary btn-sm" href="cheat-sheet.html">Hướng dẫn kiểm tra mức độ sẵn sàng trước khi thiết lập →</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="https://hermes-agent.nousresearch.com/">Tải Hermes (trang chính thức)</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="../assets/hermes-cheat-sheet.pdf">Tải xuống (PDF)</a>
+        </p>
+        <p style="font-size:.93rem; color:var(--ink-600);">Hướng dẫn này là điểm dừng an toàn trước khi thiết lập — kiểm tra thiết bị, không gian làm việc, quyền truy cập và quy tắc duy nhất. Chỉ mất hai phút, giống như một lần xác nhận an toàn có chủ đích.</p>
+        <p style="font-size:.93rem; color:var(--ink-600);"><strong>Sau đó chọn tài liệu hướng dẫn:</strong> <a href="../assets/hermes-essentials-guide.pdf"><strong>Hermes Essentials Guide</strong></a> nếu bạn cần kiểm soát chi phí (phù hợp với sinh viên và nhân viên muốn chi tiêu hợp lý — có thể vận hành gần như miễn phí), hoặc <a href="../assets/hermes-power-guide.pdf"><strong>The Hermes Power Guide</strong></a> khi bạn sẵn sàng dùng hồ sơ, công việc theo lịch và quản trị ở cấp lãnh đạo. Cả hai đều cho thấy EDENA — lớp lương tri — vận hành trong kiến trúc của bạn.</p>
+        <p style="margin-top:.8rem;"><strong>Hướng dẫn nhanh ngay tại đây:</strong></p>
+        <details class="cheat">
+          <summary>Cài đặt và khởi chạy lần đầu</summary>
+          <div class="cheat-body">Tải phiên bản dành cho máy tính của bạn (Mac hoặc Windows) từ trang chính thức và làm theo hướng dẫn của họ. Mở ứng dụng. Khi Hermes hỏi về mô hình hoặc nhà cung cấp AI, bạn có hai lựa chọn: <strong>gói đăng ký Nous</strong> (mặc định — đơn giản nhất, một hóa đơn) hoặc <strong>Full Setup → Bring Your Own Keys</strong> (tiết kiệm chi phí nhất — có thể gần như miễn phí với khóa OpenRouter và giới hạn chi tiêu; mục §1.7 trong <a href="cheat-sheet.html">hướng dẫn kiểm tra mức độ sẵn sàng trước khi thiết lập</a> sẽ hướng dẫn từng bước). Cách nào cũng dùng được và bạn có thể đổi sau. Trình đơn có thể thay đổi khi Hermes được cập nhật; nếu chưa chắc, <a href="https://hermes-agent.nousresearch.com/docs">tài liệu chính thức</a> là nguồn thông tin chuẩn.</div>
+        </details>
+        <details class="cheat">
+          <summary>Cuộc trò chuyện đầu tiên</summary>
+          <div class="cheat-body">Hãy nhập như khi bạn nhắn tin cho đồng nghiệp. Bắt đầu bằng: <em>“Tôi là điều dưỡng đang thiết lập Nurse AI OS. Tiếp theo tôi sẽ cung cấp tệp SOUL — hãy xem đó là chỉ dẫn thường trực của tôi.”</em></div>
+        </details>
+        <details class="cheat">
+          <summary>Quyền truy cập — chỉ cho một phòng, không phải cả ngôi nhà</summary>
+          <div class="cheat-body">Khi Hermes xin quyền truy cập tệp, chỉ cấp quyền <strong>cho thư mục My-Nurse-AI-OS của bạn</strong> — thư mục từ Starter Kit — và từ chối mọi phạm vi rộng hơn (toàn bộ ổ đĩa, Desktop, Downloads, Photos). Hãy hình dung thẻ ra vào của một điều dưỡng hỗ trợ: chỉ được vào đơn vị được phân công, không phải mọi tầng trong bệnh viện. Lỡ cấp quá nhiều quyền? Hãy thu hồi trong phần cài đặt quyền riêng tư của máy tính.</div>
+        </details>
+        <details class="cheat">
+          <summary>Thói quen hữu ích — một tài khoản Gmail mới cho hoạt động AI</summary>
+          <div class="cheat-body">Cũng như bạn không thực hiện giao dịch ngân hàng cá nhân trên máy tính dùng để ghi hồ sơ tại đơn vị, hãy tạo một Gmail miễn phí, riêng biệt (chẳng hạn <em>tenban.ai@gmail.com</em>) chỉ dùng cho công việc AI, khóa học và cộng đồng. Email cá nhân và gia đình của bạn vẫn riêng tư — đồng thời Google Drive và Docs miễn phí của tài khoản mới có thể kết hợp rất thuận tiện với hệ thống sau này.</div>
+        </details>
+        <details class="cheat">
+          <summary>Năm câu lệnh xử lý phần lớn công việc</summary>
+          <div class="cheat-body">“Chạy buổi họp nhanh buổi sáng của tôi.” · “Tạo một mục Kardex cho phiên này.” · “Ghi nhớ vĩnh viễn chỉnh sửa đó.” · “Trước khi bắt đầu, hãy phỏng vấn tôi như một buổi đánh giá ban đầu.” · “Cho tôi xem kế hoạch trước khi bạn làm bất cứ điều gì.” — câu cuối cùng giúp bạn giữ quyền kiểm soát mọi quyết định.</div>
+        </details>
+        <p style="font-size:.92rem; color:var(--ink-600); margin-top:.6rem;"><em>Bạn chọn Cửa 1? Hãy bỏ qua hoàn toàn bước này — làm các bước 2–5 trong công cụ AI trên trình duyệt mà bạn đang dùng (ChatGPT hoặc Claude), dán nội dung thay vì tải tệp lên. Hermes chỉ giúp mọi thứ được lưu lâu dài và sẽ luôn ở đây khi bạn muốn dùng. <a href="../setup.html">Xem hai cửa →</a></em></p>
+      </div>
+
+      <!-- ============ STEP 2 ============ -->
+      <div class="step">
+        <h3>Làm SOUL Quiz, rồi cung cấp tệp SOUL cho Hermes</h3>
+        <p>SOUL Quiz dài 2 phút hỏi về giá trị, ranh giới và những phần trong cuộc sống thực sự cần được hỗ trợ — không có đáp án sai và bạn không cần chuẩn bị gì. Quiz sẽ tải xuống tệp <strong>SOUL.md</strong> cá nhân của bạn. Đã làm rồi? Chỉ cần tìm lại tệp.</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../soul-quiz.html">Làm SOUL Quiz →</a>&nbsp; <a class="btn btn-quiet btn-sm" href="../soul-quiz-guide.html">Hướng dẫn đồng hành — cách trả lời</a>
+        <p class="prompt-label">Sau đó đính kèm hoặc dán tệp vào Hermes và nói:</p>
+        <div class="prompt-block">Đây là tệp SOUL của tôi. Hãy xem đây là chỉ dẫn thường trực về cách hỗ trợ tôi. Hãy xác nhận bạn đã hiểu gì về các giá trị và ranh giới của tôi — đặc biệt là những việc tôi sẽ không bao giờ giao cho AI.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);">Hãy đọc lại phần tóm tắt. Sửa bất cứ điều gì chưa đúng — từ giờ, các chỉnh sửa sẽ được ghi nhớ.</p>
+      </div>
+
+      <!-- ============ STEP 3 ============ -->
+      <div class="step">
+        <h3>Tải Starter Kit và cho Hermes biết vị trí thư mục</h3>
+        <p>Starter Kit là bộ khung thư mục của hệ thống — nơi dành cho tệp SOUL, ghi chú và dự án của bạn. Hãy giải nén vào nơi bạn dễ tìm lại (thư mục Documents là lựa chọn phù hợp).</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../assets/nurse-ai-os-starter-kit.zip">Tải Starter Kit (ZIP) →</a>
+        <p class="prompt-label">Sau đó nói với Hermes:</p>
+        <div class="prompt-block">Thư mục Nurse AI OS của tôi nằm tại [nơi bạn đã giải nén]. Đây là nơi lưu các tệp của tôi — tệp SOUL, ghi chú trong thư mục Memory, dự án trong thư mục Projects và các prompt tái sử dụng trong Skills. Nếu thiếu một trong ba thư mục đó, hãy tạo thư mục. Hãy giữ mọi công việc bạn làm cho tôi bên trong thư mục này.</div>
+      </div>
+
+      <!-- ============ STEP 4 ============ -->
+      <div class="step">
+        <h3>Tạo bảng điều khiển bằng một prompt — rồi đánh dấu trang</h3>
+        <p>Starter Kit có sẵn một bảng điều khiển riêng tư, chỉ chạy trong trình duyệt. Prompt này yêu cầu Hermes tự động cá nhân hóa bảng điều khiển từ câu trả lời SOUL Quiz — tên, ưu tiên và những mục tiêu đầu tiên của bạn:</p>
+        <div class="prompt-block">Dựa trên tệp SOUL của tôi, hãy cá nhân hóa Local HTML Life Dashboard trong starter kit (08-Integrations/Local-HTML-Life-Dashboard). Điền tên của tôi, những ưu tiên hàng đầu trong từng phạm vi, cùng các mục tiêu và thói quen đầu tiên từ câu trả lời quiz. Lưu dưới tên My-Dashboard.html trong thư mục Nurse AI OS và cho tôi biết chính xác vị trí tệp.</div>
+        <p><strong>Mở tệp được tạo và đánh dấu trang.</strong> Đó là bảng trung tâm của bạn — mọi thứ bạn đang xây dựng trong một cái nhìn, không tải lên bất cứ đâu.</p>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>Sau này, nếu bạn muốn thêm:</em> phiên bản Notion, truy cập qua nhắn tin và các thiết lập tự chủ/tại chỗ có trong <a href="resources.html">chủ đề nâng cao</a>. Chưa cần làm lúc này. Đánh dấu trang là đủ.</p>
+      </div>
+
+      <!-- ============ STEP 5 ============ -->
+      <div class="step">
+        <h3>Chạy những prompt đầu tiên</h3>
+        <p>Bạn đã sẵn sàng? Hãy tiếp tục. Bây giờ hãy để hệ thống thực sự giúp bạn — chọn nội dung phù hợp với tối nay:</p>
+        <p class="prompt-label">Nhịp hằng ngày (bắt đầu vào sáng mai)</p>
+        <div class="prompt-block">Chạy buổi họp nhanh buổi sáng của tôi. Hãy hỏi tôi một câu: “Ưu tiên số một của bạn hôm nay là gì?” Sau đó đề xuất ba cách cụ thể mà bạn có thể hỗ trợ — soạn thảo, nghiên cứu, tóm tắt, lập kế hoạch — tuyệt đối không đưa ra quyết định lâm sàng hoặc xử lý bất cứ nội dung nào có dữ liệu người bệnh. Hỏi tôi muốn bắt đầu từ việc nào.</div>
+        <p class="prompt-label">Sinh viên — làm chủ một bài giảng</p>
+        <div class="prompt-block">Đây là ghi chú bài giảng của tôi về [chủ đề]. Hãy tạo một bản đồ học tập bằng ngôn ngữ dễ hiểu, rồi hỏi tôi theo phương pháp Socrates — năm câu, từng câu một. Đừng đưa đáp án cho đến khi tôi đã tự lập luận.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>Sinh viên: starter kit hiện có trọn bộ <strong>Study OS pack</strong> (thư mục <code>15-Student-Study-OS</code>) — gia sư theo phương pháp Socrates, bài luyện kiểu NGN, người bệnh mô phỏng kèm phần tổng kết có hướng dẫn và thẻ ghi nhớ lặp lại ngắt quãng; tất cả đều tích hợp rào chắn về liêm chính học thuật. Hãy nói với AI: “Nạp các skill trong 15-Student-Study-OS.”</em></p>
+        <p class="prompt-label">Nhân viên — bớt một việc khỏi danh sách</p>
+        <div class="prompt-block">Dựa trên tệp SOUL, hãy tạo cho tôi danh sách phục hồi sau ca trực — những điều giúp tôi thư giãn, theo thứ tự, trong giờ đầu tiên sau khi về nhà.</div>
+        <p class="prompt-label">Lãnh đạo — bước quản trị đầu tiên</p>
+        <div class="prompt-block">Hãy giúp tôi lập sơ đồ một quy trình công việc tại đơn vị (không dùng dữ liệu người bệnh — chỉ mô tả quy trình): AI có thể giảm gánh nặng nào, có thể gây ra tác hại nào và điểm kiểm soát bắt buộc có con người rà soát nằm ở đâu.</div>
+        <p style="margin-top:1rem;">Khi những việc này trở nên tự nhiên, <a href="../personalize.html">sáu quy trình</a> sẽ đưa bạn đi tiếp — mỗi tuần một quy trình, cho đến khi hệ thống thực sự hiểu bạn. Và khi bạn sẵn sàng vận hành thành thạo — bộ nhớ, lịch trình, quản trị và toàn bộ hệ thống — <a href="../hermes-masterclass.html">Hermes Masterclass</a> là lộ trình chuyên sâu miễn phí.</p>
+      </div>
+
+    </div>
+
+    <p style="text-align:center; margin-top:2.5rem;">
+      <a class="btn btn-primary" href="../soul-quiz.html">Bắt đầu ngay — SOUL Quiz là bước 2 →</a>
+      <br><span style="font-size:.93rem; color:var(--ink-600);">Có câu hỏi trong quá trình thực hiện? <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> hằng tháng hoàn toàn miễn phí, và một con người sẽ trả lời <a href="mailto:great.ai.nurses@gmail.com">email</a>.</span>
+    </p>
+
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>Đã hoàn thành năm bước? Hãy ghi nhận cột mốc này.</strong> Tham gia danh sách cộng đồng — chỉ cần đăng ký một lần để nhận bản tin, lời mời đến Lamp Huddle hằng tháng và tư cách thành viên sáng lập trong không gian cộng đồng khi ra mắt sắp tới. <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">Tham gia danh sách cộng đồng →</a>
+    </div>
+
+    <div class="boundary" style="margin-top:1.2rem;">
+      <strong>Sau tối nay, bạn có thể đi đâu:</strong> <a href="../hermes-masterclass.html">Hermes Masterclass</a> — lộ trình chuyên sâu miễn phí. Mười mô-đun phát triển thiết lập tối nay thành một hệ thống được quản trị và luôn hoạt động: bộ nhớ, kết nối, công việc theo lịch, bảng điều khiển vận hành và quản trị EDENA chuyên sâu. Muốn duy trì đà tiến? Lộ trình mở đầu bằng <a href="../hermes-masterclass.html#fast-track">chương trình nhanh 7 ngày</a> — mỗi ngày một kết quả nhìn thấy được.
+    </div>
+
+    <p style="text-align:center; margin-top:1.5rem; font-size:.93rem; color:var(--ink-600);">Có điều gì khó hiểu trong năm bước? <a href="mailto:great.ai.nurses@gmail.com?subject=Site%20feedback%20%E2%80%94%20Start%20Here&body=Which%20step%20I%20was%20on%3A%0A%0AWhat%20was%20confusing%20or%20broken%3A%0A%0AWhat%20would%20have%20helped%3A%20">Hãy cho chúng tôi biết</a> — phản hồi trong năm sáng lập sẽ được đưa vào cải tiến.
+    </p>
+  </div>
+</section>
+
+<!-- ============ VIDEO ============ -->
+<section class="section">
+  <div class="container narrow">
+    <iframe class="video-embed" src="https://www.youtube.com/embed/0MDiFVbgR6U" title="Nurse AI OS — xem hướng dẫn bắt đầu" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</section>
+
+<!-- ============ SAFETY ============ -->
+<section class="section section-alt" id="safety">
+  <div class="container narrow">
+    <p class="eyebrow">Những quy tắc bảo vệ mọi người</p>
+    <h2>Quy tắc an toàn bằng ngôn ngữ dễ hiểu</h2>
+    <p class="section-intro">Bạn đã ghi nhớ các nguyên tắc dùng thuốc an toàn. Những quy tắc này ngắn hơn và giúp bảo vệ người bệnh, giấy phép hành nghề và chính bạn.</p>
+    <div class="steps">
+      <div class="step"><h3>Tuyệt đối không dùng dữ liệu người bệnh.</h3><p>Không dùng tên, hồ sơ, ảnh chụp màn hình, số phòng, số hồ sơ, ngày tháng hoặc câu chuyện có thể nhận diện người bệnh — trong bất kỳ công cụ AI nào, ở bất kỳ cấp độ nào. Nếu bạn không chắc một thông tin có được tính là dữ liệu người bệnh hay thông tin sức khỏe được bảo vệ (PHI) hay không: hãy xem là có. Đừng đưa thông tin đó vào.</p></div>
+      <div class="step"><h3>AI soạn bản nháp. Bạn quyết định.</h3><p>Mọi đầu ra của AI đều là bản nháp cho đến khi con người rà soát. Không nội dung nào được gửi, xuất bản hoặc dùng để hành động nếu chưa có phán đoán của bạn.</p></div>
+      <div class="step"><h3>Không thể giao giấy phép hành nghề của bạn cho AI.</h3><p>Không có AI nào ở đây hỗ trợ quyết định lâm sàng, đánh giá lâm sàng hoặc câu hỏi chăm sóc dành riêng cho một người bệnh. AI hỗ trợ công việc hành chính bận rộn — không bao giờ thay thế phán đoán của bạn.</p></div>
+      <div class="step"><h3>Hệ thống của nơi làm việc phải ở lại nơi làm việc.</h3><p>Không dùng màn hình EHR, chính sách bảo mật nội bộ hoặc dữ liệu có thể nhận diện nhân viên hay sinh viên. Chỉ dùng tài liệu công khai, hư cấu hoặc cá nhân — trừ khi bộ phận phụ trách tuân thủ của tổ chức bạn đã phê duyệt rõ ràng một công cụ và quy trình cụ thể.</p></div>
+      <div class="step"><h3>Khi chưa chắc, hãy hỏi một con người.</h3><p>Mang các tình huống chưa rõ đến <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> hoặc gửi email đến <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a>. Hỏi sớm luôn tốt hơn báo cáo sự cố muộn.</p></div>
+    </div>
+    <p style="margin-top:2rem;">Những quy tắc này có tên: <strong>EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</strong> — khung quản trị trong mọi lớp của Nurse AI OS. Mọi hành động đều được phân loại trước khi chạy:
+      <span class="badge" style="background:#e5f3e6; color:#2c6e31;">🟢 Xanh lá — có thể tiếp tục</span>
+      <span class="badge" style="background:#fdf3d7; color:#8a6420;">🟡 Vàng — bạn phê duyệt trước</span>
+      <span class="badge" style="background:#fbe4e4; color:#a33a3a;">🔴 Đỏ — bắt buộc có con người cho phép</span>
+      Bạn sẽ tìm hiểu chính thức trong <a href="../assets/nurse-ai-os-workbook.pdf">workbook</a> — hiện tại, bạn chỉ cần năm quy tắc trên. Khi sẵn sàng để AI tự động <em>tuân theo</em> các quy tắc này, hãy tải <a href="../assets/governance-kit.zip">Governance Kit</a> — bộ quy tắc dưới dạng tệp mà hệ thống nạp trong mỗi phiên.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Hãy mang theo ngọn đèn. Hãy gìn giữ sổ ghi chép. Các tác nhân đề xuất. Con người phán đoán. Điều dưỡng chịu trách nhiệm giám sát.</p>
+    <div class="footer-links">
+      <a href="index.html">Trang chủ</a>
+      <a href="../pathways.html">Lộ trình</a>
+      <a href="resources.html">Tài nguyên</a>
+      <a href="about.html">Giới thiệu</a>
+      <a href="faq.html">Câu hỏi thường gặp</a>
+      <a href="../privacy.html">Quyền riêng tư</a>
+      <a href="../terms.html">Điều khoản</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Liên hệ</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Miễn phí cho điều dưỡng và sinh viên điều dưỡng trong năm sáng lập.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

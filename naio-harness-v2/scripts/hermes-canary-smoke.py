@@ -49,8 +49,22 @@ def main() -> int:
             "phi": plugins.get_pre_tool_call_directive("write_file", {"content": "MRN: ABCD1234"})[0],
         }
         expected = {"read": None, "unknown": "block", "external": "approve", "phi": "block"}
+        transformed = plugins.invoke_hook(
+            "transform_tool_result",
+            tool_name="read_file",
+            args={},
+            result="x" * 100020,
+            task_id="canary-transform",
+        )
+        transform_ok = bool(transformed) and "EDENA: tool result truncated" in transformed[0]
         event_count = len(log.read_text().splitlines()) if log.exists() else 0
-        output = {"ok": checks == expected and event_count == 4, "checks": checks, "expected": expected, "event_count": event_count}
+        output = {
+            "ok": checks == expected and event_count == 4 and transform_ok,
+            "checks": checks,
+            "expected": expected,
+            "event_count": event_count,
+            "transform_hook": "pass" if transform_ok else "fail",
+        }
         print(json.dumps(output, indent=2, sort_keys=True))
         return 0 if output["ok"] else 1
 

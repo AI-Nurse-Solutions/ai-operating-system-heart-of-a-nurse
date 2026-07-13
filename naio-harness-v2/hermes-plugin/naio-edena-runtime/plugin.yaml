@@ -1,8 +1,9 @@
 name: naio-edena-runtime
-version: "2.0.0-canary.1"
+version: "2.0.0-canary.2"
 description: "NAIO EDENA runtime gate. Shadow by default; canary enforcement blocks redlines and unknown tools and routes approved external side effects through Hermes native approval."
 author: "NAIO Institute"
 hooks:
   - pre_tool_call
+  - transform_tool_result
 requires_env:
   - NAIO_HARNESS_ROOT

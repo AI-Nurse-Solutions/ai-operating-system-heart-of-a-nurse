@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .capabilities import compile_capabilities, load_manifests
+from .budgets import BudgetExceeded, BudgetManager
 from .config_store import load_runtime_config
 from .ledger import ProvenanceLedger
 from .models import CapabilityLayer, CompilationContext, RiskTier
@@ -43,6 +44,7 @@ class RuntimeGate:
         self.manifests = load_manifests(root / "manifests")
         self.tool_map = json.loads((root / "config" / "tool-map.json").read_text(encoding="utf-8"))
         self.log_path = log_path or Path(os.environ.get("NAIO_SHADOW_LOG", root / "state" / "runtime-events.jsonl"))
+        self.budgets = BudgetManager(self.log_path.with_suffix(self.log_path.suffix + ".budgets.json"))
         self.mode = mode
 
     def evaluate(self, tool_name: str, args: Any = None) -> dict[str, Any]:
@@ -92,9 +94,17 @@ class RuntimeGate:
         self._append(event)
         return None
 
-    def enforce(self, tool_name: str = "", args: Any = None, **_: Any) -> dict[str, str] | None:
+    def enforce(self, tool_name: str = "", args: Any = None, **metadata: Any) -> dict[str, str] | None:
         try:
             event = self.evaluate(tool_name, args)
+            capability_id = event.get("capability_id")
+            if capability_id and event["decision"] in {"allow", "draft_only", "require_approval"}:
+                run_id = str(metadata.get("session_id") or metadata.get("task_id") or metadata.get("turn_id") or "anonymous-run")
+                maximum = self.manifests[capability_id].budgets["max_calls"]
+                event["budget_count"] = self.budgets.consume(run_id, capability_id, maximum)
+                event["budget_max_calls"] = maximum
+        except BudgetExceeded:
+            event = self._event(tool_name, self.tool_map.get(tool_name), "block", "EDENA-BUDGET-EXHAUSTED", args)
         except Exception as exc:
             event = self._event(tool_name, None, "block", "EDENA-EVALUATOR-ERROR", args)
             event["error_class"] = type(exc).__name__
@@ -112,6 +122,17 @@ class RuntimeGate:
             "action": "block",
             "message": f"Nurse AI OS blocked this action ({event['reason_code']}). No data was sent or changed.",
         }
+
+    def transform_result(self, tool_name: str = "", result: Any = None, **_: Any) -> str | None:
+        capability_id = self.tool_map.get(tool_name)
+        if not capability_id or capability_id not in self.manifests or not isinstance(result, str):
+            return None
+        maximum = self.manifests[capability_id].budgets["max_output_bytes"]
+        encoded = result.encode("utf-8")
+        if len(encoded) <= maximum:
+            return None
+        truncated = encoded[:maximum].decode("utf-8", errors="ignore")
+        return truncated + "\n\n[EDENA: tool result truncated at the manifested output budget.]"
 
     def _detect_redline(self, value: Any) -> str | None:
         if isinstance(value, dict):

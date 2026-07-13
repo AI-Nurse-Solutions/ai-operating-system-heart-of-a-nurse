@@ -48,5 +48,17 @@ def _on_pre_tool_call(tool_name: str = "", args=None, **kwargs):
         }
 
 
+def _on_transform_tool_result(tool_name: str = "", result=None, **kwargs):
+    if _mode() == "shadow":
+        return None
+    if _mode() != "enforce":
+        return "[EDENA: tool result withheld because the runtime mode is invalid.]"
+    try:
+        return _gate().transform_result(tool_name=tool_name, result=result, **kwargs)
+    except Exception:
+        return "[EDENA: tool result withheld because governance processing failed closed.]"
+
+
 def register(ctx) -> None:
     ctx.register_hook("pre_tool_call", _on_pre_tool_call)
+    ctx.register_hook("transform_tool_result", _on_transform_tool_result)

@@ -1,0 +1,13 @@
+{
+  "schema_version": "2.0.0",
+  "token_passthrough": false,
+  "require_https": true,
+  "allow_private_networks": false,
+  "allow_loopback": false,
+  "allowed_hosts": [
+    "modelcontextprotocol.io",
+    "hermes-agent.nousresearch.com"
+  ],
+  "max_redirects": 0,
+  "unknown_host_disposition": "block"
+}

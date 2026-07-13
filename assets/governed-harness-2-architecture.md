@@ -87,7 +87,7 @@ Risk never grants authority. Autonomy never lowers risk. Ambiguity raises risk a
 - Hermes result-transform hook: passed
 - Evaluation dataset: `naio-edena-runtime-core` version `2026.07.13.1`
 - Dataset SHA-256: `c8259d32dd85842c95f674050db930c25cfb264874e92a1bb8668bd31da1d223`
-- Source-tree SHA-256: `32a4d840bdf124cecfab73d321117642264a87ea2013f347b37ff0769fce9696`
+- Source-tree SHA-256: `0d9e226a3eb5453a7441dd2adcf2bdfb05c8e7bf3c91448bab033ad6895c32ae`
 
 The terminal provenance root is recorded in the machine-readable release evidence. It changes with each evaluation run because events include timestamps and unique IDs.
 

@@ -13,17 +13,20 @@ import tempfile
 from pathlib import Path
 
 
-def run(args: list[str]) -> bytes:
-    return subprocess.run(args, check=True, capture_output=True).stdout
+def run(args: list[str], label: str) -> bytes:
+    try:
+        return subprocess.run(args, check=True, capture_output=True).stdout
+    except subprocess.CalledProcessError as exc:
+        raise SystemExit(f"{label} failed; ceremony refused") from exc
 
 
 def fingerprint_private(openssl: str, private_key: Path) -> str:
-    der = run([openssl, "pkey", "-in", str(private_key), "-pubout", "-outform", "DER"])
+    der = run([openssl, "pkey", "-in", str(private_key), "-pubout", "-outform", "DER"], "private-key fingerprint derivation")
     return hashlib.sha256(der).hexdigest()
 
 
 def fingerprint_public(openssl: str, public_key: Path) -> str:
-    der = run([openssl, "pkey", "-pubin", "-in", str(public_key), "-outform", "DER"])
+    der = run([openssl, "pkey", "-pubin", "-in", str(public_key), "-outform", "DER"], "public-key fingerprint derivation")
     return hashlib.sha256(der).hexdigest()
 
 
@@ -65,15 +68,13 @@ def main() -> int:
     os.close(fd)
     tmp = Path(tmp_name)
     try:
-        subprocess.run(
+        run(
             [openssl, "dgst", "-sha256", "-sign", str(private_key), "-out", str(tmp), str(artifact)],
-            check=True,
-            capture_output=True,
+            "signing",
         )
-        subprocess.run(
+        run(
             [openssl, "dgst", "-sha256", "-verify", str(public_key), "-signature", str(tmp), str(artifact)],
-            check=True,
-            capture_output=True,
+            "verification",
         )
         os.chmod(tmp, 0o644)
         os.replace(tmp, signature)

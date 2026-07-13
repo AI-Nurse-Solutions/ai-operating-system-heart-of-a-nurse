@@ -79,20 +79,24 @@ def main() -> int:
             errors.append(f"forbidden public pattern: {label}")
 
     evidence = json.loads(PUBLIC_FILES[2].read_text(encoding="utf-8"))
-    if evidence["release_status"] != "signed_implementation_candidate":
+    signing = evidence.get("signing", {})
+    verification = evidence.get("verification", {})
+    if evidence.get("release_status") != "signed_implementation_candidate":
         errors.append("release status is not the approved signed candidate label")
-    if evidence["signing"]["signed"] is not True:
+    if signing.get("signed") is not True:
         errors.append("signed candidate must declare its detached signature")
-    if evidence["signing"]["trust_anchor_rotated"] is not False:
+    if signing.get("trust_anchor_rotated") is not False:
         errors.append("existing-anchor release must not claim key rotation")
-    if evidence["verification"]["unit_tests"] != {"count": 46, "ok": True}:
+    unit_tests = verification.get("unit_tests", {})
+    if unit_tests.get("count") != 46 or unit_tests.get("ok") is not True:
         errors.append("unit-test evidence mismatch")
-    if evidence["verification"]["trajectory_evaluations"]["passed"] != 8:
+    if verification.get("trajectory_evaluations", {}).get("passed") != 8:
         errors.append("trajectory evidence mismatch")
 
-    signature = HARNESS_ROOT / "evidence" / evidence["signing"]["signature"]
+    signature_name = signing.get("signature")
+    signature = HARNESS_ROOT / "evidence" / signature_name if isinstance(signature_name, str) else None
     public_key = SITE_ROOT / "naio-os" / "config" / "naio-os-release-public.pem"
-    if not signature.is_file():
+    if signature is None or not signature.is_file():
         errors.append("detached release-evidence signature missing")
     elif not public_key.is_file():
         errors.append("trusted release public key missing")

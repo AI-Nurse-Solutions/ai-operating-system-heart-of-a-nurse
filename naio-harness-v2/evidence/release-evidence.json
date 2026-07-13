@@ -2,7 +2,7 @@
   "artifact": "Nurse AI OS Harness 2.0",
   "clinical_status": "not_clinical_decision_support",
   "data_boundary": "no_phi_synthetic_tests_only",
-  "generated_at": "2026-07-13T16:05:46.562456+00:00",
+  "generated_at": "2026-07-13T16:18:07.036590+00:00",
   "human_governance": {
     "architecture_recommendations": "approved_by_founder_2026-07-13",
     "institutional_validation": "not_claimed",
@@ -12,7 +12,7 @@
   "schema_version": "2.0.0-evidence",
   "signing": {
     "algorithm": "RSA-SHA256",
-    "ceremony_prepared_at": "2026-07-13T16:05:46.608644+00:00",
+    "ceremony_prepared_at": "2026-07-13T16:18:07.083267+00:00",
     "human_signing_authority": "Robert Domondon, Founder and Release Steward",
     "key_id": "naio-os-release-key-2026-06",
     "public_key": "../../naio-os/config/naio-os-release-public.pem",
@@ -22,7 +22,7 @@
     "trust_anchor_rotated": false
   },
   "source_file_count": 52,
-  "source_tree_hash": "758e15e76b320db76dbefd069fce3563c12b653c6df7bea09654e738232670f0",
+  "source_tree_hash": "0d9e226a3eb5453a7441dd2adcf2bdfb05c8e7bf3c91448bab033ad6895c32ae",
   "verification": {
     "hermes_runtime_canary": {
       "checks": {
@@ -109,7 +109,7 @@
         }
       ],
       "synthetic_only": true,
-      "terminal_provenance_root": "0973e340ce28a7bf0f707af42cf89cb6a4a02763f64c4e15af5787fc15710363"
+      "terminal_provenance_root": "1945af00843732eccb4924ff8ddcd476afd7d54d18412db07dad79918b713e3b"
     },
     "unit_tests": {
       "count": 46,

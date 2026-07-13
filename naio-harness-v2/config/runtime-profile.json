@@ -1,0 +1,18 @@
+{
+  "schema_version": "2.0.0",
+  "profile": "naio-canary",
+  "audience": "student",
+  "channel_trust": "local",
+  "provider": "configured-hermes-provider",
+  "sandbox": "workspace-readonly",
+  "no_phi": true,
+  "self_service": true,
+  "gate_attested": false,
+  "enabled_capabilities": ["local.read", "web.research", "local.draft", "external.publish"],
+  "layers": [
+    {"name": "profile", "allow": ["local.read", "web.research", "local.draft", "external.publish"], "deny": []},
+    {"name": "audience", "allow": ["local.read", "web.research", "local.draft", "external.publish"], "deny": []},
+    {"name": "channel", "allow": ["local.read", "web.research", "local.draft"], "deny": []},
+    {"name": "sandbox", "allow": ["local.read", "web.research", "local.draft"], "deny": []}
+  ]
+}

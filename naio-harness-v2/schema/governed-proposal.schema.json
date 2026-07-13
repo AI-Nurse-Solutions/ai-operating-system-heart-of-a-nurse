@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.org/schema/governed-proposal.schema.json",
+  "title": "NAIO Governed Proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "proposal_id", "created_at", "expires_at", "status", "capability_id", "manifest_hash", "policy_version", "dataset_version", "risk_tier", "autonomy_level", "side_effecting", "idempotent", "target", "action_digest", "idempotency_key", "attempt_count", "max_attempts", "approval", "lease", "tombstone_reason"],
+  "properties": {
+    "schema_version": {"const": "2.0.0"},
+    "proposal_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "expires_at": {"type": "string"},
+    "status": {"enum": ["pending_review", "approved", "executing", "executed", "rejected", "needs_review", "expired", "tombstoned"]},
+    "capability_id": {"type": "string"},
+    "manifest_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "policy_version": {"type": "string"},
+    "dataset_version": {"type": "string"},
+    "risk_tier": {"enum": ["green", "yellow", "orange", "red"]},
+    "autonomy_level": {"enum": ["A0", "A1", "A2", "A3", "A4"]},
+    "side_effecting": {"type": "boolean"},
+    "idempotent": {"type": "boolean"},
+    "target": {"type": "string"},
+    "action_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "idempotency_key": {"type": "string"},
+    "attempt_count": {"type": "integer", "minimum": 0},
+    "max_attempts": {"type": "integer", "minimum": 1},
+    "approval": {"type": ["object", "null"]},
+    "lease": {"type": ["object", "null"]},
+    "tombstone_reason": {"type": ["string", "null"]},
+    "result_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "2.0.0",
+  "max_fallbacks": 1,
+  "rules": {
+    "public": {"provider_change": "allowed_if_manifested", "privacy_floor": "standard"},
+    "private-non-phi": {"provider_change": "denied", "privacy_floor": "private-approved"},
+    "phi": {"provider_change": "denied", "privacy_floor": "blocked"}
+  },
+  "unknown_provider_disposition": "block",
+  "quality_may_override_privacy": false
+}

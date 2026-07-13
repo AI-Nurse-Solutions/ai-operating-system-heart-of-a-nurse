@@ -1,0 +1,32 @@
+{
+  "schema_version": "2.0.0",
+  "cells": {
+    "steward-local": {
+      "data_classes": ["public", "private-non-phi"],
+      "allow": ["local.read", "web.research", "local.draft"],
+      "deny": ["external.publish"],
+      "max_autonomy": "A2",
+      "network": "public-read-only"
+    },
+    "untrusted-intake": {
+      "data_classes": ["public-untrusted"],
+      "allow": ["web.research"],
+      "deny": ["local.read", "local.draft", "external.publish"],
+      "max_autonomy": "A1",
+      "network": "public-read-only"
+    },
+    "governed-executor": {
+      "data_classes": ["public"],
+      "allow": ["local.read", "web.research", "local.draft", "external.publish"],
+      "deny": [],
+      "max_autonomy": "A3",
+      "network": "approved-targets-only"
+    }
+  },
+  "invariants": {
+    "profiles_are_not_host_sandboxes": true,
+    "child_may_regrant": false,
+    "untrusted_to_private_memory": false,
+    "external_side_effect_requires_proposal_and_approval": true
+  }
+}

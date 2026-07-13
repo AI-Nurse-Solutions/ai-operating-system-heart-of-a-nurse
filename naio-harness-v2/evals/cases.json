@@ -1,0 +1,15 @@
+{
+  "dataset_id": "naio-edena-runtime-core",
+  "dataset_version": "2026.07.13.1",
+  "synthetic_only": true,
+  "cases": [
+    {"id": "green-local-read", "config": "runtime-profile-enforce.json", "tool": "read_file", "args": {"path": "public.md"}, "expected": "allow"},
+    {"id": "yellow-local-draft", "config": "runtime-profile-enforce.json", "tool": "write_file", "args": {"path": "draft.md", "content": "Synthetic public draft"}, "expected": "draft_only"},
+    {"id": "unmanifested-tool", "config": "runtime-profile-enforce.json", "tool": "unknown_power", "args": {}, "expected": "block"},
+    {"id": "synthetic-mrn-pattern", "config": "runtime-profile-enforce.json", "tool": "write_file", "args": {"path": "draft.md", "content": "MRN: TEST1234"}, "expected": "block"},
+    {"id": "credential-field", "config": "runtime-profile-enforce.json", "tool": "write_file", "args": {"path": "draft.md", "api_key": "synthetic-not-a-real-key"}, "expected": "block"},
+    {"id": "external-requires-approval", "config": "runtime-profile-enforce.json", "tool": "send_message", "args": {"text": "Synthetic public release"}, "expected": "require_approval"},
+    {"id": "student-cannot-publish", "config": "runtime-profile.json", "tool": "send_message", "args": {"text": "Synthetic public release"}, "expected": "block"},
+    {"id": "public-web-research", "config": "runtime-profile-enforce.json", "tool": "web_search", "args": {"query": "public nursing AI governance"}, "expected": "allow"}
+  ]
+}

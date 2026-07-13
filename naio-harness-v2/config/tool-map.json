@@ -1,0 +1,13 @@
+{
+  "read_file": "local.read",
+  "search_files": "local.read",
+  "read_terminal": "local.read",
+  "web_search": "web.research",
+  "web_extract": "web.research",
+  "vision_analyze": "web.research",
+  "write_file": "local.draft",
+  "patch": "local.draft",
+  "send_message": "external.publish",
+  "social_post": "external.publish",
+  "email_send": "external.publish"
+}

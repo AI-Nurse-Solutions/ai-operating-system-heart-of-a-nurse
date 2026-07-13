@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Governed Harness 2.0 — CNO, CIO &amp; CTO Architecture | Nurse AI OS</title>
+<meta name="description" content="The tested Nurse AI OS Harness 2.0 architecture, implementation evidence, limits, and primary-source citations for CNOs, CIOs, CTOs, CMIOs, CISOs, and nurse AI stewards.">
+<link rel="canonical" href="https://nurse-ai-os.org/governed-harness.html">
+<meta property="og:title" content="Nurse AI OS Governed Harness 2.0">
+<meta property="og:description" content="Executive architecture, implementation evidence, limits, and citations for nursing and technology leaders.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+.exec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.exec-card{border:1px solid #d8e2e0;border-top:4px solid var(--teal-600);border-radius:12px;padding:1.2rem;background:#fff}.exec-card:nth-child(2){border-top-color:var(--gold-500)}.exec-card:nth-child(3){border-top-color:var(--navy-700)}.status-row{display:flex;gap:.55rem;flex-wrap:wrap;margin:1rem 0}.status{border-radius:999px;padding:.35rem .7rem;font-weight:700;font-size:.85rem}.pass{background:#dff3eb;color:#145c45}.pending{background:#fff0cb;color:#725310}.blocked{background:#f8dedb;color:#8b2e26}.evidence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;margin:1.2rem 0}.metric{background:var(--navy-900);color:#fff;border-radius:12px;padding:1rem;text-align:center}.metric strong{display:block;font-family:var(--font-display);font-size:1.8rem;color:var(--gold-300)}.report-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.94rem}.report-table th{background:var(--navy-900);color:#fff;text-align:left;padding:.6rem}.report-table td{border:1px solid #dce4e2;padding:.6rem;vertical-align:top}.report-table-wrap{overflow-x:auto}.citation-list li{margin:.65rem 0;overflow-wrap:anywhere}.statement{font-family:var(--font-display);font-size:1.25rem;line-height:1.55;border-left:5px solid var(--gold-500);padding:1rem 1.2rem;background:#fff8e8}.small-note{font-size:.92rem;color:var(--ink-600)}code{overflow-wrap:anywhere}@media(max-width:850px){.exec-grid,.evidence-grid{grid-template-columns:1fr}.report-table{font-size:.85rem}}
+</style>
+</head>
+<body class="calm-clinical-page">
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Main navigation">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Start Here</a><a href="pathways.html">Pathways</a><a href="resources.html">Resources</a><a href="about.html">About</a><a href="faq.html">FAQ</a><a href="nurse-station.html">Nurse Station</a><a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.4rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Executive architecture · implementation evidence · primary sources</p>
+    <h1>Governed Harness 2.0</h1>
+    <p class="lede">How Nurse AI OS places a deterministic, nurse-governed safety plane over Hermes — for CNOs, CIOs, CTOs, CMIOs, CISOs, CEOs, nurse informaticists, and AI architects.</p>
+    <div class="status-row" aria-label="Release status">
+      <span class="status pass">44/44 unit tests</span><span class="status pass">8/8 trajectory evaluations</span><span class="status pass">Hermes canary passed</span><span class="status pending">Unsigned candidate</span><span class="status blocked">Not clinical deployment</span>
+    </div>
+    <p><a class="btn btn-primary" href="assets/governed-harness-2-architecture.md">Download the architecture statement</a> <a class="btn btn-secondary" href="naio-harness-v2/evidence/release-evidence.json">Inspect machine evidence</a></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">The decision</p>
+    <h2>One runtime. One governed control plane.</h2>
+    <p class="statement"><strong>Nurse AI OS is a no-PHI, nurse-governed control plane over the Hermes Agent runtime.</strong> Hermes supplies the horizontal runtime; EDENA supplies deterministic risk and autonomy semantics; Florence-X supplies bounded orchestration; human approval remains the authority boundary; and tamper-evident evidence makes the system's claims inspectable.</p>
+    <p>Hermes remains the only agent runtime. OpenClaw, LangGraph, OpenAI Agents SDK, Google ADK, Microsoft Agent Framework, PydanticAI, Letta, and OpenHands were studied for patterns—not installed as parallel orchestration layers. This avoids duplicating profiles, context, skills, memory, tools, approvals, cron, delegation, Kanban, and gateways already present in Hermes.</p>
+    <div class="boundary"><strong>Boundary:</strong> Harness 2.0 does not authorize PHI, patient-specific clinical decisions, EHR access, named-personnel decisions, payments, credential handling, or unreviewed external action. It is not a HIPAA audit, security certification, clinical product, or institutional approval.</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">Read it by role</p>
+    <h2>What each executive should inspect</h2>
+    <div class="exec-grid">
+      <article class="exec-card"><h3>CNO · human authority</h3><ul><li>AI advises and drafts; nurses and authorized humans judge.</li><li>Red means stop/escalate—not autonomy.</li><li>Patient, chart, personnel, and policy-adoption decisions stay human or institutional.</li><li>Nurse Steward Council review remains a release gate.</li><li>No patient-outcome or compliance claim is made.</li></ul></article>
+      <article class="exec-card"><h3>CIO · effective control</h3><ul><li>Capabilities compile across profile, audience, channel, provider, sandbox, trust cell, and runtime.</li><li>Every layer may narrow; none may re-grant.</li><li>Unknown fields and unmanifested tools fail closed.</li><li>Metadata-only, hash-chained evidence supports audit without retaining prompts or payloads.</li><li>Profiles are not host sandboxes; enterprise isolation remains required.</li></ul></article>
+      <article class="exec-card"><h3>CTO · technical assurance</h3><ul><li>Typed, content-hashed capability manifests.</li><li>Hermes-native pre-tool and result-transform hooks.</li><li>Hash-bound proposals instead of suspended model state.</li><li>Restart-safe side-effect handling, budgets, model-routing limits, and connector manifests.</li><li>Versioned synthetic trajectory datasets and machine-readable release evidence.</li></ul></article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Canonical semantics</p>
+    <h2>Risk and autonomy are different questions</h2>
+    <div class="report-table-wrap"><table class="report-table">
+      <thead><tr><th>Dimension</th><th>Values</th><th>Meaning</th></tr></thead>
+      <tbody><tr><td><strong>Risk tier</strong></td><td>Green · Yellow · Orange · Red</td><td>Consequence and escalation. Red means prohibit, stop, or route to an authorized human/institutional process.</td></tr><tr><td><strong>Autonomy level</strong></td><td>A0 · A1 · A2 · A3 · A4</td><td>How independently a bounded capability may operate. A4 is reserved and unavailable in self-service Nurse AI OS.</td></tr></tbody>
+    </table></div>
+    <p><strong>Invariants:</strong> risk never grants authority; autonomy never lowers risk; ambiguity moves risk upward and autonomy downward; a child agent or downstream configuration may narrow but never restore a denied capability.</p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">Implemented—not merely proposed</p>
+    <h2>Control and evidence map</h2>
+    <div class="evidence-grid"><div class="metric"><strong>44</strong>unit tests passed</div><div class="metric"><strong>8/8</strong>trajectory cases passed</div><div class="metric"><strong>2</strong>Hermes hooks verified</div><div class="metric"><strong>0</strong>PHI used in testing</div></div>
+    <div class="report-table-wrap"><table class="report-table">
+      <thead><tr><th>Control</th><th>Implemented evidence</th></tr></thead><tbody>
+      <tr><td>Capability registry</td><td>Content-hash-verified manifests; unknown and unmanifested capabilities block.</td></tr>
+      <tr><td>Monotonic compiler</td><td>Tests prove a downstream layer cannot re-grant authority removed upstream.</td></tr>
+      <tr><td>Strict configuration</td><td>Unknown fields reject; writes are atomic; last-known-good and rejected candidates are retained.</td></tr>
+      <tr><td>Runtime gate</td><td>Loaded through Hermes's real plugin manager in an isolated temporary home.</td></tr>
+      <tr><td>Redlines</td><td>Synthetic MRN and credential-field cases block; argument values are not logged.</td></tr>
+      <tr><td>Human approval</td><td>External side-effect class returns Hermes's native <code>approve</code> directive.</td></tr>
+      <tr><td>Provenance</td><td>SHA-256 sequence chain; mutation, deletion, and reordering are detected.</td></tr>
+      <tr><td>Governed proposals</td><td>Approval binds manifest, target, action digest, reviewer role, and time; payload is not persisted.</td></tr>
+      <tr><td>Restart safety</td><td>Side effects return to review; only idempotent read-only work may resume within retry ceiling.</td></tr>
+      <tr><td>Trust and resource limits</td><td>Separate trust cells, hashed-run call budgets, output truncation, privacy-aware fallback, strict connector manifests.</td></tr>
+      </tbody></table></div>
+    <p class="small-note">Dataset <code>naio-edena-runtime-core</code> · version <code>2026.07.13.1</code> · SHA-256 <code>c8259d32dd85842c95f674050db930c25cfb264874e92a1bb8668bd31da1d223</code></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Honest status</p><h2>Known · Assumed · Unknown · Recommended · Decide</h2>
+    <h3>Known</h3><p>The source executes successfully in the tested canary; Hermes loaded the plugin; 44 unit tests and eight synthetic trajectories passed; the signed Phase 23 bundle and default profile were not changed.</p>
+    <h3>Assumed</h3><p>The host operator remains trusted; Hermes native approval behavior remains consistent with the tested version; any institution will add identity, endpoint, network, retention, procurement, labor, legal, privacy, and incident-response controls.</p>
+    <h3>Unknown</h3><p>Institutional concurrency, broad adversarial false-positive/false-negative rates, nurse usability burden, council acceptability, and organization-specific regulatory requirements remain to be established.</p>
+    <h3>Recommended</h3><p>Use public or synthetic data in a dedicated profile and isolated workspace; expand adversarial evaluations; review redlines with nursing, privacy, security, legal, informatics, and affected workers; reevaluate after any model, tool, manifest, policy, or connector change.</p>
+    <h3>Decide</h3><p>The matching private key for the existing trust anchor is unavailable in this build environment. Harness 2.0 is therefore <strong>unsigned</strong>. The trust anchor was not rotated. Signing requires an authorized human key ceremony and independent fingerprint verification.</p>
+    <div class="boundary"><strong>Governance status:</strong> founder architecture approval recorded July 13, 2026 · Nurse Steward Council review pending · institutional validation not claimed · default-profile activation not performed.</div>
+  </div>
+</section>
+
+<section class="section section-alt" id="sources">
+  <div class="container narrow">
+    <p class="eyebrow">Primary sources · accessed July 13, 2026</p><h2>Citations and technical receipts</h2>
+    <ol class="citation-list">
+      <li><a href="https://ojin.nursingworld.org/table-of-contents/volume-30-2025/number-2-may-2025/the-ethical-use-of-artificial-intelligence-in-nursing-practice/" target="_blank" rel="noopener">American Nurses Association / OJIN — The Ethical Use of Artificial Intelligence in Nursing Practice</a></li>
+      <li><a href="https://www.nursingworld.org/practice-policy/nursing-excellence/official-position-statements/" target="_blank" rel="noopener">ANA — Official Position Statements</a></li>
+      <li><a href="https://www.who.int/publications/i/item/9789240084759" target="_blank" rel="noopener">WHO — Ethics and governance of AI for health: large multi-modal models</a></li>
+      <li><a href="https://doi.org/10.6028/NIST.AI.600-1" target="_blank" rel="noopener">NIST AI 600-1 — Generative AI Profile</a></li>
+      <li><a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/" target="_blank" rel="noopener">OWASP — Top 10 for Agentic Applications 2026</a></li>
+      <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks" target="_blank" rel="noopener">Hermes Agent — Hooks</a></li>
+      <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins" target="_blank" rel="noopener">Hermes Agent — Plugins</a></li>
+      <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/profiles" target="_blank" rel="noopener">Hermes Agent — Profiles</a></li>
+      <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban" target="_blank" rel="noopener">Hermes Agent — Kanban</a></li>
+      <li><a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">Hermes Agent — Official repository</a></li>
+      <li><a href="https://docs.openclaw.ai/gateway/security" target="_blank" rel="noopener">OpenClaw — Gateway security</a></li>
+      <li><a href="https://docs.openclaw.ai/gateway/configuration" target="_blank" rel="noopener">OpenClaw — Configuration</a></li>
+      <li><a href="https://docs.openclaw.ai/gateway/restart-recovery" target="_blank" rel="noopener">OpenClaw — Restart recovery</a></li>
+      <li><a href="https://openai.github.io/openai-agents-python/guardrails/" target="_blank" rel="noopener">OpenAI Agents SDK — Guardrails</a></li>
+      <li><a href="https://openai.github.io/openai-agents-python/human_in_the_loop/" target="_blank" rel="noopener">OpenAI Agents SDK — Human-in-the-loop</a></li>
+      <li><a href="https://docs.langchain.com/oss/python/langgraph/persistence" target="_blank" rel="noopener">LangGraph — Persistence</a></li>
+      <li><a href="https://docs.langchain.com/oss/python/langgraph/interrupts" target="_blank" rel="noopener">LangGraph — Interrupts</a></li>
+      <li><a href="https://google.github.io/adk-docs/callbacks/types-of-callbacks/" target="_blank" rel="noopener">Google ADK — Callback types</a></li>
+      <li><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop" target="_blank" rel="noopener">Microsoft Agent Framework — Human-in-the-loop workflows</a></li>
+      <li><a href="https://ai.pydantic.dev/deferred-tools/" target="_blank" rel="noopener">PydanticAI — Deferred tools</a></li>
+      <li><a href="https://ai.pydantic.dev/evals/" target="_blank" rel="noopener">PydanticAI — Evaluations</a></li>
+      <li><a href="https://docs.letta.com/guides/core-concepts/stateful-agents/" target="_blank" rel="noopener">Letta — Stateful agents</a></li>
+      <li><a href="https://docs.openhands.dev/sdk/guides/security" target="_blank" rel="noopener">OpenHands — Security</a></li>
+      <li><a href="https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices" target="_blank" rel="noopener">Model Context Protocol — Security best practices</a></li>
+      <li><a href="https://modelcontextprotocol.io/docs/tutorials/security/authorization" target="_blank" rel="noopener">Model Context Protocol — Authorization</a></li>
+    </ol>
+    <div class="boundary"><strong>Inspect, don't trust the summary:</strong> <a href="assets/governed-harness-2-architecture.md">download the full statement</a>, <a href="naio-harness-v2/evidence/release-evidence.json">read machine evidence</a>, or <a href="naio-harness-v2/">browse the source, policies, tests, schemas, and plugin</a>.</div>
+  </div>
+</section>
+
+<footer class="site-footer"><div class="container"><p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p><div class="footer-links"><a href="index.html">Home</a><a href="resources.html">Resources</a><a href="architecture-report.html">Professional-guidance report</a><a href="#sources">Citations</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="mailto:managers@nurse-ai-os.help">Contact</a></div><p>© 2026 Nurse AI OS · NAIO / NIN · Public working architecture, not clinical or institutional authorization.</p></div></footer>
+<script src="assets/counter.js" defer></script>
+</body>
+</html>

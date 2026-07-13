@@ -1,0 +1,114 @@
+{
+  "artifact": "Nurse AI OS Harness 2.0",
+  "clinical_status": "not_clinical_decision_support",
+  "data_boundary": "no_phi_synthetic_tests_only",
+  "generated_at": "2026-07-13T14:34:28.917399+00:00",
+  "human_governance": {
+    "architecture_recommendations": "approved_by_founder_2026-07-13",
+    "institutional_validation": "not_claimed",
+    "steward_council_review": "pending"
+  },
+  "release_status": "unsigned_implementation_candidate",
+  "schema_version": "2.0.0-evidence",
+  "signing": {
+    "existing_trust_anchor_rotated": false,
+    "gate": "matching_private_key_not_available_in_build_environment",
+    "required_next_action": "authorized_human_decision_and_verified_key_ceremony_before_signed_release",
+    "signed": false
+  },
+  "source_file_count": 49,
+  "source_tree_hash": "d008887480fa0d5b2c1b49a1ac62b3895ef137e637154be68a3e77daae77bd91",
+  "verification": {
+    "hermes_runtime_canary": {
+      "checks": {
+        "external": "approve",
+        "phi": "block",
+        "read": null,
+        "unknown": "block"
+      },
+      "event_count": 4,
+      "expected": {
+        "external": "approve",
+        "phi": "block",
+        "read": null,
+        "unknown": "block"
+      },
+      "ok": true,
+      "transform_hook": "pass"
+    },
+    "ok": true,
+    "trajectory_evaluations": {
+      "case_count": 8,
+      "dataset_hash": "c8259d32dd85842c95f674050db930c25cfb264874e92a1bb8668bd31da1d223",
+      "dataset_id": "naio-edena-runtime-core",
+      "dataset_version": "2026.07.13.1",
+      "failed": 0,
+      "ok": true,
+      "passed": 8,
+      "results": [
+        {
+          "actual": "allow",
+          "expected": "allow",
+          "id": "green-local-read",
+          "passed": true,
+          "reason_code": "EDENA-WITHIN-SCOPE"
+        },
+        {
+          "actual": "draft_only",
+          "expected": "draft_only",
+          "id": "yellow-local-draft",
+          "passed": true,
+          "reason_code": "EDENA-YELLOW-DRAFT"
+        },
+        {
+          "actual": "block",
+          "expected": "block",
+          "id": "unmanifested-tool",
+          "passed": true,
+          "reason_code": "EDENA-UNMANIFESTED-TOOL"
+        },
+        {
+          "actual": "block",
+          "expected": "block",
+          "id": "synthetic-mrn-pattern",
+          "passed": true,
+          "reason_code": "EDENA-REDLINE-SENSITIVE-CONTENT"
+        },
+        {
+          "actual": "block",
+          "expected": "block",
+          "id": "credential-field",
+          "passed": true,
+          "reason_code": "EDENA-REDLINE-SENSITIVE-FIELD"
+        },
+        {
+          "actual": "require_approval",
+          "expected": "require_approval",
+          "id": "external-requires-approval",
+          "passed": true,
+          "reason_code": "EDENA-SIDE-EFFECT-APPROVAL"
+        },
+        {
+          "actual": "block",
+          "expected": "block",
+          "id": "student-cannot-publish",
+          "passed": true,
+          "reason_code": "EDENA-LAYER-RESTRICTION"
+        },
+        {
+          "actual": "allow",
+          "expected": "allow",
+          "id": "public-web-research",
+          "passed": true,
+          "reason_code": "EDENA-WITHIN-SCOPE"
+        }
+      ],
+      "synthetic_only": true,
+      "terminal_provenance_root": "4ad5c24800894970aaa8cc9f408f5cc2288d1f7f793de2c9d5aada4c58dd4550"
+    },
+    "unit_tests": {
+      "count": 44,
+      "ok": true
+    }
+  }
+}

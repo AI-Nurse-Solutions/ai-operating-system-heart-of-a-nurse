@@ -1,0 +1,22 @@
+{
+  "capability_id": "external.publish",
+  "version": "1.0.0",
+  "capability_type": "tool",
+  "source": "hermes:external-delivery-class",
+  "content_hash": "24956257d808fc1078a54b69bcf1e0bcdaa0fb1cdbc0a02de4eece67f508951c",
+  "owner": "NAIO Institute",
+  "reviewer": "Nurse Steward Council candidate",
+  "audiences": ["builder", "leader"],
+  "risk_tier": "orange",
+  "autonomy_ceiling": "A3",
+  "data_classes": ["public"],
+  "tool_classes": ["external_irreversible"],
+  "side_effects": true,
+  "allowed_targets": ["explicit-approved-destination"],
+  "human_gate": "written_scope_and_explicit_approval",
+  "isolation": "governed-executor",
+  "budgets": {"max_calls": 1, "timeout_seconds": 120, "max_output_bytes": 50000},
+  "dependencies": ["local.draft"],
+  "review_expires": "2026-10-13",
+  "status": "active"
+}

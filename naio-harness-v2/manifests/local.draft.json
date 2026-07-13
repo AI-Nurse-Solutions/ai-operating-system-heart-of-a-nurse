@@ -1,0 +1,22 @@
+{
+  "capability_id": "local.draft",
+  "version": "1.0.0",
+  "capability_type": "tool",
+  "source": "hermes:write_file+patch",
+  "content_hash": "cac4bba9ed167f631a51815b6043afa1d5282bf036eeb14a8deee410c23ced4b",
+  "owner": "NAIO Institute",
+  "reviewer": "Nurse Steward Council candidate",
+  "audiences": ["student", "builder", "leader", "bedside"],
+  "risk_tier": "yellow",
+  "autonomy_ceiling": "A2",
+  "data_classes": ["public", "private-non-phi"],
+  "tool_classes": ["draft_local"],
+  "side_effects": false,
+  "allowed_targets": ["governed-workspace"],
+  "human_gate": "before_external_use",
+  "isolation": "workspace-scoped",
+  "budgets": {"max_calls": 20, "timeout_seconds": 60, "max_output_bytes": 200000},
+  "dependencies": ["local.read"],
+  "review_expires": "2026-10-13",
+  "status": "active"
+}

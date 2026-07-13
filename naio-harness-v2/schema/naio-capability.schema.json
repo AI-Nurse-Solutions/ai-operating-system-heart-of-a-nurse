@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.org/schema/naio-capability.schema.json",
+  "title": "NAIO Capability Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["capability_id", "version", "capability_type", "source", "content_hash", "owner", "reviewer", "audiences", "risk_tier", "autonomy_ceiling", "data_classes", "tool_classes", "side_effects", "allowed_targets", "human_gate", "isolation", "budgets", "dependencies", "review_expires", "status"],
+  "properties": {
+    "capability_id": {"type": "string", "pattern": "^[a-z0-9._-]+$"},
+    "version": {"type": "string"},
+    "capability_type": {"enum": ["tool", "skill", "mcp", "agent", "cron", "plugin"]},
+    "source": {"type": "string"},
+    "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "owner": {"type": "string", "minLength": 1},
+    "reviewer": {"type": "string", "minLength": 1},
+    "audiences": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "risk_tier": {"enum": ["green", "yellow", "orange", "red"]},
+    "autonomy_ceiling": {"enum": ["A0", "A1", "A2", "A3", "A4"]},
+    "data_classes": {"type": "array", "items": {"type": "string"}},
+    "tool_classes": {"type": "array", "items": {"type": "string"}},
+    "side_effects": {"type": "boolean"},
+    "allowed_targets": {"type": "array", "items": {"type": "string"}},
+    "human_gate": {"type": "string"},
+    "isolation": {"type": "string"},
+    "budgets": {"type": "object", "additionalProperties": false, "required": ["max_calls", "timeout_seconds", "max_output_bytes"], "properties": {"max_calls": {"type": "integer", "minimum": 0}, "timeout_seconds": {"type": "integer", "minimum": 1}, "max_output_bytes": {"type": "integer", "minimum": 1}}},
+    "dependencies": {"type": "array", "items": {"type": "string"}},
+    "review_expires": {"type": "string", "format": "date"},
+    "status": {"enum": ["active", "suspended", "expired", "candidate"]}
+  }
+}

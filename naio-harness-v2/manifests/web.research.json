@@ -1,0 +1,22 @@
+{
+  "capability_id": "web.research",
+  "version": "1.0.0",
+  "capability_type": "tool",
+  "source": "hermes:web_search+web_extract",
+  "content_hash": "88fcc61ed2cd9cc3489ee0202e665b6846db2a543c57188ce823b1a7961d2294",
+  "owner": "NAIO Institute",
+  "reviewer": "Nurse Steward Council candidate",
+  "audiences": ["student", "builder", "leader", "bedside"],
+  "risk_tier": "green",
+  "autonomy_ceiling": "A2",
+  "data_classes": ["public"],
+  "tool_classes": ["read_only", "network"],
+  "side_effects": false,
+  "allowed_targets": ["https-public-web"],
+  "human_gate": "review_sources",
+  "isolation": "untrusted-reader",
+  "budgets": {"max_calls": 20, "timeout_seconds": 120, "max_output_bytes": 200000},
+  "dependencies": [],
+  "review_expires": "2026-10-13",
+  "status": "active"
+}

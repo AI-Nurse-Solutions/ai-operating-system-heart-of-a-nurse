@@ -9,6 +9,10 @@ from pathlib import Path
 _GATE = None
 
 
+def _mode() -> str:
+    return os.environ.get("NAIO_EDENA_MODE", "shadow").strip().lower()
+
+
 def _gate():
     global _GATE
     if _GATE is not None:
@@ -17,20 +21,31 @@ def _gate():
     source = root / "src"
     if str(source) not in sys.path:
         sys.path.insert(0, str(source))
-    from naio_harness.runtime_gate import ShadowGate
-    _GATE = ShadowGate(root)
+    from naio_harness.runtime_gate import RuntimeGate
+    _GATE = RuntimeGate(root, mode=_mode())
     return _GATE
 
 
 def _on_pre_tool_call(tool_name: str = "", args=None, **kwargs):
-    # Shadow mode is deliberately observational. It always returns None.
-    try:
-        _gate().observe(tool_name=tool_name, args=args, **kwargs)
-    except Exception:
-        # Stage 2 must not change Hermes behavior. Stage 3 replaces this with
-        # fail-closed directives after canary verification.
+    mode = _mode()
+    if mode == "shadow":
+        try:
+            _gate().observe(tool_name=tool_name, args=args, **kwargs)
+        except Exception:
+            return None
         return None
-    return None
+    if mode != "enforce":
+        return {
+            "action": "block",
+            "message": "Nurse AI OS blocked this action because NAIO_EDENA_MODE is invalid.",
+        }
+    try:
+        return _gate().enforce(tool_name=tool_name, args=args, **kwargs)
+    except Exception:
+        return {
+            "action": "block",
+            "message": "Nurse AI OS blocked this action because the EDENA gate failed closed.",
+        }
 
 
 def register(ctx) -> None:

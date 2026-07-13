@@ -31,10 +31,10 @@ class Stage2ShadowGateTests(unittest.TestCase):
     def test_shadow_decisions_are_non_mutating(self):
         with tempfile.TemporaryDirectory() as tmp:
             gate = ShadowGate(ROOT, Path(tmp) / "events.jsonl")
-            self.assertEqual(gate.evaluate("read_file", {"path": "safe.md"})["would_decide"], "would_allow")
-            self.assertEqual(gate.evaluate("write_file", {"path": "draft.md"})["would_decide"], "would_draft_only")
-            self.assertEqual(gate.evaluate("unknown_power", {})["would_decide"], "would_block")
-            self.assertEqual(gate.evaluate("send_message", {"text": "hello"})["would_decide"], "would_block")
+            self.assertEqual(gate.evaluate("read_file", {"path": "safe.md"})["decision"], "allow")
+            self.assertEqual(gate.evaluate("write_file", {"path": "draft.md"})["decision"], "draft_only")
+            self.assertEqual(gate.evaluate("unknown_power", {})["decision"], "block")
+            self.assertEqual(gate.evaluate("send_message", {"text": "hello"})["decision"], "block")
 
     def test_shadow_log_never_contains_argument_values(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -49,6 +49,7 @@ class Stage2ShadowGateTests(unittest.TestCase):
             self.assertEqual(event["argument_names"], ["path", "token"])
             self.assertFalse(event["payload_captured"])
             self.assertEqual(event["mode"], "shadow")
+            self.assertEqual(event["observed_decision"], "allow")
 
     def test_plugin_registers_real_hermes_hook_shape(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -67,7 +68,7 @@ class Stage2ShadowGateTests(unittest.TestCase):
                 self.assertIsNone(result)
                 raw = Path(os.environ["NAIO_SHADOW_LOG"]).read_text()
                 self.assertNotIn("private-value", raw)
-                self.assertEqual(json.loads(raw)["would_decide"], "would_allow")
+                self.assertEqual(json.loads(raw)["observed_decision"], "allow")
             finally:
                 if old_root is None:
                     os.environ.pop("NAIO_HARNESS_ROOT", None)

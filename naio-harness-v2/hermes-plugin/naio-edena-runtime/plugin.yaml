@@ -1,6 +1,6 @@
 name: naio-edena-runtime
-version: "2.0.0-shadow.1"
-description: "NAIO EDENA runtime observer. Shadow mode only: records metadata-only would-allow/block/approve decisions and never changes Hermes tool behavior."
+version: "2.0.0-canary.1"
+description: "NAIO EDENA runtime gate. Shadow by default; canary enforcement blocks redlines and unknown tools and routes approved external side effects through Hermes native approval."
 author: "NAIO Institute"
 hooks:
   - pre_tool_call

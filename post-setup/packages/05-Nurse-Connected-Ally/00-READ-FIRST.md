@@ -43,9 +43,9 @@ Nurse AI OS should stop and ask the user before applying changes. It must confir
 2. `ROLE-PACK.json`
 3. The role-specific Hermes Program (`*.md`)
 4. The role-specific Guide (`*.docx`)
-5. `SuperPowers-After-Setup/README.md`
-6. `SuperPowers-After-Setup/MASTER-INSTALLER.md` — reference only until the user approves a reviewed plan
-7. The SuperPowers User Guide (`*.docx`)
+5. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md` — design reference; the full distribution is not supplied
+6. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md` — design reference only; do not execute or invent missing modules
+7. The SuperPowers User Guide (`*.docx`) — reference material
 8. `PACKAGE-CHECKSUMS.sha256`
 
 ## Non-negotiable boundaries

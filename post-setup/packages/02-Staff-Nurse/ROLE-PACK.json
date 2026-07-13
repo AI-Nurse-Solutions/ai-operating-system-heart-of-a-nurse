@@ -32,12 +32,12 @@
     },
     {
       "bytes": 20127,
-      "packaged_path": "SuperPowers-After-Setup/MASTER-INSTALLER.md",
+      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md",
       "source_sha256": "c7debff684da7ebe910be089355545d1c9aa5fa45168500da4e84156c2e3ea53"
     },
     {
       "bytes": 5950,
-      "packaged_path": "SuperPowers-After-Setup/README.md",
+      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md",
       "source_sha256": "383c73489e54735cd5bc5e7ad15ee28c1a5b7de16f3349318d3b33e9e71df5f8"
     }
   ]

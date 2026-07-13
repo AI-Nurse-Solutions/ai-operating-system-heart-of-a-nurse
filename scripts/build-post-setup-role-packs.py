@@ -63,6 +63,7 @@ FIXED_ZIP_TIME = (2026, 7, 13, 0, 0, 0)
 
 
 def sha256(path: Path) -> str:
+    """Return the SHA-256 digest for a file."""
     h = hashlib.sha256()
     with path.open("rb") as f:
         for block in iter(lambda: f.read(1024 * 1024), b""):
@@ -71,14 +72,47 @@ def sha256(path: Path) -> str:
 
 
 def normalized_relative(path: Path) -> Path:
+    """Normalize supplied filenames while preserving role-source provenance."""
     parts = ["SuperPowers-After-Setup" if part == "SuperPowers after Setup" else part for part in path.parts]
     result = Path(*parts)
     if result.name == "Hermes-Nurse-AI-OS-SuperPowers-Pack-User-Guide (1).docx":
         result = result.with_name("Hermes-Nurse-AI-OS-SuperPowers-Pack-User-Guide.docx")
+    if result.parent.name == "SuperPowers-After-Setup" and result.name == "README.md":
+        result = result.with_name("REFERENCE-SUPERPOWERS-README.md")
+    if result.parent.name == "SuperPowers-After-Setup" and result.name == "MASTER-INSTALLER.md":
+        result = result.with_name("REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md")
     return result
 
 
+def reference_only_text(path: Path, text: str) -> str:
+    """Mark incomplete SuperPowers documents as non-executable references."""
+    if path.name not in {"REFERENCE-SUPERPOWERS-README.md", "REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md"}:
+        return text
+    notice = (
+        "> **ROLE-PACK REFERENCE NOTICE:** This source describes a larger SuperPowers distribution whose "
+        "`manifest.yaml`, `core/`, `workflows/`, `templates/`, and `tests/` files were not supplied with "
+        "this role pack. Do not execute its installation directives, claim the full pack is present, or "
+        "invent missing modules. Use it only as design context during the review-first process in "
+        "`../00-READ-FIRST.md`. The role-specific Program and Guide are the supplied post-setup materials.\n\n"
+    )
+    text = text.replace('status: "Implementation-ready"', 'status: "Reference-only in this role pack"', 1)
+    if path.name == "REFERENCE-SUPERPOWERS-README.md":
+        text = text.replace("This package contains:", "The original full SuperPowers design describes:", 1)
+        text = text.replace("## Installation", "## Original full-distribution installation concept — do not execute from this role pack", 1)
+        text = text.replace("## Package map", "## Original full-distribution package map — files below are not included", 1)
+    if path.name == "REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md":
+        text = text.replace("## Master Installer and Operating Program", "## Original Full-Distribution Installer Reference — Do Not Execute", 1)
+        text = text.replace("**Execution directive:**", "**Original design directive (not executable from this role pack):**", 1)
+    marker = "---\n\n# Hermes"
+    if marker in text:
+        text = text.replace(marker, f"---\n\n{notice}# Hermes", 1)
+    else:
+        text = notice + text
+    return text.rstrip() + "\n"
+
+
 def read_first(role: dict) -> str:
+    """Render the role-specific review-first and no-installation instructions."""
     return f"""# {role['label']} — Nurse AI OS Post-Setup Role Pack
 
 ## What this folder is
@@ -124,9 +158,9 @@ Nurse AI OS should stop and ask the user before applying changes. It must confir
 2. `ROLE-PACK.json`
 3. The role-specific Hermes Program (`*.md`)
 4. The role-specific Guide (`*.docx`)
-5. `SuperPowers-After-Setup/README.md`
-6. `SuperPowers-After-Setup/MASTER-INSTALLER.md` — reference only until the user approves a reviewed plan
-7. The SuperPowers User Guide (`*.docx`)
+5. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md` — design reference; the full distribution is not supplied
+6. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md` — design reference only; do not execute or invent missing modules
+7. The SuperPowers User Guide (`*.docx`) — reference material
 8. `PACKAGE-CHECKSUMS.sha256`
 
 ## Non-negotiable boundaries
@@ -141,7 +175,50 @@ Nurse AI OS should stop and ask the user before applying changes. It must confir
 """
 
 
+def validate_role_package(destination: Path, role: dict) -> dict:
+    """Fail closed unless a tracked role package preserves required boundaries."""
+    manifest_path = destination / "ROLE-PACK.json"
+    if not manifest_path.is_file():
+        raise FileNotFoundError(manifest_path)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("role") != role["label"]:
+        raise ValueError(f"Role mismatch in {manifest_path}")
+    if manifest.get("activation") != "user_initiated_two_step_review_and_explicit_approval":
+        raise ValueError(f"Unsafe activation setting in {manifest_path}")
+    if manifest.get("no_phi") is not True or manifest.get("onboarding_edena_ceiling") != "yellow":
+        raise ValueError(f"No-PHI or EDENA ceiling failure in {manifest_path}")
+    false_keys = (
+        "install_on_download",
+        "role_selection_verifies_credentials_or_authority",
+        "clinical_decisions",
+        "automatic_memory",
+        "automatic_connectors",
+        "automatic_external_actions",
+        "automatic_cron",
+    )
+    for key in false_keys:
+        if manifest.get(key) is not False:
+            raise ValueError(f"Unsafe {key} setting in {manifest_path}")
+    for record in manifest.get("source_files", []):
+        if not (destination / record["packaged_path"]).is_file():
+            raise FileNotFoundError(destination / record["packaged_path"])
+    return manifest
+
+
+def refresh_package_checksums(destination: Path) -> None:
+    """Regenerate and verify the internal checksum ledger before every ZIP build."""
+    targets = [p for p in sorted(destination.rglob("*")) if p.is_file() and p.name != "PACKAGE-CHECKSUMS.sha256"]
+    ledger = destination / "PACKAGE-CHECKSUMS.sha256"
+    lines = [f"{sha256(path)}  {path.relative_to(destination).as_posix()}" for path in targets]
+    ledger.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    for line in ledger.read_text(encoding="utf-8").splitlines():
+        digest, rel = line.split("  ", 1)
+        if sha256(destination / rel) != digest:
+            raise ValueError(f"Internal checksum verification failed: {destination / rel}")
+
+
 def import_role(source_root: Path, role: dict) -> None:
+    """Import one authorized role source without overwriting an existing package."""
     source = source_root / role["source"]
     destination = PACKAGES / role["folder"]
     if not source.is_dir():
@@ -156,7 +233,10 @@ def import_role(source_root: Path, role: dict) -> None:
         rel = normalized_relative(path.relative_to(source))
         target = destination / rel
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(path, target)
+        if target.name.startswith("REFERENCE-SUPERPOWERS-") and target.suffix == ".md":
+            target.write_text(reference_only_text(target, path.read_text(encoding="utf-8")), encoding="utf-8")
+        else:
+            shutil.copy2(path, target)
         source_records.append(
             {
                 "packaged_path": rel.as_posix(),
@@ -184,15 +264,17 @@ def import_role(source_root: Path, role: dict) -> None:
         "source_files": source_records,
     }
     (destination / "ROLE-PACK.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    checksum_targets = [p for p in sorted(destination.rglob("*")) if p.is_file() and p.name != "PACKAGE-CHECKSUMS.sha256"]
-    lines = [f"{sha256(p)}  {p.relative_to(destination).as_posix()}" for p in checksum_targets]
-    (destination / "PACKAGE-CHECKSUMS.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    validate_role_package(destination, role)
+    refresh_package_checksums(destination)
 
 
 def deterministic_zip(role: dict) -> dict:
+    """Validate a role package, refresh its ledger, and write a deterministic ZIP."""
     source = PACKAGES / role["folder"]
     if not source.is_dir():
         raise FileNotFoundError(source)
+    validate_role_package(source, role)
+    refresh_package_checksums(source)
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     output = DOWNLOADS / f"nurse-ai-os-post-setup-{role['slug']}.zip"
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
@@ -216,6 +298,7 @@ def deterministic_zip(role: dict) -> dict:
 
 
 def build(source_root: Path | None) -> None:
+    """Optionally import sources, then build all five governed downloads."""
     PACKAGES.mkdir(parents=True, exist_ok=True)
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     if source_root:
@@ -239,6 +322,7 @@ def build(source_root: Path | None) -> None:
 
 
 def main() -> int:
+    """Parse command-line arguments and return a shell-friendly status code."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--import-source", type=Path, help="Import the five role folders before building downloads")
     args = parser.parse_args()

@@ -10,7 +10,7 @@ These are separate, review-first downloads for users who have already completed 
 | `02-Staff-Nurse` | Staff Nurse | `downloads/nurse-ai-os-post-setup-staff-nurse.zip` |
 | `03-Nurse-Leader-and-Manager` | Nurse Leader and Manager | `downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip` |
 | `04-Nurse-Educator` | Nurse Educator | `downloads/nurse-ai-os-post-setup-nurse-educator.zip` |
-| `05-Nurse-Connected-Ally` | Non-nurse user who selected Other | `downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip` |
+| `05-Nurse-Connected-Ally` | Nurse-Connected Ally | `downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip` |
 
 ## What downloading does
 
@@ -36,9 +36,9 @@ Each role ZIP includes:
 - `ROLE-PACK.json`
 - Role-specific Hermes Program
 - Role-specific Guide
-- Shared SuperPowers post-setup README
-- Shared SuperPowers installer reference
-- Shared SuperPowers User Guide
+- Shared SuperPowers README, clearly marked as a design reference because the full module tree was not supplied
+- Shared SuperPowers master-installer document, clearly marked as non-executable reference material
+- Shared SuperPowers User Guide, retained as reference material
 - `PACKAGE-CHECKSUMS.sha256`
 
 Role selection provides personalization only. It does not verify licensure, enrollment, employment, faculty status, managerial authority, institutional authorization, or permission to process patient or personnel information.

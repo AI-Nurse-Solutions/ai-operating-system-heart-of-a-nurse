@@ -3,15 +3,17 @@ title: "Hermes–Nurse AI OS SuperPowers Pack — Master Installer"
 program_id: "NAIO-SPP-1.0"
 version: "1.0"
 date: "2026-07-13"
-status: "Implementation-ready"
+status: "Reference-only in this role pack"
 default_mode: "Preview-first, least-privilege, human-controlled"
 ---
 
+> **ROLE-PACK REFERENCE NOTICE:** This source describes a larger SuperPowers distribution whose `manifest.yaml`, `core/`, `workflows/`, `templates/`, and `tests/` files were not supplied with this role pack. Do not execute its installation directives, claim the full pack is present, or invent missing modules. Use it only as design context during the review-first process in `../00-READ-FIRST.md`. The role-specific Program and Guide are the supplied post-setup materials.
+
 # Hermes–Nurse AI OS SuperPowers Pack
 
-## Master Installer and Operating Program
+## Original Full-Distribution Installer Reference — Do Not Execute
 
-**Execution directive:** Install a post-setup capability layer for an existing Hermes–Nurse AI OS. The layer must improve the user's clarity, craft, recall, decision quality, and follow-through without silently increasing access, surveillance, dependence, or automation.
+**Original design directive (not executable from this role pack):** Install a post-setup capability layer for an existing Hermes–Nurse AI OS. The layer must improve the user's clarity, craft, recall, decision quality, and follow-through without silently increasing access, surveillance, dependence, or automation.
 
 > **Product promise:** SuperPowers do not make the AI more powerful over the user. They make the user more capable, clear, and in control.
 
@@ -492,4 +494,3 @@ Produce an activation report containing:
 - HHS HIPAA De-identification Guidance: <https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html>
 
 **Final operating principle:** Greater clarity, craft, recall, and follow-through must come before greater autonomy.
-

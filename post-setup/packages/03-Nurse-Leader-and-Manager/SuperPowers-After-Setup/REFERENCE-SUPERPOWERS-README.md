@@ -2,9 +2,11 @@
 title: "Hermes–Nurse AI OS SuperPowers Pack"
 version: "1.0"
 date: "2026-07-13"
-status: "Implementation-ready"
+status: "Reference-only in this role pack"
 audience: "Nurse leaders, nursing students, nursing educators, staff nurses, and nurse-connected allies"
 ---
+
+> **ROLE-PACK REFERENCE NOTICE:** This source describes a larger SuperPowers distribution whose `manifest.yaml`, `core/`, `workflows/`, `templates/`, and `tests/` files were not supplied with this role pack. Do not execute its installation directives, claim the full pack is present, or invent missing modules. Use it only as design context during the review-first process in `../00-READ-FIRST.md`. The role-specific Program and Guide are the supplied post-setup materials.
 
 # Hermes–Nurse AI OS SuperPowers Pack
 
@@ -14,7 +16,7 @@ The SuperPowers Pack is a post-setup capability layer for an existing Hermes–N
 
 > **Product promise:** SuperPowers do not make the AI more powerful over the user. They make the user more capable, clear, and in control.
 
-This package contains:
+The original full SuperPowers design describes:
 
 - an always-on **Trust Shield**;
 - the universal **Core Eight** SuperPowers;
@@ -43,7 +45,7 @@ Automation follows a separate safety progression:
 
 `Manual → AI-assisted → Preview → Approval-gated → Monitored automation`
 
-## Installation
+## Original full-distribution installation concept — do not execute from this role pack
 
 1. Confirm the user's base Hermes–Nurse AI OS is active and its identity, privacy, memory, no-PHI, and human-escalation rules have passed testing.
 2. Give Hermes this entire package, beginning with `MASTER-INSTALLER.md`.
@@ -87,7 +89,7 @@ Try these commands after installation:
 - Memory is visible, editable, purpose-limited, exportable, and deletable.
 - A user can pause a workflow, hide a launcher, revoke a connection, or uninstall a Power-Up without penalty.
 
-## Package map
+## Original full-distribution package map — files below are not included
 
 - `Hermes-Nurse-AI-OS-SuperPowers-Pack-User-Guide.docx` — illustrated benefits, setup, and user instructions
 - `MASTER-INSTALLER.md` — complete installation and operating program

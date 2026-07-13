@@ -1,0 +1,44 @@
+{
+  "activation": "user_initiated_two_step_review_and_explicit_approval",
+  "automatic_connectors": false,
+  "automatic_cron": false,
+  "automatic_external_actions": false,
+  "automatic_memory": false,
+  "clinical_decisions": false,
+  "install_on_download": false,
+  "intended_stage": "after_soul_files_and_hermes_setup",
+  "no_phi": true,
+  "onboarding_edena_ceiling": "yellow",
+  "package_id": "naio-post-setup-nurse-connected-ally",
+  "package_version": "2026.07.13.1",
+  "role": "Nurse-Connected Ally",
+  "role_selection_verifies_credentials_or_authority": false,
+  "schema_version": "1.0",
+  "source_files": [
+    {
+      "bytes": 241237,
+      "packaged_path": "Hermes-Nurse-AI-OS-SuperPowers-Pack-User-Guide.docx",
+      "source_sha256": "d2f083f1718e7d800a416ddcdaa5cea900d9148eae693fc808509f339519411b"
+    },
+    {
+      "bytes": 223157,
+      "packaged_path": "Nurse-Connected-Ally-AI-OS-Life-Enterprise-and-Community-Guide.docx",
+      "source_sha256": "31f2040b34af1a923f0a179e6d75286584681d3db7052db6ee071b7c5ce44068"
+    },
+    {
+      "bytes": 77572,
+      "packaged_path": "Nurse-Connected-Ally-Secure-Life-Enterprise-and-Community-Hermes-Program.md",
+      "source_sha256": "c39ffb24c3e9d5e49cd1136e8b06516226b3c726e440673eba301865f9e10ee6"
+    },
+    {
+      "bytes": 20127,
+      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md",
+      "source_sha256": "c7debff684da7ebe910be089355545d1c9aa5fa45168500da4e84156c2e3ea53"
+    },
+    {
+      "bytes": 5950,
+      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md",
+      "source_sha256": "383c73489e54735cd5bc5e7ad15ee28c1a5b7de16f3349318d3b33e9e71df5f8"
+    }
+  ]
+}

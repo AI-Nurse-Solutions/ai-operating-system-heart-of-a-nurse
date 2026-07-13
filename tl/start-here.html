@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magsimula Dito — Nurse AI OS</title>
+<meta name="description" content="Limang hakbang para mabuo ang iyong Nurse AI OS: i-setup ang Hermes gamit ang checklist, sagutan at i-load ang SOUL Quiz, idagdag ang starter kit, buuin ang dashboard, at patakbuhin ang iyong mga unang prompt.">
+<link rel="alternate" hreflang="en" href="../start-here.html">
+<link rel="alternate" hreflang="tl" href="start-here.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+.prompt-block {
+  background: #10233a; color: #dbe6ef; border-radius: 10px;
+  padding: 1.1rem 1.3rem; font-family: "SF Mono", "Consolas", monospace;
+  font-size: .88rem; line-height: 1.55; white-space: pre-wrap;
+  border-left: 4px solid var(--gold-500); margin: .8rem 0 1.2rem;
+}
+.prompt-label {
+  font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--teal-600); margin: 1rem 0 .2rem;
+}
+details.cheat {
+  background: var(--linen-100); border-radius: 10px; margin-bottom: .6rem; padding: 0;
+  border-left: 4px solid var(--teal-500);
+}
+details.cheat summary {
+  cursor: pointer; font-weight: 700; padding: .8rem 1.1rem; list-style: none; color: var(--navy-900);
+}
+details.cheat summary::-webkit-details-marker { display: none; }
+details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-size: .98rem; }
+</style>
+</head>
+<body class="calm-clinical-page">
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html" class="active">Magsimula Dito</a>
+      <a href="../pathways.html">Mga Pathway</a>
+      <a href="resources.html">Mga Resource</a>
+      <a href="about.html">Tungkol Dito</a>
+      <a href="index.html#founding-year">Libreng Founding Year</a>
+      <a href="faq.html">FAQ</a>
+      <a href="../nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="../soul-quiz.html">Sagutan ang SOUL Quiz</a>
+      <a href="../start-here.html" lang="en" hreflang="en">English</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">Ang buong setup, walang dagdag</p>
+    <h1>Limang hakbang. Isang gabi. Tapos.</h1>
+    <p class="lede">Ito na ang buong onboarding — mag-setup, i-personalize, buuin ang iyong dashboard, at patakbuhin ang mga una mong prompt. Lahat ng iba pa sa site na ito ay optional na mas malalim na pag-aaral para sa susunod. Kung isang page lang ang babasahin mo, ito na iyon.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <iframe class="video-embed" style="margin-bottom:2.5rem;" src="https://www.youtube.com/embed/Qm3Kp51F5O8?si=nyXR0r_VIuZBK-ep" title="Maligayang pagdating — isang system na may puso ng nars" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    <div class="boundary">
+      <strong>Isang paalala bago ka magsimula — lalo na kung estudyante ka:</strong> maaaring may ilang bahagi na mahirap maintindihan sa una. Normal lang iyon, at hindi ito pagsusulit. Ang kailangan mo lang ay ang <em>susunod</em> na hakbang, hindi ang buong mapa. Laktawan muna ang nakakalito, balikan kapag handa ka na, at dalhin ang mga tanong sa <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> — bawat nars doon ay nagsimula rin kung nasaan ka ngayon. At ang iisang tuntuning hindi kailanman nagbabago: <strong>walang patient data, kailanman</strong> — ang system na ito ay para sa buhay mo, hindi sa mga pasyente mo. <a href="#safety">Mga tuntunin sa kaligtasan →</a>
+    </div>
+
+    <!-- ============ STEP 0 · READINESS ============ -->
+    <div class="step" style="border-left:4px solid var(--gold-500); margin-bottom:.4rem;">
+      <h3>Hakbang 0 — readiness check (2 minuto)</h3>
+      <p>Tinitingnan mo ang iyong equipment sa simula ng bawat shift. Ganoon din dito — ang dalawang minuto ngayon ay makakatipid ng isang oras na abala mamaya.</p>
+      <p><strong>Kailangan mo ng desktop o laptop</strong> — Mac o Windows; hindi phone, tablet, o Chromebook. Bakit sulit: sa sarili mong computer, mananatiling <strong>local — nasa machine mo, hindi nasa cloud ng iba</strong> ang files mo at memory ng AI mo. Bilang pangkalahatang gabay, karaniwang sapat ang computer na ginawa sa loob ng nakaraang ~5 taon, may hindi bababa sa 8&nbsp;GB memory, at may ilang GB na bakanteng storage — nasa <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">official Hermes site</a> ang kasalukuyang requirements.</p>
+      <p><strong>Ihanda ang field</strong> — parang paglilinis ng sterile field bago ang procedure: titira ang system mo sa isang dedicated folder (bubuuin ito ng Starter Kit), at walang anumang pribado ang dapat naroon — walang tax documents, family photos, o work files. Kung shared family computer ang gamit mo, isaalang-alang ang hiwalay na user account: sarili mong med cart sa halip na iisang cart para sa lahat.</p>
+      <p style="font-size:.93rem; color:var(--ink-600);">Kung ayaw ma-install ang Hermes, specs iyon ng computer mo — <em>hindi ikaw, at hindi dahil may mali kang ginawa</em>. May parating na cloud option (ang VPS path) para kahit anong device ay makapagpatakbo ng buong system.</p>
+    </div>
+
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500); margin-bottom:2rem;">
+      <strong>Wala ka pang angkop na computer? Kasama ka pa rin — ngayon mismo.</strong> Kunin ang <a href="../ai-mentors.html">libreng AI course at 55 libreng AI mentors</a> (gumagana ang mga ito sa kahit anong browser), sumali sa buwanang Lamp Huddle, <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">magpalista sa community</a>, at sagutan na ang <a href="../soul-quiz.html">SOUL Quiz</a> — magiging handa ang SOUL file mo sa araw na maging handa ang system mo. Mahalaga sa amin ang pakikilahok at boses mo <em>ngayon</em>, hindi lang pagkatapos mong makabili ng hardware. Papasok ang AI sa healthcare, nasa usapan man ang nursing o wala — ang mga nars na naghahanda ngayon ang mamumuno sa pagbabagong iyon sa halip na sila ang pamunuan nito. Kayo ang mga Florence Nightingale ng hinaharap, ang magpapasya kung paano isisilang ang care intelligence.
+    </div>
+
+    <div class="boundary" style="margin-bottom:2rem;">
+      <strong>Dalawang pinto, isang system — piliin ang para sa iyo bago ang Hakbang 1.</strong> <strong>Pinto 1 (dito nagsisimula ang karamihan ng nars):</strong> laktawan muna ang install at gawin ngayong gabi ang mga hakbang 2–5 sa browser AI na ginagamit mo na (ChatGPT o Claude) — i-paste sa halip na i-upload. <strong>Pinto 2:</strong> i-install ang Hermes sa Hakbang 1 para sa buong build — permanenteng memory at local files. Parehong ligtas, walang masasayang sa ginawa mo kung lilipat ka, at puwedeng maghintay ang Pinto 2 hangga't gusto mo. <a href="../setup.html">Paliwanag sa dalawang pinto →</a>
+    </div>
+
+    <div class="steps">
+      <!-- ============ STEP 1 ============ -->
+      <div class="step">
+        <h3>Para sa Pinto 2 lang — suriin ang Pre-Procedure Checklist, saka i-install ang Hermes</h3>
+        <p>Ang Hermes ang libre at open-source na AI engine kung saan tumatakbo ang Nurse AI OS mo. I-install ito mula sa official site, buksan, at kumustahin — parang chat lang ito, at wala kang masisira.</p>
+        <p>
+          <a class="btn btn-primary btn-sm" href="cheat-sheet.html">Ang Pre-Procedure Checklist →</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="https://hermes-agent.nousresearch.com/">Kunin ang Hermes (official site)</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="../assets/hermes-cheat-sheet.pdf">I-download (PDF)</a>
+        </p>
+        <p style="font-size:.93rem; color:var(--ink-600);">Ang checklist ang time-out mo bago ang procedure — equipment, paghahanda ng field, permissions, at ang iisang tuntunin. Dalawang minuto lang, parang pagtiyak sa tamang pasyente at tamang site.</p>
+        <p style="font-size:.93rem; color:var(--ink-600);"><strong>Pagkatapos, piliin ang guide mo:</strong> ang <a href="../assets/hermes-essentials-guide.pdf"><strong>Hermes Essentials Guide</strong></a> kung binabantayan mo ang gastos (para sa students at budget-smart staff — halos libre itong patakbuhin), o <a href="../assets/hermes-power-guide.pdf"><strong>The Hermes Power Guide</strong></a> kapag handa ka na sa profiles, scheduled jobs, at leader-grade governance. Parehong ipinapakita kung paano gumagana sa architecture mo ang EDENA — ang conscience layer.</p>
+        <p style="margin-top:.8rem;"><strong>Narito mismo ang cheat sheet:</strong></p>
+        <details class="cheat">
+          <summary>Install at unang pagbukas</summary>
+          <div class="cheat-body">Mag-download mula sa official site para sa computer mo (Mac o Windows) at sundin ang kanilang steps. Buksan ito. Kapag tinanong ka tungkol sa AI model o provider, may dalawang ruta ka: ang <strong>Nous subscription</strong> (default — pinakasimple, iisang bill) o <strong>Full Setup → Bring Your Own Keys</strong> (pinakamatipid — maaaring halos libre gamit ang OpenRouter key at spending limit; gagabayan ka ng §1.7 ng <a href="cheat-sheet.html">Pre-Procedure Checklist</a>). Parehong gumagana, at puwede kang magpalit sa susunod. Nagbabago ang menus habang nag-a-update ang Hermes; kapag hindi ka sigurado, ang kanilang <a href="https://hermes-agent.nousresearch.com/docs">official docs</a> ang batayan.</div>
+        </details>
+        <details class="cheat">
+          <summary>Ang una mong usapan</summary>
+          <div class="cheat-body">Mag-type na parang nagte-text ka sa katrabaho. Magsimula rito: <em>“Isa akong nars na nagse-setup ng Nurse AI OS ko. Susunod kong ibibigay ang SOUL file ko — ituring mo itong standing instructions ko.”</em></div>
+        </details>
+        <details class="cheat">
+          <summary>Permissions — bigyan ito ng isang kuwarto, hindi ng buong bahay</summary>
+          <div class="cheat-body">Kapag humingi ang Hermes ng permission para ma-access ang files, payagan ito <strong>sa My-Nurse-AI-OS folder mo lang</strong> — ang folder mula sa Starter Kit — at tanggihan ang mas malawak na access (full disk, Desktop, Downloads, Photos). Isipin ang badge ng float nurse: may access sa assigned unit, hindi sa bawat floor ng ospital. Napasobra ang permission nang hindi sinasadya? Alisin ito sa privacy settings ng computer mo.</div>
+        </details>
+        <details class="cheat">
+          <summary>Smart habit — bagong Gmail para sa AI life mo</summary>
+          <div class="cheat-body">Kung paanong hindi ka nag-o-online banking sa charting station ng unit, gumawa ng libre at hiwalay na Gmail (halimbawa, <em>pangalanmo.ai@gmail.com</em>) na para lang sa AI work, courses, at community mo. Mananatiling pribado ang personal at family email mo — at magandang maipapartner sa system mo kalaunan ang libreng Google Drive at Docs ng bagong account.</div>
+        </details>
+        <details class="cheat">
+          <summary>Ang limang pariralang gumagawa ng halos lahat</summary>
+          <div class="cheat-body">“Patakbuhin ang morning huddle ko.” · “Gawan mo ako ng Kardex entry para sa session na ito.” · “Gawing permanente ang correction na iyon.” · “Bago ka magsimula, interbyuhin mo ako na parang admission assessment.” · “Ipakita muna ang plano mo bago ka gumawa ng kahit ano.” — pinananatili ng huli ang kamay mo sa bawat desisyon.</div>
+        </details>
+        <p style="font-size:.92rem; color:var(--ink-600); margin-top:.6rem;"><em>Nasa Pinto 1 ka? Laktawan nang buo ang step na ito — gawin ang steps 2–5 sa browser AI na ginagamit mo na (ChatGPT o Claude), i-paste sa halip na i-upload. Ginagawa lang itong permanente ng Hermes, at narito ito kapag gusto mo na. <a href="../setup.html">Ang dalawang pinto →</a></em></p>
+      </div>
+
+      <!-- ============ STEP 2 ============ -->
+      <div class="step">
+        <h3>Sagutan ang SOUL Quiz, saka ibigay sa Hermes ang SOUL file mo</h3>
+        <p>Itatanong ng 2-minutong SOUL Quiz ang tungkol sa values mo, boundaries, at kung saang bahagi ng totoong buhay mo kailangan ng tulong — walang maling sagot at walang kailangang ihanda. Ida-download nito ang personal mong <strong>SOUL.md</strong> file. Nasagutan mo na? Hanapin lang ang file mo.</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../soul-quiz.html">Sagutan ang SOUL Quiz →</a>&nbsp; <a class="btn btn-quiet btn-sm" href="../soul-quiz-guide.html">Companion Guide — paano sumagot</a>
+        <p class="prompt-label">Pagkatapos, i-attach o i-paste ang file sa Hermes at sabihin:</p>
+        <div class="prompt-block">Ito ang SOUL file ko. Ituring mo itong standing instructions para sa paraan ng pagsuporta mo sa akin. Kumpirmahin kung ano ang naunawaan mo tungkol sa values at boundaries ko — lalo na ang mga bagay na hindi ko kailanman ide-delegate.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);">Basahin ang summary nito. Itama ang anumang mali — mula ngayon, mananatili ang corrections.</p>
+      </div>
+
+      <!-- ============ STEP 3 ============ -->
+      <div class="step">
+        <h3>I-download ang Starter Kit at ipakita sa Hermes kung nasaan ito</h3>
+        <p>Ang Starter Kit ang folder skeleton ng system mo — tahanan para sa SOUL file, notes, at projects mo. I-unzip ito sa lugar na madali mong mahahanap ulit (perpekto ang Documents).</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../assets/nurse-ai-os-starter-kit.zip">I-download ang Starter Kit (ZIP) →</a>
+        <p class="prompt-label">Pagkatapos, sabihin sa Hermes:</p>
+        <div class="prompt-block">Ang Nurse AI OS folder ko ay nasa [kung saan mo ito in-unzip]. Dito nakatira ang files ko — ang SOUL file ko, notes ko sa Memory folder, projects ko sa Projects folder, at reusable prompts ko sa Skills. Kung wala ang alinman sa tatlong folder na iyon, gawin mo ang mga ito. Panatilihin sa folder na ito ang lahat ng gagawin mo para sa akin.</div>
+      </div>
+
+      <!-- ============ STEP 4 ============ -->
+      <div class="step">
+        <h3>Buuin ang dashboard mo — isang prompt lang — at i-bookmark ito</h3>
+        <p>May kasamang private at browser-only dashboard ang starter kit mo. Sa prompt na ito, awtomatikong ipa-personalize ito ng Hermes mula sa mga sagot mo sa SOUL Quiz — pangalan, priorities, at mga unang goal mo:</p>
+        <div class="prompt-block">Gamit ang SOUL file ko, i-personalize ang Local HTML Life Dashboard sa starter kit ko (08-Integrations/Local-HTML-Life-Dashboard). Ilagay ang pangalan ko, pinakamahahalagang priority sa bawat sphere, at mga unang goal at habit mula sa quiz answers ko. I-save ito bilang My-Dashboard.html sa Nurse AI OS folder ko at sabihin sa akin ang eksaktong lokasyon nito.</div>
+        <p><strong>Buksan ang file na ginawa nito at i-bookmark.</strong> Iyan ang station board mo — lahat ng binubuo mo sa isang tingin, at walang ina-upload kahit saan.</p>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>Sa susunod, kung gusto mo pa ng higit:</em> may Notion version, messaging access, at sovereign/on-premise setup sa <a href="resources.html">advanced topics</a>. Huwag muna ngayon. Sapat na ang bookmark.</p>
+      </div>
+
+      <!-- ============ STEP 5 ============ -->
+      <div class="step">
+        <h3>Patakbuhin ang mga una mong prompt</h3>
+        <p>Tapos na ang setup mo. Ngayon, pakinabangan mo ito — piliin kung alin ang bagay ngayong gabi:</p>
+        <p class="prompt-label">Ang daily rhythm (magsimula bukas ng umaga)</p>
+        <div class="prompt-block">Patakbuhin ang morning huddle ko. Isang tanong lang ang itanong mo: “Ano ang number one priority mo ngayon?” Pagkatapos, magmungkahi ng tatlong tiyak na paraan kung paano ka makakatulong — drafts, research, summaries, planning — hindi kailanman clinical decisions o anumang may patient data. Itanong kung alin ang uunahin.</div>
+        <p class="prompt-label">Para sa students — gawing manageable ang isang lecture</p>
+        <div class="prompt-block">Narito ang lecture notes ko tungkol sa [topic]. Gumawa ng plain-language study map, saka i-quiz ako gamit ang Socratic method — limang tanong, paisa-isa. Huwag ibigay ang sagot hangga't hindi ko ito napag-iisipan.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>Students: kasama na ngayon sa starter kit mo ang buong <strong>Study OS pack</strong> (folder <code>15-Student-Study-OS</code>) — isang Socratic tutor, NGN-style drills, simulated patients na may guided debriefs, at spaced-repetition flashcards, lahat ay may built-in academic-integrity guardrails. Sabihin sa AI mo: “I-load ang skills sa 15-Student-Study-OS.”</em></p>
+        <p class="prompt-label">Para sa staff — alisin ang isang bagay sa pasan mo</p>
+        <div class="prompt-block">Gumawa ng shift-recovery checklist batay sa SOUL file ko — kung ano ang tumutulong sa aking mag-decompress, sunod-sunod, para sa unang oras pag-uwi ko.</div>
+        <p class="prompt-label">Para sa leaders — ang una mong governance move</p>
+        <div class="prompt-block">Tulungan akong i-map ang isang workflow sa unit ko (walang patient data — process lang): anong burden ang maaaring bawasan ng AI, anong harm ang maaari nitong maidulot, at saan kailangang manatili ang tao sa loop.</div>
+        <p style="margin-top:1rem;">Kapag natural na sa iyo ang mga ito, dadalhin ka ng <a href="../personalize.html">anim na workflow</a> hanggang dulo — isa kada linggo, hanggang tunay ka nang makilala ng system. At kapag handa ka nang gumalaw na parang pro — memory, schedules, governance, at buong system — ang <a href="../hermes-masterclass.html">Hermes Masterclass</a> ang libreng deep track.</p>
+      </div>
+    </div>
+
+    <p style="text-align:center; margin-top:2.5rem;">
+      <a class="btn btn-primary" href="../soul-quiz.html">Magsimula ngayon — Hakbang 2 ang SOUL Quiz →</a>
+      <br><span style="font-size:.93rem; color:var(--ink-600);">May tanong habang ginagawa mo ito? Libre ang buwanang <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a>, at totoong tao ang sasagot sa <a href="mailto:great.ai.nurses@gmail.com">email</a>.</span>
+    </p>
+
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>Tapos na sa limang hakbang? Gawin na itong official.</strong> Sumali sa community list — sa isang signup, makukuha mo ang newsletter, invitations sa buwanang Lamp Huddle, at founding-member status sa community home natin kapag nagbukas ito sa lalong madaling panahon. <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">Sumali sa community list →</a>
+    </div>
+
+    <div class="boundary" style="margin-top:1.2rem;">
+      <strong>Saan pupunta pagkatapos ng gabing ito:</strong> ang <a href="../hermes-masterclass.html">Hermes Masterclass</a> — ang libreng deep track. Palalawakin ng sampung module ang setup ngayong gabi tungo sa isang governed at always-on system: memory, connections, scheduled work, operator console, at mas malalim na EDENA governance. Gusto mo ng momentum? Nagsisimula ito sa <a href="../hermes-masterclass.html#fast-track">7-day fast track</a> — isang nakikitang panalo bawat araw.
+    </div>
+
+    <p style="text-align:center; margin-top:1.5rem; font-size:.93rem; color:var(--ink-600);">May nakakalito sa limang hakbang? <a href="mailto:great.ai.nurses@gmail.com?subject=Site%20feedback%20%E2%80%94%20Start%20Here&body=Which%20step%20I%20was%20on%3A%0A%0AWhat%20was%20confusing%20or%20broken%3A%0A%0AWhat%20would%20have%20helped%3A%20">Sabihin sa amin</a> — isasama sa pagbuo ang feedback sa founding year.
+    </p>
+  </div>
+</section>
+
+<!-- ============ VIDEO ============ -->
+<section class="section">
+  <div class="container narrow">
+    <iframe class="video-embed" src="https://www.youtube.com/embed/0MDiFVbgR6U" title="Nurse AI OS — panoorin kung paano magsimula" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</section>
+
+<!-- ============ SAFETY ============ -->
+<section class="section section-alt" id="safety">
+  <div class="container narrow">
+    <p class="eyebrow">Mga tuntuning nagpoprotekta sa lahat</p>
+    <h2>Mga tuntunin sa kaligtasan, sa simpleng salita</h2>
+    <p class="section-intro">Kabisado mo ang rights of medication administration. Mas maikli ang mga ito, at pinoprotektahan nila ang mga pasyente mo, lisensya mo, at ikaw.</p>
+    <div class="steps">
+      <div class="step"><h3>Walang patient data. Kailanman.</h3><p>Walang pangalan, chart, screenshot, room number, record number, petsa, o kuwentong maaaring makakilala sa isang pasyente — sa anumang AI tool, sa anumang level. Kung hindi ka sigurado kung kasama ito: kasama ito. Huwag ilagay.</p></div>
+      <div class="step"><h3>Gumagawa ng draft ang AI. Ikaw ang nagpapasya.</h3><p>Draft ang bawat AI output hanggang masuri ito ng tao. Walang ipapadala, ipa-publish, o gagawan ng aksyon nang wala ang iyong judgment.</p></div>
+      <div class="step"><h3>Hindi puwedeng i-outsource ang lisensya mo.</h3><p>Walang AI dito na sumusuporta sa clinical decisions, assessments, o patient-specific care questions. Dinadala nito ang busywork mo — hindi kailanman ang judgment mo.</p></div>
+      <div class="step"><h3>Sa trabaho mananatili ang employer systems.</h3><p>Walang EHR screens, confidential policies, o identifiable staff o student data. Public, fictional, o personal material lang — maliban kung tahasang inaprubahan ng compliance team ng organization mo ang isang tool at workflow.</p></div>
+      <div class="step"><h3>Kapag may duda, magtanong sa tao.</h3><p>Dalhin ang gray areas sa <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> o mag-email sa <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a>. Mas mabuti ang tanong na maagang naitanong kaysa insidenteng huling nai-report.</p></div>
+    </div>
+    <p style="margin-top:2rem;">May pangalan ang mga tuntuning ito: <strong>EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</strong> — ang governance framework sa bawat layer ng Nurse AI OS. Inuuri muna ang bawat aksyon bago ito tumakbo:
+      <span class="badge" style="background:#e5f3e6; color:#2c6e31;">🟢 Green — maaaring magpatuloy</span>
+      <span class="badge" style="background:#fdf3d7; color:#8a6420;">🟡 Yellow — kailangan muna ang approval mo</span>
+      <span class="badge" style="background:#fbe4e4; color:#a33a3a;">🔴 Red — kailangan ang authorization ng tao</span>
+      Pormal mo itong makikilala sa <a href="../assets/nurse-ai-os-workbook.pdf">workbook</a> — sa ngayon, sapat na ang limang tuntunin sa itaas. Kapag handa ka nang gawing awtomatiko ang <em>pagsunod</em> ng AI mo sa mga ito, i-download ang <a href="../assets/governance-kit.zip">Governance Kit</a> — ang mga tuntunin bilang files na nilo-load ng system mo sa bawat session.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Dalhin ang ilawan. Panatilihin ang talaan. Nagpapayo ang mga agent. Tao ang humahatol. Mga nars ang nangangasiwa.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="../pathways.html">Mga Pathway</a>
+      <a href="resources.html">Mga Resource</a>
+      <a href="about.html">Tungkol Dito</a>
+      <a href="faq.html">FAQ</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Mga Tuntunin</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Makipag-ugnayan</a>
+      <a href="../start-here.html" lang="en" hreflang="en">English</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Libre para sa mga nars at nursing students sa founding year.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

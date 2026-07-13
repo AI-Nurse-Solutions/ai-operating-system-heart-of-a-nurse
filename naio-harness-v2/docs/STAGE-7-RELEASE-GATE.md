@@ -2,7 +2,7 @@
 
 ## Candidate status
 
-Harness 2.0 is a tested, unsigned implementation candidate. It is not a clinical system, HIPAA certification, institutional approval, or production authorization.
+Harness 2.0 is a tested, existing-trust-anchor signed implementation candidate. It is not a clinical system, HIPAA certification, institutional approval, or production authorization.
 
 ## Evidence required
 
@@ -23,13 +23,23 @@ Harness 2.0 is a tested, unsigned implementation candidate. It is not a clinical
 | Founder architecture approval | Approved July 13, 2026 |
 | Nurse Steward Council review | Pending |
 | Institutional CNO/CIO/CTO review | Not claimed |
-| Matching legacy signing key | Not available in this build environment |
-| Trust-anchor rotation | Not authorized and not performed |
+| Matching legacy signing key | Restored at its original protected path; fingerprint verified |
+| Detached release-evidence signature | Required to verify against the existing RSA-SHA256 public key before release |
+| Trust-anchor rotation | Not required and not performed |
 | Default-profile activation | Not performed |
 
 ## Signing rule
 
-Do not overwrite or silently rotate the existing trust anchor. A signed Harness 2.0 release requires an authorized human key ceremony, verification of the public fingerprint, signing of the source-tree hash plus evaluation dataset version and terminal provenance root, and independent verification before distribution.
+Do not overwrite or silently rotate the existing trust anchor. The Harness 2.0 release signs the exact machine-evidence JSON, which binds the source-tree hash, evaluation dataset identity/version/hash, terminal provenance root, test results, clinical/data boundaries, and human-governance status. The signing script refuses changed bytes, unsafe private-key permissions, or a key whose derived public fingerprint differs from the trusted RSA public key. Independent verification is required before distribution.
+
+Verification command from the repository root:
+
+```bash
+openssl dgst -sha256 \
+  -verify naio-os/config/naio-os-release-public.pem \
+  -signature naio-harness-v2/evidence/release-evidence.sig \
+  naio-harness-v2/evidence/release-evidence.json
+```
 
 ## Rollback
 

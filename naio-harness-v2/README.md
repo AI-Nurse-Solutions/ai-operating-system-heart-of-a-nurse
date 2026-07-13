@@ -4,7 +4,7 @@ A privacy-first, no-PHI governance plane for Nurse AI OS running over Hermes Age
 
 ## Status
 
-Implementation candidate. Not clinical decision support, not a HIPAA certification, and not authorized for patient data, EHR data, personnel decisions, payments, or autonomous external actions.
+Existing-trust-anchor signed implementation candidate. Not clinical decision support, not a HIPAA certification, and not authorized for patient data, EHR data, personnel decisions, payments, or autonomous external actions. The detached release-evidence signature preserves the Phase 23 RSA-SHA256 trust anchor; it does not imply Nurse Steward Council or institutional approval.
 
 ## Architecture rule
 

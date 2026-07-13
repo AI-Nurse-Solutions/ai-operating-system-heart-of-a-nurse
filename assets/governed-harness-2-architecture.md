@@ -6,7 +6,7 @@
 
 **Audience:** Chief Nursing Officers, Chief Information Officers, Chief Technology Officers, Chief Medical Information Officers, Chief Information Security Officers, CEOs, nurse informaticists, AI architects, and Nurse Steward Councils
 
-**Status:** Tested, unsigned implementation candidate — not activated in the default Hermes profile
+**Status:** Tested, existing-trust-anchor signed implementation candidate — not activated in the default Hermes profile
 
 > **Architectural statement:** Nurse AI OS is a no-PHI, nurse-governed control plane over the Hermes Agent runtime. Hermes supplies the horizontal agent runtime; EDENA supplies deterministic risk and autonomy semantics; Florence-X supplies bounded orchestration; human approval remains the authority boundary; and tamper-evident evidence makes the system's claims inspectable. The architecture does not authorize patient-specific clinical decisions, EHR access, personnel decisions, payments, credential handling, or unreviewed external action.
 
@@ -81,7 +81,7 @@ Risk never grants authority. Autonomy never lowers risk. Ambiguity raises risk a
 
 ### Candidate verification result
 
-- Unit tests: **44 passed, 0 failed**
+- Unit tests: **46 passed, 0 failed**
 - Synthetic trajectory evaluations: **8 passed, 0 failed**
 - Hermes runtime canary: safe read allowed; unknown tool blocked; synthetic PHI blocked; external side effect escalated for approval
 - Hermes result-transform hook: passed
@@ -123,7 +123,7 @@ The terminal provenance root is recorded in the machine-readable release evidenc
 
 ### Decide
 
-The matching private key for the existing public trust anchor is not available in this build environment. Harness 2.0 is therefore **unsigned**. The trust anchor was not rotated. A signed release requires an authorized human key ceremony and independent fingerprint verification.
+The matching Phase 23 private key was restored at its original protected path. Its derived RSA public fingerprint matched the existing trusted key exactly. Harness 2.0's exact machine-evidence JSON is signed with that existing anchor; no trust-anchor rotation occurred. The signature proves artifact integrity and signer-key continuity. It does not imply clinical readiness, HIPAA certification, Nurse Steward Council approval, or institutional validation.
 
 ## Boundaries
 
@@ -169,7 +169,18 @@ Harness 2.0 is not:
 ## Inspection links
 
 - Machine-readable release evidence: `../naio-harness-v2/evidence/release-evidence.json`
+- Detached RSA-SHA256 signature: `../naio-harness-v2/evidence/release-evidence.sig`
+- Trusted public key: `../naio-os/config/naio-os-release-public.pem`
 - Harness source, tests, schemas, policies, plugin, and documentation: https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse/tree/main/naio-harness-v2
 - Previous professional-guidance architecture report: `../architecture-report.html`
+
+Independent verification from a repository checkout:
+
+```bash
+openssl dgst -sha256 \
+  -verify naio-os/config/naio-os-release-public.pem \
+  -signature naio-harness-v2/evidence/release-evidence.sig \
+  naio-harness-v2/evidence/release-evidence.json
+```
 
 *Agents propose. Humans judge. Nurses steward.*

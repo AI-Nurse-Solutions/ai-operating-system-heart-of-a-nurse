@@ -32,9 +32,9 @@
     <h1>Governed Harness 2.0</h1>
     <p class="lede">How Nurse AI OS places a deterministic, nurse-governed safety plane over Hermes — for CNOs, CIOs, CTOs, CMIOs, CISOs, CEOs, nurse informaticists, and AI architects.</p>
     <div class="status-row" aria-label="Release status">
-      <span class="status pass">44/44 unit tests</span><span class="status pass">8/8 trajectory evaluations</span><span class="status pass">Hermes canary passed</span><span class="status pending">Unsigned candidate</span><span class="status blocked">Not clinical deployment</span>
+      <span class="status pass">46/46 unit tests</span><span class="status pass">8/8 trajectory evaluations</span><span class="status pass">Hermes canary passed</span><span class="status pass">Existing-anchor signed</span><span class="status blocked">Not clinical deployment</span>
     </div>
-    <p><a class="btn btn-primary" href="assets/governed-harness-2-architecture.md">Download the architecture statement</a> <a class="btn btn-secondary" href="naio-harness-v2/evidence/release-evidence.json">Inspect machine evidence</a></p>
+    <p><a class="btn btn-primary" href="assets/governed-harness-2-architecture.md">Download the architecture statement</a> <a class="btn btn-secondary" href="naio-harness-v2/evidence/release-evidence.json">Inspect machine evidence</a> <a class="btn btn-secondary" href="naio-harness-v2/evidence/release-evidence.sig">Download signature</a></p>
   </div>
 </section>
 
@@ -101,7 +101,7 @@
     <h3>Assumed</h3><p>The host operator remains trusted; Hermes native approval behavior remains consistent with the tested version; any institution will add identity, endpoint, network, retention, procurement, labor, legal, privacy, and incident-response controls.</p>
     <h3>Unknown</h3><p>Institutional concurrency, broad adversarial false-positive/false-negative rates, nurse usability burden, council acceptability, and organization-specific regulatory requirements remain to be established.</p>
     <h3>Recommended</h3><p>Use public or synthetic data in a dedicated profile and isolated workspace; expand adversarial evaluations; review redlines with nursing, privacy, security, legal, informatics, and affected workers; reevaluate after any model, tool, manifest, policy, or connector change.</p>
-    <h3>Decide</h3><p>The matching private key for the existing trust anchor is unavailable in this build environment. Harness 2.0 is therefore <strong>unsigned</strong>. The trust anchor was not rotated. Signing requires an authorized human key ceremony and independent fingerprint verification.</p>
+    <h3>Decide</h3><p>The matching Phase 23 private key was restored at its original protected path and its derived public fingerprint matched the trusted RSA key. Harness 2.0's exact release-evidence bytes are signed with the existing anchor; the anchor was not rotated. The detached signature is independently verifiable. This cryptographic integrity proof does not create clinical, regulatory, council, or institutional approval.</p>
     <div class="boundary"><strong>Governance status:</strong> founder architecture approval recorded July 13, 2026 · Nurse Steward Council review pending · institutional validation not claimed · default-profile activation not performed.</div>
   </div>
 </section>

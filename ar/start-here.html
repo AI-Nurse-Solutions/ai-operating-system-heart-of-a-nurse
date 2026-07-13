@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ابدؤوا من هنا — Nurse AI OS</title>
+<meta name="description" content="خمس خطوات لإعداد Nurse AI OS: تثبيت Hermes بالاستعانة بدليل مختصر، وإجراء اختبار SOUL وإضافة ملفه، وتنزيل Starter Kit، وبناء لوحة المعلومات، وتشغيل أولى المطالبات.">
+<link rel="alternate" hreflang="en" href="../start-here.html">
+<link rel="alternate" hreflang="ar" href="start-here.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+body { font-family: "Noto Sans Arabic", "Source Sans 3", sans-serif; }
+.prompt-block {
+  background: #10233a; color: #dbe6ef; border-radius: 10px;
+  padding: 1.1rem 1.3rem; font-family: "Noto Sans Arabic", "SF Mono", "Consolas", monospace;
+  font-size: .88rem; line-height: 1.75; white-space: pre-wrap;
+  border-right: 4px solid var(--gold-500); margin: .8rem 0 1.2rem;
+}
+.prompt-label {
+  font-size: .78rem; font-weight: 800; letter-spacing: 0;
+  color: var(--teal-600); margin: 1rem 0 .2rem;
+}
+details.cheat {
+  background: var(--linen-100); border-radius: 10px; margin-bottom: .6rem; padding: 0;
+  border-right: 4px solid var(--teal-500);
+}
+details.cheat summary {
+  cursor: pointer; font-weight: 700; padding: .8rem 1.1rem; list-style: none; color: var(--navy-900);
+}
+details.cheat summary::-webkit-details-marker { display: none; }
+details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-size: .98rem; }
+</style>
+</head>
+<body class="calm-clinical-page">
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html" class="active">ابدؤوا من هنا</a>
+      <a href="../pathways.html">المسارات</a>
+      <a href="resources.html">الموارد</a>
+      <a href="about.html">من نحن</a>
+      <a href="index.html#founding-year">السنة التأسيسية المجانية</a>
+      <a href="faq.html">الأسئلة الشائعة</a>
+      <a href="../nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="../soul-quiz.html">أجروا اختبار SOUL</a>
+      <a href="../start-here.html" lang="en" dir="ltr">English</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">الإعداد الكامل، من دون إضافات</p>
+    <h1>خمس خطوات. أمسية واحدة. وينتهي الإعداد.</h1>
+    <p class="lede">تضم هذه الصفحة رحلة البدء كاملة: التثبيت، والتخصيص، وبناء لوحة المعلومات، وتشغيل أولى المطالبات. أما بقية محتوى الموقع فهو تعمّق اختياري يمكنكم العودة إليه لاحقًا. إن قرأتم صفحة واحدة فقط، فلتكن هذه الصفحة.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <iframe class="video-embed" style="margin-bottom:2.5rem;" src="https://www.youtube.com/embed/Qm3Kp51F5O8?si=nyXR0r_VIuZBK-ep" title="مرحبًا بكم — نظام يحمل قلب كوادر التمريض" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    <div class="boundary">
+      <strong>كلمة قبل أن تبدأوا — ولا سيما طلاب وطالبات التمريض:</strong> قد يبدو بعض المحتوى أصعب من المألوف في البداية. هذا طبيعي، وليس اختبارًا. لا تحتاجون في كل مرة إلا إلى <em>الخطوة التالية</em>، لا إلى استيعاب الخريطة كلها. تجاوزوا ما يربككم، وعودوا إليه لاحقًا، واحملوا أسئلتكم إلى <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a>؛ فجميع كوادر التمريض هناك بدأوا من النقطة نفسها. وهناك قاعدة واحدة لا تتغير: <strong>لا تُدخلوا بيانات المرضى مطلقًا</strong> — فهذا النظام مخصص لحياتكم وعملكم الشخصي، لا لمرضاكم. <a href="#safety">قواعد السلامة ←</a>
+    </div>
+
+    <!-- ============ STEP 0 · READINESS ============ -->
+    <div class="step" style="border-right:4px solid var(--gold-500); margin-bottom:.4rem;">
+      <h3>الخطوة 0 — فحص الجاهزية قبل الإعداد (دقيقتان)</h3>
+      <p>كما تتحققون من أدواتكم في بداية كل مناوبة، ابدؤوا هنا بفحص سريع؛ فدقيقتان الآن قد توفران ساعة من الإحباط لاحقًا.</p>
+      <p><strong>ستحتاجون إلى حاسوب مكتبي أو محمول</strong> — يعمل بنظام Mac أو Windows، وليس هاتفًا أو جهازًا لوحيًا أو Chromebook. والميزة أن ملفاتكم وذاكرة مساعد الذكاء الاصطناعي تظل <strong>محلية — على جهازكم، لا في خدمة سحابية تابعة لطرف آخر</strong>. وكدليل تقريبي، يفي بالغرض عادةً حاسوب صُنع خلال نحو خمس سنوات، بذاكرة لا تقل عن 8&nbsp;GB وبضعة GB من المساحة الخالية. راجعوا <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">وثائق Hermes الرسمية</a> للاطلاع على المتطلبات الحالية.</p>
+      <p><strong>جهّزوا مساحة العمل الرقمية</strong> — سيقيم نظامكم في مجلد مخصص واحد ينشئه Starter Kit. لا تضعوا داخله أي مواد خاصة، مثل المستندات الضريبية أو الصور العائلية أو ملفات جهة العمل. وإذا كان الحاسوب مشتركًا مع أفراد الأسرة، ففكروا في إنشاء حساب مستخدم منفصل حتى تبقى مساحة النظام محددة ومعزولة.</p>
+      <p style="font-size:.93rem; color:var(--ink-600);">إذا تعذر تثبيت Hermes بسبب مواصفات الحاسوب، <em>فالمشكلة ليست فيكم ولا في خطوة أخطأتم فيها</em>. هناك خيار سحابي قادم عبر مسار VPS كي يتاح تشغيل نظام كامل من أي جهاز.</p>
+    </div>
+
+    <div class="boundary" style="background:var(--gold-100); border-right-color:var(--gold-500); margin-bottom:2rem;">
+      <strong>ليس لديكم حاسوب مناسب بعد؟ ما زال بإمكانكم البدء اليوم.</strong> التحقوا <a href="../ai-mentors.html">بالدورة المجانية في الذكاء الاصطناعي واستفيدوا من 55 مرشدًا مجانيًا للذكاء الاصطناعي</a> (تعمل كلها في أي متصفح)، واحضروا Lamp Huddle الشهرية، و<a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">انضموا إلى قائمة المجتمع</a>، وأجروا <a href="../soul-quiz.html">اختبار SOUL</a> الآن؛ فسيكون ملف SOUL جاهزًا يوم يصبح نظامكم جاهزًا. مشاركتكم وصوتكم مهمان لنا <em>الآن</em>، لا بعد شراء جهاز. سيصل الذكاء الاصطناعي إلى الرعاية الصحية سواء كان التمريض حاضرًا إلى الطاولة أم لا؛ والممرضون والممرضات الذين يستعدون اليوم سيقودون هذا التحول بدلًا من أن يُقادوا به. أنتم امتداد فلورنس نايتنغيل في المستقبل، ومن سيشاركون في تقرير الكيفية التي يولد بها ذكاء الرعاية.
+    </div>
+
+    <div class="boundary" style="margin-bottom:2rem;">
+      <strong>بابان إلى نظام واحد — اختاروا بابكم قبل الخطوة 1.</strong> <strong>الباب 1 (يبدأ منه معظم كوادر التمريض):</strong> تجاوزوا التثبيت تمامًا ونفّذوا الخطوات 2–5 الليلة في أداة الذكاء الاصطناعي التي تستخدمونها في المتصفح، مثل ChatGPT أو Claude؛ الصقوا المحتوى بدلًا من رفع الملف. <strong>الباب 2:</strong> ثبّتوا Hermes في الخطوة 1 للحصول على البنية الكاملة، بما فيها الذاكرة الدائمة والملفات المحلية. كلا البابين آمن، ولن يضيع ما تبنونه إذا انتقلتم بينهما، ويمكنكم تأجيل الباب 2 ما شئتم. <a href="../setup.html">شرح البابين ←</a>
+    </div>
+
+    <div class="steps">
+
+      <!-- ============ STEP 1 ============ -->
+      <div class="step">
+        <h3>للباب 2 فقط — راجعوا وقفة الأمان، ثم ثبّتوا Hermes</h3>
+        <p>Hermes هو محرك الذكاء الاصطناعي المجاني والمفتوح المصدر الذي يعمل عليه Nurse AI OS. ثبّتوه من الموقع الرسمي، وافتحوه، ثم ابدؤوا بتحية بسيطة. يعمل كالمحادثة، ولن تتسببوا في تعطيله بمجرد التجربة.</p>
+        <p>
+          <a class="btn btn-primary btn-sm" href="cheat-sheet.html">وقفة الأمان قبل الإعداد ←</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener">تنزيل Hermes من الموقع الرسمي</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="../assets/hermes-cheat-sheet.pdf">تنزيل الدليل بصيغة PDF</a>
+        </p>
+        <p style="font-size:.93rem; color:var(--ink-600);">وقفة الأمان هي نقطة تحقق قصيرة قبل بدء الإعداد: راجعوا الجهاز، ومساحة العمل، والأذونات، والقاعدة الأساسية. تستغرق دقيقتين وتساعدكم على إبقاء حدود النظام واضحة منذ البداية.</p>
+        <p style="font-size:.93rem; color:var(--ink-600);"><strong>ثم اختاروا دليلكم:</strong> <a href="../assets/hermes-essentials-guide.pdf"><strong>Hermes Essentials Guide</strong></a> إذا كنتم تراقبون التكلفة (وهو مناسب لطلاب وطالبات التمريض ولكوادر التمريض الحريصة على الميزانية، ويمكن تشغيله بتكلفة تكاد تكون معدومة)، أو <a href="../assets/hermes-power-guide.pdf"><strong>The Hermes Power Guide</strong></a> عندما تستعدون للملفات التعريفية والمهام المجدولة والحوكمة على مستوى القيادات. يوضح الدليلان كيف تعمل EDENA، طبقة الضمير، داخل البنية.</p>
+        <p style="margin-top:.8rem;"><strong>الدليل المختصر، هنا مباشرة:</strong></p>
+        <details class="cheat">
+          <summary>التثبيت والتشغيل الأول</summary>
+          <div class="cheat-body">نزّلوا Hermes من الموقع الرسمي بما يناسب حاسوبكم (Mac أو Windows)، واتبعوا الخطوات المنشورة، ثم افتحوه. عندما يطلب اختيار نموذج أو مزود للذكاء الاصطناعي، أمامكم مساران: <strong>اشتراك Nous</strong>، وهو الخيار الافتراضي والأبسط بفاتورة واحدة، أو <strong>Full Setup → Bring Your Own Keys</strong>، وهو الأوفر عادةً وقد تكاد تكلفته تنعدم باستخدام مفتاح OpenRouter وحد للإنفاق. يشرح القسم 1.7 من <a href="cheat-sheet.html">وقفة الأمان قبل الإعداد</a> هذا المسار. كلاهما يعمل، ويمكنكم التغيير لاحقًا. قد تتغير القوائم مع تحديث Hermes؛ وعند الشك، تبقى <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">الوثائق الرسمية</a> هي المرجع المعتمد.</div>
+        </details>
+        <details class="cheat">
+          <summary>محادثتكم الأولى</summary>
+          <div class="cheat-body">اكتبوا كما لو كنتم تراسلون زميلًا أو زميلة. ابدؤوا بهذه العبارة: <em>«أنا من كوادر التمريض وأُعد Nurse AI OS الخاص بي. سأعطيك ملف SOUL بعد قليل؛ تعامل معه بوصفه تعليماتي الدائمة.»</em></div>
+        </details>
+        <details class="cheat">
+          <summary>الأذونات — امنحوه غرفة، لا المنزل كله</summary>
+          <div class="cheat-body">عندما يطلب Hermes إذن الوصول إلى الملفات، امنحوه حق الوصول <strong>إلى مجلد My-Nurse-AI-OS فقط</strong>، أي المجلد الوارد في Starter Kit، وارفضوا أي نطاق أوسع، مثل القرص كاملًا أو سطح المكتب أو التنزيلات أو الصور. المقصود هو وصول محدد إلى مساحة العمل المخصصة، لا إلى كل ما على الجهاز. وإذا منحتموه صلاحية أوسع مصادفةً، فأزيلوها من إعدادات الخصوصية في الحاسوب.</div>
+        </details>
+        <details class="cheat">
+          <summary>عادة ذكية — حساب Gmail جديد لأنشطة الذكاء الاصطناعي</summary>
+          <div class="cheat-body">أنشئوا حساب Gmail مجانيًا ومنفصلًا، مثل <em>yourname.ai@gmail.com</em>، وخصصوه لأعمال الذكاء الاصطناعي والدورات والمجتمع. بهذه الطريقة يبقى بريدكم الشخصي والعائلي خاصًا، ويمكن لاحقًا الاستفادة من Google Drive وGoogle Docs المجانيين المرتبطين بالحساب الجديد إلى جانب نظامكم.</div>
+        </details>
+        <details class="cheat">
+          <summary>العبارات الخمس التي تنجز معظم العمل</summary>
+          <div class="cheat-body">«شغّل اجتماعي الصباحي.» · «أنشئ لي إدخال Kardex لهذه الجلسة.» · «اجعل هذا التصحيح دائمًا.» · «قبل أن تبدأ، اطرح عليّ أسئلة تمهيدية لفهم احتياجي وسياقي.» · «اعرض خطتك قبل أن تنفذ أي شيء.» — تحافظ العبارة الأخيرة على وجود نقطة تحقق تتطلب مراجعة بشرية قبل كل قرار.</div>
+        </details>
+        <p style="font-size:.92rem; color:var(--ink-600); margin-top:.6rem;"><em>اخترتم الباب 1؟ تجاوزوا هذه الخطوة تمامًا ونفّذوا الخطوات 2–5 في أداة الذكاء الاصطناعي التي تستخدمونها في المتصفح، مثل ChatGPT أو Claude، مع لصق المحتوى بدلًا من رفعه. يضيف Hermes الاستمرارية فقط، وسيظل متاحًا متى أردتم. <a href="../setup.html">البابان ←</a></em></p>
+      </div>
+
+      <!-- ============ STEP 2 ============ -->
+      <div class="step">
+        <h3>أجروا اختبار SOUL، ثم أعطوا Hermes ملف SOUL</h3>
+        <p>يستغرق اختبار SOUL دقيقتين، ويسألكم عن قيمكم وحدودكم والجوانب التي تحتاج إلى دعم في حياتكم الواقعية. لا توجد إجابات خاطئة ولا حاجة إلى التحضير. سيُنزل الاختبار ملفكم الشخصي <strong>SOUL.md</strong>. سبق أن أجريتموه؟ ابحثوا عن الملف فحسب.</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../soul-quiz.html">أجروا اختبار SOUL ←</a>&nbsp; <a class="btn btn-quiet btn-sm" href="../soul-quiz-guide.html">الدليل المصاحب — كيف تجيبون</a>
+        <p class="prompt-label">بعد ذلك، أرفقوا الملف في Hermes أو الصقوا محتواه، ثم اكتبوا:</p>
+        <div class="prompt-block">هذا ملف SOUL الخاص بي. تعامل معه بوصفه تعليماتي الدائمة بشأن طريقة دعمي. أكّد ما فهمته عن قيمي وحدودي، ولا سيما الأمور التي لن أفوّضها أبدًا.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);">اقرؤوا الملخص الذي يعيده إليكم، وصححوا أي فهم غير دقيق؛ فمن الآن فصاعدًا ستبقى التصحيحات محفوظة.</p>
+      </div>
+
+      <!-- ============ STEP 3 ============ -->
+      <div class="step">
+        <h3>نزّلوا Starter Kit وأروا Hermes مكان المجلد</h3>
+        <p>Starter Kit هو الهيكل الأساسي لمجلدات نظامكم؛ فهو يوفر مكانًا لملف SOUL والملاحظات والمشروعات. فكوا ضغطه في موقع يسهل العثور عليه لاحقًا، مثل مجلد Documents.</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../assets/nurse-ai-os-starter-kit.zip">تنزيل Starter Kit بصيغة ZIP ←</a>
+        <p class="prompt-label">ثم أخبروا Hermes:</p>
+        <div class="prompt-block">مجلد Nurse AI OS الخاص بي موجود في [المكان الذي فككت فيه الملف المضغوط]. هذا هو موضع ملفاتي: ملف SOUL، وملاحظاتي في مجلد Memory، ومشروعاتي في مجلد Projects، ومطالباتي القابلة لإعادة الاستخدام في مجلد Skills. إذا كان أي من هذه المجلدات الثلاثة غير موجود، فأنشئه. أبقِ كل عمل تنجزه لي داخل هذا المجلد.</div>
+      </div>
+
+      <!-- ============ STEP 4 ============ -->
+      <div class="step">
+        <h3>ابنوا لوحة المعلومات بمطالبة واحدة، ثم احفظوها في المفضلة</h3>
+        <p>يتضمن Starter Kit لوحة معلومات خاصة تعمل في المتصفح فقط. تطلب المطالبة التالية من Hermes تخصيصها تلقائيًا استنادًا إلى إجابات اختبار SOUL، بما يشمل أسماءكم وأولوياتكم وأهدافكم الأولى:</p>
+        <div class="prompt-block">باستخدام ملف SOUL الخاص بي، خصّص Local HTML Life Dashboard الموجودة في Starter Kit (08-Integrations/Local-HTML-Life-Dashboard). أضف اسمي وأهم أولوياتي في كل مجال وأهدافي وعاداتي الأولى استنادًا إلى إجاباتي في الاختبار. احفظها باسم My-Dashboard.html داخل مجلد Nurse AI OS الخاص بي، وأخبرني بموقعها بدقة.</div>
+        <p><strong>افتحوا الملف الناتج واحفظوه في المفضلة.</strong> هذه هي لوحة محطتكم: كل ما تبنونه في نظرة واحدة، من دون رفع أي شيء إلى أي مكان.</p>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>لاحقًا، إن أردتم المزيد:</em> ستجدون نسخة Notion، والوصول عبر المراسلة، وخيارات التشغيل السيادي أو المحلي في <a href="resources.html">الموضوعات المتقدمة</a>. ليس الآن؛ فحفظ الصفحة في المفضلة يكفي.</p>
+      </div>
+
+      <!-- ============ STEP 5 ============ -->
+      <div class="step">
+        <h3>شغّلوا أولى مطالباتكم</h3>
+        <p>اكتمل الإعداد. اختاروا الآن ما يلائم أمسيتكم واجعلوا النظام يثبت فائدته:</p>
+        <p class="prompt-label">الإيقاع اليومي (ابدؤوا صباح الغد)</p>
+        <div class="prompt-block">شغّل اجتماعي الصباحي. اسألني سؤالًا واحدًا: «ما أولويتي الأولى اليوم؟» ثم اقترح ثلاث طرق محددة يمكنك مساعدتي بها، مثل إعداد المسودات أو البحث أو التلخيص أو التخطيط، من دون اتخاذ قرارات سريرية أو استخدام أي بيانات للمرضى. اسألني بأي خيار نبدأ.</div>
+        <p class="prompt-label">لطلاب وطالبات التمريض — محاضرة واحدة بصورة أسهل</p>
+        <div class="prompt-block">هذه ملاحظات محاضرتي عن [الموضوع]. أنشئ لي خريطة دراسية بلغة واضحة، ثم اختبرني بأسلوب سقراطي: خمسة أسئلة، سؤالًا واحدًا في كل مرة. لا تعطِني الإجابة قبل أن أشرح مسار تفكيري.</div>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>طلاب وطالبات التمريض: يتضمن Starter Kit الآن حزمة <strong>Study OS pack</strong> كاملة في المجلد <code>15-Student-Study-OS</code>، وفيها معلّم سقراطي، وتدريبات بأسلوب NGN، وحالات مرضى محاكاة مع استخلاص موجّه للدروس، وبطاقات مراجعة بالتكرار المتباعد، مع ضوابط للنزاهة الأكاديمية مدمجة في جميع الأدوات. قولوا لمساعد الذكاء الاصطناعي: «حمّل المهارات الموجودة في 15-Student-Study-OS.»</em></p>
+        <p class="prompt-label">لكوادر التمريض — خففوا مهمة واحدة عن كاهلكم</p>
+        <div class="prompt-block">أنشئ لي قائمة تحقق للتعافي بعد المناوبة استنادًا إلى ملف SOUL، تتضمن بالترتيب ما يساعدني على استعادة هدوئي خلال الساعة الأولى بعد عودتي إلى المنزل.</div>
+        <p class="prompt-label">للقيادات — خطوتكم الأولى في الحوكمة</p>
+        <div class="prompt-block">ساعدني في رسم سير عمل واحد في وحدتي من دون أي بيانات للمرضى، بل العملية فقط: ما العبء الذي قد يخففه الذكاء الاصطناعي، وما الضرر الذي قد يسببه، وأين يجب أن توجد نقطة تحقق تتطلب مراجعة بشرية.</div>
+        <p style="margin-top:1rem;">عندما تصبح هذه الممارسات طبيعية، تنقلكم <a href="../personalize.html">مسارات العمل الستة</a> إلى المرحلة التالية، مسارًا واحدًا كل أسبوع، إلى أن يعرفكم النظام حقًا. وعندما تستعدون للعمل بمستوى متقدم، بما يشمل الذاكرة والجداول والحوكمة والنظام كاملًا، فستجدون المسار المجاني المتعمق في <a href="../hermes-masterclass.html">Hermes Masterclass</a>.</p>
+      </div>
+
+    </div>
+
+    <p style="text-align:center; margin-top:2.5rem;">
+      <a class="btn btn-primary" href="../soul-quiz.html">ابدؤوا الآن — اختبار SOUL هو الخطوة 2 ←</a>
+      <br><span style="font-size:.93rem; color:var(--ink-600);">لديكم أسئلة في أثناء الطريق؟ <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> الشهرية مجانية، ويرد شخص من الفريق على <a href="mailto:great.ai.nurses@gmail.com">البريد الإلكتروني</a>.</span>
+    </p>
+
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>أنهيتم الخطوات الخمس؟ اجعلوا انضمامكم رسميًا.</strong> انضموا إلى قائمة المجتمع؛ يمنحكم تسجيل واحد النشرة البريدية ودعوات Lamp Huddle الشهرية وصفة العضوية التأسيسية في مساحة مجتمعنا عندما تُفتح قريبًا. <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">الانضمام إلى قائمة المجتمع ←</a>
+    </div>
+
+    <div class="boundary" style="margin-top:1.2rem;">
+      <strong>إلى أين تتجهون بعد هذه الأمسية؟</strong> إلى <a href="../hermes-masterclass.html">Hermes Masterclass</a>، وهو المسار المجاني المتعمق. تحوّل عشر وحدات إعداد هذه الأمسية إلى نظام محكوم يعمل باستمرار، مع الذاكرة والاتصالات والعمل المجدول ووحدة تحكم للمشغّل ودراسة معمقة لحوكمة EDENA. أتريدون الحفاظ على الزخم؟ يبدأ المسار <a href="../hermes-masterclass.html#fast-track">ببرنامج سريع لمدة 7 أيام</a>، مع إنجاز ملموس كل يوم.
+    </div>
+
+    <p style="text-align:center; margin-top:1.5rem; font-size:.93rem; color:var(--ink-600);">هل وجدتم أمرًا مربكًا في الخطوات الخمس؟ <a href="mailto:great.ai.nurses@gmail.com?subject=Site%20feedback%20%E2%80%94%20Start%20Here&body=Which%20step%20I%20was%20on%3A%0A%0AWhat%20was%20confusing%20or%20broken%3A%0A%0AWhat%20would%20have%20helped%3A%20">أخبرونا</a>؛ فملاحظات السنة التأسيسية تدخل في عملية التطوير.
+    </p>
+  </div>
+</section>
+
+<!-- ============ VIDEO ============ -->
+<section class="section">
+  <div class="container narrow">
+    <iframe class="video-embed" src="https://www.youtube.com/embed/0MDiFVbgR6U" title="Nurse AI OS — شاهدوا كيفية البدء" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</section>
+
+<!-- ============ SAFETY ============ -->
+<section class="section section-alt" id="safety">
+  <div class="container narrow">
+    <p class="eyebrow">القواعد التي تحمي الجميع</p>
+    <h2>قواعد السلامة بلغة واضحة</h2>
+    <p class="section-intro">كما تحفظون حقوق إعطاء الدواء، احفظوا هذه القواعد الأقصر؛ فهي تحمي المرضى وترخيصكم المهني وتحميكم.</p>
+    <div class="steps">
+      <div class="step"><h3>لا بيانات للمرضى. مطلقًا.</h3><p>لا أسماء، ولا سجلات أو صور شاشة، ولا أرقام غرف أو ملفات، ولا تواريخ أو قصص قد تكشف هوية مريض أو مريضة، في أي أداة ذكاء اصطناعي وعلى أي مستوى. إذا لم تكونوا متأكدين من أن معلومة ما تُعد من بيانات المرضى أو المعلومات الصحية المحمية (PHI)، فاعتبروها كذلك ولا تدخلوها.</p></div>
+      <div class="step"><h3>الذكاء الاصطناعي يصوغ المسودات. وأنتم تقررون.</h3><p>كل مخرجات الذكاء الاصطناعي مسودة تتطلب المراجعة البشرية. لا يُرسل شيء ولا يُنشر ولا يُعمل به من دون حكمكم ومراجعتكم.</p></div>
+      <div class="step"><h3>لا يمكن تفويض مسؤوليتكم المهنية.</h3><p>لا يدعم أي جزء هنا القرارات السريرية أو التقييمات أو أسئلة الرعاية الخاصة بمريض بعينه. يتولى النظام الأعمال المساندة، ولا يحل مطلقًا محل حكمكم المهني.</p></div>
+      <div class="step"><h3>أنظمة جهة العمل تبقى في مكان العمل.</h3><p>لا شاشات من السجل الصحي الإلكتروني، ولا سياسات سرية، ولا بيانات تتيح التعرف على موظفين أو طلاب. استخدموا مواد عامة أو خيالية أو شخصية فقط، ما لم يوافق فريق الامتثال في مؤسستكم صراحةً على أداة وسير عمل محددين.</p></div>
+      <div class="step"><h3>عند الشك، اسألوا إنسانًا.</h3><p>اعرضوا المسائل غير الواضحة في <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> أو راسلوا <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a>. سؤال مبكر خير من حادثة يُبلّغ عنها بعد فوات الأوان.</p></div>
+    </div>
+    <p style="margin-top:2rem;">لهذه القواعد اسم: <strong><bdi dir="ltr">EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</bdi></strong>، وهو إطار الحوكمة المدمج في كل طبقة من Nurse AI OS. يُصنَّف كل عمل قبل تشغيله:
+      <span class="badge" style="background:#e5f3e6; color:#2c6e31;">🟢 أخضر — يمكن المتابعة</span>
+      <span class="badge" style="background:#fdf3d7; color:#8a6420;">🟡 أصفر — توافقون أولًا</span>
+      <span class="badge" style="background:#fbe4e4; color:#a33a3a;">🔴 أحمر — التفويض البشري إلزامي</span>
+      ستتعرفون إليه رسميًا في <a href="../assets/nurse-ai-os-workbook.pdf">كتيّب العمل</a>. أما الآن فتكفيكم القواعد الخمس أعلاه. وعندما تستعدون لجعل الذكاء الاصطناعي <em>يلتزم</em> بها تلقائيًا، نزّلوا <a href="../assets/governance-kit.zip">Governance Kit</a>، حيث تتوفر القواعد على هيئة ملفات يحمّلها نظامكم في كل جلسة.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">الوكلاء يقترحون. البشر يقررون. كوادر التمريض تتولى الإشراف المسؤول.</p>
+    <div class="footer-links">
+      <a href="index.html">الرئيسية</a>
+      <a href="../pathways.html">المسارات</a>
+      <a href="resources.html">الموارد</a>
+      <a href="about.html">من نحن</a>
+      <a href="faq.html">الأسئلة الشائعة</a>
+      <a href="../privacy.html">الخصوصية</a>
+      <a href="../terms.html">الشروط</a>
+      <a href="mailto:great.ai.nurses@gmail.com">تواصلوا معنا</a>
+    </div>
+    <p>© 2026 Nurse AI OS · مجاني للممرضين والممرضات وطلاب وطالبات التمريض خلال السنة التأسيسية.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

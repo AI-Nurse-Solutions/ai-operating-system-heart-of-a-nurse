@@ -151,6 +151,49 @@ a:hover { color: var(--navy-800); }
 }
 .nav-cta:hover { background: var(--gold-300); }
 
+/* ---------- Secondary language navigation ---------- */
+.language-nav {
+  direction: ltr;
+  background: rgba(250, 247, 241, .97);
+  border-bottom: 1px solid rgba(14, 31, 51, .12);
+  box-shadow: 0 2px 8px rgba(14, 31, 51, .06);
+}
+.language-nav-inner {
+  max-width: 1160px; margin: 0 auto; padding: .58rem 1.25rem;
+  display: flex; align-items: center; justify-content: center; gap: .55rem;
+  overflow-x: auto; scrollbar-width: thin;
+}
+.language-nav-label {
+  color: var(--ink-600); font-size: .78rem; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+  margin-right: .2rem;
+}
+.language-chip {
+  color: var(--white) !important; text-decoration: none;
+  border-radius: 999px; padding: .35rem .78rem;
+  font-size: .83rem; font-weight: 800; line-height: 1.2; white-space: nowrap;
+  border: 2px solid transparent; box-shadow: 0 1px 2px rgba(14, 31, 51, .12);
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.language-chip:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.language-chip:focus-visible { outline: 3px solid var(--gold-500); outline-offset: 2px; }
+.language-chip.is-active {
+  border-color: var(--white); box-shadow: 0 0 0 3px var(--gold-500), 0 2px 5px rgba(14, 31, 51, .18);
+}
+.language-en { background: #315b7d; }
+.language-es { background: #a44759; }
+.language-tl { background: #0f766e; }
+.language-zh { background: #a65b18; }
+.language-ar { background: #6f3f63; }
+
+html[lang="ar"] body {
+  font-family: "Noto Sans Arabic", var(--font-body);
+}
+html[lang="ar"] .offer-table th,
+html[lang="ar"] .offer-table td { text-align: right; }
+html[lang="ar"] .offer-table td:last-child { text-align: left; }
+html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
+
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-block; text-decoration: none; font-weight: 700;
@@ -338,6 +381,9 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
 @media (max-width: 620px) {
   .cols-2, .cols-3, .cols-4, .resource-list { grid-template-columns: 1fr; }
   .nav-links { gap: .75rem; font-size: .9rem; }
+  .language-nav-inner { justify-content: center; overflow-x: visible; padding: .55rem .35rem; gap: .25rem; }
+  .language-nav-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  .language-chip { flex: 1 1 0; min-width: 0; padding: .4rem .28rem; font-size: .72rem; text-align: center; }
   .section { padding: 2.6rem 0; }
   body.clinical-sketch-page {
     background-size: auto, 620px auto;

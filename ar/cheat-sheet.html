@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>قائمة التحقق قبل الإعداد ودليل Hermes المختصر — Nurse AI OS</title>
+<meta name="description" content="قائمة تحقق آمنة قبل إعداد Nurse AI OS: افحصوا أجهزتكم، وجهّزوا مساحة العمل، وثبّتوا Hermes بالأذونات المناسبة، وحافظوا على بيانات المرضى والمراجعة البشرية والحوكمة.">
+<link rel="alternate" hreflang="en" href="../cheat-sheet.html">
+<link rel="alternate" hreflang="ar" href="cheat-sheet.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+body{font-family:"Noto Sans Arabic","Source Sans 3",sans-serif;text-align:right;}
+.checkitem{display:flex;gap:.8rem;align-items:flex-start;background:var(--white);border:1px solid var(--linen-100);border-radius:10px;padding:.9rem 1.1rem;margin:.6rem 0;box-shadow:var(--shadow-sm);}
+.checkitem input[type=checkbox]{margin-top:.3rem;width:1.15rem;height:1.15rem;accent-color:var(--teal-600);flex:none;cursor:pointer;}
+.checkitem label{cursor:pointer;}
+.checkitem strong{color:var(--navy-800);}
+.checkitem .why{display:block;color:var(--ink-600);font-size:.93rem;margin-top:.15rem;}
+.prompt-block{background:#10233a;color:#dbe6ef;border-radius:10px;padding:1.1rem 1.3rem;font-family:"Noto Sans Arabic","SF Mono","Consolas",monospace;font-size:.88rem;line-height:1.7;white-space:pre-wrap;border-left:0;border-right:4px solid var(--gold-500);margin:.8rem 0 1.2rem;}
+.phrase-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin:1rem 0 1.5rem;}
+.phrase-table th{background:var(--navy-900);color:var(--gold-300);font-family:"Noto Sans Arabic",sans-serif;text-align:right;padding:.6rem .9rem;}
+.phrase-table td{padding:.55rem .9rem;border-top:1px solid var(--linen-100);font-size:.95rem;vertical-align:top;}
+.phrase-table td:first-child{font-weight:700;color:var(--teal-600);width:44%;}
+[dir="ltr"],bdi,code,kbd,samp{unicode-bidi:isolate;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">ابدؤوا هنا</a>
+      <a href="../pathways.html">المسارات</a>
+      <a href="resources.html">الموارد</a>
+      <a href="about.html">من نحن</a>
+      <a href="index.html#founding-year">سنة التأسيس المجانية</a>
+      <a href="faq.html">الأسئلة الشائعة</a>
+      <a href="../nurse-station.html">محطة التمريض</a>
+      <a class="nav-cta" href="../soul-quiz.html">ابدؤوا اختبار SOUL</a>
+      <a href="../cheat-sheet.html" lang="en" dir="ltr" hreflang="en">English</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">خطوة الإعداد 1 · اقرأوا قبل التثبيت</p>
+    <h1>قائمة التحقق قبل الإعداد</h1>
+    <p class="lede">قبل بدء أي عمل مهم، يتوقف فريق التمريض لحظة ليتأكد من صحة السياق والأدوات والحدود. امنحوا إعداد الذكاء الاصطناعي العناية نفسها: ثمانية فحوص قصيرة قبل التثبيت، ثم اتبعوا دليل الإعداد. دقيقتان الآن قد توفران ساعة من الإرباك لاحقًا.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="../assets/hermes-cheat-sheet.pdf">نزّلوا قائمة التحقق ودليل Hermes المختصر (PDF) ←</a>
+      <a class="btn btn-secondary" href="start-here.html">عودوا إلى الخطوات الخمس</a>
+    </div>
+    <p class="hero-note">اطبعوها وثبّتوها قرب أجهزتكم، ثم ضعوا علامة في كل مربع. تعمل المربعات في هذه الصفحة لكم وحدكم؛ لا يُحفظ شيء ولا يُرسل.</p>
+  </div>
+</section>
+
+<!-- ============ THE TIME-OUT ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">قبل أن تبدؤوا</p>
+    <h2>وقفة أمان — تحقّقوا قبل العمل</h2>
+    <p style="color:var(--ink-600);"><strong>وقفة الأمان تعني التمهّل، لا القلق.</strong> إنها عادة تمريضية نافعة: افحصوا الجهاز والمجلد والأذونات والحدود قبل بدء العمل. إذا لم يكن أحد البنود جاهزًا، فهذا لا يعني أنكم أخفقتم؛ بل يعني أنكم عرفتم الخطوة الآمنة التالية.</p>
+
+    <div class="checkitem"><input type="checkbox" id="c1"><label for="c1"><strong>الجهاز المناسب: حاسوب مكتبي أو محمول يعمل بنظام Mac أو Windows.</strong><span class="why">لا هاتف ولا جهاز لوحي ولا Chromebook. عند استخدام حاسوبكم الشخصي، يمكن أن تبقى ملفاتكم وذاكرة مساعدكم محليًا على الجهاز بدل وضعها تلقائيًا في خدمة سحابية. هذه هي نقطة البداية لامتلاك نظامكم والتحكم فيه.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c2"><label for="c2"><strong>تحقّقتم من المواصفات.</strong><span class="why">كقاعدة تقريبية، يعمل عادةً حاسوب صُنّع خلال السنوات الخمس الماضية، بذاكرة لا تقل عن <bdi dir="ltr">8 GB</bdi> وبضعة غيغابايتات من المساحة المتاحة. راجعوا دائمًا <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">وثائق Hermes الرسمية</a> لمعرفة المتطلبات الحالية. إذا تعذّر التثبيت بسبب المواصفات، فالمشكلة في توافق الجهاز وليست خطأ منكم. يتوفر مسار VPS اختياري للمتقدمين؛ وراجعوا قسم «في أثناء الانتظار» أدناه.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c3"><label for="c3"><strong>جهّزتم مساحة العمل: مجلد واحد مخصص لا يحتوي على مواد خاصة.</strong><span class="why">اجعلوا لنظامكم مساحة واضحة ومنظمة. ضَعوا مجلد <bdi dir="ltr">My-Nurse-AI-OS</bdi> الذي تنشئه حزمة البداية في مكان يسهل العثور عليه، مثل مجلد المستندات. لا تضعوا داخله إقرارات ضريبية أو صورًا عائلية أو ملفات عمل سرية؛ ضعوا فقط ما تقبلون أن يقرأه مساعدكم.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c4"><label for="c4"><strong>إذا كان الحاسوب مشتركًا مع الأسرة، أنشأتم حساب مستخدم منفصلًا.</strong><span class="why">يوفر الحساب المنفصل مساحة خاصة لعملكم مع الذكاء الاصطناعي، بدل خلطه بملفات الآخرين وإعداداتهم.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c5"><label for="c5"><strong>اعتمدتم عادة ذكية: حساب Gmail مستقل لأنشطة الذكاء الاصطناعي.</strong><span class="why">يساعد حساب مجاني منفصل، مثل <bdi dir="ltr">yourname.ai@gmail.com</bdi>، على إبقاء بريدكم الشخصي والعائلي بعيدًا عن أدوات العمل. ويمكنكم لاحقًا استخدام Google Drive وGoogle Docs المرتبطين به ضمن حدود الخصوصية التي تختارونها.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c6"><label for="c6"><strong>حفظتم القاعدة الأهم: لا تدخلوا بيانات المرضى أبدًا.</strong><span class="why">لا أسماء ولا سجلات ولا لقطات شاشة ولا أرقام غرف ولا قصص قد تكشف هوية مريض. لا تدخلوا المعلومات الصحية المحمية (PHI). هذا النظام لخدمتكم أنتم، وليس لمعالجة حالات المرضى أو اتخاذ القرارات السريرية.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c7"><label for="c7"><strong>حسمتم خيار Docker: ليس مطلوبًا للمبتدئين، وقد يفيد لاحقًا في تشغيل الخدمات.</strong><span class="why">إذا كان النظام لاستخدامكم الشخصي، فلا حاجة إلى وضع Hermes أو Obsidian أو المتصفح أو المستندات العادية داخل Docker. استخدموه لاحقًا عند الحاجة إلى خدمات خلفية قابلة لإعادة البناء، مثل قواعد البيانات ومخازن المتجهات وواجهات API المحلية وn8n وتطبيقات الويب التجريبية. القاعدة العملية: إذا كان يعمل كخدمة فقد يساعد Docker؛ أما أدوات سطح المكتب التي يستخدمها البشر مباشرة فلا تحتاج إلى هذا التعقيد.</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c8"><label for="c8"><strong>حسمتم خيار VPS: مسار متقدم اختياري، وليس نقطة البداية.</strong><span class="why">VPS هو حاسوب سحابي مستأجر يمكنه إبقاء Hermes قيد التشغيل بعد إغلاق حاسوبكم. قد يفيد للبوابات والمهام المجدولة وخطافات الويب ولوحات المعلومات والخدمات المجتمعية التي لا تستخدم PHI. لكن ملفاته ليست محلية فقط؛ فالخصوصية تعتمد على تأمين الخادم والنسخ الاحتياطي والتحديثات وثقتكم بالمزوّد والحوكمة. ابدؤوا محليًا باستخدام Hermes Desktop، وانتقلوا لاحقًا إلى VPS لخدمات دائمة التشغيل لا تستخدم PHI؛ ولا تضعوا عليه بيانات المرضى أو ملفات الأسرة الخاصة أو وثائق جهة العمل السرية.</span></label></div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>هل وضعتم علامة في المربعات كلها؟ اكتملت الاستعدادات.</strong> إذا بقي بند، عالجوا ما تستطيعون بهدوء. وحتى من دون حاسوب يستوفي المتطلبات، يمكنكم اليوم استخدام <a href="../ai-mentors.html">الدورة المجانية ومرشدي الذكاء الاصطناعي البالغ عددهم 55</a>، وإكمال <a href="../soul-quiz.html">اختبار SOUL</a>، والانضمام إلى Lamp Huddle الشهرية والمجتمع.
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PROCEDURE ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">هل أنتم مستعدون؟ تابعوا.</p>
+    <h2>دليل الإعداد — التثبيت والتهيئة</h2>
+    <p style="color:var(--ink-600);">قد تتغير القوائم مع تحديث Hermes. إذا اختلف ما ترونه، فارجعوا إلى <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">الوثائق الرسمية</a>؛ فهي المرجع الأحدث.</p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>ثبّتوا Hermes من المصدر الرسمي</h3>
+        <p>ابدؤوا بالموقع الرسمي: <a href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener"><bdi dir="ltr">hermes-agent.nousresearch.com</bdi></a>. نزّلوا النسخة المناسبة لحاسوبكم واتبعوا تعليماته، ثم افتحوا التطبيق. عندما يطلب الإعداد اختيار نموذج أو مزوّد للذكاء الاصطناعي، اقرأوا الخطوة التالية أولًا؛ فهناك خيارات مجانية ومنخفضة التكلفة.</p>
+      </div>
+      <div class="step">
+        <h3>الأذونات — امنحوه غرفة لا المنزل كله</h3>
+        <p>عندما يطلب Hermes الوصول إلى الملفات، <strong>امنحوه الوصول إلى مجلد <bdi dir="ltr">My-Nurse-AI-OS</bdi> فقط</strong>. ارفضوا الوصول الأوسع إلى القرص كاملًا أو سطح المكتب أو التنزيلات أو الصور. المبدأ هو أقل قدر لازم من الصلاحيات. وإذا منحتم إذنًا أوسع بالخطأ، فأزيلوه من إعدادات الخصوصية في الحاسوب.</p>
+      </div>
+      <div class="step">
+        <h3>اختاروا مصدر تشغيل الذكاء الاصطناعي — توجد مسارات مجانية ومنخفضة التكلفة</h3>
+        <p><strong>Hermes مجاني ومفتوح المصدر.</strong> تأتي أي تكلفة من النموذج الذي يشغّله، وتُحسب عادةً وفق مقدار الاستخدام. لديكم مساران:</p>
+        <p><strong>المسار أ — اشتراك Nous.</strong> وهو الأبسط: اشتراك واحد تتولى الخدمة من خلاله بقية الإعداد. اختاروه أثناء التهيئة وتجاوزوا بقية هذه الخطوة.</p>
+        <p><strong>المسار ب — استخدام مفاتيحكم الخاصة.</strong> غالبًا ما يكون أوفر، وقد يتيح تشغيل Hermes بتكلفة محدودة جدًا. في إعداد Hermes اختاروا <bdi dir="ltr"><strong>Full Setup</strong></bdi> بدل خيار الاشتراك الافتراضي، ثم <bdi dir="ltr"><strong>Bring Your Own Keys</strong></bdi>. نوصي بخدمة <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a>: حساب واحد ومفتاح API واحد يتيحان الوصول إلى نماذج كثيرة، ومنها خيارات مجانية ومنخفضة التكلفة. ثم:</p>
+        <ol style="margin:.4rem 1.2rem 1rem 0; line-height:1.7;">
+          <li>أنشئوا حسابًا في <a href="https://openrouter.ai" target="_blank" rel="noopener"><bdi dir="ltr">openrouter.ai</bdi></a>، وأنشئوا مفتاح API من لوحة التحكم.</li>
+          <li><strong>ضعوا حدًا للإنفاق في OpenRouter أولًا</strong>؛ فهذا حاجز أمان يمنع الفواتير المفاجئة. ابدؤوا ببضعة دولارات، ويمكنكم رفع الحد لاحقًا.</li>
+          <li>اختاروا OpenRouter مزوّدًا داخل إعداد Hermes، ثم الصقوا المفتاح.</li>
+          <li>ابدؤوا بنموذج مجاني أو منخفض التكلفة، واطلبوا مهمة بسيطة للتأكد من عمله. إذا لم تكن النتيجة كافية، انتقلوا إلى نموذج أقوى. تعتمد التكلفة على الرموز التي تستخدمونها.</li>
+        </ol>
+        <p style="font-size:.93rem;color:var(--ink-600);"><strong>تنبيه:</strong> اشتراك ChatGPT Plus أو Grok لا يتضمن عادةً استخدام API؛ إذ تُحاسب واجهة API بصورة منفصلة. الخيار الأكثر قابلية للتحكم هو مفتاح OpenRouter مخصص مع حد إنفاق تضبطونه بأنفسكم.</p>
+      </div>
+      <div class="step">
+        <h3>ابدؤوا محادثتكم الأولى</h3>
+        <p>يعمل Hermes كمحادثة: اكتبوا ثم اضغطوا زر الإدخال. لن تُفسدوا النظام بمجرد المحادثة.</p>
+        <div class="prompt-block">أنا من كوادر التمريض وأُعدّ نظام Nurse AI OS الخاص بي. سأعطيك بعد قليل ملف SOUL الخاص بي؛ عامله بوصفه تعليماتي الدائمة.</div>
+      </div>
+      <div class="step">
+        <h3>أعطوا Hermes ملف SOUL</h3>
+        <p>نزّلوا الملف من <a href="../soul-quiz.html">اختبار SOUL</a> باسم <bdi dir="ltr">Core-SOUL.md</bdi> أو ضمن الحزمة الكاملة. أرفقوه أو اسحبوه أو الصقوا محتواه، ثم اكتبوا:</p>
+        <div class="prompt-block">هذا ملف SOUL الخاص بي. عامله بوصفه تعليماتي الدائمة بشأن طريقة دعمك لي. أكّد ما فهمته عن قيمي وحدودي.</div>
+        <p style="font-size:.93rem;color:var(--ink-600);">اقرؤوا الملخص الذي يعيده إليكم، وصحّحوا أي خطأ كي تصبح التصحيحات قواعد مستمرة.</p>
+      </div>
+      <div class="step">
+        <h3>أعطوا Hermes حزمة البداية</h3>
+        <p>فكّوا ضغط <a href="../assets/nurse-ai-os-starter-kit.zip">حزمة البداية</a> في مكان يسهل الرجوع إليه، مثل مجلد المستندات، ثم اكتبوا:</p>
+        <div class="prompt-block">مجلد Nurse AI OS الخاص بي موجود في [الموقع]. هنا توجد ملفاتي: ملف SOUL، وملاحظاتي (Memory)، ومشاريعي (Projects)، والمطالبات القابلة لإعادة الاستخدام (Skills). إذا كان أي من هذه المجلدات غير موجود، فأنشئه. احتفظ بكل عملك من أجلي داخل هذا المجلد.</div>
+      </div>
+      <div class="step">
+        <h3>أنشئوا لوحة معلوماتكم واحفظوها في المفضلة</h3>
+        <div class="prompt-block">استخدم ملف SOUL الخاص بي لتخصيص لوحة معلومات الحياة المحلية بصيغة HTML الموجودة في حزمة البداية (08-Integrations/Local-HTML-Life-Dashboard). أضف اسمي وأهم أولوياتي في كل مجال وأهدافي وعاداتي الأولى استنادًا إلى إجاباتي في الاختبار. احفظها باسم My-Dashboard.html داخل مجلد Nurse AI OS، ثم أخبرني بموقعها بدقة.</div>
+        <p>افتحوا الملف الناتج في المتصفح و<strong>احفظوه في المفضلة</strong>؛ فهذه لوحة متابعتكم.</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="background:var(--teal-100); border-left-color:var(--teal-600);">
+      <strong>لماذا يفوق ملف SOUL وحزمة البداية غيرهما أهمية؟</strong> يحتاج الذكاء الاصطناعي القوي إلى ضوابط واضحة. يمنحه ملف SOUL قيمكم وحدودكم والخطوط التي لا يجوز تجاوزها، وتمنحه حزمة البداية مكانًا وبنية منظمين. معًا يضيفان إلى النظام منظور كوادر التمريض، ويُبقيانكم أصحاب القرار. لا يؤدي تجاوزهما إلى تسريع آمن؛ بل يقلل قدرتكم على التوجيه والمراجعة البشرية.
+    </div>
+    <div class="boundary" style="margin-top:1rem;">
+      <strong>تعمّقوا باستخدام دليلي الإعداد:</strong> <a href="../assets/hermes-essentials-guide.pdf"><strong>دليل Hermes الأساسي</strong></a> لطلبة التمريض وكوادر التمريض الحريصة على الميزانية، و<a href="../assets/hermes-power-guide.pdf"><strong>دليل Hermes المتقدم</strong></a> للمستخدمين المتقدمين والقيادات، بما يشمل الملفات الشخصية والمهام المجدولة وتوجيه النماذج. يوضح الدليلان كيف تعمل <bdi dir="ltr">EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</bdi>، أي إطار التصميم الأخلاقي والتمكين لتعزيز التمريض، بوصفها طبقة الضمير والحوكمة في البنية.
+    </div>
+  </div>
+</section>
+
+<!-- ============ POST-PROCEDURE CARE ============ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">بعد الإعداد</p>
+    <h2>استخدموا النظام حتى يصبح روتينًا مألوفًا</h2>
+    <p class="section-intro">لا تحتاجون إلى حفظ كل ميزة. تعلّموا الروتين مرة، ثم كرروه حتى يصبح طبيعيًا. إليكم سبع عادات:</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>1 · صنّفوا المهمة ثم اختاروا النموذج</h3>
+        <p>استخدموا <strong>نموذجًا مجانيًا أو منخفض التكلفة</strong> للأسئلة السريعة والتلخيص وإعادة الصياغة وتوليد الأفكار. واستخدموا <strong>نموذجًا أقوى في الاستدلال</strong> للتخطيط متعدد الخطوات والمستندات الطويلة والبرمجة واستكشاف المشكلات المعقدة. وإذا احتجتم إلى تحليل لقطة شاشة أو مخطط، فاختاروا <strong>نموذجًا يدعم الرؤية</strong>. ابدؤوا بالخيار الأقل تكلفة، ثم انتقلوا إلى الأقوى عندما تتطلب المهمة ذلك.</p>
+      </div>
+      <div class="card">
+        <h3>2 · جلسة واحدة لكل موضوع</h3>
+        <p>لا تخلطوا الميزانية والمشروع الجانبي وخطة CCRN في محادثة واحدة؛ فقد تختلط التفاصيل وتصبح الإجابات أقل دقة. تنتج الجلسة المركّزة عملًا أوضح. <strong>موضوع جديد، جلسة جديدة.</strong></p>
+      </div>
+      <div class="card">
+        <h3>3 · استخدموا المشاريع للعمل المستمر والجلسات للمحادثات المنفردة</h3>
+        <p>الجلسة محادثة واحدة. أما العمل المستمر، مثل دورة تبنونها أو خطة عمل أو مشروع عائلي، فضعوه في <strong>Project</strong>: مساحة تجمع الملفات والأهداف والمحادثات حتى لا تبدأوا من الصفر كل مرة.</p>
+      </div>
+      <div class="card">
+        <h3>4 · اطلبوا منظورًا متخصصًا</h3>
+        <p>حدّدوا الدور المطلوب من Hermes، وسيتغير عمق الإجابة وأسلوبها: <em>«تصرّف كمدرّس يستخدم لغة بسيطة، واشرح هذا الخطأ خطوة بخطوة.»</em> · <em>«تصرّف كمستشار للمشروعات الناشئة، وراجع خطتي بحثًا عن المخاطر والخطوات التالية.»</em></p>
+      </div>
+      <div class="card">
+        <h3>5 · عند التردد، اسألوا المساعد نفسه</h3>
+        <p>لا تحتاجون إلى صياغة مطالبة مثالية. قولوا: <em>«ما أفضل خطوة تالية؟»</em> · <em>«اسألني ما تحتاج إليه قبل أن نتابع.»</em> · <em>«قسّم هذا إلى خطوات بسيطة.»</em> · <em>«أي نموذج يناسب هذه المهمة؟»</em></p>
+      </div>
+      <div class="card">
+        <h3>6 · استخدموا لقطات الشاشة لاستكشاف المشكلات</h3>
+        <p>بدل وصف المشكلة طويلًا، شاركوا لقطة شاشة مع توضيح ما كنتم تحاولون فعله، وما حدث بدلًا منه، ونص الخطأ الدقيق، وما جرّبتموه بالفعل. <strong>لا تُظهروا مفاتيح API أو كلمات المرور في لقطة الشاشة</strong>؛ قصّوها أو اخفوها أولًا، وتأكدوا من خلو الصورة من بيانات المرضى.</p>
+      </div>
+      <div class="card gold">
+        <h3>7 · أديروا الإنفاق بمسؤولية</h3>
+        <p>راقبوا الاستخدام: فعّلوا حدود الإنفاق، وأنجزوا المسودات بنماذج منخفضة التكلفة، واحتفظوا بالنماذج الأقوى للاستدلال النهائي، ولا ترفعوا ملفات كبيرة إلا عندما تحتاج إليها المهمة فعلًا.</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>الروتين اليومي — كرروه حتى يصبح مألوفًا:</strong> النموذج المناسب للمهمة · جلسة جديدة للموضوع الجديد · مشروع للعمل المستمر · دور واضح للمخرجات المتخصصة · اسألوا عند التردد · اعرضوا لقطة شاشة آمنة عند التعثر · انتقلوا إلى نموذج أقوى عند الحاجة فقط.
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIVE PHRASES ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">عبارات للاستخدام اليومي</p>
+    <h2>خمس عبارات تنجز معظم العمل</h2>
+    <table class="phrase-table">
+      <thead><tr><th>ما تقولونه</th><th>ما يفعله Hermes</th></tr></thead>
+      <tbody>
+        <tr><td>«ابدأ اجتماعي الصباحي المختصر.»</td><td>يسألكم عن الأولوية الأولى ويقترح ثلاث طرق للمساعدة</td></tr>
+        <tr><td>«أنشئ ملاحظة Kardex لهذه الجلسة.»</td><td>يكتب ملاحظة تسليم من خمسة أسطر لحفظها في مجلد Memory</td></tr>
+        <tr><td>«اجعل هذا التصحيح دائمًا.»</td><td>يحوّل ملاحظاتكم إلى قاعدة مستمرة</td></tr>
+        <tr><td>«قبل أن تبدأ، اطرح عليّ أسئلة تمهيدية لفهم احتياجي.»</td><td>يطرح الأسئلة قبل المهام الكبيرة بدل التخمين</td></tr>
+        <tr><td>«أرني خطتك قبل أن تنفّذ أي شيء.»</td><td>ينشئ نقطة تحقق تتطلب مراجعة بشرية، فتظل القرارات بأيديكم</td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:2rem;">في أثناء الانتظار — ألا يتوفر لديكم حاسوب مناسب بعد؟ ما زال الباب مفتوحًا.</h2>
+    <p>إذا لم يتمكن حاسوبكم الحالي من تشغيل Hermes، فلم تفقدوا سوى خطوة التثبيت. تعمل <a href="../ai-mentors.html">دورة الذكاء الاصطناعي المجانية والمرشدون المجانيون البالغ عددهم 55</a> في أي متصفح، كما أن Lamp Huddle الشهرية والمجتمع متاحان لكم، وسيجهّز <a href="../soul-quiz.html">اختبار SOUL</a> ملفكم لليوم الذي يصبح فيه نظامكم جاهزًا.</p>
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500);">
+      <strong>ونقولها بوضوح:</strong> مشاركتكم وصوتكم مهمان الآن، لا بعد شراء جهاز جديد. سيصل الذكاء الاصطناعي إلى الرعاية الصحية سواء شاركت كوادر التمريض في تشكيله أم لا. ومن يستعدون اليوم من كوادر التمريض يستطيعون قيادة هذا التغيير بدل أن يُقادوا به. <strong>أنتم امتداد لإرث فلورنس نايتنغيل، وستسهمون في تقرير الكيفية التي يتشكل بها ذكاء الرعاية.</strong>
+    </div>
+
+    <p style="margin-top:2rem;"><strong>إذا شعرتم بالضياع:</strong> فهذا طبيعي. لا تحتاجون إلى الخريطة كلها، بل إلى الخطوة التالية فقط. تجاوزوا مؤقتًا ما يربككم، واحضروا أسئلتكم إلى Lamp Huddle الشهرية؛ فكل فرد من كوادر التمريض هناك بدأ من نقطة مشابهة.</p>
+
+    <p style="text-align:center; margin-top:2rem;">
+      <a class="btn btn-primary" href="../assets/hermes-cheat-sheet.pdf">نزّلوا قائمة التحقق ودليل Hermes المختصر (PDF) ←</a>&nbsp;
+      <a class="btn btn-quiet" href="start-here.html">تابعوا إلى الخطوة 2 — اختبار SOUL ←</a>
+    </p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">الوكلاء يقترحون. البشر يقررون. كوادر التمريض تتولى الإشراف المسؤول.</p>
+    <div class="footer-links">
+      <a href="index.html">الرئيسية</a>
+      <a href="start-here.html">ابدؤوا هنا</a>
+      <a href="../pathways.html">المسارات</a>
+      <a href="resources.html">الموارد</a>
+      <a href="about.html">من نحن</a>
+      <a href="faq.html">الأسئلة الشائعة</a>
+      <a href="../privacy.html">الخصوصية</a>
+      <a href="../terms.html">الشروط</a>
+      <a href="mailto:great.ai.nurses@gmail.com">تواصلوا معنا</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO Institute · مجاني لكوادر التمريض وطلبة التمريض خلال سنة التأسيس.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

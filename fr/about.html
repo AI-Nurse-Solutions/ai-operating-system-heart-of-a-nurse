@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>À propos du fondateur — Nurse AI OS</title>
+<meta name="description" content="Robert Domondon, RN, MBA — infirmier en soins intensifs depuis 22 ans, gestionnaire de santé pendant 13 ans, médecin diplômé aux Philippines, ancien administrateur d’un hôpital naval américain et architecte de l’écosystème de gouvernance de l’IA dirigé par le personnel infirmier à l’origine de Nurse AI OS.">
+<link rel="alternate" hreflang="en" href="https://nurse-ai-os.org/about.html">
+<link rel="alternate" hreflang="fr" href="https://nurse-ai-os.org/fr/about.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+.zone { display:inline-block; border-radius:8px; padding:.3rem .8rem; font-weight:700; font-size:.9rem; margin:0 .4rem .5rem 0; }
+.zone.green { background:#e5f3e6; color:#2c6e31; }
+.zone.yellow { background:#fdf3d7; color:#8a6420; }
+.zone.red { background:#fbe4e4; color:#a33a3a; }
+.ladder { display:grid; gap:.9rem; grid-template-columns:repeat(4,1fr); }
+.rung { background:var(--white); border-radius:10px; box-shadow:var(--shadow-sm); padding:1.1rem 1rem; border-top:4px solid var(--gold-500); }
+.rung .lvl { font-family:var(--font-display); font-weight:700; color:var(--teal-600); font-size:1.05rem; }
+.rung p { font-size:.92rem; color:var(--ink-600); margin:.3rem 0 0; }
+.timeline { border-left:3px solid var(--gold-500); padding-left:1.4rem; display:grid; gap:1.1rem; margin:1.5rem 0; }
+.timeline .tl-item strong { color:var(--navy-900); font-family:var(--font-display); }
+.timeline .tl-item p { margin:.15rem 0 0; color:var(--ink-600); }
+@media (max-width:900px){ .ladder{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:620px){ .ladder{ grid-template-columns:1fr;} }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "ProfilePage",
+ "mainEntity": {
+  "@type": "Person",
+  "@id": "https://nurse-ai-os.org/about.html#robert",
+  "name": "Robert Domondon",
+  "jobTitle": "Registered Nurse (RN, CCRN, CSC, CMC)",
+  "image": "https://avatars.githubusercontent.com/u/161920594?v=4",
+  "worksFor": {
+   "@id": "https://nurse-ai-os.org/#org"
+  },
+  "url": "https://nurse-ai-os.org/about.html",
+  "knowsAbout": [
+   "Soins infirmiers intensifs",
+   "Gouvernance de l’IA dans le secteur de la santé",
+   "Formation en sciences infirmières"
+  ]
+ }
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Navigation principale">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">Commencez ici</a>
+      <a href="../pathways.html">Parcours</a>
+      <a href="resources.html">Ressources</a>
+      <a href="about.html" class="active">À propos</a>
+      <a href="index.html#founding-year">Année fondatrice gratuite</a>
+      <a href="faq.html">FAQ</a>
+      <a href="../nurse-station.html">Poste infirmier</a>
+      <a class="nav-cta" href="../soul-quiz.html">Répondez au questionnaire SOUL</a>
+      <a href="../about.html" lang="en" hreflang="en">English</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" style="padding:3.6rem 0;">
+  <div class="container hero-grid">
+    <div>
+      <p class="kicker">À propos du fondateur</p>
+      <h1>Robert Domondon</h1>
+      <p style="font-family:var(--font-display); font-size:1.25rem; color:var(--gold-300); letter-spacing:.06em; margin:-.2rem 0 0;">RN, CCRN, CSC, CMC</p>
+      <p class="lede">Vingt-deux ans au chevet des patients en soins intensifs. Treize ans dans la gestion des services de santé. La formation d’un médecin, les leçons tirées des difficultés d’un administrateur et une conviction qui traverse tout son parcours : <strong style="color:var(--gold-300);">le personnel infirmier ne devrait pas se contenter d’utiliser l’IA — il devrait en assurer la gouvernance.</strong></p>
+      <p style="margin-top:1.4rem;"><span class="badge gold">Infirmier en soins intensifs depuis 22 ans</span> <span class="badge gold">Médecin diplômé aux Philippines</span> <span class="badge gold">Ancien administrateur d’un hôpital naval américain</span> <span class="badge gold">Gestionnaire de santé pendant 13 ans</span></p>
+    </div>
+    <div>
+      <!-- To self-host instead: save the photo as assets/img/robert-domondon.jpg and swap the src -->
+      <img src="https://avatars.githubusercontent.com/u/161920594?v=4" alt="Robert Domondon, RN, MBA — fondateur de Nurse AI OS" style="max-width:340px; border-radius:50%; display:block; margin:0 auto;">
+    </div>
+  </div>
+</section>
+
+<!-- ============ MEDIA PACKET ============ -->
+<section class="section" style="padding-bottom:0;">
+  <div class="container narrow">
+    <div style="display:flex;gap:1.4rem;align-items:center;background:var(--white);border:1px solid var(--linen-100);border-left:4px solid var(--gold-500);border-radius:var(--radius);padding:1.4rem 1.6rem;box-shadow:var(--shadow-sm);flex-wrap:wrap;">
+      <span aria-hidden="true" style="flex:none;font-size:2.6rem;">📰</span>
+      <span style="flex:1;min-width:240px;">
+        <span style="display:block;font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--navy-800);margin-bottom:.25rem;">Dossier de presse <span class="badge gold" style="font-size:.72rem;vertical-align:2px;">Nouveau · juillet 2026</span></span>
+        <span style="display:block;color:var(--ink-600);line-height:1.55;">Vous écrivez sur Nurse AI OS ? Retrouvez dans un seul PDF tous les éléments à citer : le résumé analytique — un système d’exploitation d’IA personnelle gratuit et encadré par une gouvernance, créé par un infirmier en soins intensifs fort de 22 ans d’expérience, avec des niveaux de risque, un point de contrôle avec examen humain obligatoire et une règle absolue excluant les données de patients — ainsi que des formulations prêtes à l’emploi pour le grand public, les organisations infirmières et les architectes de l’IA, des faits essentiels, les biographies du fondateur, des notes d’exactitude et le contact presse.</span>
+        <a href="../assets/nurse-ai-os-media-packet-fr.pdf" style="display:inline-block;margin-top:.6rem;font-weight:700;color:var(--teal-600);text-decoration:none;">Télécharger le dossier de presse (PDF) →</a>
+        <span style="display:block;margin-top:.55rem;color:var(--ink-600);font-size:.93rem;">Également disponible en :
+          <a href="../assets/nurse-ai-os-media-packet.pdf" style="font-weight:600;" lang="en">English</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-es.pdf" style="font-weight:600;">Español</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-ar.pdf" style="font-weight:600;" lang="ar">العربية</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-ru.pdf" style="font-weight:600;" lang="ru">Русский</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-zh.pdf" style="font-weight:600;" lang="zh-Hans">中文</a> ·
+          <a href="../assets/nurse-ai-os-media-packet-hi.pdf" style="font-weight:600;" lang="hi">हिन्दी</a>
+        </span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE STORY ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Le chemin parcouru</p>
+    <h2>Une carrière menée là où les systèmes rencontrent la réalité du chevet</h2>
+    <p>Le parcours de Robert, fondateur de Nurse AI OS, est atypique, et ce choix est délibéré. Formé comme médecin aux Philippines, il a dirigé un hôpital sur une ancienne base navale américaine, géré des activités de santé pendant treize ans, cofondé un institut de guérison naturelle et travaillé dans le conseil en adoption de l’IA et le développement des affaires. Il a ensuite choisi de consacrer plus de deux décennies aux soins infirmiers intensifs aux États-Unis, au chevet des patients, la nuit, dans ces chambres où la réussite ou l’échec des systèmes se mesure un patient à la fois.</p>
+    <p>Cette combinaison — le regard clinique du médecin, la vision systémique de l’administrateur et les mains de l’infirmier — explique la forme de Nurse AI OS. Le système a été conçu par quelqu’un qui a signé le budget, rédigé la politique <em>et</em> tenu la main du patient auquel cette politique était destinée.</p>
+
+    <div class="timeline">
+      <div class="tl-item"><strong>Médecin, Philippines</strong><p>Formation et pratique cliniques — apprendre la médecine là où les ressources étaient rares et où le jugement comptait plus que tout.</p></div>
+      <div class="tl-item"><strong>Administrateur d’hôpital, ancienne base navale américaine</strong><p>Diriger les activités, la sécurité et les équipes — une vision systémique des soins.</p></div>
+      <div class="tl-item"><strong>Gestionnaire de santé · consultant en adoption de l’IA · cofondateur, Institute for Natural Healing</strong><p>Treize ans à créer des liens entre la gestion, les technologies émergentes et des soins centrés sur l’humain.</p></div>
+      <div class="tl-item"><strong>Infirmier en soins intensifs, États-Unis — 22 ans et toujours en exercice</strong><p>Soins intensifs au chevet des patients. Le point de vue auquel chacun des cadres ci-dessous doit rendre des comptes.</p></div>
+      <div class="tl-item"><strong>Fondateur — Nurse Intelligence Network, NAIO Institute, Nurse AI OS</strong><p>Construire l’écosystème dans lequel le personnel infirmier assure la gouvernance de l’ère de l’IA au lieu de la subir.</p></div>
+    </div>
+
+    <div class="boundary">
+      <strong>Doctrine de gouvernance :</strong> « La gouvernance dès la conception. La clarté et les valeurs avant la vitesse. » Le bien ne se déploie pas à grande échelle de lui-même : il doit être organisé, encadré et administré avec soin et de façon délibérée.
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE ECOSYSTEM ============ -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="eyebrow">Ce qu’il construit</p>
+    <h2>Un écosystème, cinq instruments</h2>
+    <p class="section-intro">Chaque organisation répond à une question différente : qui fixe les normes, qui décide, ce qui fait respecter l’éthique, où le personnel infirmier se rassemble et ce qui porte le travail. Ensemble, elles forment une architecture unique : une gouvernance de l’IA dirigée par le personnel infirmier, du chevet du patient jusqu’à l’institution.</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <p class="role-tag">Autorité de gouvernance</p>
+        <h3>NAIO Institute</h3>
+        <p>Le Nurse AI Orchestration Institute définit les normes, élabore les certifications et construit les cadres de conformité des systèmes de main-d’œuvre fondés sur l’IA dans le secteur de la santé. Il œuvre pour devenir la <strong>FAA de l’IA en santé</strong> : aucun agent ne doit fonctionner sans enregistrement, classification du risque et attribution à un responsable humain.</p>
+        <p><em>Principe fondamental : la gouvernance avant l’autonomie.</em></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Plan de contrôle de l’orchestration</p>
+        <h3>Florence-X</h3>
+        <p>Centre de coordination des équipes d’agents d’IA, Florence-X distribue les tâches, applique les politiques de gouvernance, achemine les modèles et les outils, gère les limites de la mémoire et coordonne les agents en une force de travail unifiée — sur une infrastructure souveraine et détenue en propre, plutôt que dépendante du nuage.</p>
+        <p><em>Il coordonne et gouverne les flux de travail; il ne prend pas les décisions cliniques finales. À chaque niveau, les humains conservent l’autorité de décision finale.</em></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">La couche de conscience</p>
+        <h3>EDENA</h3>
+        <p><strong>Ethical Design &amp; Enablement for Nursing Augmentation</strong> — classe, soumet à des points de contrôle et audite chaque action de l’IA avant son exécution. L’éthique devient une infrastructure exécutable : l’IA peut exécuter des flux de travail, mais les humains restent responsables du jugement.</p>
+        <p><span class="zone green">🟢 Vert — faible risque, peut se poursuivre</span><span class="zone yellow">🟡 Jaune — examen humain requis</span><span class="zone red">🔴 Rouge — décision humaine obligatoire</span></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Le système d’exploitation des agents encadré par une gouvernance</p>
+        <h3>Nurse AI OS</h3>
+        <p>Le système que vous utilisez en ce moment — la couche d’exploitation encadrée par NAIO où toute l’architecture devient personnelle. Placé sous le centre de coordination Florence-X, il applique la classification des risques d’EDENA et une mémoire encadrée par une gouvernance, et s’appuie sur le moteur open source <strong>Hermes</strong> pour transformer des flux de travail complexes en compétences évolutives et réutilisables, dont la valeur s’accumule au fil des tâches et des saisons.</p>
+        <p><em>Florence-X coordonne et gouverne les flux de travail. Nurse AI OS achemine, fait appliquer les règles et personnalise. Hermes apprend et s’adapte. Le personnel infirmier assure la gouvernance responsable de l’ensemble.</em></p>
+        <p class="cta-line"><a href="start-here.html">Créez le vôtre →</a></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">La couche d’intelligence humaine</p>
+        <h3>Nurse Intelligence Network</h3>
+        <p>La communauté professionnelle mondiale où le personnel infirmier développe ses compétences en IA, façonne la gouvernance et lance des projets — un réseau d’intelligence dans lequel <strong>la participation crée la gouvernance</strong>, ancré par le sommet annuel NIN Summit et le Nurse Intelligence Podcast.</p>
+        <p class="cta-line"><a href="https://www.nurseintelligence.com/">Visiter NIN →</a></p>
+      </div>
+      <div class="card">
+        <p class="role-tag">Le moteur de contenu</p>
+        <h3>Florence Media Network</h3>
+        <p>Un moteur multicanal de création et de diffusion de contenu alimenté par l’IA, qui produit à grande échelle des médias répondant aux exigences de la gouvernance — chaque contenu étant classé selon EDENA et soumis à un examen humain avant publication. Le contenu est gouverné comme une infrastructure clinique, car la confiance est le produit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREDENTIALING LADDER ============ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Certification</p>
+    <h2>Le parcours de fellowship NAIO</h2>
+    <p class="section-intro">Développer la couche d’autorité humaine des systèmes d’IA — de la maîtrise des fondamentaux jusqu’à la direction exécutive de la gouvernance, avec du mentorat, une collaboration en recherche et une participation aux conseils de gouvernance tout au long du parcours.</p>
+    <div class="ladder">
+      <div class="rung"><span class="lvl">1 · NAIO-C</span><p>Maîtrise fondamentale de l’IA et bases de la gouvernance</p></div>
+      <div class="rung"><span class="lvl">2 · NAIO-A</span><p>Orchestration avancée et conception de flux de travail</p></div>
+      <div class="rung"><span class="lvl">3 · NAIO-F</span><p>Architecture de gouvernance institutionnelle et stratégie d’écosystème</p></div>
+      <div class="rung"><span class="lvl">4 · CAIOS</span><p>Chief AI Orchestration Steward — direction exécutive de la gouvernance de l’IA</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 WORLD PROJECTS ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">Initiative stratégique</p>
+    <h2>13 projets mondiaux pour renforcer le pouvoir d’agir du personnel infirmier</h2>
+    <p class="section-intro">Un programme à long terme — délibérément ambitieux et délibérément encadré par une gouvernance. Les projets sont regroupés selon ce que chacun protège.</p>
+
+    <details class="faq">
+      <summary>Gouvernance et constitution (projets 1 à 3)</summary>
+      <div class="faq-body"><strong>01 · Nightingale Protocol</strong> — une convention constitutionnelle mondiale sur l’IA infirmière qui rédige, ratifie et fait respecter des normes de gouvernance contraignantes.<br><strong>02 · EDENA Sentient Shield</strong> — faire évoluer EDENA en un moteur d’application des limites en temps réel, capable de détecter la dérive de confiance et l’élargissement du périmètre avant qu’ils n’atteignent un patient.<br><strong>03 · Nurse Data Cooperative &amp; Ethics Council</strong> — permettre au personnel infirmier de contrôler collectivement la manière dont les données cliniques désidentifiées servent à entraîner l’IA, sous la supervision du personnel infirmier de première ligne, des patients et des communautés.</div>
+    </details>
+    <details class="faq">
+      <summary>Infrastructure et souveraineté (projets 4 à 6)</summary>
+      <div class="faq-body"><strong>04 · Florence Sovereign Mesh</strong> — une infrastructure informatique distribuée contrôlée par le personnel infirmier, afin que la gouvernance ne dépende jamais de l’autorisation des géants technologiques.<br><strong>05 · Judgment Vault &amp; Knowledge Graph</strong> — consigner le travail cognitif invisible du personnel infirmier sous forme de connaissances structurées, citables et utilisables pour la formation.<br><strong>06 · Compassion Engine</strong> — une architecture de contraintes garantissant que l’IA avancée préserve la présence thérapeutique et la dimension relationnelle des soins, la compassion devenant une exigence de gouvernance mesurable.</div>
+    </details>
+    <details class="faq">
+      <summary>Pratique clinique et sécurité (projets 7 et 8)</summary>
+      <div class="faq-body"><strong>07 · CAIRLN &amp; Guardian Commons</strong> — un système de signalement des incidents liés à l’IA, dirigé par le personnel infirmier et inspiré de l’ASRS de l’aviation : les incidents évités de justesse, les défaillances et les signaux de sécurité alimentent un patrimoine commun de renseignements sur la sécurité.<br><strong>08 · Simulation &amp; ICU Co-Pilot</strong> — tester les outils d’IA dans les pires conditions — à 3 heures du matin, en sous-effectif et avec des patients en état critique — là où ils échouent réellement, avant leur arrivée dans de véritables unités de soins.</div>
+    </details>
+    <details class="faq">
+      <summary>Main-d’œuvre et filière (projets 9 et 10)</summary>
+      <div class="faq-body"><strong>09 · Conductor &amp; Builder Guild (NINE²)</strong> — l’incubateur qui transforme les idées d’IA portées par le personnel infirmier en produits opérationnels encadrés par une gouvernance, grâce à un programme de développement entrepreneurial par cohortes.<br><strong>10 · Context Bundles &amp; Mentor Network</strong> — des ressources de connaissances prêtes à l’emploi, dont la provenance est intégrée dès la conception, diffusées par un réseau mondial de sections et de mentorat.</div>
+    </details>
+    <details class="faq">
+      <summary>Portée mondiale et équité (projets 11 à 13)</summary>
+      <div class="faq-body"><strong>11 · Philippine Bridge</strong> — un accès souverain à l’IA pour le personnel infirmier des pays du Sud, afin de transformer la fuite des cerveaux en une direction distribuée de la gouvernance.<br><strong>12 · Climate-Health Sentinel Network</strong> — des renseignements climatiques dirigés par le personnel infirmier, qui anticipent les menaces sanitaires liées au climat au lieu de se contenter d’y réagir.<br><strong>13 · Nurse Robotics Governance Authority</strong> — des normes de gouvernance pour les robots alimentés par l’IA qui entrent dans les environnements cliniques, afin que, lorsque l’IA physique arrivera, le personnel infirmier maîtrise déjà l’architecture de supervision.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ NORTH STAR ============ -->
+<section class="section section-navy">
+  <div class="container narrow" style="text-align:center;">
+    <p class="eyebrow">NIN Summit 2026</p>
+    <h2>« Et si nous pouvions déployer le bien à grande échelle ? »</h2>
+    <p class="section-intro" style="margin:0 auto 1.8rem;">La question qui sous-tend tout ce qui précède : pouvons-nous organiser délibérément l’intelligence, la technologie et l’expertise afin que la sécurité des patients, la dignité humaine et la résilience de la main-d’œuvre se déploient à grande échelle — sans causer de préjudice ?</p>
+    <p>
+      <span class="badge gold">La réalité d’abord — parler honnêtement de ce que l’IA peut et ne peut pas faire</span>
+      <span class="badge gold">Les garde-fous sont une fonctionnalité, pas une limite</span>
+      <span class="badge gold">La gouvernance dès la conception, et non ajoutée après coup</span>
+      <span class="badge gold">La confiance se mérite, reste conditionnelle et peut être révoquée</span>
+    </p>
+    <p style="margin-top:1.6rem; font-family:var(--font-display); font-size:1.2rem; color:var(--gold-300);">Déployer l’intelligence à grande échelle. Préserver l’humanité. Laisser les systèmes en meilleur état que nous les avons trouvés.</p>
+  </div>
+</section>
+
+<!-- ============ WHITE PAPER ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <a href="../assets/care-intelligence-white-paper.pdf" style="display:flex;gap:1.4rem;align-items:center;background:var(--white);border:1px solid var(--linen-100);border-left:4px solid var(--gold-500);border-radius:var(--radius);padding:1.4rem 1.6rem;text-decoration:none;box-shadow:var(--shadow-sm);flex-wrap:wrap;">
+      <img src="../assets/img/care-intelligence-cover.jpg" alt="Livre blanc Care Intelligence — couverture" width="96" height="124" style="flex:none;border-radius:6px;box-shadow:var(--shadow-sm);object-fit:cover;">
+      <span style="flex:1;min-width:240px;">
+        <span style="display:block;font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--navy-800);margin-bottom:.25rem;">Livre blanc Care Intelligence <span class="badge gold" style="font-size:.72rem;vertical-align:2px;">Juin 2026</span></span>
+        <span style="display:block;color:var(--ink-600);line-height:1.55;">Un cadre pour les orchestrateurs de soins fondés sur l’IA — toute la réflexion à l’origine de cette page, réunie dans un document conçu pour être clair et agréable à lire. Par Robert Domondon, CCRN CMC CSC.</span>
+        <span style="display:inline-block;margin-top:.6rem;font-weight:700;color:var(--teal-600);">Télécharger le livre blanc (PDF) →</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="section">
+  <div class="container narrow" style="text-align:center;">
+    <h2>La meilleure façon de comprendre ce travail est de l’utiliser</h2>
+    <p class="section-intro" style="margin:0 auto 1.6rem;">Nurse AI OS est la porte d’entrée de tout cet écosystème — il est gratuit pour le personnel infirmier et les étudiant·es en sciences infirmières pendant cette année fondatrice. Commencez comme tout membre du personnel infirmier : par une évaluation.</p>
+    <a class="btn btn-primary" href="../soul-quiz.html">Répondez au questionnaire SOUL en 2 minutes →</a>
+    <p style="margin-top:1.2rem; color:var(--ink-600); font-size:.95rem;">Conférences, collaborations ou questions sur la gouvernance : <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a> · <a href="https://www.nurseintelligence.com/">Nurse Intelligence Network</a> · <a href="https://www.youtube.com/@NurseIntelligence">YouTube</a></p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Portez la lampe. Tenez le registre. Les agents proposent. Les humains décident. Le personnel infirmier assure la gouvernance responsable.</p>
+    <div class="footer-links">
+      <a href="index.html">Accueil</a>
+      <a href="start-here.html">Commencez ici</a>
+      <a href="../pathways.html">Parcours</a>
+      <a href="resources.html">Ressources</a>
+      <a href="about.html" class="active">À propos</a>
+      <a href="faq.html">FAQ</a>
+      <a href="../privacy.html">Confidentialité</a>
+      <a href="../terms.html">Conditions d’utilisation</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+      <a href="../about.html" lang="en" hreflang="en">English</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO / NIN · Gratuit pour le personnel infirmier et les étudiant·es en sciences infirmières pendant l’année fondatrice.</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>सेटअप-पूर्व चेकलिस्ट और Hermes त्वरित मार्गदर्शिका — Nurse AI OS</title>
+<meta name="description" content="अपने Nurse AI OS को सुरक्षित ढंग से सेटअप करने के लिए आठ चरणों की जाँच: उपकरण, निजी कार्यक्षेत्र, सीमित अनुमतियाँ, लागत नियंत्रण और Hermes की आधिकारिक मार्गदर्शिका।">
+<link rel="alternate" hreflang="en" href="../cheat-sheet.html">
+<link rel="alternate" hreflang="hi" href="cheat-sheet.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+body{font-family:"Noto Sans Devanagari","Source Sans 3",sans-serif;}
+.checkitem{display:flex;gap:.8rem;align-items:flex-start;background:var(--white);border:1px solid var(--linen-100);border-radius:10px;padding:.9rem 1.1rem;margin:.6rem 0;box-shadow:var(--shadow-sm);}
+.checkitem input[type=checkbox]{margin-top:.3rem;width:1.15rem;height:1.15rem;accent-color:var(--teal-600);flex:none;cursor:pointer;}
+.checkitem label{cursor:pointer;}
+.checkitem strong{color:var(--navy-800);}
+.checkitem .why{display:block;color:var(--ink-600);font-size:.93rem;margin-top:.15rem;}
+.prompt-block{background:#10233a;color:#dbe6ef;border-radius:10px;padding:1.1rem 1.3rem;font-family:"Noto Sans Devanagari","SF Mono","Consolas",monospace;font-size:.88rem;line-height:1.65;white-space:pre-wrap;border-left:4px solid var(--gold-500);margin:.8rem 0 1.2rem;}
+.phrase-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin:1rem 0 1.5rem;}
+.phrase-table th{background:var(--navy-900);color:var(--gold-300);font-family:var(--font-display);text-align:left;padding:.6rem .9rem;}
+.phrase-table td{padding:.55rem .9rem;border-top:1px solid var(--linen-100);font-size:.95rem;vertical-align:top;}
+.phrase-table td:first-child{font-weight:700;color:var(--teal-600);width:44%;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">यहाँ से शुरू करें</a>
+      <a href="../pathways.html">मार्ग</a>
+      <a href="resources.html">संसाधन</a>
+      <a href="about.html">हमारे बारे में</a>
+      <a href="index.html#founding-year">निःशुल्क संस्थापक वर्ष</a>
+      <a href="faq.html">अक्सर पूछे जाने वाले प्रश्न</a>
+      <a href="../nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="../soul-quiz.html">SOUL Quiz करें</a>
+      <a href="../cheat-sheet.html" lang="en">English</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">सेटअप चरण 1 · इंस्टॉल करने से पहले पढ़ें</p>
+    <h1>सेटअप-पूर्व चेकलिस्ट</h1>
+    <p class="lede">सुरक्षित शुरुआत के लिए पहले दो मिनट का सुरक्षा विराम लें। इंस्टॉल करने से पहले उपकरण, कार्यक्षेत्र, अनुमतियाँ और सीमाएँ जाँचने के आठ सरल चरण पूरे करें। अभी की यह छोटी-सी जाँच बाद में समय और परेशानी दोनों बचाती है।</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="../assets/hermes-cheat-sheet.pdf">चेकलिस्ट और त्वरित मार्गदर्शिका डाउनलोड करें (PDF) →</a>
+      <a class="btn btn-secondary" href="start-here.html">पाँच चरणों पर वापस जाएँ</a>
+    </div>
+    <p class="hero-note">इसे प्रिंट करें, पास रखें और बॉक्स जाँचते जाएँ। इस पेज के बॉक्स चुने जा सकते हैं, लेकिन आपकी कोई जानकारी सहेजी या भेजी नहीं जाती।</p>
+  </div>
+</section>
+
+<!-- ============ THE TIME-OUT ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">सेटअप से पहले जाँच</p>
+    <h2>सुरक्षा विराम — शुरू करने से पहले पुष्टि करें</h2>
+    <p style="color:var(--ink-600);"><strong>सुरक्षा विराम का अर्थ ठहरकर जाँच करना है, घबराना नहीं।</strong> काम शुरू होने से पहले सही कंप्यूटर, सही फ़ोल्डर, सही अनुमतियाँ और सही सीमाएँ सुनिश्चित करें। यदि कोई बिंदु तैयार नहीं है, तो यह असफलता नहीं—आपने बस अगला सुरक्षित सुधार पहचान लिया है।</p>
+
+    <div class="checkitem"><input type="checkbox" id="c1"><label for="c1"><strong>सही उपकरण: Mac या Windows वाला डेस्कटॉप या लैपटॉप।</strong><span class="why">फ़ोन, टैबलेट या Chromebook नहीं। अपने कंप्यूटर पर आपकी फ़ाइलें और आपके AI की मेमोरी <strong>स्थानीय रहती हैं—आपकी मशीन पर, किसी और के क्लाउड में नहीं</strong>। अपने सिस्टम पर आपका नियंत्रण बने रहना इसी का उद्देश्य है।</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c2"><label for="c2"><strong>कंप्यूटर की आवश्यकताएँ जाँच ली हैं।</strong><span class="why">सामान्य मार्गदर्शन: पिछले लगभग 5 वर्षों का कंप्यूटर, कम से कम 8&nbsp;GB मेमोरी और कुछ GB खाली जगह आम तौर पर पर्याप्त होते हैं। मौजूदा आवश्यकताओं के लिए हमेशा <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">Hermes की आधिकारिक साइट</a> देखें। यदि Hermes इंस्टॉल न हो, तो कारण कंप्यूटर की विशेषताएँ हो सकती हैं—<em>यह आपकी कमी या आपकी कोई गलती नहीं है</em>। क्लाउड विकल्प (VPS मार्ग) आने वाला है; तब तक नीचे “इंतज़ार के दौरान” देखें।</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c3"><label for="c3"><strong>कार्यस्थल तैयार है: एक समर्पित फ़ोल्डर, जिसके अंदर कोई निजी सामग्री नहीं है।</strong><span class="why">आपका सिस्टम एक ही फ़ोल्डर—<em>My-Nurse-AI-OS</em>—में रहता है, जिसे Starter Kit बनाता है; Documents इसके लिए अच्छा स्थान है। इसमें कर दस्तावेज़, पारिवारिक तस्वीरें या काम की फ़ाइलें न रखें। केवल वही सामग्री रखें जिसे किसी सहायक को पढ़ने देने में आप सहज हों, क्योंकि यह ठीक वही भूमिका निभाता है।</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c4"><label for="c4"><strong>साझा पारिवारिक कंप्यूटर है? अलग यूज़र अकाउंट बनाएँ।</strong><span class="why">इससे आपका AI काम अपनी अलग जगह में रहता है और परिवार के दूसरे उपयोगकर्ताओं की फ़ाइलों से स्पष्ट रूप से अलग रहता है।</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c5"><label for="c5"><strong>समझदार आदत: अपनी AI गतिविधियों के लिए नया Gmail बनाएँ।</strong><span class="why">एक निःशुल्क अलग अकाउंट (जैसे <em>yourname.ai@gmail.com</em>) आपके निजी और पारिवारिक ईमेल को अलग रखता है। उसका निःशुल्क Google Drive और Docs बाद में आपके सिस्टम के साथ भी अच्छी तरह काम कर सकता है।</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c6"><label for="c6"><strong>एक नियम हमेशा याद रखें: मरीजों का डेटा कभी नहीं।</strong><span class="why">कोई नाम, चार्ट, screenshot, कमरे का नंबर या ऐसी कहानी नहीं जिससे मरीज की पहचान हो सके। मरीजों का डेटा या संरक्षित स्वास्थ्य जानकारी (PHI) कभी दर्ज न करें। यह सिस्टम <em>आपकी</em> जिंदगी और गैर-क्लिनिकल सहायक काम के लिए है—आपके मरीजों के लिए नहीं।</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c7"><label for="c7"><strong>Docker का निर्णय: शुरुआती लोगों के लिए वैकल्पिक, सेवाओं के लिए उपयोगी।</strong><span class="why">यदि सिस्टम केवल आपका है, तो Hermes, Obsidian, browser या सामान्य दस्तावेज़ों को Docker में रखने की जरूरत <em>नहीं</em> है। बाद में databases, vector stores, local APIs, n8n या test web apps जैसी background services के लिए Docker उपयोग करें, जब आपको ऐसा साफ़ और दोहराने योग्य सेटअप चाहिए जिसे नए लैपटॉप पर फिर बनाया जा सके। सरल नियम: जो service की तरह चलता है, उसमें Docker मदद कर सकता है; जो मनुष्य के उपयोग वाला desktop tool है, उसमें इसे छोड़ दें।</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c8"><label for="c8"><strong>VPS का निर्णय: वैकल्पिक उन्नत मार्ग, पहला कदम नहीं।</strong><span class="why">VPS किराए का cloud computer है, जो लैपटॉप बंद होने पर भी Hermes चला सकता है। यह gateways, scheduled jobs, webhooks और साझा no-PHI community tools के लिए उपयोगी है। लेकिन VPS की फ़ाइलें <em>केवल स्थानीय</em> नहीं रहतीं; वे किराए के infrastructure पर होती हैं और तभी निजी रहती हैं जब server सुरक्षित, backed up, patched और उचित गवर्नेंस के तहत हो। शुरुआती लोग अपने कंप्यूटर पर Hermes Desktop से शुरू करें। VPS का उपयोग बाद में हमेशा चालू no-PHI services के लिए करें—मरीजों का डेटा, निजी पारिवारिक फ़ाइलें या नियोक्ता के गोपनीय दस्तावेज़ कभी नहीं।</span></label></div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>सभी बॉक्स जाँच लिए? तैयारी पूरी हो गई है।</strong> कुछ बाकी हैं? जो संभव हो उसे ठीक करें। यह भी याद रखें कि अभी उपयुक्त कंप्यूटर न होने पर भी <a href="../ai-mentors.html">निःशुल्क कोर्स और 55 AI mentors</a>, <a href="../soul-quiz.html">SOUL Quiz</a>, मासिक Lamp Huddle और समुदाय आज ही आपके लिए उपलब्ध हैं।
+    </div>
+  </div>
+</section>
+
+<!-- ============ SETUP ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">तैयार हैं? आगे बढ़ें।</p>
+    <h2>Hermes इंस्टॉल और कॉन्फ़िगर करें</h2>
+    <p style="color:var(--ink-600);">Hermes के अपडेट होने पर menus बदल सकते हैं। यदि कुछ अलग दिखे, तो <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">आधिकारिक docs</a> को सही और नवीनतम स्रोत मानें।</p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>Hermes इंस्टॉल करें</h3>
+        <p>पहले आधिकारिक साइट—<a href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener">hermes-agent.nousresearch.com</a>—पर जाएँ, अपने कंप्यूटर का संस्करण डाउनलोड करें और वहाँ दिए चरणों का पालन करें। इसे खोलें। जब सेटअप AI model या provider के बारे में पूछे, तो पहले अगला चरण पढ़ें—निःशुल्क और कम लागत वाले मार्ग उपलब्ध हैं।</p>
+      </div>
+      <div class="step">
+        <h3>अनुमतियाँ — एक कमरा दें, पूरा घर नहीं</h3>
+        <p>जब Hermes फ़ाइलों तक पहुँच माँगे, तो <strong>केवल अपने My-Nurse-AI-OS फ़ोल्डर की अनुमति दें</strong>। पूरी disk, Desktop, Downloads या Photos तक व्यापक पहुँच अस्वीकार करें। पहुँच तय कार्यक्षेत्र तक सीमित रखें, पूरे कंप्यूटर तक नहीं। गलती से अधिक अनुमति दे दी? अपने कंप्यूटर की privacy settings में जाकर हटा दें।</p>
+      </div>
+      <div class="step">
+        <h3>चुनें कि आपके AI को शक्ति कैसे मिलेगी — निःशुल्क और कम लागत वाले मार्ग उपलब्ध हैं</h3>
+        <p><strong>Hermes स्वयं निःशुल्क और open-source है।</strong> लागत उस AI model से आती है जो इसे चलाता है और जिसका शुल्क उपयोग के अनुसार हो सकता है। आपके पास दो मार्ग हैं:</p>
+        <p><strong>मार्ग A — Nous subscription.</strong> सबसे सरल विकल्प: एक subscription और बाकी व्यवस्था संभाली हुई। सेटअप के दौरान इसे चुनें और इस चरण का शेष भाग छोड़ दें।</p>
+        <p><strong>मार्ग B — Bring Your Own Keys.</strong> यह सबसे किफ़ायती मार्ग है और इससे Hermes लगभग निःशुल्क चल सकता है। Hermes सेटअप में default subscription विकल्प की जगह <strong>Full Setup</strong>, फिर <strong>Bring Your Own Keys</strong> चुनें। हम <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a> सुझाते हैं—एक निःशुल्क अकाउंट, एक API key और कई models का विकल्प, जिनमें निःशुल्क और बहुत कम लागत वाले models भी हैं। फिर:</p>
+        <ol style="margin:.4rem 0 1rem 1.2rem; line-height:1.7;">
+          <li><a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a> पर अकाउंट बनाएँ और dashboard से API key बनाएँ।</li>
+          <li><strong>सबसे पहले OpenRouter में खर्च सीमा तय करें</strong>—यह अप्रत्याशित बिल से बचाने वाली सीमा है। कुछ डॉलर से शुरू करें; जरूरत होने पर बाद में बढ़ा सकते हैं।</li>
+          <li>Hermes सेटअप में OpenRouter को provider चुनें और अपनी key paste करें।</li>
+          <li>कोई model चुनें—पहले निःशुल्क या कम लागत वाला model लें। Hermes से कोई सरल काम करवाकर पुष्टि करें कि सब ठीक चल रहा है। यदि उत्तर पर्याप्त न लगे, तो अधिक सक्षम model चुनें। लागत केवल उपयोग किए गए tokens की होती है।</li>
+        </ol>
+        <p style="font-size:.93rem;color:var(--ink-600);"><strong>एक सावधानी:</strong> ChatGPT Plus या Grok subscription में आम तौर पर API access शामिल <em>नहीं</em> होता; उसका बिल अलग होता है। सबसे सुरक्षित सेटअप आपकी अपनी तय की हुई खर्च सीमा वाली समर्पित OpenRouter key है। API keys और passwords किसी prompt, screenshot या साझा फ़ाइल में कभी न रखें।</p>
+      </div>
+      <div class="step">
+        <h3>आपकी पहली बातचीत</h3>
+        <p>Hermes chat की तरह काम करता है: लिखें और enter दबाएँ। केवल बातचीत करके आप कुछ बिगाड़ नहीं सकते।</p>
+        <div class="prompt-block">मैं एक नर्स हूँ और अपना Nurse AI OS सेटअप कर रहा/रही हूँ। आगे मैं आपको अपनी SOUL फ़ाइल दूँगा/दूँगी—इसे मेरे स्थायी निर्देश मानें।</div>
+      </div>
+      <div class="step">
+        <h3>Hermes को अपनी SOUL फ़ाइल दें</h3>
+        <p><a href="../soul-quiz.html">SOUL Quiz</a> से मिली फ़ाइल (Core-SOUL.md के रूप में डाउनलोड होती है, या पूरे bundle में मिलती है) attach, drag या paste करें, फिर कहें:</p>
+        <div class="prompt-block">यह मेरी SOUL फ़ाइल है। मुझे कैसे सहयोग देना है, इसके लिए इसे मेरे स्थायी निर्देश मानें। पुष्टि करें कि आपने मेरे मूल्यों और मेरी सीमाओं के बारे में क्या समझा।</div>
+        <p style="font-size:.93rem;color:var(--ink-600);">उसका सारांश पढ़ें। जो भी गलत हो उसे सुधारें—सुधार आगे के लिए बने रहते हैं।</p>
+      </div>
+      <div class="step">
+        <h3>Hermes को अपना Starter Kit दें</h3>
+        <p><a href="../assets/nurse-ai-os-starter-kit.zip">Starter Kit</a> को ऐसी जगह unzip करें जिसे आप फिर आसानी से खोज सकें (Documents अच्छा विकल्प है), फिर Hermes से कहें:</p>
+        <div class="prompt-block">मेरा Nurse AI OS फ़ोल्डर [स्थान] पर है। मेरी फ़ाइलें यहीं रहती हैं: मेरी SOUL फ़ाइल, मेरे notes (Memory), मेरे projects (Projects), और दोबारा उपयोग होने वाले मेरे prompts (Skills)। यदि इनमें से कोई फ़ोल्डर मौजूद न हो, तो उसे बनाएँ। मेरे लिए अपना काम इसी फ़ोल्डर में रखें।</div>
+      </div>
+      <div class="step">
+        <h3>अपना dashboard बनाएँ — और bookmark करें</h3>
+        <div class="prompt-block">मेरी SOUL फ़ाइल का उपयोग करके मेरे Starter Kit (08-Integrations/Local-HTML-Life-Dashboard) में Local HTML Life Dashboard को मेरे अनुसार बनाएँ। मेरे quiz के उत्तरों से मेरा नाम, हर क्षेत्र की प्रमुख प्राथमिकताएँ और मेरे शुरुआती लक्ष्य और आदतें भरें। इसे मेरे Nurse AI OS फ़ोल्डर में My-Dashboard.html नाम से save करें और मुझे उसका बिल्कुल सही स्थान बताएँ।</div>
+        <p>बनी हुई फ़ाइल browser में खोलें और उसे <strong>bookmark करें</strong>—यही आपका station board है।</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="background:var(--teal-100); border-left-color:var(--teal-600);">
+      <strong>SOUL फ़ाइल और Starter Kit सबसे अधिक महत्वपूर्ण क्यों हैं:</strong> सक्षम AI को स्पष्ट दिशा और सीमाएँ चाहिए। ये दो फ़ाइलें वही ढाँचा देती हैं। SOUL फ़ाइल आपके मूल्य, आपकी सीमाएँ और वे रेखाएँ बताती है जिन्हें सिस्टम कभी पार नहीं कर सकता; Starter Kit उसे सुरक्षित कार्यस्थल और व्यवस्थित संरचना देता है। दोनों मिलकर सिस्टम को <strong>नर्स का दिल</strong> देते हैं—पर मानव समीक्षा का स्थान कभी नहीं लेते। AI केवल सुझाव और मसौदे देता है; अंतिम निर्णय हमेशा आपका है।
+    </div>
+    <div class="boundary" style="margin-top:1rem;">
+      <strong>दो सेटअप guides के साथ और गहराई से जानें:</strong> <a href="../assets/hermes-essentials-guide.pdf"><strong>Hermes Essentials Guide</strong></a> (विद्यार्थियों और बजट-सचेत staff के लिए—इसे लगभग निःशुल्क चलाएँ) और <a href="../assets/hermes-power-guide.pdf"><strong>The Hermes Power Guide</strong></a> (power users और leaders के लिए—profiles, scheduled jobs और model routing)। दोनों दिखाते हैं कि विवेक की परत EDENA आपकी architecture में कैसे काम करती है।
+    </div>
+  </div>
+</section>
+
+<!-- ============ AFTER SETUP ============ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">सेटअप के बाद</p>
+    <h2>सिस्टम के साथ काम करें — जब तक यह सहज आदत न बन जाए</h2>
+    <p class="section-intro">आपको हर feature याद करने की जरूरत नहीं। नियमित उपयोग से सही क्रम अपने आप सहज हो जाता है। इन सात आदतों से शुरू करें:</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>1 · पहले काम समझें, फिर model चुनें</h3>
+        <p>सरल काम—छोटे सवाल, summaries, rewrites और brainstorming—के लिए <strong>निःशुल्क या कम लागत वाला model</strong> लें। कठिन काम—कई चरणों वाली planning, लंबे documents, coding और गहरी troubleshooting—के लिए <strong>अधिक सक्षम reasoning model</strong> लें। screenshot या diagram देखना हो तो <strong>vision-capable</strong> model चुनें। पहले किफ़ायती विकल्प से शुरू करें और काम की जरूरत होने पर ही आगे बढ़ें।</p>
+      </div>
+      <div class="card">
+        <h3>2 · हर विषय के लिए अलग session</h3>
+        <p>बजट, side gig और CCRN plan को एक ही बातचीत में न मिलाएँ—विवरण आपस में उलझ सकते हैं और उत्तर अस्पष्ट हो सकते हैं। केंद्रित session से काम साफ़ रहता है। <strong>नया विषय, नया session.</strong></p>
+      </div>
+      <div class="card">
+        <h3>3 · Projects लंबे काम के लिए हैं; sessions एक बातचीत के लिए</h3>
+        <p>Session एक बातचीत है। किसी लगातार चलने वाले काम—course, business plan या family project—के लिए <strong>Project</strong> उपयोग करें: ऐसा workspace जहाँ files, goals और conversations साथ रहें, ताकि आपको हर बार शुरुआत से काम न करना पड़े।</p>
+      </div>
+      <div class="card">
+        <h3>4 · विशेषज्ञ दृष्टिकोण के लिए persona बताएँ</h3>
+        <p>Hermes को भूमिका बताएँ; इससे उत्तर की गहराई और शैली बदलती है: <em>“सरल भाषा वाले tutor की तरह यह error चरण-दर-चरण समझाएँ।”</em> · <em>“Startup strategist की तरह मेरी योजना के जोखिम और अगले कदमों की समीक्षा करें।”</em></p>
+      </div>
+      <div class="card">
+        <h3>5 · संदेह हो तो सहायक से ही पूछें</h3>
+        <p>आपको perfect prompt की जरूरत नहीं। <em>“सबसे अच्छा अगला कदम क्या है?”</em> · <em>“आगे बढ़ने से पहले मुझसे जरूरी सवाल पूछें।”</em> · <em>“इसे सरल चरणों में बाँटें।”</em> · <em>“इस काम के लिए कौन-सा model उपयोग करूँ?”</em></p>
+      </div>
+      <div class="card">
+        <h3>6 · Troubleshooting में screenshot दिखाएँ, केवल वर्णन न करें</h3>
+        <p>Screenshot के साथ बताएँ: आप क्या करना चाहते थे, उसके बदले क्या हुआ, सही error क्या था और आप पहले क्या आज़मा चुके हैं। <strong>Screenshot में API keys या passwords कभी शामिल न करें</strong>—पहले crop या blur करें। उसमें मरीजों का डेटा, PHI, निजी या नियोक्ता-गोपनीय जानकारी भी न हो।</p>
+      </div>
+      <div class="card gold">
+        <h3>7 · खर्च की जिम्मेदार देखरेख करें</h3>
+        <p>उपयोग पर नज़र रखें: खर्च सीमा चालू रखें, drafts के लिए कम लागत वाले models लें, अधिक सक्षम models को अंतिम reasoning के लिए बचाएँ और बहुत बड़ी files तभी दें जब काम को सच में उनकी जरूरत हो।</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>रोज़ की आदत:</strong> काम के लिए सही model · नए विषय के लिए नया session · लगातार काम के लिए project · विशेषज्ञ output के लिए persona · संदेह होने पर पूछें · अटकने पर सुरक्षित screenshot दिखाएँ · जरूरत होने पर ही अधिक सक्षम model चुनें।
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIVE PHRASES ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">त्वरित वाक्य</p>
+    <h2>पाँच वाक्य जो अधिकांश काम आसान बनाते हैं</h2>
+    <table class="phrase-table">
+      <thead><tr><th>आप कहें</th><th>Hermes क्या करता है</th></tr></thead>
+      <tbody>
+        <tr><td>“मेरी सुबह की huddle चलाएँ।”</td><td>आपकी सबसे पहली प्राथमिकता पूछता है और मदद के तीन तरीके सुझाता है</td></tr>
+        <tr><td>“इस session के लिए मेरी Kardex entry बनाएँ।”</td><td>Memory फ़ोल्डर में सहेजने के लिए पाँच पंक्तियों का handoff note लिखता है</td></tr>
+        <tr><td>“इस सुधार को स्थायी बनाएँ।”</td><td>आपके feedback को स्थायी नियम में बदलता है</td></tr>
+        <tr><td>“शुरू करने से पहले, मेरी जरूरत और संदर्भ समझने के लिए मुझसे सवाल पूछें।”</td><td>बड़े कामों से पहले अनुमान लगाने के बजाय सवाल पूछता है</td></tr>
+        <tr><td>“कुछ भी करने से पहले अपनी योजना दिखाएँ।”</td><td>हर निर्णय पर आपकी मानव समीक्षा बनाए रखता है</td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:2rem;">इंतज़ार के दौरान — अभी उपयुक्त कंप्यूटर नहीं है? फिर भी आप शामिल हैं।</h2>
+    <p>यदि आपका मौजूदा कंप्यूटर Hermes नहीं चला सकता, तो केवल इंस्टॉल वाला चरण रुका है। <a href="../ai-mentors.html">निःशुल्क AI कोर्स और 55 निःशुल्क AI mentors</a> किसी भी browser में चलते हैं, मासिक Lamp Huddle और समुदाय उपलब्ध हैं, और <a href="../soul-quiz.html">SOUL Quiz</a> आपकी SOUL फ़ाइल उस दिन के लिए तैयार रखेगा जब आपका सिस्टम तैयार होगा।</p>
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500);">
+      <strong>यह बात स्पष्ट रूप से सुनें:</strong> आपकी भागीदारी और आपकी आवाज़ हमारे लिए अभी मायने रखती है—हार्डवेयर खरीदने के बाद ही नहीं। नर्सिंग की भागीदारी हो या न हो, AI स्वास्थ्य सेवा में आ रहा है। आज तैयारी करने वाली नर्सें इस बदलाव का नेतृत्व करेंगी, केवल उसके पीछे नहीं चलेंगी। <strong>आप भविष्य की Florence Nightingales हैं—जो तय करेंगी कि देखभाल की बुद्धिमत्ता कैसे आकार लेती है।</strong>
+    </div>
+
+    <p style="margin-top:2rem;"><strong>यदि आप उलझन महसूस करें:</strong> यह सामान्य है। आपको केवल अगला कदम जानना है, पूरा नक्शा नहीं। जो समझ न आए उसे अभी छोड़ें और अपने सवाल मासिक Lamp Huddle में लाएँ—वहाँ हर नर्स ने वहीं से शुरुआत की थी जहाँ आप हैं।</p>
+
+    <p style="text-align:center; margin-top:2rem;">
+      <a class="btn btn-primary" href="../assets/hermes-cheat-sheet.pdf">चेकलिस्ट और त्वरित मार्गदर्शिका डाउनलोड करें (PDF) →</a>&nbsp;
+      <a class="btn btn-quiet" href="start-here.html">चरण 2 जारी रखें — SOUL Quiz →</a>
+    </p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">एजेंट सुझाव देते हैं। इंसान निर्णय लेते हैं। नर्सिंग पेशेवर जिम्मेदार देखरेख सुनिश्चित करते हैं।</p>
+    <div class="footer-links">
+      <a href="index.html">मुखपृष्ठ</a>
+      <a href="start-here.html">यहाँ से शुरू करें</a>
+      <a href="../pathways.html">मार्ग</a>
+      <a href="resources.html">संसाधन</a>
+      <a href="about.html">हमारे बारे में</a>
+      <a href="faq.html">अक्सर पूछे जाने वाले प्रश्न</a>
+      <a href="../privacy.html">गोपनीयता</a>
+      <a href="../terms.html">शर्तें</a>
+      <a href="mailto:great.ai.nurses@gmail.com">संपर्क</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO Institute · संस्थापक वर्ष के दौरान नर्सों और नर्सिंग विद्यार्थियों के लिए निःशुल्क।</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

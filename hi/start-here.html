@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>यहाँ से शुरू करें — Nurse AI OS</title>
+<meta name="description" content="अपने Nurse AI OS के लिए पाँच चरण: चेकलिस्ट के साथ Hermes इंस्टॉल करें, SOUL Quiz पूरा करके फ़ाइल जोड़ें, Starter Kit लें, अपना डैशबोर्ड बनाएँ और अपने पहले प्रॉम्प्ट चलाएँ।">
+<link rel="alternate" hreflang="en" href="../start-here.html">
+<link rel="alternate" hreflang="hi" href="start-here.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+body { font-family: "Noto Sans Devanagari", "Source Sans 3", sans-serif; }
+.prompt-block {
+  background: #10233a; color: #dbe6ef; border-radius: 10px;
+  padding: 1.1rem 1.3rem; font-family: "Noto Sans Devanagari", "SF Mono", "Consolas", monospace;
+  font-size: .88rem; line-height: 1.65; white-space: pre-wrap;
+  border-left: 4px solid var(--gold-500); margin: .8rem 0 1.2rem;
+}
+.prompt-label {
+  font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--teal-600); margin: 1rem 0 .2rem;
+}
+details.cheat {
+  background: var(--linen-100); border-radius: 10px; margin-bottom: .6rem; padding: 0;
+  border-left: 4px solid var(--teal-500);
+}
+details.cheat summary {
+  cursor: pointer; font-weight: 700; padding: .8rem 1.1rem; list-style: none; color: var(--navy-900);
+}
+details.cheat summary::-webkit-details-marker { display: none; }
+details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-size: .98rem; }
+</style>
+</head>
+<body class="calm-clinical-page">
+
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html" class="active">यहाँ से शुरू करें</a>
+      <a href="../pathways.html">मार्ग</a>
+      <a href="resources.html">संसाधन</a>
+      <a href="about.html">हमारे बारे में</a>
+      <a href="index.html#founding-year">निःशुल्क संस्थापक वर्ष</a>
+      <a href="faq.html">सामान्य प्रश्न</a>
+      <a href="../nurse-station.html">Nurse Station</a>
+      <a class="nav-cta" href="../soul-quiz.html">SOUL Quiz करें</a>
+      <a href="../start-here.html" lang="en">English</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">पूरा सेटअप, कुछ भी अतिरिक्त नहीं</p>
+    <h1>पाँच चरण। एक शाम। काम पूरा।</h1>
+    <p class="lede">इस पेज पर आपकी पूरी शुरुआत है—इंस्टॉल करना, अपने अनुसार ढालना, डैशबोर्ड बनाना और पहले प्रॉम्प्ट चलाना। इस साइट पर बाकी सब बाद में और गहराई से जानने के लिए वैकल्पिक है। यदि आप केवल एक पेज पढ़ें, तो यही पढ़ें।</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+
+    <iframe class="video-embed" style="margin-bottom:2.5rem;" src="https://www.youtube.com/embed/Qm3Kp51F5O8?si=nyXR0r_VIuZBK-ep" title="स्वागत है — नर्स के दिल वाला एक सिस्टम" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    <div class="boundary">
+      <strong>शुरू करने से पहले एक बात—खासकर यदि आप विद्यार्थी हैं:</strong> शुरुआत में इसमें से कुछ आपकी समझ से थोड़ा आगे लग सकता है। यह सामान्य है और यह कोई परीक्षा नहीं है। आपको केवल <em>अगला</em> चरण जानना है, पूरा नक्शा नहीं। जो उलझाए उसे अभी छोड़ दें, बाद में लौटें और अपने सवाल <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> में लाएँ—वहाँ हर नर्स ने ठीक वहीं से शुरुआत की थी जहाँ आप हैं। और एक नियम कभी नहीं बदलता: <strong>मरीजों का डेटा कभी नहीं</strong>—यह सिस्टम आपकी जिंदगी के लिए है, आपके मरीजों के लिए नहीं। <a href="#safety">सुरक्षा नियम →</a>
+    </div>
+
+    <!-- ============ STEP 0 · READINESS ============ -->
+    <div class="step" style="border-left:4px solid var(--gold-500); margin-bottom:.4rem;">
+      <h3>चरण 0 — सेटअप से पहले जाँच (2 मिनट)</h3>
+      <p>आप हर शिफ्ट की शुरुआत में अपने उपकरण जाँचते हैं। यहाँ भी यही करें—अभी के दो मिनट बाद की एक घंटे की परेशानी बचा सकते हैं।</p>
+      <p><strong>आपको डेस्कटॉप या लैपटॉप चाहिए</strong>—Mac या Windows; फ़ोन, टैबलेट या Chromebook नहीं। इसका लाभ यह है कि आपके अपने कंप्यूटर पर आपकी फ़ाइलें और आपके AI की मेमोरी <strong>स्थानीय रहती हैं—आपकी मशीन पर, किसी और के क्लाउड में नहीं</strong>। सामान्य मार्गदर्शन के रूप में, पिछले लगभग 5 वर्षों का कंप्यूटर, कम से कम 8&nbsp;GB मेमोरी और कुछ GB खाली जगह आम तौर पर पर्याप्त होते हैं—मौजूदा आवश्यकताओं के लिए <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">Hermes की आधिकारिक साइट</a> देखें।</p>
+      <p><strong>अपनी डिजिटल जगह तैयार करें</strong>—आपका सिस्टम एक समर्पित फ़ोल्डर में रहेगा, जिसे Starter Kit बनाता है। उसमें कोई निजी सामग्री न रखें—न कर दस्तावेज़, न पारिवारिक तस्वीरें, न काम की फ़ाइलें। साझा पारिवारिक कंप्यूटर पर अलग यूज़र अकाउंट रखने पर विचार करें, ताकि आपके सिस्टम की जगह स्पष्ट और सीमित रहे।</p>
+      <p style="font-size:.93rem; color:var(--ink-600);">यदि कंप्यूटर की विशेषताओं के कारण Hermes इंस्टॉल नहीं होता, तो यह <em>आपकी कमी या आपकी कोई गलती नहीं है</em>। एक क्लाउड विकल्प (VPS मार्ग) आने वाला है, ताकि किसी भी डिवाइस पर पूरा सिस्टम चल सके।</p>
+    </div>
+
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500); margin-bottom:2rem;">
+      <strong>अभी उपयुक्त कंप्यूटर नहीं है? फिर भी आप आज से शामिल हैं।</strong> <a href="../ai-mentors.html">निःशुल्क AI कोर्स और 55 निःशुल्क AI mentors</a> का उपयोग करें (वे किसी भी ब्राउज़र में चलते हैं), मासिक Lamp Huddle में आएँ, <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">समुदाय सूची में शामिल हों</a> और अभी <a href="../soul-quiz.html">SOUL Quiz</a> करें—जिस दिन आपका सिस्टम तैयार होगा, आपकी SOUL फ़ाइल भी तैयार होगी। आपकी भागीदारी और आपकी आवाज़ हमारे लिए <em>अभी</em> मायने रखती है, हार्डवेयर खरीदने के बाद ही नहीं। नर्सिंग की भागीदारी हो या न हो, AI स्वास्थ्य सेवा में आ रहा है—आज तैयारी करने वाली नर्सें इस बदलाव का नेतृत्व करेंगी, केवल उसके पीछे नहीं चलेंगी। आप भविष्य की Florence Nightingales हैं, जो तय करेंगी कि देखभाल की बुद्धिमत्ता कैसे आकार लेती है।
+    </div>
+
+    <div class="boundary" style="margin-bottom:2rem;">
+      <strong>दो रास्ते, एक सिस्टम—चरण 1 से पहले अपना रास्ता चुनें।</strong> <strong>रास्ता 1 (अधिकांश नर्सें यहाँ से शुरू करती हैं):</strong> इंस्टॉल को पूरी तरह छोड़ें और आज रात चरण 2–5 अपने मौजूदा ब्राउज़र AI (ChatGPT या Claude) में करें—अपलोड करने के बजाय सामग्री पेस्ट करें। <strong>रास्ता 2:</strong> पूर्ण बिल्ड—स्थायी मेमोरी और स्थानीय फ़ाइलों—के लिए चरण 1 में Hermes इंस्टॉल करें। दोनों सुरक्षित हैं, रास्ता बदलने पर आपका बनाया हुआ कुछ भी व्यर्थ नहीं जाएगा और रास्ता 2 जितना चाहें उतना इंतज़ार कर सकता है। <a href="../setup.html">दोनों रास्तों की व्याख्या →</a>
+    </div>
+
+    <div class="steps">
+
+      <!-- ============ STEP 1 ============ -->
+      <div class="step">
+        <h3>केवल रास्ता 2 — सुरक्षा विराम लें, फिर Hermes इंस्टॉल करें</h3>
+        <p>Hermes वह निःशुल्क, ओपन-सोर्स AI इंजन है जिस पर आपका Nurse AI OS चलता है। इसे आधिकारिक साइट से इंस्टॉल करें, खोलें और नमस्ते कहें—यह चैट की तरह काम करता है और केवल प्रयोग करने से आप कुछ बिगाड़ नहीं सकते।</p>
+        <p>
+          <a class="btn btn-primary btn-sm" href="cheat-sheet.html">सुरक्षा विराम चेकलिस्ट →</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="https://hermes-agent.nousresearch.com/">Hermes पाएँ (आधिकारिक साइट)</a>&nbsp;
+          <a class="btn btn-quiet btn-sm" href="../assets/hermes-cheat-sheet.pdf">डाउनलोड करें (PDF)</a>
+        </p>
+        <p style="font-size:.93rem; color:var(--ink-600);">यह चेकलिस्ट सेटअप से पहले आपका सुरक्षा विराम है—उपकरण, डिजिटल जगह, अनुमतियाँ और एक मुख्य नियम जाँचें। दो मिनट में सीमाएँ शुरू से स्पष्ट हो जाती हैं।</p>
+        <p style="font-size:.93rem; color:var(--ink-600);"><strong>फिर अपना गाइड चुनें:</strong> यदि आप खर्च पर नज़र रखते हैं तो <a href="../assets/hermes-essentials-guide.pdf"><strong>Hermes Essentials Guide</strong></a> (विद्यार्थियों और बजट के प्रति सजग स्टाफ के लिए—इसे लगभग निःशुल्क चलाएँ), या जब आप प्रोफ़ाइल, निर्धारित जॉब और नेतृत्व-स्तरीय गवर्नेंस के लिए तैयार हों तो <a href="../assets/hermes-power-guide.pdf"><strong>The Hermes Power Guide</strong></a>। दोनों दिखाते हैं कि EDENA—विवेक की परत—आपकी आर्किटेक्चर में कैसे काम करती है।</p>
+        <p style="margin-top:.8rem;"><strong>चेकलिस्ट यहीं है:</strong></p>
+        <details class="cheat">
+          <summary>इंस्टॉल और पहली बार खोलना</summary>
+          <div class="cheat-body">अपने कंप्यूटर (Mac या Windows) के लिए आधिकारिक साइट से डाउनलोड करें और वहाँ दिए चरणों का पालन करें। इसे खोलें। जब यह AI मॉडल या provider के बारे में पूछे, तो आपके पास दो मार्ग हैं: <strong>Nous subscription</strong> (डिफ़ॉल्ट—सबसे सरल, एक बिल) या <strong>Full Setup → Bring Your Own Keys</strong> (सबसे किफ़ायती—OpenRouter key और खर्च सीमा के साथ लगभग निःशुल्क हो सकता है; <a href="cheat-sheet.html">सुरक्षा विराम चेकलिस्ट</a> का §1.7 इसे समझाता है)। दोनों काम करते हैं और आप बाद में बदल सकते हैं। Hermes के अपडेट होने पर मेन्यू बदल सकते हैं; संदेह हो तो उसकी <a href="https://hermes-agent.nousresearch.com/docs">आधिकारिक docs</a> को सही स्रोत मानें।</div>
+        </details>
+        <details class="cheat">
+          <summary>आपकी पहली बातचीत</summary>
+          <div class="cheat-body">ऐसे लिखें जैसे किसी सहकर्मी को संदेश भेजते हैं। इससे शुरू करें: <em>“मैं एक नर्स हूँ और अपना Nurse AI OS सेटअप कर रहा/रही हूँ। आगे मैं तुम्हें अपनी SOUL फ़ाइल दूँगा/दूँगी—इसे मेरे स्थायी निर्देश मानना।”</em></div>
+        </details>
+        <details class="cheat">
+          <summary>अनुमतियाँ—एक कमरा दें, पूरा घर नहीं</summary>
+          <div class="cheat-body">जब Hermes फ़ाइलों तक पहुँच की अनुमति माँगे, तो <strong>केवल अपने My-Nurse-AI-OS फ़ोल्डर</strong>—Starter Kit वाले फ़ोल्डर—की अनुमति दें और उससे व्यापक हर अनुमति (पूरी disk, Desktop, Downloads, Photos) अस्वीकार करें। पहुँच केवल तय कार्यक्षेत्र तक होनी चाहिए, पूरे कंप्यूटर तक नहीं। गलती से अधिक अनुमति दे दी? कंप्यूटर की privacy settings में जाकर उसे हटा दें।</div>
+        </details>
+        <details class="cheat">
+          <summary>समझदार आदत—अपनी AI गतिविधियों के लिए नया Gmail</summary>
+          <div class="cheat-body">एक निःशुल्क, अलग Gmail बनाएँ (जैसे <em>yourname.ai@gmail.com</em>) और उसे केवल AI काम, कोर्स और समुदाय के लिए उपयोग करें। आपका निजी और पारिवारिक ईमेल गोपनीय रहेगा—और नए अकाउंट के निःशुल्क Google Drive और Docs बाद में आपके सिस्टम के साथ अच्छी तरह काम करेंगे।</div>
+        </details>
+        <details class="cheat">
+          <summary>अधिकांश काम करने वाले पाँच वाक्य</summary>
+          <div class="cheat-body">“मेरी सुबह की huddle चलाओ।” · “इस session के लिए मेरी Kardex entry बनाओ।” · “इस सुधार को स्थायी बनाओ।” · “शुरू करने से पहले, मेरी जरूरत और संदर्भ समझने के लिए मुझसे सवाल पूछो।” · “कुछ भी करने से पहले अपनी योजना दिखाओ।” — आखिरी वाक्य हर निर्णय पर आपकी मानव समीक्षा बनाए रखता है।</div>
+        </details>
+        <p style="font-size:.92rem; color:var(--ink-600); margin-top:.6rem;"><em>रास्ता 1 चुना है? इस चरण को पूरी तरह छोड़ें—अपने मौजूदा ब्राउज़र AI (ChatGPT या Claude) में चरण 2–5 करें और अपलोड की जगह सामग्री पेस्ट करें। Hermes केवल उसे स्थायी बनाता है और जब आप चाहेंगे, तब उपलब्ध रहेगा। <a href="../setup.html">दो रास्ते →</a></em></p>
+      </div>
+
+      <!-- ============ STEP 2 ============ -->
+      <div class="step">
+        <h3>SOUL Quiz करें, फिर Hermes को अपनी SOUL फ़ाइल दें</h3>
+        <p>2 मिनट का SOUL Quiz आपके मूल्यों, सीमाओं और असल जिंदगी में जहाँ मदद चाहिए उसके बारे में पूछता है—कोई गलत उत्तर नहीं और तैयारी की जरूरत नहीं। यह आपकी निजी <strong>SOUL.md</strong> फ़ाइल डाउनलोड करता है। पहले कर चुके हैं? बस अपनी फ़ाइल ढूँढें।</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../soul-quiz.html">SOUL Quiz करें →</a>&nbsp; <a class="btn btn-quiet btn-sm" href="../soul-quiz-guide.html">सहायक गाइड—उत्तर कैसे दें</a>
+        <p class="prompt-label">फिर फ़ाइल को Hermes में अटैच या पेस्ट करके कहें:</p>
+        <div class="prompt-block">यह मेरी SOUL फ़ाइल है। मुझे कैसे सहयोग देना है, इसके लिए इसे मेरे स्थायी निर्देश मानो। पुष्टि करो कि तुमने मेरे मूल्यों और मेरी सीमाओं के बारे में क्या समझा—खासकर वे बातें जिन्हें मैं कभी delegate नहीं करूँगा/करूँगी।</div>
+        <p style="font-size:.92rem; color:var(--ink-600);">उसका सारांश पढ़ें। जो भी गलत हो उसे सुधारें—अब से सुधार याद रहेंगे।</p>
+      </div>
+
+      <!-- ============ STEP 3 ============ -->
+      <div class="step">
+        <h3>Starter Kit डाउनलोड करें और Hermes को उसका स्थान बताएँ</h3>
+        <p>Starter Kit आपके सिस्टम का फ़ोल्डर ढाँचा है—आपकी SOUL फ़ाइल, नोट्स और प्रोजेक्ट्स का घर। इसे ऐसी जगह unzip करें जिसे आप फिर आसानी से खोज सकें (Documents एक अच्छा विकल्प है)।</p>
+        <a class="step-cta btn btn-primary btn-sm" href="../assets/nurse-ai-os-starter-kit.zip">Starter Kit डाउनलोड करें (ZIP) →</a>
+        <p class="prompt-label">फिर Hermes से कहें:</p>
+        <div class="prompt-block">मेरा Nurse AI OS फ़ोल्डर [जहाँ आपने इसे unzip किया है] पर है। मेरी फ़ाइलें यहीं रहती हैं—मेरी SOUL फ़ाइल, Memory फ़ोल्डर में मेरे नोट्स, Projects फ़ोल्डर में मेरे प्रोजेक्ट्स और Skills में दोबारा उपयोग होने वाले मेरे प्रॉम्प्ट। यदि इन तीन फ़ोल्डरों में से कोई मौजूद न हो, तो उसे बनाओ। मेरे लिए अपना काम इसी फ़ोल्डर में रखो।</div>
+      </div>
+
+      <!-- ============ STEP 4 ============ -->
+      <div class="step">
+        <h3>अपना डैशबोर्ड बनाएँ—एक प्रॉम्प्ट में—और उसे bookmark करें</h3>
+        <p>आपके Starter Kit में निजी, केवल ब्राउज़र में चलने वाला डैशबोर्ड शामिल है। यह प्रॉम्प्ट Hermes से आपके SOUL Quiz के उत्तरों—आपका नाम, प्राथमिकताएँ और शुरुआती लक्ष्य—के आधार पर उसे अपने आप आपके अनुरूप बनाने को कहता है:</p>
+        <div class="prompt-block">मेरी SOUL फ़ाइल का उपयोग करके मेरे Starter Kit (08-Integrations/Local-HTML-Life-Dashboard) में Local HTML Life Dashboard को मेरे अनुसार बनाओ। मेरे quiz के उत्तरों से मेरा नाम, हर क्षेत्र की प्रमुख प्राथमिकताएँ और मेरे शुरुआती लक्ष्य और आदतें भरो। इसे मेरे Nurse AI OS फ़ोल्डर में My-Dashboard.html नाम से save करो और मुझे उसका बिल्कुल सही स्थान बताओ।</div>
+        <p><strong>बनी हुई फ़ाइल खोलें और उसे bookmark करें।</strong> यही आपका station board है—जो कुछ आप बना रहे हैं वह एक नज़र में, और कहीं भी upload नहीं किया गया।</p>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>बाद में, यदि कभी और चाहिए:</em> Notion version, messaging access और sovereign/on-premise setups <a href="resources.html">advanced topics</a> में उपलब्ध हैं। अभी नहीं। bookmark पर्याप्त है।</p>
+      </div>
+
+      <!-- ============ STEP 5 ============ -->
+      <div class="step">
+        <h3>अपने पहले प्रॉम्प्ट चलाएँ</h3>
+        <p>तैयारी पूरी हो गई है। अब इससे काम लें—आज रात के लिए जो सबसे उपयुक्त हो उसे चुनें:</p>
+        <p class="prompt-label">रोज़ की लय (कल सुबह शुरू करें)</p>
+        <div class="prompt-block">मेरी सुबह की huddle चलाओ। मुझसे एक सवाल पूछो: “आज मेरी सबसे पहली प्राथमिकता क्या है?” फिर तीन ठोस तरीके सुझाओ जिनसे तुम मदद कर सकते हो—drafts, research, summaries, planning—कभी भी क्लिनिकल निर्णय या मरीजों के डेटा से जुड़ा कुछ नहीं। पूछो कि किससे शुरू करना है।</div>
+        <p class="prompt-label">विद्यार्थी—एक lecture, आसान रूप में</p>
+        <div class="prompt-block">[विषय] पर मेरे lecture notes ये हैं। सरल भाषा में मेरा study map बनाओ, फिर Socratic तरीके से quiz लो—पाँच सवाल, एक बार में एक। जब तक मैं सोचकर उत्तर देने की कोशिश न करूँ, मुझे जवाब मत बताना।</div>
+        <p style="font-size:.92rem; color:var(--ink-600);"><em>विद्यार्थियों के लिए: आपके Starter Kit में अब पूरा <strong>Study OS pack</strong> (फ़ोल्डर <code>15-Student-Study-OS</code>) शामिल है—Socratic tutor, NGN-style drills, निर्देशित debriefs वाले simulated patients और spaced-repetition flashcards; हर जगह academic-integrity guardrails पहले से मौजूद हैं। अपने AI से कहें: “15-Student-Study-OS में मौजूद skills load करो।”</em></p>
+        <p class="prompt-label">स्टाफ—अपनी सूची से एक काम हटाएँ</p>
+        <div class="prompt-block">मेरी SOUL फ़ाइल के आधार पर शिफ्ट के बाद संभलने की checklist बनाओ—घर पहुँचने के बाद पहले घंटे में मुझे सहज होने में जो चीजें मदद करती हैं, उन्हें क्रम में रखो।</div>
+        <p class="prompt-label">लीडर्स—गवर्नेंस में आपका पहला कदम</p>
+        <div class="prompt-block">मेरी unit का एक workflow map करने में मदद करो (मरीजों का डेटा नहीं—केवल process): AI कौन-सा बोझ कम कर सकता है, वह कौन-सा नुकसान पैदा कर सकता है और कहाँ अनिवार्य मानव समीक्षा बिंदु होना चाहिए।</div>
+        <p style="margin-top:1rem;">जब ये सहज लगने लगें, तो <a href="../personalize.html">छह workflows</a> आपको आगे ले जाएँगे—हर सप्ताह एक, जब तक सिस्टम सच में आपको समझने न लगे। और जब आप पेशेवर तरीके से काम करने—memory, schedules, गवर्नेंस और पूरे सिस्टम—के लिए तैयार हों, तो <a href="../hermes-masterclass.html">Hermes Masterclass</a> निःशुल्क गहन मार्ग है।</p>
+      </div>
+
+    </div>
+
+    <p style="text-align:center; margin-top:2.5rem;">
+      <a class="btn btn-primary" href="../soul-quiz.html">अभी शुरू करें—SOUL Quiz चरण 2 है →</a>
+      <br><span style="font-size:.93rem; color:var(--ink-600);">रास्ते में सवाल हैं? मासिक <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> निःशुल्क है और <a href="mailto:great.ai.nurses@gmail.com">ईमेल</a> का जवाब एक इंसान देता है।</span>
+    </p>
+
+    <div class="boundary" style="margin-top:2rem;">
+      <strong>पाँचों चरण पूरे हो गए? अब आधिकारिक रूप से जुड़ें।</strong> समुदाय सूची में शामिल हों—एक signup से आपको newsletter, मासिक Lamp Huddle के निमंत्रण और जल्द खुलने वाले हमारे सामुदायिक स्थान में founding-member status मिलेगा। <a href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">समुदाय सूची में शामिल हों →</a>
+    </div>
+
+    <div class="boundary" style="margin-top:1.2rem;">
+      <strong>आज की शाम के बाद कहाँ जाएँ:</strong> <a href="../hermes-masterclass.html">Hermes Masterclass</a>—निःशुल्क गहन मार्ग। दस modules आज के सेटअप को गवर्नेंस के साथ हमेशा उपलब्ध सिस्टम में बदलते हैं: memory, connections, scheduled work, operator console और EDENA गवर्नेंस की गहरी समझ। गति बनाए रखना चाहते हैं? यह <a href="../hermes-masterclass.html#fast-track">7-day fast track</a> से शुरू होता है—हर दिन एक स्पष्ट उपलब्धि।
+    </div>
+
+    <p style="text-align:center; margin-top:1.5rem; font-size:.93rem; color:var(--ink-600);">पाँच चरणों में कुछ उलझन हुई? <a href="mailto:great.ai.nurses@gmail.com?subject=Site%20feedback%20%E2%80%94%20Start%20Here&body=Which%20step%20I%20was%20on%3A%0A%0AWhat%20was%20confusing%20or%20broken%3A%0A%0AWhat%20would%20have%20helped%3A%20">हमें बताएँ</a>—संस्थापक वर्ष का feedback सीधे सुधार में शामिल होता है।
+    </p>
+  </div>
+</section>
+
+<!-- ============ VIDEO ============ -->
+<section class="section">
+  <div class="container narrow">
+    <iframe class="video-embed" src="https://www.youtube.com/embed/0MDiFVbgR6U" title="Nurse AI OS — शुरुआत कैसे करें, देखें" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</section>
+
+<!-- ============ SAFETY ============ -->
+<section class="section section-alt" id="safety">
+  <div class="container narrow">
+    <p class="eyebrow">वे नियम जो सबकी सुरक्षा करते हैं</p>
+    <h2>सरल भाषा में सुरक्षा नियम</h2>
+    <p class="section-intro">आपने दवा देने के अधिकार याद किए हैं। ये नियम उससे छोटे हैं और आपके मरीजों, आपके लाइसेंस और आपकी सुरक्षा करते हैं।</p>
+    <div class="steps">
+      <div class="step"><h3>मरीजों का डेटा कभी नहीं।</h3><p>नाम, चार्ट, screenshots, कमरे के नंबर, record numbers, तारीखें या ऐसी कहानियाँ जिनसे किसी मरीज की पहचान हो सके—किसी भी AI tool में, किसी भी स्तर पर नहीं। यदि संदेह हो कि कोई जानकारी मरीजों का डेटा या संरक्षित स्वास्थ्य जानकारी (PHI) है या नहीं, तो उसे वैसा ही मानें और शामिल न करें।</p></div>
+      <div class="step"><h3>AI मसौदा बनाता है। आप निर्णय लेते हैं।</h3><p>हर AI output तब तक मसौदा है जब तक कोई इंसान उसकी समीक्षा न करे। आपकी समझ और मानव समीक्षा के बिना कुछ भी भेजा, प्रकाशित या लागू नहीं होता।</p></div>
+      <div class="step"><h3>आपका लाइसेंस किसी और को नहीं सौंपा जा सकता।</h3><p>यहाँ कोई भी AI क्लिनिकल निर्णय, assessments या किसी खास मरीज की देखभाल से जुड़े प्रश्नों का समर्थन नहीं करता। यह आपके सहायक काम संभालता है—आपकी पेशेवर समझ कभी नहीं।</p></div>
+      <div class="step"><h3>नियोक्ता के सिस्टम कार्यस्थल पर ही रहते हैं।</h3><p>EHR screens, गोपनीय policies या पहचान योग्य staff अथवा student data का उपयोग न करें। केवल सार्वजनिक, काल्पनिक या निजी सामग्री उपयोग करें—जब तक आपकी संस्था की compliance team ने किसी tool और workflow को स्पष्ट स्वीकृति न दी हो।</p></div>
+      <div class="step"><h3>संदेह हो तो किसी इंसान से पूछें।</h3><p>अस्पष्ट मामले <a href="../assets/lamp-huddle.pdf">Lamp Huddle</a> में लाएँ या <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a> पर ईमेल करें। जल्दी पूछा गया सवाल, देर से report हुई घटना से बेहतर है।</p></div>
+    </div>
+    <p style="margin-top:2rem;">इन नियमों का एक नाम है: <strong>EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</strong>—Nurse AI OS की हर परत में मौजूद गवर्नेंस framework। हर action चलने से पहले classify किया जाता है:
+      <span class="badge" style="background:#e5f3e6; color:#2c6e31;">🟢 हरा—तैयार हैं? आगे बढ़ें।</span>
+      <span class="badge" style="background:#fdf3d7; color:#8a6420;">🟡 पीला—पहले मानव समीक्षा</span>
+      <span class="badge" style="background:#fbe4e4; color:#a33a3a;">🔴 लाल—मानव निर्णय के बिना कार्रवाई निषिद्ध</span>
+      आप इसे <a href="../assets/nurse-ai-os-workbook.pdf">workbook</a> में औपचारिक रूप से समझेंगे—अभी ऊपर दिए पाँच नियम ही पर्याप्त हैं। जब आप अपने AI से इनका अपने आप <em>पालन</em> करवाने के लिए तैयार हों, तो <a href="../assets/governance-kit.zip">Governance Kit</a> डाउनलोड करें—नियम ऐसी फ़ाइलों में हैं जिन्हें आपका सिस्टम हर session में load करता है।</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">एजेंट सुझाव देते हैं। इंसान निर्णय लेते हैं। नर्सिंग पेशेवर जिम्मेदार देखरेख सुनिश्चित करते हैं।</p>
+    <div class="footer-links">
+      <a href="index.html">मुखपृष्ठ</a>
+      <a href="../pathways.html">मार्ग</a>
+      <a href="resources.html">संसाधन</a>
+      <a href="about.html">हमारे बारे में</a>
+      <a href="faq.html">सामान्य प्रश्न</a>
+      <a href="../privacy.html">गोपनीयता</a>
+      <a href="../terms.html">शर्तें</a>
+      <a href="mailto:great.ai.nurses@gmail.com">संपर्क</a>
+    </div>
+    <p>© 2026 Nurse AI OS · संस्थापक वर्ष के दौरान नर्सों और नर्सिंग विद्यार्थियों के लिए निःशुल्क।</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

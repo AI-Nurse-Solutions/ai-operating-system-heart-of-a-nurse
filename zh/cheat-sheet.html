@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>预检清单与 Hermes 备忘单 — Nurse AI OS</title>
+<meta name="description" content="建立 Nurse AI OS 的预检清单：核对设备、准备场地、正确权限安装 Hermes，赋予系统护士之心。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+.checkitem{display:flex;gap:.8rem;align-items:flex-start;background:var(--white);border:1px solid var(--linen-100);border-radius:10px;padding:.9rem 1.1rem;margin:.6rem 0;box-shadow:var(--shadow-sm);}
+.checkitem input[type=checkbox]{margin-top:.3rem;width:1.15rem;height:1.15rem;accent-color:var(--teal-600);flex:none;cursor:pointer;}
+.checkitem label{cursor:pointer;}
+.checkitem strong{color:var(--navy-800);}
+.checkitem .why{display:block;color:var(--ink-600);font-size:.93rem;margin-top:.15rem;}
+.prompt-block{background:#10233a;color:#dbe6ef;border-radius:10px;padding:1.1rem 1.3rem;font-family:"SF Mono","Consolas",monospace;font-size:.88rem;line-height:1.55;white-space:pre-wrap;border-left:4px solid var(--gold-500);margin:.8rem 0 1.2rem;}
+.phrase-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin:1rem 0 1.5rem;}
+.phrase-table th{background:var(--navy-900);color:var(--gold-300);font-family:var(--font-display);text-align:left;padding:.6rem .9rem;}
+.phrase-table td{padding:.55rem .9rem;border-top:1px solid var(--linen-100);font-size:.95rem;vertical-align:top;}
+.phrase-table td:first-child{font-weight:700;color:var(--teal-600);width:44%;}
+</style>
+<link rel="alternate" hreflang="en" href="../cheat-sheet.html">
+<link rel="alternate" hreflang="zh-Hans" href="cheat-sheet.html">
+</head>
+<body>
+<header class="site-header">
+  <nav class="nav-bar">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="start-here.html">从这里开始</a>
+      <a href="cheat-sheet.html" class="active">预检清单</a>
+      <a href="../pathways.html">路径</a>
+      <a href="resources.html">资源</a>
+      <a href="about.html">关于</a>
+      <a href="index.html#founding-year">免费创始年</a>
+      <a href="faq.html">常见问题</a>
+      <a href="../nurse-station.html">护士站</a>
+      <a class="nav-cta" href="../soul-quiz.html">参加 SOUL 测验</a>
+      <a href="../cheat-sheet.html">English</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:3.2rem 0;">
+  <div class="container narrow">
+    <p class="kicker">配置步骤 1 · 安装前必读</p>
+    <h1>预检清单</h1>
+    <p class="lede">你不会在未完成安全核对时开始操作：确认患者、部位与设备无误。设置 AI 时也应同样谨慎 —— 安装前先完成八项检查，再进入操作流程。现在花两分钟，之后可少走许多弯路。</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="../assets/hermes-cheat-sheet.pdf">下载预检清单 + 备忘单（PDF） →</a>
+      <a class="btn btn-secondary" href="start-here.html">返回五步流程</a>
+    </div>
+    <p class="hero-note">可以打印出来贴在手边，逐项勾选。本页的复选框也可以直接勾选，但只供你参考 —— 不会保存或发送任何内容。</p>
+  </div>
+</section>
+
+<!-- ============ THE TIME-OUT ============ -->
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">动作前先检查</p>
+    <h2>安全核对 — 开始前确认</h2>
+    <p style="color:var(--ink-600);"><strong>安全核对意味着暂停，而非惊慌。</strong> 护士惯例：动作前确认配置 — 正确设备、正确文件夹、正确权限、正确边界。若有项未就绪，你并未失败 —— 只是发现了下一步安全修正。</p>
+
+    <div class="checkitem"><input type="checkbox" id="c1"><label for="c1"><strong>正确设备：台式机或笔记本电脑 — Mac 或 Windows。</strong><span class="why">不是手机、平板或 Chromebook。在自己的电脑上，你的文件与 AI 的记忆保持<strong>本地化 —— 在你的机器上，而非他人云端</strong>。这就是拥有自己系统的意义。</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c2"><label for="c2"><strong>确认电脑规格。</strong><span class="why">粗略参考：近 5 年内的电脑、至少 8&nbsp;GB 内存、几 GB 空闲空间通常足够 —— <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">Hermes 官网</a>列出最新要求。若 Hermes 安装失败，问题在电脑规格 —— <em>不是你的错，也不是你操作失误</em>。云端方案（VPS 路径）即将推出；在此之前，请参阅下文“电脑暂不符合要求？你仍可参与”。</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c3"><label for="c3"><strong>准备工作区：使用一个不含私人资料的专用文件夹。</strong><span class="why">就像术前准备无菌区。你的系统将驻留在 <em>My-Nurse-AI-OS</em> 文件夹中，由入门套件创建（建议放在 Documents）。不要放入税务文件、家庭照片或工作文件 —— 只放你愿意让助手读取的内容，因为它确实会读取这些文件。</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c4"><label for="c4"><strong>共用家庭电脑？另设用户账号。</strong><span class="why">你的专属“药车”而非共用的 — 你的 AI 工作保持在独立空间。</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c5"><label for="c5"><strong>聪明习惯：专用 Gmail 给 AI 生活。</strong><span class="why">正如你不在病区记录站做私人银行业务，注册一个免费、独立的 Gmail（如 <em>yourname.ai@gmail.com</em>），专用于 AI 工作、课程、社区。个人与家庭邮箱保持私密 —— 新账号的免费 Google Drive 与 Docs 也能与你的系统完美配合。</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c6"><label for="c6"><strong>记住唯一规则：绝不输入患者数据，任何时候都不行。</strong><span class="why">不得输入姓名、病历、截图、房号，或任何可能识别患者身份的内容。此系统服务于<em>你的</em>生活，而不是患者护理。</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c7"><label for="c7"><strong>Docker 决策：新手可选，服务场景有用。</strong><span class="why">若此系统纯属个人使用，<em>无需</em>将 Hermes、Obsidian、你的浏览器或普通文件置于 Docker。后期为后台服务（数据库、向量库、本地 API、n8n、测试网页应用）使用 Docker 时，可获益于可复制、可重建的环境。经验法则：若作服务运行，Docker 有帮助；若是面向人的桌面工具，可免除此流程。</span></label></div>
+
+    <div class="checkitem"><input type="checkbox" id="c8"><label for="c8"><strong>VPS 决策：高级可选路径，不是第一步。</strong><span class="why">VPS 是租用的云端计算机，即使你的电脑关机，也能继续运行 Hermes。它适合网关、定时任务、webhook 和无 PHI 的社区工具。但 VPS 上的文件不再是<strong>纯本地</strong>文件；它们位于租用的基础设施中，只有在服务器得到妥善加固、备份、更新和治理时才算私密。新手应从自己电脑上的 Hermes Desktop 开始。以后可用 VPS 运行常驻的无 PHI 服务 —— 绝不用于患者数据、私人家庭文件或雇主机密文件。</span></label></div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>全部勾选？你已完成操作前准备。</strong> 还有项目未完成？先处理能处理的部分，并记住 —— 即使电脑暂不符合要求，<a href="../ai-mentors.html">免费 AI 课程与 55 位免费 AI 导师</a>、<a href="../soul-quiz.html">SOUL 测验</a>、每月 Lamp Huddle 和社区仍向你开放。
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PROCEDURE ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">准备就绪？继续。</p>
+    <h2>操作流程 — 安装与配置</h2>
+    <p style="color:var(--ink-600);">Hermes 的菜单会随版本更新而变化。若界面与本页不同，请以 <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">官方文档</a> 为准。</p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>安装 Hermes</h3>
+        <p>访问官网 — <a href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener">hermes-agent.nousresearch.com</a> — 下载适用于你电脑的版本，遵循其步骤。打开后，当设置询问 AI 模型或供应商时，先看下一步 —— 有免费及低成本方案。</p>
+      </div>
+
+      <div class="step">
+        <h3>权限 —— 给个房间，别给整栋楼</h3>
+        <p>当 Hermes 请求文件访问时，<strong>仅授权你的 My-Nurse-AI-OS 文件夹</strong>。拒绝更宽泛的权限 —— 全盘、桌面、下载、照片。把它想成支援护士的工牌：只进入被分配的病区，而不是全院每个楼层。误授过宽？可在电脑的隐私设置中撤销。</p>
+      </div>
+
+      <div class="step">
+        <h3>选择 AI 供能方式 — 有免费及低成本路径</h3>
+        <p><strong>Hermes 本体免费且开源。</strong> 可能产生的费用来自驱动它的 AI 模型 —— 可以把 Hermes 想成免费的输液泵，模型像泵中输注的液体，按使用量计费。你有两条路：</p>
+
+        <p><strong>路线 A — Nous 订阅。</strong> 最简：一次订阅，一切搞定。设置时直接勾选，随后跳过本节余下内容。</p>
+
+        <p><strong>路线 B — 自带密钥。</strong> 最经济，也是以近乎零成本运行 Hermes 的方式。在 Hermes 设置中，选 <strong>完整设置</strong>（非默认订阅选项），再选 <strong>自带密钥</strong>。我们推荐 <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a> —— 免费账户、一枚 API 密钥、含免费及超低成本模型的完整菜单。具体操作：</p>
+
+        <ol style="margin:.4rem 0 1rem 1.2rem; line-height:1.7;">
+          <li>在 <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a> 注册账户，从个人面板生成 API 密钥。</li>
+          <li><strong>先在 OpenRouter 设定消费上限</strong> —— 这是防止意外账单的安全护栏。起点可设为几美元，之后随时可以上调。</li>
+          <li>在 Hermes 设置中，选 OpenRouter 作供应商，粘贴你的密钥。</li>
+          <li>选择模型时，先试免费或低成本选项。让 Hermes 处理一项简单任务，确认能够正常工作；如果回答质量不足，再切换到更强的模型。测试模型只按实际使用的 token 计费，不另收测试费。</li>
+        </ol>
+
+        <p style="font-size:.93rem;color:var(--ink-600);"><strong>警告：</strong> ChatGPT Plus 或 Grok 订阅通常<strong>不含</strong> API 访问 —— 那部分需另算费用。最稳妥做法：一枚专属 OpenRouter 密钥，配上你自己设定的消费上限。</p>
+      </div>
+
+      <div class="step">
+        <h3>首次对话</h3>
+        <p>Hermes 即聊天工具：输入，回车。聊天不可能弄坏任何东西。</p>
+        <div class="prompt-block">我是一名护士，正在搭建我的 Nurse AI OS。稍后我会给你我的 SOUL 文件 —— 请视为我的固定指令。</div>
+      </div>
+
+      <div class="step">
+        <h3>提交 SOUL 文件</h3>
+        <p>经由 <a href="../soul-quiz.html">SOUL 测验</a>（下载为 Core-SOUL.md，或完整套件）。附加、拖拽或粘贴文件后，你说：</p>
+        <div class="prompt-block">这是我的 SOUL 文件。请视为我的固定指令，指导你如何支持我。确认你理解我的价值观与边界。</div>
+        <p style="font-size:.93rem;color:var(--ink-600);">听取或阅读 Hermes 返回的摘要。发现任何错误都要纠正 —— 你的修正将被保留。</p>
+      </div>
+
+      <div class="step">
+        <h3>提交入门包</h3>
+        <p>解压 <a href="../assets/nurse-ai-os-starter-kit.zip">入门包</a> 至好记之处（Documents 为佳选），然后告诉 Hermes：</p>
+        <div class="prompt-block">我的 Nurse AI OS 文件夹在 [位置]。这里存放我的文件 —— SOUL 文件、Memory 文件夹里的笔记、Projects 文件夹里的项目、Skills 文件夹里的可复用提示词。若那三个文件夹任一缺失，请创建。请把你为我做的工作放在此文件夹内。</div>
+      </div>
+
+      <div class="step">
+        <h3>构建仪表盘 —— 并添加书签</h3>
+        <div class="prompt-block">使用我的 SOUL 文件，个性化入门包中的 Local HTML Life Dashboard（08-Integrations/Local-HTML-Life-Dashboard）。填入我的名字、各维度首要优先级、测验所得首批目标与习惯。另存为 My-Dashboard.html 到我的 Nurse AI OS 文件夹，并告诉我确切位置。</div>
+        <p>在浏览器中打开生成文件并<strong>加为书签</strong> —— 这就是你的站务板。</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="background:var(--teal-100); border-left-color:var(--teal-600);">
+      <strong>为什么 SOUL 文件和入门套件比其他内容都重要？</strong> 强大的 AI 就像一匹精力充沛的骏马 —— 能力出众，但没有缰绳就可能失控。这两个文件<strong>就是缰绳</strong>。SOUL 文件告诉 AI 你的价值观、边界和绝不能越过的红线；入门套件则为它提供明确的空间与结构。两者结合，让系统拥有<strong>护士之心</strong>，也让控制权始终在你手中。跳过它们不会更快，只会让你更容易被系统牵着走。
+    </div>
+
+    <div class="boundary" style="margin-top:1rem;">
+      <strong>通过两份设置指南继续深入：</strong> <a href="../assets/hermes-essentials-guide.pdf"><strong>Hermes 基础指南</strong></a>（适合护理专业学生和重视预算的临床护士，帮助你以近乎零成本运行）和 <a href="../assets/hermes-power-guide.pdf"><strong>Hermes 进阶指南</strong></a>（适合使用配置文件、定时任务和模型路由的进阶用户与领导者）。两份指南都说明 EDENA — Ethical Design &amp; Enablement for Nursing Augmentation（护理增强的伦理设计与赋能）这一良知层如何在你的架构中实际运作。
+    </div>
+  </div>
+</section>
+
+<!-- ============ POST-PROCEDURE CARE ============ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">操作后维护</p>
+    <h2>使用系统 — 直至成为肌肉记忆</h2>
+    <p class="section-intro">你不需要背下所有功能。先在脑中熟悉流程，操作自然会跟上 —— 就像你掌握的每项技能最终都会成为本能。养成以下七个习惯：</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>1 · 先为任务分诊，再选择模型</h3>
+        <p>简单任务 —— 快速问答、摘要、改写、头脑风暴 —— 使用<strong>免费或低成本模型</strong>。复杂任务 —— 多步骤规划、长文档、编程、深入排障 —— 使用<strong>推理能力更强的模型</strong>。需要查看截图或图表时，选择<strong>支持视觉输入的模型</strong>。就像不会为处理一根木刺启动抢救团队：先从低成本选项开始，需要时再升级。</p>
+      </div>
+
+      <div class="card">
+        <h3>2 · 一个主题一个会话 — 就像一个患者一份病历</h3>
+        <p>切勿将财务、副业、CCRN 复习塞入同一对话 —— 细节易混，答案易糊。专注对话产出更清晰。<strong>话题更迭？立刻新会话。</strong>
+</p>
+      </div>
+
+      <div class="card">
+        <h3>3 · 项目即护理计划；会话即工作班次</h3>
+        <p>一次会话 = 一次对话。进行中的事项 —— 课程开发、商业计划、家庭项目 —— 用<strong>项目</strong>：工作区让文件、目标、对话长期共存，避免重复起步。</p>
+      </div>
+
+      <div class="card">
+        <h3>4 · 请教专家 — 用人设</h3>
+        <p>吩咐 Hermes 扮演谁，其回应的深度与风格随之改变：<em>"以平实导师身份，逐步解释此错误。"</em> · <em>"以创业策划家身份，审阅我的计划以寻找风险及下一步。"</em></p>
+      </div>
+
+      <div class="card">
+        <h3>5 · 有疑问？问助手自己</h3>
+        <p>你不需要完美指令。<em>"接下来最佳行动是什么？"</em> · <em>"在继续前，问我你所需的问题。"</em> · <em>"把这事拆成易行步骤。"</em> · <em>"我该用哪个模型处理此任务？"</em></p>
+      </div>
+
+      <div class="card">
+        <h3>6 · 用截图排障 — 让画面说明问题</h3>
+        <p>把截图当作排障数据，不要只靠文字描述。分享截图时同时说明：你原本想做什么、实际发生了什么、完整报错，以及已经尝试过哪些方法。<strong>截图中绝不能包含 API 密钥或密码</strong> —— 必要时先裁剪或模糊处理。</p>
+      </div>
+
+      <div class="card gold">
+        <h3>7 · 管控开支</h3>
+        <p>像管理耗材一样留意费用：开启消费上限，草稿使用低成本模型，把能力更强的模型留给真正需要复杂推理的任务；除非任务确实需要，否则不要上传大型文件。</p>
+      </div>
+    </div>
+
+    <div class="boundary" style="margin-top:1.4rem;">
+      <strong>日常流程 —— 练到成为本能：</strong> 按任务选择模型 · 新话题开启新会话 · 持续事项使用项目 · 需要专业视角时指定角色 · 有疑问就提问 · 卡住时提供截图 · 仅在必要时升级模型。
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIVE PHRASES ============ -->
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">术后嘱咐</p>
+    <h2>五句高频使用短语</h2>
+    <table class="phrase-table">
+      <thead><tr><th>你说</th><th>Hermes 做什么</th></tr></thead>
+      <tbody>
+        <tr><td>"运行我的早班交接。"</td><td>询问你的 #1 优先级，提出三种具体协助方式</td></tr>
+        <tr><td>"给我这节会话的 Kardex 记录。"</td><td>撰写 5 行交接记录，存入你的 Memory 文件夹</td></tr>
+        <tr><td>"把那个修正固化。"</td><td>把你的反馈转化为永久生效的规则</td></tr>
+        <tr><td>"开始前，像入院评估一样问诊我。"</td><td>在大任务前主动提问而非猜测</td></tr>
+        <tr><td>"动手前先给我看计划。"</td><td>让你的手牢牢把握每个决策</td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:2rem;">电脑暂不符合要求？你仍可参与。</h2>
+    <p>若当前电脑无法运行 Hermes，你只是暂时跳过安装这一步。<a href="../ai-mentors.html">免费 AI 课程与 55 位免费 AI 导师</a>可直接在浏览器中使用，每月 Lamp Huddle 与社区仍向你开放；<a href="../soul-quiz.html">SOUL 测验</a>会提前生成 SOUL 文件，等系统就绪时即可使用。</p>
+
+    <div class="boundary" style="background:var(--gold-100); border-left-color:var(--gold-500);">
+      <strong>再次强调：</strong> 你的参与与你的声音<em>现在</em>对我们极其重要 —— 而非等你添置硬件之后。AI 正涌入医疗，无论护理是否坐在决策桌旁 —— 今日准备的护士将引领此变局，而非被其裹挟。<strong>你是未来的南丁格尔 — 也是决定照护智能如何诞生的人。</strong>
+    </div>
+
+    <p style="margin-top:2rem;"><strong>感到迷茫？</strong> 这很正常。你只需专注<em>下一步</em>，不必一次看懂全貌。跳过暂时困惑的内容，把问题带到每月 Lamp Huddle —— 那里的每位护士都曾从和你现在相同的位置起步。</p>
+
+    <p style="text-align:center; margin-top:2rem;">
+      <a class="btn btn-primary" href="../assets/hermes-cheat-sheet.pdf">下载预检清单 + 备忘单（PDF） →</a>&nbsp;
+      <a class="btn btn-quiet" href="start-here.html">继续至步骤 2 — SOUL 测验 →</a>
+    </p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">智能体提出建议。人类作出判断。护士负责守护。</p>
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="start-here.html">从这里开始</a>
+      <a href="../pathways.html">路径</a>
+      <a href="resources.html">资源</a>
+      <a href="about.html">关于</a>
+      <a href="faq.html">常见问题</a>
+      <a href="../privacy.html">隐私</a>
+      <a href="../terms.html">条款</a>
+      <a href="mailto:great.ai.nurses@gmail.com">联系</a>
+    </div>
+    <p>© 2026 Nurse AI OS · NAIO Institute · 创始年免费供护士与护理学生使用。</p>
+  </div>
+</footer>
+
+<script src="../assets/counter.js" defer></script>
+</body>
+</html>

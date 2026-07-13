@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -49,7 +50,7 @@ def main() -> int:
     parser.feed(page)
     if not parser.title.strip():
         errors.append("missing HTML title")
-    required = ["CNO", "CIO", "CTO", "44/44", "8/8", "Unsigned candidate", "Primary sources"]
+    required = ["CNO", "CIO", "CTO", "46/46", "8/8", "Existing-anchor signed", "Primary sources"]
     for value in required:
         if value not in page:
             errors.append(f"missing required public statement: {value}")
@@ -78,14 +79,35 @@ def main() -> int:
             errors.append(f"forbidden public pattern: {label}")
 
     evidence = json.loads(PUBLIC_FILES[2].read_text(encoding="utf-8"))
-    if evidence["release_status"] != "unsigned_implementation_candidate":
-        errors.append("release status is not the approved unsigned candidate label")
-    if evidence["signing"]["signed"] is not False:
-        errors.append("candidate must not claim a signature")
-    if evidence["verification"]["unit_tests"] != {"count": 44, "ok": True}:
+    signing = evidence.get("signing", {})
+    verification = evidence.get("verification", {})
+    if evidence.get("release_status") != "signed_implementation_candidate":
+        errors.append("release status is not the approved signed candidate label")
+    if signing.get("signed") is not True:
+        errors.append("signed candidate must declare its detached signature")
+    if signing.get("trust_anchor_rotated") is not False:
+        errors.append("existing-anchor release must not claim key rotation")
+    unit_tests = verification.get("unit_tests", {})
+    if unit_tests.get("count") != 46 or unit_tests.get("ok") is not True:
         errors.append("unit-test evidence mismatch")
-    if evidence["verification"]["trajectory_evaluations"]["passed"] != 8:
+    if verification.get("trajectory_evaluations", {}).get("passed") != 8:
         errors.append("trajectory evidence mismatch")
+
+    signature_name = signing.get("signature")
+    signature = HARNESS_ROOT / "evidence" / signature_name if isinstance(signature_name, str) else None
+    public_key = SITE_ROOT / "naio-os" / "config" / "naio-os-release-public.pem"
+    if signature is None or not signature.is_file():
+        errors.append("detached release-evidence signature missing")
+    elif not public_key.is_file():
+        errors.append("trusted release public key missing")
+    else:
+        verified = subprocess.run(
+            ["openssl", "dgst", "-sha256", "-verify", str(public_key), "-signature", str(signature), str(PUBLIC_FILES[2])],
+            capture_output=True,
+            text=True,
+        )
+        if verified.returncode != 0 or "Verified OK" not in verified.stdout:
+            errors.append("detached release-evidence signature failed verification")
 
     output = {"ok": not errors, "errors": errors, "internal_links_checked": len(parser.links) - len(external), "external_citations": len(external), "public_files_scanned": len(PUBLIC_FILES)}
     print(json.dumps(output, indent=2, sort_keys=True))

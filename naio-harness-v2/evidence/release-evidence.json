@@ -2,22 +2,27 @@
   "artifact": "Nurse AI OS Harness 2.0",
   "clinical_status": "not_clinical_decision_support",
   "data_boundary": "no_phi_synthetic_tests_only",
-  "generated_at": "2026-07-13T14:34:28.917399+00:00",
+  "generated_at": "2026-07-13T16:18:07.036590+00:00",
   "human_governance": {
     "architecture_recommendations": "approved_by_founder_2026-07-13",
     "institutional_validation": "not_claimed",
     "steward_council_review": "pending"
   },
-  "release_status": "unsigned_implementation_candidate",
+  "release_status": "signed_implementation_candidate",
   "schema_version": "2.0.0-evidence",
   "signing": {
-    "existing_trust_anchor_rotated": false,
-    "gate": "matching_private_key_not_available_in_build_environment",
-    "required_next_action": "authorized_human_decision_and_verified_key_ceremony_before_signed_release",
-    "signed": false
+    "algorithm": "RSA-SHA256",
+    "ceremony_prepared_at": "2026-07-13T16:18:07.083267+00:00",
+    "human_signing_authority": "Robert Domondon, Founder and Release Steward",
+    "key_id": "naio-os-release-key-2026-06",
+    "public_key": "../../naio-os/config/naio-os-release-public.pem",
+    "public_key_fingerprint_sha256": "0ec92278f995225fbb93ce5853ff919965ec7fc4a1ae0942879207201c55b8f4",
+    "signature": "release-evidence.sig",
+    "signed": true,
+    "trust_anchor_rotated": false
   },
-  "source_file_count": 49,
-  "source_tree_hash": "d008887480fa0d5b2c1b49a1ac62b3895ef137e637154be68a3e77daae77bd91",
+  "source_file_count": 52,
+  "source_tree_hash": "0d9e226a3eb5453a7441dd2adcf2bdfb05c8e7bf3c91448bab033ad6895c32ae",
   "verification": {
     "hermes_runtime_canary": {
       "checks": {
@@ -104,10 +109,10 @@
         }
       ],
       "synthetic_only": true,
-      "terminal_provenance_root": "4ad5c24800894970aaa8cc9f408f5cc2288d1f7f793de2c9d5aada4c58dd4550"
+      "terminal_provenance_root": "1945af00843732eccb4924ff8ddcd476afd7d54d18412db07dad79918b713e3b"
     },
     "unit_tests": {
-      "count": 44,
+      "count": 46,
       "ok": true
     }
   }

@@ -24,11 +24,14 @@ Nurse AI OS has moved beyond a conceptual architecture. It now has:
 - a live post-setup distribution with five role-specific downloads;
 - deterministic ZIP checksums and explicit `not_installed` package status.
 
-That progress is substantial, but the system must **not** yet be described as a unified enforcement architecture. Three control-plane gaps prevent that claim:
+That progress is substantial, but the system must **not** yet be described as a unified enforcement architecture. Four P0 control-plane gaps prevent that claim:
 
 1. **Canonical EDENA semantics are inconsistent.** The signed Harness implements separate `risk_tier` and `autonomy_level` dimensions and treats Risk Red as block/stop. The repository-level `naio-os/config/edena-policy.yaml` still defines Red as semi-autonomous, human-out-of-the-loop operation. Both cannot remain sources of truth.
 2. **The role handoff is incomplete.** The SOUL export schema has four normalized role keys—`student`, `staff`, `leader`, and `other`—while the post-setup distribution has five lanes, separating Nurse Educator from Nurse Leader and Manager. No explicit role resolver currently binds those layers.
-3. **Shadow is observation, not protection.** The active plugin records what EDENA would allow or block, but it does not change tool execution. The system therefore has runtime governance evidence, not default-profile runtime enforcement.
+3. **PHI or live-care content can enter through an uncovered path.** Shadow tool-argument evaluation is not end-to-end prevention across input, memory, media, channels, delegation, or model output.
+4. **Enforce-capable configuration could be promoted without valid governance authorization.** Environment or configuration drift could activate blocking outside the approved scope.
+
+Shadow remains observation, not protection. The active plugin records what EDENA would allow or block, but it does not change tool execution. That P1 limitation means the system has runtime governance evidence, not default-profile runtime enforcement.
 
 ### Decision
 
@@ -931,10 +934,9 @@ The immediate work is to ensure that every layer tells the same truth:
 - `https://nurse-ai-os.org/post-setup/`
 - `https://nurse-ai-os.org/post-setup/downloads/manifest.json`
 
-## Prior reports incorporated by reference
+## Publication evidence boundary
 
-- `assets/nurse-ai-os-architecture-report.md`
-- `reports/2026-07-13-nurse-ai-os-harness-combined-report.md`
+This report is self-contained for public review. An earlier internal Harness working report informed the analysis but is **not incorporated by reference** and is not part of the public verification set. Every claim retained from that work is restated here and tied to the inspectable evidence artifacts listed above.
 
 ---
 

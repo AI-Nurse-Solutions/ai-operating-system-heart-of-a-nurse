@@ -1,0 +1,33 @@
+{
+  "schema_version": "2.0.0",
+  "approved_on": "2026-07-13",
+  "risk_tiers": {
+    "green": {"rank": 0, "default_disposition": "allow", "human_gate": "review_output"},
+    "yellow": {"rank": 1, "default_disposition": "require_approval", "human_gate": "before_external_use"},
+    "orange": {"rank": 2, "default_disposition": "defer_for_review", "human_gate": "written_scope_and_explicit_approval"},
+    "red": {"rank": 3, "default_disposition": "block", "human_gate": "authorized_human_or_institutional_process"}
+  },
+  "autonomy_levels": {
+    "A0": {"rank": 0, "label": "human_only"},
+    "A1": {"rank": 1, "label": "advisory"},
+    "A2": {"rank": 2, "label": "drafting"},
+    "A3": {"rank": 3, "label": "bounded_execution"},
+    "A4": {"rank": 4, "label": "supervised_autonomous_reserved"}
+  },
+  "hard_redlines": [
+    "phi_or_patient_identifier",
+    "patient_specific_clinical_decision",
+    "named_personnel_decision",
+    "payment_or_financial_execution",
+    "credential_or_secret_handling",
+    "unknown_side_effect_target",
+    "unmanifested_capability"
+  ],
+  "invariants": {
+    "red_max_autonomy": "A0",
+    "self_service_max_autonomy": "A2",
+    "downstream_may_regrant": false,
+    "ambiguity_risk_direction": "up",
+    "ambiguity_autonomy_direction": "down"
+  }
+}

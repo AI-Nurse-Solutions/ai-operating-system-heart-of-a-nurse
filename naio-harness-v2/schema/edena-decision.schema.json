@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.org/schema/edena-decision.schema.json",
+  "title": "EDENA Runtime Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision", "risk_tier", "autonomy_level", "reason_code", "policy_version", "capability_id"],
+  "properties": {
+    "decision": {"enum": ["allow", "block", "require_approval", "draft_only", "defer_for_review"]},
+    "risk_tier": {"enum": ["green", "yellow", "orange", "red"]},
+    "autonomy_level": {"enum": ["A0", "A1", "A2", "A3", "A4"]},
+    "reason_code": {"type": "string", "pattern": "^EDENA-[A-Z0-9_-]+$"},
+    "human_message": {"type": "string", "maxLength": 512},
+    "policy_version": {"type": "string"},
+    "capability_id": {"type": "string", "minLength": 1},
+    "manifest_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "requires_approval": {"type": "boolean"}
+  }
+}

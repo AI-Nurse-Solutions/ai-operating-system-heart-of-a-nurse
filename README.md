@@ -82,6 +82,8 @@ Nurse AI OS is an open platform.
 - **Documentation, playbooks, and curricula** are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 - **Third-party components** retain their original licenses and notices. Hermes Agent is used as an external runtime, and OpenClaw is referenced for interoperability and architectural research; neither codebase is vendored here as of July 14, 2026. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
+Nurse AI OS is provided as-is, without warranty of any kind, under the terms of the Apache License 2.0.
+
 Copyright 2026 Robert Domondon. See [NOTICE](NOTICE).
 
 ## Trademark

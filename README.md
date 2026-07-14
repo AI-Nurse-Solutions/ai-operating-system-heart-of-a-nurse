@@ -73,3 +73,25 @@ Stepwise communication realignment:
 - Step 12 — dashboard sequence correction: made the Local HTML Life Dashboard the first recommended dashboard and Notion the advanced option, with advantages of each described on the homepage and Hermes setup guide.
 
 - Step 13 — Nurse AI Side-Gig Starter Kit: added `/side-gig-starter-kit/`, a dedicated downloadable ZIP, and starter-kit source folder as the first doorway into NIN/NAIO for nurse entrepreneurs validating one safe no-PHI side project before cohorts or advanced builder pathways.
+
+## License
+
+Nurse AI OS is an open platform.
+
+- **Source code** is licensed under the [Apache License 2.0](LICENSE). You may use, modify, distribute, and commercially deploy it, with an explicit patent grant and no field-of-use restrictions.
+- **Documentation, playbooks, and curricula** are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- **Third-party components** retain their original licenses and notices. Hermes Agent is used as an external runtime, and OpenClaw is referenced for interoperability and architectural research; neither codebase is vendored here as of July 14, 2026. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Copyright 2026 Robert Domondon. See [NOTICE](NOTICE).
+
+## Trademark
+
+Nurse AI OS™ is a trademark of Robert Domondon. An application to register the mark is pending; no claim of federal registration is made. The source-code license does not grant permission to use the Nurse AI OS name, logo, certification marks, or other brand assets except for reasonable factual references to the project. Saying your work is "built with," "compatible with," or "a fork of" Nurse AI OS is permitted; claiming to be the official project, using the logo without permission, or issuing Nurse AI OS certificates is not. Full policy: [TRADEMARKS.md](TRADEMARKS.md).
+
+## Healthcare Use
+
+Nurse AI OS is workforce, administrative, and educational infrastructure — not a medical device. Deployments in healthcare settings are governed by [SAFETY.md](SAFETY.md): licensed-clinician accountability, no autonomous diagnosis or treatment, and no raw protected health information in agent memory, telemetry, logs, or model context. Read it before deploying.
+
+## Contributing
+
+Contributions are welcome under the bounded Contributor License Agreement in [CONTRIBUTING.md](CONTRIBUTING.md). Contributors keep their copyright; project relicensing rights are limited to the project's published licenses. The CLA contains no non-disparagement or critique-suppression term.

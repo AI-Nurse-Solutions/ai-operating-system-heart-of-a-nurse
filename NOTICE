@@ -1,0 +1,15 @@
+Nurse AI OS
+Copyright 2026 Robert Domondon
+
+Nurse AI OS™ is a trademark of Robert Domondon.
+
+The Nurse AI OS source-code license does not grant permission to use the
+Nurse AI OS name, logo, certification marks, or other brand assets except
+for reasonable factual references to the project. See TRADEMARKS.md.
+
+This project uses Hermes Agent as an external open-source runtime and references
+OpenClaw for interoperability and architectural research. No source code from
+either project is vendored in this repository as of July 14, 2026. Their MIT
+License notices and current distribution status are recorded in
+THIRD_PARTY_NOTICES.md.
+

@@ -33,7 +33,7 @@ Apache License 2.0 (code) and CC BY 4.0 (documentation) govern everyone's rights
 Copyright in the project's original components and the Nurse AI OS trademark are currently held by Robert Domondon as an individual. The project's institutional plan is:
 
 1. Upon formation of the designated successor entities, ownership transfers by written intellectual-property assignment — commercial operations assets to the commercial entity, and certification-mark custody to the nonprofit governance steward.
-2. The transfer changes the holder, not the terms. The open licenses, the CLA commitments in `CONTRIBUTING.md` Section 1.2, and the permitted uses in `TRADEMARKS.md` Section 2 survive unchanged.
+2. The transfer changes the holder, not the terms. The open licenses, the CLA terms in `CONTRIBUTING.md` Section 1, and the permitted uses in `TRADEMARKS.md` Section 2 survive unchanged.
 3. Each transfer is announced in the repository changelog and reflected in `NOTICE` and `TRADEMARKS.md` within the same release.
 
 ## 6. Transparency

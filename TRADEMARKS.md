@@ -20,7 +20,7 @@ You may, without asking:
 
 - Refer to the project by name to identify it factually: in documentation, articles, research, coursework, presentations, and conversation.
 - State truthful relationships: "built with Nurse AI OS," "compatible with Nurse AI OS," "runs on Nurse AI OS," "a fork of Nurse AI OS."
-- Critique, review, compare, parody, or report on the project, favorably or unfavorably. Journalism, research, and commentary that use the name to talk about the project are always permitted. This policy will never be asserted against good-faith criticism.
+- Critique, review, compare, parody, or report on the project, favorably or unfavorably. Journalism, research, and commentary that use the name to discuss the project are always permitted. This policy will never be asserted against good-faith criticism.
 - Fork the code and say your project is derived from Nurse AI OS, provided your fork carries its own name.
 
 ## 3. Prohibited Uses

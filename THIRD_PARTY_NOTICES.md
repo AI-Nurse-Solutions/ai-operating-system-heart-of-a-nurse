@@ -18,7 +18,7 @@ No Hermes or OpenClaw source code is vendored in this repository as of July 14, 
 
 Hermes Agent is distributed under the MIT License. Its original notice is reproduced verbatim:
 
-```
+```text
 MIT License
 
 Copyright (c) 2025 Nous Research
@@ -46,7 +46,7 @@ SOFTWARE.
 
 OpenClaw is distributed under the MIT License. Its original notice is reproduced verbatim:
 
-```
+```text
 MIT License
 
 Copyright (c) 2026 OpenClaw Foundation

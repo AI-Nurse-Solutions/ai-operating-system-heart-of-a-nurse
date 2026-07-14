@@ -4,6 +4,7 @@ import {
   POST_SETUP_LANES,
   ERROR_CODES,
   createInitialState,
+  normalizeSavedState,
   determineRoute,
   getFlow,
   validateStage,
@@ -52,10 +53,15 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return createInitialState();
     const parsed = JSON.parse(raw);
-    if (parsed?.schemaVersion !== 1) return createInitialState();
+    const normalized = normalizeSavedState(parsed);
+    if (!normalized) {
+      localStorage.removeItem(STORAGE_KEY);
+      return createInitialState();
+    }
     hadSavedState = true;
-    return { ...createInitialState(), ...parsed };
+    return normalized;
   } catch {
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
     return createInitialState();
   }
 }

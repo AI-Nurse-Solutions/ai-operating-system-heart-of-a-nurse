@@ -108,13 +108,28 @@ class SetupHelperTests(unittest.TestCase):
         result = node_eval("""
           import {createInitialState,determineRoute} from './setup-helper/setup-helper-model.mjs';
           function route(device,ownership,admin){const s=createInitialState();s.door='mac';s.environment={device,ownership,admin,browser:'safari',hermesStatus:'not-installed'};return determineRoute(s)}
-          console.log(JSON.stringify({personal:route('mac','personal','yes'),authorized:route('mac','authorized','yes'),managed:route('mac','employer','yes'),noAdmin:route('mac','personal','no'),windows:route('windows','personal','yes')}));
+          console.log(JSON.stringify({personal:route('mac','personal','yes'),authorized:route('mac','authorized','yes'),managed:route('mac','employer','yes'),shared:route('mac','shared','yes'),noAdmin:route('mac','personal','no'),windows:route('windows','personal','yes')}));
         """)
         self.assertEqual(result["personal"], "mac")
         self.assertEqual(result["authorized"], "mac")
         self.assertEqual(result["managed"], "browser")
+        self.assertEqual(result["shared"], "browser")
         self.assertEqual(result["noAdmin"], "browser")
         self.assertEqual(result["windows"], "browser")
+
+    def test_corrupt_saved_state_is_rejected_fail_closed(self):
+        result = node_eval("""
+          import {createInitialState,getFlow,normalizeSavedState} from './setup-helper/setup-helper-model.mjs';
+          const valid=createInitialState();valid.updatedAt='2026-07-14T00:00:00Z';
+          const partial={schemaVersion:1,safety:null};
+          const badStage={...valid,stage:99};
+          const badIndex={...valid,stage:5,route:'browser',flowIndex:999};
+          const badIds={...valid,route:'browser',completedFlowIds:['mac-install']};
+          console.log(JSON.stringify({valid:!!normalizeSavedState(valid),partial:normalizeSavedState(partial),badStage:normalizeSavedState(badStage),badIndex:normalizeSavedState(badIndex),badIds:normalizeSavedState(badIds),browserFlow:getFlow('browser').length}));
+        """)
+        self.assertTrue(result["valid"])
+        for key in ("partial", "badStage", "badIndex", "badIds"):
+            self.assertIsNone(result[key])
 
     def test_safety_and_readiness_are_fail_closed(self):
         result = node_eval("""

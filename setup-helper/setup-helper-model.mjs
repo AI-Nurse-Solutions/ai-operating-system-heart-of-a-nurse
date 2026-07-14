@@ -218,12 +218,79 @@ export function createInitialState() {
 export function determineRoute(state) {
   if (state.door !== 'mac') return 'browser';
   const env = state.environment || {};
-  if (env.device !== 'mac' || env.ownership === 'employer' || env.admin === 'no') return 'browser';
+  if (env.device !== 'mac' || !['personal', 'authorized'].includes(env.ownership) || env.admin !== 'yes') return 'browser';
   return 'mac';
 }
 
 export function getFlow(route) {
   return route === 'mac' ? MAC_FLOW : BROWSER_FLOW;
+}
+
+function isRecord(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function hasBooleanShape(value, keys) {
+  return isRecord(value) && keys.every((key) => typeof value[key] === 'boolean');
+}
+
+export function normalizeSavedState(candidate) {
+  if (!isRecord(candidate) || candidate.schemaVersion !== 1) return null;
+  if (!Number.isInteger(candidate.stage) || candidate.stage < 0 || candidate.stage > 6) return null;
+  if (!hasBooleanShape(candidate.safety, ['noPhi', 'noClinical', 'noSecrets', 'guideOnly'])) return null;
+  if (!hasBooleanShape(candidate.readiness, ['time', 'folder', 'recovery', 'boundaries'])) return null;
+  if (!isRecord(candidate.environment)) return null;
+
+  const allowed = {
+    door: ['', 'browser', 'mac'],
+    device: ['', 'mac', 'windows', 'mobile', 'other'],
+    ownership: ['', 'personal', 'authorized', 'employer', 'shared'],
+    admin: ['', 'yes', 'no'],
+    browser: ['', 'chrome', 'safari', 'firefox', 'other'],
+    hermesStatus: ['', 'not-installed', 'installed', 'not-sure'],
+    identityRole: ['', ...IDENTITY_ROLES.map((item) => item.value)],
+    postSetupLane: ['', ...POST_SETUP_LANES.map((item) => item.value)],
+    route: ['', 'browser', 'mac'],
+    issueCode: ['', ...ERROR_CODES.map((item) => item.value)]
+  };
+  const fields = [
+    ['door', candidate.door],
+    ['device', candidate.environment.device],
+    ['ownership', candidate.environment.ownership],
+    ['admin', candidate.environment.admin],
+    ['browser', candidate.environment.browser],
+    ['hermesStatus', candidate.environment.hermesStatus],
+    ['identityRole', candidate.identityRole],
+    ['postSetupLane', candidate.postSetupLane],
+    ['route', candidate.route],
+    ['issueCode', candidate.issueCode]
+  ];
+  if (fields.some(([name, value]) => !allowed[name].includes(value))) return null;
+  if (!Array.isArray(candidate.completedFlowIds) || candidate.completedFlowIds.some((id) => typeof id !== 'string')) return null;
+  if (!Number.isInteger(candidate.flowIndex) || candidate.flowIndex < 0) return null;
+  if (typeof candidate.updatedAt !== 'string') return null;
+  if (candidate.stage >= 5 && !['browser', 'mac'].includes(candidate.route)) return null;
+
+  const route = candidate.route;
+  const flow = route ? getFlow(route) : [];
+  if ((!route && (candidate.flowIndex !== 0 || candidate.completedFlowIds.length)) ||
+      (route && (candidate.flowIndex >= flow.length || candidate.completedFlowIds.some((id) => !flow.some((step) => step.id === id))))) return null;
+
+  return {
+    schemaVersion: 1,
+    stage: candidate.stage,
+    safety: Object.fromEntries(['noPhi', 'noClinical', 'noSecrets', 'guideOnly'].map((key) => [key, candidate.safety[key]])),
+    door: candidate.door,
+    environment: Object.fromEntries(['device', 'ownership', 'admin', 'browser', 'hermesStatus'].map((key) => [key, candidate.environment[key]])),
+    identityRole: candidate.identityRole,
+    postSetupLane: candidate.postSetupLane,
+    readiness: Object.fromEntries(['time', 'folder', 'recovery', 'boundaries'].map((key) => [key, candidate.readiness[key]])),
+    route,
+    flowIndex: candidate.flowIndex,
+    completedFlowIds: [...new Set(candidate.completedFlowIds)],
+    issueCode: candidate.issueCode,
+    updatedAt: candidate.updatedAt
+  };
 }
 
 export function validateStage(stage, state) {

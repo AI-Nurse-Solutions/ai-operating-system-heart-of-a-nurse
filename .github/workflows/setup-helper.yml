@@ -8,6 +8,11 @@ on:
       - "setup.html"
       - "start-here.html"
       - "privacy.html"
+      - "faq.html"
+      - "cheat-sheet.html"
+      - "hermes-downloads/index.html"
+      - "about.html"
+      - "hermes-masterclass.html"
       - "sitemap.xml"
       - ".github/workflows/setup-helper.yml"
   push:
@@ -18,6 +23,11 @@ on:
       - "setup.html"
       - "start-here.html"
       - "privacy.html"
+      - "faq.html"
+      - "cheat-sheet.html"
+      - "hermes-downloads/index.html"
+      - "about.html"
+      - "hermes-masterclass.html"
       - "sitemap.xml"
       - ".github/workflows/setup-helper.yml"
 
@@ -49,7 +59,11 @@ jobs:
           python3 - <<'PY'
           import re
           from pathlib import Path
-          paths = list(Path("setup-helper").rglob("*")) + [Path("setup.html"), Path("start-here.html"), Path("privacy.html")]
+          paths = list(Path("setup-helper").rglob("*")) + [
+              Path("setup.html"), Path("start-here.html"), Path("privacy.html"),
+              Path("faq.html"), Path("cheat-sheet.html"), Path("hermes-downloads/index.html"),
+              Path("about.html"), Path("hermes-masterclass.html"),
+          ]
           text = "\n".join(p.read_text(errors="ignore") for p in paths if p.is_file())
           patterns = {
               "private key": r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",

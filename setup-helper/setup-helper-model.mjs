@@ -197,6 +197,25 @@ const MAC_FLOW = Object.freeze([
   }
 ]);
 
+const MAC_STATUS_CHECK = Object.freeze({
+  id: 'mac-check-existing',
+  title: 'Check whether Hermes is already installed',
+  time: '5–15 minutes',
+  risk: 'Yellow · human verifies',
+  why: 'A health check prevents an unnecessary reinstall and gives you evidence before the next step.',
+  actions: [
+    'Open Terminal and run the health-check command below.',
+    'If Hermes responds, do not reinstall it; review the result and continue.',
+    'If Terminal says the command is missing, use only the official installation documentation, then rerun the health check.'
+  ],
+  command: 'hermes doctor',
+  links: [
+    { label: 'Official Hermes installation docs', href: 'https://hermes-agent.nousresearch.com/docs/getting-started/installation', external: true },
+    { label: 'Official Hermes site', href: 'https://hermes-agent.nousresearch.com/', external: true }
+  ],
+  verify: 'hermes doctor completed without an unresolved blocking problem.'
+});
+
 export function createInitialState() {
   return {
     schemaVersion: 1,
@@ -222,8 +241,15 @@ export function determineRoute(state) {
   return 'mac';
 }
 
-export function getFlow(route) {
-  return route === 'mac' ? MAC_FLOW : BROWSER_FLOW;
+export function getFlow(route, hermesStatus = 'not-installed') {
+  if (route !== 'mac') return BROWSER_FLOW;
+  if (hermesStatus === 'installed') return MAC_FLOW.filter((step) => step.id !== 'mac-install');
+  if (hermesStatus === 'not-sure') {
+    return MAC_FLOW
+      .map((step) => step.id === 'mac-install' ? MAC_STATUS_CHECK : step)
+      .filter((step) => step.id !== 'mac-doctor');
+  }
+  return MAC_FLOW;
 }
 
 function isRecord(value) {
@@ -272,7 +298,7 @@ export function normalizeSavedState(candidate) {
   if (candidate.stage >= 5 && !['browser', 'mac'].includes(candidate.route)) return null;
 
   const route = candidate.route;
-  const flow = route ? getFlow(route) : [];
+  const flow = route ? getFlow(route, candidate.environment.hermesStatus) : [];
   if ((!route && (candidate.flowIndex !== 0 || candidate.completedFlowIds.length)) ||
       (route && (candidate.flowIndex >= flow.length || candidate.completedFlowIds.some((id) => !flow.some((step) => step.id === id))))) return null;
 
@@ -321,7 +347,7 @@ export function safeTaskForLane(lane) {
 
 export function buildSupportSummary(state, issueCode) {
   const route = state.route || determineRoute(state);
-  const flow = getFlow(route);
+  const flow = getFlow(route, state.environment?.hermesStatus);
   const current = flow[Math.min(state.flowIndex || 0, flow.length - 1)];
   return [
     'Nurse AI OS Setup Helper — sanitized support summary',

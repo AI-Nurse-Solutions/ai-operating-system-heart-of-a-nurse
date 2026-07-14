@@ -70,7 +70,7 @@ details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-
     <div class="step" style="border-left:4px solid var(--gold-500); margin-bottom:.4rem;">
       <h3>Step 0 — the readiness check (2 minutes)</h3>
       <p>You check your equipment at the start of every shift. Same here — two minutes now saves an hour of frustration later.</p>
-      <p><strong>You'll need a desktop or laptop</strong> — Mac or Windows; not a phone, tablet, or Chromebook. Why it's worth it: on your own computer, your files and your AI's memory stay <strong>local — on your machine, not in someone's cloud</strong>. Rough guide: a computer from the last ~5 years with at least 8&nbsp;GB of memory and a few GB free usually does fine — the <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">official Hermes site</a> lists current requirements.</p>
+      <p><strong>You'll need a desktop or laptop</strong> — Mac or Windows; not a phone, tablet, or Chromebook. Your Nurse AI OS files and local Hermes state can stay on your machine. <strong>Model processing is a separate boundary:</strong> unless you deliberately use a local model, prompts and selected context may be sent to your configured model provider under that provider's terms. Rough guide: a computer from the last ~5 years with at least 8&nbsp;GB of memory and a few GB free usually does fine — the <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">official Hermes site</a> lists current requirements.</p>
       <p><strong>Prep the field</strong> — like clearing a sterile field before a procedure: your system will live in one dedicated folder (the Starter Kit builds it), and nothing private should live inside it — no tax documents, no family photos, no work files. On a shared family computer, consider a separate user account: your own med cart instead of a shared one.</p>
       <p style="font-size:.93rem; color:var(--ink-600);">If Hermes won't install, it's your computer's specs — <em>not you, and not a mistake you made</em>. A cloud option (the VPS path) is coming so any device can run a full system.</p>
     </div>
@@ -88,7 +88,7 @@ details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-
       <!-- ============ STEP 1 ============ -->
       <div class="step">
         <h3>Door 2 only — go over the Pre-Procedure Checklist, then install Hermes</h3>
-        <p>Hermes is the free, open-source AI engine your Nurse AI OS runs on. Install it from the official site, open it, and say hello — it works like a chat, and you cannot break anything.</p>
+        <p>Hermes is the free, open-source AI engine your Nurse AI OS runs on. Install it from the official site and begin carefully. It works like a chat, but it can also use files, terminal commands, and other tools when configured. Review commands and permissions, keep approvals on, and stop when anything is unclear.</p>
         <p>
           <a class="btn btn-primary btn-sm" href="cheat-sheet.html">The Pre-Procedure Checklist →</a>&nbsp;
           <a class="btn btn-quiet btn-sm" href="https://hermes-agent.nousresearch.com/">Get Hermes (official site)</a>&nbsp;
@@ -205,11 +205,11 @@ details.cheat .cheat-body { padding: 0 1.1rem 1rem; color: var(--ink-600); font-
       <div class="step"><h3>Employer systems stay at work.</h3><p>No EHR screens, no confidential policies, no identifiable staff or student data. Public, fictional, or personal material only — unless your organization's compliance team has explicitly approved a tool and workflow.</p></div>
       <div class="step"><h3>When in doubt, ask a human.</h3><p>Bring gray areas to the <a href="assets/lamp-huddle.pdf">Lamp Huddle</a> or email <a href="mailto:great.ai.nurses@gmail.com">great.ai.nurses@gmail.com</a>. A question asked early beats an incident reported late.</p></div>
     </div>
-    <p style="margin-top:2rem;">These rules have a name: <strong>EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</strong> — the governance framework in every layer of Nurse AI OS. Every action gets classified before it runs:
-      <span class="badge" style="background:#e5f3e6; color:#2c6e31;">🟢 Green — may proceed</span>
-      <span class="badge" style="background:#fdf3d7; color:#8a6420;">🟡 Yellow — you approve first</span>
-      <span class="badge" style="background:#fbe4e4; color:#a33a3a;">🔴 Red — human authorization mandatory</span>
-      You'll meet it formally in the <a href="assets/nurse-ai-os-workbook.pdf">workbook</a> — for now, the five rules above are all you need. When you're ready to make your AI <em>follow</em> them automatically, download the <a href="assets/governance-kit.zip">Governance Kit</a> — the rules as files your system loads every session.</p>
+    <p style="margin-top:2rem;">These rules have a name: <strong>EDENA — Ethical Design &amp; Enablement for Nursing Augmentation</strong> — the governance framework in every layer of Nurse AI OS. In the current public setup, EDENA provides review-first classifications for human judgment:
+      <span class="badge" style="background:#e5f3e6; color:#2c6e31;">🟢 Green — low-risk and reversible</span>
+      <span class="badge" style="background:#fdf3d7; color:#8a6420;">🟡 Yellow — human review before action</span>
+      <span class="badge" style="background:#fbe4e4; color:#a33a3a;">🔴 Red — stop, prohibit, or escalate</span>
+      The <a href="assets/governance-kit.zip">Governance Kit</a> provides advisory instruction files; it does not by itself enforce controls. The published default posture remains shadow/observe-only, with humans responsible for every action.</p>
   </div>
 </section>
 

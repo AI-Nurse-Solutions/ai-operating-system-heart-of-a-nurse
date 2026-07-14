@@ -169,7 +169,7 @@ function renderReadiness() {
 
 function renderFlow() {
   const route = state.route || determineRoute(state);
-  const flow = getFlow(route);
+  const flow = getFlow(route, state.environment?.hermesStatus);
   const index = Math.min(state.flowIndex, flow.length - 1);
   const step = flow[index];
   const verified = state.completedFlowIds.includes(step.id);
@@ -220,7 +220,7 @@ function bindStageInputs() {
   }));
   const verified = content.querySelector('#flow-verified');
   if (verified) verified.addEventListener('change', () => {
-    const flow = getFlow(state.route || determineRoute(state));
+    const flow = getFlow(state.route || determineRoute(state), state.environment?.hermesStatus);
     const id = flow[state.flowIndex].id;
     if (verified.checked && !state.completedFlowIds.includes(id)) state.completedFlowIds.push(id);
     if (!verified.checked) state.completedFlowIds = state.completedFlowIds.filter((x) => x !== id);
@@ -252,7 +252,7 @@ function next() {
   }
   if (state.stage === 2) state.route = determineRoute(state);
   if (state.stage === 5) {
-    const flow = getFlow(state.route);
+    const flow = getFlow(state.route, state.environment?.hermesStatus);
     const current = flow[state.flowIndex];
     if (!state.completedFlowIds.includes(current.id)) {
       showValidation('Check the verification statement only after you have confirmed the expected result.');
@@ -270,7 +270,7 @@ function back() {
   if (state.stage === 5 && state.flowIndex > 0) state.flowIndex -= 1;
   else if (state.stage === 6) {
     state.stage = 5;
-    state.flowIndex = Math.max(0, getFlow(state.route).length - 1);
+    state.flowIndex = Math.max(0, getFlow(state.route, state.environment?.hermesStatus).length - 1);
   } else if (state.stage > 0) state.stage -= 1;
   persist();
   render();
@@ -279,7 +279,7 @@ function back() {
 function updateProgress() {
   let progress = (state.stage / 6) * 100;
   if (state.stage === 5) {
-    const flow = getFlow(state.route || determineRoute(state));
+    const flow = getFlow(state.route || determineRoute(state), state.environment?.hermesStatus);
     progress = 83 + ((state.flowIndex + (state.completedFlowIds.includes(flow[state.flowIndex]?.id) ? 1 : 0)) / flow.length) * 14;
   }
   if (state.stage === 6) progress = 100;
@@ -299,7 +299,7 @@ function updateButtons() {
   nextButton.hidden = state.stage === 6;
   issueButton.hidden = false;
   if (state.stage === 5) {
-    const flow = getFlow(state.route || determineRoute(state));
+    const flow = getFlow(state.route || determineRoute(state), state.environment?.hermesStatus);
     nextButton.textContent = state.flowIndex === flow.length - 1 ? 'Verify and finish →' : 'I verified this step →';
   } else nextButton.textContent = state.stage === 4 ? 'Begin guided setup →' : 'Continue →';
 }

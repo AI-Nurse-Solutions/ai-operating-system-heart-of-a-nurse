@@ -294,7 +294,7 @@ export function normalizeSavedState(candidate) {
 }
 
 export function validateStage(stage, state) {
-  if (stage === 0) return Object.values(state.safety || {}).every(Boolean);
+  if (stage === 0) return ['noPhi', 'noClinical', 'noSecrets', 'guideOnly'].every((key) => state.safety?.[key] === true);
   if (stage === 1) return ['browser', 'mac'].includes(state.door);
   if (stage === 2) {
     const env = state.environment || {};
@@ -304,7 +304,7 @@ export function validateStage(stage, state) {
     return IDENTITY_ROLES.some((r) => r.value === state.identityRole) &&
       POST_SETUP_LANES.some((l) => l.value === state.postSetupLane);
   }
-  if (stage === 4) return Object.values(state.readiness || {}).every(Boolean);
+  if (stage === 4) return ['time', 'folder', 'recovery', 'boundaries'].every((key) => state.readiness?.[key] === true);
   return true;
 }
 

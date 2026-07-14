@@ -208,11 +208,15 @@ function bindStageInputs() {
     persist();
   }));
   content.querySelectorAll('input[type="radio"]').forEach((input) => input.addEventListener('change', () => {
+    const focusedId = input.id;
     const name = input.name;
     if (['device', 'ownership', 'admin', 'browser', 'hermesStatus'].includes(name)) state.environment[name] = input.value;
     else state[name] = input.value;
     persist();
-    if (state.stage === 2) render();
+    if (state.stage === 2) {
+      render();
+      document.getElementById(focusedId)?.focus();
+    }
   }));
   const verified = content.querySelector('#flow-verified');
   if (verified) verified.addEventListener('change', () => {
@@ -222,12 +226,14 @@ function bindStageInputs() {
     if (!verified.checked) state.completedFlowIds = state.completedFlowIds.filter((x) => x !== id);
     persist();
   });
-  content.querySelectorAll('.copy-command').forEach((button) => button.addEventListener('click', async () => {
+  content.querySelectorAll('.copy-command').forEach((button) => {
     const original = button.textContent;
-    try { await navigator.clipboard.writeText(button.dataset.command); button.textContent = 'Copied'; }
-    catch { button.textContent = 'Select and copy manually'; }
-    setTimeout(() => { button.textContent = original; }, 1800);
-  }));
+    button.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(button.dataset.command); button.textContent = 'Copied'; }
+      catch { button.textContent = 'Select and copy manually'; }
+      setTimeout(() => { button.textContent = original; }, 1800);
+    });
+  });
   content.querySelector('#print-summary')?.addEventListener('click', () => window.print());
 }
 

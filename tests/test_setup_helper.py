@@ -141,6 +141,14 @@ class SetupHelperTests(unittest.TestCase):
         """)
         self.assertEqual(result, {"emptySafety": False, "fullSafety": True, "emptyReady": False, "fullReady": True})
 
+    def test_required_stage_fields_cannot_pass_vacuously(self):
+        result = node_eval("""
+          import {createInitialState,validateStage} from './setup-helper/setup-helper-model.mjs';
+          const s=createInitialState();s.safety={};s.readiness={};
+          console.log(JSON.stringify({safety:validateStage(0,s),readiness:validateStage(4,s)}));
+        """)
+        self.assertEqual(result, {"safety": False, "readiness": False})
+
     def test_both_flows_are_complete_and_verified(self):
         result = node_eval("""
           import {getFlow} from './setup-helper/setup-helper-model.mjs';
@@ -192,7 +200,14 @@ class SetupHelperTests(unittest.TestCase):
         self.assertIn("overflow-x:hidden", self.css)
         self.assertIn("grid-template-columns:repeat(2,minmax(0,1fr))", self.css)
         self.assertIn(".helper-hero-grid>*{min-width:0}", self.css)
+        self.assertIn("clip-path:inset(50%)", self.css)
         self.assertIn("<noscript>", self.html)
+
+    def test_ci_hardening_and_full_public_scan_scope(self):
+        workflow = (ROOT / ".github/workflows/setup-helper.yml").read_text(encoding="utf-8")
+        self.assertIn("persist-credentials: false", workflow)
+        for path in ("setup.html", "start-here.html", "privacy.html"):
+            self.assertIn(f'Path("{path}")', workflow)
 
     def test_honest_time_and_nonclaim_copy(self):
         combined = (self.html + self.model + self.app).lower()

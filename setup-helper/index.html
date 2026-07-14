@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup Helper — Nurse AI OS</title>
+<meta name="description" content="A private, step-by-step Nurse AI OS Setup Helper for Browser-first and macOS Hermes installation. No account, no AI chatbot, and no message logging.">
+<link rel="canonical" href="https://nurse-ai-os.org/setup-helper/">
+<link rel="icon" type="image/svg+xml" href="../assets/img/favicon-lamp.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<link rel="stylesheet" href="setup-helper.css">
+</head>
+<body>
+<a class="skip-link" href="#helper-app">Skip to Setup Helper</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="../index.html"><span class="lamp" aria-hidden="true">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="../start-here.html">Start Here</a>
+      <a href="../setup.html">Two Doors</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../faq.html">FAQ</a>
+      <a class="nav-cta active" href="./" aria-current="page">Setup Helper</a>
+    </div>
+  </nav>
+</header>
+
+<section class="helper-hero">
+  <div class="container helper-hero-grid">
+    <div>
+      <p class="kicker">Phase 1 · deterministic guidance</p>
+      <h1>A calm guide through Nurse AI OS setup</h1>
+      <p class="lede">One verified step at a time for Browser-first or macOS Hermes setup. This helper does not use an AI model, send your answers to a server, or install anything for you.</p>
+      <div class="privacy-chips" aria-label="Privacy and safety summary">
+        <span>Local progress only</span><span>No account</span><span>No PHI</span><span>Human executes</span>
+      </div>
+    </div>
+    <aside class="time-card" aria-label="Time expectation">
+      <p class="time-card-label">Honest expectation</p>
+      <strong>Setup takes time.</strong>
+      <p>Allow 30–45 minutes for a careful SOUL first pass, plus installation time if you choose Hermes. Pause whenever you need. The wait is worth it.</p>
+      <p class="broad-strokes">Broad strokes now. Go deeper later.</p>
+    </aside>
+  </div>
+</section>
+
+<main id="helper-app" class="section helper-section" tabindex="-1">
+  <div class="container helper-shell">
+    <aside class="helper-sidebar" aria-label="Setup progress">
+      <div class="progress-header"><span>Setup progress</span><strong id="progress-percent">0%</strong></div>
+      <div class="progress-track" role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-fill"></div></div>
+      <ol id="stage-list" class="stage-list">
+        <li data-stage="0">Safety boundary</li>
+        <li data-stage="1">Choose a door</li>
+        <li data-stage="2">Your environment</li>
+        <li data-stage="3">Identity and lane</li>
+        <li data-stage="4">Readiness</li>
+        <li data-stage="5">Guided setup</li>
+        <li data-stage="6">First safe success</li>
+      </ol>
+      <div class="local-note"><strong>Stored on this device:</strong> current step, door, device category, identity, lane, and checked items. No free-text conversation is collected.</div>
+      <button id="reset-button" class="text-button" type="button">Clear local progress and restart</button>
+    </aside>
+
+    <section class="helper-chat" aria-label="Setup Helper conversation">
+      <div class="helper-agent">
+        <div class="agent-avatar" aria-hidden="true">🕯️</div>
+        <div><p class="agent-name">Nurse AI OS Setup Helper</p><p class="agent-status"><span aria-hidden="true">●</span> Deterministic · local-only</p></div>
+      </div>
+      <div id="resume-banner" class="resume-banner" hidden>
+        <span>Local progress found on this device.</span>
+        <button id="resume-button" type="button">Resume</button>
+      </div>
+      <div id="announcement" class="sr-only" aria-live="polite"></div>
+      <div id="chat-content" class="chat-content"></div>
+      <div id="validation-message" class="validation-message" role="alert" hidden></div>
+      <div class="helper-actions">
+        <button id="back-button" class="btn btn-quiet" type="button">← Back</button>
+        <button id="issue-button" class="btn btn-quiet" type="button">Something went wrong</button>
+        <button id="next-button" class="btn btn-primary" type="button">Continue →</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<section class="section section-alt">
+  <div class="container narrow">
+    <p class="eyebrow">What this helper will never do</p>
+    <h2>Guidance without hidden authority</h2>
+    <div class="never-grid">
+      <div><strong>No silent installation</strong><span>You click, type, approve, or stop every action.</span></div>
+      <div><strong>No credentials</strong><span>Provider keys and passwords belong inside approved provider or Hermes setup surfaces—not here.</span></div>
+      <div><strong>No clinical use</strong><span>No patient-specific care, clinical decisions, EHR content, or identifiable stories.</span></div>
+      <div><strong>No automatic activation</strong><span>No connectors, cron jobs, memory rules, role packs, or enforcement modes are enabled.</span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links"><a href="../index.html">Home</a><a href="../start-here.html">Start Here</a><a href="../setup.html">Two Doors</a><a href="../privacy.html">Privacy</a><a href="mailto:great.ai.nurses@gmail.com">Human help</a></div>
+    <p>Phase 1 · Browser-first and macOS Hermes · No PHI · No clinical decisions.</p>
+  </div>
+</footer>
+
+<dialog id="issue-dialog" aria-labelledby="issue-title">
+  <form method="dialog" id="issue-form">
+    <div class="dialog-head"><div><p class="kicker">Sanitized troubleshooting</p><h2 id="issue-title">What went wrong?</h2></div><button class="dialog-close" value="cancel" aria-label="Close troubleshooting">×</button></div>
+    <p>Choose an approved error category. Do not paste names, patient information, screenshots, credentials, tokens, file contents, or employer-confidential details.</p>
+    <label for="issue-code">Issue category</label>
+    <select id="issue-code" required></select>
+    <div id="issue-guidance" class="issue-guidance"></div>
+    <label class="confirm-row"><input id="support-safe" type="checkbox"> I confirmed the support summary contains no PHI, credentials, or employer-confidential information.</label>
+    <textarea id="support-summary" readonly rows="11" aria-label="Sanitized support summary"></textarea>
+    <div class="dialog-actions"><button id="copy-summary" class="btn btn-primary" type="button" disabled>Copy sanitized summary</button><a class="btn btn-quiet" href="mailto:great.ai.nurses@gmail.com">Email a human</a><button class="btn btn-quiet" value="cancel">Return to setup</button></div>
+    <p id="copy-status" class="copy-status" aria-live="polite"></p>
+  </form>
+</dialog>
+
+<noscript><div class="noscript">This local Setup Helper needs JavaScript to keep progress and show one step at a time. You can use the static <a href="../start-here.html">Start Here guide</a> instead.</div></noscript>
+<script type="module" src="setup-helper.mjs"></script>
+</body>
+</html>

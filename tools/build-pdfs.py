@@ -33,7 +33,7 @@ DOCS = {
     "architecture": ("assets/nurse-ai-os-architecture-report.md", "assets/nurse-ai-os-architecture-report.pdf",
                      "Nurse AI OS Architecture Report"),
     "media": ("assets/nurse-ai-os-media-packet.md", "assets/nurse-ai-os-media-packet.pdf",
-              "Nurse AI OS Media Packet"),
+              "Nurse AI OS™ Media Packet"),
     "media-fr": ("assets/nurse-ai-os-media-packet-fr.md", "assets/nurse-ai-os-media-packet-fr.pdf",
                  "Nurse AI OS — Dossier de presse"),
     "media-es": ("assets/nurse-ai-os-media-packet-es.md", "assets/nurse-ai-os-media-packet-es.pdf",
@@ -134,8 +134,8 @@ def build(key: str, chrome: str) -> None:
     html = (f'<!DOCTYPE html><html lang="{meta.get("lang", "en")}" dir="{meta.get("dir", "ltr")}">'
             f'<head><meta charset="utf-8"><title>{title}</title>'
             f'{FONTS}{meta.get("font_links", "")}<style>{CSS}{meta.get("css", "")}</style></head><body>{body}'
-            f'<div class="doc-footer">nurse-ai-os.org · No PHI, ever · AI drafts, humans judge, '
-            f'nurses steward · This PDF is generated from {src_rel} — the web copy is canonical.'
+            f'<div class="doc-footer">nurse-ai-os.org · No PHI · Agents propose. Humans judge. '
+            f'Nurses steward. · This PDF is generated from {src_rel} — the web copy is canonical.'
             f'</div></body></html>')
     with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8") as tf:
         tf.write(html)

@@ -17,6 +17,16 @@ MODEL = HELPER / "setup-helper-model.mjs"
 APP = HELPER / "setup-helper.mjs"
 CSS = HELPER / "setup-helper.css"
 PRIVACY = ROOT / "privacy.html"
+ENGLISH_SETUP_PAGES = (
+    ROOT / "setup.html",
+    ROOT / "start-here.html",
+    ROOT / "faq.html",
+    ROOT / "cheat-sheet.html",
+    ROOT / "hermes-downloads/index.html",
+    ROOT / "about.html",
+    ROOT / "hermes-masterclass.html",
+    HTML,
+)
 
 
 class Parser(html.parser.HTMLParser):
@@ -160,6 +170,20 @@ class SetupHelperTests(unittest.TestCase):
         self.assertTrue(result["browser"]["unique"] and result["browser"]["complete"])
         self.assertTrue(result["mac"]["unique"] and result["mac"]["complete"])
 
+    def test_hermes_status_changes_the_mac_flow(self):
+        result = node_eval("""
+          import {getFlow} from './setup-helper/setup-helper-model.mjs';
+          const describe=(status)=>{const f=getFlow('mac',status);return {ids:f.map(x=>x.id),commands:f.map(x=>x.command||'')}};
+          console.log(JSON.stringify({notInstalled:describe('not-installed'),installed:describe('installed'),notSure:describe('not-sure')}));
+        """)
+        self.assertIn("mac-install", result["notInstalled"]["ids"])
+        self.assertNotIn("mac-install", result["installed"]["ids"])
+        self.assertIn("mac-doctor", result["installed"]["ids"])
+        self.assertNotIn("curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash", result["installed"]["commands"])
+        self.assertIn("mac-check-existing", result["notSure"]["ids"])
+        self.assertNotIn("mac-install", result["notSure"]["ids"])
+        self.assertEqual(result["notSure"]["commands"].count("hermes doctor"), 1)
+
     def test_all_lane_tasks_are_explicitly_no_phi(self):
         result = node_eval("""
           import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
@@ -206,7 +230,10 @@ class SetupHelperTests(unittest.TestCase):
     def test_ci_hardening_and_full_public_scan_scope(self):
         workflow = (ROOT / ".github/workflows/setup-helper.yml").read_text(encoding="utf-8")
         self.assertIn("persist-credentials: false", workflow)
-        for path in ("setup.html", "start-here.html", "privacy.html"):
+        for path in (
+            "setup.html", "start-here.html", "privacy.html", "faq.html", "cheat-sheet.html",
+            "hermes-downloads/index.html", "about.html", "hermes-masterclass.html",
+        ):
             self.assertIn(f'Path("{path}")', workflow)
 
     def test_honest_time_and_nonclaim_copy(self):
@@ -218,6 +245,21 @@ class SetupHelperTests(unittest.TestCase):
             self.assertIn(phrase, combined)
         self.assertNotIn("2-minute soul", combined)
         self.assertNotIn("fully automated installation", combined)
+
+    def test_public_setup_copy_discloses_provider_boundary_and_no_enforcement(self):
+        combined = "\n".join(path.read_text(encoding="utf-8") for path in ENGLISH_SETUP_PAGES).lower()
+        for forbidden in (
+            "you cannot break anything",
+            "not in someone's cloud",
+            "every action gets classified before it runs",
+            "human authorization mandatory",
+            "local-only setup helper",
+            "deterministic · local-only",
+        ):
+            self.assertNotIn(forbidden, combined)
+        self.assertIn("configured model provider", combined)
+        self.assertIn("does not by itself enforce controls", combined)
+        self.assertIn("shadow/observe-only", combined)
 
     def test_official_hermes_source_and_commands(self):
         self.assertIn("https://hermes-agent.nousresearch.com/install.sh", self.model)

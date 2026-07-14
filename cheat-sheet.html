@@ -60,7 +60,7 @@
     <h2>The time-out — verify before you begin</h2>
     <p style="color:var(--ink-600);"><strong>Time-out means pause, not panic.</strong> This is the nurse's habit of checking the setup before the work starts: right machine, right folder, right permissions, right boundaries. If one item is not ready, you have not failed — you just found the next safe fix.</p>
 
-    <div class="checkitem"><input type="checkbox" id="c1"><label for="c1"><strong>Right equipment: a desktop or laptop — Mac or Windows.</strong><span class="why">Not a phone, tablet, or Chromebook. On your own computer, your files and your AI's memory stay <strong>local — on your machine, not in someone's cloud</strong>. That's the whole point of owning your system.</span></label></div>
+    <div class="checkitem"><input type="checkbox" id="c1"><label for="c1"><strong>Right equipment: a desktop or laptop — Mac or Windows.</strong><span class="why">Not a phone, tablet, or Chromebook. Your files and local Hermes state can stay on your machine. Unless you use a local model, prompts and selected context may still be processed by your configured model provider.</span></label></div>
 
     <div class="checkitem"><input type="checkbox" id="c2"><label for="c2"><strong>Specs verified.</strong><span class="why">Rough guide: a computer from the last ~5 years with at least 8&nbsp;GB of memory and a few GB free usually does fine — the <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">official Hermes site</a> lists current requirements. If Hermes won't install, it's the machine's specs — <em>not you, and not a mistake you made</em>. A cloud option (the VPS path) is coming; meanwhile, see "While you wait" below.</span></label></div>
 
@@ -113,7 +113,7 @@
       </div>
       <div class="step">
         <h3>Your first conversation</h3>
-        <p>Hermes works like a chat: type, press enter. You cannot break anything by chatting.</p>
+        <p>Hermes works like a chat, but it may also use files, terminal commands, and other tools when configured. Start with approvals on, review commands and permissions, and stop when anything is unclear.</p>
         <div class="prompt-block">I'm a nurse setting up my Nurse AI OS. I'll give you my SOUL file next — treat it as my standing instructions.</div>
       </div>
       <div class="step">

@@ -16,7 +16,7 @@ Installation begins only when you intentionally:
 
 If you do not approve the exact card, Hermes must make no installation changes. You may edit the card, install the foundation only, preserve detected components without changes, or cancel.
 
-After approval, Hermes performs only the governed sequence on the approved private educator/designer workspace: it creates, repairs, or binds the Nursing Educator foundation first; runs 33 foundation checks; adds the Trust Shield, TEACH Core, Command Studio, templates, and twenty optional SuperPowers as an inactive overlay; then runs 120 TEACH tests plus 16 integration checks. That is **169 embedded release checks in total**. Compatible work must be preserved rather than duplicated.
+After approval, Hermes performs only the governed sequence on the approved private educator/designer workspace: it creates, repairs, or binds the Nurse Educator foundation first; runs 33 foundation checks; adds the Trust Shield, TEACH Core, Command Studio, templates, and twenty optional SuperPowers as an inactive overlay; then runs 120 TEACH tests plus 16 integration checks. That is **169 embedded release checks in total**. Compatible work must be preserved rather than duplicated.
 
 These 169 entries are installation acceptance scenarios supplied inside the program. Their presence and inventory are verified by the package tests; they are not independent clinical or educational validation, accreditation, certification, compliance evidence, institutional approval, or proof that every scenario has been executed in your environment.
 

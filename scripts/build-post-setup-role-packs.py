@@ -36,6 +36,11 @@ ROLES = [
             "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md",
             "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx",
         ),
+        "required_prebuilt_digests": {
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Hermes-Program.md": "6c4826e3f4c9d6decd743be1588f429ce2204ee5917989866fd408f7fd522148",
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md": "f0942ba0670465a4a2a426070c802192682ba9b1b2d6ecdcd79ed8a69745b326",
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx": "6efefb44e28c70767b565d9607e71919312407454095cadb3568b6482cac9b21",
+        },
     },
     {
         "source": "Staff Nurse",
@@ -57,6 +62,11 @@ ROLES = [
             "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.md",
             "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.docx",
         ),
+        "required_prebuilt_digests": {
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Hermes-Program.md": "5ac88fdc530c23b7b1b72cb1eefa4d41cf4bfc2996cd383dfff1867315893a08",
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.md": "79503858ae693d7b4a2f5961e50ffcef5e1f7c3c63af35db156d0a127ee40cc3",
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.docx": "fc44cf7e636a354d836b44dc924d4710341afcff9fe937458383d0d9a835cfe7",
+        },
     },
     {
         "source": "04-Nurse-Educator",
@@ -71,6 +81,11 @@ ROLES = [
             "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.md",
             "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.docx",
         ),
+        "required_prebuilt_digests": {
+            "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Hermes-Program.md": "c34aee05bdad5cc2d56f3b6e0268e1e2c45e1584be3efc15133b6042cdab9cc7",
+            "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.md": "b3c0a088f0fd72db372ac176a4bbf31082297a13249d85525cbbe1eebddd7294",
+            "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.docx": "12a1176b4c08cbab842204d9c24228e76809383a16c05b02817273e45b526e16",
+        },
     },
     {
         "source": "Other Nurse Ally",
@@ -92,6 +107,11 @@ ROLES = [
             "NP-Complete-AI-OS-with-Wings-Setup-Guide.md",
             "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx",
         ),
+        "required_prebuilt_digests": {
+            "NP-Complete-AI-OS-with-Wings-Hermes-Program.md": "46734b8ecb72e4fa8dc58f4b03ba4cc7db9e15b4eae4db9d7a7eaf4879cd5e30",
+            "NP-Complete-AI-OS-with-Wings-Setup-Guide.md": "6ea5ebd1fec5303ff8479f94c19435d9d3a89b7c7fc57d513a4305a3a6776f37",
+            "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx": "430f6c3fe5046202cc7de3df2edbb594b20dc62931f5645bce22787cf4644ecb",
+        },
     },
 ]
 
@@ -396,6 +416,16 @@ def validate_prebuilt_inventory(package: Path, role: dict) -> None:
             f"required: {', '.join(sorted(path.as_posix() for path in pinned_sources))}; "
             f"declared: {', '.join(sorted(path.as_posix() for path in declared_sources))}"
         )
+    pinned_digests = {Path(path): digest for path, digest in role["required_prebuilt_digests"].items()}
+    if set(pinned_digests) != pinned_sources:
+        raise ValueError(f"Trusted digest configuration mismatch for {role['folder']}")
+    declared_digests = {
+        Path(record["packaged_path"]): record.get("source_sha256")
+        for record in manifest.get("source_files", [])
+    }
+    for path, expected_digest in pinned_digests.items():
+        if declared_digests.get(path) != expected_digest or sha256(package / path) != expected_digest:
+            raise ValueError(f"Trusted source checksum mismatch: {package / path}")
     expected_files = {
         Path("00-READ-FIRST.md"),
         Path("PACKAGE-CHECKSUMS.sha256"),

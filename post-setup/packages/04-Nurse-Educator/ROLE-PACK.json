@@ -37,9 +37,11 @@
   "schema_version": "1.0",
   "source_files": [
     {
-      "bytes": 127368,
+      "bytes": 127252,
       "packaged_path": "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Hermes-Program.md",
-      "source_sha256": "d16b693d5a28b706e8f20b1b1f1b8941f2e81d93ce2f70cf00b151833b22f035"
+      "source_sha256": "c34aee05bdad5cc2d56f3b6e0268e1e2c45e1584be3efc15133b6042cdab9cc7",
+      "transformation": "removed unintended four-space indentation from the embedded TEACH Cards and Templates headings and list items so they render as semantic Markdown without changing their text, order, or checklist syntax",
+      "upstream_sha256": "d16b693d5a28b706e8f20b1b1f1b8941f2e81d93ce2f70cf00b151833b22f035"
     },
     {
       "bytes": 13599,

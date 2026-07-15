@@ -56,6 +56,24 @@ class EducatorCompleteEditionTests(unittest.TestCase):
         self.assertIn("Hybrid or Faculty Developer<br>", self.guide)
         self.assertFalse(any(line.endswith(" ") for line in self.guide.splitlines()))
 
+    def test_embedded_template_normalization_is_renderable_and_provenanced(self):
+        record = next(item for item in self.manifest["source_files"] if item["packaged_path"] == PROGRAM.name)
+        self.assertEqual(record["upstream_sha256"], "d16b693d5a28b706e8f20b1b1f1b8941f2e81d93ce2f70cf00b151833b22f035")
+        self.assertIn("semantic Markdown", record["transformation"])
+        section = self.program.split("# TEACH Cards and Templates", 1)[1].split(
+            "<!-- END EMBEDDED COMPONENT: templates/TEACH-Cards-and-Templates.md -->", 1
+        )[0]
+        for phrase in (
+            "## Required library",
+            "1. Teaching/Design True North Card",
+            "## Optional Power Activation Card",
+            "- [ ] Preview only",
+            "## TEACH Gate Release Receipt",
+            "## Human Teaching Anti-Slop Check",
+        ):
+            self.assertIn(phrase, section)
+        self.assertNotRegex(section, r"(?m)^    (?:##|1\.|-|Remove generic filler)")
+
     def test_pre_install_consent_and_institutional_boundary(self):
         self.assertEqual(self.manifest["role"], "Nurse Educator and Instructional Designer")
         self.assertFalse(self.manifest["role_selection_verifies_credentials_or_authority"])

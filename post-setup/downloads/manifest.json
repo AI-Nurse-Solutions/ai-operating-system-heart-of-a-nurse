@@ -76,7 +76,7 @@
       },
       "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
       "automatic_shared_access": false,
-      "bytes": 226575,
+      "bytes": 226702,
       "download": "downloads/nurse-ai-os-post-setup-nurse-educator.zip",
       "folder": "04-Nurse-Educator",
       "foundation_first": true,
@@ -93,7 +93,7 @@
         "Instructional Designer",
         "Hybrid / Faculty Developer"
       ],
-      "sha256": "710a68fc2d69a616037c757305504f0bb8856b7ffb09346dfa9dc24d5e442788",
+      "sha256": "3324ae200243d911af1aa7fec2d5077b470ca913270a5532ece3090fab61f244",
       "teach_overlay_second": true
     },
     {

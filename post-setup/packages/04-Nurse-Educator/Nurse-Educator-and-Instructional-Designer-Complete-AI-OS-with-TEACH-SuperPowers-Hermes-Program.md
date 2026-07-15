@@ -2439,9 +2439,9 @@ During days 31–90, run one bounded course, module, simulation, faculty-develop
 
 # TEACH Cards and Templates
 
-    ## Required library
+## Required library
 
-    1. Teaching/Design True North Card
+1. Teaching/Design True North Card
 2. Role, Authority & Release Map
 3. Learner Context & Variability Brief
 4. Learning Experience Design Brief
@@ -2466,38 +2466,38 @@ During days 31–90, run one bounded course, module, simulation, faculty-develop
 23. Scholarship/Promotion/Portfolio Evidence Map
 24. Seven-Day Launch & 90-Day Impact Plan
 
-    ## Optional Power Activation Card
+## Optional Power Activation Card
 
-    - Role adapter, active hat, context, and verified authority:
-    - Power, purpose, learner level, approved outcome, and project:
-    - Approved inputs; prohibited inputs; student-data status; no-PHI status:
-    - Sources, versions, rights, licenses, and unknowns:
-    - EDENA tier and TEACH Gate result:
-    - Human reviewers and exact release owner:
-    - Memory: Off / Session only / Approved category
-    - Connections, sharing, external actions, and automation: Off
-    - Expected learner, teaching/design, workload, and capability benefit:
-    - Success, accessibility, equity, burden, balancing, and independence measures:
-    - Failure states, manual fallback, expiry, stop conditions, rollback, and removal:
-    - [ ] Preview only
-    - [ ] Approve activation with these exact limits
-    - [ ] Edit
-    - [ ] Cancel
+- Role adapter, active hat, context, and verified authority:
+- Power, purpose, learner level, approved outcome, and project:
+- Approved inputs; prohibited inputs; student-data status; no-PHI status:
+- Sources, versions, rights, licenses, and unknowns:
+- EDENA tier and TEACH Gate result:
+- Human reviewers and exact release owner:
+- Memory: Off / Session only / Approved category
+- Connections, sharing, external actions, and automation: Off
+- Expected learner, teaching/design, workload, and capability benefit:
+- Success, accessibility, equity, burden, balancing, and independence measures:
+- Failure states, manual fallback, expiry, stop conditions, rollback, and removal:
+- [ ] Preview only
+- [ ] Approve activation with these exact limits
+- [ ] Edit
+- [ ] Cancel
 
-    ## TEACH Gate Release Receipt
+## TEACH Gate Release Receipt
 
-    - Target and approved outcome:
-    - Evidence, sources, versions, rights, and unresolved items:
-    - Authority to design, evaluate, approve, and release:
-    - Accessibility, inclusion, privacy, integrity, copyright, clinical-safety, and bias checks:
-    - AI contribution and disclosure:
-    - Human edits and decision:
-    - Exact audience, destination, release state, and rollback:
-    - Information saved: None / Session only / Approved
+- Target and approved outcome:
+- Evidence, sources, versions, rights, and unresolved items:
+- Authority to design, evaluate, approve, and release:
+- Accessibility, inclusion, privacy, integrity, copyright, clinical-safety, and bias checks:
+- AI contribution and disclosure:
+- Human edits and decision:
+- Exact audience, destination, release state, and rollback:
+- Information saved: None / Session only / Approved
 
-    ## Human Teaching Anti-Slop Check
+## Human Teaching Anti-Slop Check
 
-    Remove generic filler, repetitive structures, fabricated specificity, inflated promises, false personalization, sterile tone, learner-blaming language, unsupported claims, unnecessary jargon, decorative complexity, and content that sounds polished but cannot be taught or used. Preserve the educator's voice, local context, source-backed accuracy, accessible alternatives, clear decisions, and authentic uncertainty.
+Remove generic filler, repetitive structures, fabricated specificity, inflated promises, false personalization, sterile tone, learner-blaming language, unsupported claims, unnecessary jargon, decorative complexity, and content that sounds polished but cannot be taught or used. Preserve the educator's voice, local context, source-backed accuracy, accessible alternatives, clear decisions, and authentic uncertainty.
 
 <!-- END EMBEDDED COMPONENT: templates/TEACH-Cards-and-Templates.md -->
 

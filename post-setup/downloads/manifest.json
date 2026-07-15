@@ -68,16 +68,33 @@
       "sha256": "6cb306bc0e1e2c5df28b9ec8afdca193a4f7879c886237ac485a81d8fffabb9c"
     },
     {
-      "activation": "user_initiated_two_step_review_and_explicit_approval",
-      "bytes": 495459,
+      "acceptance_tests": {
+        "foundation": 33,
+        "integration": 16,
+        "teach_overlay": 120,
+        "total": 169
+      },
+      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "automatic_shared_access": false,
+      "bytes": 226575,
       "download": "downloads/nurse-ai-os-post-setup-nurse-educator.zip",
       "folder": "04-Nurse-Educator",
+      "foundation_first": true,
       "install_on_download": false,
+      "institutional_deployment_requires_separate_authorization": true,
       "intended_stage": "after_soul_files_and_hermes_setup",
-      "package_version": "2026.07.13.1",
-      "pre_install_disclosure_required": false,
-      "role": "Nurse Educator",
-      "sha256": "2246dc81cc324a48c373f680a06e3eb7483bdfe8fe16c9b7bb3f804a2d51cf97"
+      "optional_superpowers_active_after_install": 0,
+      "optional_superpowers_total": 20,
+      "package_version": "2026.07.15.1",
+      "pre_install_disclosure_required": true,
+      "role": "Nurse Educator and Instructional Designer",
+      "role_adapters": [
+        "Nurse Educator",
+        "Instructional Designer",
+        "Hybrid / Faculty Developer"
+      ],
+      "sha256": "710a68fc2d69a616037c757305504f0bb8856b7ffb09346dfa9dc24d5e442788",
+      "teach_overlay_second": true
     },
     {
       "activation": "user_initiated_two_step_review_and_explicit_approval",
@@ -115,6 +132,6 @@
     }
   ],
   "purpose": "role-specific Nurse AI OS post-setup downloads",
-  "release": "2026.07.15.3",
+  "release": "2026.07.15.4",
   "schema_version": "1.0"
 }

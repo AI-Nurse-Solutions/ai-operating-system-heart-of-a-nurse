@@ -59,11 +59,18 @@ ROLES = [
         ),
     },
     {
-        "source": "Educator",
+        "source": "04-Nurse-Educator",
         "folder": "04-Nurse-Educator",
         "slug": "nurse-educator",
-        "label": "Nurse Educator",
-        "audience": "A nurse educator using AI for no-PHI teaching preparation, fictional or de-identified learning materials, academic-integrity support, and educator capacity while human faculty retain judgment.",
+        "label": "Nurse Educator and Instructional Designer",
+        "audience": "A nurse educator, instructional designer, or hybrid/faculty developer using a private no-PHI and no-student-record workspace for governed teaching and design preparation while authorized humans retain grading, clinical, academic-integrity, accommodation, curriculum, accreditation, research, release, and institutional authority.",
+        "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+        "prebuilt": True,
+        "required_prebuilt_sources": (
+            "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Hermes-Program.md",
+            "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.md",
+            "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.docx",
+        ),
     },
     {
         "source": "Other Nurse Ally",
@@ -260,6 +267,30 @@ def validate_role_package(destination: Path, role: dict) -> dict:
             raise ValueError(f"NP Wings must remain inactive after installation: {manifest_path}")
         if manifest.get("acceptance_tests") != {"foundation": 63, "np_wings": 82, "total": 145}:
             raise ValueError(f"NP acceptance-test inventory mismatch in {manifest_path}")
+    if role["slug"] == "nurse-educator":
+        if manifest.get("foundation_first") is not True or manifest.get("teach_overlay_second") is not True:
+            raise ValueError(f"Unsafe educator installation order in {manifest_path}")
+        if manifest.get("optional_superpowers_active_after_install") != 0:
+            raise ValueError(f"TEACH SuperPowers must remain inactive after installation: {manifest_path}")
+        if manifest.get("optional_superpowers_total") != 20:
+            raise ValueError(f"TEACH SuperPower inventory mismatch in {manifest_path}")
+        if manifest.get("role_adapters") != [
+            "Nurse Educator",
+            "Instructional Designer",
+            "Hybrid / Faculty Developer",
+        ]:
+            raise ValueError(f"Educator role-adapter inventory mismatch in {manifest_path}")
+        if manifest.get("institutional_deployment_requires_separate_authorization") is not True:
+            raise ValueError(f"Educator institutional-deployment boundary missing: {manifest_path}")
+        if manifest.get("automatic_shared_access") is not False:
+            raise ValueError(f"Educator shared access must remain off: {manifest_path}")
+        if manifest.get("acceptance_tests") != {
+            "foundation": 33,
+            "teach_overlay": 120,
+            "integration": 16,
+            "total": 169,
+        }:
+            raise ValueError(f"Educator release-check inventory mismatch in {manifest_path}")
     if role["slug"] == "nurse-leader-and-manager":
         if manifest.get("foundation_first") is not True or manifest.get("lead_overlay_second") is not True:
             raise ValueError(f"Unsafe Nurse Leader installation order in {manifest_path}")
@@ -497,13 +528,16 @@ def deterministic_zip(role: dict) -> dict:
         "foundation_first",
         "future_overlay_second",
         "lead_overlay_second",
+        "teach_overlay_second",
         "wings_overlay_second",
         "pathways",
+        "role_adapters",
         "bridge_context_transfer_automatic",
         "automatic_shared_access",
         "optional_superpowers_total",
         "optional_superpowers_active_after_install",
         "organizational_deployment_requires_separate_authorization",
+        "institutional_deployment_requires_separate_authorization",
     ):
         if key in role_manifest:
             record[key] = role_manifest[key]
@@ -539,7 +573,7 @@ def build(source_root: Path | None) -> None:
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.15.3",
+        "release": "2026.07.15.4",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,
@@ -560,8 +594,9 @@ def main() -> int:
         "--import-source",
         type=Path,
         help=(
-            "Import three review-first role sources plus prebuilt 01-Student-Nurse, "
-            "03-Nurse-Leader-and-Manager, and 06-Nurse-Practitioner-USA folders before building"
+            "Import two review-first role sources plus prebuilt 01-Student-Nurse, "
+            "03-Nurse-Leader-and-Manager, 04-Nurse-Educator, and "
+            "06-Nurse-Practitioner-USA folders before building"
         ),
     )
     args = parser.parse_args()

@@ -137,16 +137,16 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
             "113 release checks in total",
             "all sixteen optional SuperPowers remain inactive",
             "Without that approval, Hermes must make no installation changes",
-            "Complete Edition lanes 01, 03, and 06",
-            "For review-first lanes 02, 04, and 05",
+            "Complete Edition lanes 01, 03, 04, and 06",
+            "For review-first lanes 02 and 05",
         ):
             self.assertIn(phrase, page)
         self.assertNotIn("Lanes 01–05 require review before changes", page)
         self.assertNotIn("Lanes 01–05 contain", page)
 
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 03, and 06 are separately governed Complete Editions", readme)
-        self.assertIn("Review-first lanes 02, 04, and 05 include", readme)
+        self.assertIn("Lanes 01, 03, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Review-first lanes 02 and 05 include", readme)
         self.assertIn("The Nurse Leader and Manager ZIP is a separately governed Complete Edition", readme)
         self.assertIn("All sixteen optional SuperPowers remain inactive", readme)
         self.assertIn("private-workspace approval does not authorize organizational deployment", readme)

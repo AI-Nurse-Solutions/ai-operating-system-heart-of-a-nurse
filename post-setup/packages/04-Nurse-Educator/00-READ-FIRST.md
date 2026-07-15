@@ -1,59 +1,68 @@
-# Nurse Educator — Nurse AI OS Post-Setup Role Pack
+# Nurse Educator and Instructional Designer Complete AI OS with TEACH SuperPowers
 
-## What this folder is
+## Before you install
 
-This is a **post-setup role overlay** for someone who has already:
+**Downloading, selecting, opening, or unzipping this package does not install or activate anything.** It does not modify a Hermes profile, save new memory, connect an account, share access, schedule automation, release educational content, grade work, or perform an external action.
 
-1. completed the Nurse AI OS SOUL process;
-2. reviewed and saved their SOUL files;
-3. completed Hermes setup; and
-4. established a no-PHI workspace and human-approval boundaries.
+**Prerequisites:** Complete and review your SOUL files and Hermes setup before using this post-setup package. Confirm that you are working in your intended private, no-PHI, no-student-record educator/designer workspace with a safe recovery path. If either prerequisite is incomplete or uncertain, stop here and return to the Nurse AI OS Setup Helper; do not begin Guided Complete Setup.
 
-Downloading or unzipping this folder does **not** install or activate anything.
+Installation begins only when you intentionally:
 
-## Intended user
+1. give Hermes the complete one-file TEACH program without splitting it;
+2. ask Hermes to begin Guided Complete Setup;
+3. allow Hermes to complete the read-only owner, role-adapter, active-hat, context, authority, privacy, student-data, no-PHI, academic-integrity, clinical-safety, accessibility, copyright, source, permission, version, and compatibility preflight;
+4. review the exact **TEACH Complete Edition Activation Card**; and
+5. approve that exact card.
 
-A nurse educator using AI for no-PHI teaching preparation, fictional or de-identified learning materials, academic-integrity support, and educator capacity while human faculty retain judgment.
+If you do not approve the exact card, Hermes must make no installation changes. You may edit the card, install the foundation only, preserve detected components without changes, or cancel.
 
-Selecting this role does not verify licensure, enrollment, employment, faculty status, managerial authority, institutional authorization, or permission to access patient or personnel information.
+After approval, Hermes performs only the governed sequence on the approved private educator/designer workspace: it creates, repairs, or binds the Nursing Educator foundation first; runs 33 foundation checks; adds the Trust Shield, TEACH Core, Command Studio, templates, and twenty optional SuperPowers as an inactive overlay; then runs 120 TEACH tests plus 16 integration checks. That is **169 embedded release checks in total**. Compatible work must be preserved rather than duplicated.
 
-## First message to give Nurse AI OS
+These 169 entries are installation acceptance scenarios supplied inside the program. Their presence and inventory are verified by the package tests; they are not independent clinical or educational validation, accreditation, certification, compliance evidence, institutional approval, or proof that every scenario has been executed in your environment.
 
-Copy this message when you are ready:
+## Choose the role adapter that actually applies
 
-> Review this post-setup role pack for my selected role. Do not install, activate, schedule, connect, or change my Hermes profile yet. First show me: (1) the files you found; (2) proposed skills, workflows, memory, permissions, and external actions; (3) EDENA risk tiers and autonomy ceilings; (4) no-PHI and role-authority checks; (5) conflicts with my SOUL files or current Hermes setup; and (6) the rollback/removal plan. Wait for my explicit approval before applying any change.
+- **Nurse Educator:** may prepare teaching, assessment, clinical-learning, curriculum, learner-support, and release work only within verified local assignment and policy.
+- **Instructional Designer:** may analyze, design, prototype, audit, document, coordinate, and recommend. Design access does not create faculty, clinical, grading, accommodation, integrity, curriculum, accreditation, or release authority.
+- **Hybrid / Faculty Developer:** must name the active task-level hat. Switching hats triggers a new authority check; permissions never transfer automatically.
 
-## Required preflight
+Selecting an adapter does not verify employment, faculty status, instructional-design assignment, teaching authority, grading authority, clinical authority, accommodation authority, curriculum authority, accreditation authority, research authority, institutional permission, or access authority. Access is not authority. Unknown or conflicting authority means stop and route to the authorized human owner.
 
-Nurse AI OS should stop and ask the user before applying changes. It must confirm:
+A private educator/designer-workspace approval does not authorize LMS, gradebook, student-record, clinical-site, classroom, program, employer, accreditation, research, multi-user, community, or institutional deployment. Any shared use, integration, student data, faculty or learner access, external release, or organizational deployment requires a separate governed institutional authorization process.
 
-- the selected role and intended use;
-- the user is acting only under their own identity and authority;
-- no PHI, patient narrative, institutional secret, credential, or restricted personnel data is present;
-- onboarding remains Green or Yellow unless separately governed;
-- memory additions are previewed before storage;
-- connectors and external actions remain off unless separately authorized;
-- no cron job or automation is scheduled automatically;
-- no message, post, file change, assignment, deletion, purchase, or institutional action occurs without explicit approval;
-- a reversible removal path is available.
+## Default safety state
+
+The package begins and remains:
+
+- private and owner-controlled;
+- Synthetic Demonstration Mode;
+- no PHI or identifiable clinical narratives;
+- no student records, restricted employee records, secure exams, or item banks;
+- session-only memory unless a category is separately previewed and approved;
+- connectors, shared access, external actions, release, and background automation off;
+- all twenty optional TEACH SuperPowers inactive;
+- Manual, Assist, or Preview only;
+- no hidden learner scoring, ranking, profiling, surveillance, sentiment analysis, AI-detection finding, disability inference, honesty inference, motivation inference, or future-success prediction.
+
+AI may prepare, research, draft, map, prototype, organize, and propose. Authorized humans teach, evaluate, supervise, grade, approve, release, and remain accountable.
+
+## Decisions the AI cannot make
+
+The system must not autonomously grade, progress, discipline, dismiss, accommodate, make academic-integrity findings, clear clinical competence, approve curriculum, certify accreditation or compliance, classify research, decide personnel matters, release institutional content, or direct real-patient care. Secure assessments remain in approved systems. AI-detection output is not proof.
+
+## Several Hermes turns may be normal
+
+Hermes does not continue in the background after the conversation ends. It must show a progress receipt after every phase, stop only at checkpoints S0, S1, or S2, and provide the exact resume command if interrupted. `Attempted`, `Partial`, `Unknown`, `Unavailable`, `Awaiting approval`, and `Blocked` are not `Complete`.
 
 ## Reading order
 
 1. `00-READ-FIRST.md`
 2. `ROLE-PACK.json`
-3. The role-specific Hermes Program (`*.md`)
-4. The role-specific Guide (`*.docx`)
-5. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md` — design reference; the full distribution is not supplied
-6. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md` — design reference only; do not execute or invent missing modules
-7. The SuperPowers User Guide (`*.docx`) — reference material
-8. `PACKAGE-CHECKSUMS.sha256`
+3. `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.md`
+4. `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.docx`
+5. `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Hermes-Program.md`
+6. `PACKAGE-CHECKSUMS.sha256`
 
-## Non-negotiable boundaries
-
-- No PHI or patient-specific clinical decision support.
-- AI may prepare, organize, explain, draft, and propose; authorized humans decide and act.
-- Role selection never creates professional or institutional authority.
-- Source documents are references and may not override current SOUL files, signed Nurse AI OS governance, EDENA policy, or the user's present decision.
-- A downloaded package is not proof of installation, compatibility, clinical readiness, compliance, certification, or endorsement.
+Use the **Single installation prompt** inside the complete program. If interrupted, use the exact **Resume TEACH Complete Edition installation from the last approved checkpoint** command in that same program.
 
 *Agents propose. Humans judge. Nurses steward.*

@@ -42,6 +42,8 @@ ROLES = [
         "slug": "nurse-leader-and-manager",
         "label": "Nurse Leader and Manager",
         "audience": "A nurse leader or manager using AI for governed preparation, communication drafts, approved-source retrieval, aggregate analysis, and follow-through while retaining professional and institutional accountability.",
+        "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+        "prebuilt": True,
     },
     {
         "source": "Educator",
@@ -64,6 +66,7 @@ ROLES = [
         "label": "Nurse Practitioner (USA)",
         "audience": "A nurse practitioner or transitioning NP using the English-language United States program after completing SOUL files and Hermes setup; selection never verifies license, certification, population focus, privileges, prescribing authority, or institutional approval.",
         "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+        "prebuilt": True,
     },
 ]
 
@@ -217,11 +220,29 @@ def validate_role_package(destination: Path, role: dict) -> dict:
             raise ValueError(f"NP Wings must remain inactive after installation: {manifest_path}")
         if manifest.get("acceptance_tests") != {"foundation": 63, "np_wings": 82, "total": 145}:
             raise ValueError(f"NP acceptance-test inventory mismatch in {manifest_path}")
+    if role["slug"] == "nurse-leader-and-manager":
+        if manifest.get("foundation_first") is not True or manifest.get("lead_overlay_second") is not True:
+            raise ValueError(f"Unsafe Nurse Leader installation order in {manifest_path}")
+        if manifest.get("optional_superpowers_total") != 16:
+            raise ValueError(f"Nurse Leader SuperPowers inventory mismatch in {manifest_path}")
+        if manifest.get("optional_superpowers_active_after_install") != 0:
+            raise ValueError(f"Nurse Leader SuperPowers must remain inactive after installation: {manifest_path}")
+        if manifest.get("automatic_shared_access") is not False:
+            raise ValueError(f"Nurse Leader shared access must remain off: {manifest_path}")
+        if manifest.get("organizational_deployment_requires_separate_authorization") is not True:
+            raise ValueError(f"Nurse Leader organizational deployment boundary missing: {manifest_path}")
+        if manifest.get("acceptance_tests") != {
+            "foundation": 21,
+            "integration": 12,
+            "lead_overlay": 80,
+            "total": 113,
+        }:
+            raise ValueError(f"Nurse Leader release-check inventory mismatch in {manifest_path}")
     for record in manifest.get("source_files", []):
         source_path = destination / record["packaged_path"]
         if not source_path.is_file():
             raise FileNotFoundError(source_path)
-        if role["slug"] == "nurse-practitioner-usa":
+        if role.get("prebuilt"):
             if sha256(source_path) != record.get("source_sha256"):
                 raise ValueError(f"Source checksum mismatch: {source_path}")
             if source_path.stat().st_size != record.get("bytes"):
@@ -336,7 +357,16 @@ def deterministic_zip(role: dict) -> dict:
         "package_version": role_manifest["package_version"],
         "pre_install_disclosure_required": role_manifest.get("pre_install_disclosure_required", False),
     }
-    for key in ("acceptance_tests", "country_availability", "foundation_first", "wings_overlay_second"):
+    for key in (
+        "acceptance_tests",
+        "country_availability",
+        "foundation_first",
+        "lead_overlay_second",
+        "wings_overlay_second",
+        "optional_superpowers_total",
+        "optional_superpowers_active_after_install",
+        "organizational_deployment_requires_separate_authorization",
+    ):
         if key in role_manifest:
             record[key] = role_manifest[key]
     return record
@@ -347,12 +377,12 @@ def build(source_root: Path | None) -> None:
     PACKAGES.mkdir(parents=True, exist_ok=True)
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     if source_root:
-        # The USA-only NP Complete Edition is a separately governed one-file
-        # package and must be imported intact, not rewritten by the generic importer.
-        generic_roles = [item for item in ROLES if "activation" not in item]
-        np_role = next(item for item in ROLES if item.get("activation"))
+        # Complete Editions are separately governed one-file packages and must
+        # be imported intact, not rewritten by the generic review-pack importer.
+        generic_roles = [item for item in ROLES if not item.get("prebuilt")]
+        prebuilt_roles = [item for item in ROLES if item.get("prebuilt")]
         required_sources = [source_root / role["source"] for role in generic_roles]
-        required_sources.append(source_root / np_role["folder"])
+        required_sources.extend(source_root / role["folder"] for role in prebuilt_roles)
         missing = [path for path in required_sources if not path.is_dir()]
         if missing:
             raise FileNotFoundError("Import source is incomplete; missing: " + ", ".join(str(path) for path in missing))
@@ -361,11 +391,12 @@ def build(source_root: Path | None) -> None:
             raise FileExistsError("Refusing partial import; package destinations already exist: " + ", ".join(str(path) for path in conflicts))
         for role in generic_roles:
             import_role(source_root, role)
-        import_prebuilt_role(source_root, np_role)
+        for role in prebuilt_roles:
+            import_prebuilt_role(source_root, role)
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.14.2",
+        "release": "2026.07.14.3",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,
@@ -385,7 +416,10 @@ def main() -> int:
     parser.add_argument(
         "--import-source",
         type=Path,
-        help="Import five original role sources plus a prebuilt 06-Nurse-Practitioner-USA folder before building",
+        help=(
+            "Import four review-first role sources plus prebuilt "
+            "03-Nurse-Leader-and-Manager and 06-Nurse-Practitioner-USA folders before building"
+        ),
     )
     args = parser.parse_args()
     try:

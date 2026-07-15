@@ -5,6 +5,7 @@ on:
     paths:
       - "setup-helper/**"
       - "tests/test_setup_helper.py"
+      - "tests/test_leader_role_pack.py"
       - "tests/test_np_role_pack.py"
       - "post-setup/**"
       - "scripts/build-post-setup-role-packs.py"
@@ -23,6 +24,7 @@ on:
     paths:
       - "setup-helper/**"
       - "tests/test_setup_helper.py"
+      - "tests/test_leader_role_pack.py"
       - "tests/test_np_role_pack.py"
       - "post-setup/**"
       - "scripts/build-post-setup-role-packs.py"
@@ -58,6 +60,7 @@ jobs:
         run: |
           python3 scripts/build-post-setup-role-packs.py
           python3 tests/test_setup_helper.py
+          python3 tests/test_leader_role_pack.py
           python3 tests/test_np_role_pack.py
       - name: Check generated JavaScript syntax
         run: |

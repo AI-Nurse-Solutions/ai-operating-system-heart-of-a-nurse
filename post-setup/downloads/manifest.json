@@ -26,16 +26,27 @@
       "sha256": "e02d6d7e126a37bf62d7891e4f4e28b40ecfa0af8036ee66b8665e2dae0c9bd3"
     },
     {
-      "activation": "user_initiated_two_step_review_and_explicit_approval",
-      "bytes": 467079,
+      "acceptance_tests": {
+        "foundation": 21,
+        "integration": 12,
+        "lead_overlay": 80,
+        "total": 113
+      },
+      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "bytes": 258717,
       "download": "downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip",
       "folder": "03-Nurse-Leader-and-Manager",
+      "foundation_first": true,
       "install_on_download": false,
       "intended_stage": "after_soul_files_and_hermes_setup",
-      "package_version": "2026.07.13.1",
-      "pre_install_disclosure_required": false,
+      "lead_overlay_second": true,
+      "optional_superpowers_active_after_install": 0,
+      "optional_superpowers_total": 16,
+      "organizational_deployment_requires_separate_authorization": true,
+      "package_version": "2026.07.14.1",
+      "pre_install_disclosure_required": true,
       "role": "Nurse Leader and Manager",
-      "sha256": "d6c4cc1868035f2acfe903d5acacd4daceaa4a6daa05a2ca8a94b2638b94bee9"
+      "sha256": "6cb306bc0e1e2c5df28b9ec8afdca193a4f7879c886237ac485a81d8fffabb9c"
     },
     {
       "activation": "user_initiated_two_step_review_and_explicit_approval",
@@ -85,6 +96,6 @@
     }
   ],
   "purpose": "role-specific Nurse AI OS post-setup downloads",
-  "release": "2026.07.14.2",
+  "release": "2026.07.14.3",
   "schema_version": "1.0"
 }

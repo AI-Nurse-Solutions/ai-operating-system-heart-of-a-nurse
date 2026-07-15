@@ -1,6 +1,6 @@
 # Nurse AI OS Post-Setup Role Packs
 
-These are separate, review-first downloads for users who have already completed their SOUL files and Hermes setup.
+These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lanes 01, 02, 04, and 05 are review-first overlays. Lanes 03 and 06 are separately governed Complete Editions with read-only preflight and exact activation-card approval before any installation mutation.
 
 ## Role folders
 
@@ -27,11 +27,11 @@ Nothing is installed or activated. Every package declares:
 }
 ```
 
-The user unzips one role folder. Lanes 01–05 use the review-first prompt and require proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. The USA-only Nurse Practitioner lane uses its supplied one-file Hermes program, read-only preflight, one combined activation card, phased checkpoints, and explicit approval before any installation mutation.
+The user unzips one role folder. Lanes 01, 02, 04, and 05 use the review-first prompt and require proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. The Nurse Leader and USA-only Nurse Practitioner Complete Editions use their supplied one-file Hermes programs, read-only preflights, exact combined activation cards, phased checkpoints, and explicit approval before any installation mutation.
 
 ## Package contents
 
-Lanes 01–05 include:
+Review-first lanes 01, 02, 04, and 05 include:
 
 - `00-READ-FIRST.md`
 - `ROLE-PACK.json`
@@ -41,6 +41,17 @@ Lanes 01–05 include:
 - Shared SuperPowers master-installer document, clearly marked as non-executable reference material
 - Shared SuperPowers User Guide, retained as reference material
 - `PACKAGE-CHECKSUMS.sha256`
+
+The Nurse Leader and Manager ZIP is a separately governed Complete Edition. It includes:
+
+- `00-READ-FIRST.md`
+- `ROLE-PACK.json`
+- `Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Hermes-Program.md` — complete one-file guided installer
+- `Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.md`
+- `Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.docx`
+- `PACKAGE-CHECKSUMS.sha256`
+
+The Leader program establishes, repairs, or binds the foundation first, runs 21 foundation tests, adds the LEAD Library as an inactive overlay, and runs 80 LEAD tests plus 12 integration checks. All sixteen optional SuperPowers remain inactive. Downloading does not install it. Role selection does not verify managerial or organizational authority, and private-workspace approval does not authorize organizational deployment.
 
 The Nurse Practitioner ZIP is a separately governed Complete Edition. It includes:
 
@@ -63,7 +74,7 @@ Rebuild ZIPs deterministically from the tracked package folders:
 python3 scripts/build-post-setup-role-packs.py
 ```
 
-To import a new user-authorized source bundle into an empty package tree:
+To import a new user-authorized source bundle into an empty package tree, supply the four review-first source folders plus intact prebuilt `03-Nurse-Leader-and-Manager` and `06-Nurse-Practitioner-USA` folders:
 
 ```bash
 python3 scripts/build-post-setup-role-packs.py --import-source /path/to/source
@@ -73,6 +84,6 @@ The importer refuses to overwrite an existing role package. Review and version s
 
 ## Governance boundary
 
-No PHI. No patient-specific clinical decisions. Downloading never installs. Connectors, external actions, new memory categories, and background automation remain off unless separately governed. Onboarding remains Green or Yellow unless separately governed.
+No PHI. No patient-specific clinical decisions. Downloading never installs. Connectors, shared access, external actions, new memory categories, and background automation remain off unless separately governed. Onboarding remains Green or Yellow unless separately governed. Private-workspace approval never authorizes organizational deployment.
 
 *Agents propose. Humans judge. Nurses steward.*

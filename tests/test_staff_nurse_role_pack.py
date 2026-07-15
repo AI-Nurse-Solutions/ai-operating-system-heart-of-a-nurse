@@ -169,10 +169,21 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
         ):
             self.assertIn(phrase, page)
 
+        readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Lanes 01, 02, 03, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Review-first lane 05 includes", readme)
+
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):
+        self.assertTrue(ZIP.is_file(), ZIP)
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(public["release"], "2026.07.15.5")
         record = next(item for item in public["packages"] if item["role"] == "Staff Nurse and Quality Contributor")
+        self.assertFalse(record["install_on_download"])
+        self.assertTrue(record["pre_install_disclosure_required"])
+        self.assertEqual(record["activation"], "user_initiated_guided_complete_setup_with_combined_activation_card")
+        self.assertTrue(record["foundation_first"])
+        self.assertTrue(record["shift_overlay_second"])
+        self.assertEqual(record["optional_superpowers_total"], 20)
         self.assertEqual(record["sha256"], sha256(ZIP))
         self.assertEqual(record["acceptance_tests"]["total"], 176)
         self.assertEqual(record["optional_superpowers_active_after_install"], 0)

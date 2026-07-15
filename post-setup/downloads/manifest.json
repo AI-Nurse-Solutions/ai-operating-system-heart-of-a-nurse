@@ -58,7 +58,8 @@
         "Chartered Staff-Nurse QI Project Lead",
         "Hybrid / Multiple-Employer"
       ],
-      "sha256": "67a21e49b3e4e6e84448d3213b8288f0536c565283daa7ecaf52bf6df1f03e23"
+      "sha256": "67a21e49b3e4e6e84448d3213b8288f0536c565283daa7ecaf52bf6df1f03e23",
+      "shift_overlay_second": true
     },
     {
       "acceptance_tests": {

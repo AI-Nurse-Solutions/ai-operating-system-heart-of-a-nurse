@@ -623,6 +623,7 @@ def deterministic_zip(role: dict) -> dict:
         "foundation_first",
         "future_overlay_second",
         "lead_overlay_second",
+        "shift_overlay_second",
         "teach_overlay_second",
         "wings_overlay_second",
         "pathways",

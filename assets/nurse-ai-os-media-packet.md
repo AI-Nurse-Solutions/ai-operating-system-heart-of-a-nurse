@@ -15,7 +15,7 @@
 ## Fast facts
 
 - **What:** the commercial brand for a governed, no-PHI AI learning and stewardship product purpose-built for nurses; available browser-first or with Hermes Agent as an external runtime.
-- **Who it serves:** six English post-setup lanes on one governance spine — Student Nurse, Staff Nurse, a Nurse Leader and Manager Complete Edition with sixteen inactive optional LEAD SuperPowers, Nurse Educator, Nurse-Connected Ally, and a USA-only Nurse Practitioner Complete Edition — plus advanced builder pathways.
+- **Who it serves:** six English post-setup lanes on one governance spine — a Nursing Student and Nursing Assistant Complete Edition with three protected pathways and eighteen inactive optional FUTURE SuperPowers, Staff Nurse, a Nurse Leader and Manager Complete Edition with sixteen inactive optional LEAD SuperPowers, Nurse Educator, Nurse-Connected Ally, and a USA-only Nurse Practitioner Complete Edition — plus advanced builder pathways.
 - **Cost:** free for nurses and nursing students during the founding year.
 - **The hard boundary:** no patient information in the product experience — "if it could identify a patient, leave it out." No patient-specific clinical decisions. Official distributions are workforce, administrative, and educational infrastructure, not clinical decision support.
 - **The safety model:** EDENA risk tiers (🟢 proceed / 🟡 human approves first / 🟠 deferred until governed review / 🔴 stop) — tiers measure risk, not privilege. Doctrine: *Agents propose. Humans judge. Nurses steward.*

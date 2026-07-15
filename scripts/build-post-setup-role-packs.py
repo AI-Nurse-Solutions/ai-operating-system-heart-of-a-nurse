@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 import zipfile
@@ -23,11 +24,18 @@ DOWNLOADS = POST_SETUP / "downloads"
 
 ROLES = [
     {
-        "source": "Student",
+        "source": "01-Student-Nurse",
         "folder": "01-Student-Nurse",
         "slug": "student-nurse",
-        "label": "Student Nurse",
-        "audience": "A nursing student using AI for learning, planning, reflection, and life organization without replacing faculty, preceptors, academic standards, or personal judgment.",
+        "label": "Nursing Student and Nursing Assistant",
+        "audience": "A nursing student, nursing assistant, or bridge learner using a private no-PHI workspace for learning, career growth, technology fluency, life organization, and safe rehearsal without replacing faculty, preceptors, supervising nurses, supervisors, verified scope, academic rules, or personal judgment.",
+        "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+        "prebuilt": True,
+        "required_prebuilt_sources": (
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Hermes-Program.md",
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md",
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx",
+        ),
     },
     {
         "source": "Staff Nurse",
@@ -44,6 +52,11 @@ ROLES = [
         "audience": "A nurse leader or manager using AI for governed preparation, communication drafts, approved-source retrieval, aggregate analysis, and follow-through while retaining professional and institutional accountability.",
         "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
         "prebuilt": True,
+        "required_prebuilt_sources": (
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Hermes-Program.md",
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.md",
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.docx",
+        ),
     },
     {
         "source": "Educator",
@@ -67,6 +80,11 @@ ROLES = [
         "audience": "A nurse practitioner or transitioning NP using the English-language United States program after completing SOUL files and Hermes setup; selection never verifies license, certification, population focus, privileges, prescribing authority, or institutional approval.",
         "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
         "prebuilt": True,
+        "required_prebuilt_sources": (
+            "NP-Complete-AI-OS-with-Wings-Hermes-Program.md",
+            "NP-Complete-AI-OS-with-Wings-Setup-Guide.md",
+            "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx",
+        ),
     },
 ]
 
@@ -211,6 +229,28 @@ def validate_role_package(destination: Path, role: dict) -> dict:
     for key in false_keys:
         if manifest.get(key) is not False:
             raise ValueError(f"Unsafe {key} setting in {manifest_path}")
+    if role["slug"] == "student-nurse":
+        if manifest.get("pathways") != ["Nursing Student", "Nursing Assistant", "Bridge"]:
+            raise ValueError(f"Student/Assistant pathway inventory mismatch in {manifest_path}")
+        if manifest.get("foundation_first") is not True or manifest.get("future_overlay_second") is not True:
+            raise ValueError(f"Unsafe Student/Assistant installation order in {manifest_path}")
+        if manifest.get("optional_superpowers_total") != 18:
+            raise ValueError(f"Student/Assistant SuperPowers inventory mismatch in {manifest_path}")
+        if manifest.get("optional_superpowers_active_after_install") != 0:
+            raise ValueError(f"Student/Assistant SuperPowers must remain inactive after installation: {manifest_path}")
+        if manifest.get("automatic_shared_access") is not False:
+            raise ValueError(f"Student/Assistant shared access must remain off: {manifest_path}")
+        if manifest.get("bridge_context_transfer_automatic") is not False:
+            raise ValueError(f"Bridge context transfer must remain off: {manifest_path}")
+        if manifest.get("organizational_deployment_requires_separate_authorization") is not True:
+            raise ValueError(f"Student/Assistant deployment boundary missing: {manifest_path}")
+        if manifest.get("acceptance_tests") != {
+            "foundation": 24,
+            "future_overlay": 96,
+            "integration": 16,
+            "total": 136,
+        }:
+            raise ValueError(f"Student/Assistant release-check inventory mismatch in {manifest_path}")
     if role["slug"] == "nurse-practitioner-usa":
         if manifest.get("country_availability") != ["United States"]:
             raise ValueError(f"Nurse Practitioner lane must remain USA-only: {manifest_path}")
@@ -313,16 +353,107 @@ def import_role(source_root: Path, role: dict) -> None:
     refresh_package_checksums(destination)
 
 
+def validate_prebuilt_inventory(package: Path, role: dict) -> None:
+    """Fail closed unless a prebuilt package has exactly its governed inventory."""
+    validate_role_package(package, role)
+    manifest = json.loads((package / "ROLE-PACK.json").read_text(encoding="utf-8"))
+    pinned_sources = {Path(path) for path in role["required_prebuilt_sources"]}
+    declared_sources = [Path(record.get("packaged_path", "")) for record in manifest.get("source_files", [])]
+    if len(declared_sources) != len(set(declared_sources)) or set(declared_sources) != pinned_sources:
+        raise ValueError(
+            f"Pinned source inventory mismatch for {role['folder']}; "
+            f"required: {', '.join(sorted(path.as_posix() for path in pinned_sources))}; "
+            f"declared: {', '.join(sorted(path.as_posix() for path in declared_sources))}"
+        )
+    expected_files = {
+        Path("00-READ-FIRST.md"),
+        Path("PACKAGE-CHECKSUMS.sha256"),
+        Path("ROLE-PACK.json"),
+    }
+    expected_files.update(pinned_sources)
+    expected_dirs = {
+        parent
+        for path in expected_files
+        for parent in path.parents
+        if parent != Path(".")
+    }
+    actual_files = {
+        path.relative_to(package)
+        for path in package.rglob("*")
+        if path.is_file()
+    }
+    actual_dirs = {
+        path.relative_to(package)
+        for path in package.rglob("*")
+        if path.is_dir()
+    }
+    symlinks = {
+        path.relative_to(package)
+        for path in package.rglob("*")
+        if path.is_symlink()
+    }
+    missing = expected_files - actual_files
+    unexpected = actual_files - expected_files
+    unexpected_dirs = actual_dirs - expected_dirs
+    if missing or unexpected or unexpected_dirs or symlinks:
+        details = []
+        for label, paths in (
+            ("missing files", missing),
+            ("unexpected files", unexpected),
+            ("unexpected directories", unexpected_dirs),
+            ("symlinks", symlinks),
+        ):
+            if paths:
+                details.append(f"{label}: {', '.join(sorted(path.as_posix() for path in paths))}")
+        raise ValueError(
+            f"Prebuilt package inventory mismatch for {role['folder']}; " + "; ".join(details)
+        )
+
+    ledger_path = package / "PACKAGE-CHECKSUMS.sha256"
+    ledger_records: dict[Path, str] = {}
+    for line_number, line in enumerate(ledger_path.read_text(encoding="utf-8").splitlines(), start=1):
+        match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
+        if not match:
+            raise ValueError(
+                f"Invalid checksum ledger line for {role['folder']} at line {line_number}"
+            )
+        relative = Path(match.group(2))
+        if relative.is_absolute() or ".." in relative.parts or "\\" in match.group(2):
+            raise ValueError(
+                f"Unsafe checksum ledger path for {role['folder']}: {match.group(2)}"
+            )
+        if relative in ledger_records:
+            raise ValueError(
+                f"Duplicate checksum ledger path for {role['folder']}: {relative.as_posix()}"
+            )
+        ledger_records[relative] = match.group(1)
+
+    expected_ledger_files = expected_files - {Path("PACKAGE-CHECKSUMS.sha256")}
+    if set(ledger_records) != expected_ledger_files:
+        raise ValueError(f"Checksum ledger inventory mismatch for {role['folder']}")
+    mismatches = [
+        relative
+        for relative, expected_hash in ledger_records.items()
+        if sha256(package / relative) != expected_hash
+    ]
+    if mismatches:
+        raise ValueError(
+            f"Checksum mismatch for {role['folder']}: "
+            + ", ".join(sorted(path.as_posix() for path in mismatches))
+        )
+
+
 def import_prebuilt_role(source_root: Path, role: dict) -> None:
-    """Import a separately governed prebuilt role package without rewriting it."""
+    """Import an exact separately governed package without rewriting it."""
     source = source_root / role["folder"]
     destination = PACKAGES / role["folder"]
     if not source.is_dir():
         raise FileNotFoundError(source)
     if destination.exists():
         raise FileExistsError(f"Refusing to overwrite existing package: {destination}")
-    shutil.copytree(source, destination, ignore=shutil.ignore_patterns(".DS_Store"))
-    validate_role_package(destination, role)
+    validate_prebuilt_inventory(source, role)
+    shutil.copytree(source, destination)
+    validate_prebuilt_inventory(destination, role)
     refresh_package_checksums(destination)
 
 
@@ -331,7 +462,10 @@ def deterministic_zip(role: dict) -> dict:
     source = PACKAGES / role["folder"]
     if not source.is_dir():
         raise FileNotFoundError(source)
-    validate_role_package(source, role)
+    if role.get("prebuilt"):
+        validate_prebuilt_inventory(source, role)
+    else:
+        validate_role_package(source, role)
     refresh_package_checksums(source)
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     output = DOWNLOADS / f"nurse-ai-os-post-setup-{role['slug']}.zip"
@@ -361,8 +495,12 @@ def deterministic_zip(role: dict) -> dict:
         "acceptance_tests",
         "country_availability",
         "foundation_first",
+        "future_overlay_second",
         "lead_overlay_second",
         "wings_overlay_second",
+        "pathways",
+        "bridge_context_transfer_automatic",
+        "automatic_shared_access",
         "optional_superpowers_total",
         "optional_superpowers_active_after_install",
         "organizational_deployment_requires_separate_authorization",
@@ -389,6 +527,11 @@ def build(source_root: Path | None) -> None:
         conflicts = [PACKAGES / role["folder"] for role in ROLES if (PACKAGES / role["folder"]).exists()]
         if conflicts:
             raise FileExistsError("Refusing partial import; package destinations already exist: " + ", ".join(str(path) for path in conflicts))
+        # Validate every immutable Complete Edition before any generic importer
+        # can create a destination. A bad prebuilt source must leave no partial
+        # package tree behind and must be safe to correct and retry.
+        for role in prebuilt_roles:
+            validate_prebuilt_inventory(source_root / role["folder"], role)
         for role in generic_roles:
             import_role(source_root, role)
         for role in prebuilt_roles:
@@ -396,7 +539,7 @@ def build(source_root: Path | None) -> None:
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.14.3",
+        "release": "2026.07.15.3",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,
@@ -417,8 +560,8 @@ def main() -> int:
         "--import-source",
         type=Path,
         help=(
-            "Import four review-first role sources plus prebuilt "
-            "03-Nurse-Leader-and-Manager and 06-Nurse-Practitioner-USA folders before building"
+            "Import three review-first role sources plus prebuilt 01-Student-Nurse, "
+            "03-Nurse-Leader-and-Manager, and 06-Nurse-Practitioner-USA folders before building"
         ),
     )
     args = parser.parse_args()

@@ -1,12 +1,12 @@
 # Nurse AI OS Post-Setup Role Packs
 
-These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lanes 01, 02, 04, and 05 are review-first overlays. Lanes 03 and 06 are separately governed Complete Editions with read-only preflight and exact activation-card approval before any installation mutation.
+These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lanes 02, 04, and 05 are review-first overlays. Lanes 01, 03, and 06 are separately governed Complete Editions with read-only preflight and exact activation-card approval before any installation mutation.
 
 ## Role folders
 
 | Folder | User-facing role | Download |
 |---|---|---|
-| `01-Student-Nurse` | Student Nurse | `downloads/nurse-ai-os-post-setup-student-nurse.zip` |
+| `01-Student-Nurse` | Nursing Student and Nursing Assistant | `downloads/nurse-ai-os-post-setup-student-nurse.zip` |
 | `02-Staff-Nurse` | Staff Nurse | `downloads/nurse-ai-os-post-setup-staff-nurse.zip` |
 | `03-Nurse-Leader-and-Manager` | Nurse Leader and Manager | `downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip` |
 | `04-Nurse-Educator` | Nurse Educator | `downloads/nurse-ai-os-post-setup-nurse-educator.zip` |
@@ -27,11 +27,11 @@ Nothing is installed or activated. Every package declares:
 }
 ```
 
-The user unzips one role folder. Lanes 01, 02, 04, and 05 use the review-first prompt and require proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. The Nurse Leader and USA-only Nurse Practitioner Complete Editions use their supplied one-file Hermes programs, read-only preflights, exact combined activation cards, phased checkpoints, and explicit approval before any installation mutation.
+The user unzips one role folder. Lanes 02, 04, and 05 use the review-first prompt and require proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. The Nursing Student and Nursing Assistant, Nurse Leader, and USA-only Nurse Practitioner Complete Editions use their supplied one-file Hermes programs, read-only preflights, exact combined activation cards, phased checkpoints, and explicit approval before any installation mutation.
 
 ## Package contents
 
-Review-first lanes 01, 02, 04, and 05 include:
+Review-first lanes 02, 04, and 05 include:
 
 - `00-READ-FIRST.md`
 - `ROLE-PACK.json`
@@ -41,6 +41,17 @@ Review-first lanes 01, 02, 04, and 05 include:
 - Shared SuperPowers master-installer document, clearly marked as non-executable reference material
 - Shared SuperPowers User Guide, retained as reference material
 - `PACKAGE-CHECKSUMS.sha256`
+
+The Nursing Student and Nursing Assistant ZIP is a separately governed Complete Edition. It includes:
+
+- `00-READ-FIRST.md`
+- `ROLE-PACK.json`
+- `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Hermes-Program.md` — complete one-file guided installer
+- `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md`
+- `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx`
+- `PACKAGE-CHECKSUMS.sha256`
+
+The FUTURE program supports Nursing Student, Nursing Assistant, and Bridge pathways. It creates, repairs, or binds the foundation first, runs 24 foundation tests, adds the FUTURE Library and Passport as an inactive overlay, and runs 96 FUTURE tests plus 16 integration checks—136 embedded release checks in total. All eighteen optional SuperPowers remain inactive. Bridge keeps academic and employment contexts separate. Downloading does not install it. Pathway selection does not verify enrollment, certification, employment, scope, delegation, supervision, competence, or institutional permission, and private-workspace approval does not authorize school, clinical-site, employer, community, or organizational deployment.
 
 The Nurse Leader and Manager ZIP is a separately governed Complete Edition. It includes:
 
@@ -74,7 +85,7 @@ Rebuild ZIPs deterministically from the tracked package folders:
 python3 scripts/build-post-setup-role-packs.py
 ```
 
-To import a new user-authorized source bundle into an empty package tree, supply the four review-first source folders plus intact prebuilt `03-Nurse-Leader-and-Manager` and `06-Nurse-Practitioner-USA` folders:
+To import a new user-authorized source bundle into an empty package tree, supply the three review-first source folders plus intact prebuilt `01-Student-Nurse`, `03-Nurse-Leader-and-Manager`, and `06-Nurse-Practitioner-USA` folders:
 
 ```bash
 python3 scripts/build-post-setup-role-packs.py --import-source /path/to/source

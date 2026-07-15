@@ -12,7 +12,8 @@ export const POST_SETUP_LANES = Object.freeze([
   { value: 'staff_nurse', label: 'Staff Nurse' },
   { value: 'nurse_leader_manager', label: 'Nurse Leader and Manager' },
   { value: 'nurse_educator', label: 'Nurse Educator' },
-  { value: 'nurse_connected_ally', label: 'Nurse-Connected Ally' }
+  { value: 'nurse_connected_ally', label: 'Nurse-Connected Ally' },
+  { value: 'nurse_practitioner_usa', label: 'Nurse Practitioner (USA only)' }
 ]);
 
 export const ERROR_CODES = Object.freeze([
@@ -340,7 +341,8 @@ export function safeTaskForLane(lane) {
     staff_nurse: 'No-PHI task: Draft a personal after-shift recovery checklist based only on the non-sensitive preferences I provide. Do not discuss a patient, unit incident, or clinical decision.',
     nurse_leader_manager: 'No-PHI task: Help me map one generic workflow burden using only public or fictional process steps. Separate burden, possible benefit, possible harm, and the human gate.',
     nurse_educator: 'No-PHI task: Draft a fictional lesson outline for a public nursing topic. Include objectives, an activity, and an academic-integrity reminder. Use no real learner or patient data.',
-    nurse_connected_ally: 'No-PHI task: Draft a one-page brief for a project that supports nurses. Separate what I know, what I assume, what nurses must decide, and the smallest reversible next step.'
+    nurse_connected_ally: 'No-PHI task: Draft a one-page brief for a project that supports nurses. Separate what I know, what I assume, what nurses must decide, and the smallest reversible next step.',
+    nurse_practitioner_usa: 'No-PHI task: Open the USA-only NP Complete Edition setup guide and show the read-only preflight checklist only. Do not install, save, connect, or activate anything. First state clearly that downloading and unzipping do not install anything; installation begins only after I provide the complete one-file NP program, finish the read-only preflight, and approve the exact Combined Activation Card. Explain that after approval Hermes automatically establishes the foundation first, adds inactive NP Wings second, runs 145 embedded acceptance tests, preserves compatible work, and keeps connectors, external actions, new memory categories, background automation, and all optional Wings off. State that lane selection does not verify NP licensure, certification, population focus, privileges, prescribing authority, competence, or institutional approval.'
   };
   return tasks[lane] || tasks.nurse_connected_ally;
 }

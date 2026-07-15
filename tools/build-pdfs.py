@@ -52,6 +52,12 @@ DOCS = {
 # Google-Fonts stylesheets for the script, and CSS overriding the default
 # Latin font stacks. Latin-script languages (fr, es) need no entry.
 LANG_META = {
+    "architecture": {
+        "lang": "en", "dir": "ltr",
+        # Keep the compact evidence appendix and generated source footer
+        # together instead of creating a nearly empty trailing page.
+        "css": ".doc-footer{margin-top:.8em;}",
+    },
     "media-ar": {
         "lang": "ar", "dir": "rtl",
         "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">',
@@ -131,12 +137,15 @@ def build(key: str, chrome: str) -> None:
     src, out = ROOT / src_rel, ROOT / out_rel
     body = markdown.markdown(src.read_text(encoding="utf-8"),
                              extensions=["tables", "fenced_code", "sane_lists", "smarty"])
+    footer = "" if key == "architecture" else (
+        f'<div class="doc-footer">nurse-ai-os.org · No PHI · Agents propose. Humans judge. '
+        f'Nurses steward. · This PDF is generated from {src_rel} — the web copy is canonical.'
+        f'</div>'
+    )
     html = (f'<!DOCTYPE html><html lang="{meta.get("lang", "en")}" dir="{meta.get("dir", "ltr")}">'
             f'<head><meta charset="utf-8"><title>{title}</title>'
             f'{FONTS}{meta.get("font_links", "")}<style>{CSS}{meta.get("css", "")}</style></head><body>{body}'
-            f'<div class="doc-footer">nurse-ai-os.org · No PHI · Agents propose. Humans judge. '
-            f'Nurses steward. · This PDF is generated from {src_rel} — the web copy is canonical.'
-            f'</div></body></html>')
+            f'{footer}</body></html>')
     with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8") as tf:
         tf.write(html)
         tmp = tf.name

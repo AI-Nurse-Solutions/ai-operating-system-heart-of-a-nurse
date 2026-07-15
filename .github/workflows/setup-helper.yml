@@ -5,6 +5,9 @@ on:
     paths:
       - "setup-helper/**"
       - "tests/test_setup_helper.py"
+      - "tests/test_np_role_pack.py"
+      - "post-setup/**"
+      - "scripts/build-post-setup-role-packs.py"
       - "setup.html"
       - "start-here.html"
       - "privacy.html"
@@ -20,6 +23,9 @@ on:
     paths:
       - "setup-helper/**"
       - "tests/test_setup_helper.py"
+      - "tests/test_np_role_pack.py"
+      - "post-setup/**"
+      - "scripts/build-post-setup-role-packs.py"
       - "setup.html"
       - "start-here.html"
       - "privacy.html"
@@ -49,7 +55,10 @@ jobs:
         with:
           node-version: "22"
       - name: Run deterministic Setup Helper tests
-        run: python3 tests/test_setup_helper.py
+        run: |
+          python3 scripts/build-post-setup-role-packs.py
+          python3 tests/test_setup_helper.py
+          python3 tests/test_np_role_pack.py
       - name: Check generated JavaScript syntax
         run: |
           node --check setup-helper/setup-helper-model.mjs
@@ -60,6 +69,7 @@ jobs:
           import re
           from pathlib import Path
           paths = list(Path("setup-helper").rglob("*")) + [
+              *Path("post-setup").rglob("*"),
               Path("setup.html"), Path("start-here.html"), Path("privacy.html"),
               Path("faq.html"), Path("cheat-sheet.html"), Path("hermes-downloads/index.html"),
               Path("about.html"), Path("hermes-masterclass.html"),

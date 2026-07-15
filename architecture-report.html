@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nurse AI OS Governed Harness — Latest Architecture Report</title>
-<meta name="description" content="The latest verified Nurse AI OS architecture report: signed Governed Harness, active shadow governance, five live post-setup role packages, control boundaries, residual risks, and solo-founder roadmap.">
+<meta name="description" content="The latest verified Nurse AI OS architecture report: signed Governed Harness, active shadow governance, six English post-setup role packages including a USA-only Nurse Practitioner Complete Edition, control boundaries, and roadmap.">
 <link rel="canonical" href="https://nurse-ai-os.org/architecture-report.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,9 +50,10 @@
 <main>
 <section class="hero" style="padding:3.2rem 0;">
   <div class="container narrow">
-    <p class="kicker">Latest verified architecture · July 13, 2026 · 34 pages</p>
+    <p class="kicker">Latest verified architecture · July 14, 2026 distribution revision</p>
     <h1>Nurse AI OS Governed Harness</h1>
     <p class="lede">Current-state architecture, control boundaries, and a solo-founder roadmap for a nurse-governed control plane over Hermes.</p>
+    <p><strong>July 14 distribution revision:</strong> six English post-setup lanes are now live, including the USA-only Nurse Practitioner Complete Edition. The underlying Harness evidence snapshot remains July 13.</p>
     <div class="boundary" style="margin-top:1.2rem;">
       <strong>Current posture:</strong> signed implementation candidate · <code>active_shadow</code> · live post-setup distribution · no canary enforcement · no clinical or PHI authorization.
     </div>
@@ -67,13 +68,13 @@
   <div class="container narrow">
     <p class="eyebrow">Executive decision</p>
     <h2>Keep the default profile in shadow mode</h2>
-    <p class="section-intro">Nurse AI OS now has a signed Hermes-native governance runtime and a live five-role post-setup distribution. It does <strong>not</strong> yet have a coherent end-to-end enforcement architecture.</p>
-    <p>Do not activate canary enforcement until EDENA semantics are unified, the five-role handoff is explicit, shadow evidence is adjudicated, pre-tool and post-generation pathways are threat-modeled, rollback is exercised, and the exact canary scope receives human authorization.</p>
+    <p class="section-intro">Nurse AI OS now has a signed Hermes-native governance runtime and a live six-lane English post-setup distribution. It does <strong>not</strong> yet have a coherent end-to-end enforcement architecture.</p>
+    <p>Do not activate canary enforcement until EDENA semantics are unified, the six-lane handoff is durably represented beyond local Setup Helper state, shadow evidence is adjudicated, pre-tool and post-generation pathways are threat-modeled, rollback is exercised, and the exact canary scope receives human authorization.</p>
 
     <div class="status-grid" aria-label="Current architecture status">
       <div class="status-card"><strong>Signed and verified</strong><span>46/46 unit tests, 8/8 synthetic evaluations, detached signature verified.</span></div>
       <div class="status-card"><strong>Active shadow</strong><span>The plugin observes policy decisions but does not block tool execution.</span></div>
-      <div class="status-card"><strong>Five live role packs</strong><span>Checksummed, review-first downloads with status <code>not_installed</code>.</span></div>
+      <div class="status-card"><strong>Six live English role packs</strong><span>Five review-first overlays plus one USA-only NP Complete Edition; checksummed and <code>not_installed</code> on download.</span></div>
       <div class="status-card warn"><strong>No canary enforcement</strong><span>Promotion remains unauthorized and must use a dedicated profile.</span></div>
       <div class="status-card warn"><strong>No PHI authorization</strong><span>The system is not authorized to accept patient data or provide patient-specific clinical support.</span></div>
       <div class="status-card warn"><strong>No institutional approval</strong><span>Signing proves integrity and provenance—not clinical readiness, HIPAA compliance, or deployment approval.</span></div>
@@ -93,7 +94,7 @@
       <tr><td><strong>Hermes</strong></td><td>Sole horizontal runtime for tools, skills, profiles, memory, cron, delegation, and gateways.</td><td>Operational substrate</td></tr>
       <tr><td><strong>Florence-X</strong></td><td>Verification, coordination, typed handoffs, budgets, and stop conditions.</td><td>Build and operating discipline</td></tr>
       <tr><td><strong>Evidence</strong></td><td>Metadata-only hash-chained events, tests, evaluations, and release evidence.</td><td>Active local evidence plane</td></tr>
-      <tr><td><strong>Distribution</strong></td><td>Signed Harness release and five checksummed, review-first post-setup packages.</td><td>Live; role packs not installed</td></tr>
+      <tr><td><strong>Distribution</strong></td><td>Signed Harness release and six checksummed English post-setup packages: five review-first overlays and one USA-only NP Complete Edition.</td><td>Live; role packs not installed on download</td></tr>
     </table></div>
     <div class="boundary"><strong>Governing rule:</strong> every layer may narrow authority. No downstream layer may restore a capability denied upstream.</div>
   </div>
@@ -110,7 +111,7 @@
       <tr><td>Tests</td><td>46/46 unit tests and 8/8 synthetic trajectory evaluations passed.</td></tr>
       <tr><td>Shadow ledger snapshot</td><td>345 chain-verified events at 2026-07-13 21:54 UTC: 198 observed allows and 147 observed blocks.</td></tr>
       <tr><td>Payload flag</td><td>Zero events with <code>payload_captured=true</code> at the report snapshot.</td></tr>
-      <tr><td>Post-setup distribution</td><td>Five live role ZIPs; eight governed files each; checksum verification passed; status <code>not_installed</code>.</td></tr>
+      <tr><td>Post-setup distribution</td><td>Six live role ZIPs; five review-first overlays plus one USA-only NP Complete Edition; checksum verification passed; status <code>not_installed</code> on download.</td></tr>
     </table></div>
     <p>A “would block” shadow event is evidence only. It does not mean the action was mechanically prevented.</p>
   </div>
@@ -123,7 +124,7 @@
     <div class="report-table-wrap"><table class="report-table">
       <tr><th>Priority</th><th>Gap</th><th>Required response</th></tr>
       <tr><td class="priority">P0</td><td>The repository EDENA policy conflicts with the signed Harness semantics; Red cannot mean both stop and high autonomy.</td><td>Adopt one two-axis risk/autonomy schema and enforce it in CI.</td></tr>
-      <tr><td class="priority">P0</td><td>SOUL normalizes four roles while the post-setup layer has five lanes, separating Educator from Leader/Manager.</td><td>Add an explicit, user-controlled post-setup lane resolver.</td></tr>
+      <tr><td class="priority">P0</td><td>SOUL normalizes four roles while the English post-setup layer has six lanes. Setup Helper captures the user's lane locally, but the exported handoff artifact does not persist it.</td><td>Add a separate <code>post_setup_lane</code> handoff field without treating it as identity or credential verification.</td></tr>
       <tr><td class="priority">P0</td><td>PHI or live-care content can enter before a tool call or through memory, media, channels, delegation, or model output.</td><td>Produce an end-to-end no-PHI threat model and adversarial path tests.</td></tr>
       <tr><td class="priority">P0</td><td>Enforce-capable configuration could be promoted without valid governance authorization.</td><td>Require a dedicated profile, startup attestation, exact-artifact/scope approval, promotion record, and tested rollback.</td></tr>
     </table></div>
@@ -158,7 +159,7 @@
       <a class="btn btn-secondary" href="assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf">Versioned PDF</a>
       <a class="btn btn-secondary" href="assets/2026-07-13-nurse-ai-os-updated-architecture-report.md">Versioned Markdown</a>
     </div>
-    <p class="version-note" style="color:#dbe7f3;margin-top:1.2rem;">Version date: 2026-07-13 · 34 pages · stable and versioned copies are byte-identical<br>PDF SHA-256 (both copies): <code class="digest">152f1c0a8e7fd02a0c6cdb9ed41bd7602690f7cd69fde1f378e2b2e9bcbbb733</code><br>Markdown SHA-256 (both copies): <code class="digest">423ef04a865a10327784573f550c57dca900c6c165fc83e0123e5dbf1dd01293</code></p>
+    <p class="version-note" style="color:#dbe7f3;margin-top:1.2rem;"><strong>Latest stable:</strong> 2026-07-14 distribution revision · 37 pages<br>PDF SHA-256: <code class="digest">0796add882bbb91d9a4893088cde7d281fa21854a89c95baffa19684e5de309f</code><br>Markdown SHA-256: <code class="digest">79ce42a0792ed3e782e9ebcce57315ad42e0ad81eca9b108ce3e0a178fbfb77d</code><br><strong>Historical archive:</strong> the dated 2026-07-13 PDF and Markdown remain unchanged.</p>
   </div>
 </section>
 </main>

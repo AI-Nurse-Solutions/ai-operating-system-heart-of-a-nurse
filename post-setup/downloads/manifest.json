@@ -2,52 +2,89 @@
   "installation_status": "not_installed",
   "packages": [
     {
+      "activation": "user_initiated_two_step_review_and_explicit_approval",
       "bytes": 483346,
       "download": "downloads/nurse-ai-os-post-setup-student-nurse.zip",
       "folder": "01-Student-Nurse",
       "install_on_download": false,
       "intended_stage": "after_soul_files_and_hermes_setup",
+      "package_version": "2026.07.13.1",
+      "pre_install_disclosure_required": false,
       "role": "Student Nurse",
       "sha256": "4bfa9a52f948557c657c5457b24047a21be3843746c9de07a0e87249339a78de"
     },
     {
+      "activation": "user_initiated_two_step_review_and_explicit_approval",
       "bytes": 496417,
       "download": "downloads/nurse-ai-os-post-setup-staff-nurse.zip",
       "folder": "02-Staff-Nurse",
       "install_on_download": false,
       "intended_stage": "after_soul_files_and_hermes_setup",
+      "package_version": "2026.07.13.1",
+      "pre_install_disclosure_required": false,
       "role": "Staff Nurse",
       "sha256": "e02d6d7e126a37bf62d7891e4f4e28b40ecfa0af8036ee66b8665e2dae0c9bd3"
     },
     {
+      "activation": "user_initiated_two_step_review_and_explicit_approval",
       "bytes": 467079,
       "download": "downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip",
       "folder": "03-Nurse-Leader-and-Manager",
       "install_on_download": false,
       "intended_stage": "after_soul_files_and_hermes_setup",
+      "package_version": "2026.07.13.1",
+      "pre_install_disclosure_required": false,
       "role": "Nurse Leader and Manager",
       "sha256": "d6c4cc1868035f2acfe903d5acacd4daceaa4a6daa05a2ca8a94b2638b94bee9"
     },
     {
+      "activation": "user_initiated_two_step_review_and_explicit_approval",
       "bytes": 495459,
       "download": "downloads/nurse-ai-os-post-setup-nurse-educator.zip",
       "folder": "04-Nurse-Educator",
       "install_on_download": false,
       "intended_stage": "after_soul_files_and_hermes_setup",
+      "package_version": "2026.07.13.1",
+      "pre_install_disclosure_required": false,
       "role": "Nurse Educator",
       "sha256": "2246dc81cc324a48c373f680a06e3eb7483bdfe8fe16c9b7bb3f804a2d51cf97"
     },
     {
+      "activation": "user_initiated_two_step_review_and_explicit_approval",
       "bytes": 501367,
       "download": "downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip",
       "folder": "05-Nurse-Connected-Ally",
       "install_on_download": false,
       "intended_stage": "after_soul_files_and_hermes_setup",
+      "package_version": "2026.07.13.1",
+      "pre_install_disclosure_required": false,
       "role": "Nurse-Connected Ally",
       "sha256": "4303c9fa379df70ad2c9922ada1d6fe93d2eb8110ef9edf2ea88b635a1d20090"
+    },
+    {
+      "acceptance_tests": {
+        "foundation": 63,
+        "np_wings": 82,
+        "total": 145
+      },
+      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "bytes": 161302,
+      "country_availability": [
+        "United States"
+      ],
+      "download": "downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip",
+      "folder": "06-Nurse-Practitioner-USA",
+      "foundation_first": true,
+      "install_on_download": false,
+      "intended_stage": "after_soul_files_and_hermes_setup",
+      "package_version": "2026.07.14.2",
+      "pre_install_disclosure_required": true,
+      "role": "Nurse Practitioner (USA)",
+      "sha256": "c956bf76fefaf323ac8b6577df3e5586d04b342353d77e0c20863bfedc7a961a",
+      "wings_overlay_second": true
     }
   ],
   "purpose": "role-specific Nurse AI OS post-setup downloads",
-  "release": "2026.07.13.1",
+  "release": "2026.07.14.2",
   "schema_version": "1.0"
 }

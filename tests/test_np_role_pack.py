@@ -6,6 +6,9 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import runpy
+import shutil
+import tempfile
 import unittest
 import zipfile
 from pathlib import Path
@@ -144,6 +147,38 @@ class NursePractitionerLaneTests(unittest.TestCase):
                 if path.is_file():
                     self.assertIn(prefix + path.name, names)
                     self.assertEqual(archive.read(prefix + path.name), path.read_bytes())
+
+    def test_import_source_can_seed_separately_governed_np_package(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        role = next(item for item in namespace["ROLES"] if item["label"] == "Nurse Practitioner (USA)")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source_root = root / "source"
+            source_root.mkdir()
+            shutil.copytree(PACKAGE, source_root / role["folder"])
+            function = namespace["import_prebuilt_role"]
+            function.__globals__["PACKAGES"] = root / "packages"
+            function.__globals__["PACKAGES"].mkdir()
+            function(source_root, role)
+            imported = function.__globals__["PACKAGES"] / role["folder"]
+            self.assertEqual((imported / "ROLE-PACK.json").read_bytes(), ROLE_MANIFEST.read_bytes())
+            self.assertTrue((imported / "PACKAGE-CHECKSUMS.sha256").is_file())
+
+    def test_import_source_rejects_missing_np_before_partial_import(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        build = namespace["build"]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source_root = root / "source"
+            source_root.mkdir()
+            for role in namespace["ROLES"]:
+                if "activation" not in role:
+                    (source_root / role["source"]).mkdir()
+            build.__globals__["PACKAGES"] = root / "packages"
+            build.__globals__["DOWNLOADS"] = root / "downloads"
+            with self.assertRaisesRegex(FileNotFoundError, "06-Nurse-Practitioner-USA"):
+                build(source_root)
+            self.assertEqual(list((root / "packages").iterdir()), [])
 
 
 if __name__ == "__main__":

@@ -292,6 +292,19 @@ def import_role(source_root: Path, role: dict) -> None:
     refresh_package_checksums(destination)
 
 
+def import_prebuilt_role(source_root: Path, role: dict) -> None:
+    """Import a separately governed prebuilt role package without rewriting it."""
+    source = source_root / role["folder"]
+    destination = PACKAGES / role["folder"]
+    if not source.is_dir():
+        raise FileNotFoundError(source)
+    if destination.exists():
+        raise FileExistsError(f"Refusing to overwrite existing package: {destination}")
+    shutil.copytree(source, destination, ignore=shutil.ignore_patterns(".DS_Store"))
+    validate_role_package(destination, role)
+    refresh_package_checksums(destination)
+
+
 def deterministic_zip(role: dict) -> dict:
     """Validate a role package, refresh its ledger, and write a deterministic ZIP."""
     source = PACKAGES / role["folder"]
@@ -335,9 +348,20 @@ def build(source_root: Path | None) -> None:
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     if source_root:
         # The USA-only NP Complete Edition is a separately governed one-file
-        # package and must not be rewritten by the generic five-role importer.
-        for role in (item for item in ROLES if "activation" not in item):
+        # package and must be imported intact, not rewritten by the generic importer.
+        generic_roles = [item for item in ROLES if "activation" not in item]
+        np_role = next(item for item in ROLES if item.get("activation"))
+        required_sources = [source_root / role["source"] for role in generic_roles]
+        required_sources.append(source_root / np_role["folder"])
+        missing = [path for path in required_sources if not path.is_dir()]
+        if missing:
+            raise FileNotFoundError("Import source is incomplete; missing: " + ", ".join(str(path) for path in missing))
+        conflicts = [PACKAGES / role["folder"] for role in ROLES if (PACKAGES / role["folder"]).exists()]
+        if conflicts:
+            raise FileExistsError("Refusing partial import; package destinations already exist: " + ", ".join(str(path) for path in conflicts))
+        for role in generic_roles:
             import_role(source_root, role)
+        import_prebuilt_role(source_root, np_role)
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
@@ -358,7 +382,11 @@ def build(source_root: Path | None) -> None:
 def main() -> int:
     """Parse command-line arguments and return a shell-friendly status code."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--import-source", type=Path, help="Import role folders before building downloads")
+    parser.add_argument(
+        "--import-source",
+        type=Path,
+        help="Import five original role sources plus a prebuilt 06-Nurse-Practitioner-USA folder before building",
+    )
     args = parser.parse_args()
     try:
         build(args.import_source.expanduser().resolve() if args.import_source else None)

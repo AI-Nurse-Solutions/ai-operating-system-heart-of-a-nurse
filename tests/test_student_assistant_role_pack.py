@@ -161,13 +161,13 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
             "136 embedded release checks",
             "all eighteen optional FUTURE SuperPowers remain inactive",
             "Nursing Student, Nursing Assistant, or Bridge",
-            "Complete Edition lanes 01, 03, and 06",
-            "For review-first lanes 02, 04, and 05",
+            "Complete Edition lanes 01, 03, 04, and 06",
+            "For review-first lanes 02 and 05",
         ):
             self.assertIn(phrase, page)
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 03, and 06 are separately governed Complete Editions", readme)
-        self.assertIn("Review-first lanes 02, 04, and 05 include", readme)
+        self.assertIn("Lanes 01, 03, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Review-first lanes 02 and 05 include", readme)
         self.assertIn("Nursing Student and Nursing Assistant ZIP is a separately governed Complete Edition", readme)
 
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):
@@ -313,7 +313,10 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
                     handle.write("\nunauthorized safety-wrapper change\n")
                 function.__globals__["PACKAGES"] = root / "packages"
                 function.__globals__["PACKAGES"].mkdir()
-                with self.assertRaisesRegex(ValueError, "Checksum mismatch.*00-READ-FIRST.md"):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "(?:Checksum mismatch|Trusted wrapper checksum mismatch).*00-READ-FIRST.md",
+                ):
                     function(source_root, role)
                 self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
 
@@ -340,6 +343,52 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unexpected files.*STALE.md"):
                 build(source_root)
             self.assertEqual(list((root / "packages").iterdir()), [])
+
+    def test_import_source_rejects_self_consistent_source_replacement_for_every_prebuilt_role(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        function = namespace["import_prebuilt_role"]
+        refresh = namespace["refresh_package_checksums"]
+        for role in (item for item in namespace["ROLES"] if item.get("prebuilt")):
+            with self.subTest(role=role["folder"]), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                source_root = root / "source"
+                source_root.mkdir()
+                source = source_root / role["folder"]
+                shutil.copytree(ROOT / "post-setup" / "packages" / role["folder"], source)
+                target = source / role["required_prebuilt_sources"][0]
+                target.write_bytes(target.read_bytes() + b"\nself-consistent but unauthorized replacement\n")
+                manifest_path = source / "ROLE-PACK.json"
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                record = next(item for item in manifest["source_files"] if item["packaged_path"] == target.name)
+                record["source_sha256"] = hashlib.sha256(target.read_bytes()).hexdigest()
+                record["bytes"] = target.stat().st_size
+                manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+                refresh(source)
+                function.__globals__["PACKAGES"] = root / "packages"
+                function.__globals__["PACKAGES"].mkdir()
+                with self.assertRaisesRegex(ValueError, "Trusted source checksum mismatch"):
+                    function(source_root, role)
+                self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
+
+    def test_import_source_rejects_self_consistent_wrapper_replacement_for_every_prebuilt_role(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        function = namespace["import_prebuilt_role"]
+        refresh = namespace["refresh_package_checksums"]
+        for role in (item for item in namespace["ROLES"] if item.get("prebuilt")):
+            with self.subTest(role=role["folder"]), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                source_root = root / "source"
+                source_root.mkdir()
+                source = source_root / role["folder"]
+                shutil.copytree(ROOT / "post-setup" / "packages" / role["folder"], source)
+                wrapper = source / "00-READ-FIRST.md"
+                wrapper.write_text(wrapper.read_text(encoding="utf-8") + "\nself-consistent unsafe wrapper\n", encoding="utf-8")
+                refresh(source)
+                function.__globals__["PACKAGES"] = root / "packages"
+                function.__globals__["PACKAGES"].mkdir()
+                with self.assertRaisesRegex(ValueError, "Trusted wrapper checksum mismatch"):
+                    function(source_root, role)
+                self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
 
 
 if __name__ == "__main__":

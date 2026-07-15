@@ -226,6 +226,28 @@ class SetupHelperTests(unittest.TestCase):
         self.assertIn("read-only preflight checklist only", result["task"])
         self.assertIn("Do not install, save, connect, or activate anything", result["task"])
 
+    def test_educator_designer_complete_edition_starter_is_self_contained(self):
+        result = node_eval("""
+          import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
+          const lane=POST_SETUP_LANES.find(x=>x.value==='nurse_educator');
+          console.log(JSON.stringify({label:lane?.label,task:safeTaskForLane('nurse_educator')}));
+        """)
+        self.assertEqual(result["label"], "Nurse Educator and Instructional Designer")
+        task = result["task"]
+        for phrase in (
+            "without opening or requiring a package file",
+            "Nurse Educator, Instructional Designer, or Hybrid / Faculty Developer",
+            "one-page no-PHI readiness checklist",
+            "one synthetic first-win lesson or learning-design outline",
+            "Do not save new memory, connect, share, grade, release, activate, automate, or modify my profile",
+            "downloading, selecting, opening, and unzipping do not install anything",
+            "complete one-file TEACH program",
+            "read-only preflight",
+            "TEACH Complete Edition Activation Card",
+            "all twenty optional TEACH SuperPowers",
+        ):
+            self.assertIn(phrase, task)
+
     def test_nurse_leader_complete_edition_is_preflight_first(self):
         result = node_eval("""
           import {safeTaskForLane} from './setup-helper/setup-helper-model.mjs';

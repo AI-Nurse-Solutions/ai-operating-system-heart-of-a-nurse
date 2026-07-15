@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 import zipfile
@@ -383,6 +384,39 @@ def validate_prebuilt_inventory(package: Path, role: dict) -> None:
                 details.append(f"{label}: {', '.join(sorted(path.as_posix() for path in paths))}")
         raise ValueError(
             f"Prebuilt package inventory mismatch for {role['folder']}; " + "; ".join(details)
+        )
+
+    ledger_path = package / "PACKAGE-CHECKSUMS.sha256"
+    ledger_records: dict[Path, str] = {}
+    for line_number, line in enumerate(ledger_path.read_text(encoding="utf-8").splitlines(), start=1):
+        match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
+        if not match:
+            raise ValueError(
+                f"Invalid checksum ledger line for {role['folder']} at line {line_number}"
+            )
+        relative = Path(match.group(2))
+        if relative.is_absolute() or ".." in relative.parts or "\\" in match.group(2):
+            raise ValueError(
+                f"Unsafe checksum ledger path for {role['folder']}: {match.group(2)}"
+            )
+        if relative in ledger_records:
+            raise ValueError(
+                f"Duplicate checksum ledger path for {role['folder']}: {relative.as_posix()}"
+            )
+        ledger_records[relative] = match.group(1)
+
+    expected_ledger_files = expected_files - {Path("PACKAGE-CHECKSUMS.sha256")}
+    if set(ledger_records) != expected_ledger_files:
+        raise ValueError(f"Checksum ledger inventory mismatch for {role['folder']}")
+    mismatches = [
+        relative
+        for relative, expected_hash in ledger_records.items()
+        if sha256(package / relative) != expected_hash
+    ]
+    if mismatches:
+        raise ValueError(
+            f"Checksum mismatch for {role['folder']}: "
+            + ", ".join(sorted(path.as_posix() for path in mismatches))
         )
 
 

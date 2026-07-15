@@ -230,6 +230,24 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
                     function(source_root, role)
                 self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
 
+    def test_import_source_verifies_wrapper_checksums_before_copying(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        function = namespace["import_prebuilt_role"]
+        for role in (item for item in namespace["ROLES"] if item.get("prebuilt")):
+            with self.subTest(role=role["folder"]), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                source_root = root / "source"
+                source_root.mkdir()
+                source = source_root / role["folder"]
+                shutil.copytree(ROOT / "post-setup" / "packages" / role["folder"], source)
+                with (source / "00-READ-FIRST.md").open("a", encoding="utf-8") as handle:
+                    handle.write("\nunauthorized safety-wrapper change\n")
+                function.__globals__["PACKAGES"] = root / "packages"
+                function.__globals__["PACKAGES"].mkdir()
+                with self.assertRaisesRegex(ValueError, "Checksum mismatch.*00-READ-FIRST.md"):
+                    function(source_root, role)
+                self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

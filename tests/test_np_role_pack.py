@@ -172,8 +172,13 @@ class NursePractitionerLaneTests(unittest.TestCase):
             source_root = root / "source"
             source_root.mkdir()
             for role in namespace["ROLES"]:
-                if "activation" not in role:
+                if not role.get("prebuilt"):
                     (source_root / role["source"]).mkdir()
+                elif role["label"] == "Nurse Leader and Manager":
+                    shutil.copytree(
+                        ROOT / "post-setup" / "packages" / role["folder"],
+                        source_root / role["folder"],
+                    )
             build.__globals__["PACKAGES"] = root / "packages"
             build.__globals__["DOWNLOADS"] = root / "downloads"
             with self.assertRaisesRegex(FileNotFoundError, "06-Nurse-Practitioner-USA"):

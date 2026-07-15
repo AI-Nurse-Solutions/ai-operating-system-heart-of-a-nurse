@@ -204,6 +204,20 @@ class SetupHelperTests(unittest.TestCase):
         self.assertIn("read-only preflight checklist only", result["task"])
         self.assertIn("Do not install, save, connect, or activate anything", result["task"])
 
+    def test_nurse_leader_complete_edition_is_preflight_first(self):
+        result = node_eval("""
+          import {safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
+          console.log(JSON.stringify({task:safeTaskForLane('nurse_leader_manager')}));
+        """)
+        task = result["task"]
+        self.assertIn("read-only preflight checklist only", task)
+        self.assertIn("Do not install, save, connect, share, or activate anything", task)
+        self.assertIn("downloading and unzipping do not install anything", task)
+        self.assertIn("Nurse Leader Complete Edition Activation Card", task)
+        self.assertIn("113 embedded release checks", task)
+        self.assertIn("all sixteen optional SuperPowers off", task)
+        self.assertIn("private-workspace approval does not authorize organizational deployment", task)
+
     def test_no_server_calls_or_analytics(self):
         combined = self.app + self.model
         for forbidden in ("fetch(", "XMLHttpRequest", "WebSocket", "sendBeacon", "gtag(", "mixpanel", "segment.io"):

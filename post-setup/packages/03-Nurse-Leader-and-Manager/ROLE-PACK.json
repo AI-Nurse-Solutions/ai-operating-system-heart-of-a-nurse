@@ -1,44 +1,51 @@
 {
-  "activation": "user_initiated_two_step_review_and_explicit_approval",
+  "acceptance_tests": {
+    "foundation": 21,
+    "integration": 12,
+    "lead_overlay": 80,
+    "total": 113
+  },
+  "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
   "automatic_connectors": false,
   "automatic_cron": false,
   "automatic_external_actions": false,
   "automatic_memory": false,
+  "automatic_shared_access": false,
   "clinical_decisions": false,
+  "existing_install_policy": "detect_verify_bind_and_skip_never_duplicate",
+  "foundation_first": true,
   "install_on_download": false,
+  "installation_model": "hermes_guided_one_file_multi_turn_with_safe_checkpoints",
   "intended_stage": "after_soul_files_and_hermes_setup",
+  "lead_overlay_second": true,
   "no_phi": true,
   "onboarding_edena_ceiling": "yellow",
-  "package_id": "naio-post-setup-nurse-leader-and-manager",
-  "package_version": "2026.07.13.1",
+  "optional_superpowers_active_after_install": 0,
+  "optional_superpowers_total": 16,
+  "organizational_deployment_requires_separate_authorization": true,
+  "package_id": "naio-post-setup-nurse-leader-manager-complete-lead",
+  "package_version": "2026.07.14.1",
+  "pre_install_disclosure_required": true,
+  "program_id": "NAIO-NL-COMPLETE-LEAD-1.0",
+  "restricted_workforce_information_default": "excluded",
   "role": "Nurse Leader and Manager",
   "role_selection_verifies_credentials_or_authority": false,
   "schema_version": "1.0",
   "source_files": [
     {
-      "bytes": 241237,
-      "packaged_path": "Hermes-Nurse-AI-OS-SuperPowers-Pack-User-Guide.docx",
-      "source_sha256": "d2f083f1718e7d800a416ddcdaa5cea900d9148eae693fc808509f339519411b"
+      "bytes": 215044,
+      "packaged_path": "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Hermes-Program.md",
+      "source_sha256": "5ac88fdc530c23b7b1b72cb1eefa4d41cf4bfc2996cd383dfff1867315893a08"
     },
     {
-      "bytes": 200561,
-      "packaged_path": "Nurse-Leader-AI-OS-Leadership-Guide.docx",
-      "source_sha256": "76ef9b604d7a72da056d2b2894e561ca476aa91d756369b0d6df1b0f6e88f3bf"
+      "bytes": 19054,
+      "packaged_path": "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.md",
+      "source_sha256": "79503858ae693d7b4a2f5961e50ffcef5e1f7c3c63af35db156d0a127ee40cc3"
     },
     {
-      "bytes": 40587,
-      "packaged_path": "Nurse-Leader-Empowerment-Function-Hermes-Program.md",
-      "source_sha256": "72097c31b2f9817bdb167f2836b1772cdefcb86474859b698ae56cc9b2571050"
-    },
-    {
-      "bytes": 20127,
-      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md",
-      "source_sha256": "c7debff684da7ebe910be089355545d1c9aa5fa45168500da4e84156c2e3ea53"
-    },
-    {
-      "bytes": 5950,
-      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md",
-      "source_sha256": "383c73489e54735cd5bc5e7ad15ee28c1a5b7de16f3349318d3b33e9e71df5f8"
+      "bytes": 183332,
+      "packaged_path": "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.docx",
+      "source_sha256": "fc44cf7e636a354d836b44dc924d4710341afcff9fe937458383d0d9a835cfe7"
     }
   ]
 }

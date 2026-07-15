@@ -1,44 +1,66 @@
 {
-  "activation": "user_initiated_two_step_review_and_explicit_approval",
+  "acceptance_tests": {
+    "foundation": 40,
+    "integration": 16,
+    "shift_overlay": 120,
+    "total": 176
+  },
+  "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
   "automatic_connectors": false,
   "automatic_cron": false,
   "automatic_external_actions": false,
   "automatic_memory": false,
+  "automatic_shared_access": false,
   "clinical_decisions": false,
+  "default_context": "Private Personal Mode",
+  "default_data_mode": "Synthetic Demonstration Mode",
+  "default_memory": "session_only",
+  "foundation_first": true,
   "install_on_download": false,
+  "institutional_deployment_requires_separate_authorization": true,
   "intended_stage": "after_soul_files_and_hermes_setup",
   "no_phi": true,
   "onboarding_edena_ceiling": "yellow",
+  "optional_superpowers_active_after_install": 0,
+  "optional_superpowers_total": 20,
   "package_id": "naio-post-setup-staff-nurse",
-  "package_version": "2026.07.13.1",
-  "role": "Staff Nurse",
+  "package_version": "2026.07.15.1",
+  "pre_install_disclosure_required": true,
+  "release_checks_are_embedded_declarations_not_live_validation": true,
+  "role": "Staff Nurse and Quality Contributor",
+  "role_adapters": [
+    "Direct-Care Staff Nurse",
+    "Unit Champion / Preceptor / Shared-Governance Member",
+    "Chartered Staff-Nurse QI Project Lead",
+    "Hybrid / Multiple-Employer"
+  ],
   "role_selection_verifies_credentials_or_authority": false,
   "schema_version": "1.0",
+  "shift_overlay_second": true,
+  "source_archive": {
+    "bytes": 250478,
+    "filename": "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Package-v1.0.zip",
+    "sha256": "b3a78f0b6a86bc1bc67dcc95d087fe8c71226889ca02a285a2c4504194d8ccf5"
+  },
   "source_files": [
     {
-      "bytes": 241237,
-      "packaged_path": "Hermes-Nurse-AI-OS-SuperPowers-Pack-User-Guide.docx",
-      "source_sha256": "d2f083f1718e7d800a416ddcdaa5cea900d9148eae693fc808509f339519411b"
+      "bytes": 203746,
+      "packaged_path": "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Hermes-Program.md",
+      "source_sha256": "6fa391b8000d7b5c0e6a922b9ed61446143d6b1ddf70c88950a8171a9176b828",
+      "transformation": "replaced twenty-four supplied Markdown trailing-space hard breaks with explicit <br> tags for equivalent rendering and a whitespace-clean repository",
+      "upstream_sha256": "549c499c1d0d9fa5cd68c2147314c476a3596da08b943d186a009ec5e60bb4d4"
     },
     {
-      "bytes": 220140,
-      "packaged_path": "Staff-Nurse-AI-OS-Life-and-Practice-Guide.docx",
-      "source_sha256": "1f2189cee5a4b28c3baedbc9088c6d11e552b666a6781c245de7bcda69a2037a"
+      "bytes": 18947,
+      "packaged_path": "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.md",
+      "source_sha256": "1d23c026f251b2826b839f5b65f64a1ea59988d014ff9c8e44f079a9eb38e86d",
+      "transformation": "replaced three supplied Markdown trailing-space hard breaks with explicit <br> tags for equivalent rendering and a whitespace-clean repository",
+      "upstream_sha256": "b284742b9a70827cf4aeebdd036cf81e8f1561b00250cbc6d176d68b377342f4"
     },
     {
-      "bytes": 74956,
-      "packaged_path": "Staff-Nurse-Life-and-Practice-Hermes-Program.md",
-      "source_sha256": "44f417b9b1d09b54fbf1629e6e3ebb82652c9dadec6941804f68e1c0c61797d5"
-    },
-    {
-      "bytes": 20127,
-      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md",
-      "source_sha256": "c7debff684da7ebe910be089355545d1c9aa5fa45168500da4e84156c2e3ea53"
-    },
-    {
-      "bytes": 5950,
-      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md",
-      "source_sha256": "383c73489e54735cd5bc5e7ad15ee28c1a5b7de16f3349318d3b33e9e71df5f8"
+      "bytes": 188909,
+      "packaged_path": "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.docx",
+      "source_sha256": "f8e4381fafaeec746663dc8ebc18c707369ed5c1591537890c5004659d73a0ec"
     }
   ]
 }

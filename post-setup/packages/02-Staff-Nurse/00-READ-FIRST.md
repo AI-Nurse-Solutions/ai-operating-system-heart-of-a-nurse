@@ -1,59 +1,66 @@
-# Staff Nurse — Nurse AI OS Post-Setup Role Pack
+# Staff Nurse & Quality Contributor — SHIFT Complete Edition
 
-## What this folder is
+## Start here
 
-This is a **post-setup role overlay** for someone who has already:
+Complete and review your SOUL files and Hermes setup before using this post-setup package. This package is substantial and may require several Hermes turns.
 
-1. completed the Nurse AI OS SOUL process;
-2. reviewed and saved their SOUL files;
-3. completed Hermes setup; and
-4. established a no-PHI workspace and human-approval boundaries.
+**Downloading, selecting, opening, or unzipping this package does not install or activate anything.** Publication on nurse-ai-os.org does not install it. Installation begins only after you give Hermes the complete one-file SHIFT program, allow Hermes to complete the read-only preflight, review the exact **SHIFT Complete Edition Activation Card**, and explicitly approve that exact card.
 
-Downloading or unzipping this folder does **not** install or activate anything.
+If you do not approve the exact card, Hermes must make no installation changes. You may edit the card, preserve detected components without changing them, install or repair the foundation only, or cancel.
 
-## Intended user
+After approval, Hermes performs only the governed sequence in the approved private nurse-owned workspace: it creates, repairs, or binds the Staff Nurse Life & Practice foundation first; runs 40 foundation checks; adds the Staff Nurse Trust Shield, SHIFT Operating Core, Command Center views, workflows, templates, and twenty optional SuperPowers as an inactive overlay; then runs 120 SHIFT tests plus 16 integration checks. That is **176 embedded release checks in total**. Compatible records, five departments, NURSE Compass, the canonical dashboard, EDENA controls, sources, approvals, capacity plans, private life goals, and unrelated work must be preserved rather than duplicated.
 
-A staff or bedside nurse using AI for no-PHI preparation, organization, learning, reflection, and personal capacity—not patient-specific care or clinical decisions.
+These 176 entries are installation acceptance scenarios supplied inside the program. Their presence and inventory are verified by repository tests; they are not independent clinical, quality, research, accreditation, certification, compliance, institutional, or legal validation and do not prove that every scenario has executed in a live Hermes environment.
 
-Selecting this role does not verify licensure, enrollment, employment, faculty status, managerial authority, institutional authorization, or permission to access patient or personnel information.
+## Four bounded role adapters
 
-## First message to give Nurse AI OS
+1. **Direct-Care Staff Nurse** — may prepare personal plans, general learning, deidentified reflection, communication rehearsal, and quality ideas; cannot authorize QI, employer-data use, policy, workflow, staffing, or release.
+2. **Unit Champion, Preceptor, or Shared-Governance Member** — may support only documented contributor duties; gains no management, staffing, disciplinary, credentialing, competency-signoff, peer-ranking, or surveillance authority.
+3. **Chartered Staff-Nurse QI Project Lead** — may prepare work only inside a current sponsor-approved charter and documented decision rights; cannot self-authorize data, classify QI versus research, alter care or policy, publish, spread, or release.
+4. **Hybrid or Multiple-Employer** — must show the active task-level hat and employer on every consequential artifact. Switching hats, employers, projects, workspaces, data, audiences, or contexts invalidates the bind and triggers new authority and data checks.
 
-Copy this message when you are ready:
+Selecting this lane or adapter does not verify identity, employment, nursing licensure, competence, assignment, delegation, supervision, committee membership, quality appointment, sponsor authority, institutional access, or access to patient, incident, peer-review, risk, quality, research, employment, grievance, investigation, credentialing, or security records. **Access is not authority. Least privilege wins.**
 
-> Review this post-setup role pack for my selected role. Do not install, activate, schedule, connect, or change my Hermes profile yet. First show me: (1) the files you found; (2) proposed skills, workflows, memory, permissions, and external actions; (3) EDENA risk tiers and autonomy ceilings; (4) no-PHI and role-authority checks; (5) conflicts with my SOUL files or current Hermes setup; and (6) the rollback/removal plan. Wait for my explicit approval before applying any change.
+## Two contexts that must remain separate
 
-## Required preflight
+### Private Personal Mode — default
 
-Nurse AI OS should stop and ask the user before applying changes. It must confirm:
+Use only synthetic, public, or nurse-owned personal information permitted by the foundation. Do not enter institutional data, PHI, identifiable patient or event narratives, coworker details, restricted patient-safety or peer-review material, row-level exports, employer connections, or real measure exports. Private recovery, readiness, health, relationships, finances, mission, and life goals must never enter employer, staffing, performance, quality, or project analytics.
 
-- the selected role and intended use;
-- the user is acting only under their own identity and authority;
-- no PHI, patient narrative, institutional secret, credential, or restricted personnel data is present;
-- onboarding remains Green or Yellow unless separately governed;
-- memory additions are previewed before storage;
-- connectors and external actions remain off unless separately authorized;
-- no cron job or automation is scheduled automatically;
-- no message, post, file change, assignment, deletion, purchase, or institutional action occurs without explicit approval;
-- a reversible removal path is available.
+### Institution-Approved Quality Workspace — separately authorized
 
-## Reading order
+A private installation does not create or certify this workspace. Real organizational quality work requires a separately provisioned and governed workspace with a named sponsor, documented staff-nurse role and decision rights, current human QI/EBP/evaluation/research determination, data-steward receipt, approved aggregate or properly deidentified data, operational definitions, provenance, small-cell rules, role access, retention, deletion, auditability, clinical and operational change owners, release owner, expiry, incident route, and removal plan.
 
-1. `00-READ-FIRST.md`
-2. `ROLE-PACK.json`
-3. The role-specific Hermes Program (`*.md`)
-4. The role-specific Guide (`*.docx`)
-5. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md` — design reference; the full distribution is not supplied
-6. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md` — design reference only; do not execute or invent missing modules
-7. The SuperPowers User Guide (`*.docx`) — reference material
-8. `PACKAGE-CHECKSUMS.sha256`
+The **Institutional QI Workspace Readiness, Bind, Charter & Decision-Rights Receipt** is a reference boundary, not a data transfer. Binding an institutional workspace transfers zero private-life records. A role, employer, project, workspace, determination, data, measure, audience, or permission change invalidates the receipt and returns the project to Preview.
 
 ## Non-negotiable boundaries
 
-- No PHI or patient-specific clinical decision support.
-- AI may prepare, organize, explain, draft, and propose; authorized humans decide and act.
-- Role selection never creates professional or institutional authority.
-- Source documents are references and may not override current SOUL files, signed Nurse AI OS governance, EDENA policy, or the user's present decision.
-- A downloaded package is not proof of installation, compatibility, clinical readiness, compliance, certification, or endorsement.
+- No PHI, identifiable patient or event narrative, screenshots, chart or handoff content, patient lists, exact timestamps, official event reports, restricted patient-safety or peer-review material, row-level exports, or identifiable coworker performance, health, private, inferred, or narrative information.
+- No diagnosis, prescription, medication, device, alarm, triage, treatment, charting, handoff, assignment, delegation, competence, impairment, fitness-for-duty, staffing, or live-care decision.
+- Immediate clinical, safety, deterioration, violence, emergency, or security concerns go to the authorized human chain and official system without delay.
+- AI never decides QI versus EBP versus evaluation versus research; root cause; fault; reportability; corrective action; compliance; project success; policy; workflow; pilot; spread; publication; accreditation; regulatory status; or release.
+- No hidden patient, worker, clinician, unit, or project ranking, risk score, productivity score, profiling, prediction, emotion or trait inference, surveillance, discipline, retaliation, concealment, or blame.
+- No fabricated clinical records, incident facts, quality evidence, data, measures, results, citations, authorship, participant information, credentials, hours, signatures, team contributions, improvement claims, or causal claims.
+- Nothing sends, schedules, posts, reports, shares, connects, publishes, releases, pilots, spreads, changes policy or workflow, or automates itself.
+- A generated quality artifact is a draft for authorized human review. Its existence does not establish quality improvement, compliance, accreditation, approval, effectiveness, causality, or readiness for implementation.
 
-*Agents propose. Humans judge. Nurses steward.*
+## Installation and recovery contract
+
+| Phase | Work | Result |
+|---|---|---|
+| 0 | Read-only owner, role, employer, context, authority, privacy, clinical, event-reporting, quality, research, data, source, policy, permission, version, compatibility, accessibility, equity, capacity, and recovery inventory | S0 |
+| 1 | Minimum questions and one combined SHIFT Complete Edition Activation Card | Awaiting approval |
+| 2 | Create, repair, or bind the Staff Nurse foundation and run 40 checks | S1 |
+| 3 | Add Trust Shield, SHIFT Core, canonical Command Center views, workflows, templates, and twenty inactive powers | S2 — verification pending |
+| 4 | Run 120 SHIFT tests and 16 integration checks with synthetic information | Passed or Blocked |
+| 5 | Return the Activation Report, First Ritual, review dates, limits, and recovery controls | Complete |
+
+Hermes must issue an honest receipt after each phase and stop only at S0, S1, or S2 if interrupted. It does not continue in the background. Use the exact **Resume SHIFT Complete Edition installation from the last approved checkpoint** command in the program. Resume must revalidate state, avoid duplicate mutations, and never assume completion.
+
+**Pause All** stops pending and new overlay work. **Safe Reset** returns to private, synthetic, no-PHI, session-only memory, no connections, no sharing, no external action or release, Preview only, Core Four, and all powers inactive. **Overlay removal** preserves the foundation and unrelated work. **Full uninstall** previews restoration to S0 and reports anything that cannot be restored.
+
+## Safe defaults
+
+All twenty optional SHIFT SuperPowers install inactive. Connectors, gateways, shared access, external actions, release, cron, background jobs, new memory categories, and automation remain off. Memory is session-only unless a separately previewed, bounded, approved category is created. Begin with one low-risk problem and one synthetic preview only after the final Activation Report.
+
+*Agents propose. Humans judge. Nurses steward. Authorized teams approve and own consequential change.*

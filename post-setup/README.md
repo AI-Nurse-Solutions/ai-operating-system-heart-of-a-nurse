@@ -1,13 +1,13 @@
 # Nurse AI OS Post-Setup Role Packs
 
-These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lanes 02 and 05 are review-first overlays. Lanes 01, 03, 04, and 06 are separately governed Complete Editions with read-only preflight and exact activation-card approval before any installation mutation.
+These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 01, 02, 03, 04, and 06 are separately governed Complete Editions with read-only preflight and exact activation-card approval before any installation mutation.
 
 ## Role folders
 
 | Folder | User-facing role | Download |
 |---|---|---|
 | `01-Student-Nurse` | Nursing Student and Nursing Assistant | `downloads/nurse-ai-os-post-setup-student-nurse.zip` |
-| `02-Staff-Nurse` | Staff Nurse | `downloads/nurse-ai-os-post-setup-staff-nurse.zip` |
+| `02-Staff-Nurse` | Staff Nurse and Quality Contributor | `downloads/nurse-ai-os-post-setup-staff-nurse.zip` |
 | `03-Nurse-Leader-and-Manager` | Nurse Leader and Manager | `downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip` |
 | `04-Nurse-Educator` | Nurse Educator and Instructional Designer | `downloads/nurse-ai-os-post-setup-nurse-educator.zip` |
 | `05-Nurse-Connected-Ally` | Nurse-Connected Ally | `downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip` |
@@ -27,11 +27,11 @@ Nothing is installed or activated. Every package declares:
 }
 ```
 
-The user unzips one role folder. Lanes 02 and 05 use the review-first prompt and require proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. The Nursing Student and Nursing Assistant, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions use their supplied one-file Hermes programs, read-only preflights, exact combined activation cards, phased checkpoints, and explicit approval before any installation mutation.
+The user unzips one role folder. Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. The Nursing Student and Nursing Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions use their supplied one-file Hermes programs, read-only preflights, exact combined activation cards, phased checkpoints, and explicit approval before any installation mutation.
 
 ## Package contents
 
-Review-first lanes 02 and 05 include:
+Review-first lane 05 includes:
 
 - `00-READ-FIRST.md`
 - `ROLE-PACK.json`
@@ -52,6 +52,17 @@ The Nursing Student and Nursing Assistant ZIP is a separately governed Complete 
 - `PACKAGE-CHECKSUMS.sha256`
 
 The FUTURE program supports Nursing Student, Nursing Assistant, and Bridge pathways. It creates, repairs, or binds the foundation first, runs 24 foundation tests, adds the FUTURE Library and Passport as an inactive overlay, and runs 96 FUTURE tests plus 16 integration checks—136 embedded release checks in total. All eighteen optional SuperPowers remain inactive. Bridge keeps academic and employment contexts separate. Downloading does not install it. Pathway selection does not verify enrollment, certification, employment, scope, delegation, supervision, competence, or institutional permission, and private-workspace approval does not authorize school, clinical-site, employer, community, or organizational deployment.
+
+The Staff Nurse and Quality Contributor ZIP is a separately governed Complete Edition. It includes:
+
+- `00-READ-FIRST.md`
+- `ROLE-PACK.json`
+- `Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Hermes-Program.md` — complete one-file guided installer
+- `Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.md`
+- `Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.docx`
+- `PACKAGE-CHECKSUMS.sha256`
+
+The SHIFT program supports Direct-Care Staff Nurse; Unit Champion, Preceptor, or Shared-Governance Member; Chartered Staff-Nurse QI Project Lead; and Hybrid / Multiple-Employer adapters. It creates, repairs, or binds the Staff Nurse foundation first, runs 40 foundation checks, adds the Trust Shield, SHIFT Core, canonical Command Center views, workflows, templates, and twenty optional SuperPowers as an inactive overlay, and runs 120 SHIFT tests plus 16 integration checks—176 embedded release checks in total. All twenty optional SHIFT SuperPowers remain inactive. Downloading does not install it. Role selection verifies no licensure, employment, competence, assignment, delegation, supervision, quality appointment, sponsor authority, institutional access, or data permission. Private-workspace approval does not authorize institutional quality work; that requires a separately provisioned and governed workspace, sponsor, charter, human QI/EBP/evaluation/research determination, data-steward receipt, approved aggregate or properly deidentified data, small-cell controls, named change and release owners, and auditability.
 
 The Nurse Leader and Manager ZIP is a separately governed Complete Edition. It includes:
 
@@ -96,7 +107,7 @@ Rebuild ZIPs deterministically from the tracked package folders:
 python3 scripts/build-post-setup-role-packs.py
 ```
 
-To import a new user-authorized source bundle into an empty package tree, supply the two review-first source folders plus intact prebuilt `01-Student-Nurse`, `03-Nurse-Leader-and-Manager`, `04-Nurse-Educator`, and `06-Nurse-Practitioner-USA` folders:
+To import a new user-authorized source bundle into an empty package tree, supply the review-first lane-05 source folder plus intact prebuilt `01-Student-Nurse`, `02-Staff-Nurse`, `03-Nurse-Leader-and-Manager`, `04-Nurse-Educator`, and `06-Nurse-Practitioner-USA` folders:
 
 ```bash
 python3 scripts/build-post-setup-role-packs.py --import-source /path/to/source

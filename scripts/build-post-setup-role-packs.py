@@ -31,6 +31,11 @@ ROLES = [
         "audience": "A nursing student, nursing assistant, or bridge learner using a private no-PHI workspace for learning, career growth, technology fluency, life organization, and safe rehearsal without replacing faculty, preceptors, supervising nurses, supervisors, verified scope, academic rules, or personal judgment.",
         "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
         "prebuilt": True,
+        "required_prebuilt_sources": (
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Hermes-Program.md",
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md",
+            "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx",
+        ),
     },
     {
         "source": "Staff Nurse",
@@ -47,6 +52,11 @@ ROLES = [
         "audience": "A nurse leader or manager using AI for governed preparation, communication drafts, approved-source retrieval, aggregate analysis, and follow-through while retaining professional and institutional accountability.",
         "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
         "prebuilt": True,
+        "required_prebuilt_sources": (
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Hermes-Program.md",
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.md",
+            "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.docx",
+        ),
     },
     {
         "source": "Educator",
@@ -70,6 +80,11 @@ ROLES = [
         "audience": "A nurse practitioner or transitioning NP using the English-language United States program after completing SOUL files and Hermes setup; selection never verifies license, certification, population focus, privileges, prescribing authority, or institutional approval.",
         "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
         "prebuilt": True,
+        "required_prebuilt_sources": (
+            "NP-Complete-AI-OS-with-Wings-Hermes-Program.md",
+            "NP-Complete-AI-OS-with-Wings-Setup-Guide.md",
+            "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx",
+        ),
     },
 ]
 
@@ -342,12 +357,20 @@ def validate_prebuilt_inventory(package: Path, role: dict) -> None:
     """Fail closed unless a prebuilt package has exactly its governed inventory."""
     validate_role_package(package, role)
     manifest = json.loads((package / "ROLE-PACK.json").read_text(encoding="utf-8"))
+    pinned_sources = {Path(path) for path in role["required_prebuilt_sources"]}
+    declared_sources = [Path(record.get("packaged_path", "")) for record in manifest.get("source_files", [])]
+    if len(declared_sources) != len(set(declared_sources)) or set(declared_sources) != pinned_sources:
+        raise ValueError(
+            f"Pinned source inventory mismatch for {role['folder']}; "
+            f"required: {', '.join(sorted(path.as_posix() for path in pinned_sources))}; "
+            f"declared: {', '.join(sorted(path.as_posix() for path in declared_sources))}"
+        )
     expected_files = {
         Path("00-READ-FIRST.md"),
         Path("PACKAGE-CHECKSUMS.sha256"),
         Path("ROLE-PACK.json"),
     }
-    expected_files.update(Path(record["packaged_path"]) for record in manifest["source_files"])
+    expected_files.update(pinned_sources)
     expected_dirs = {
         parent
         for path in expected_files

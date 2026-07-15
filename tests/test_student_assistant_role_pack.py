@@ -245,6 +245,43 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
                     function(source_root, role)
                 self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
 
+    def test_import_source_rejects_self_consistent_manifest_that_omits_pinned_sources(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        function = namespace["import_prebuilt_role"]
+        for role in (item for item in namespace["ROLES"] if item.get("prebuilt")):
+            with self.subTest(role=role["folder"]), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                source_root = root / "source"
+                source_root.mkdir()
+                source = source_root / role["folder"]
+                shutil.copytree(ROOT / "post-setup" / "packages" / role["folder"], source)
+                omitted = role["required_prebuilt_sources"][0]
+                (source / omitted).unlink()
+                manifest_path = source / "ROLE-PACK.json"
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                manifest["source_files"] = [
+                    record for record in manifest["source_files"] if record["packaged_path"] != omitted
+                ]
+                manifest_path.write_text(
+                    json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+                ledger = source / "PACKAGE-CHECKSUMS.sha256"
+                ledger.write_text(
+                    "\n".join(
+                        f"{sha256(path)}  {path.relative_to(source).as_posix()}"
+                        for path in sorted(source.rglob("*"))
+                        if path.is_file() and path != ledger
+                    )
+                    + "\n",
+                    encoding="utf-8",
+                )
+                function.__globals__["PACKAGES"] = root / "packages"
+                function.__globals__["PACKAGES"].mkdir()
+                with self.assertRaisesRegex(ValueError, "Pinned source inventory mismatch"):
+                    function(source_root, role)
+                self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
+
     def test_import_source_rejects_macos_metadata_for_every_prebuilt_role(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
         function = namespace["import_prebuilt_role"]

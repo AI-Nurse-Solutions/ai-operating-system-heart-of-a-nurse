@@ -201,7 +201,12 @@ class SetupHelperTests(unittest.TestCase):
         """)
         self.assertEqual(result["label"], "Nursing Student, Nursing Assistant, or Bridge")
         task = result["task"]
-        self.assertIn("read-only preflight checklist only", task)
+        self.assertIn("without opening or requiring a package file", task)
+        self.assertIn("one-page readiness checklist", task)
+        self.assertIn("one synthetic seven-day first-win plan", task)
+        self.assertIn("whether my SOUL files and Hermes setup are complete", task)
+        self.assertIn("at the later post-setup stage", task)
+        self.assertIn("finish the read-only preflight", task)
         self.assertIn("Do not install, save, connect, share, transfer school or work context, or activate anything", task)
         self.assertIn("downloading and unzipping do not install anything", task)
         self.assertIn("FUTURE Complete Edition Activation Card", task)

@@ -337,16 +337,66 @@ def import_role(source_root: Path, role: dict) -> None:
     refresh_package_checksums(destination)
 
 
+def validate_prebuilt_inventory(package: Path, role: dict) -> None:
+    """Fail closed unless a prebuilt package has exactly its governed inventory."""
+    validate_role_package(package, role)
+    manifest = json.loads((package / "ROLE-PACK.json").read_text(encoding="utf-8"))
+    expected_files = {
+        Path("00-READ-FIRST.md"),
+        Path("PACKAGE-CHECKSUMS.sha256"),
+        Path("ROLE-PACK.json"),
+    }
+    expected_files.update(Path(record["packaged_path"]) for record in manifest["source_files"])
+    expected_dirs = {
+        parent
+        for path in expected_files
+        for parent in path.parents
+        if parent != Path(".")
+    }
+    actual_files = {
+        path.relative_to(package)
+        for path in package.rglob("*")
+        if path.is_file() and path.name != ".DS_Store"
+    }
+    actual_dirs = {
+        path.relative_to(package)
+        for path in package.rglob("*")
+        if path.is_dir()
+    }
+    symlinks = {
+        path.relative_to(package)
+        for path in package.rglob("*")
+        if path.is_symlink()
+    }
+    missing = expected_files - actual_files
+    unexpected = actual_files - expected_files
+    unexpected_dirs = actual_dirs - expected_dirs
+    if missing or unexpected or unexpected_dirs or symlinks:
+        details = []
+        for label, paths in (
+            ("missing files", missing),
+            ("unexpected files", unexpected),
+            ("unexpected directories", unexpected_dirs),
+            ("symlinks", symlinks),
+        ):
+            if paths:
+                details.append(f"{label}: {', '.join(sorted(path.as_posix() for path in paths))}")
+        raise ValueError(
+            f"Prebuilt package inventory mismatch for {role['folder']}; " + "; ".join(details)
+        )
+
+
 def import_prebuilt_role(source_root: Path, role: dict) -> None:
-    """Import a separately governed prebuilt role package without rewriting it."""
+    """Import an exact separately governed package without rewriting it."""
     source = source_root / role["folder"]
     destination = PACKAGES / role["folder"]
     if not source.is_dir():
         raise FileNotFoundError(source)
     if destination.exists():
         raise FileExistsError(f"Refusing to overwrite existing package: {destination}")
+    validate_prebuilt_inventory(source, role)
     shutil.copytree(source, destination, ignore=shutil.ignore_patterns(".DS_Store"))
-    validate_role_package(destination, role)
+    validate_prebuilt_inventory(destination, role)
     refresh_package_checksums(destination)
 
 
@@ -355,7 +405,10 @@ def deterministic_zip(role: dict) -> dict:
     source = PACKAGES / role["folder"]
     if not source.is_dir():
         raise FileNotFoundError(source)
-    validate_role_package(source, role)
+    if role.get("prebuilt"):
+        validate_prebuilt_inventory(source, role)
+    else:
+        validate_role_package(source, role)
     refresh_package_checksums(source)
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     output = DOWNLOADS / f"nurse-ai-os-post-setup-{role['slug']}.zip"

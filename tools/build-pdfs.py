@@ -56,7 +56,7 @@ LANG_META = {
         "lang": "en", "dir": "ltr",
         # Keep the compact evidence appendix and generated source footer
         # together instead of creating a nearly empty trailing page.
-        "css": ".doc-footer{margin-top:.8em;}",
+        "css": ".doc-footer{margin-top:.2em;padding-top:.25em;font-size:7pt;line-height:1.2;}",
     },
     "media-ar": {
         "lang": "ar", "dir": "rtl",
@@ -137,7 +137,7 @@ def build(key: str, chrome: str) -> None:
     src, out = ROOT / src_rel, ROOT / out_rel
     body = markdown.markdown(src.read_text(encoding="utf-8"),
                              extensions=["tables", "fenced_code", "sane_lists", "smarty"])
-    footer = "" if key == "architecture" else (
+    footer = (
         f'<div class="doc-footer">nurse-ai-os.org · No PHI · Agents propose. Humans judge. '
         f'Nurses steward. · This PDF is generated from {src_rel} — the web copy is canonical.'
         f'</div>'

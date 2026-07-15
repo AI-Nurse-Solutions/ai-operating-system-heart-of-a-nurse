@@ -148,7 +148,7 @@ function renderEnvironment() {
 
 function renderIdentity() {
   return assistantMessage('Choose identity and lane separately', `
-    <p>Your broad identity helps me explain. Your post-setup lane routes content. Neither verifies licensure, enrollment, employment, faculty status, managerial authority, or institutional approval.</p>
+    <p>Your broad identity helps me explain. Your post-setup lane routes content. Neither verifies licensure, NP certification, population focus, prescriptive authority, privileges, enrollment, employment, faculty status, managerial authority, or institutional approval. The Nurse Practitioner lane is English-language and United States-only.</p>
     <div class="question-card">
       <fieldset><legend>Broad onboarding identity</legend><div class="choice-grid">${IDENTITY_ROLES.map((x) => choice('identityRole', x.value, x.label, '', state.identityRole === x.value)).join('')}</div></fieldset>
       <fieldset><legend>Post-setup lane</legend><div class="choice-grid">${POST_SETUP_LANES.map((x) => choice('postSetupLane', x.value, x.label, '', state.postSetupLane === x.value)).join('')}</div></fieldset>
@@ -187,7 +187,7 @@ function renderComplete() {
     <div class="completion-grid"><div><strong>Route</strong>${summary.route === 'mac' ? 'macOS Hermes' : 'Browser-first'}</div><div><strong>Broad identity</strong>${escapeHtml(summary.identity)}</div><div><strong>Post-setup lane</strong>${escapeHtml(summary.lane)}</div><div><strong>Governance posture</strong>Shadow / observe-only; human executes</div></div>
     <div class="task-box"><strong>Keep this first-task prompt</strong>\n${escapeHtml(summary.task)}</div>
     <div class="stage-note"><strong>Boundary:</strong> ${escapeHtml(summary.boundary)}<br><strong>Posture:</strong> ${escapeHtml(summary.posture)}</div>
-    <p><a class="btn btn-primary" href="../post-setup/">Review the five post-setup lane packages →</a> <button id="print-summary" class="btn btn-quiet" type="button">Print this summary</button></p>
+    <p><a class="btn btn-primary" href="../post-setup/">Review the six English post-setup lane packages →</a> <button id="print-summary" class="btn btn-quiet" type="button">Print this summary</button></p>
     <p><strong>Agents propose. Humans judge. Nurses steward.</strong></p>`);
 }
 

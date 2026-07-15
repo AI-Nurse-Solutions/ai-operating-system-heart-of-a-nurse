@@ -98,7 +98,8 @@ class SetupHelperTests(unittest.TestCase):
         """)
         self.assertEqual(result["roles"], ["student", "staff", "leader", "other"])
         self.assertEqual(result["lanes"], [
-            "student_nurse", "staff_nurse", "nurse_leader_manager", "nurse_educator", "nurse_connected_ally"
+            "student_nurse", "staff_nurse", "nurse_leader_manager", "nurse_educator", "nurse_connected_ally",
+            "nurse_practitioner_usa"
         ])
 
     def test_identity_does_not_infer_lane(self):
@@ -189,8 +190,19 @@ class SetupHelperTests(unittest.TestCase):
           import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
           console.log(JSON.stringify(Object.fromEntries(POST_SETUP_LANES.map(x=>[x.value,safeTaskForLane(x.value).startsWith('No-PHI task:')]))));
         """)
-        self.assertEqual(len(result), 5)
+        self.assertEqual(len(result), 6)
         self.assertTrue(all(result.values()))
+
+    def test_nurse_practitioner_lane_is_usa_only_and_preflight_first(self):
+        result = node_eval("""
+          import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
+          const lane=POST_SETUP_LANES.find(x=>x.value==='nurse_practitioner_usa');
+          console.log(JSON.stringify({label:lane?.label,task:safeTaskForLane('nurse_practitioner_usa')}));
+        """)
+        self.assertEqual(result["label"], "Nurse Practitioner (USA only)")
+        self.assertIn("USA-only", result["task"])
+        self.assertIn("read-only preflight checklist only", result["task"])
+        self.assertIn("Do not install, save, connect, or activate anything", result["task"])
 
     def test_no_server_calls_or_analytics(self):
         combined = self.app + self.model

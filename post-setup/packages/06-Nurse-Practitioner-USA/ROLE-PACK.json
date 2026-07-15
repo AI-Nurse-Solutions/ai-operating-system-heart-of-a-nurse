@@ -1,0 +1,49 @@
+{
+  "acceptance_tests": {
+    "foundation": 63,
+    "np_wings": 82,
+    "total": 145
+  },
+  "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+  "automatic_connectors": false,
+  "automatic_cron": false,
+  "automatic_external_actions": false,
+  "automatic_memory": false,
+  "clinical_decisions": false,
+  "country_availability": [
+    "United States"
+  ],
+  "existing_install_policy": "detect_verify_bind_and_skip_never_duplicate",
+  "foundation_first": true,
+  "install_on_download": false,
+  "installation_model": "hermes_guided_one_file_multi_turn_with_safe_checkpoints",
+  "intended_stage": "after_soul_files_and_hermes_setup",
+  "no_phi": true,
+  "onboarding_edena_ceiling": "yellow",
+  "optional_wings_active_after_install": 0,
+  "package_id": "naio-post-setup-nurse-practitioner-usa-complete-wings",
+  "package_version": "2026.07.14.2",
+  "pre_install_disclosure_required": true,
+  "program_id": "NAIO-NP-COMPLETE-WINGS-1.0",
+  "role": "Nurse Practitioner (USA)",
+  "role_selection_verifies_credentials_or_authority": false,
+  "schema_version": "1.0",
+  "source_files": [
+    {
+      "bytes": 208665,
+      "packaged_path": "NP-Complete-AI-OS-with-Wings-Hermes-Program.md",
+      "source_sha256": "46734b8ecb72e4fa8dc58f4b03ba4cc7db9e15b4eae4db9d7a7eaf4879cd5e30"
+    },
+    {
+      "bytes": 12969,
+      "packaged_path": "NP-Complete-AI-OS-with-Wings-Setup-Guide.md",
+      "source_sha256": "6ea5ebd1fec5303ff8479f94c19435d9d3a89b7c7fc57d513a4305a3a6776f37"
+    },
+    {
+      "bytes": 88312,
+      "packaged_path": "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx",
+      "source_sha256": "430f6c3fe5046202cc7de3df2edbb594b20dc62931f5645bce22787cf4644ecb"
+    }
+  ],
+  "wings_overlay_second": true
+}

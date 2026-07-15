@@ -57,6 +57,14 @@ ROLES = [
         "label": "Nurse-Connected Ally",
         "audience": "A non-nurse who selected Other and wants to support nurses or nurse-led work without claiming nursing licensure, clinical authority, institutional authority, or permission to handle patient data.",
     },
+    {
+        "source": "Nurse Practitioner USA",
+        "folder": "06-Nurse-Practitioner-USA",
+        "slug": "nurse-practitioner-usa",
+        "label": "Nurse Practitioner (USA)",
+        "audience": "A nurse practitioner or transitioning NP using the English-language United States program after completing SOUL files and Hermes setup; selection never verifies license, certification, population focus, privileges, prescribing authority, or institutional approval.",
+        "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+    },
 ]
 
 FIXED_ZIP_TIME = (2026, 7, 13, 0, 0, 0)
@@ -183,7 +191,8 @@ def validate_role_package(destination: Path, role: dict) -> dict:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("role") != role["label"]:
         raise ValueError(f"Role mismatch in {manifest_path}")
-    if manifest.get("activation") != "user_initiated_two_step_review_and_explicit_approval":
+    expected_activation = role.get("activation", "user_initiated_two_step_review_and_explicit_approval")
+    if manifest.get("activation") != expected_activation:
         raise ValueError(f"Unsafe activation setting in {manifest_path}")
     if manifest.get("no_phi") is not True or manifest.get("onboarding_edena_ceiling") != "yellow":
         raise ValueError(f"No-PHI or EDENA ceiling failure in {manifest_path}")
@@ -199,9 +208,24 @@ def validate_role_package(destination: Path, role: dict) -> dict:
     for key in false_keys:
         if manifest.get(key) is not False:
             raise ValueError(f"Unsafe {key} setting in {manifest_path}")
+    if role["slug"] == "nurse-practitioner-usa":
+        if manifest.get("country_availability") != ["United States"]:
+            raise ValueError(f"Nurse Practitioner lane must remain USA-only: {manifest_path}")
+        if manifest.get("foundation_first") is not True or manifest.get("wings_overlay_second") is not True:
+            raise ValueError(f"Unsafe NP installation order in {manifest_path}")
+        if manifest.get("optional_wings_active_after_install") != 0:
+            raise ValueError(f"NP Wings must remain inactive after installation: {manifest_path}")
+        if manifest.get("acceptance_tests") != {"foundation": 63, "np_wings": 82, "total": 145}:
+            raise ValueError(f"NP acceptance-test inventory mismatch in {manifest_path}")
     for record in manifest.get("source_files", []):
-        if not (destination / record["packaged_path"]).is_file():
-            raise FileNotFoundError(destination / record["packaged_path"])
+        source_path = destination / record["packaged_path"]
+        if not source_path.is_file():
+            raise FileNotFoundError(source_path)
+        if role["slug"] == "nurse-practitioner-usa":
+            if sha256(source_path) != record.get("source_sha256"):
+                raise ValueError(f"Source checksum mismatch: {source_path}")
+            if source_path.stat().st_size != record.get("bytes"):
+                raise ValueError(f"Source byte-count mismatch: {source_path}")
     return manifest
 
 
@@ -268,6 +292,19 @@ def import_role(source_root: Path, role: dict) -> None:
     refresh_package_checksums(destination)
 
 
+def import_prebuilt_role(source_root: Path, role: dict) -> None:
+    """Import a separately governed prebuilt role package without rewriting it."""
+    source = source_root / role["folder"]
+    destination = PACKAGES / role["folder"]
+    if not source.is_dir():
+        raise FileNotFoundError(source)
+    if destination.exists():
+        raise FileExistsError(f"Refusing to overwrite existing package: {destination}")
+    shutil.copytree(source, destination, ignore=shutil.ignore_patterns(".DS_Store"))
+    validate_role_package(destination, role)
+    refresh_package_checksums(destination)
+
+
 def deterministic_zip(role: dict) -> dict:
     """Validate a role package, refresh its ledger, and write a deterministic ZIP."""
     source = PACKAGES / role["folder"]
@@ -286,7 +323,8 @@ def deterministic_zip(role: dict) -> dict:
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
-    return {
+    role_manifest = json.loads((source / "ROLE-PACK.json").read_text(encoding="utf-8"))
+    record = {
         "role": role["label"],
         "folder": role["folder"],
         "download": output.relative_to(POST_SETUP).as_posix(),
@@ -294,20 +332,40 @@ def deterministic_zip(role: dict) -> dict:
         "sha256": sha256(output),
         "install_on_download": False,
         "intended_stage": "after_soul_files_and_hermes_setup",
+        "activation": role_manifest["activation"],
+        "package_version": role_manifest["package_version"],
+        "pre_install_disclosure_required": role_manifest.get("pre_install_disclosure_required", False),
     }
+    for key in ("acceptance_tests", "country_availability", "foundation_first", "wings_overlay_second"):
+        if key in role_manifest:
+            record[key] = role_manifest[key]
+    return record
 
 
 def build(source_root: Path | None) -> None:
-    """Optionally import sources, then build all five governed downloads."""
+    """Optionally import sources, then build all governed role downloads."""
     PACKAGES.mkdir(parents=True, exist_ok=True)
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     if source_root:
-        for role in ROLES:
+        # The USA-only NP Complete Edition is a separately governed one-file
+        # package and must be imported intact, not rewritten by the generic importer.
+        generic_roles = [item for item in ROLES if "activation" not in item]
+        np_role = next(item for item in ROLES if item.get("activation"))
+        required_sources = [source_root / role["source"] for role in generic_roles]
+        required_sources.append(source_root / np_role["folder"])
+        missing = [path for path in required_sources if not path.is_dir()]
+        if missing:
+            raise FileNotFoundError("Import source is incomplete; missing: " + ", ".join(str(path) for path in missing))
+        conflicts = [PACKAGES / role["folder"] for role in ROLES if (PACKAGES / role["folder"]).exists()]
+        if conflicts:
+            raise FileExistsError("Refusing partial import; package destinations already exist: " + ", ".join(str(path) for path in conflicts))
+        for role in generic_roles:
             import_role(source_root, role)
+        import_prebuilt_role(source_root, np_role)
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.13.1",
+        "release": "2026.07.14.2",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,
@@ -324,7 +382,11 @@ def build(source_root: Path | None) -> None:
 def main() -> int:
     """Parse command-line arguments and return a shell-friendly status code."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--import-source", type=Path, help="Import the five role folders before building downloads")
+    parser.add_argument(
+        "--import-source",
+        type=Path,
+        help="Import five original role sources plus a prebuilt 06-Nurse-Practitioner-USA folder before building",
+    )
     args = parser.parse_args()
     try:
         build(args.import_source.expanduser().resolve() if args.import_source else None)

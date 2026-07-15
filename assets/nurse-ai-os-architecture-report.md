@@ -4,7 +4,7 @@
 
 **Prepared for:** Robert Domondon, Founder and Release Steward, NAIO Institute  
 **Primary readers:** AI architects, CNOs/CNIOs, nurse leaders, implementation partners  
-**Report date:** July 13, 2026  
+**Report date:** July 14, 2026 distribution revision; Harness evidence snapshot remains July 13
 **Evidence snapshot:** 2026-07-13 21:54 UTC  
 **Architecture status:** **Signed implementation candidate · active shadow governance · live post-setup distribution · no clinical or PHI authorization**  
 **Decision doctrine:** *Agents propose. Humans judge. Nurses steward.*
@@ -21,13 +21,13 @@ Nurse AI OS has moved beyond a conceptual architecture. It now has:
 - 46 passing unit tests and 8 of 8 passing synthetic trajectory evaluations;
 - a verified immutable local release with preserved trust-anchor continuity;
 - a public Governed Harness architecture and evidence surface;
-- a live post-setup distribution with five role-specific downloads;
+- a live post-setup distribution with six English-language role-specific downloads, including a USA-only Nurse Practitioner Complete Edition;
 - deterministic ZIP checksums and explicit `not_installed` package status.
 
 That progress is substantial, but the system must **not** yet be described as a unified enforcement architecture. Four P0 control-plane gaps prevent that claim:
 
 1. **Canonical EDENA semantics are inconsistent.** The signed Harness implements separate `risk_tier` and `autonomy_level` dimensions and treats Risk Red as block/stop. The repository-level `naio-os/config/edena-policy.yaml` still defines Red as semi-autonomous, human-out-of-the-loop operation. Both cannot remain sources of truth.
-2. **The role handoff is incomplete.** The SOUL export schema has four normalized role keys—`student`, `staff`, `leader`, and `other`—while the post-setup distribution has five lanes, separating Nurse Educator from Nurse Leader and Manager. No explicit role resolver currently binds those layers.
+2. **The durable role handoff is incomplete.** The SOUL export schema has four normalized role keys—`student`, `staff`, `leader`, and `other`—while the English post-setup distribution has six lanes. The Setup Helper now records an explicit user-selected lane, including Nurse Practitioner (USA), but the exported SOUL handoff artifact does not yet persist a separate `post_setup_lane` field.
 3. **PHI or live-care content can enter through an uncovered path.** Shadow tool-argument evaluation is not end-to-end prevention across input, memory, media, channels, delegation, or model output.
 4. **Enforce-capable configuration could be promoted without valid governance authorization.** Environment or configuration drift could activate blocking outside the approved scope.
 
@@ -38,7 +38,7 @@ Shadow remains observation, not protection. The active plugin records what EDENA
 Keep the current default profile in shadow mode. Do not activate canary enforcement yet. First:
 
 1. unify EDENA semantics across the repository, signed Harness, public documentation, SOUL schema, tier maps, and training language;
-2. add an explicit post-setup role resolver and schema migration for Nurse Educator;
+2. persist the explicit Setup Helper lane selection as a separate `post_setup_lane` handoff field without treating it as identity or credential verification;
 3. review the accumulated shadow evidence for tool coverage, false positives, false negatives, and workflow burden;
 4. sign the post-setup distribution manifest against the existing NAIO trust anchor or clearly designate a separate distribution trust policy;
 5. prepare a dedicated, synthetic, no-PHI canary profile with tested rollback;
@@ -46,7 +46,7 @@ Keep the current default profile in shadow mode. Do not activate canary enforcem
 
 The strongest current architectural description is:
 
-> **Nurse AI OS is a nurse-centered control plane over Hermes, designed around nurse-governance principles. SOUL establishes accountable identity and boundaries; the signed EDENA Harness evaluates runtime actions; Florence-X provides build, verification, and coordination discipline; Hermes executes tools, skills, profiles, memory, scheduling, and delegation; a local metadata-minimized ledger records governance evidence; signed releases preserve provenance; and a public post-setup layer offers five role-specific, review-first packages. The current operating posture is observation-only shadow governance, not clinical deployment, institutional authorization, or default-profile enforcement.**
+> **Nurse AI OS is a nurse-centered control plane over Hermes, designed around nurse-governance principles. SOUL establishes accountable identity and boundaries; the signed EDENA Harness evaluates runtime actions; Florence-X provides build, verification, and coordination discipline; Hermes executes tools, skills, profiles, memory, scheduling, and delegation; a local metadata-minimized ledger records governance evidence; signed releases preserve provenance; and a public post-setup layer offers six English role packages—five review-first overlays plus one USA-only Nurse Practitioner Complete Edition with a read-only preflight and explicit activation card. The current operating posture is observation-only shadow governance, not clinical deployment, institutional authorization, or default-profile enforcement.**
 
 ---
 
@@ -60,7 +60,7 @@ This report updates the July 2026 Nurse AI OS architecture to include:
 - the active Hermes plugin and shadow evidence plane;
 - the corrected Harness risk/autonomy model;
 - the immutable release and rollback topology;
-- the five live post-setup role packages;
+- the six live English post-setup role packages;
 - the SOUL-to-Hermes-to-role-package handoff;
 - current trust boundaries, residual risks, and promotion gates.
 
@@ -112,7 +112,7 @@ This report does not establish:
 | Shadow decisions | 198 observed allows; 147 observed blocks |
 | Payload capture flag | Zero events with `payload_captured=true` |
 | Post-setup page | `https://nurse-ai-os.org/post-setup/`, HTTP 200 |
-| Post-setup packages | Five live ZIPs, eight governed files each |
+| Post-setup packages | Six live ZIPs: five review-first role overlays plus one USA-only NP Complete Edition; all checksum-verifiable and `not_installed` on download |
 | Post-setup manifest state | `not_installed` |
 
 The shadow ledger count is a timestamped snapshot, not a release constant. It continues to grow while the plugin observes Hermes activity.
@@ -173,8 +173,8 @@ The shadow ledger count is a timestamped snapshot, not a release constant. It co
                                     ▼
 ┌───────────────────────────────────────────────────────────────────────────┐
 │  PUBLIC DISTRIBUTION                                                     │
-│  website · starter kit · SOUL quiz · five post-setup role downloads     │
-│  checksummed · review-first · not installed · no authority conferred    │
+│  website · starter kit · SOUL quiz · six English role downloads         │
+│  checksummed · human-approved · not installed · no authority conferred  │
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -249,7 +249,7 @@ This separation is the architecture’s central strength. Its current weakness i
 - starter kit and SOUL quiz;
 - architecture and governance pages;
 - Governed Harness evidence surface;
-- five post-setup role packages;
+- six English post-setup role packages;
 - public manifests and SHA-256 checksums.
 
 **Trust posture:** public artifacts are inspectable and versioned. The Governed Harness uses detached RSA-SHA256 signing. The post-setup role ZIPs currently use manifest-bound SHA-256 checksums but are not yet bound to the NAIO detached-signature ceremony.
@@ -274,8 +274,8 @@ This separation is the architecture’s central strength. Its current weakness i
 | Canary enforcement | Code path exists | **No** | No current real blocking | Explicit Robert authorization | Not authorized |
 | Default-profile enforcement | Code path exists | **No** | No | Explicit Robert authorization after evidence review | Prohibited until promoted |
 | Nurse Steward Council | Charter/process artifacts exist | Not operationally completed | No | Named human governance required | Pending |
-| Five post-setup role ZIPs | Yes | Live downloads | No | Two-step review and approval | Distribution only |
-| Full SuperPowers module tree | **No, not supplied in role ZIPs** | No | No | Separate future package decision | Reference-only gap |
+| Six English post-setup role ZIPs | Yes | Live downloads | No | Review/activation-card approval | Distribution only |
+| Full SuperPowers module tree in lanes 01–05 | **No, not supplied in the five original role ZIPs** | No | No | Separate future package decision | Reference-only gap; NP lane is separately complete and embedded |
 | Clinical/EHR/PHI system | No | No | No | Separate institutional/legal program required | Out of scope |
 
 ---
@@ -717,7 +717,7 @@ Without that review, 345 events represent collected evidence—not demonstrated 
 | Priority | Risk | Why it matters | Required response |
 |---|---|---|---|
 | **P0** | Repository EDENA policy conflicts with signed Harness semantics | Two sources of truth can reverse the meaning of Red | Migrate to one two-axis schema; add CI semantic invariant |
-| **P0** | SOUL role schema and five role lanes do not resolve educator explicitly | Users can receive the wrong post-setup specialization | Add explicit role resolver and schema/version migration |
+| **P0** | SOUL role schema does not durably carry the six-lane Setup Helper selection | Users can lose or receive the wrong post-setup specialization | Add a separate `post_setup_lane` handoff field and schema/version migration |
 | **P0** | PHI or live-care content can enter before a tool call or through an uncovered path | Shadow tool-argument evaluation is not end-to-end prevention across input, memory, media, channels, delegation, or model output | Produce an end-to-end no-PHI threat model and adversarial multilingual, narrative, image, document, memory, channel, and output tests |
 | **P0** | Enforce-capable configuration could be promoted without valid governance authorization | Environment or configuration drift could activate blocking outside the approved scope | Require a dedicated profile, startup attestation, exact-artifact and exact-scope authorization, promotion record, and tested rollback |
 | **P1** | Shadow may be mistaken for enforcement | Users may believe a would-block prevented action | Place visible “observe only” status in UI/reporting; preserve default shadow label |
@@ -803,7 +803,7 @@ Nurse AI OS may call the architecture **coherent** when:
 
 - [ ] one canonical artifact defines risk and autonomy;
 - [ ] every runtime, schema, website, quiz, package, and curriculum passes semantic validation;
-- [ ] the five post-setup lanes have an explicit user-controlled resolver;
+- [ ] the six English post-setup lanes have an explicit user-controlled resolver and durable handoff field;
 - [ ] role selection does not infer credentials or authority;
 - [ ] shadow evidence is reviewed and documented;
 - [ ] tool-path coverage is measured;
@@ -871,7 +871,7 @@ The strongest argument against the current architecture is not that it lacks gov
 That attack is valid here:
 
 - the signed runtime semantics are ahead of the repository canon;
-- the public role distribution is ahead of the SOUL role resolver;
+- the public role distribution is ahead of the durable SOUL lane handoff;
 - the plugin evidence plane is ahead of enforcement authorization;
 - the governance documentation is ahead of Council activation;
 - the checksum discipline of role packages is behind the signing discipline of the Harness.
@@ -893,7 +893,7 @@ Nurse AI OS now has a credible technical spine:
 - a signed Hermes-native Harness;
 - a local metadata-only evidence ledger;
 - immutable releases and rollback;
-- a live five-role post-setup distribution.
+- a live six-lane English post-setup distribution, including a USA-only Nurse Practitioner Complete Edition.
 
 Its next phase is not “more agents.” It is **coherence, evidence adjudication, and human governance**.
 
@@ -942,12 +942,4 @@ This report is self-contained for public review. An earlier internal Harness wor
 
 # Appendix B — Live post-setup downloads
 
-- [Download the Student Nurse role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip)
-- [Download the Staff Nurse role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip)
-- [Download the Nurse Leader and Manager role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip)
-- [Download the Nurse Educator role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip)
-- [Download the Nurse-Connected Ally role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip)
-
----
-
-*Prepared under the Florence-X rule: verify before claim. No PHI. No patient-specific clinical decision support. No enforcement promotion authorized.*
+[Student Nurse](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip) · [Staff Nurse](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip) · [Nurse Leader and Manager](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip) · [Nurse Educator](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip) · [Nurse-Connected Ally](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip) · [Nurse Practitioner (USA)](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip)

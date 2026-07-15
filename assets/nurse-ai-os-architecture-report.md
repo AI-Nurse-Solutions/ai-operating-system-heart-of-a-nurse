@@ -4,7 +4,7 @@
 
 **Prepared for:** Robert Domondon, Founder and Release Steward, NAIO Institute  
 **Primary readers:** AI architects, CNOs/CNIOs, nurse leaders, implementation partners  
-**Report date:** July 15, 2026 distribution revision; Harness evidence snapshot remains July 13
+**Report date:** July 15, 2026, distribution revision; Harness evidence snapshot remains July 13
 **Evidence snapshot:** 2026-07-13 21:54 UTC  
 **Architecture status:** **Signed implementation candidate · active shadow governance · live post-setup distribution · no clinical or PHI authorization**  
 **Decision doctrine:** *Agents propose. Humans judge. Nurses steward.*

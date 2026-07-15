@@ -504,6 +504,11 @@ def build(source_root: Path | None) -> None:
         conflicts = [PACKAGES / role["folder"] for role in ROLES if (PACKAGES / role["folder"]).exists()]
         if conflicts:
             raise FileExistsError("Refusing partial import; package destinations already exist: " + ", ".join(str(path) for path in conflicts))
+        # Validate every immutable Complete Edition before any generic importer
+        # can create a destination. A bad prebuilt source must leave no partial
+        # package tree behind and must be safe to correct and retry.
+        for role in prebuilt_roles:
+            validate_prebuilt_inventory(source_root / role["folder"], role)
         for role in generic_roles:
             import_role(source_root, role)
         for role in prebuilt_roles:
@@ -511,7 +516,7 @@ def build(source_root: Path | None) -> None:
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.15.1",
+        "release": "2026.07.15.2",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,

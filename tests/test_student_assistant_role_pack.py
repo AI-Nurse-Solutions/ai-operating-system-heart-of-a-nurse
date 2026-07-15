@@ -55,6 +55,19 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
             self.assertEqual(path.stat().st_size, record["bytes"])
             self.assertEqual(sha256(path), record["source_sha256"])
 
+    def test_markdown_guide_is_renderable_and_normalization_is_provenanced(self):
+        records = {item["packaged_path"]: item for item in self.manifest["source_files"]}
+        record = records[GUIDE.name]
+        self.assertEqual(
+            record["upstream_sha256"],
+            "872d913a46e3bf1655c8b4f8d3b945c5bcee363c7567240400842341d6412e87",
+        )
+        self.assertIn("four-space leading indent", record["transformation"])
+        self.assertFalse(any(line.startswith("    ##") for line in self.guide.splitlines()))
+        self.assertFalse(any(line.startswith("    >") for line in self.guide.splitlines()))
+        self.assertIn("## Setup, Benefits, and First-Use Guide", self.guide)
+        self.assertIn("> **Please allow time.**", self.guide)
+
     def test_pre_install_consent_and_deployment_boundary(self):
         self.assertEqual(self.manifest["role"], "Nursing Student and Nursing Assistant")
         self.assertFalse(self.manifest["role_selection_verifies_credentials_or_authority"])
@@ -247,6 +260,30 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "Checksum mismatch.*00-READ-FIRST.md"):
                     function(source_root, role)
                 self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
+
+    def test_build_validates_all_prebuilt_sources_before_any_import_mutation(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        build = namespace["build"]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source_root = root / "source"
+            source_root.mkdir()
+            for role in namespace["ROLES"]:
+                if role.get("prebuilt"):
+                    shutil.copytree(
+                        ROOT / "post-setup" / "packages" / role["folder"],
+                        source_root / role["folder"],
+                    )
+                else:
+                    (source_root / role["source"]).mkdir()
+            (source_root / "01-Student-Nurse" / "STALE.md").write_text(
+                "must fail before generic imports\n", encoding="utf-8"
+            )
+            build.__globals__["PACKAGES"] = root / "packages"
+            build.__globals__["DOWNLOADS"] = root / "downloads"
+            with self.assertRaisesRegex(ValueError, "unexpected files.*STALE.md"):
+                build(source_root)
+            self.assertEqual(list((root / "packages").iterdir()), [])
 
 
 if __name__ == "__main__":

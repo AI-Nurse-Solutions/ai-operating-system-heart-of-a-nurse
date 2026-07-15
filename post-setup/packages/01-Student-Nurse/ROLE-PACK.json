@@ -25,7 +25,7 @@
   "optional_superpowers_total": 18,
   "organizational_deployment_requires_separate_authorization": true,
   "package_id": "naio-post-setup-nursing-student-assistant-complete-future",
-  "package_version": "2026.07.15.1",
+  "package_version": "2026.07.15.2",
   "pathways": [
     "Nursing Student",
     "Nursing Assistant",
@@ -44,9 +44,11 @@
       "source_sha256": "6c4826e3f4c9d6decd743be1588f429ce2204ee5917989866fd408f7fd522148"
     },
     {
-      "bytes": 12455,
+      "bytes": 12099,
       "packaged_path": "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md",
-      "source_sha256": "872d913a46e3bf1655c8b4f8d3b945c5bcee363c7567240400842341d6412e87"
+      "source_sha256": "f0942ba0670465a4a2a426070c802192682ba9b1b2d6ecdcd79ed8a69745b326",
+      "transformation": "Removed one uniform four-space leading indent and two trailing hard-break spaces from affected Markdown lines for standards-compliant rendering",
+      "upstream_sha256": "872d913a46e3bf1655c8b4f8d3b945c5bcee363c7567240400842341d6412e87"
     },
     {
       "bytes": 185375,

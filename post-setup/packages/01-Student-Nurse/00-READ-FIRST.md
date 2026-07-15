@@ -4,6 +4,8 @@
 
 **Downloading, selecting, opening, or unzipping this package does not install or activate anything.** It does not modify a Hermes profile, save new memory, connect an account, share access, schedule automation, or perform an external action.
 
+**Prerequisites:** Complete and review your SOUL files and Hermes setup before using this post-setup package. Confirm that you are working in your intended private, no-PHI learner workspace with a safe recovery path. If either prerequisite is incomplete or uncertain, stop here and return to the Nurse AI OS Setup Helper; do not begin Guided Complete Setup.
+
 Installation begins only when you intentionally:
 
 1. give Hermes the complete one-file FUTURE program without splitting it;

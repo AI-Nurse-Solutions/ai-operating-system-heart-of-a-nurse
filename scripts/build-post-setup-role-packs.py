@@ -357,7 +357,7 @@ def validate_prebuilt_inventory(package: Path, role: dict) -> None:
     actual_files = {
         path.relative_to(package)
         for path in package.rglob("*")
-        if path.is_file() and path.name != ".DS_Store"
+        if path.is_file()
     }
     actual_dirs = {
         path.relative_to(package)
@@ -429,7 +429,7 @@ def import_prebuilt_role(source_root: Path, role: dict) -> None:
     if destination.exists():
         raise FileExistsError(f"Refusing to overwrite existing package: {destination}")
     validate_prebuilt_inventory(source, role)
-    shutil.copytree(source, destination, ignore=shutil.ignore_patterns(".DS_Store"))
+    shutil.copytree(source, destination)
     validate_prebuilt_inventory(destination, role)
     refresh_package_checksums(destination)
 
@@ -516,7 +516,7 @@ def build(source_root: Path | None) -> None:
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.15.2",
+        "release": "2026.07.15.3",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,

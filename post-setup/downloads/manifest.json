@@ -11,7 +11,7 @@
       "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
       "automatic_shared_access": false,
       "bridge_context_transfer_automatic": false,
-      "bytes": 210014,
+      "bytes": 210148,
       "download": "downloads/nurse-ai-os-post-setup-student-nurse.zip",
       "folder": "01-Student-Nurse",
       "foundation_first": true,
@@ -21,7 +21,7 @@
       "optional_superpowers_active_after_install": 0,
       "optional_superpowers_total": 18,
       "organizational_deployment_requires_separate_authorization": true,
-      "package_version": "2026.07.15.2",
+      "package_version": "2026.07.15.3",
       "pathways": [
         "Nursing Student",
         "Nursing Assistant",
@@ -29,7 +29,7 @@
       ],
       "pre_install_disclosure_required": true,
       "role": "Nursing Student and Nursing Assistant",
-      "sha256": "c4d293df1beeb03fc219177f8846ea9dd75f1e54811ad6687f6ec1e84e9e7d53"
+      "sha256": "f57f0b3a6f15863c0f5afbb80b48fe4fb5c59ab010b99a83579098dd68ab8a17"
     },
     {
       "activation": "user_initiated_two_step_review_and_explicit_approval",
@@ -115,6 +115,6 @@
     }
   ],
   "purpose": "role-specific Nurse AI OS post-setup downloads",
-  "release": "2026.07.15.2",
+  "release": "2026.07.15.3",
   "schema_version": "1.0"
 }

@@ -74,6 +74,8 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
         self.assertTrue(self.manifest["pre_install_disclosure_required"])
         self.assertTrue(self.manifest["organizational_deployment_requires_separate_authorization"])
         for phrase in (
+            "Complete and review your SOUL files and Hermes setup before using this post-setup package",
+            "If either prerequisite is incomplete or uncertain, stop here",
             "Downloading, selecting, opening, or unzipping this package does not install or activate anything",
             "allow Hermes to complete the read-only",
             "approve that exact card",
@@ -240,6 +242,23 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
                 function.__globals__["PACKAGES"] = root / "packages"
                 function.__globals__["PACKAGES"].mkdir()
                 with self.assertRaisesRegex(ValueError, "unexpected files.*STALE-UNMANIFESTED-FILE.md"):
+                    function(source_root, role)
+                self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
+
+    def test_import_source_rejects_macos_metadata_for_every_prebuilt_role(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        function = namespace["import_prebuilt_role"]
+        for role in (item for item in namespace["ROLES"] if item.get("prebuilt")):
+            with self.subTest(role=role["folder"]), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                source_root = root / "source"
+                source_root.mkdir()
+                source = source_root / role["folder"]
+                shutil.copytree(ROOT / "post-setup" / "packages" / role["folder"], source)
+                (source / ".DS_Store").write_bytes(b"macOS metadata must not ship")
+                function.__globals__["PACKAGES"] = root / "packages"
+                function.__globals__["PACKAGES"].mkdir()
+                with self.assertRaisesRegex(ValueError, r"unexpected files.*\.DS_Store"):
                     function(source_root, role)
                 self.assertFalse((function.__globals__["PACKAGES"] / role["folder"]).exists())
 

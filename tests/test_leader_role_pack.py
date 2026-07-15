@@ -144,6 +144,13 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
         self.assertNotIn("Lanes 01–05 require review before changes", page)
         self.assertNotIn("Lanes 01–05 contain", page)
 
+        readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Lanes 03 and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Review-first lanes 01, 02, 04, and 05 include", readme)
+        self.assertIn("The Nurse Leader and Manager ZIP is a separately governed Complete Edition", readme)
+        self.assertIn("All sixteen optional SuperPowers remain inactive", readme)
+        self.assertIn("private-workspace approval does not authorize organizational deployment", readme)
+
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):
         self.assertTrue(ZIP.is_file(), ZIP)
         manifest = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))

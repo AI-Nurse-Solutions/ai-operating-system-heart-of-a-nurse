@@ -8,7 +8,7 @@ export const IDENTITY_ROLES = Object.freeze([
 ]);
 
 export const POST_SETUP_LANES = Object.freeze([
-  { value: 'student_nurse', label: 'Student Nurse' },
+  { value: 'student_nurse', label: 'Nursing Student, Nursing Assistant, or Bridge' },
   { value: 'staff_nurse', label: 'Staff Nurse' },
   { value: 'nurse_leader_manager', label: 'Nurse Leader and Manager' },
   { value: 'nurse_educator', label: 'Nurse Educator' },
@@ -337,7 +337,7 @@ export function validateStage(stage, state) {
 
 export function safeTaskForLane(lane) {
   const tasks = {
-    student_nurse: 'No-PHI task: Build a plain-language study map for one public nursing topic. Ask me five Socratic questions, one at a time. Do not use patient data or answer for me.',
+    student_nurse: 'No-PHI task: Open the Nursing Student and Nursing Assistant FUTURE Complete Edition setup guide and show the read-only preflight checklist only. Do not install, save, connect, share, transfer school or work context, or activate anything. First state clearly that downloading and unzipping do not install anything; installation begins only after I provide the complete one-file FUTURE program, finish the read-only preflight, select Nursing Student, Nursing Assistant, or Bridge, and approve the exact FUTURE Complete Edition Activation Card. Explain that after approval Hermes automatically creates, repairs, or binds the foundation first, adds the inactive FUTURE Library second, runs 136 embedded release checks, preserves compatible work, and keeps connectors, shared access, external actions, new memory categories, background automation, and all eighteen optional SuperPowers off. State that pathway selection does not verify enrollment, certification, employment, scope, delegation, supervision, competence, or institutional permission; Bridge contexts stay separate; and private-workspace approval does not authorize school, clinical-site, employer, community, or organizational deployment.',
     staff_nurse: 'No-PHI task: Draft a personal after-shift recovery checklist based only on the non-sensitive preferences I provide. Do not discuss a patient, unit incident, or clinical decision.',
     nurse_leader_manager: 'No-PHI task: Open the Nurse Leader Complete Edition setup guide and show the read-only preflight checklist only. Do not install, save, connect, share, or activate anything. First state clearly that downloading and unzipping do not install anything; installation begins only after I provide the complete one-file Nurse Leader program, finish the read-only preflight, and approve the exact Nurse Leader Complete Edition Activation Card. Explain that after approval Hermes automatically creates, repairs, or binds the foundation first, adds the inactive LEAD Library second, runs 113 embedded release checks, preserves compatible work, and keeps connectors, shared access, external actions, new memory categories, background automation, and all sixteen optional SuperPowers off. State that lane selection does not verify leadership or organizational authority and private-workspace approval does not authorize organizational deployment.',
     nurse_educator: 'No-PHI task: Draft a fictional lesson outline for a public nursing topic. Include objectives, an activity, and an academic-integrity reminder. Use no real learner or patient data.',

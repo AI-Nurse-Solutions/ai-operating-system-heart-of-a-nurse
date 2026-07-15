@@ -2,16 +2,34 @@
   "installation_status": "not_installed",
   "packages": [
     {
-      "activation": "user_initiated_two_step_review_and_explicit_approval",
-      "bytes": 483346,
+      "acceptance_tests": {
+        "foundation": 24,
+        "future_overlay": 96,
+        "integration": 16,
+        "total": 136
+      },
+      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "automatic_shared_access": false,
+      "bridge_context_transfer_automatic": false,
+      "bytes": 209901,
       "download": "downloads/nurse-ai-os-post-setup-student-nurse.zip",
       "folder": "01-Student-Nurse",
+      "foundation_first": true,
+      "future_overlay_second": true,
       "install_on_download": false,
       "intended_stage": "after_soul_files_and_hermes_setup",
-      "package_version": "2026.07.13.1",
-      "pre_install_disclosure_required": false,
-      "role": "Student Nurse",
-      "sha256": "4bfa9a52f948557c657c5457b24047a21be3843746c9de07a0e87249339a78de"
+      "optional_superpowers_active_after_install": 0,
+      "optional_superpowers_total": 18,
+      "organizational_deployment_requires_separate_authorization": true,
+      "package_version": "2026.07.15.1",
+      "pathways": [
+        "Nursing Student",
+        "Nursing Assistant",
+        "Bridge"
+      ],
+      "pre_install_disclosure_required": true,
+      "role": "Nursing Student and Nursing Assistant",
+      "sha256": "246ea95ecca9b6146d377f693417e099e66af8af3f456e46b815ee33142113b3"
     },
     {
       "activation": "user_initiated_two_step_review_and_explicit_approval",
@@ -33,6 +51,7 @@
         "total": 113
       },
       "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "automatic_shared_access": false,
       "bytes": 258717,
       "download": "downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip",
       "folder": "03-Nurse-Leader-and-Manager",
@@ -96,6 +115,6 @@
     }
   ],
   "purpose": "role-specific Nurse AI OS post-setup downloads",
-  "release": "2026.07.14.3",
+  "release": "2026.07.15.1",
   "schema_version": "1.0"
 }

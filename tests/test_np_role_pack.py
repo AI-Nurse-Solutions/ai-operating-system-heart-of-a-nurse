@@ -174,7 +174,7 @@ class NursePractitionerLaneTests(unittest.TestCase):
             for role in namespace["ROLES"]:
                 if not role.get("prebuilt"):
                     (source_root / role["source"]).mkdir()
-                elif role["label"] == "Nurse Leader and Manager":
+                elif role["label"] != "Nurse Practitioner (USA)":
                     shutil.copytree(
                         ROOT / "post-setup" / "packages" / role["folder"],
                         source_root / role["folder"],

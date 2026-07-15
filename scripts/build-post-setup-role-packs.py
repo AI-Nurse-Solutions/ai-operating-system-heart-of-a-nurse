@@ -23,11 +23,13 @@ DOWNLOADS = POST_SETUP / "downloads"
 
 ROLES = [
     {
-        "source": "Student",
+        "source": "01-Student-Nurse",
         "folder": "01-Student-Nurse",
         "slug": "student-nurse",
-        "label": "Student Nurse",
-        "audience": "A nursing student using AI for learning, planning, reflection, and life organization without replacing faculty, preceptors, academic standards, or personal judgment.",
+        "label": "Nursing Student and Nursing Assistant",
+        "audience": "A nursing student, nursing assistant, or bridge learner using a private no-PHI workspace for learning, career growth, technology fluency, life organization, and safe rehearsal without replacing faculty, preceptors, supervising nurses, supervisors, verified scope, academic rules, or personal judgment.",
+        "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+        "prebuilt": True,
     },
     {
         "source": "Staff Nurse",
@@ -211,6 +213,28 @@ def validate_role_package(destination: Path, role: dict) -> dict:
     for key in false_keys:
         if manifest.get(key) is not False:
             raise ValueError(f"Unsafe {key} setting in {manifest_path}")
+    if role["slug"] == "student-nurse":
+        if manifest.get("pathways") != ["Nursing Student", "Nursing Assistant", "Bridge"]:
+            raise ValueError(f"Student/Assistant pathway inventory mismatch in {manifest_path}")
+        if manifest.get("foundation_first") is not True or manifest.get("future_overlay_second") is not True:
+            raise ValueError(f"Unsafe Student/Assistant installation order in {manifest_path}")
+        if manifest.get("optional_superpowers_total") != 18:
+            raise ValueError(f"Student/Assistant SuperPowers inventory mismatch in {manifest_path}")
+        if manifest.get("optional_superpowers_active_after_install") != 0:
+            raise ValueError(f"Student/Assistant SuperPowers must remain inactive after installation: {manifest_path}")
+        if manifest.get("automatic_shared_access") is not False:
+            raise ValueError(f"Student/Assistant shared access must remain off: {manifest_path}")
+        if manifest.get("bridge_context_transfer_automatic") is not False:
+            raise ValueError(f"Bridge context transfer must remain off: {manifest_path}")
+        if manifest.get("organizational_deployment_requires_separate_authorization") is not True:
+            raise ValueError(f"Student/Assistant deployment boundary missing: {manifest_path}")
+        if manifest.get("acceptance_tests") != {
+            "foundation": 24,
+            "future_overlay": 96,
+            "integration": 16,
+            "total": 136,
+        }:
+            raise ValueError(f"Student/Assistant release-check inventory mismatch in {manifest_path}")
     if role["slug"] == "nurse-practitioner-usa":
         if manifest.get("country_availability") != ["United States"]:
             raise ValueError(f"Nurse Practitioner lane must remain USA-only: {manifest_path}")
@@ -361,8 +385,12 @@ def deterministic_zip(role: dict) -> dict:
         "acceptance_tests",
         "country_availability",
         "foundation_first",
+        "future_overlay_second",
         "lead_overlay_second",
         "wings_overlay_second",
+        "pathways",
+        "bridge_context_transfer_automatic",
+        "automatic_shared_access",
         "optional_superpowers_total",
         "optional_superpowers_active_after_install",
         "organizational_deployment_requires_separate_authorization",
@@ -396,7 +424,7 @@ def build(source_root: Path | None) -> None:
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.14.3",
+        "release": "2026.07.15.1",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,
@@ -417,8 +445,8 @@ def main() -> int:
         "--import-source",
         type=Path,
         help=(
-            "Import four review-first role sources plus prebuilt "
-            "03-Nurse-Leader-and-Manager and 06-Nurse-Practitioner-USA folders before building"
+            "Import three review-first role sources plus prebuilt 01-Student-Nurse, "
+            "03-Nurse-Leader-and-Manager, and 06-Nurse-Practitioner-USA folders before building"
         ),
     )
     args = parser.parse_args()

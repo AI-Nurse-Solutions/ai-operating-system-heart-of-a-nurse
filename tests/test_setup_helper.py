@@ -193,6 +193,23 @@ class SetupHelperTests(unittest.TestCase):
         self.assertEqual(len(result), 6)
         self.assertTrue(all(result.values()))
 
+    def test_student_assistant_complete_edition_is_preflight_first(self):
+        result = node_eval("""
+          import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
+          const lane=POST_SETUP_LANES.find(x=>x.value==='student_nurse');
+          console.log(JSON.stringify({label:lane?.label,task:safeTaskForLane('student_nurse')}));
+        """)
+        self.assertEqual(result["label"], "Nursing Student, Nursing Assistant, or Bridge")
+        task = result["task"]
+        self.assertIn("read-only preflight checklist only", task)
+        self.assertIn("Do not install, save, connect, share, transfer school or work context, or activate anything", task)
+        self.assertIn("downloading and unzipping do not install anything", task)
+        self.assertIn("FUTURE Complete Edition Activation Card", task)
+        self.assertIn("136 embedded release checks", task)
+        self.assertIn("all eighteen optional SuperPowers off", task)
+        self.assertIn("Bridge contexts stay separate", task)
+        self.assertIn("does not authorize school, clinical-site, employer, community, or organizational deployment", task)
+
     def test_nurse_practitioner_lane_is_usa_only_and_preflight_first(self):
         result = node_eval("""
           import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';

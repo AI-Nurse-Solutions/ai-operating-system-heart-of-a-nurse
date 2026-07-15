@@ -1,59 +1,75 @@
-# Student Nurse — Nurse AI OS Post-Setup Role Pack
+# Nursing Student and Nursing Assistant Complete AI OS with FUTURE SuperPowers
 
-## What this folder is
+## Before you install
 
-This is a **post-setup role overlay** for someone who has already:
+**Downloading, selecting, opening, or unzipping this package does not install or activate anything.** It does not modify a Hermes profile, save new memory, connect an account, share access, schedule automation, or perform an external action.
 
-1. completed the Nurse AI OS SOUL process;
-2. reviewed and saved their SOUL files;
-3. completed Hermes setup; and
-4. established a no-PHI workspace and human-approval boundaries.
+Installation begins only when you intentionally:
 
-Downloading or unzipping this folder does **not** install or activate anything.
+1. give Hermes the complete one-file FUTURE program without splitting it;
+2. ask Hermes to begin Guided Complete Setup;
+3. allow Hermes to complete the read-only owner, pathway, context, privacy, academic-integrity, clinical-authority, employer-authority, permission, version, and compatibility preflight;
+4. review the exact **FUTURE Complete Edition Activation Card**; and
+5. approve that exact card.
 
-## Intended user
+If you do not approve the exact card, Hermes must make no installation changes. You may edit the card, install the foundation only, preserve detected components without changes, or cancel.
 
-A nursing student using AI for learning, planning, reflection, and life organization without replacing faculty, preceptors, academic standards, or personal judgment.
+After approval, Hermes performs only the governed sequence on the approved private learner workspace: it creates, repairs, or binds the FUTURE foundation first; runs 24 foundation tests; adds the FUTURE Library, Passport, and eighteen optional SuperPowers as an inactive overlay; then runs 96 FUTURE tests plus 16 integration checks. That is **136 embedded release checks in total**. Compatible work must be preserved rather than duplicated.
 
-Selecting this role does not verify licensure, enrollment, employment, faculty status, managerial authority, institutional authorization, or permission to access patient or personnel information.
+These 136 entries are installation acceptance scenarios supplied inside the program. Their presence and inventory are verified by the package tests; they are not independent clinical validation, educational accreditation, certification, compliance evidence, or proof that every scenario has been executed in your environment.
 
-## First message to give Nurse AI OS
+## Choose the pathway that actually applies
 
-Copy this message when you are ready:
+- **Nursing Student:** for learning, coursework, fictional simulation, approved NCLEX preparation, professional identity, and school-to-career development. Faculty, program, clinical-site, preceptor, and assessment rules govern.
+- **Nursing Assistant:** for role knowledge, certification review, professional communication, career growth, work-life capacity, and education planning—never patient data or live-care direction. State and local rules, employer policy, verified scope, delegation, and supervision govern.
+- **Bridge:** for a nursing assistant who is also pursuing nursing education. Academic and employment contexts must remain separate and require visible switching.
 
-> Review this post-setup role pack for my selected role. Do not install, activate, schedule, connect, or change my Hermes profile yet. First show me: (1) the files you found; (2) proposed skills, workflows, memory, permissions, and external actions; (3) EDENA risk tiers and autonomy ceilings; (4) no-PHI and role-authority checks; (5) conflicts with my SOUL files or current Hermes setup; and (6) the rollback/removal plan. Wait for my explicit approval before applying any change.
+Selecting a pathway does not verify enrollment, certification, employment, competence, scope, delegation, supervision, institutional permission, or access authority. A nursing-assistant title never creates independent nursing or clinical decision authority. Unknown authority means stop and ask the authorized faculty member, preceptor, supervising nurse, supervisor, program, clinical site, or employer.
 
-## Required preflight
+A private learner-workspace approval does not authorize school, clinical-site, employer, classroom, cohort, faculty, supervisor, community, or organizational deployment. Any shared use, integration, institutional data, faculty or supervisor access, or organizational deployment requires a separate governed authorization process.
 
-Nurse AI OS should stop and ask the user before applying changes. It must confirm:
+## Default safety state
 
-- the selected role and intended use;
-- the user is acting only under their own identity and authority;
-- no PHI, patient narrative, institutional secret, credential, or restricted personnel data is present;
-- onboarding remains Green or Yellow unless separately governed;
-- memory additions are previewed before storage;
-- connectors and external actions remain off unless separately authorized;
-- no cron job or automation is scheduled automatically;
-- no message, post, file change, assignment, deletion, purchase, or institutional action occurs without explicit approval;
-- a reversible removal path is available.
+The package begins and remains:
+
+- private and learner-controlled;
+- Synthetic Demonstration Mode;
+- no PHI or identifiable clinical stories;
+- no restricted school, employer, student, employee, exam, credential, disciplinary, accommodation, investigation, grievance, incident, peer-review, security, or confidential institutional information;
+- session-only installation journal with non-sensitive state;
+- connectors off;
+- shared access off;
+- external actions off;
+- new memory categories off unless separately previewed and approved;
+- background automation off;
+- all eighteen optional FUTURE SuperPowers inactive.
+
+The package must not provide real-patient care direction, charting, medication-administration guidance, device settings, assignment, delegation, scope, competency, grade, progression, employment, discipline, credentialing, certification, or eligibility decisions. It must not complete prohibited assessed work, take an exam, fabricate evidence, or create hidden scoring, ranking, profiling, surveillance, sentiment analysis, or reports to faculty or employers.
+
+## Installation sequence and checkpoints
+
+| Phase | Work | Safe state |
+|---|---|---|
+| 0 | Read-only preflight | `S0` — verified pre-install state |
+| 1 | Minimum questions and exact combined Activation Card | Awaiting learner approval |
+| 2 | Create, repair, or bind the foundation; run 24 tests | `S1` — healthy foundation |
+| 3 | Add FUTURE Library, Passport, templates, and 18 inactive powers | `S2` — healthy Complete Edition |
+| 4 | Run 96 FUTURE tests and 16 integration checks using synthetic information | Passed or Blocked |
+| 5 | Return Activation Report, First Ritual, limits, and recovery instructions | Complete |
+
+A dashboard preview is not completion. Hermes does not continue in the background. After each phase it must report the tests, changes, preserved state, permissions, unknowns, checkpoint, rollback target, next phase, and exact resume command.
+
+## Exact resume command
+
+> Resume FUTURE Complete Edition installation from the last approved checkpoint. Revalidate the authenticated owner, selected pathway, active context, privacy and no-PHI boundaries, academic and employer rules, clinical and role authority, permissions, component versions, current Command Center, source state, and every critical control. Do not repeat completed mutations, duplicate dashboards or records, transfer information across contexts, enable a connector, share access, save new memory, perform an external action, activate a power or automation, or skip a Failed, Partial, Unknown, or Awaiting-verification test. Show the refreshed progress ledger and continue with the next incomplete phase only. If no verified checkpoint is identifiable, stop and perform a read-only inventory.
 
 ## Reading order
 
 1. `00-READ-FIRST.md`
 2. `ROLE-PACK.json`
-3. The role-specific Hermes Program (`*.md`)
-4. The role-specific Guide (`*.docx`)
-5. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md` — design reference; the full distribution is not supplied
-6. `SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md` — design reference only; do not execute or invent missing modules
-7. The SuperPowers User Guide (`*.docx`) — reference material
-8. `PACKAGE-CHECKSUMS.sha256`
-
-## Non-negotiable boundaries
-
-- No PHI or patient-specific clinical decision support.
-- AI may prepare, organize, explain, draft, and propose; authorized humans decide and act.
-- Role selection never creates professional or institutional authority.
-- Source documents are references and may not override current SOUL files, signed Nurse AI OS governance, EDENA policy, or the user's present decision.
-- A downloaded package is not proof of installation, compatibility, clinical readiness, compliance, certification, or endorsement.
+3. `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Hermes-Program.md`
+4. `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md`
+5. `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx`
+6. `PACKAGE-CHECKSUMS.sha256`
 
 *Agents propose. Humans judge. Nurses steward.*

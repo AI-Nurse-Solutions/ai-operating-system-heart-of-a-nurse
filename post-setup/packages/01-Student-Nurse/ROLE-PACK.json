@@ -1,44 +1,57 @@
 {
-  "activation": "user_initiated_two_step_review_and_explicit_approval",
+  "acceptance_tests": {
+    "foundation": 24,
+    "future_overlay": 96,
+    "integration": 16,
+    "total": 136
+  },
+  "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
   "automatic_connectors": false,
   "automatic_cron": false,
   "automatic_external_actions": false,
   "automatic_memory": false,
+  "automatic_shared_access": false,
+  "bridge_context_transfer_automatic": false,
   "clinical_decisions": false,
+  "existing_install_policy": "detect_verify_bind_and_skip_never_duplicate",
+  "foundation_first": true,
+  "future_overlay_second": true,
   "install_on_download": false,
+  "installation_model": "hermes_guided_one_file_multi_turn_with_safe_checkpoints",
   "intended_stage": "after_soul_files_and_hermes_setup",
   "no_phi": true,
   "onboarding_edena_ceiling": "yellow",
-  "package_id": "naio-post-setup-student-nurse",
-  "package_version": "2026.07.13.1",
-  "role": "Student Nurse",
+  "optional_superpowers_active_after_install": 0,
+  "optional_superpowers_total": 18,
+  "organizational_deployment_requires_separate_authorization": true,
+  "package_id": "naio-post-setup-nursing-student-assistant-complete-future",
+  "package_version": "2026.07.15.1",
+  "pathways": [
+    "Nursing Student",
+    "Nursing Assistant",
+    "Bridge"
+  ],
+  "pre_install_disclosure_required": true,
+  "program_id": "NAIO-FUTURE-COMPLETE-1.0",
+  "restricted_school_employer_information_default": "excluded",
+  "role": "Nursing Student and Nursing Assistant",
   "role_selection_verifies_credentials_or_authority": false,
   "schema_version": "1.0",
   "source_files": [
     {
-      "bytes": 213708,
-      "packaged_path": "Nursing-Student-AI-OS-Life-and-Learning-Guide.docx",
-      "source_sha256": "be32cba74f0bb6a2d6a84f26b4c8f5c505104b17c792ac20abff374ed7cf5eb4"
+      "bytes": 53593,
+      "packaged_path": "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Hermes-Program.md",
+      "source_sha256": "6c4826e3f4c9d6decd743be1588f429ce2204ee5917989866fd408f7fd522148"
     },
     {
-      "bytes": 49674,
-      "packaged_path": "Nursing-Student-Life-and-Learning-Hermes-Program.md",
-      "source_sha256": "980d1416bdc4d1204ddca10b7ab895622d3226ad2620ab0358453019dd58014b"
+      "bytes": 12455,
+      "packaged_path": "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md",
+      "source_sha256": "872d913a46e3bf1655c8b4f8d3b945c5bcee363c7567240400842341d6412e87"
     },
     {
-      "bytes": 241237,
-      "packaged_path": "SuperPowers-After-Setup/Hermes-Nurse-AI-OS-SuperPowers-Pack-User-Guide.docx",
-      "source_sha256": "d2f083f1718e7d800a416ddcdaa5cea900d9148eae693fc808509f339519411b"
-    },
-    {
-      "bytes": 20127,
-      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-MASTER-INSTALLER.md",
-      "source_sha256": "c7debff684da7ebe910be089355545d1c9aa5fa45168500da4e84156c2e3ea53"
-    },
-    {
-      "bytes": 5950,
-      "packaged_path": "SuperPowers-After-Setup/REFERENCE-SUPERPOWERS-README.md",
-      "source_sha256": "383c73489e54735cd5bc5e7ad15ee28c1a5b7de16f3349318d3b33e9e71df5f8"
+      "bytes": 185375,
+      "packaged_path": "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx",
+      "source_sha256": "6efefb44e28c70767b565d9607e71919312407454095cadb3568b6482cac9b21"
     }
   ]
 }

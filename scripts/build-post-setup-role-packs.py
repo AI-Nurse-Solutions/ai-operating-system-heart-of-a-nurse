@@ -41,6 +41,10 @@ ROLES = [
             "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md": "f0942ba0670465a4a2a426070c802192682ba9b1b2d6ecdcd79ed8a69745b326",
             "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx": "6efefb44e28c70767b565d9607e71919312407454095cadb3568b6482cac9b21",
         },
+        "required_prebuilt_wrapper_digests": {
+            "00-READ-FIRST.md": "3e92e58bf5968eab8202d7f5aebfeacdff9720f5b1ce42082ecd667c7673a875",
+            "ROLE-PACK.json": "20ca38fd696f02652193baf831be6b35fce55e955945a7b94c2263b3ab5beb49",
+        },
     },
     {
         "source": "Staff Nurse",
@@ -67,6 +71,10 @@ ROLES = [
             "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.md": "79503858ae693d7b4a2f5961e50ffcef5e1f7c3c63af35db156d0a127ee40cc3",
             "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.docx": "fc44cf7e636a354d836b44dc924d4710341afcff9fe937458383d0d9a835cfe7",
         },
+        "required_prebuilt_wrapper_digests": {
+            "00-READ-FIRST.md": "07ceddf57630c6ad931ac6fff3638f77e3dd7bf9f3e1e7f80468829e71d1e2e6",
+            "ROLE-PACK.json": "f25e93648e5450d05feb318552e72501d699dd54308cde46d01eb59b348bc91c",
+        },
     },
     {
         "source": "04-Nurse-Educator",
@@ -85,6 +93,10 @@ ROLES = [
             "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Hermes-Program.md": "c34aee05bdad5cc2d56f3b6e0268e1e2c45e1584be3efc15133b6042cdab9cc7",
             "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.md": "b3c0a088f0fd72db372ac176a4bbf31082297a13249d85525cbbe1eebddd7294",
             "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.docx": "12a1176b4c08cbab842204d9c24228e76809383a16c05b02817273e45b526e16",
+        },
+        "required_prebuilt_wrapper_digests": {
+            "00-READ-FIRST.md": "f1a2cb2c6339eac2a14c4e76f42430bca7d705a7388fed1562a4776a9c121513",
+            "ROLE-PACK.json": "976e0db91b193bacfc0fc28944dec4b106c8bf4df59ac2c2dabda4ddd47f951d",
         },
     },
     {
@@ -111,6 +123,10 @@ ROLES = [
             "NP-Complete-AI-OS-with-Wings-Hermes-Program.md": "46734b8ecb72e4fa8dc58f4b03ba4cc7db9e15b4eae4db9d7a7eaf4879cd5e30",
             "NP-Complete-AI-OS-with-Wings-Setup-Guide.md": "6ea5ebd1fec5303ff8479f94c19435d9d3a89b7c7fc57d513a4305a3a6776f37",
             "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx": "430f6c3fe5046202cc7de3df2edbb594b20dc62931f5645bce22787cf4644ecb",
+        },
+        "required_prebuilt_wrapper_digests": {
+            "00-READ-FIRST.md": "525b5fee48fe4a4af0d4e0ffce14628ca98ce5c2e6633416cc77d63e0a442158",
+            "ROLE-PACK.json": "234ec9548c9f7cc9f02b80f6c074fae3ffebd89ba9200494631e743edcefc320",
         },
     },
 ]
@@ -426,6 +442,14 @@ def validate_prebuilt_inventory(package: Path, role: dict) -> None:
     for path, expected_digest in pinned_digests.items():
         if declared_digests.get(path) != expected_digest or sha256(package / path) != expected_digest:
             raise ValueError(f"Trusted source checksum mismatch: {package / path}")
+    wrapper_digests = {
+        Path(path): digest for path, digest in role["required_prebuilt_wrapper_digests"].items()
+    }
+    if set(wrapper_digests) != {Path("00-READ-FIRST.md"), Path("ROLE-PACK.json")}:
+        raise ValueError(f"Trusted wrapper configuration mismatch for {role['folder']}")
+    for path, expected_digest in wrapper_digests.items():
+        if sha256(package / path) != expected_digest:
+            raise ValueError(f"Trusted wrapper checksum mismatch: {package / path}")
     expected_files = {
         Path("00-READ-FIRST.md"),
         Path("PACKAGE-CHECKSUMS.sha256"),

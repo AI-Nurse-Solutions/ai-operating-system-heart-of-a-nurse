@@ -21,7 +21,7 @@ Nurse AI OS has moved beyond a conceptual architecture. It now has:
 - 46 passing unit tests and 8 of 8 passing synthetic trajectory evaluations;
 - a verified immutable local release with preserved trust-anchor continuity;
 - a public Governed Harness architecture and evidence surface;
-- a live post-setup distribution with six English-language role-specific downloads, including Nursing Student and Assistant, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions;
+- a live post-setup distribution with six English-language role-specific downloads, including Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions;
 - deterministic ZIP checksums and explicit `not_installed` package status.
 
 That progress is substantial, but the system must **not** yet be described as a unified enforcement architecture. Four P0 control-plane gaps prevent that claim:
@@ -46,7 +46,7 @@ Keep the current default profile in shadow mode. Do not activate canary enforcem
 
 The strongest current architectural description is:
 
-> **Nurse AI OS is a nurse-centered control plane over Hermes, designed around nurse-governance principles. SOUL establishes accountable identity and boundaries; the signed EDENA Harness evaluates runtime actions; Florence-X provides build, verification, and coordination discipline; Hermes executes tools, skills, profiles, memory, scheduling, and delegation; a local metadata-minimized ledger records governance evidence; signed releases preserve provenance; and a public post-setup layer offers six English role packages—two review-first overlays plus Nursing Student and Assistant, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions with read-only preflights and exact activation cards. The current operating posture is observation-only shadow governance, not clinical deployment, institutional authorization, or default-profile enforcement.**
+> **Nurse AI OS is a nurse-centered control plane over Hermes, designed around nurse-governance principles. SOUL establishes accountable identity and boundaries; the signed EDENA Harness evaluates runtime actions; Florence-X provides build, verification, and coordination discipline; Hermes executes tools, skills, profiles, memory, scheduling, and delegation; a local metadata-minimized ledger records governance evidence; signed releases preserve provenance; and a public post-setup layer offers six English role packages—one review-first overlay plus Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions with read-only preflights and exact activation cards. The current operating posture is observation-only shadow governance, not clinical deployment, institutional authorization, or default-profile enforcement.**
 
 ---
 
@@ -112,7 +112,7 @@ This report does not establish:
 | Shadow decisions | 198 observed allows; 147 observed blocks |
 | Payload capture flag | Zero events with `payload_captured=true` |
 | Post-setup page | `https://nurse-ai-os.org/post-setup/`, HTTP 200 |
-| Post-setup packages | Six live ZIPs: two review-first role overlays plus Nursing Student and Assistant, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only NP Complete Editions; all checksum-verifiable and `not_installed` on download |
+| Post-setup packages | Six live ZIPs: one review-first role overlay plus Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only NP Complete Editions; all checksum-verifiable and `not_installed` on download |
 | Post-setup manifest state | `not_installed` |
 
 The shadow ledger count is a timestamped snapshot, not a release constant. It continues to grow while the plugin observes Hermes activity.
@@ -275,7 +275,7 @@ This separation is the architecture’s central strength. Its current weakness i
 | Default-profile enforcement | Code path exists | **No** | No | Explicit Robert authorization after evidence review | Prohibited until promoted |
 | Nurse Steward Council | Charter/process artifacts exist | Not operationally completed | No | Named human governance required | Pending |
 | Six English post-setup role ZIPs | Yes | Live downloads | No | Review/activation-card approval | Distribution only |
-| Full SuperPowers module tree in review-first lanes 02 and 05 | **No, not supplied in the two remaining original role ZIPs** | No | No | Separate future package decision | Reference-only gap; Nursing Student and Assistant, Nurse Leader, Nurse Educator and Instructional Designer, and NP lanes are separately complete and embedded |
+| Full SuperPowers module tree in review-first lane 05 | **No, not supplied in the remaining original role ZIP** | No | No | Separate future package decision | Reference-only gap; Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and NP lanes are separately complete and embedded |
 | Clinical/EHR/PHI system | No | No | No | Separate institutional/legal program required | Out of scope |
 
 ---
@@ -430,7 +430,7 @@ Hermes setup + no-PHI safety checks
 Post-setup role resolver
            │
            ├─ Nursing Student and Nursing Assistant
-           ├─ Staff Nurse
+           ├─ Staff Nurse and Quality Contributor
            ├─ Nurse Leader and Manager
            ├─ Nurse Educator and Instructional Designer
            ├─ Nurse-Connected Ally
@@ -439,11 +439,11 @@ Post-setup role resolver
                   ▼
 Download one role pack
                   │
-                  ├─ Lanes 02, 05: review-first preflight
+                  ├─ Lane 05: review-first preflight
                   │       └─ proposed changes, EDENA tiers, permissions,
                   │          conflicts, rollback → apply / revise / defer / reject
                   │
-                  └─ Lanes 01, 03, 04, 06: read-only Complete Edition preflight
+                  └─ Lanes 01, 02, 03, 04, 06: read-only Complete Edition preflight
                           └─ exact activation card → approve / edit /
                              foundation only / keep inactive / cancel
 
@@ -464,13 +464,13 @@ The public SOUL quiz normalizes four roles:
 The live post-setup distribution has six lanes:
 
 1. Nursing Student and Nursing Assistant
-2. Staff Nurse
+2. Staff Nurse and Quality Contributor
 3. Nurse Leader and Manager
 4. Nurse Educator and Instructional Designer
 5. Nurse-Connected Ally
 6. Nurse Practitioner (USA only)
 
-Each live package includes a role manifest and declares `install_on_download: false`. Lanes 02 and 05 use review-first approval. Lane 01 uses a read-only Nursing Student and Nursing Assistant FUTURE Complete Edition preflight, one exact combined activation card, a foundation-first/FUTURE-second sequence, 136 embedded release checks, three protected pathways, and eighteen inactive optional powers. Lane 03 uses the equivalent governed Nurse Leader sequence with 113 release checks. Lane 04 uses the Nurse Educator and Instructional Designer TEACH sequence with three authority adapters, 33 foundation checks, 120 TEACH tests, 16 integration checks, and twenty inactive optional powers. Lane 06 uses the governed USA-only NP sequence with 145 embedded acceptance tests.
+Each live package includes a role manifest and declares `install_on_download: false`. Lane 05 uses review-first approval. Lane 01 uses a read-only Nursing Student and Nursing Assistant FUTURE Complete Edition preflight, one exact combined activation card, a foundation-first/FUTURE-second sequence, 136 embedded release checks, three protected pathways, and eighteen inactive optional powers. Lane 02 uses the Staff Nurse and Quality Contributor SHIFT sequence with four bounded authority adapters, 40 foundation checks, 120 SHIFT tests, 16 integration checks, and twenty inactive optional powers. Lane 03 uses the equivalent governed Nurse Leader sequence with 113 release checks. Lane 04 uses the Nurse Educator and Instructional Designer TEACH sequence with three authority adapters, 33 foundation checks, 120 TEACH tests, 16 integration checks, and twenty inactive optional powers. Lane 06 uses the governed USA-only NP sequence with 145 embedded acceptance tests.
 
 ## 7.3 Handoff gap
 
@@ -512,7 +512,7 @@ A `naio-soul.schema.json` v1.1 may either add `educator` or preserve the four on
 | Lane | Live artifact | State |
 |---|---|---|
 | Nursing Student and Nursing Assistant | `nurse-ai-os-post-setup-student-nurse.zip` | Complete Edition; Student/Assistant/Bridge; 136 checks; 18 optional powers inactive; checksummed; not installed |
-| Staff Nurse | `nurse-ai-os-post-setup-staff-nurse.zip` | Live, checksummed, not installed |
+| Staff Nurse and Quality Contributor | `nurse-ai-os-post-setup-staff-nurse.zip` | Complete Edition; 176 checks; 20 optional SHIFT powers inactive; checksummed; not installed |
 | Nurse Leader and Manager | `nurse-ai-os-post-setup-nurse-leader-and-manager.zip` | Complete Edition; 113 checks; 16 optional powers inactive; checksummed; not installed |
 | Nurse Educator and Instructional Designer | `nurse-ai-os-post-setup-nurse-educator.zip` | Complete Edition; 169 checks; 20 optional powers inactive; checksummed; not installed |
 | Nurse-Connected Ally | `nurse-ai-os-post-setup-nurse-connected-ally.zip` | Live, checksummed, not installed |
@@ -532,13 +532,13 @@ Every package declares:
 - Green/Yellow onboarding ceiling;
 - explicit human approval before any mutation.
 
-The two review-first lanes use a two-step review and explicit approval. The Nursing Student and Assistant, Nurse Leader, Nurse Educator and Instructional Designer, and NP Complete Editions require a read-only preflight and approval of an exact combined activation card before their governed multi-phase installation begins. Downloading or unzipping never starts either process.
+The remaining review-first lane uses a two-step review and explicit approval. The Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and NP Complete Editions require a read-only preflight and approval of an exact combined activation card before their governed multi-phase installation begins. Downloading or unzipping never starts either process.
 
 ## 8.3 Review-first SuperPowers reference limitation
 
-The SuperPowers documents supplied for lanes 02 and 05 referenced a larger distribution containing `manifest.yaml`, `core/`, `workflows/`, `templates/`, and `tests/`, but those modules were not supplied. Those two public packages therefore relabel the documents as `REFERENCE-SUPERPOWERS-*` and state that they must not be executed or used to invent missing modules.
+The SuperPowers documents supplied for lane 05 referenced a larger distribution containing `manifest.yaml`, `core/`, `workflows/`, `templates/`, and `tests/`, but those modules were not supplied. That public package therefore relabels the documents as `REFERENCE-SUPERPOWERS-*` and states that they must not be executed or used to invent missing modules.
 
-This is the correct honesty posture for those two lanes. The Nursing Student and Assistant, Nurse Leader, Nurse Educator and Instructional Designer, and NP lanes are separately supplied Complete Editions with embedded runtime content and enumerated release checks; their inclusion does not constitute independent clinical or educational validation, accreditation, certification, compliance, or organizational authorization.
+This is the correct honesty posture for that lane. The Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and NP lanes are separately supplied Complete Editions with embedded runtime content and enumerated release checks; their inclusion does not constitute independent clinical, quality, educational, research, accreditation, certification, compliance, or organizational authorization.
 
 ## 8.4 Integrity posture
 
@@ -730,7 +730,7 @@ Without that review, 345 events represent collected evidence—not demonstrated 
 | **P1** | Shadow evidence not yet adjudicated | False positives/negatives and unmapped tools remain unknown | Run structured evidence review before canary proposal |
 | **P1** | Nurse Steward Council pending | Governance legitimacy remains founder-centered | Name members, authority, conflicts, docket, dissent, and release linkage |
 | **P1** | Post-setup ZIPs are checksummed but not detached-signed | Package integrity is weaker than Harness integrity | Sign exact manifest or document separate trust model |
-| **P1** | Missing full SuperPowers module tree in lanes 02 and 05 | Those review-first role packs cannot truthfully install the complete referenced system | Keep references non-executable; build or formally remove full-pack promise |
+| **P1** | Missing full SuperPowers module tree in lane 05 | That review-first role pack cannot truthfully install the complete referenced system | Keep references non-executable; build or formally remove full-pack promise |
 | **P1** | Earlier private Nurse Leaders corpus lacks recorded installation authorization | Technical existence could be mistaken for governance consent or approved post-setup deployment | Keep conceptually quarantined; obtain an explicit retain, remove, or narrowly re-authorize decision |
 | **P1** | Human approval can launder authority the approver does not possess | A click does not prove legal, organizational, data-use, employment, or system authority | Validate source of authority; bind approval to action, target, arguments, policy, expiry, and unchanged digest; route institutional actions institutionally |
 | **P1** | No general post-generation delivery gate is demonstrated | `transform_tool_result` governs tool results, not every assistant response or delivery path | Map and test model-output, send, publish, channel, and delivery boundaries before claiming complete mediation |
@@ -899,7 +899,7 @@ Nurse AI OS now has a credible technical spine:
 - a signed Hermes-native Harness;
 - a local metadata-only evidence ledger;
 - immutable releases and rollback;
-- a live six-lane English post-setup distribution, including Nursing Student and Assistant, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions.
+- a live six-lane English post-setup distribution, including Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions.
 
 Its next phase is not “more agents.” It is **coherence, evidence adjudication, and human governance**.
 
@@ -948,4 +948,4 @@ This report is self-contained for public review. An earlier internal Harness wor
 
 # Appendix B — Live post-setup downloads
 
-[Nursing Student and Nursing Assistant](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip) · [Staff Nurse](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip) · [Nurse Leader and Manager](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip) · [Nurse Educator and Instructional Designer](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip) · [Nurse-Connected Ally](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip) · [Nurse Practitioner (USA only)](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip)
+[Nursing Student and Nursing Assistant](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip) · [Staff Nurse and Quality Contributor](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip) · [Nurse Leader and Manager](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip) · [Nurse Educator and Instructional Designer](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip) · [Nurse-Connected Ally](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip) · [Nurse Practitioner (USA only)](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip)

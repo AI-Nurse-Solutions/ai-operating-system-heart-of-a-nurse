@@ -226,6 +226,30 @@ class SetupHelperTests(unittest.TestCase):
         self.assertIn("read-only preflight checklist only", result["task"])
         self.assertIn("Do not install, save, connect, or activate anything", result["task"])
 
+    def test_staff_nurse_quality_contributor_shift_starter_is_self_contained(self):
+        result = node_eval("""
+          import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
+          const lane=POST_SETUP_LANES.find(x=>x.value==='staff_nurse');
+          console.log(JSON.stringify({label:lane?.label,task:safeTaskForLane('staff_nurse')}));
+        """)
+        self.assertEqual(result["label"], "Staff Nurse and Quality Contributor")
+        task = result["task"]
+        for phrase in (
+            "without opening or requiring a package file",
+            "Direct-Care Staff Nurse",
+            "Chartered Staff-Nurse QI Project Lead",
+            "one-page no-PHI readiness checklist",
+            "one synthetic first-win",
+            "downloading, selecting, opening, and unzipping do not install anything",
+            "complete one-file SHIFT program",
+            "read-only preflight",
+            "SHIFT Complete Edition Activation Card",
+            "176 embedded release checks",
+            "all twenty optional SHIFT SuperPowers",
+            "private-workspace approval does not authorize institutional quality work",
+        ):
+            self.assertIn(phrase, task)
+
     def test_educator_designer_complete_edition_starter_is_self_contained(self):
         result = node_eval("""
           import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';

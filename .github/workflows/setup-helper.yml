@@ -6,6 +6,7 @@ on:
       - "setup-helper/**"
       - "tests/test_setup_helper.py"
       - "tests/test_student_assistant_role_pack.py"
+      - "tests/test_staff_nurse_role_pack.py"
       - "tests/test_leader_role_pack.py"
       - "tests/test_educator_role_pack.py"
       - "tests/test_np_role_pack.py"
@@ -27,6 +28,7 @@ on:
       - "setup-helper/**"
       - "tests/test_setup_helper.py"
       - "tests/test_student_assistant_role_pack.py"
+      - "tests/test_staff_nurse_role_pack.py"
       - "tests/test_leader_role_pack.py"
       - "tests/test_educator_role_pack.py"
       - "tests/test_np_role_pack.py"
@@ -63,8 +65,10 @@ jobs:
       - name: Run deterministic Setup Helper tests
         run: |
           python3 scripts/build-post-setup-role-packs.py
+          git diff --exit-code
           python3 tests/test_setup_helper.py
           python3 tests/test_student_assistant_role_pack.py
+          python3 tests/test_staff_nurse_role_pack.py
           python3 tests/test_leader_role_pack.py
           python3 tests/test_educator_role_pack.py
           python3 tests/test_np_role_pack.py

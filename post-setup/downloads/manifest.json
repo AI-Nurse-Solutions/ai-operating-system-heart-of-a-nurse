@@ -32,16 +32,34 @@
       "sha256": "f57f0b3a6f15863c0f5afbb80b48fe4fb5c59ab010b99a83579098dd68ab8a17"
     },
     {
-      "activation": "user_initiated_two_step_review_and_explicit_approval",
-      "bytes": 496417,
+      "acceptance_tests": {
+        "foundation": 40,
+        "integration": 16,
+        "shift_overlay": 120,
+        "total": 176
+      },
+      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "automatic_shared_access": false,
+      "bytes": 255189,
       "download": "downloads/nurse-ai-os-post-setup-staff-nurse.zip",
       "folder": "02-Staff-Nurse",
+      "foundation_first": true,
       "install_on_download": false,
+      "institutional_deployment_requires_separate_authorization": true,
       "intended_stage": "after_soul_files_and_hermes_setup",
-      "package_version": "2026.07.13.1",
-      "pre_install_disclosure_required": false,
-      "role": "Staff Nurse",
-      "sha256": "e02d6d7e126a37bf62d7891e4f4e28b40ecfa0af8036ee66b8665e2dae0c9bd3"
+      "optional_superpowers_active_after_install": 0,
+      "optional_superpowers_total": 20,
+      "package_version": "2026.07.15.1",
+      "pre_install_disclosure_required": true,
+      "role": "Staff Nurse and Quality Contributor",
+      "role_adapters": [
+        "Direct-Care Staff Nurse",
+        "Unit Champion / Preceptor / Shared-Governance Member",
+        "Chartered Staff-Nurse QI Project Lead",
+        "Hybrid / Multiple-Employer"
+      ],
+      "sha256": "67a21e49b3e4e6e84448d3213b8288f0536c565283daa7ecaf52bf6df1f03e23",
+      "shift_overlay_second": true
     },
     {
       "acceptance_tests": {
@@ -132,6 +150,6 @@
     }
   ],
   "purpose": "role-specific Nurse AI OS post-setup downloads",
-  "release": "2026.07.15.4",
+  "release": "2026.07.15.5",
   "schema_version": "1.0"
 }

@@ -47,11 +47,27 @@ ROLES = [
         },
     },
     {
-        "source": "Staff Nurse",
+        "source": "02-Staff-Nurse",
         "folder": "02-Staff-Nurse",
         "slug": "staff-nurse",
-        "label": "Staff Nurse",
-        "audience": "A staff or bedside nurse using AI for no-PHI preparation, organization, learning, reflection, and personal capacity—not patient-specific care or clinical decisions.",
+        "label": "Staff Nurse and Quality Contributor",
+        "audience": "A direct-care staff nurse, unit champion, preceptor, shared-governance member, chartered staff-nurse QI project lead, or multi-employer nurse using a private no-PHI workspace for life and practice support and governed quality preparation while authorized humans and institutions retain all clinical, reporting, data, staffing, quality, research, policy, release, and employment authority.",
+        "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+        "prebuilt": True,
+        "required_prebuilt_sources": (
+            "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Hermes-Program.md",
+            "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.md",
+            "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.docx",
+        ),
+        "required_prebuilt_digests": {
+            "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Hermes-Program.md": "6fa391b8000d7b5c0e6a922b9ed61446143d6b1ddf70c88950a8171a9176b828",
+            "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.md": "1d23c026f251b2826b839f5b65f64a1ea59988d014ff9c8e44f079a9eb38e86d",
+            "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.docx": "f8e4381fafaeec746663dc8ebc18c707369ed5c1591537890c5004659d73a0ec",
+        },
+        "required_prebuilt_wrapper_digests": {
+            "00-READ-FIRST.md": "f56d0802cabfac2468458891c8969af2874e8332108bb3fff08927231d421682",
+            "ROLE-PACK.json": "d82606ed0a12adfa85464902545840c4b30724166517b4bc91e19a4b90e5cb0c",
+        },
     },
     {
         "source": "Nurse Leaders",
@@ -294,6 +310,31 @@ def validate_role_package(destination: Path, role: dict) -> dict:
             "total": 136,
         }:
             raise ValueError(f"Student/Assistant release-check inventory mismatch in {manifest_path}")
+    if role["slug"] == "staff-nurse":
+        if manifest.get("foundation_first") is not True or manifest.get("shift_overlay_second") is not True:
+            raise ValueError(f"Unsafe Staff Nurse installation order in {manifest_path}")
+        if manifest.get("optional_superpowers_total") != 20:
+            raise ValueError(f"SHIFT SuperPower inventory mismatch in {manifest_path}")
+        if manifest.get("optional_superpowers_active_after_install") != 0:
+            raise ValueError(f"SHIFT SuperPowers must remain inactive after installation: {manifest_path}")
+        if manifest.get("automatic_shared_access") is not False:
+            raise ValueError(f"Staff Nurse shared access must remain off: {manifest_path}")
+        if manifest.get("institutional_deployment_requires_separate_authorization") is not True:
+            raise ValueError(f"Staff Nurse institutional-deployment boundary missing: {manifest_path}")
+        if manifest.get("role_adapters") != [
+            "Direct-Care Staff Nurse",
+            "Unit Champion / Preceptor / Shared-Governance Member",
+            "Chartered Staff-Nurse QI Project Lead",
+            "Hybrid / Multiple-Employer",
+        ]:
+            raise ValueError(f"Staff Nurse role-adapter inventory mismatch in {manifest_path}")
+        if manifest.get("acceptance_tests") != {
+            "foundation": 40,
+            "integration": 16,
+            "shift_overlay": 120,
+            "total": 176,
+        }:
+            raise ValueError(f"Staff Nurse release-check inventory mismatch in {manifest_path}")
     if role["slug"] == "nurse-practitioner-usa":
         if manifest.get("country_availability") != ["United States"]:
             raise ValueError(f"Nurse Practitioner lane must remain USA-only: {manifest_path}")
@@ -582,6 +623,7 @@ def deterministic_zip(role: dict) -> dict:
         "foundation_first",
         "future_overlay_second",
         "lead_overlay_second",
+        "shift_overlay_second",
         "teach_overlay_second",
         "wings_overlay_second",
         "pathways",
@@ -627,7 +669,7 @@ def build(source_root: Path | None) -> None:
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.15.4",
+        "release": "2026.07.15.5",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,
@@ -648,8 +690,8 @@ def main() -> int:
         "--import-source",
         type=Path,
         help=(
-            "Import two review-first role sources plus prebuilt 01-Student-Nurse, "
-            "03-Nurse-Leader-and-Manager, 04-Nurse-Educator, and "
+            "Import the review-first lane-05 source plus prebuilt 01-Student-Nurse, "
+            "02-Staff-Nurse, 03-Nurse-Leader-and-Manager, 04-Nurse-Educator, and "
             "06-Nurse-Practitioner-USA folders before building"
         ),
     )

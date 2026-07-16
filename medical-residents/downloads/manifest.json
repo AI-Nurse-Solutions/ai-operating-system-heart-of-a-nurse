@@ -1,0 +1,39 @@
+{
+  "installation_status": "not_installed",
+  "packages": [
+    {
+      "acceptance_tests": {
+        "foundation": 72,
+        "integration": 16,
+        "rounds_overlay": 72,
+        "total": 160
+      },
+      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "bytes": 243080,
+      "download": "downloads/medical-resident-rounds-complete-edition.zip",
+      "foundation_first": true,
+      "install_on_download": false,
+      "installation_status": "not_installed",
+      "institutional_deployment_requires_separate_authorization": true,
+      "nursing_population_state_shared": false,
+      "optional_superpowers_active_after_install": 0,
+      "optional_superpowers_total": 24,
+      "package_version": "2026.07.16.1",
+      "population_lane": "medical_resident",
+      "pre_install_disclosure_required": true,
+      "records_total": 17,
+      "role": "Medical Resident \u2014 ROUNDS",
+      "rounds_overlay_second": true,
+      "route": "/medical-residents/",
+      "sha256": "e4a39cc6f9a1a87ceadb7721f1c7fe5c7e2de1f2a8fe8c0cf98309ea290f3a92",
+      "standalone_non_nurse_lane": true,
+      "suggested_agents_active_after_install": 0,
+      "suggested_agents_total": 10,
+      "templates_total": 30,
+      "workflows_total": 24
+    }
+  ],
+  "purpose": "standalone adjacent clinical lane for medical residents; separate from Nurse AI OS post-setup lanes",
+  "release": "2026.07.16.1",
+  "schema_version": "1.0"
+}

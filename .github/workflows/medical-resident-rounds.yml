@@ -1,0 +1,81 @@
+name: Medical Resident ROUNDS Release
+
+on:
+  pull_request:
+    paths:
+      - "medical-residents/**"
+      - "scripts/build-medical-resident-rounds.py"
+      - "tests/test_medical_resident_rounds.py"
+      - "sitemap.xml"
+      - "README.md"
+      - ".github/workflows/medical-resident-rounds.yml"
+  push:
+    branches: [main]
+    paths:
+      - "medical-residents/**"
+      - "scripts/build-medical-resident-rounds.py"
+      - "tests/test_medical_resident_rounds.py"
+      - "sitemap.xml"
+      - "README.md"
+      - ".github/workflows/medical-resident-rounds.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Rebuild committed ROUNDS release bytes
+        run: |
+          python3 scripts/build-medical-resident-rounds.py
+          git diff --exit-code
+      - name: Run ROUNDS package and isolation tests
+        run: python3 tests/test_medical_resident_rounds.py
+      - name: Refuse accidental secrets or PHI examples
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          paths = [p for p in Path("medical-residents").rglob("*") if p.is_file()]
+          text = "\n".join(p.read_text(errors="ignore") for p in paths)
+          patterns = {
+              "private key": r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
+              "generic api key": r"(?i)(?:api[_-]?key|token|password)\s*[:=]\s*['\"][A-Za-z0-9_\-]{16,}",
+              "patient example": r"(?i)(?:patient|mrn)\s*(?:name|number)?\s*[:=]\s*[A-Z][a-z]+",
+          }
+          hits = [name for name, pattern in patterns.items() if re.search(pattern, text)]
+          if hits:
+              raise SystemExit("ROUNDS public-safety scan failed: " + ", ".join(hits))
+          print("ROUNDS_PUBLIC_SAFETY_SCAN=passed")
+          PY
+      - name: Verify page links and Python syntax
+        run: |
+          python3 -m py_compile scripts/build-medical-resident-rounds.py tests/test_medical_resident_rounds.py
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  values=dict(attrs)
+                  for key in ("href", "src"):
+                      if values.get(key): self.links.append(values[key])
+          page=Path("medical-residents/index.html")
+          parser=Links(); parser.feed(page.read_text())
+          for link in parser.links:
+              if link.startswith(("http:", "https:", "mailto:", "tel:", "#", "data:")):
+                  continue
+              target=(page.parent / link.split("#",1)[0].split("?",1)[0]).resolve()
+              if link.endswith("/") or target.is_dir(): target=target / "index.html"
+              if not target.exists(): raise SystemExit(f"Missing ROUNDS page target: {link}")
+          print("ROUNDS_LINKS=passed")
+          PY

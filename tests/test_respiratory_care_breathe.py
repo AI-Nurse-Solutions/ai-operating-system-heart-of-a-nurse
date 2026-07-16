@@ -242,6 +242,17 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
                     rels = archive.read(name).decode("utf-8", errors="replace")
                     self.assertNotIn('TargetMode="External"', rels)
 
+    def test_public_scanner_reads_zip_docx_and_nested_text_members(self):
+        scanner = runpy.run_path(str(ROOT / "scripts" / "scan-public-healthcare-artifacts.py"))
+        scan_paths = scanner["scan_paths"]
+        scanner["run_self_probes"]()
+        with tempfile.TemporaryDirectory() as tmp:
+            docx = Path(tmp) / "unsafe.docx"
+            with zipfile.ZipFile(docx, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+                archive.writestr("word/document.xml", "<w:t>MRN number=A1B2C3</w:t>")
+            findings = scan_paths([docx])
+            self.assertTrue(any(label == "patient or mrn example" for label, _ in findings))
+
     def test_public_page_contract_and_separate_route(self):
         page = (BREATHE / "index.html").read_text(encoding="utf-8")
         for phrase in (

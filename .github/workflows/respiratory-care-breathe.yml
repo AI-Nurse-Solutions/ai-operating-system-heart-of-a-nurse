@@ -5,6 +5,7 @@ on:
     paths:
       - "respiratory-care/**"
       - "scripts/build-respiratory-care-breathe.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
       - "tests/test_respiratory_care_breathe.py"
       - "tests/test_medical_resident_rounds.py"
       - "post-setup/downloads/manifest.json"
@@ -20,6 +21,7 @@ on:
     paths:
       - "respiratory-care/**"
       - "scripts/build-respiratory-care-breathe.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
       - "tests/test_respiratory_care_breathe.py"
       - "tests/test_medical_resident_rounds.py"
       - "post-setup/downloads/manifest.json"
@@ -54,26 +56,7 @@ jobs:
       - name: Run shared adjacent-lane homepage regression
         run: python3 tests/test_medical_resident_rounds.py
       - name: Refuse accidental secrets or PHI examples
-        run: |
-          python3 - <<'PY'
-          import re
-          from pathlib import Path
-          paths = [p for p in Path("respiratory-care").rglob("*") if p.is_file()]
-          text = "\n".join(p.read_text(encoding="utf-8", errors="ignore") for p in paths)
-          patterns = {
-              "private key": r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
-              "generic api key": r"(?i)(?:api[_-]?key|token|password)\s*[:=]\s*['\"][A-Za-z0-9_\-]{16,}",
-              "patient or mrn example": r"(?i)(?:patient\s*(?:name)?|mrn\s*(?:number)?)\s*[:=]\s*[A-Za-z0-9][A-Za-z0-9_-]*",
-          }
-          phi_probe = patterns["patient or mrn example"]
-          for sample in ("Patient: John", "MRN: 123456", "MRN number=A1B2C3"):
-              if not re.search(phi_probe, sample):
-                  raise SystemExit(f"BREATHE PHI scan probe failed: {sample}")
-          hits = [name for name, pattern in patterns.items() if re.search(pattern, text)]
-          if hits:
-              raise SystemExit("BREATHE public-safety scan failed: " + ", ".join(hits))
-          print("BREATHE_PUBLIC_SAFETY_SCAN=passed")
-          PY
+        run: python3 scripts/scan-public-healthcare-artifacts.py respiratory-care --label BREATHE
       - name: Verify page links and Python syntax
         run: |
           python3 -m py_compile scripts/build-respiratory-care-breathe.py tests/test_respiratory_care_breathe.py

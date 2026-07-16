@@ -9,7 +9,7 @@
         "total": 160
       },
       "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
-      "bytes": 243080,
+      "bytes": 243095,
       "download": "downloads/medical-resident-rounds-complete-edition.zip",
       "foundation_first": true,
       "install_on_download": false,
@@ -25,7 +25,7 @@
       "role": "Medical Resident \u2014 ROUNDS",
       "rounds_overlay_second": true,
       "route": "/medical-residents/",
-      "sha256": "e4a39cc6f9a1a87ceadb7721f1c7fe5c7e2de1f2a8fe8c0cf98309ea290f3a92",
+      "sha256": "d0fe01d5c0b1d54f60025abd366895789aa74cb1889a67e7bb5d3ad61f765afb",
       "standalone_non_nurse_lane": true,
       "suggested_agents_active_after_install": 0,
       "suggested_agents_total": 10,

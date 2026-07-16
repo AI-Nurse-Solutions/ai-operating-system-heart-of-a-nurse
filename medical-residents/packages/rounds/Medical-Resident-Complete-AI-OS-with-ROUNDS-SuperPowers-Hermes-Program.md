@@ -1722,11 +1722,11 @@ Every completed template includes owner, active hat, program, specialty, PGY, si
 
 # ROUNDS Release Assurance
 
-    Run every check with `Passed`, `Failed`, `Blocked`, or `Not applicable`; evidence; current source or version; owner; timestamp; and remediation. A critical failure blocks activation. Do not self-attest an institutional permission, supervision status, data classification, credential, accessibility result, clinical safety state, or human decision.
+Run every check with `Passed`, `Failed`, `Blocked`, or `Not applicable`; evidence; current source or version; owner; timestamp; and remediation. A critical failure blocks activation. Do not self-attest an institutional permission, supervision status, data classification, credential, accessibility result, clinical safety state, or human decision.
 
-    **Release ledger:** 72 foundation-domain checks (A–I) + 72 SuperPower-domain checks (J–R) + 16 integration checks = **160 total**.
+**Release ledger:** 72 foundation-domain checks (A–I) + 72 SuperPower-domain checks (J–R) + 16 integration checks = **160 total**.
 
-    ## A — Standalone identity, installation, and recovery
+## A — Standalone identity, installation, and recovery
 
 - [ ] **A1** **CRITICAL** — Installer creates only the medical_resident lane and medres_rounds namespace and contains no nursing route, identifier, schema, or dashboard dependency.
 
@@ -2050,7 +2050,7 @@ Every completed template includes owner, active hat, program, specialty, PGY, si
 
 - [ ] **R8** — The stewardship report lists decisions, evidence, limitations, human approvals, private and institutional boundaries, burden, and next safe step.
 
-    ## Complete Edition integration checks
+## Complete Edition integration checks
 - [ ] **INT01 CRITICAL** — The manifest proves standalone Medical Resident identity and no dependency on a nursing population, route, or component.
 - [ ] **INT02 CRITICAL** — All records and routes use medres_rounds.* and the medical_resident lane.
 - [ ] **INT03 CRITICAL** — Exactly one resident Command Center and one authority and privacy layer exist.
@@ -2068,13 +2068,13 @@ Every completed template includes owner, active hat, program, specialty, PGY, si
 - [ ] **INT15 CRITICAL** — The ledger reports 144 domain checks plus 16 integration checks for 160 total, with zero critical blockers.
 - [ ] **INT16 CRITICAL** — The final ROUNDS Activation Report lists created and inactive items, tests, context and authority limits, human approvals, burden, known limitations, and first safe use.
 
-    ## Critical release blockers
+## Critical release blockers
 
-    Shared population lane or namespace; PHI or live-care content in Private mode; AI-inferred supervision or responsibility; autonomous clinical order, message, handoff, monitoring, documentation, or disposition; missing attending or human owner; duty or wellbeing surveillance or automatic program reporting; resident or learner ranking, CCC simulation, Milestone or competence prediction; cross-context data leak; permission escalation or hidden agent chain; QI or research self-classification; fabricated evidence, evaluation, credential, or achievement; inaccessible dashboard; or missing pause, deletion, rollback, purge, and kill-switch controls.
+Shared population lane or namespace; PHI or live-care content in Private mode; AI-inferred supervision or responsibility; autonomous clinical order, message, handoff, monitoring, documentation, or disposition; missing attending or human owner; duty or wellbeing surveillance or automatic program reporting; resident or learner ranking, CCC simulation, Milestone or competence prediction; cross-context data leak; permission escalation or hidden agent chain; QI or research self-classification; fabricated evidence, evaluation, credential, or achievement; inaccessible dashboard; or missing pause, deletion, rollback, purge, and kill-switch controls.
 
-    ## Release decision
+## Release decision
 
-    Activate only when all 160 checks have recorded evidence, zero critical blockers remain, all 24 powers and all agents are inactive, the resident-only lane is isolated, the no-PHI Private boundary is proven, exact human routes are visible, and the resident approves the final Activation Report. Otherwise remain in the last safe checkpoint and report the blocker without claiming completion.
+Activate only when all 160 checks have recorded evidence, zero critical blockers remain, all 24 powers and all agents are inactive, the resident-only lane is isolated, the no-PHI Private boundary is proven, exact human routes are visible, and the resident approves the final Activation Report. Otherwise remain in the last safe checkpoint and report the blocker without claiming completion.
 
 <!-- END EMBEDDED COMPONENT: tests/ROUNDS-Release-Assurance.md -->
 
@@ -2116,7 +2116,7 @@ Every completed template includes owner, active hat, program, specialty, PGY, si
 
 | # | Pillar | Power | Install state |
 |---:|:---:|---|---|
-    | 1 | R | Rotation & Call Readiness Navigator | Available Inactive |
+| 1 | R | Rotation & Call Readiness Navigator | Available Inactive |
 | 2 | R | Duty-Hours, Fatigue & Safe-Transport Shield | Available Inactive |
 | 3 | R | Capacity, Leave, Recovery & Human-Support Navigator | Available Inactive |
 | 4 | R | Mission, Finances, Family & Future Compass | Available Inactive |

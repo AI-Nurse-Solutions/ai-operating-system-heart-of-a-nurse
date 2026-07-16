@@ -6,6 +6,8 @@ on:
       - "medical-residents/**"
       - "scripts/build-medical-resident-rounds.py"
       - "tests/test_medical_resident_rounds.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
       - "sitemap.xml"
       - "README.md"
       - ".github/workflows/medical-resident-rounds.yml"
@@ -15,6 +17,8 @@ on:
       - "medical-residents/**"
       - "scripts/build-medical-resident-rounds.py"
       - "tests/test_medical_resident_rounds.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
       - "sitemap.xml"
       - "README.md"
       - ".github/workflows/medical-resident-rounds.yml"
@@ -49,8 +53,12 @@ jobs:
           patterns = {
               "private key": r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
               "generic api key": r"(?i)(?:api[_-]?key|token|password)\s*[:=]\s*['\"][A-Za-z0-9_\-]{16,}",
-              "patient example": r"(?i)(?:patient|mrn)\s*(?:name|number)?\s*[:=]\s*[A-Z][a-z]+",
+              "patient or mrn example": r"(?i)(?:patient\s*(?:name)?|mrn\s*(?:number)?)\s*[:=]\s*[A-Za-z0-9][A-Za-z0-9_-]*",
           }
+          phi_probe = patterns["patient or mrn example"]
+          for sample in ("Patient: John", "MRN: 123456", "MRN number=A1B2C3"):
+              if not re.search(phi_probe, sample):
+                  raise SystemExit(f"ROUNDS PHI scan probe failed: {sample}")
           hits = [name for name, pattern in patterns.items() if re.search(pattern, text)]
           if hits:
               raise SystemExit("ROUNDS public-safety scan failed: " + ", ".join(hits))

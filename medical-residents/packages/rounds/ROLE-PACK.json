@@ -47,10 +47,10 @@
   "schema_version": "1.0",
   "source_files": [
     {
-      "bytes": 176867,
+      "bytes": 176831,
       "packaged_path": "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Hermes-Program.md",
-      "source_sha256": "da5a9a90271bf54e2769ce79e37340d8e2624b43fe64b843929e295b384918a5",
-      "transformation": "replaced the supplied Markdown trailing-space hard breaks with explicit <br> tags for equivalent rendering and a whitespace-clean repository without changing text or order",
+      "source_sha256": "33a8e8dbd963bb21d21582d520f3d98c161ed7b900a9cdfa7a13df1039da365c",
+      "transformation": "removed unintended four-space indentation from release-assurance paragraphs, headings, and the first power-inventory row, and replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
       "upstream_sha256": "63524f871de3a28842d04e936b7bce7bd2b3a76724f08222179a7a8c7365d35e"
     },
     {

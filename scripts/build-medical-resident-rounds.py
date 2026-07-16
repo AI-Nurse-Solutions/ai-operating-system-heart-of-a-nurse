@@ -24,13 +24,13 @@ ZIP_PREFIX = "ROUNDS-Medical-Resident-Complete-Edition"
 FIXED_ZIP_TIME = (2026, 7, 16, 0, 0, 0)
 
 SOURCE_DIGESTS = {
-    "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Hermes-Program.md": "da5a9a90271bf54e2769ce79e37340d8e2624b43fe64b843929e295b384918a5",
+    "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Hermes-Program.md": "33a8e8dbd963bb21d21582d520f3d98c161ed7b900a9cdfa7a13df1039da365c",
     "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-Guide.md": "bff68f996a605dc71c92609b6e20d4d5e1a1a95a24b92c84c3dfad7f746bc0f9",
     "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-Guide.docx": "a0c4483ca3b51d0597db52b8c32c5dcc93e9916ae2374277b1962f1832f50d4b",
 }
 WRAPPER_DIGESTS = {
     "00-READ-FIRST.md": "45cae20cc87a1dac6674b07a897612180f4010c6a98e1f32648d5fda67db2de9",
-    "ROLE-PACK.json": "fc3474c7be2bde1c58787697132b3fb3f6f0da50fee0673c323a3eac1e26d9cd",
+    "ROLE-PACK.json": "a6406228f83365c91c9f9b50303b08993c2f393bc78d3b85d2e95b412a300f85",
 }
 EXPECTED_FILES = set(SOURCE_DIGESTS) | set(WRAPPER_DIGESTS) | {"PACKAGE-CHECKSUMS.sha256"}
 
@@ -95,6 +95,8 @@ def load_manifest() -> dict:
         raise ValueError("ROUNDS upstream program provenance changed")
     if "trailing-space hard breaks" not in program.get("transformation", ""):
         raise ValueError("ROUNDS program transformation record missing")
+    if "four-space indentation" not in program.get("transformation", ""):
+        raise ValueError("ROUNDS program indentation normalization record missing")
     guide = next(item for item in manifest["source_files"] if item["packaged_path"].endswith("Setup-Guide.md"))
     if guide.get("upstream_sha256") != "5afbd0e56253167d6fe4247aaa081b520d648a232af98e212c0f2a355d2e4ead":
         raise ValueError("ROUNDS upstream Markdown provenance changed")
@@ -161,6 +163,7 @@ def build() -> dict:
         for name in sorted(EXPECTED_FILES):
             path = PACKAGE / name
             info = zipfile.ZipInfo(f"{ZIP_PREFIX}/{name}", FIXED_ZIP_TIME)
+            info.create_system = 3
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)

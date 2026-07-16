@@ -40,7 +40,7 @@ class RoundsMedicalResidentTests(unittest.TestCase):
     def test_required_artifacts_and_source_provenance(self):
         records = {item["packaged_path"]: item for item in self.manifest["source_files"]}
         expected = {
-            PROGRAM.name: "da5a9a90271bf54e2769ce79e37340d8e2624b43fe64b843929e295b384918a5",
+            PROGRAM.name: "33a8e8dbd963bb21d21582d520f3d98c161ed7b900a9cdfa7a13df1039da365c",
             GUIDE.name: "bff68f996a605dc71c92609b6e20d4d5e1a1a95a24b92c84c3dfad7f746bc0f9",
             DOCX.name: "a0c4483ca3b51d0597db52b8c32c5dcc93e9916ae2374277b1962f1832f50d4b",
         }
@@ -56,7 +56,9 @@ class RoundsMedicalResidentTests(unittest.TestCase):
             "63524f871de3a28842d04e936b7bce7bd2b3a76724f08222179a7a8c7365d35e",
         )
         self.assertIn("trailing-space hard breaks", program_record["transformation"])
+        self.assertIn("four-space indentation", program_record["transformation"])
         self.assertFalse(any(line.endswith(" ") for line in self.program.splitlines()))
+        self.assertNotRegex(self.program, r"(?m)^    (?:##|\|)")
 
     def test_markdown_normalization_is_renderable_and_provenanced(self):
         record = next(item for item in self.manifest["source_files"] if item["packaged_path"] == GUIDE.name)
@@ -210,6 +212,36 @@ class RoundsMedicalResidentTests(unittest.TestCase):
             self.assertIn(phrase, page)
         self.assertIn('href="downloads/medical-resident-rounds-complete-edition.zip"', page)
 
+    def test_homepage_embeds_resident_short_below_all_nurse_videos(self):
+        page = (ROOT / "index.html").read_text(encoding="utf-8")
+        video_region = page.split("<!-- ============ HOMEPAGE SHORT", 1)[1].split(
+            "<!-- ============ ROLE CARDS", 1
+        )[0]
+        ordered_ids = [
+            "79xHeOuH_1k",
+            "M-dIPB-pSp0",
+            "8FvTTp-sZVk",
+            "W1eOXb-l2EI",
+            "ZE9pg_vnL8g",
+            "InXb8EN9Hcs",
+        ]
+        positions = [video_region.index(video_id) for video_id in ordered_ids]
+        self.assertEqual(positions, sorted(positions))
+        self.assertEqual(video_region.count("InXb8EN9Hcs"), 1)
+        self.assertIn("Adjacent clinical lane · Medical residents", video_region)
+        self.assertIn("Now everyone in the hospital has an AI OS", video_region)
+        self.assertIn("For Medical Residents: ROUNDS", video_region)
+        self.assertIn('class="home-resident-video"', video_region)
+        self.assertIn('class="home-short-frame"', video_region.split("InXb8EN9Hcs", 1)[0])
+        self.assertIn("https://www.youtube-nocookie.com/embed/InXb8EN9Hcs", video_region)
+        self.assertIn('loading="lazy"', video_region)
+        self.assertIn('referrerpolicy="strict-origin-when-cross-origin"', video_region)
+        self.assertIn("allowfullscreen", video_region)
+        self.assertIn('href="medical-residents/"', video_region)
+        css = (ROOT / "assets" / "nurse-ai.css").read_text(encoding="utf-8")
+        self.assertIn(".home-resident-video", css)
+        self.assertIn("aspect-ratio: 9 / 16", css)
+
     def test_public_manifest_checksum_and_zip_bytes(self):
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
         record = public["packages"][0]
@@ -224,6 +256,10 @@ class RoundsMedicalResidentTests(unittest.TestCase):
             expected = {ZIP_PREFIX + path.name for path in PACKAGE.iterdir() if path.is_file()}
             self.assertEqual(set(archive.namelist()), expected)
             self.assertIsNone(archive.testzip())
+            for info in archive.infolist():
+                self.assertEqual(info.create_system, 3)
+                self.assertEqual(info.date_time, (2026, 7, 16, 0, 0, 0))
+                self.assertEqual(info.external_attr >> 16, 0o100644)
             for path in PACKAGE.iterdir():
                 if path.is_file():
                     self.assertEqual(archive.read(ZIP_PREFIX + path.name), path.read_bytes())

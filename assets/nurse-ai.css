@@ -366,6 +366,20 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
   background: var(--navy-900);
 }
 .home-role-video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.home-resident-video {
+  max-width: 720px;
+  margin: 3rem auto 0;
+  padding: 1.4rem;
+  border: 2px solid var(--teal-500);
+  border-radius: calc(var(--radius) + 4px);
+  background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(221,245,241,.9));
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+.home-resident-video h3 { margin: .25rem 0 .45rem; }
+.home-resident-video > p:not(.eyebrow):not(.cta-line) { margin: 0; color: var(--ink-600); }
+.home-resident-video .home-short-frame { margin-top: 1.15rem; }
+.home-resident-video .cta-line { margin: 1rem 0 0; }
 
 /* ---------- Offer table ---------- */
 .offer-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }

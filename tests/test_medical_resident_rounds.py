@@ -224,6 +224,7 @@ class RoundsMedicalResidentTests(unittest.TestCase):
             "W1eOXb-l2EI",
             "ZE9pg_vnL8g",
             "InXb8EN9Hcs",
+            "MKKx9Ie6GmY",
         ]
         positions = [video_region.index(video_id) for video_id in ordered_ids]
         self.assertEqual(positions, sorted(positions))
@@ -238,8 +239,18 @@ class RoundsMedicalResidentTests(unittest.TestCase):
         self.assertIn('referrerpolicy="strict-origin-when-cross-origin"', video_region)
         self.assertIn("allowfullscreen", video_region)
         self.assertIn('href="medical-residents/"', video_region)
+        self.assertEqual(video_region.count("MKKx9Ie6GmY"), 1)
+        self.assertIn("Hospital AI OS story · Respiratory therapists", video_region)
+        self.assertIn("For Respiratory Therapists", video_region)
+        self.assertIn('class="home-rt-video"', video_region)
+        self.assertIn("https://www.youtube-nocookie.com/embed/MKKx9Ie6GmY", video_region)
+        rt_region = video_region.split('class="home-rt-video"', 1)[1]
+        self.assertIn('loading="lazy"', rt_region)
+        self.assertIn('referrerpolicy="strict-origin-when-cross-origin"', rt_region)
+        self.assertIn("allowfullscreen", rt_region)
         css = (ROOT / "assets" / "nurse-ai.css").read_text(encoding="utf-8")
         self.assertIn(".home-resident-video", css)
+        self.assertIn(".home-rt-video", css)
         self.assertIn("aspect-ratio: 9 / 16", css)
 
     def test_public_manifest_checksum_and_zip_bytes(self):

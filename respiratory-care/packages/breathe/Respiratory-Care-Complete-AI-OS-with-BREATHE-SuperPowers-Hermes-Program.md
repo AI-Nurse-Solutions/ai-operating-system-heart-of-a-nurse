@@ -202,7 +202,7 @@ The route and title do not confer a license. The installer's Activation Card mus
 | Educator, preceptor, quality, lead or manager hat | All 24 visible and inactive | Hat-specific teaching, quality or planning only; the hat does not grant clinical, personnel, research or agent authority |
 | Unknown, stale, expired or conflicting status | All 24 visible and inactive | Preview unavailable for consequential powers; ask questions and route to the named human authority |
 
-Powers 22–24 and all suggested agents remain `PERM-P0 Disabled` for every role until separately chartered, tested and approved. A catalog entry never becomes a capability because it is visible.
+Powers 22–24 remain `Available Inactive`, and all associated suggested agents remain `PERM-P0 Disabled`, for every role until separately chartered, tested and approved. A catalog entry never becomes a capability because it is visible.
 
 <!-- END EMBEDDED COMPONENT: core/00-Standalone-Respiratory-Care-Lane-and-Human-Standard.md -->
 
@@ -819,7 +819,7 @@ Every power installs `Available Inactive`. Activation is optional, preview-first
 
 **Operating sequence:** map agent-to-agent and agent-to-human transfers; intersect permissions; prevent recursion; quarantine external instructions; require independent sources and human resolution.
 
-**Power-specific output:** Multi-Agent Sequence Map, permission intersections, device boundary, review order, failure paths, and termination receipt.
+**Power-specific output:** completed `TPL-28` Multi-Agent Sequence Map with agent sequence and dependencies, permission intersections, transfer contracts, disagreement resolution, device boundary, named human review order, failure and containment paths, and termination evidence.
 
 **Safe exit criterion:** no recursive delegation, hidden subagent, device or alarm access, clinical authority, autonomous contact, agent consensus as truth, or verifier-agent approval.
 
@@ -920,7 +920,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Shift Readiness Card, Top Three, generic readiness checklist, protected-life item, and escalation Plan B; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** the respiratory care professional confirms feasibility and the official charge, lead, manager, or clinical team retains assignment and care authority.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-02 — Workload Reality, Delay Risk & Human Escalation
 
@@ -931,7 +931,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Workload Reality Map, evidence questions, burden and delay risks, and human escalation brief; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** an authorized operational and clinical human reviews priorities; the AI never makes assignments, defers ordered care, or declares staffing safe.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-03 — Break, Recovery, Health-Care Time & Safe Transport
 
@@ -942,18 +942,18 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Capacity Shield, break and recovery plan, safe-transport options, and human-support route; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** the professional chooses a human route; the OS makes no fitness, impairment, employment, or driving determination.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-04 — True North, Family, Finances & Ninety-Day Direction
 
 **Linked assets:** `PWR-04` Mission, Family, Finances & Future Compass; `TPL-27` Whole-Life Capacity, Family, Finance & Minimum-Mode Plan; `whole_life_private`.<br>
 **Trigger and intended benefit:** Connect respiratory-care identity to family, finances, education, health, joy, service, leadership, and a life beyond the next shift.<br>
-**Allowed inputs:** private mission and values; nonsecret financial categories; family and caregiving needs; education and career interests; time horizon; chosen privacy level. Private mode accepts only nonsensitive professional-owned information, public sources and clearly synthetic material; the role-to-power entitlement gate still applies.<br>
-**Run:** 1) verify role entitlement and SCOPE; 2) declare Private synthetic/generic or exact approved partition; 3) translate values into bounded goals, decisions, buffers, mentoring questions, and review dates without storing account credentials or employer analytics; 4) add CIRCLE for coordination or ORBIT for a named agent; 5) preview the linked template; 6) wait for the named human gate.<br>
+**Allowed inputs:** private mission and values; nonsecret financial categories; family and caregiving needs; education and career interests; time horizon; chosen privacy level. Whole-life inputs are accepted only in `whole_life_private` within a personally controlled isolated store; institution-managed BREATHE Private mode rejects them. Other Private mode inputs remain limited to nonsensitive professional-owned information, public sources and clearly synthetic material; the role-to-power entitlement gate still applies.<br>
+**Run:** 1) verify role entitlement and SCOPE; 2) prove a personally controlled isolated store and route whole-life inputs only to `whole_life_private`, or reject them in institution-managed BREATHE Private mode; 3) translate values into bounded goals, decisions, buffers, mentoring questions, and review dates without storing account credentials or employer analytics; 4) add CIRCLE for coordination or ORBIT for a named agent; 5) preview the linked template; 6) wait for the named human gate.<br>
 **Output contract:** private True North, financial organization map, family logistics plan, and ninety-day direction; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
-**Human gate:** the professional controls edit, export, sharing, pause, and deletion; private whole-life data never enters employer or competency analytics by default.<br>
+**Human gate:** the professional verifies the personally controlled isolated store and controls edit, export, sharing, pause and deletion; institution-managed BREATHE rejects private whole-life data, which never enters employer or competency analytics.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-05 — Evidence, Guideline, Policy & Manufacturer Source Brief
 
@@ -964,7 +964,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Evidence & Guideline Brief with provenance, limits, local-verification queue, and expiry; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** a qualified human applies current orders, protocols, policies, manufacturer instructions, and patient context; no autonomous recommendation changes care.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-06 — Synthetic ABG, Acid–Base & Gas-Exchange Deliberate Practice
 
@@ -975,7 +975,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Synthetic Gas-Exchange Learning Sheet, calculation trail, uncertainty check, reflection, and debrief prompts; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** a qualified educator or clinician reviews learning; no real result, diagnosis, ventilator change, oxygen target, or patient action is produced.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-07 — Synthetic Respiratory Assessment, Trend & Bias Rehearsal
 
@@ -986,7 +986,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Synthetic Assessment Map, alternative explanations, bias check, missing-data list, and human escalation rehearsal; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** the activity remains educational; no diagnosis, triage, patient monitoring, treatment selection, or real-care direction is created.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-08 — SCOPE Role, Credential, Order, Protocol & Permission Check
 
@@ -997,7 +997,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Scope & Order Boundary Card, source ledger, unknowns, and decision-owner queue; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** an authorized human resolves uncertainty; the OS never expands scope, credential, competency, medical direction, or protocol authority.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-09 — Synthetic Ventilator Mode, Waveform & Alarm Learning
 
@@ -1008,7 +1008,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Synthetic Ventilator Learning Worksheet, source map, alarm reasoning tree, and debrief prompts; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** no connection to a ventilator, alarm system, monitor, EHR, or patient; no setting, mode, alarm-limit, or treatment recommendation for live care.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-10 — Oxygen, Aerosol, Humidification & Device Education Comparison
 
@@ -1019,7 +1019,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Device Comparison Brief, generic readiness and teaching checklist, source and policy queue; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** only an authorized prescriber or protocol, plus humans acting within verified local scope and policy, determine patient-specific device, medication, flow, dose, target, and response; the official record remains authoritative.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-11 — Generic Equipment, Circuit, Interface, Supply & Backup Readiness
 
@@ -1030,7 +1030,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Generic Equipment Readiness Map, owner matrix, backup path, and discrepancy escalation card; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** authorized clinical, supply, infection prevention, and biomedical teams verify readiness in official systems; the OS never certifies equipment.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-12 — Synthetic Transport, Procedure & Equipment-Failure Rehearsal
 
@@ -1041,7 +1041,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Synthetic Transport or Procedure Readiness Rehearsal, role map, equipment questions, contingency card, and debrief; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** authorized clinicians make all live transport, procedure, airway, monitoring, equipment, and readiness decisions through official workflows.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-13 — CIRCLE Respiratory Care-Orchestration Map
 
@@ -1052,7 +1052,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Respiratory Care Orchestration Map, ownership and dependency view, closed-loop queue, and transition card; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** the official clinical team and systems retain care authority and responsibility; the map is never a patient list, task manager, shadow chart, order, or handoff.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-14 — Synthetic Airway, Code, Rapid Response & Escalation Rehearsal
 
@@ -1063,7 +1063,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Synthetic Acute Response Rehearsal, communication script, role and equipment questions, omissions check, and human debrief; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** no real alert, page, triage, airway procedure, drug, device action, treatment, or emergency direction is initiated by the OS.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-15 — Rounds, Consult, Recommendation & Closed-Loop Preparation
 
@@ -1074,7 +1074,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Rounds or Consult Preparation Brief, role map, check-back prompts, and human-decision queue; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** the respiratory professional communicates through the official channel and qualified humans decide; AI transmission is never acceptance or responsibility transfer.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-16 — Synthetic Liberation, NIV, Tracheostomy & Transition Reliability
 
@@ -1085,7 +1085,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Synthetic Transition Reliability Map, human-owner matrix, barrier and contingency prompts, and debrief; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** authorized clinicians determine weaning, liberation, NIV, tracheostomy, decannulation, disposition, or follow-up; the OS makes no readiness decision.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-17 — Patient, Family, Caregiver Education & Teach-Back Rehearsal
 
@@ -1096,7 +1096,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Education Rehearsal Plan, teach-back prompts, accessibility and interpreter plan, source list, and review queue; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** a qualified clinician personalizes and delivers patient-specific education; the OS does not obtain consent, verify competence, or replace interpreter and accessibility services.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-18 — Preceptor, Competency, Simulation & Feedback Development
 
@@ -1107,7 +1107,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Preceptor or Simulation Plan, deliberate-practice steps, feedback prompts, and human evaluation queue; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** authorized educators and leaders determine validation, competency, remediation, assignment eligibility, and personnel consequences; no hidden scoring.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-19 — Quality, Safety, Infection Prevention & PDSA Project
 
@@ -1118,7 +1118,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Quality Charter, process map, PDSA plan, measure dictionary, equity and burden review, and sponsor queue; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** authorized humans decide QI versus research, reportability, cause, policy, and clinical change; no event detail or patient data enters Private mode.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-20 — Feedback, Conflict, Safety Concern & Advocacy Preparation
 
@@ -1129,7 +1129,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Conversation Brief, feedback plan, safety or advocacy route map, and follow-up date; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** urgent safety routes go directly to authorized humans; the OS makes no legal, HR, retaliation, fitness, blame, or disciplinary determination.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-21 — Credential, Specialty, Career, Research & Leadership Growth
 
@@ -1140,29 +1140,29 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Credential Radar, specialty and career map, evidence portfolio, mentoring questions, and ninety-day plan; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** official boards, employers, educators, investigators, and credentialing bodies verify status and decisions; the OS never certifies, scores, authors, or fabricates achievement.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-22 — ORBIT Agent Charter, Tool, Permission & Data Registry
 
 **Linked assets:** `PWR-22` AI Agent Charter, Tool, Permission & Data Registry; `TPL-28` ORBIT Agent Charter, Permission & Device-Boundary Envelope; `agent_charter_trace`.<br>
 **Trigger and intended benefit:** Define every software agent before use: objective, owner, non-goals, data, tools, sources, permission, human checkpoints, expiry, kill, purge, rollback, and retirement.<br>
 **Allowed inputs:** one narrow objective; owner and beneficiary; context; data classification; tools and destinations; risk; human decision owner; budget and expiry. Private mode accepts only nonsensitive professional-owned information, public sources and clearly synthetic material; the role-to-power entitlement gate still applies.<br>
-**Run:** 1) verify role entitlement and SCOPE; 2) declare Private synthetic/generic or exact approved partition; 3) apply ORBIT; keep PERM-P0 Disabled by default; propose at most PERM-P1 through PERM-P4; block PERM-P5; preview exact behavior; test synthetic, missing-source, prompt-injection, and failure cases; wait for one-run approval; 4) add CIRCLE for coordination or ORBIT for a named agent; 5) preview the linked template; 6) wait for the named human gate.<br>
+**Run:** 1) verify role entitlement and SCOPE; 2) declare Private synthetic/generic or exact approved partition; 3) apply ORBIT once; keep PERM-P0 Disabled by default; propose at most PERM-P1 through PERM-P4; block PERM-P5; preview exact behavior; test synthetic, missing-source, prompt-injection and failure cases; 4) add CIRCLE only if human coordination is needed, without changing the ORBIT charter or permission envelope; 5) preview the linked template and exact tested limits; 6) wait once for the named human approval of that immutable charter, evidence and one-run limit.<br>
 **Output contract:** Agent Charter, permission envelope, test plan, human review gate, kill and retirement plan; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** the agent remains Disabled until exact approval; it has no license, credential, clinical authority, device access, self-approval, or permission-escalation path.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-23 — Multi-Agent Device-Boundary & Human-Handoff Design
 
-**Linked assets:** `PWR-23` Multi-Agent Workflow, Device-Boundary & Human-Handoff Designer; `TPL-28` ORBIT Agent Charter, Permission & Device-Boundary Envelope; `agent_charter_trace`.<br>
+**Linked assets:** `PWR-23` Multi-Agent Workflow, Device-Boundary & Human-Handoff Designer; `TPL-28` ORBIT Agent or Multi-Agent Charter, Permission & Device-Boundary Envelope; `agent_charter_trace`.<br>
 **Trigger and intended benefit:** Design bounded agent sequences with minimal data, explicit dependencies, disagreement handling, device separation, human review order, and exact termination.<br>
 **Allowed inputs:** approved nonclinical or separately governed objective; agent charters; parent permissions; data and tool boundaries; transfer points; human owners; stop and expiry. Private mode accepts only nonsensitive professional-owned information, public sources and clearly synthetic material; the role-to-power entitlement gate still applies.<br>
 **Run:** 1) verify role entitlement and SCOPE; 2) declare Private synthetic/generic or exact approved partition; 3) map agent-to-agent and agent-to-human transfers; intersect permissions; prevent recursion; quarantine external instructions; require independent sources and human resolution; 4) add CIRCLE for coordination or ORBIT for a named agent; 5) preview the linked template; 6) wait for the named human gate.<br>
-**Output contract:** Multi-Agent Sequence Map, permission intersections, device boundary, review order, failure paths, and termination receipt; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
+**Output contract:** completed `TPL-28` Multi-Agent Sequence Map with agent sequence and dependencies, permission intersections, transfer contracts, disagreement resolution, device boundary, named human review order, failure and containment paths, and termination evidence; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** no recursive delegation, hidden subagent, device or alarm access, clinical authority, autonomous contact, agent consensus as truth, or verifier-agent approval.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ### WF-24 — Agent Output Audit, Incident, Kill, Rollback & Retirement
 
@@ -1173,7 +1173,7 @@ Private mode displays synthetic or process-only care and equipment panels. An in
 **Output contract:** Agent Audit, accept-or-reject receipt, incident record, containment status, rollback and purge evidence, and retirement receipt; include facts, sources, uncertainty, human owner, action state, official destination if any, expiry and deletion.<br>
 **Human gate:** a named human owns every decision and incident; the agent cannot conceal, restart, widen scope, retain prohibited data, or authorize release.<br>
 **Stop and fallback:** stop on missing or stale authority, prohibited data, urgent care, real device data, source conflict, role mismatch, failed accessibility, agent drift or unavailable human owner; use the official human process and last safe state.<br>
-**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
+**Completion receipt:** record workflow ID, power/template/schema IDs, owner, context, inputs accepted or rejected, sources, SCOPE result, human decision, named approver, approval scope, approval timestamp, receipt ID, approved artifact/version, output state, no-action confirmation, expiry, correction, rollback, purge and Retain–Revise–Pause–Remove choice.
 
 ## Suggested software agents — all PERM-P0 Disabled
 
@@ -1258,7 +1258,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-01`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1278,7 +1278,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-02`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1299,7 +1299,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-03`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1319,7 +1319,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-04`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1339,7 +1339,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-05`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1359,7 +1359,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-06`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1379,7 +1379,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-07`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1399,7 +1399,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-08`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1419,7 +1419,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-09`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1439,7 +1439,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-10`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1459,7 +1459,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-11`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1479,7 +1479,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-12`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1499,7 +1499,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-13`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1519,7 +1519,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-14`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1539,7 +1539,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-15`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1559,7 +1559,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-16`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1579,7 +1579,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-17`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1599,7 +1599,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-18`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1619,7 +1619,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-19`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1639,7 +1639,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-20`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1659,7 +1659,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-21`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1679,7 +1679,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-22`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1700,7 +1700,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-23`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1720,7 +1720,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-24`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1740,7 +1740,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-25`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1760,7 +1760,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-26`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1780,7 +1780,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-27`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1796,11 +1796,11 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 **Completion gate:** Template is unavailable in institution-managed contexts and never enters employer analytics.<br>
 **Boundary:** Private mode accepts no PHI, live-care, EHR, patient-list, device, alarm, waveform, order, medication, event, staff-evaluation or restricted institutional content. The template is not an order, chart, handoff, patient task, device instruction, credential, competency decision or approval.
 
-## Template 28 — ORBIT Agent Charter, Permission & Device-Boundary Envelope
+## Template 28 — ORBIT Agent or Multi-Agent Charter, Permission & Device-Boundary Envelope
 
 **Stable ID:** `TPL-28`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1811,16 +1811,23 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 - **T — human transfer/release or terminate, kill, rollback, purge and retirement:** `<enter or mark Unknown>`
 - **Install state PERM-P0 Disabled:** `<enter or mark Unknown>`
 - **Proposed maximum permission and exact justification:** `<enter or mark Unknown>`
+- **Agent sequence, dependencies and nonrecursive termination order:** `<enter or mark Unknown>`
+- **Permission intersection at every transfer:** `<enter or mark Unknown>`
+- **Agent-to-agent and agent-to-human transfer contracts:** `<enter or mark Unknown>`
+- **Disagreement, independent-source and no-consensus-as-truth resolution:** `<enter or mark Unknown>`
+- **Named human review order and checkpoints:** `<enter or mark Unknown>`
+- **Failure, containment and manual-fallback paths:** `<enter or mark Unknown>`
+- **Termination, kill, rollback, purge and retirement evidence:** `<enter or mark Unknown>`
 - **Manual fallback and incident route:** `<enter or mark Unknown>`
 
-**Completion gate:** Agent remains PERM-P0 until the named human approves one tested bounded run.<br>
+**Completion gate:** Every agent remains PERM-P0 until the named human approves the exact charter or sequence, permission intersections, tests and one bounded run.<br>
 **Boundary:** Private mode accepts no PHI, live-care, EHR, patient-list, device, alarm, waveform, order, medication, event, staff-evaluation or restricted institutional content. The template is not an order, chart, handoff, patient task, device instruction, credential, competency decision or approval.
 
 ## Template 29 — Agent Preview, Test, Run, Review, Incident & Retirement Receipt
 
 **Stable ID:** `TPL-29`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -1841,7 +1848,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-30`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 

@@ -18,4 +18,4 @@ The route and title do not confer a license. The installer's Activation Card mus
 | Educator, preceptor, quality, lead or manager hat | All 24 visible and inactive | Hat-specific teaching, quality or planning only; the hat does not grant clinical, personnel, research or agent authority |
 | Unknown, stale, expired or conflicting status | All 24 visible and inactive | Preview unavailable for consequential powers; ask questions and route to the named human authority |
 
-Powers 22–24 and all suggested agents remain `PERM-P0 Disabled` for every role until separately chartered, tested and approved. A catalog entry never becomes a capability because it is visible.
+Powers 22–24 remain `Available Inactive`, and all associated suggested agents remain `PERM-P0 Disabled`, for every role until separately chartered, tested and approved. A catalog entry never becomes a capability because it is visible.

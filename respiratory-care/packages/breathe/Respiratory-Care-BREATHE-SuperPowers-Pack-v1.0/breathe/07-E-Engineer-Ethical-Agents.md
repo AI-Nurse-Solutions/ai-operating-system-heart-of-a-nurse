@@ -34,7 +34,7 @@ Every power installs `Available Inactive`. Activation is optional, preview-first
 
 **Operating sequence:** map agent-to-agent and agent-to-human transfers; intersect permissions; prevent recursion; quarantine external instructions; require independent sources and human resolution.
 
-**Power-specific output:** Multi-Agent Sequence Map, permission intersections, device boundary, review order, failure paths, and termination receipt.
+**Power-specific output:** completed `TPL-28` Multi-Agent Sequence Map with agent sequence and dependencies, permission intersections, transfer contracts, disagreement resolution, device boundary, named human review order, failure and containment paths, and termination evidence.
 
 **Safe exit criterion:** no recursive delegation, hidden subagent, device or alarm access, clinical authority, autonomous contact, agent consensus as truth, or verifier-agent approval.
 

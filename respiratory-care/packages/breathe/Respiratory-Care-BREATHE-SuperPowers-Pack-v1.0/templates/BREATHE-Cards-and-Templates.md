@@ -6,7 +6,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-01`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -26,7 +26,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-02`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -47,7 +47,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-03`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -67,7 +67,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-04`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -87,7 +87,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-05`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -107,7 +107,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-06`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -127,7 +127,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-07`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -147,7 +147,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-08`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -167,7 +167,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-09`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -187,7 +187,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-10`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -207,7 +207,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-11`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -227,7 +227,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-12`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -247,7 +247,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-13`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -267,7 +267,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-14`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -287,7 +287,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-15`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -307,7 +307,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-16`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -327,7 +327,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-17`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -347,7 +347,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-18`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -367,7 +367,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-19`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -387,7 +387,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-20`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -407,7 +407,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-21`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -427,7 +427,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-22`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -448,7 +448,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-23`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -468,7 +468,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-24`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -488,7 +488,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-25`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -508,7 +508,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-26`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -528,7 +528,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-27`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -544,11 +544,11 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 **Completion gate:** Template is unavailable in institution-managed contexts and never enters employer analytics.<br>
 **Boundary:** Private mode accepts no PHI, live-care, EHR, patient-list, device, alarm, waveform, order, medication, event, staff-evaluation or restricted institutional content. The template is not an order, chart, handoff, patient task, device instruction, credential, competency decision or approval.
 
-## Template 28 — ORBIT Agent Charter, Permission & Device-Boundary Envelope
+## Template 28 — ORBIT Agent or Multi-Agent Charter, Permission & Device-Boundary Envelope
 
 **Stable ID:** `TPL-28`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -559,16 +559,23 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 - **T — human transfer/release or terminate, kill, rollback, purge and retirement:** `<enter or mark Unknown>`
 - **Install state PERM-P0 Disabled:** `<enter or mark Unknown>`
 - **Proposed maximum permission and exact justification:** `<enter or mark Unknown>`
+- **Agent sequence, dependencies and nonrecursive termination order:** `<enter or mark Unknown>`
+- **Permission intersection at every transfer:** `<enter or mark Unknown>`
+- **Agent-to-agent and agent-to-human transfer contracts:** `<enter or mark Unknown>`
+- **Disagreement, independent-source and no-consensus-as-truth resolution:** `<enter or mark Unknown>`
+- **Named human review order and checkpoints:** `<enter or mark Unknown>`
+- **Failure, containment and manual-fallback paths:** `<enter or mark Unknown>`
+- **Termination, kill, rollback, purge and retirement evidence:** `<enter or mark Unknown>`
 - **Manual fallback and incident route:** `<enter or mark Unknown>`
 
-**Completion gate:** Agent remains PERM-P0 until the named human approves one tested bounded run.<br>
+**Completion gate:** Every agent remains PERM-P0 until the named human approves the exact charter or sequence, permission intersections, tests and one bounded run.<br>
 **Boundary:** Private mode accepts no PHI, live-care, EHR, patient-list, device, alarm, waveform, order, medication, event, staff-evaluation or restricted institutional content. The template is not an order, chart, handoff, patient task, device instruction, credential, competency decision or approval.
 
 ## Template 29 — Agent Preview, Test, Run, Review, Incident & Retirement Receipt
 
 **Stable ID:** `TPL-29`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 
@@ -589,7 +596,7 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 
 **Stable ID:** `TPL-30`
 
-**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; human owner; created/updated/expiry; retention; correction; export; deletion.
+**Common header:** owner; exact local job title; NBRC credential; state license/permit; learner status; active hat; site, setting and service; context; allowed/prohibited data; source/version; fact-versus-interpretation; human decision owner; status; created/updated/expiry; retention; correction; export; deletion.
 
 **Purpose-specific fields:**
 

@@ -54,7 +54,7 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         expected_key_sources = {
             PROGRAM.name: (
                 "63821c41bd20b34edd7245d2eb640d695b7a80b33e0586893a8387e444d813bb",
-                "3134e43460383b2a1ac05c21c6a5f98aef69c1434be5f98d077ba450ae787110",
+                "0250340ba2b1603d84c56603f7271ac6531e20cb6979bc2a0e25d62ab896406a",
             ),
             GUIDE.name: (
                 "1ff712f65a167c812b66e32cfa4d588be247617506640772da349592c2e988ff",
@@ -94,29 +94,63 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
     def test_power_workflow_template_schema_and_agent_inventories(self):
         powers = sorted({int(x) for x in re.findall(r"^## Power (\d+)\b", self.program, re.MULTILINE)})
         self.assertEqual(powers, list(range(1, 25)))
-        workflow_text = (SOURCE_PACK / "workflows" / "BREATHE-Workflows-Launch-and-Adoption-Plan.md").read_text()
+        workflow_text = (SOURCE_PACK / "workflows" / "BREATHE-Workflows-Launch-and-Adoption-Plan.md").read_text(encoding="utf-8")
         workflows = [int(x) for x in re.findall(r"^### WF-(\d{2})\b", workflow_text, re.MULTILINE)]
         self.assertEqual(workflows, list(range(1, 25)))
-        templates_text = (SOURCE_PACK / "templates" / "BREATHE-Cards-and-Templates.md").read_text()
+        templates_text = (SOURCE_PACK / "templates" / "BREATHE-Cards-and-Templates.md").read_text(encoding="utf-8")
         templates = [int(x) for x in re.findall(r"^## Template (\d+)\b", templates_text, re.MULTILINE)]
         self.assertEqual(templates, list(range(1, 31)))
-        foundation = (SOURCE_PACK / "foundation" / "Respiratory-Care-Life-Practice-and-Professional-Foundation.md").read_text()
+        foundation = (SOURCE_PACK / "foundation" / "Respiratory-Care-Life-Practice-and-Professional-Foundation.md").read_text(encoding="utf-8")
         schema_section = foundation.split("## Eighteen professional-owned record schemas", 1)[1].split("## Canonical Source Watch registry", 1)[0]
         schemas = re.findall(r"^\| `([^`]+)` \|", schema_section, re.MULTILINE)
         self.assertEqual(len(schemas), 18)
         self.assertEqual(len(set(schemas)), 18)
-        agents = re.findall(r"^- \*\*AGT-(\d{2}):\*\*.+PERM-P0 Disabled", workflow_text, re.MULTILINE)
+        agents = re.findall(r"^- \*\*AGT-(\d{2}):.*PERM-P0 Disabled", workflow_text, re.MULTILINE)
         self.assertEqual(agents, [f"{i:02d}" for i in range(1, 11)])
 
+    def test_reviewed_data_approval_and_agent_contracts_are_representable(self):
+        workflow = (SOURCE_PACK / "workflows" / "BREATHE-Workflows-Launch-and-Adoption-Plan.md").read_text(encoding="utf-8")
+        templates = (SOURCE_PACK / "templates" / "BREATHE-Cards-and-Templates.md").read_text(encoding="utf-8")
+        agent_powers = (SOURCE_PACK / "breathe" / "07-E-Engineer-Ethical-Agents.md").read_text(encoding="utf-8")
+        lane = (SOURCE_PACK / "core" / "00-Standalone-Respiratory-Care-Lane-and-Human-Standard.md").read_text(encoding="utf-8")
+
+        headers = re.findall(r"^\*\*Common header:\*\* (.+)$", templates, re.MULTILINE)
+        self.assertEqual(len(headers), 30)
+        for header in headers:
+            for field in ("fact-versus-interpretation", "human decision owner", "status"):
+                self.assertIn(field, header)
+
+        receipts = re.findall(r"^\*\*Completion receipt:\*\* (.+)$", workflow, re.MULTILINE)
+        self.assertEqual(len(receipts), 24)
+        for receipt in receipts:
+            for field in ("named approver", "approval scope", "approval timestamp", "receipt ID", "approved artifact/version"):
+                self.assertIn(field, receipt)
+
+        wf04 = workflow.split("### WF-04", 1)[1].split("### WF-05", 1)[0]
+        self.assertIn("whole_life_private", wf04)
+        self.assertIn("institution-managed BREATHE Private mode rejects", wf04)
+
+        wf22 = workflow.split("### WF-22", 1)[1].split("### WF-23", 1)[0]
+        self.assertIn("apply ORBIT once", wf22)
+        self.assertIn("add CIRCLE only", wf22)
+        self.assertNotIn("or ORBIT for a named agent", wf22)
+
+        tpl28 = templates.split("## Template 28", 1)[1].split("## Template 29", 1)[0]
+        for field in ("Agent sequence", "Permission intersection", "transfer contracts", "Disagreement", "Named human review order", "Failure, containment", "Termination, kill"):
+            self.assertIn(field, tpl28)
+        self.assertIn("completed `TPL-28` Multi-Agent Sequence Map", agent_powers)
+        self.assertIn("Powers 22–24 remain `Available Inactive`", lane)
+        self.assertIn("associated suggested agents remain `PERM-P0 Disabled`", lane)
+
     def test_declared_release_checks_are_exact_unique_and_not_claimed_as_executed(self):
-        release = (SOURCE_PACK / "tests" / "BREATHE-Release-Assurance.md").read_text()
+        release = (SOURCE_PACK / "tests" / "BREATHE-Release-Assurance.md").read_text(encoding="utf-8")
         ids = re.findall(r"^- \[ \] \*\*(RA-(?:[A-R]\d{2}|INT\d{2}))\b", release, re.MULTILINE)
         self.assertEqual(len(ids), 160)
         self.assertEqual(len(set(ids)), 160)
         self.assertEqual(len([x for x in ids if not x.startswith("RA-INT")]), 144)
         self.assertEqual([x for x in ids if x.startswith("RA-INT")], [f"RA-INT{i:02d}" for i in range(1, 17)])
         self.assertIn("They do **not** prove the checks ran in a respiratory professional's environment", self.read_first)
-        self.assertIn("not evidence that all scenarios ran in a respiratory professional's environment", (BREATHE / "index.html").read_text())
+        self.assertIn("not evidence that all scenarios ran in a respiratory professional's environment", (BREATHE / "index.html").read_text(encoding="utf-8"))
 
     def test_standalone_identity_and_no_cross_population_state(self):
         self.assertEqual(self.manifest["population_lane"], "respiratory_care")
@@ -133,12 +167,12 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             "If isolation cannot be proven, installation must stop before mutation",
         ):
             self.assertIn(phrase, self.read_first)
-        nurse_manifest = json.loads((ROOT / "post-setup" / "downloads" / "manifest.json").read_text())
+        nurse_manifest = json.loads((ROOT / "post-setup" / "downloads" / "manifest.json").read_text(encoding="utf-8"))
         self.assertNotIn("BREATHE", json.dumps(nurse_manifest))
         self.assertNotIn("respiratory_care", json.dumps(nurse_manifest))
-        setup_model = (ROOT / "setup-helper" / "setup-helper-model.mjs").read_text()
+        setup_model = (ROOT / "setup-helper" / "setup-helper-model.mjs").read_text(encoding="utf-8")
         self.assertNotIn("respiratory_care", setup_model)
-        rounds_manifest = (ROOT / "medical-residents" / "packages" / "rounds" / "ROLE-PACK.json").read_text()
+        rounds_manifest = (ROOT / "medical-residents" / "packages" / "rounds" / "ROLE-PACK.json").read_text(encoding="utf-8")
         self.assertNotIn("resp_breathe", rounds_manifest)
 
     def test_preinstall_consent_and_installation_order(self):
@@ -160,7 +194,7 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         self.assertIn("Any program-byte, policy, target or card change after approval invalidates that approval", self.program)
 
     def test_emergencies_leave_breathe_instead_of_creating_a_gate_state(self):
-        templates = (SOURCE_PACK / "templates" / "BREATHE-Cards-and-Templates.md").read_text()
+        templates = (SOURCE_PACK / "templates" / "BREATHE-Cards-and-Templates.md").read_text(encoding="utf-8")
         self.assertNotIn("emergency bypass", templates)
         self.assertNotIn("emergency bypass", self.program)
         self.assertIn("An emergency is never a BREATHE gate state", templates)
@@ -305,7 +339,7 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             }
             for label, content in cases.items():
                 with self.subTest(label=label):
-                    (copied / "ledger").write_text(content)
+                    (copied / "ledger").write_text(content, encoding="utf-8")
                     with self.assertRaises(ValueError):
                         parser("ledger", {"same"})
         parser.__globals__["PACKAGE"] = PACKAGE

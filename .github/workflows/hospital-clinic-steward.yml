@@ -1,0 +1,109 @@
+name: STEWARD Governance Preview
+
+on:
+  pull_request:
+    paths:
+      - "hospital-clinic-administrators/**"
+      - "scripts/build-hospital-clinic-steward.py"
+      - "scripts/check-steward-pdf.py"
+      - "scripts/requirements-steward-pdf.txt"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_hospital_clinic_steward.py"
+      - "tests/test_medical_resident_rounds.py"
+      - "tests/test_respiratory_care_breathe.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
+      - "medical-residents/packages/rounds/ROLE-PACK.json"
+      - "respiratory-care/packages/breathe/ROLE-PACK.json"
+      - "index.html"
+      - "assets/nurse-ai.css"
+      - "sitemap.xml"
+      - "README.md"
+      - "LICENSE"
+      - ".github/workflows/hospital-clinic-steward.yml"
+  push:
+    branches: [main]
+    paths:
+      - "hospital-clinic-administrators/**"
+      - "scripts/build-hospital-clinic-steward.py"
+      - "scripts/check-steward-pdf.py"
+      - "scripts/requirements-steward-pdf.txt"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_hospital_clinic_steward.py"
+      - "tests/test_medical_resident_rounds.py"
+      - "tests/test_respiratory_care_breathe.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
+      - "medical-residents/packages/rounds/ROLE-PACK.json"
+      - "respiratory-care/packages/breathe/ROLE-PACK.json"
+      - "index.html"
+      - "assets/nurse-ai.css"
+      - "sitemap.xml"
+      - "README.md"
+      - "LICENSE"
+      - ".github/workflows/hospital-clinic-steward.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Install hash-pinned PDF checker dependency
+        run: python3 -m pip install --disable-pip-version-check --require-hashes -r scripts/requirements-steward-pdf.txt
+      - name: Rebuild committed non-executable preview bytes
+        run: |
+          python3 scripts/build-hospital-clinic-steward.py
+          git diff --exit-code
+          git ls-files --error-unmatch \
+            hospital-clinic-administrators/downloads/CHECKSUMS.sha256 \
+            hospital-clinic-administrators/downloads/manifest.json \
+            hospital-clinic-administrators/downloads/steward-governance-preview.zip \
+            hospital-clinic-administrators/preview/PACKAGE-CHECKSUMS.sha256
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Run STEWARD preview, nonclaim, and isolation tests
+        run: python3 tests/test_hospital_clinic_steward.py
+      - name: Verify tagged PDF semantics, parity, and inertness
+        run: python3 scripts/check-steward-pdf.py
+      - name: Run shared adjacent-lane regressions
+        run: |
+          python3 tests/test_medical_resident_rounds.py
+          python3 tests/test_respiratory_care_breathe.py
+      - name: Refuse accidental secrets, PHI, or realistic individual records
+        run: python3 scripts/scan-public-healthcare-artifacts.py hospital-clinic-administrators --label STEWARD-PREVIEW
+      - name: Verify preview links and Python syntax
+        run: |
+          python3 -m py_compile scripts/build-hospital-clinic-steward.py scripts/check-steward-pdf.py tests/test_hospital_clinic_steward.py
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  values=dict(attrs)
+                  for key in ("href", "src"):
+                      if values.get(key): self.links.append(values[key])
+          page=Path("hospital-clinic-administrators/index.html")
+          root=Path.cwd().resolve()
+          parser=Links(); parser.feed(page.read_text(encoding="utf-8"))
+          for link in parser.links:
+              if link.startswith(("http:", "https:", "mailto:", "tel:", "#", "data:")):
+                  continue
+              target=(page.parent / link.split("#",1)[0].split("?",1)[0]).resolve()
+              try:
+                  target.relative_to(root)
+              except ValueError:
+                  raise SystemExit(f"STEWARD preview target escapes repository: {link}")
+              if link.endswith("/") or target.is_dir(): target=target / "index.html"
+              if not target.exists(): raise SystemExit(f"Missing STEWARD preview target: {link}")
+          print("STEWARD_PREVIEW_LINKS=passed")
+          PY

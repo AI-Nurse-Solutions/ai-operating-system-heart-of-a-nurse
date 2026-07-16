@@ -1,0 +1,24 @@
+{
+  "packages": [
+    {
+      "activation_available": false,
+      "artifact_class": "non_executable_governance_preview",
+      "bytes": 429787,
+      "complete_ai_os_claim": "paused",
+      "download": "downloads/steward-governance-preview.zip",
+      "executable_or_installer_included": false,
+      "institutional_authorization": false,
+      "operational_data_authorized": false,
+      "original_source_payload_included": false,
+      "population_architecture": "one_lane_with_explicit_context_variants",
+      "population_lane_proposed": "hospital_clinic_administration",
+      "route": "/hospital-clinic-administrators/",
+      "runtime_status": "not_implemented",
+      "sha256": "8842946b9d0715421d4d5b08a7aa474c50fb879fac63965d6519ccd8fc94a4bb",
+      "version": "2026.07.16-preview.1"
+    }
+  ],
+  "purpose": "public non-executable STEWARD governance preview for hospital and clinic administration",
+  "release_posture": "doctrine_kept_installable_complete_ai_os_paused",
+  "schema_version": "1.0"
+}

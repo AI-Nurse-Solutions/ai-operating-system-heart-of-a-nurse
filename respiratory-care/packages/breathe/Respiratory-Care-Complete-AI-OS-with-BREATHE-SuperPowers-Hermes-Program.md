@@ -57,7 +57,7 @@ If the target is shared or isolation cannot be proven, stop and request a separa
 
 Ask only what is necessary: preferred display name; exact local job title; NBRC credential and official status source; state license or permit, jurisdiction and expiry; learner or education status; active role or hat; site, setting and service; verified task-specific competencies; clinical, medical, operational and emergency routes; current scope, order, protocol, policy and manufacturer source locations; Private or separately approved context; allowed/prohibited data; artifact persistence/ACL/retention choice; workload and fatigue routes; one protected-life commitment only in a personal isolated store; expected benefit and burden; stop, fallback, expiry, rollback, purge and removal.
 
-Show one combined Activation Card: identity and isolation; separately labeled title, credential, license, learner status, role and competency sources; human routes; context and data/device boundary; conversation memory session-only; proposed persistent artifacts with owner/ACL/retention/deletion; 24 powers Available Inactive; 10 agents PERM-P0 Disabled; connectors/schedules/sharing/actions Off; expected benefit and burden; accessibility; stop, fallback, expiry, rollback, purge and removal; Preview, Approve exact limits, Edit and Cancel. Wait for exact approval.
+Show one combined Activation Card: exact complete-program SHA-256 digest; identity and isolation; separately labeled title, credential, license, learner status, role and competency sources; human routes; context and data/device boundary; conversation memory session-only; proposed persistent artifacts with owner/ACL/retention/deletion; 24 powers Available Inactive; 10 agents PERM-P0 Disabled; connectors/schedules/sharing/actions Off; expected benefit and burden; accessibility; stop, fallback, expiry, rollback, purge and removal; Preview, Approve this exact digest and limits, Edit and Cancel. Wait for exact approval. Any program-byte, policy, target or card change after approval invalidates that approval and requires a new card and exact approval before mutation.
 
 ## Phase 2 — S0, foundation and S1
 
@@ -1328,11 +1328,11 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 - **O — order, protocol, owner and official source:** `<enter or mark Unknown>`
 - **P — privacy, parameters, permission, platform and device boundary:** `<enter or mark Unknown>`
 - **E — escalation, end state and expiry:** `<enter or mark Unknown>`
-- **Gate result: pass, question, block or emergency bypass:** `<enter or mark Unknown>`
+- **Gate result: pass, question or block; emergencies leave BREATHE for official procedures:** `<enter or mark Unknown>`
 - **Named human decision and timestamp:** `<enter or mark Unknown>`
 - **Official reconciliation and receipt:** `<enter or mark Unknown>`
 
-**Completion gate:** All five elements are current and consistent, or the output is blocked and routed to a human.<br>
+**Completion gate:** All five elements are current and consistent, or the output is blocked and routed to a human. An emergency is never a BREATHE gate state; stop BREATHE and use official emergency, clinical and device procedures.<br>
 **Boundary:** Private mode accepts no PHI, live-care, EHR, patient-list, device, alarm, waveform, order, medication, event, staff-evaluation or restricted institutional content. The template is not an order, chart, handoff, patient task, device instruction, credential, competency decision or approval.
 
 ## Template 5 — Shift Capacity, Top Three & Plan B Card

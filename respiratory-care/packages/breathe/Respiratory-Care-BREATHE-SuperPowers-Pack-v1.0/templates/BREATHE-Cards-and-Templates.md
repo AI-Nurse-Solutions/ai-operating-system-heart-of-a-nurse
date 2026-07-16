@@ -76,11 +76,11 @@ These are functional copyable forms, not approvals. Every template shows owner, 
 - **O — order, protocol, owner and official source:** `<enter or mark Unknown>`
 - **P — privacy, parameters, permission, platform and device boundary:** `<enter or mark Unknown>`
 - **E — escalation, end state and expiry:** `<enter or mark Unknown>`
-- **Gate result: pass, question, block or emergency bypass:** `<enter or mark Unknown>`
+- **Gate result: pass, question or block; emergencies leave BREATHE for official procedures:** `<enter or mark Unknown>`
 - **Named human decision and timestamp:** `<enter or mark Unknown>`
 - **Official reconciliation and receipt:** `<enter or mark Unknown>`
 
-**Completion gate:** All five elements are current and consistent, or the output is blocked and routed to a human.<br>
+**Completion gate:** All five elements are current and consistent, or the output is blocked and routed to a human. An emergency is never a BREATHE gate state; stop BREATHE and use official emergency, clinical and device procedures.<br>
 **Boundary:** Private mode accepts no PHI, live-care, EHR, patient-list, device, alarm, waveform, order, medication, event, staff-evaluation or restricted institutional content. The template is not an order, chart, handoff, patient task, device instruction, credential, competency decision or approval.
 
 ## Template 5 — Shift Capacity, Top Three & Plan B Card

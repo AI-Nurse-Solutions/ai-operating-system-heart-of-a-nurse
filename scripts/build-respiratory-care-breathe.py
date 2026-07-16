@@ -22,10 +22,12 @@ DOWNLOADS = ROOT / "downloads"
 ZIP_NAME = "breathe-respiratory-care-complete-edition.zip"
 ZIP_PREFIX = "BREATHE-Respiratory-Care-Complete-Edition"
 FIXED_ZIP_TIME = (2026, 7, 16, 0, 0, 0)
-SOURCE_RECORDS = {'README.md': {'bytes': 6446,
+SOURCE_RECORDS = {'README.md': {'bytes': 6744,
                'packaged_path': 'README.md',
-               'source_sha256': 'b10de0f4f3cdb6ffcb33f09a90440b92c3bd3732f905fcbd68907d3e54f4eadf',
-               'transformation': 'none; byte-for-byte copy from the supplied archive',
+               'source_sha256': 'b85901213e49c5f44be866ceb63f662d2206b6028b4f4d0f8b2f69ab5a994601',
+               'transformation': 'corrected the two supplied SHA256SUMS.txt references to the published '
+                                 'PACKAGE-CHECKSUMS.sha256 and renamed UPSTREAM-SHA256SUMS.txt paths, adding the '
+                                 'provenance-mapping instruction; all other text and order are unchanged',
                'upstream_bytes': 6446,
                'upstream_path': 'README.md',
                'upstream_sha256': 'b10de0f4f3cdb6ffcb33f09a90440b92c3bd3732f905fcbd68907d3e54f4eadf'},
@@ -190,30 +192,10 @@ SOURCE_RECORDS = {'README.md': {'bytes': 6446,
                                                                 'upstream_bytes': 4664,
                                                                 'upstream_path': 'Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/manifest.md',
                                                                 'upstream_sha256': '0faedbc17d49d71ee1097bebb8e011569ed98115253f4fc26cd050ef87f6b893'},
- 'Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/templates/BREATHE-Cards-and-Templates.md': {'bytes': 42069,
+ 'Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/templates/BREATHE-Cards-and-Templates.md': {'bytes': 42219,
                                                                                              'packaged_path': 'Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/templates/BREATHE-Cards-and-Templates.md',
-                                                                                             'source_sha256': '43d1696dbba18c7822842055e101e14e96c1323f01385a1e62b74df151c40b9e',
-                                                                                             'transformation': 'replaced '
-                                                                                                               'supplied '
-                                                                                                               'Markdown '
-                                                                                                               'trailing-space '
-                                                                                                               'hard '
-                                                                                                               'breaks '
-                                                                                                               'with '
-                                                                                                               'explicit '
-                                                                                                               '<br> '
-                                                                                                               'tags '
-                                                                                                               'for '
-                                                                                                               'semantic '
-                                                                                                               'rendering '
-                                                                                                               'and a '
-                                                                                                               'whitespace-clean '
-                                                                                                               'repository '
-                                                                                                               'without '
-                                                                                                               'changing '
-                                                                                                               'text '
-                                                                                                               'or '
-                                                                                                               'order',
+                                                                                             'source_sha256': 'ea57f6d5e628340be506f2086d3bb2f18afa73747906cc692119b1d6b0e48b15',
+                                                                                             'transformation': 'replaced supplied Markdown trailing-space hard breaks with explicit <br> tags and removed the undefined emergency-bypass gate state so emergencies leave BREATHE for official procedures; all other text and order are unchanged',
                                                                                              'upstream_bytes': 42009,
                                                                                              'upstream_path': 'Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/templates/BREATHE-Cards-and-Templates.md',
                                                                                              'upstream_sha256': 'c51891e757f190cf7bdf07d92633d1373dd798ee5df70fc86a868d5d44befa81'},
@@ -297,20 +279,10 @@ SOURCE_RECORDS = {'README.md': {'bytes': 6446,
                                                                                                                 'upstream_bytes': 2573,
                                                                                                                 'upstream_path': 'Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/workflows/Respiratory-Role-Setting-and-Situation-Recipes.md',
                                                                                                                 'upstream_sha256': '6aecee0f209c555719684aeea49439aff25ffbdec0c7b101ed176c4e438dc9f5'},
- 'Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Hermes-Program.md': {'bytes': 268407,
+ 'Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Hermes-Program.md': {'bytes': 268761,
                                                                                 'packaged_path': 'Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Hermes-Program.md',
-                                                                                'source_sha256': '5f0bb27213e8549ab5f82ea53e663cd960ea70a47594c668a465066e3458f742',
-                                                                                'transformation': 'replaced supplied '
-                                                                                                  'Markdown '
-                                                                                                  'trailing-space hard '
-                                                                                                  'breaks with '
-                                                                                                  'explicit <br> tags '
-                                                                                                  'for semantic '
-                                                                                                  'rendering and a '
-                                                                                                  'whitespace-clean '
-                                                                                                  'repository without '
-                                                                                                  'changing text or '
-                                                                                                  'order',
+                                                                                'source_sha256': '3134e43460383b2a1ac05c21c6a5f98aef69c1434be5f98d077ba450ae787110',
+                                                                                'transformation': 'replaced supplied Markdown trailing-space hard breaks with explicit <br> tags, bound Activation Card approval to the exact complete-program digest, and removed the undefined emergency-bypass gate state; all other text and order are unchanged',
                                                                                 'upstream_bytes': 267975,
                                                                                 'upstream_path': 'Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Hermes-Program.md',
                                                                                 'upstream_sha256': '63821c41bd20b34edd7245d2eb640d695b7a80b33e0586893a8387e444d813bb'},
@@ -348,7 +320,7 @@ SOURCE_RECORDS = {'README.md': {'bytes': 6446,
                              'upstream_sha256': '9a3cfe815619a97907407bfeb3744ab5ea6c8da22eca2ebffddfaf409fa63f20'}}
 WRAPPER_DIGESTS = {
     "00-READ-FIRST.md": "cfe95016b123c144d97429d27a30a2e2e602e5417c5370965f8df52a9c80e2a2",
-    "ROLE-PACK.json": "5e470be81218c3cb39b495740cee3a02da1d35703db049e600fe6613fb007178",
+    "ROLE-PACK.json": "b81eda411c9de7b0c8f8a9768c1835ebdbce8c3685cb6e5c481cd37343c77469",
 }
 EXPECTED_FILES = set(SOURCE_RECORDS) | set(WRAPPER_DIGESTS) | {"PACKAGE-CHECKSUMS.sha256"}
 

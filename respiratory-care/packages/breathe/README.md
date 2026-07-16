@@ -56,7 +56,8 @@ Current law, board rules, employer policy, medical direction, orders, protocols,
 | `Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup-Guide.docx` | Polished user guide for benefits, setup, safe use and recovery |
 | `Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup-Guide.md` | Accessible plain-Markdown guide and fallback |
 | `Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/` | Auditable source components corresponding to the embedded installer content |
-| `SHA256SUMS.txt` | SHA-256 integrity values for every packaged file except the checksum file itself |
+| `PACKAGE-CHECKSUMS.sha256` | SHA-256 integrity values for the published, normalized package bytes |
+| `UPSTREAM-SHA256SUMS.txt` | Supplied pre-normalization checksum ledger retained for provenance; use `ROLE-PACK.json` to map upstream hashes to published paths |
 
 ## First safe use
 
@@ -70,6 +71,6 @@ Use the S0, S1 or S2 receipt and the exact resume command in the complete instal
 
 ## Verify this package
 
-From inside the package directory, compare each file to `SHA256SUMS.txt` with a SHA-256 utility. The release validator also checks the complete installer structure, embedded/source parity, inventory, guide QA, checksum coverage and ZIP CRC integrity.
+From inside the package directory, compare published files to `PACKAGE-CHECKSUMS.sha256` with a SHA-256 utility. Use `UPSTREAM-SHA256SUMS.txt` together with `ROLE-PACK.json` to inspect the supplied pre-normalization provenance chain. The release validator also checks the complete installer structure, embedded/source parity, inventory, guide QA, checksum coverage and ZIP CRC integrity.
 
 This package supports organization, education, reflection and governed workflow design. It does not replace emergency response, clinical judgment, supervision, credential verification, institutional governance, legal advice or official clinical and device systems.

@@ -41,6 +41,10 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
     def test_required_artifacts_and_archive_provenance(self):
         for path in (PROGRAM, GUIDE, DOCX, PACKAGE / "UPSTREAM-SHA256SUMS.txt"):
             self.assertTrue(path.is_file(), path)
+        package_readme = (PACKAGE / "README.md").read_text(encoding="utf-8")
+        self.assertIn("`PACKAGE-CHECKSUMS.sha256`", package_readme)
+        self.assertIn("`UPSTREAM-SHA256SUMS.txt`", package_readme)
+        self.assertNotIn("`SHA256SUMS.txt`", package_readme)
         archive = self.manifest["source_archive"]
         self.assertEqual(archive["sha256"], "7fc1d4b0a8dec362bcd41e5e049b1498d70fc2cbfd9d0348f5d7b240172f2edb")
         self.assertEqual(archive["bytes"], 317428)
@@ -50,7 +54,7 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         expected_key_sources = {
             PROGRAM.name: (
                 "63821c41bd20b34edd7245d2eb640d695b7a80b33e0586893a8387e444d813bb",
-                "5f0bb27213e8549ab5f82ea53e663cd960ea70a47594c668a465066e3458f742",
+                "3134e43460383b2a1ac05c21c6a5f98aef69c1434be5f98d077ba450ae787110",
             ),
             GUIDE.name: (
                 "1ff712f65a167c812b66e32cfa4d588be247617506640772da349592c2e988ff",
@@ -152,6 +156,15 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         self.assertTrue(self.manifest["foundation_first"])
         self.assertTrue(self.manifest["breathe_overlay_second"])
         self.assertFalse(self.manifest["install_on_download"])
+        self.assertIn("exact complete-program SHA-256 digest", self.program)
+        self.assertIn("Any program-byte, policy, target or card change after approval invalidates that approval", self.program)
+
+    def test_emergencies_leave_breathe_instead_of_creating_a_gate_state(self):
+        templates = (SOURCE_PACK / "templates" / "BREATHE-Cards-and-Templates.md").read_text()
+        self.assertNotIn("emergency bypass", templates)
+        self.assertNotIn("emergency bypass", self.program)
+        self.assertIn("An emergency is never a BREATHE gate state", templates)
+        self.assertIn("emergencies leave BREATHE for official procedures", templates)
 
     def test_safe_defaults_device_and_clinical_authority_boundaries(self):
         for key in (

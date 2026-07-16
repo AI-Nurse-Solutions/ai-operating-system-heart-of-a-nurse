@@ -1,0 +1,74 @@
+{
+  "acceptance_tests": {
+    "foundation": 72,
+    "integration": 16,
+    "rounds_overlay": 72,
+    "total": 160
+  },
+  "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+  "automatic_connectors": false,
+  "automatic_cron": false,
+  "automatic_external_actions": false,
+  "automatic_memory": false,
+  "automatic_shared_access": false,
+  "clinical_decisions": false,
+  "default_context": "private_resident_os",
+  "existing_install_policy": "detect_verify_bind_and_skip_never_duplicate",
+  "foundation_first": true,
+  "install_on_download": false,
+  "installation_model": "hermes_guided_one_file_multi_turn_with_safe_checkpoints",
+  "institutional_deployment_requires_separate_authorization": true,
+  "intended_stage": "new_or_verified_isolated_medical_resident_workspace",
+  "live_patient_specific_private_use": false,
+  "memory_default": "session_only",
+  "namespace": "medres_rounds.*",
+  "no_phi": true,
+  "nursing_population_state_shared": false,
+  "optional_superpowers_active_after_install": 0,
+  "optional_superpowers_total": 24,
+  "package_id": "naio-adjacent-medical-resident-rounds-complete-edition",
+  "package_version": "2026.07.16.1",
+  "population_lane": "medical_resident",
+  "pre_install_disclosure_required": true,
+  "program_id": "MRAIOS-ROUNDS-COMPLETE-1.0",
+  "records_total": 17,
+  "resident_home": "My ROUNDS",
+  "role": "Medical Resident — ROUNDS",
+  "role_adapters": [
+    "Intern / Early Resident",
+    "Advancing Resident",
+    "Senior / Team-Lead Resident",
+    "Chief Resident — Clinical or Administrative Hat",
+    "Off-Service / Visiting / Cross-Cover Resident"
+  ],
+  "role_selection_verifies_credentials_or_authority": false,
+  "rounds_overlay_second": true,
+  "route": "/medical-residents/",
+  "schema_version": "1.0",
+  "source_files": [
+    {
+      "bytes": 176831,
+      "packaged_path": "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Hermes-Program.md",
+      "source_sha256": "33a8e8dbd963bb21d21582d520f3d98c161ed7b900a9cdfa7a13df1039da365c",
+      "transformation": "removed unintended four-space indentation from release-assurance paragraphs, headings, and the first power-inventory row, and replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_sha256": "63524f871de3a28842d04e936b7bce7bd2b3a76724f08222179a7a8c7365d35e"
+    },
+    {
+      "bytes": 23282,
+      "packaged_path": "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-Guide.md",
+      "source_sha256": "bff68f996a605dc71c92609b6e20d4d5e1a1a95a24b92c84c3dfad7f746bc0f9",
+      "transformation": "removed one unintended four-space indentation prefix from every affected supplied Markdown line and replaced supplied trailing-space hard breaks with explicit <br> tags so headings, warnings, lists, tables, and line breaks render semantically without changing text or order",
+      "upstream_sha256": "5afbd0e56253167d6fe4247aaa081b520d648a232af98e212c0f2a355d2e4ead"
+    },
+    {
+      "bytes": 186284,
+      "packaged_path": "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-Guide.docx",
+      "source_sha256": "a0c4483ca3b51d0597db52b8c32c5dcc93e9916ae2374277b1962f1832f50d4b"
+    }
+  ],
+  "standalone_non_nurse_lane": true,
+  "suggested_agents_active_after_install": 0,
+  "suggested_agents_total": 10,
+  "templates_total": 30,
+  "workflows_total": 24
+}

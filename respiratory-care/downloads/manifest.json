@@ -1,0 +1,43 @@
+{
+  "installation_status": "not_installed",
+  "packages": [
+    {
+      "acceptance_tests": {
+        "breathe_overlay": 72,
+        "foundation": 72,
+        "integration": 16,
+        "total": 160
+      },
+      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "breathe_overlay_second": true,
+      "bytes": 325176,
+      "device_control": false,
+      "device_data_private_use": false,
+      "download": "downloads/breathe-respiratory-care-complete-edition.zip",
+      "foundation_first": true,
+      "install_on_download": false,
+      "installation_status": "not_installed",
+      "institutional_deployment_requires_separate_authorization": true,
+      "medical_resident_population_state_shared": false,
+      "no_phi": true,
+      "nursing_population_state_shared": false,
+      "optional_superpowers_active_after_install": 0,
+      "optional_superpowers_total": 24,
+      "package_version": "2026.07.16.1",
+      "population_lane": "respiratory_care",
+      "pre_install_disclosure_required": true,
+      "profession": "Respiratory Care Professional",
+      "records_total": 18,
+      "route": "/respiratory-care/",
+      "sha256": "a47a5a3f0a77b11032c950ac5cb02a6aea22de63bea990d2eaaa227e97311a79",
+      "standalone_non_nurse_lane": true,
+      "suggested_agents_active_after_install": 0,
+      "suggested_agents_total": 10,
+      "templates_total": 30,
+      "workflows_total": 24
+    }
+  ],
+  "purpose": "standalone adjacent clinical lane for respiratory care professionals; separate from Nurse AI OS and Medical Resident ROUNDS",
+  "release": "2026.07.16.1",
+  "schema_version": "1.0"
+}

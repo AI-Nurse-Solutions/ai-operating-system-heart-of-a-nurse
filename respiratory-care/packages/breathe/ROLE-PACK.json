@@ -1,0 +1,265 @@
+{
+  "acceptance_tests": {
+    "breathe_overlay": 72,
+    "foundation": 72,
+    "integration": 16,
+    "total": 160
+  },
+  "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+  "automatic_connectors": false,
+  "automatic_cron": false,
+  "automatic_device_access": false,
+  "automatic_external_actions": false,
+  "automatic_memory": false,
+  "automatic_shared_access": false,
+  "breathe_overlay_second": true,
+  "clinical_decisions": false,
+  "default_context": "private_respiratory_os",
+  "device_control": false,
+  "device_data_private_use": false,
+  "existing_install_policy": "detect_verify_bind_and_skip_never_duplicate",
+  "foundation_first": true,
+  "install_on_download": false,
+  "installation_model": "hermes_guided_one_file_multi_turn_with_safe_checkpoints",
+  "institutional_deployment_requires_separate_authorization": true,
+  "intended_stage": "new_or_verified_isolated_respiratory_care_workspace",
+  "live_patient_specific_private_use": false,
+  "medical_resident_population_state_shared": false,
+  "memory_default": "session_only",
+  "namespace": "resp_breathe.*",
+  "no_phi": true,
+  "nursing_population_state_shared": false,
+  "optional_superpowers_active_after_install": 0,
+  "optional_superpowers_total": 24,
+  "package_id": "naio-adjacent-respiratory-care-breathe-complete-edition",
+  "package_version": "2026.07.16.1",
+  "population_lane": "respiratory_care",
+  "pre_install_disclosure_required": true,
+  "profession": "Respiratory Care Professional",
+  "program_id": "RCAIOS-BREATHE-COMPLETE-1.0",
+  "records_total": 18,
+  "respiratory_home": "My BREATHE",
+  "role_selection_verifies_credentials_or_authority": false,
+  "route": "/respiratory-care/",
+  "schema_version": "1.0",
+  "source_archive": {
+    "bytes": 317428,
+    "members": 23,
+    "sha256": "7fc1d4b0a8dec362bcd41e5e049b1498d70fc2cbfd9d0348f5d7b240172f2edb",
+    "supplied_name": "BREATHE-Respiratory-Care-Pack.zip"
+  },
+  "source_files": [
+    {
+      "bytes": 6446,
+      "packaged_path": "README.md",
+      "source_sha256": "b10de0f4f3cdb6ffcb33f09a90440b92c3bd3732f905fcbd68907d3e54f4eadf",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 6446,
+      "upstream_path": "README.md",
+      "upstream_sha256": "b10de0f4f3cdb6ffcb33f09a90440b92c3bd3732f905fcbd68907d3e54f4eadf"
+    },
+    {
+      "bytes": 681,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/README.md",
+      "source_sha256": "c48395a08ee00237fed7792d2f0d1cd7a67d3fa900b51c3f4c579ba6c6aa32c5",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 679,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/README.md",
+      "upstream_sha256": "cef7aaac31e22bb68f969f13d283d28cea9815e843fb9c986e43da1282667a7d"
+    },
+    {
+      "bytes": 11040,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/01-B-Begin-Safely.md",
+      "source_sha256": "50ffebaf7e5a20e2c0cf38a35f4e6c76402cb64589e5735a8265ea521fd1b263",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 11040,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/01-B-Begin-Safely.md",
+      "upstream_sha256": "50ffebaf7e5a20e2c0cf38a35f4e6c76402cb64589e5735a8265ea521fd1b263"
+    },
+    {
+      "bytes": 10875,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/02-R-Reason-with-Evidence.md",
+      "source_sha256": "824bb6b2b6e3dd65b95c8efa8152104db9ad35405b705d05483f63260ca9af9b",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 10875,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/02-R-Reason-with-Evidence.md",
+      "upstream_sha256": "824bb6b2b6e3dd65b95c8efa8152104db9ad35405b705d05483f63260ca9af9b"
+    },
+    {
+      "bytes": 11081,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/03-E-Equip-for-Reliability.md",
+      "source_sha256": "f70a5e0754b54677a64802400d67d084e011699bae192899d2f75ea6ced35c7c",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 11081,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/03-E-Equip-for-Reliability.md",
+      "upstream_sha256": "f70a5e0754b54677a64802400d67d084e011699bae192899d2f75ea6ced35c7c"
+    },
+    {
+      "bytes": 11079,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/04-A-Align-Airway-and-Teams.md",
+      "source_sha256": "d985c3aedcbee48f3e5948a752e3a6c58a772cb15566c4060bf0f355c50affc6",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 11079,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/04-A-Align-Airway-and-Teams.md",
+      "upstream_sha256": "d985c3aedcbee48f3e5948a752e3a6c58a772cb15566c4060bf0f355c50affc6"
+    },
+    {
+      "bytes": 8446,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/05-T-Teach-Improve-and-Advance.md",
+      "source_sha256": "ba74ec35f32ec6293a680a12c48d1a7fa3f498ff01bc91408c778d601168e49c",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 8446,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/05-T-Teach-Improve-and-Advance.md",
+      "upstream_sha256": "ba74ec35f32ec6293a680a12c48d1a7fa3f498ff01bc91408c778d601168e49c"
+    },
+    {
+      "bytes": 5642,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/06-H-Honor-Humans-and-Future.md",
+      "source_sha256": "bed6449a78f977a127cb7ffd5e13aac087aa40365eeeb5a74b4af6dbe3b16d8b",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 5642,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/06-H-Honor-Humans-and-Future.md",
+      "upstream_sha256": "bed6449a78f977a127cb7ffd5e13aac087aa40365eeeb5a74b4af6dbe3b16d8b"
+    },
+    {
+      "bytes": 8492,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/07-E-Engineer-Ethical-Agents.md",
+      "source_sha256": "dcfd343b737e638991fedea5d5098a49579b9c61a2c1ab534e4420eb80dde4a9",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 8492,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/breathe/07-E-Engineer-Ethical-Agents.md",
+      "upstream_sha256": "dcfd343b737e638991fedea5d5098a49579b9c61a2c1ab534e4420eb80dde4a9"
+    },
+    {
+      "bytes": 2892,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/core/00-Standalone-Respiratory-Care-Lane-and-Human-Standard.md",
+      "source_sha256": "37acb1fa00c0b916594e28ea80d3786ffc666d83859954699461ad3bb4a11950",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 2892,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/core/00-Standalone-Respiratory-Care-Lane-and-Human-Standard.md",
+      "upstream_sha256": "37acb1fa00c0b916594e28ea80d3786ffc666d83859954699461ad3bb4a11950"
+    },
+    {
+      "bytes": 2850,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/core/01-Respiratory-Professional-Patient-Team-Device-and-Institution-Trust-Shield.md",
+      "source_sha256": "4f2dbc27c328e4edcf639ae420feb6e812703a2fd141c509b1ceb412c71eee24",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 2850,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/core/01-Respiratory-Professional-Patient-Team-Device-and-Institution-Trust-Shield.md",
+      "upstream_sha256": "4f2dbc27c328e4edcf639ae420feb6e812703a2fd141c509b1ceb412c71eee24"
+    },
+    {
+      "bytes": 4664,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/core/02-BREATHE-SCOPE-CIRCLE-ORBIT-Operating-Core.md",
+      "source_sha256": "6de2bd6ddc3926ba022fa991e16e8a5e5cc48bbf9da6c9bdd212926758e0e209",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 4664,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/core/02-BREATHE-SCOPE-CIRCLE-ORBIT-Operating-Core.md",
+      "upstream_sha256": "6de2bd6ddc3926ba022fa991e16e8a5e5cc48bbf9da6c9bdd212926758e0e209"
+    },
+    {
+      "bytes": 15014,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/foundation/Respiratory-Care-Life-Practice-and-Professional-Foundation.md",
+      "source_sha256": "d7b047d2f76dbd29c6bbc616d7919bb7edb3af994662576a4273881e6ad2a57a",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 15014,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/foundation/Respiratory-Care-Life-Practice-and-Professional-Foundation.md",
+      "upstream_sha256": "d7b047d2f76dbd29c6bbc616d7919bb7edb3af994662576a4273881e6ad2a57a"
+    },
+    {
+      "bytes": 4682,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/manifest.md",
+      "source_sha256": "38c3ac56d9933bdcfe4c64e2380f279d130d0313352f5baafb59f95d429984f6",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 4664,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/manifest.md",
+      "upstream_sha256": "0faedbc17d49d71ee1097bebb8e011569ed98115253f4fc26cd050ef87f6b893"
+    },
+    {
+      "bytes": 42069,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/templates/BREATHE-Cards-and-Templates.md",
+      "source_sha256": "43d1696dbba18c7822842055e101e14e96c1323f01385a1e62b74df151c40b9e",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 42009,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/templates/BREATHE-Cards-and-Templates.md",
+      "upstream_sha256": "c51891e757f190cf7bdf07d92633d1373dd798ee5df70fc86a868d5d44befa81"
+    },
+    {
+      "bytes": 55452,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/tests/BREATHE-Release-Assurance.md",
+      "source_sha256": "5fe51985df8345c859f5d394448b5e87419a63048515002580ba410b046d1c04",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 55452,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/tests/BREATHE-Release-Assurance.md",
+      "upstream_sha256": "5fe51985df8345c859f5d394448b5e87419a63048515002580ba410b046d1c04"
+    },
+    {
+      "bytes": 55881,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/workflows/BREATHE-Workflows-Launch-and-Adoption-Plan.md",
+      "source_sha256": "9a28d4b379c2976c1be31858e2e3a698f8e949e4332d3e7240b9eb7121680587",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 55531,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/workflows/BREATHE-Workflows-Launch-and-Adoption-Plan.md",
+      "upstream_sha256": "4b5bb85caba0bee2aeeb23e0f8a5a7870c3ad5b1f1c0c28fb6e16b0e92b4316f"
+    },
+    {
+      "bytes": 2874,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/workflows/My-BREATHE-Respiratory-Care-Command-Center.md",
+      "source_sha256": "78a8ad74623a7d4f0b3fbeb50a10b8de1d62320e1637a072a52d0626b224a37c",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 2870,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/workflows/My-BREATHE-Respiratory-Care-Command-Center.md",
+      "upstream_sha256": "332f1041e1ff9a84c21686fcdc5f055c4cf35e86b7b2ffd9401057fc3648be1e"
+    },
+    {
+      "bytes": 2573,
+      "packaged_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/workflows/Respiratory-Role-Setting-and-Situation-Recipes.md",
+      "source_sha256": "6aecee0f209c555719684aeea49439aff25ffbdec0c7b101ed176c4e438dc9f5",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 2573,
+      "upstream_path": "Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/workflows/Respiratory-Role-Setting-and-Situation-Recipes.md",
+      "upstream_sha256": "6aecee0f209c555719684aeea49439aff25ffbdec0c7b101ed176c4e438dc9f5"
+    },
+    {
+      "bytes": 268407,
+      "packaged_path": "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Hermes-Program.md",
+      "source_sha256": "5f0bb27213e8549ab5f82ea53e663cd960ea70a47594c668a465066e3458f742",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 267975,
+      "upstream_path": "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Hermes-Program.md",
+      "upstream_sha256": "63821c41bd20b34edd7245d2eb640d695b7a80b33e0586893a8387e444d813bb"
+    },
+    {
+      "bytes": 194330,
+      "packaged_path": "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup-Guide.docx",
+      "source_sha256": "d2bf6752d59cffb0ca772a0387326a7fb918dc846bc14a080b86fc7ea90ae8dc",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 194330,
+      "upstream_path": "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup-Guide.docx",
+      "upstream_sha256": "d2bf6752d59cffb0ca772a0387326a7fb918dc846bc14a080b86fc7ea90ae8dc"
+    },
+    {
+      "bytes": 20238,
+      "packaged_path": "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup-Guide.md",
+      "source_sha256": "f80690b24eacbe2b2724119107be78e887b166115ea95ebdef19f84e3ec33cbd",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 20220,
+      "upstream_path": "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup-Guide.md",
+      "upstream_sha256": "1ff712f65a167c812b66e32cfa4d588be247617506640772da349592c2e988ff"
+    },
+    {
+      "bytes": 3338,
+      "packaged_path": "UPSTREAM-SHA256SUMS.txt",
+      "source_sha256": "9a3cfe815619a97907407bfeb3744ab5ea6c8da22eca2ebffddfaf409fa63f20",
+      "transformation": "renamed from SHA256SUMS.txt to distinguish the supplied pre-normalization provenance ledger from PACKAGE-CHECKSUMS.sha256",
+      "upstream_bytes": 3338,
+      "upstream_path": "SHA256SUMS.txt",
+      "upstream_sha256": "9a3cfe815619a97907407bfeb3744ab5ea6c8da22eca2ebffddfaf409fa63f20"
+    }
+  ],
+  "standalone_non_nurse_lane": true,
+  "suggested_agents_active_after_install": 0,
+  "suggested_agents_total": 10,
+  "templates_total": 30,
+  "workflows_total": 24
+}

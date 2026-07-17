@@ -78,7 +78,8 @@ jobs:
             /healthcare-research-innovation-leaders/downloads/manifest.json \
             /healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip
           do
-            curl --fail --silent --show-error --output /tmp/discover-response "http://127.0.0.1:8765$path"
+            curl --retry 20 --retry-connrefused --retry-delay 1 --fail --silent --show-error \
+              --output /tmp/discover-response "http://127.0.0.1:8765$path"
             test -s /tmp/discover-response
           done
       - name: Verify page links and Python syntax

@@ -174,7 +174,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         self.assertIn("jsonschema==4.25.1", workflow)
         self.assertIn("validate-healthcare-research-innovation-discover-schemas.py", workflow)
         self.assertIn("python3 -m http.server 8765 --bind 127.0.0.1", workflow)
-        self.assertIn("curl --fail --silent --show-error", workflow)
+        self.assertIn("curl --retry 20 --retry-connrefused --retry-delay 1", workflow)
 
     def test_fixtures_adapters_criteria_and_variants_are_exact(self):
         release = (SOURCE_PACK / "tests" / "01-DISCOVER-Release-and-Runtime-Tests.md").read_text(encoding="utf-8")

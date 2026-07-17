@@ -27,7 +27,7 @@ PROGRAM_NAME = "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DI
 SOURCE_PACK = "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0"
 WRAPPER_DIGESTS = {
     "00-READ-FIRST.md": "4acfcfe9461c43ab9548de951a914021288590a4a1e583e47d736aa9dc7b3cbe",
-    "ROLE-PACK.json": "39d4f2e3781dae91b1768dbdf0e5c452fe231dcdb5d6de94a2eae7dd0401fb95",
+    "ROLE-PACK.json": "fc2e5d22969544e4ee036a7998415c66e9190a367a2107cd5e54f5e2403bd8a6",
 }
 
 
@@ -59,7 +59,7 @@ def load_manifest() -> dict:
         "namespace": "research_innovation_discover.*",
         "optional_superpowers_active_after_install": 0,
         "optional_superpowers_total": 24,
-        "package_version": "2026.07.16.1",
+        "package_version": "2026.07.16.2",
         "population_lane": "healthcare_research_innovation_leadership",
         "program_id": "HRIL-AIOS-DISCOVER-COMPLETE-1.0",
         "records_total": 18,
@@ -238,8 +238,14 @@ def validate_consent_contract() -> None:
     for phrase in required:
         if phrase not in read_first:
             raise ValueError(f"DISCOVER consent or nonclaim contract missing: {phrase}")
-    if "Wait for explicit install authority" not in program or "Nothing continues in the background" not in read_first:
-        raise ValueError("DISCOVER phase gate or no-background contract missing")
+    program_required = (
+        "exact combined **DISCOVER Activation Card**",
+        "Stop after displaying the card. Create no state and wait for explicit post-card authority.",
+        "Silence, timeout, download, file opening, title, credentials, access, earlier work, or a general request to “publish and install” is never approval",
+        "Any change to the target, program bytes/hash, component hashes, policy, data classes, routes, partitions, permissions, actions, or card invalidates approval and requires a new card",
+    )
+    if any(phrase not in program for phrase in program_required) or "Nothing continues in the background" not in read_first:
+        raise ValueError("DISCOVER exact-card, phase-gate, or no-background contract missing")
 
 
 def validate_package() -> dict:

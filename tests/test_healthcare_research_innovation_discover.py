@@ -52,7 +52,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         records = {item["packaged_path"]: item for item in self.manifest["source_files"]}
         self.assertEqual(len(records), 23)
         self.assertEqual(records[PROGRAM.name]["upstream_sha256"], "61e900ac5c2b10ee240086ab8d24617ff9ea272bdb18b7bd181a8c60cd6102b5")
-        self.assertEqual(records[PROGRAM.name]["source_sha256"], "dd9b375581bc1e1ab9441fad6c8eb43a929aa65dce2af84492d1b0efb267157f")
+        self.assertEqual(records[PROGRAM.name]["source_sha256"], "1903134361533a7dc76dc450ebd85aff388e850df94e0fa8ee4ac4df90077333")
         self.assertEqual(records[DOCX.name]["upstream_sha256"], records[DOCX.name]["source_sha256"])
         for name, record in records.items():
             path = PACKAGE / name
@@ -218,7 +218,24 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         self.assertTrue(self.manifest["foundation_first"])
         self.assertTrue(self.manifest["discover_overlay_second"])
         self.assertFalse(self.manifest["install_on_download"])
-        self.assertIn("Wait for explicit install authority", self.program)
+        for phrase in (
+            "exact combined **DISCOVER Activation Card**",
+            "target Hermes environment and exact complete-program SHA-256",
+            "owner, active hat, authority source, authority expiry, and unresolved authority",
+            "isolated lane, qualified routes, namespace, partitions, ACLs, and optional private-store choice",
+            "17 component paths and verified hashes",
+            "24 powers `Available Inactive`, 24 workflows `Preview Only`, 30 templates, 18 schemas, ten agents `PERM-P0 Disabled`, ten fixtures/adapters, and 160 criteria in `specified` state",
+            "allowed and prohibited data, source, tool, network, destination, action, contact, and persistence boundaries",
+            "supported, unsupported, blocked, or uncertain target capabilities",
+            "S0/S1/S2 sequence, expected burden, visible multi-turn/no-background behavior, checkpoints, receipts, and stop conditions",
+            "exact rollback, quarantine, resume, repair, export, delete, and DISCOVER-only uninstall scope",
+            "approve the exact complete scope, revise it, install the foundation only, or cancel",
+            "Stop after displaying the card. Create no state and wait for explicit post-card authority.",
+            "Silence, timeout, download, file opening, title, credentials, access, earlier work, or a general request to \u201cpublish and install\u201d is never approval",
+            "Any change to the target, program bytes/hash, component hashes, policy, data classes, routes, partitions, permissions, actions, or card invalidates approval and requires a new card",
+            "INSTALL DISCOVER AFTER S0 — USE EXACT VERIFIED COMPONENT HASHES AND KEEP ALL POWERS AND AGENTS INACTIVE.",
+        ):
+            self.assertIn(phrase, self.program)
 
     def test_safe_defaults_data_action_and_authority_boundaries(self):
         false_keys = (

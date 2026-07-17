@@ -196,6 +196,8 @@ class StewardGovernancePreviewTests(unittest.TestCase):
         self.assertNotIn("Activation Card", self.page)
         self.assertNotIn("Complete Edition", self.page)
         self.assertNotIn("Hermes-Program", self.page)
+        self.assertIn("youtube-nocookie.com/embed/xdlnYkMJQl4", self.page)
+        self.assertIn("vision narrative, not evidence", self.page)
 
     def test_public_page_links_only_preview_artifacts(self):
         for link in (
@@ -213,11 +215,13 @@ class StewardGovernancePreviewTests(unittest.TestCase):
         admin = page.index('class="home-admin-lane"')
         self.assertLess(page.index('class="home-resident-video"'), page.index('class="home-rt-video"'))
         self.assertLess(page.index('class="home-rt-video"'), admin)
+        self.assertLess(page.index('class="home-discover-video"'), page.index('class="home-thrive-video"'))
+        self.assertLess(page.index('class="home-thrive-video"'), admin)
         self.assertLess(admin, page.index("<!-- ============ ROLE CARDS"))
         region = page[admin:page.index("<!-- ============ ROLE CARDS")]
         for phrase in ("Public governance preview", "STEWARD Governance Specification", "Non-executable", "Complete AI OS claim remains paused"):
             self.assertIn(phrase, region)
-        self.assertNotIn("iframe", region)
+        self.assertIn("youtube-nocookie.com/embed/xdlnYkMJQl4", region)
 
     def test_no_cross_population_registration_or_state(self):
         nurse_manifest = json.loads((ROOT / "post-setup" / "downloads" / "manifest.json").read_text(encoding="utf-8"))

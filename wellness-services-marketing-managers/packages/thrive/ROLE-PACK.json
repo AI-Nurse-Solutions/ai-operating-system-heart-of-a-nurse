@@ -1,0 +1,271 @@
+{
+  "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+  "automatic_connectors": false,
+  "automatic_cron": false,
+  "automatic_external_actions": false,
+  "automatic_memory": false,
+  "automatic_shared_access": false,
+  "canonical_dashboard_route": "/wellness-services-marketing-managers/dashboard",
+  "clinical_decisions": false,
+  "dashboard_alias": "/wellness-services-marketing-managers/mission-control",
+  "employment_decisions": false,
+  "financial_or_procurement_authority": false,
+  "fixtures_adapters_total": 10,
+  "foundation_first": true,
+  "health_claim_release_authority": false,
+  "healthcare_research_population_state_shared": false,
+  "hospital_administration_population_state_shared": false,
+  "install_on_download": false,
+  "installation_model": "hermes_guided_one_file_multi_turn_with_safe_checkpoints",
+  "installation_status": "not_installed",
+  "institutional_deployment_requires_separate_authorization": true,
+  "live_person_contact": false,
+  "medical_resident_population_state_shared": false,
+  "mission_control": "My THRIVE Mission Control",
+  "namespace": "wellness_thrive.*",
+  "no_phi": true,
+  "nursing_population_state_shared": false,
+  "official_system_writes": false,
+  "optional_superpowers_active_after_install": 0,
+  "optional_superpowers_total": 24,
+  "package_id": "naio-wellness-marketing-management-thrive",
+  "package_version": "2026.07.17.1",
+  "person_level_data_allowed": false,
+  "population_lane": "wellness_services_marketing_management",
+  "pre_install_disclosure_required": true,
+  "program_id": "WELLMKT-AIOS-THRIVE-COMPLETE-1.0",
+  "records_total": 18,
+  "respiratory_care_population_state_shared": false,
+  "role": "Wellness Services Marketer & Manager \u2014 THRIVE",
+  "role_selection_verifies_credentials_or_authority": false,
+  "route": "/wellness-services-marketing-managers/",
+  "runtime_criteria": {
+    "publication_status": "specified_not_prepassed",
+    "s1": 40,
+    "s2": 120,
+    "total": 160
+  },
+  "schema_version": "1.0",
+  "schemas_total": 18,
+  "source_archive": {
+    "bytes": 536136,
+    "members": 23,
+    "sha256": "3561455a9147df173a284e5fcf1ee5dd26b73ef31ae3ca2ffca5c1383a88ff1a",
+    "supplied_name": "THRIVE-Wellness-Marketing-Management-Pack.zip"
+  },
+  "source_files": [
+    {
+      "bytes": 15387,
+      "packaged_path": "README.md",
+      "source_sha256": "26c42bea9e7701111915327f0019cbc70df28f0c04badcf42539763d21f6af5f",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; corrected publication inventory to the governed 26-file package and separated upstream from published checksum ledgers; upstream bytes and hash retained",
+      "upstream_bytes": 14848,
+      "upstream_path": "README.md",
+      "upstream_sha256": "7a63e9958669c239ca5bc8d9ba53d60681f41f18113e7eaa4df89c2bf15806b6"
+    },
+    {
+      "bytes": 3729,
+      "packaged_path": "UPSTREAM-SHA256SUMS.txt",
+      "source_sha256": "5f4558b0b6e4a1b11454730ade8c59085d6857ff168cf9436c876a57197c4297",
+      "transformation": "renamed to UPSTREAM-SHA256SUMS.txt to distinguish supplied-source integrity from published-package integrity; bytes unchanged",
+      "upstream_bytes": 3729,
+      "upstream_path": "SHA256SUMS.txt",
+      "upstream_sha256": "5f4558b0b6e4a1b11454730ade8c59085d6857ff168cf9436c876a57197c4297"
+    },
+    {
+      "bytes": 960962,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Hermes-Program.md",
+      "source_sha256": "e9f231c6f314365ee9e08498639fcaa8b0510c7d9491d8abf52c4b76a7939e85",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; embedded normalized direct components and refreshed all 17 component hashes; added the exact digest-bound THRIVE Activation Card, no-state stop, exact post-card command, and material-change invalidation; embedded hardened agent and control-receipt schemas; upstream bytes and hash retained",
+      "upstream_bytes": 952145,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Hermes-Program.md",
+      "upstream_sha256": "ac07a7bc414cedbff9dc74a34975ca817f21a11d0e1e6f5a0f73169eb84ce571"
+    },
+    {
+      "bytes": 209120,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Setup-Guide.docx",
+      "source_sha256": "b3c90f26efebff15299aff4f65e543d670903a8f5f6b74db5ce99fea1d740473",
+      "transformation": "none; byte-for-byte copy from supplied archive",
+      "upstream_bytes": 209120,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Setup-Guide.docx",
+      "upstream_sha256": "b3c90f26efebff15299aff4f65e543d670903a8f5f6b74db5ce99fea1d740473"
+    },
+    {
+      "bytes": 9694,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Setup-Guide.md",
+      "source_sha256": "a8878aebdf5a2a5b3625d53deef1ca06c6d5c47b373b155099947f523849b579",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; replaced generic S0 confirmation with no-state inspection, exact Activation Card review, exact post-card command, and dual-ledger verification; upstream bytes and hash retained",
+      "upstream_bytes": 9259,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Setup-Guide.md",
+      "upstream_sha256": "90f969d73d8d5a508249d102250f19c1098f6eb60ed0e281319dbdae5558f75f"
+    },
+    {
+      "bytes": 458,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/README.md",
+      "source_sha256": "7d9d52f084859d9d8cd5e0ca6420f2531c5d4295e1712c60702215a357077ebe",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 454,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/README.md",
+      "upstream_sha256": "0c6ace497f1adc7615b6177374ae929ba00e8af52c66aa3241b4912b0d90b54c"
+    },
+    {
+      "bytes": 1998,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/core/00-Standalone-Wellness-Marketing-Management-Lane.md",
+      "source_sha256": "e2aa1cb640e024808b6871f18459b1db44e033b1f3e1b9cabd4ebb56080ba857",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 1992,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/core/00-Standalone-Wellness-Marketing-Management-Lane.md",
+      "upstream_sha256": "a411549575d6245ce98d8e8f7f80b57f777981c2a5aeb544f81d37749e68b539"
+    },
+    {
+      "bytes": 2697,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/core/01-Trust-Privacy-Safety-and-Authority-Shield.md",
+      "source_sha256": "ae1b256e7c2ef865b4f670cec1e8ea5d3c94cbb2768bf948a094d2adb00bc105",
+      "transformation": "none; byte-for-byte copy from supplied archive",
+      "upstream_bytes": 2697,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/core/01-Trust-Privacy-Safety-and-Authority-Shield.md",
+      "upstream_sha256": "ae1b256e7c2ef865b4f670cec1e8ea5d3c94cbb2768bf948a094d2adb00bc105"
+    },
+    {
+      "bytes": 3711,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/core/02-THRIVE-Operating-Core.md",
+      "source_sha256": "f739bfaf2b5f3d5c1e1e8d20a240d191d23081a38659b434cf4710b122c0ef13",
+      "transformation": "none; byte-for-byte copy from supplied archive",
+      "upstream_bytes": 3711,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/core/02-THRIVE-Operating-Core.md",
+      "upstream_sha256": "f739bfaf2b5f3d5c1e1e8d20a240d191d23081a38659b434cf4710b122c0ef13"
+    },
+    {
+      "bytes": 6310,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/core/03-Nurse-AI-OS-Mission-Control-and-Dashboard-Integration.md",
+      "source_sha256": "302908f257e17bda7db5c5fd1a946ca1f7e883726798e4145f148ca5c07e1e73",
+      "transformation": "none; byte-for-byte copy from supplied archive",
+      "upstream_bytes": 6310,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/core/03-Nurse-AI-OS-Mission-Control-and-Dashboard-Integration.md",
+      "upstream_sha256": "302908f257e17bda7db5c5fd1a946ca1f7e883726798e4145f148ca5c07e1e73"
+    },
+    {
+      "bytes": 4173,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/foundation/00-Wellness-Life-and-Operations-Foundation.md",
+      "source_sha256": "5810fa7ea15829140edaf8c4800f89cf7d0d14cb09f3fcb31f40e7d4a459df43",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 4165,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/foundation/00-Wellness-Life-and-Operations-Foundation.md",
+      "upstream_sha256": "e565354d5bd36bf6ea374819ac118068c96e25f3efd52c32b14fd35ccef03827"
+    },
+    {
+      "bytes": 2557,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/manifest/01-THRIVE-Installation-Manifest.md",
+      "source_sha256": "a9ab47f4dd373796b5308baa7f67325a30dceddf5bbc00325153416b373235c4",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 2547,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/manifest/01-THRIVE-Installation-Manifest.md",
+      "upstream_sha256": "15df1dbcda23a4a5fc3fc3801615090f5a2a03df6fca138a25353ae3dbb8cb1e"
+    },
+    {
+      "bytes": 29762,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/templates/01-THRIVE-Functional-Templates.md",
+      "source_sha256": "29a8970185b08005d0334a2960728c64cfd0ad5648a2bef09553b8b39bc6c518",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 29522,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/templates/01-THRIVE-Functional-Templates.md",
+      "upstream_sha256": "95323ffad3a3877d6015f63ad5f72512b498d230128521397f36273e06cf397d"
+    },
+    {
+      "bytes": 88315,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/tests/01-THRIVE-Release-and-Runtime-Tests.md",
+      "source_sha256": "a8b7a1f9d58d3156ae0a7877b561d0e2052731f01e228997e84ed4aa0d55e724",
+      "transformation": "none; byte-for-byte copy from supplied archive",
+      "upstream_bytes": 88315,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/tests/01-THRIVE-Release-and-Runtime-Tests.md",
+      "upstream_sha256": "a8b7a1f9d58d3156ae0a7877b561d0e2052731f01e228997e84ed4aa0d55e724"
+    },
+    {
+      "bytes": 4854,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/01-T-Truth-Trust.md",
+      "source_sha256": "263f5986c7eb9efbdd13c623c4e04d8d7b21ecf046177e4e847eebb4809efe07",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 4790,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/01-T-Truth-Trust.md",
+      "upstream_sha256": "d550f6060081f08ebaa6c7db7913214199cddd2061664081aacc28f0111b9e18"
+    },
+    {
+      "bytes": 4981,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/02-H-Human-Centered-Experience.md",
+      "source_sha256": "7e6083a914fefd526ad6b35f9eec58a25c96ae135c4bba873f01acc9f68c9690",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 4917,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/02-H-Human-Centered-Experience.md",
+      "upstream_sha256": "b7f74fa606b6663fd2e32d151725947beb1378ed960b888983055bcb6ec1e040"
+    },
+    {
+      "bytes": 4804,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/03-R-Reach-Relationships.md",
+      "source_sha256": "54e45c4151a7ec0549eee6ba16533d19549b967a93e0c3289156577a7cd8b450",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 4740,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/03-R-Reach-Relationships.md",
+      "upstream_sha256": "edae594f2cad1f35d31dcc471f111180909bf262f4a1d08b84f26aeb788dcefd"
+    },
+    {
+      "bytes": 5097,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/04-I-Integrated-Campaigns-Operations.md",
+      "source_sha256": "79d7f2c31a3960cb2cab591c81176956a8d62b6809fe241fcc5f00f13ac0df81",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 5033,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/04-I-Integrated-Campaigns-Operations.md",
+      "upstream_sha256": "4ecb34ce32c27d7370b4bd1980c748bc9dadba8e316598470578306f4201dd98"
+    },
+    {
+      "bytes": 4825,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/05-V-Value-Viability.md",
+      "source_sha256": "f3745d3aa2ad43037862f66a02a4e998443157f0c28aef0a5bdfa7a2c253f7a7",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 4761,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/05-V-Value-Viability.md",
+      "upstream_sha256": "e9b490f593d28e244bd3143265795394a1d3b6bb23a5d4141a99b1c0e4298736"
+    },
+    {
+      "bytes": 4914,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/06-E-Ethics-Evidence-Agents.md",
+      "source_sha256": "2d60c805d168d53500970fa783692011546553bddcb1ba73f3573dc15e273497",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 4850,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/thrive/06-E-Ethics-Evidence-Agents.md",
+      "upstream_sha256": "0516b91b565792467556f5e1bd44bd963831e552a7c51f36e5f0c12825b7a657"
+    },
+    {
+      "bytes": 30227,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/workflows/01-THRIVE-Runnable-Workflows.md",
+      "source_sha256": "1ce35d5d8701d7eba97ba91f69f369df40583f9b8b364a347d9a9ef5fb087fd5",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br> without changing text or order; upstream bytes and hash retained",
+      "upstream_bytes": 29843,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/workflows/01-THRIVE-Runnable-Workflows.md",
+      "upstream_sha256": "a28d9191a90a0a021e34e894830e0c9d9122497b88cac9170671c46d9ed42c67"
+    },
+    {
+      "bytes": 5688,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/workflows/02-THRIVE-Setting-and-Role-Recipes.md",
+      "source_sha256": "ace3f6a1cac5eb5d5cbf767305f839d75db543b16242c511cf8f0c7e80ee5951",
+      "transformation": "none; byte-for-byte copy from supplied archive",
+      "upstream_bytes": 5688,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/workflows/02-THRIVE-Setting-and-Role-Recipes.md",
+      "upstream_sha256": "ace3f6a1cac5eb5d5cbf767305f839d75db543b16242c511cf8f0c7e80ee5951"
+    },
+    {
+      "bytes": 740769,
+      "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/workflows/03-THRIVE-Schemas-and-Agents.md",
+      "source_sha256": "a9c08002da4c5ba0eb7d653bfc674b455dea5a3922b1373167be28705b67ff8e",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; required approval.decision=approve for every approved_by_human record; hardened P0/P1/P2/P3 agent-state, record-state, and armed-kill constraints plus blocked/unsupported/rejected zero-delta receipt semantics; refreshed canonical schema hashes; upstream bytes and hash retained",
+      "upstream_bytes": 735275,
+      "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/workflows/03-THRIVE-Schemas-and-Agents.md",
+      "upstream_sha256": "f85813f3aaf18b9cb62919fe6e7b74d556c14f076270aa5361db40368dda1e90"
+    }
+  ],
+  "standalone_wellness_business_lane": true,
+  "suggested_agents_active_after_install": 0,
+  "suggested_agents_total": 10,
+  "templates_total": 30,
+  "thrive_overlay_second": true,
+  "workflows_total": 24
+}

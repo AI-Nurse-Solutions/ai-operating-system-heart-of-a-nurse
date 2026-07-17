@@ -601,6 +601,7 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 .home-resident-video,
 .home-rt-video,
 .home-discover-video,
+.home-thrive-video,
 .home-admin-lane {
   max-width: 720px;
   margin: 3rem auto 0;
@@ -614,14 +615,18 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 .home-resident-video h3,
 .home-rt-video h3,
 .home-discover-video h3,
+.home-thrive-video h3,
 .home-admin-lane h3 { margin: .25rem 0 .45rem; }
 .home-resident-video > p:not(.eyebrow):not(.cta-line),
 .home-rt-video > p:not(.eyebrow):not(.cta-line),
 .home-discover-video > p:not(.eyebrow):not(.cta-line),
+.home-thrive-video > p:not(.eyebrow):not(.cta-line),
 .home-admin-lane > p:not(.eyebrow):not(.cta-line) { margin: 0; color: var(--ink-600); }
 .home-resident-video .home-short-frame,
 .home-rt-video .home-short-frame,
-.home-discover-video .home-short-frame { margin-top: 1.15rem; }
+.home-discover-video .home-short-frame,
+.home-thrive-video .home-short-frame,
+.home-admin-lane .home-short-frame { margin-top: 1.15rem; }
 .home-resident-video .cta-line { margin: 1rem 0 0; }
 .home-rt-video {
   margin-top: 1.5rem;
@@ -634,6 +639,12 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
   background: linear-gradient(145deg, rgba(255,255,255,.95), rgba(231,245,241,.92));
 }
 .home-discover-video .cta-line { margin: 1rem 0 0; }
+.home-thrive-video {
+  margin-top: 1.5rem;
+  border-color: #8d3f6c;
+  background: linear-gradient(145deg, rgba(255,255,255,.95), rgba(247,234,240,.94));
+}
+.home-thrive-video .cta-line { margin: 1rem 0 0; }
 .home-admin-lane {
   margin-top: 1.5rem;
   border-color: #0b7d7b;

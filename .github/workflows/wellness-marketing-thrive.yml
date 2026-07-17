@@ -1,0 +1,119 @@
+name: Wellness Marketing THRIVE Release
+
+on:
+  pull_request:
+    paths:
+      - "wellness-services-marketing-managers/**"
+      - "hospital-clinic-administrators/index.html"
+      - "scripts/build-wellness-marketing-thrive.py"
+      - "scripts/validate-wellness-marketing-thrive-schemas.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_wellness_marketing_thrive.py"
+      - "tests/test_hospital_clinic_steward.py"
+      - "tests/test_medical_resident_rounds.py"
+      - "tests/test_respiratory_care_breathe.py"
+      - "tests/test_healthcare_research_innovation_discover.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
+      - "index.html"
+      - "assets/nurse-ai.css"
+      - "sitemap.xml"
+      - "README.md"
+      - ".github/workflows/wellness-marketing-thrive.yml"
+  push:
+    branches: [main]
+    paths:
+      - "wellness-services-marketing-managers/**"
+      - "hospital-clinic-administrators/index.html"
+      - "scripts/build-wellness-marketing-thrive.py"
+      - "scripts/validate-wellness-marketing-thrive-schemas.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_wellness_marketing_thrive.py"
+      - "tests/test_hospital_clinic_steward.py"
+      - "tests/test_medical_resident_rounds.py"
+      - "tests/test_respiratory_care_breathe.py"
+      - "tests/test_healthcare_research_innovation_discover.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
+      - "index.html"
+      - "assets/nurse-ai.css"
+      - "sitemap.xml"
+      - "README.md"
+      - ".github/workflows/wellness-marketing-thrive.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned Draft 2020-12 validator
+        run: python3 -m pip install --disable-pip-version-check jsonschema==4.25.1
+      - name: Rebuild committed THRIVE release bytes twice
+        run: |
+          python3 scripts/build-wellness-marketing-thrive.py
+          first="$(sha256sum wellness-services-marketing-managers/downloads/thrive-wellness-marketing-management-complete-edition.zip | cut -d' ' -f1)"
+          python3 scripts/build-wellness-marketing-thrive.py
+          second="$(sha256sum wellness-services-marketing-managers/downloads/thrive-wellness-marketing-management-complete-edition.zip | cut -d' ' -f1)"
+          test "$first" = "$second"
+          git diff --exit-code
+      - name: Run THRIVE package, consent, video, and isolation tests
+        run: python3 tests/test_wellness_marketing_thrive.py
+      - name: Compile schemas and prove agent and receipt conditions fail closed
+        run: python3 scripts/validate-wellness-marketing-thrive-schemas.py
+      - name: Run STEWARD and adjacent-lane homepage regressions
+        run: |
+          python3 tests/test_hospital_clinic_steward.py
+          python3 tests/test_medical_resident_rounds.py
+          python3 tests/test_respiratory_care_breathe.py
+          python3 tests/test_healthcare_research_innovation_discover.py
+      - name: Refuse accidental secrets, PHI, or realistic individual records
+        run: |
+          python3 scripts/scan-public-healthcare-artifacts.py wellness-services-marketing-managers --label THRIVE
+          python3 scripts/scan-public-healthcare-artifacts.py hospital-clinic-administrators --label STEWARD-PREVIEW
+      - name: Verify local HTTP routes, manifests, and videos
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/thrive-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for path in \
+            / \
+            /wellness-services-marketing-managers/ \
+            /wellness-services-marketing-managers/downloads/manifest.json \
+            /wellness-services-marketing-managers/downloads/thrive-wellness-marketing-management-complete-edition.zip \
+            /hospital-clinic-administrators/
+          do
+            curl --retry 20 --retry-connrefused --retry-delay 1 --fail --silent --show-error --output /tmp/thrive-response "http://127.0.0.1:8765$path"
+            test -s /tmp/thrive-response
+          done
+          grep -q "youtube-nocookie.com/embed/Ndk5C78e7jQ" wellness-services-marketing-managers/index.html
+          grep -q "youtube-nocookie.com/embed/xdlnYkMJQl4" hospital-clinic-administrators/index.html
+      - name: Verify page links and Python syntax
+        run: |
+          python3 -m py_compile scripts/build-wellness-marketing-thrive.py scripts/validate-wellness-marketing-thrive-schemas.py tests/test_wellness_marketing_thrive.py
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Links(HTMLParser):
+              def __init__(self): super().__init__(); self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  values=dict(attrs)
+                  for key in ("href", "src"):
+                      if values.get(key): self.links.append(values[key])
+          for page in (Path("wellness-services-marketing-managers/index.html"), Path("hospital-clinic-administrators/index.html")):
+              parser=Links(); parser.feed(page.read_text(encoding="utf-8"))
+              for link in parser.links:
+                  if link.startswith(("http:", "https:", "mailto:", "tel:", "#", "data:")): continue
+                  target=(page.parent / link.split("#",1)[0].split("?",1)[0]).resolve()
+                  if link.endswith("/") or target.is_dir(): target=target / "index.html"
+                  if not target.exists(): raise SystemExit(f"Missing local target from {page}: {link}")
+          print("THRIVE_STEWARD_LINKS=passed")
+          PY

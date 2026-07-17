@@ -20,7 +20,7 @@ PROGRAM_NAME='Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-
 SOURCE_PACK='Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0'
 WRAPPER_DIGESTS={
  '00-READ-FIRST.md':'12941b98af5cabc887a9f164b43e7ed4c82aa450d9b94231d544726a0ccbe8b1',
- 'ROLE-PACK.json':'40fbb009ccf2c5d421535c368c5e13904b26839cf0b30f032af79ff1e7a832c6',
+ 'ROLE-PACK.json':'ea80170fbeaa489d1543f9ced1fa54867be96d9a693d75aae4d09a22f36b9fdf',
 }
 
 def sha256(path:Path)->str:return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -49,8 +49,8 @@ def load_manifest()->dict:
  expected={
   'activation':'user_initiated_guided_complete_setup_with_combined_activation_card',
   'canonical_dashboard_route':'/wellness-services-marketing-managers/dashboard','dashboard_alias':'/wellness-services-marketing-managers/mission-control',
-  'fixtures_adapters_total':10,'mission_control':'My THRIVE Mission Control','namespace':'wellness_thrive.*',
-  'optional_superpowers_active_after_install':0,'optional_superpowers_total':24,'package_version':'2026.07.17.1',
+  'mission_control':'My THRIVE Mission Control','namespace':'wellness_thrive.*','release_fixtures_total':10,'runtime_adapters_total':10,'schema_fixtures_total':11,
+  'optional_superpowers_active_after_install':0,'optional_superpowers_total':24,'package_version':'2026.07.17.2',
   'population_lane':'wellness_services_marketing_management','program_id':'WELLMKT-AIOS-THRIVE-COMPLETE-1.0',
   'records_total':18,'role':'Wellness Services Marketer & Manager — THRIVE','route':'/wellness-services-marketing-managers/',
   'runtime_criteria':{'publication_status':'specified_not_prepassed','s1':40,'s2':120,'total':160},
@@ -118,7 +118,7 @@ def build()->dict:
   for name in sorted(files):
    info=zipfile.ZipInfo(f'{ZIP_PREFIX}/{name}',FIXED_ZIP_TIME);info.create_system=3;info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16
    z.writestr(info,files[name].read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
- record={k:m[k] for k in ('activation','foundation_first','install_on_download','installation_status','institutional_deployment_requires_separate_authorization','no_phi','optional_superpowers_active_after_install','optional_superpowers_total','package_version','person_level_data_allowed','population_lane','pre_install_disclosure_required','role','route','runtime_criteria','schemas_total','standalone_wellness_business_lane','suggested_agents_active_after_install','suggested_agents_total','templates_total','workflows_total')}
+ record={k:m[k] for k in ('activation','foundation_first','install_on_download','installation_status','institutional_deployment_requires_separate_authorization','no_phi','optional_superpowers_active_after_install','optional_superpowers_total','package_version','person_level_data_allowed','population_lane','pre_install_disclosure_required','role','route','release_fixtures_total','runtime_adapters_total','runtime_criteria','schema_fixtures_total','schemas_total','standalone_wellness_business_lane','suggested_agents_active_after_install','suggested_agents_total','templates_total','workflows_total')}
  record.update({'bytes':output.stat().st_size,'download':f'downloads/{ZIP_NAME}','sha256':sha256(output)})
  public={'installation_status':'not_installed','packages':[record],'purpose':'standalone wellness services marketing and management lane; isolated from nursing, clinical, research, respiratory, resident, and hospital-administration state','release':m['package_version'],'schema_version':'1.0'}
  (DOWNLOADS/'manifest.json').write_text(json.dumps(public,indent=2,sort_keys=True)+'\n',encoding='utf-8')

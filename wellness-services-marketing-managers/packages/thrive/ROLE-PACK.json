@@ -10,7 +10,6 @@
   "dashboard_alias": "/wellness-services-marketing-managers/mission-control",
   "employment_decisions": false,
   "financial_or_procurement_authority": false,
-  "fixtures_adapters_total": 10,
   "foundation_first": true,
   "health_claim_release_authority": false,
   "healthcare_research_population_state_shared": false,
@@ -29,22 +28,25 @@
   "optional_superpowers_active_after_install": 0,
   "optional_superpowers_total": 24,
   "package_id": "naio-wellness-marketing-management-thrive",
-  "package_version": "2026.07.17.1",
+  "package_version": "2026.07.17.2",
   "person_level_data_allowed": false,
   "population_lane": "wellness_services_marketing_management",
   "pre_install_disclosure_required": true,
   "program_id": "WELLMKT-AIOS-THRIVE-COMPLETE-1.0",
   "records_total": 18,
+  "release_fixtures_total": 10,
   "respiratory_care_population_state_shared": false,
   "role": "Wellness Services Marketer & Manager \u2014 THRIVE",
   "role_selection_verifies_credentials_or_authority": false,
   "route": "/wellness-services-marketing-managers/",
+  "runtime_adapters_total": 10,
   "runtime_criteria": {
     "publication_status": "specified_not_prepassed",
     "s1": 40,
     "s2": 120,
     "total": 160
   },
+  "schema_fixtures_total": 11,
   "schema_version": "1.0",
   "schemas_total": 18,
   "source_archive": {
@@ -73,10 +75,10 @@
       "upstream_sha256": "5f4558b0b6e4a1b11454730ade8c59085d6857ff168cf9436c876a57197c4297"
     },
     {
-      "bytes": 960962,
+      "bytes": 961004,
       "packaged_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Hermes-Program.md",
-      "source_sha256": "e9f231c6f314365ee9e08498639fcaa8b0510c7d9491d8abf52c4b76a7939e85",
-      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; embedded normalized direct components and refreshed all 17 component hashes; added the exact digest-bound THRIVE Activation Card, no-state stop, exact post-card command, and material-change invalidation; embedded hardened agent and control-receipt schemas; upstream bytes and hash retained",
+      "source_sha256": "351ba0d6e444a47df90c7214ea9341f3659b941f0c5129945343118d820820f7",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; embedded normalized direct components and refreshed all 17 component hashes; added the exact digest-bound THRIVE Activation Card, no-state stop, exact post-card command, and material-change invalidation; embedded hardened agent and control-receipt schemas; upstream bytes and hash retained; clarified the distinct inventories of ten release fixtures, ten paired runtime adapters, and 11 canonical schema fixtures",
       "upstream_bytes": 952145,
       "upstream_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Hermes-Program.md",
       "upstream_sha256": "ac07a7bc414cedbff9dc74a34975ca817f21a11d0e1e6f5a0f73169eb84ce571"

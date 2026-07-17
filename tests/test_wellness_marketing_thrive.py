@@ -17,7 +17,7 @@ def ledger(path:Path)->dict[str,str]:
 class ThriveReleaseTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.role=json.loads((PKG/'ROLE-PACK.json').read_text());cls.program=PROGRAM.read_text();cls.page=(LANE/'index.html').read_text();cls.home=(ROOT/'index.html').read_text();cls.admin=(ROOT/'hospital-clinic-administrators/index.html').read_text();cls.builder=(ROOT/'scripts/build-wellness-marketing-thrive.py').read_text()
+  cls.role=json.loads((PKG/'ROLE-PACK.json').read_text());cls.program=PROGRAM.read_text();cls.page=(LANE/'index.html').read_text();cls.home=(ROOT/'index.html').read_text();cls.admin=(ROOT/'hospital-clinic-administrators/index.html').read_text();cls.builder=(ROOT/'scripts/build-wellness-marketing-thrive.py').read_text();cls.workflow=(ROOT/'.github/workflows/wellness-marketing-thrive.yml').read_text()
  def test_source_archive_and_provenance_are_pinned(self):
   self.assertEqual(self.role['source_archive'],{'bytes':536136,'members':23,'sha256':'3561455a9147df173a284e5fcf1ee5dd26b73ef31ae3ca2ffca5c1383a88ff1a','supplied_name':'THRIVE-Wellness-Marketing-Management-Pack.zip'})
   self.assertEqual(len(self.role['source_files']),23);self.assertEqual(len({r['upstream_path'] for r in self.role['source_files']}),23);self.assertEqual(len({r['packaged_path'] for r in self.role['source_files']}),23)
@@ -35,19 +35,27 @@ class ThriveReleaseTests(unittest.TestCase):
   for rel,d,body in blocks:
    p=PKG/SP/rel.strip();self.assertTrue(p.is_file());self.assertEqual(sha(p),d);self.assertEqual(body.strip(),p.read_text().strip())
  def test_exact_activation_card_is_in_controlling_program(self):
-  for phrase in ('exact combined **THRIVE Activation Card**','target Hermes environment and exact complete-program SHA-256','operator, organization/brand, active professional hat','17 component paths and verified hashes','24 powers `Available Inactive`','allowed and prohibited data, sources, wellness/health claims','supported, unsupported, blocked, or uncertain target capabilities','exact rollback, quarantine, resume, repair, export, delete, and THRIVE-only uninstall scope','Stop after displaying the card. Create no state','INSTALL THRIVE AFTER S0 — USE EXACT VERIFIED COMPONENT HASHES AND KEEP ALL POWERS AND AGENTS INACTIVE.','general request to “publish and install” is never approval','invalidates approval and requires a new card'):
+  for phrase in ('exact combined **THRIVE Activation Card**','target Hermes environment and exact complete-program SHA-256','operator, organization/brand, active professional hat','17 component paths and verified hashes','24 powers `Available Inactive`','ten release fixture/adapter pairs, 11 canonical schema fixtures','allowed and prohibited data, sources, wellness/health claims','supported, unsupported, blocked, or uncertain target capabilities','exact rollback, quarantine, resume, repair, export, delete, and THRIVE-only uninstall scope','Stop after displaying the card. Create no state','INSTALL THRIVE AFTER S0 — USE EXACT VERIFIED COMPONENT HASHES AND KEEP ALL POWERS AND AGENTS INACTIVE.','general request to “publish and install” is never approval','invalidates approval and requires a new card'):
    self.assertIn(phrase,self.program)
  def test_read_first_download_and_institutional_boundaries(self):
   text=(PKG/'00-READ-FIRST.md').read_text()
   for phrase in ('Downloading, selecting, opening, or unzipping this package does not install or activate anything','INSPECT THRIVE INSTALLER ONLY — CREATE NO STATE.','specified—not pre-passed','Private-workspace approval does not authorize organizational deployment','Human approval does not convert a categorically prohibited function into an allowed one'):
    self.assertIn(phrase,text)
  def test_manifest_counts_and_default_states(self):
-  expected={'installation_status':'not_installed','install_on_download':False,'standalone_wellness_business_lane':True,'optional_superpowers_total':24,'optional_superpowers_active_after_install':0,'workflows_total':24,'templates_total':30,'schemas_total':18,'suggested_agents_total':10,'suggested_agents_active_after_install':0,'fixtures_adapters_total':10,'records_total':18,'person_level_data_allowed':False,'live_person_contact':False,'official_system_writes':False,'health_claim_release_authority':False}
+  expected={'installation_status':'not_installed','install_on_download':False,'standalone_wellness_business_lane':True,'optional_superpowers_total':24,'optional_superpowers_active_after_install':0,'workflows_total':24,'templates_total':30,'schemas_total':18,'suggested_agents_total':10,'suggested_agents_active_after_install':0,'release_fixtures_total':10,'runtime_adapters_total':10,'schema_fixtures_total':11,'records_total':18,'person_level_data_allowed':False,'live_person_contact':False,'official_system_writes':False,'health_claim_release_authority':False}
   for k,v in expected.items():self.assertEqual(self.role[k],v,k)
   self.assertEqual(self.role['runtime_criteria'],{'publication_status':'specified_not_prepassed','s1':40,'s2':120,'total':160})
  def test_source_inventories_are_exact(self):
   tests=(PKG/SP/'tests/01-THRIVE-Release-and-Runtime-Tests.md').read_text();workflow=(PKG/SP/'workflows/01-THRIVE-Runnable-Workflows.md').read_text();templates=(PKG/SP/'templates/01-THRIVE-Functional-Templates.md').read_text();schemas=(PKG/SP/'workflows/03-THRIVE-Schemas-and-Agents.md').read_text()
   self.assertEqual(len(set(re.findall(r'RA-(?:[A-R]\d{2}|INT\d{2})',tests))),160);self.assertEqual(len(set(re.findall(r'WF-(\d{2})',workflow))),24);self.assertEqual(len(set(re.findall(r'TPL-(\d{2})',templates))),30);self.assertEqual(len(set(re.findall(r'AGT-(\d{2})',schemas))),10);self.assertEqual(len(re.findall(r'^### `https://nurse-ai-os\.local/schemas/wellness_thrive/',schemas,re.M)),18)
+  self.assertEqual(len(set(re.findall(r'(?<!SCHEMA-)FX-(\d{2})@1\.0\.0',tests))),10)
+  adapter_ids=set()
+  for payload in re.findall(r'```json\n([^\n]+)\n```',tests):
+   try:data=json.loads(payload)
+   except json.JSONDecodeError:continue
+   if isinstance(data,dict) and 'adapter_id' in data:adapter_ids.add((data['adapter_id'],data.get('version')))
+  self.assertEqual(len(adapter_ids),10)
+  self.assertEqual(len(set(re.findall(r'SCHEMA-FX-[A-Z0-9-]+@1\.0\.0',schemas))),11)
  def test_page_states_boundaries_without_overclaiming(self):
   for phrase in ('Standalone wellness-business lane','Downloading changes nothing','No clinical advice, manufactured evidence, sensitive targeting, or consequential action','The 160 criteria are specified, not pre-passed','Institutional use is a separate state','Hermes Agent is an external open-source runtime'):
    self.assertIn(phrase,self.page)
@@ -80,4 +88,7 @@ class ThriveReleaseTests(unittest.TestCase):
   self.assertIn('@media (prefers-reduced-motion: reduce)',(ROOT/'assets/nurse-ai.css').read_text());self.assertIn('https://nurse-ai-os.org/wellness-services-marketing-managers/',(ROOT/'sitemap.xml').read_text())
  def test_builder_pins_current_role_manifest(self):
   self.assertIn(f"'ROLE-PACK.json':'{sha(PKG/'ROLE-PACK.json')}'",self.builder);self.assertIn(f"'00-READ-FIRST.md':'{sha(PKG/'00-READ-FIRST.md')}'",self.builder)
+ def test_ci_tracks_generated_release_and_rejects_untracked_rebuilds(self):
+  for phrase in ('git ls-files --error-unmatch','downloads/CHECKSUMS.sha256','downloads/manifest.json','downloads/thrive-wellness-marketing-management-complete-edition.zip','packages/thrive/PACKAGE-CHECKSUMS.sha256','git status --porcelain --untracked-files=all'):
+   self.assertIn(phrase,self.workflow)
 if __name__=='__main__':unittest.main(verbosity=2)

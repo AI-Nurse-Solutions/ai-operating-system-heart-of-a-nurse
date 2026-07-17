@@ -77,7 +77,7 @@ After Phase 1 integrity verification, run read-only S0 without creating state. B
 - operator, organization/brand, active professional hat, authority source, authority expiry, spending/approval thresholds, and unresolved authority;
 - isolated lane, route, namespace, partitions, ACLs, optional owner-private store choice, and cross-lane denial;
 - the 17 component paths and verified hashes;
-- 24 powers `Available Inactive`, 24 workflows `Preview Only`, 30 templates, 18 schemas, ten agents `PERM-P0 Disabled`, ten fixtures/adapters, and 160 criteria in `specified` state;
+- 24 powers `Available Inactive`, 24 workflows `Preview Only`, 30 templates, 18 schemas, ten agents `PERM-P0 Disabled`, ten release fixture/adapter pairs, 11 canonical schema fixtures, and 160 criteria in `specified` state;
 - allowed and prohibited data, sources, wellness/health claims, audiences, tools, network, destinations, actions, contact, publication, spend, and persistence boundaries;
 - named clinical, substantiation, privacy, legal/compliance, accessibility, finance, HR, security, brand, and executive human routes;
 - supported, unsupported, blocked, or uncertain target capabilities;

@@ -65,6 +65,12 @@ jobs:
           second="$(sha256sum wellness-services-marketing-managers/downloads/thrive-wellness-marketing-management-complete-edition.zip | cut -d' ' -f1)"
           test "$first" = "$second"
           git diff --exit-code
+          git ls-files --error-unmatch \
+            wellness-services-marketing-managers/downloads/CHECKSUMS.sha256 \
+            wellness-services-marketing-managers/downloads/manifest.json \
+            wellness-services-marketing-managers/downloads/thrive-wellness-marketing-management-complete-edition.zip \
+            wellness-services-marketing-managers/packages/thrive/PACKAGE-CHECKSUMS.sha256
+          test -z "$(git status --porcelain --untracked-files=all)"
       - name: Run THRIVE package, consent, video, and isolation tests
         run: python3 tests/test_wellness_marketing_thrive.py
       - name: Compile schemas and prove agent and receipt conditions fail closed

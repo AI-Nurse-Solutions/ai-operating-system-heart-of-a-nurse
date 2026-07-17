@@ -1,0 +1,41 @@
+name: Homepage Steward's Charter
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "assets/nurse-ai.css"
+      - "tests/test_home_stewards_charter.py"
+      - ".github/workflows/home-stewards-charter.yml"
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "assets/nurse-ai.css"
+      - "tests/test_home_stewards_charter.py"
+      - ".github/workflows/home-stewards-charter.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Verify Charter placement, doctrine, scope, and accessibility
+        run: python3 tests/test_home_stewards_charter.py
+      - name: Refuse accidental secrets, PHI, or realistic individual records
+        run: |
+          mkdir -p /tmp/home-charter-public/assets
+          cp index.html /tmp/home-charter-public/index.html
+          cp assets/nurse-ai.css /tmp/home-charter-public/assets/nurse-ai.css
+          python3 scripts/scan-public-healthcare-artifacts.py /tmp/home-charter-public --label HOME-CHARTER
+      - name: Verify workflow and test syntax
+        run: python3 -m py_compile tests/test_home_stewards_charter.py

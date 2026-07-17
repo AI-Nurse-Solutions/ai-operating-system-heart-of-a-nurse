@@ -2,7 +2,7 @@
 
 Recipes select questions and Preview workflows only. They never widen the product's authority, data, permission or action ceiling.
 
-## 12. Setting and role recipes
+## 10. Setting and role recipes
 
 Recipes select workflows and questions only. They can never widen the product’s data, action, permission or authority ceiling.
 

@@ -41,7 +41,7 @@ Show at most seven attention items. Order blocked/expired first, then due timest
 
 - **Mode:** Preview only; opens `DSC-WF-16` and never executes an external action.
 - **Allowed input / schema:** synthetic/non-production inputs; validate against `innovation_validation_experiment`.
-- **Human gate:** innovation, safety, privacy and operations owners reviews the exact object/version/hash.
+- **Human gate:** innovation, safety, privacy and operations owners review the exact object/version/hash.
 - **Receipt and expiry:** emit `control_audit_receipt`; stale authority/source/approval blocks and re-routes.
 - **Rollback/discard:** discard unapproved preview; remove staged refs; preserve a minimal tamper-evident control receipt when policy requires.
 

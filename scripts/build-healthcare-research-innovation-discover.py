@@ -27,7 +27,7 @@ PROGRAM_NAME = "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DI
 SOURCE_PACK = "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0"
 WRAPPER_DIGESTS = {
     "00-READ-FIRST.md": "4acfcfe9461c43ab9548de951a914021288590a4a1e583e47d736aa9dc7b3cbe",
-    "ROLE-PACK.json": "cc560b71525ca23c7ee7384ff74ebf7b8944e8ad763a659faf5aaefbd1a83294",
+    "ROLE-PACK.json": "39d4f2e3781dae91b1768dbdf0e5c452fe231dcdb5d6de94a2eae7dd0401fb95",
 }
 
 

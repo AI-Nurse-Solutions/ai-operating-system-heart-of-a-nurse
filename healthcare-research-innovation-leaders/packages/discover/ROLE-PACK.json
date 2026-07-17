@@ -54,10 +54,10 @@
   },
   "source_files": [
     {
-      "bytes": 1675649,
+      "bytes": 1688328,
       "packaged_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Hermes-Program.md",
-      "source_sha256": "58ba1c8746efc335060948a666b5c1ac836e2b0cc9b36fe498256b5bfd74d238",
-      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; recomputed the 17 normalized component hashes in the complete-program table and markers while preserving component order and content parity",
+      "source_sha256": "dd9b375581bc1e1ab9441fad6c8eb43a929aa65dce2af84492d1b0efb267157f",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; recomputed the 17 normalized component hashes in the complete-program table and markers while preserving component order and content parity; embedded the four release-hardening component corrections with refreshed component hashes; upstream bytes and hash remain recorded",
       "upstream_bytes": 1675125,
       "upstream_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Hermes-Program.md",
       "upstream_sha256": "61e900ac5c2b10ee240086ab8d24617ff9ea272bdb18b7bd181a8c60cd6102b5"
@@ -117,10 +117,10 @@
       "upstream_sha256": "243c4b4285631aa62d150616dcf914b6e0ddf6b7b5d8ec0a03766842d00a2b2c"
     },
     {
-      "bytes": 4423,
+      "bytes": 4422,
       "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/03-Nurse-AI-OS-Mission-Control-and-Dashboard-Integration.md",
-      "source_sha256": "43a22e263c9d5fb3ba7cc6a334667cfd68e4d960e5ad4a8567a74465fe160fd8",
-      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "source_sha256": "b6e960239f7394c8797b79a547507c10e383cae3e7e07d7fe229a74e923b7915",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; corrected supplied subject-verb agreement in the human-gate sentence; upstream bytes and hash remain recorded",
       "upstream_bytes": 4419,
       "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/03-Nurse-AI-OS-Mission-Control-and-Dashboard-Integration.md",
       "upstream_sha256": "12e4b792dd2e3756340cc1818961a8d11d1887fbe69ca57c006e15822763a686"
@@ -198,10 +198,10 @@
       "upstream_sha256": "157ef320981710d6abcbab4aa102dedb3362ca981fd4b9741f2564312f66ddcb"
     },
     {
-      "bytes": 133681,
+      "bytes": 135708,
       "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/templates/01-DISCOVER-Functional-Templates.md",
-      "source_sha256": "7b04a7e30449a170d83be94e21ef690206e59c6b5dbb14a07bd7ef6847a4f82a",
-      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "source_sha256": "c6193e1ef02571a5049fadc7fe8c232156e65ec9d4a7899168f84ca2456244d1",
+      "transformation": "none; byte-for-byte copy from the supplied archive; release-hardening correction: removed conclusive readiness fields and added explicit audit-receipt envelope fields; upstream bytes and hash remain recorded",
       "upstream_bytes": 133681,
       "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/templates/01-DISCOVER-Functional-Templates.md",
       "upstream_sha256": "7b04a7e30449a170d83be94e21ef690206e59c6b5dbb14a07bd7ef6847a4f82a"
@@ -227,17 +227,17 @@
     {
       "bytes": 4613,
       "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/02-DISCOVER-Setting-Role-and-Situation-Recipes.md",
-      "source_sha256": "8f2ca58570cf85bfbb0f7a1763d322ec1c746131446441b6f95f14e1dd58eb3c",
-      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "source_sha256": "fde9451c72f78191efb647d3fff95c938669fcb3b76f3c811370d83a2ecef729",
+      "transformation": "none; byte-for-byte copy from the supplied archive; corrected supplied recipe heading count from 12 to the 10 published table rows; upstream bytes and hash remain recorded",
       "upstream_bytes": 4613,
       "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/02-DISCOVER-Setting-Role-and-Situation-Recipes.md",
       "upstream_sha256": "8f2ca58570cf85bfbb0f7a1763d322ec1c746131446441b6f95f14e1dd58eb3c"
     },
     {
-      "bytes": 395377,
+      "bytes": 406038,
       "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/03-DISCOVER-Schemas-and-Agents.md",
-      "source_sha256": "063dff06fe7652ff3e24fa5328b13f56f4540608ac41d08f668db0f01efd90be",
-      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "source_sha256": "e23304e1f0e9acbf4558aca3a6e02015d71fb046a7d7243785e4aa302ef7bb63",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; release-hardening correction: canonical schemas now fail closed for zero/blocked delta counts and P0/P1 agent state, with active agent-to-record-state bindings; upstream bytes and hash remain recorded",
       "upstream_bytes": 395371,
       "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/03-DISCOVER-Schemas-and-Agents.md",
       "upstream_sha256": "530279d475b9f7c202dbe438648ccb1c2d76150898c3d7f1029087cec0e5b335"

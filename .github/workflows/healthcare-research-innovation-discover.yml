@@ -67,6 +67,20 @@ jobs:
           python3 tests/test_respiratory_care_breathe.py
       - name: Refuse accidental secrets or PHI examples
         run: python3 scripts/scan-public-healthcare-artifacts.py healthcare-research-innovation-leaders --label DISCOVER
+      - name: Verify local HTTP route, manifest, and download
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/discover-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for path in \
+            / \
+            /healthcare-research-innovation-leaders/ \
+            /healthcare-research-innovation-leaders/downloads/manifest.json \
+            /healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip
+          do
+            curl --fail --silent --show-error --output /tmp/discover-response "http://127.0.0.1:8765$path"
+            test -s /tmp/discover-response
+          done
       - name: Verify page links and Python syntax
         run: |
           python3 -m py_compile scripts/build-healthcare-research-innovation-discover.py scripts/validate-healthcare-research-innovation-discover-schemas.py tests/test_healthcare_research_innovation_discover.py

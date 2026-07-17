@@ -31,6 +31,12 @@ def rejects(validator: Draft202012Validator, instance: Any) -> bool:
     return bool(list(validator.iter_errors(instance)))
 
 
+def require_accepts(validator: Draft202012Validator, instance: Any, label: str) -> None:
+    errors = list(validator.iter_errors(instance))
+    if errors:
+        raise SystemExit(f"{label}: valid baseline rejected: {errors[0].message}")
+
+
 def conditional_fragment(schema: dict[str, Any], branch: dict[str, Any], fields: tuple[str, str]) -> dict[str, Any]:
     properties = schema["properties"]
     return {
@@ -118,8 +124,90 @@ def main() -> None:
         elif aggregate_branch is not None:
             raise SystemExit(f"{name}: inapplicable aggregate evidence branch")
 
+        digest = "0" * 64
+        for definition_name, blocked_disposition, local_disposition, count_fields in (
+            ("actionDelta", "expected_block", "local_preview_only", ("created", "changed", "deleted")),
+            ("dataDelta", "expected_rejection", "approved_local_preview", ("records_read", "records_written")),
+        ):
+            definition = schema["$defs"][definition_name]
+            Draft202012Validator.check_schema(definition)
+            validator = Draft202012Validator(definition)
+            base: dict[str, Any] = {field: 0 for field in count_fields}
+            base.update({"disposition": "zero", "delta_sha256": digest})
+            if definition_name == "actionDelta":
+                base["external_side_effect_count"] = 0
+            else:
+                base["prohibited_records_retained"] = 0
+                base["cross_partition_disclosures"] = 0
+            require_accepts(validator, base, f"{name}/{definition_name}")
+            contradictory = dict(base)
+            contradictory[count_fields[0]] = 1
+            if not rejects(validator, contradictory):
+                raise SystemExit(f"{name}/{definition_name}: zero disposition accepted nonzero count")
+            contradictory["disposition"] = blocked_disposition
+            if not rejects(validator, contradictory):
+                raise SystemExit(f"{name}/{definition_name}: blocked disposition accepted nonzero count")
+            contradictory["disposition"] = local_disposition
+            require_accepts(validator, contradictory, f"{name}/{definition_name} local delta")
+
+        if name == "agent_charter_trace":
+            content = schema["properties"]["content"]
+            agent_fields = (
+                "agent_state", "permission", "invocation_count", "one_run_authorization",
+                "source_allowlist", "tool_allowlist", "destination_allowlist", "network_allowlist",
+                "external_writes", "retry_count",
+            )
+            agent_fragment = {
+                "$schema": schema["$schema"],
+                "$defs": schema["$defs"],
+                "type": "object",
+                "properties": {field: content["properties"][field] for field in agent_fields},
+                "required": list(agent_fields),
+                "allOf": content["allOf"],
+                "additionalProperties": False,
+            }
+            agent_validator = Draft202012Validator(agent_fragment)
+            p0 = {
+                "agent_state": "disabled", "permission": "PERM-P0", "invocation_count": 0,
+                "one_run_authorization": None, "source_allowlist": [], "tool_allowlist": [],
+                "destination_allowlist": [], "network_allowlist": [], "external_writes": "off",
+                "retry_count": 0,
+            }
+            require_accepts(agent_validator, p0, "agent/P0 disabled")
+            p0_running = dict(p0, agent_state="running")
+            if not rejects(agent_validator, p0_running):
+                raise SystemExit("agent: PERM-P0 running state was accepted")
+
+            state_branches = [
+                branch for branch in schema["allOf"]
+                if "content" in branch.get("if", {}).get("properties", {})
+                and "record_state" in branch.get("then", {}).get("properties", {})
+            ]
+            state_fragment = {
+                "$schema": schema["$schema"],
+                "type": "object",
+                "properties": {
+                    "record_state": schema["properties"]["record_state"],
+                    "content": {
+                        "type": "object",
+                        "properties": {"agent_state": content["properties"]["agent_state"]},
+                        "required": ["agent_state"],
+                        "additionalProperties": False,
+                    },
+                },
+                "required": ["record_state", "content"],
+                "allOf": state_branches,
+                "additionalProperties": False,
+            }
+            state_validator = Draft202012Validator(state_fragment)
+            require_accepts(state_validator, {"record_state": "running", "content": {"agent_state": "running"}}, "agent state binding")
+            if not rejects(state_validator, {"record_state": "draft", "content": {"agent_state": "running"}}):
+                raise SystemExit("agent: running content with draft record state was accepted")
+
     print("DISCOVER_SCHEMA_COMPILE=passed draft=2020-12 schemas=18")
     print("DISCOVER_CONDITIONAL_EVIDENCE=fail_closed approval_negative_cases=17 aggregate_negative_cases=17 private_nonapprovable=1")
+    print("DISCOVER_DELTA_CONSISTENCY=fail_closed schema_definitions=36 contradictory_negative_cases=72")
+    print("DISCOVER_AGENT_STATE=fail_closed p0_running_rejected=1 state_mismatch_rejected=1")
 
 
 if __name__ == "__main__":

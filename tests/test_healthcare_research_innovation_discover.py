@@ -52,7 +52,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         records = {item["packaged_path"]: item for item in self.manifest["source_files"]}
         self.assertEqual(len(records), 23)
         self.assertEqual(records[PROGRAM.name]["upstream_sha256"], "61e900ac5c2b10ee240086ab8d24617ff9ea272bdb18b7bd181a8c60cd6102b5")
-        self.assertEqual(records[PROGRAM.name]["source_sha256"], "58ba1c8746efc335060948a666b5c1ac836e2b0cc9b36fe498256b5bfd74d238")
+        self.assertEqual(records[PROGRAM.name]["source_sha256"], "dd9b375581bc1e1ab9441fad6c8eb43a929aa65dce2af84492d1b0efb267157f")
         self.assertEqual(records[DOCX.name]["upstream_sha256"], records[DOCX.name]["source_sha256"])
         for name, record in records.items():
             path = PACKAGE / name
@@ -73,8 +73,10 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
                 self.assertTrue(
                     "trailing-space hard breaks" in record["transformation"]
                     or record["packaged_path"] == "README.md"
+                    or "release-hardening correction" in record["transformation"]
+                    or "corrected supplied recipe heading count" in record["transformation"]
                 )
-        self.assertEqual(normalized, 16)
+        self.assertEqual(normalized, 18)
         package_readme = (PACKAGE / "README.md").read_text(encoding="utf-8")
         self.assertIn("exactly **26 files**", package_readme)
         self.assertIn("discover-healthcare-research-innovation-leader-complete-edition.zip", package_readme)
@@ -106,6 +108,21 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         self.assertEqual(re.findall(r"\*\*Inventory ID:\*\* `DSC-WF-(\d{2})`", workflows), [f"{index:02d}" for index in range(1, 25)])
         templates = (SOURCE_PACK / "templates" / "01-DISCOVER-Functional-Templates.md").read_text(encoding="utf-8")
         self.assertEqual(re.findall(r"^## TPL-(\d{2}) —", templates, re.MULTILINE), [f"{index:02d}" for index in range(1, 31)])
+        self.assertNotIn("readiness_conclusion", templates)
+        self.assertEqual(templates.count("unresolved_readiness_blockers"), 8)
+        for receipt_field in (
+            "before_state_sha256", "after_state_sha256",
+            "expected_action_delta", "observed_action_delta",
+            "expected_data_delta", "observed_data_delta",
+            "controlled_object_sha256", "reviewed_at", "expires_at",
+        ):
+            self.assertIn(f"**{receipt_field}:**", templates)
+        recipes = (SOURCE_PACK / "workflows" / "02-DISCOVER-Setting-Role-and-Situation-Recipes.md").read_text(encoding="utf-8")
+        self.assertIn("## 10. Setting and role recipes", recipes)
+        self.assertNotIn("## 12. Setting and role recipes", recipes)
+        mission_control = (SOURCE_PACK / "core" / "03-Nurse-AI-OS-Mission-Control-and-Dashboard-Integration.md").read_text(encoding="utf-8")
+        self.assertIn("owners review the exact object/version/hash", mission_control)
+        self.assertNotIn("owners reviews the exact object/version/hash", mission_control)
         schemas = (SOURCE_PACK / "workflows" / "03-DISCOVER-Schemas-and-Agents.md").read_text(encoding="utf-8")
         schema_names = re.findall(r"^### `https://nurse-ai-os\.local/schemas/research_innovation_discover/([^/]+)/1\.0\.0`$", schemas, re.MULTILINE)
         self.assertEqual(len(schema_names), 18)
@@ -156,6 +173,8 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         self.assertTrue(validator_script.is_file())
         self.assertIn("jsonschema==4.25.1", workflow)
         self.assertIn("validate-healthcare-research-innovation-discover-schemas.py", workflow)
+        self.assertIn("python3 -m http.server 8765 --bind 127.0.0.1", workflow)
+        self.assertIn("curl --fail --silent --show-error", workflow)
 
     def test_fixtures_adapters_criteria_and_variants_are_exact(self):
         release = (SOURCE_PACK / "tests" / "01-DISCOVER-Release-and-Runtime-Tests.md").read_text(encoding="utf-8")

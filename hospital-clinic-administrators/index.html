@@ -26,6 +26,9 @@
   .steward-status strong{display:block;color:var(--steward-navy)}
   .steward-status span{display:block;color:#5a6875;font-size:.9rem;margin-top:.25rem}
   .steward-mantra{font-family:var(--font-display);font-size:1.2rem;color:var(--steward-navy);text-align:center;margin:2rem auto 0}
+  .steward-video-wrap{max-width:390px;margin:1.5rem auto 0}
+  .steward-video-frame{aspect-ratio:9/16;overflow:hidden;border:3px solid var(--steward-gold);border-radius:24px;background:#091923;box-shadow:var(--shadow-md)}
+  .steward-video-frame iframe{width:100%;height:100%;border:0;display:block}
   .integrity-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
   .integrity-row .btn{white-space:normal;text-align:center}
   .integrity-row .btn-secondary{background:transparent;border-color:var(--steward-navy);color:var(--steward-navy)}
@@ -87,7 +90,25 @@
   </div>
 </section>
 
-<section class="section section-alt" id="architecture">
+<section class="section section-alt" aria-labelledby="steward-story-title">
+  <div class="container narrow">
+    <p class="eyebrow">Hospital administrator &amp; clinic manager story</p>
+    <h2 id="steward-story-title">See the administrative vision—then inspect the evidence boundary</h2>
+    <p>This short introduces the future lane for hospital administrators and clinic managers. It is a vision narrative, not evidence that the STEWARD runtime exists, that controls are enforced, or that any organization has authorized operational use.</p>
+    <div class="steward-video-wrap"><div class="steward-video-frame">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/xdlnYkMJQl4?rel=0&amp;modestbranding=1"
+        title="Hospital Administrator and Clinic Manager — Nurse AI OS"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen></iframe>
+    </div></div>
+    <div class="steward-boundary"><strong>The maturity state does not change:</strong> public governance preview available; runtime not implemented; Complete AI OS claim paused; institutional use not authorized.</div>
+  </div>
+</section>
+
+<section class="section" id="architecture">
   <div class="container">
     <p class="eyebrow">Architecture kept</p>
     <h2>One administrative lane, explicit context variants</h2>
@@ -100,7 +121,7 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section section-alt">
   <div class="container">
     <p class="eyebrow">Doctrine kept</p>
     <h2>Three proposed control frameworks</h2>
@@ -112,7 +133,7 @@
   </div>
 </section>
 
-<section class="section section-alt" id="boundaries">
+<section class="section" id="boundaries">
   <div class="container narrow">
     <p class="eyebrow">Dignity and data</p>
     <h2>No operational data, surveillance, or consequential action</h2>
@@ -122,7 +143,7 @@
   </div>
 </section>
 
-<section class="section" id="roadmap">
+<section class="section section-alt" id="roadmap">
   <div class="container">
     <p class="eyebrow">Florence-X + EDENA build path</p>
     <h2>The audit defines what enforcement must prove next</h2>
@@ -135,7 +156,7 @@
   </div>
 </section>
 
-<section class="section section-alt" id="integrity">
+<section class="section" id="integrity">
   <div class="container">
     <p class="eyebrow">Inspect before you trust</p>
     <h2>Specification, provenance, and checksums</h2>

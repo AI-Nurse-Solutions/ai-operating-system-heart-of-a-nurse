@@ -1,0 +1,40 @@
+{
+  "installation_status": "not_installed",
+  "packages": [
+    {
+      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "bytes": 603773,
+      "discover_overlay_second": true,
+      "download": "downloads/discover-healthcare-research-innovation-leader-complete-edition.zip",
+      "foundation_first": true,
+      "install_on_download": false,
+      "installation_status": "not_installed",
+      "institutional_deployment_requires_separate_authorization": true,
+      "no_phi": true,
+      "optional_superpowers_active_after_install": 0,
+      "optional_superpowers_total": 24,
+      "package_version": "2026.07.16.1",
+      "person_level_data_allowed": false,
+      "population_lane": "healthcare_research_innovation_leadership",
+      "pre_install_disclosure_required": true,
+      "role": "Healthcare Research & Innovation Leader \u2014 DISCOVER",
+      "route": "/healthcare-research-innovation-leaders/",
+      "runtime_criteria": {
+        "publication_status": "specified_not_prepassed",
+        "s1": 40,
+        "s2": 120,
+        "total": 160
+      },
+      "schemas_total": 18,
+      "sha256": "92ea5b7960e6f37090d765a6aca131e2513b9b54addea84bb68aa1febb130a22",
+      "standalone_interdisciplinary_lane": true,
+      "suggested_agents_active_after_install": 0,
+      "suggested_agents_total": 10,
+      "templates_total": 30,
+      "workflows_total": 24
+    }
+  ],
+  "purpose": "standalone Healthcare Research and Innovation leadership lane within Nurse AI OS; isolated from nursing, medical-resident, respiratory-care, and hospital-administration state",
+  "release": "2026.07.16.1",
+  "schema_version": "1.0"
+}

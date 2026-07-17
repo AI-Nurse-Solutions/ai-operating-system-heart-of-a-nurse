@@ -1,0 +1,86 @@
+name: Healthcare Research Innovation DISCOVER Release
+
+on:
+  pull_request:
+    paths:
+      - "healthcare-research-innovation-leaders/**"
+      - "scripts/build-healthcare-research-innovation-discover.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_healthcare_research_innovation_discover.py"
+      - "tests/test_medical_resident_rounds.py"
+      - "tests/test_respiratory_care_breathe.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
+      - "index.html"
+      - "assets/nurse-ai.css"
+      - "sitemap.xml"
+      - ".github/workflows/healthcare-research-innovation-discover.yml"
+  push:
+    branches: [main]
+    paths:
+      - "healthcare-research-innovation-leaders/**"
+      - "scripts/build-healthcare-research-innovation-discover.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_healthcare_research_innovation_discover.py"
+      - "tests/test_medical_resident_rounds.py"
+      - "tests/test_respiratory_care_breathe.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
+      - "index.html"
+      - "assets/nurse-ai.css"
+      - "sitemap.xml"
+      - ".github/workflows/healthcare-research-innovation-discover.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Rebuild committed DISCOVER release bytes twice
+        run: |
+          python3 scripts/build-healthcare-research-innovation-discover.py
+          first="$(sha256sum healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip | cut -d' ' -f1)"
+          python3 scripts/build-healthcare-research-innovation-discover.py
+          second="$(sha256sum healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip | cut -d' ' -f1)"
+          test "$first" = "$second"
+          git diff --exit-code
+      - name: Run DISCOVER package, consent, and isolation tests
+        run: python3 tests/test_healthcare_research_innovation_discover.py
+      - name: Run shared adjacent-lane homepage regressions
+        run: |
+          python3 tests/test_medical_resident_rounds.py
+          python3 tests/test_respiratory_care_breathe.py
+      - name: Refuse accidental secrets or PHI examples
+        run: python3 scripts/scan-public-healthcare-artifacts.py healthcare-research-innovation-leaders --label DISCOVER
+      - name: Verify page links and Python syntax
+        run: |
+          python3 -m py_compile scripts/build-healthcare-research-innovation-discover.py tests/test_healthcare_research_innovation_discover.py
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  values=dict(attrs)
+                  for key in ("href", "src"):
+                      if values.get(key): self.links.append(values[key])
+          page=Path("healthcare-research-innovation-leaders/index.html")
+          parser=Links(); parser.feed(page.read_text(encoding="utf-8"))
+          for link in parser.links:
+              if link.startswith(("http:", "https:", "mailto:", "tel:", "#", "data:")):
+                  continue
+              target=(page.parent / link.split("#",1)[0].split("?",1)[0]).resolve()
+              if link.endswith("/") or target.is_dir(): target=target / "index.html"
+              if not target.exists(): raise SystemExit(f"Missing DISCOVER page target: {link}")
+          print("DISCOVER_LINKS=passed")
+          PY

@@ -1,0 +1,269 @@
+{
+  "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+  "automatic_connectors": false,
+  "automatic_cron": false,
+  "automatic_external_actions": false,
+  "automatic_memory": false,
+  "automatic_shared_access": false,
+  "canonical_dashboard_route": "/healthcare-research-innovation-leaders/dashboard",
+  "clinical_decisions": false,
+  "dashboard_alias": "/healthcare-research-innovation-leaders/mission-control",
+  "discover_overlay_second": true,
+  "fixtures_adapters_total": 10,
+  "foundation_first": true,
+  "hospital_administration_population_state_shared": false,
+  "install_on_download": false,
+  "installation_model": "hermes_guided_one_file_multi_turn_with_safe_checkpoints",
+  "installation_status": "not_installed",
+  "institutional_deployment_requires_separate_authorization": true,
+  "live_person_contact": false,
+  "medical_resident_population_state_shared": false,
+  "mission_control": "My DISCOVER Mission Control",
+  "namespace": "research_innovation_discover.*",
+  "no_phi": true,
+  "nursing_population_state_shared": false,
+  "official_system_writes": false,
+  "optional_superpowers_active_after_install": 0,
+  "optional_superpowers_total": 24,
+  "package_id": "naio-healthcare-research-innovation-discover",
+  "package_version": "2026.07.16.1",
+  "participant_recruitment_or_enrollment": false,
+  "person_level_data_allowed": false,
+  "population_lane": "healthcare_research_innovation_leadership",
+  "pre_install_disclosure_required": true,
+  "program_id": "HRIL-AIOS-DISCOVER-COMPLETE-1.0",
+  "records_total": 18,
+  "research_or_qi_determinations": false,
+  "respiratory_care_population_state_shared": false,
+  "role": "Healthcare Research & Innovation Leader \u2014 DISCOVER",
+  "role_selection_verifies_credentials_or_authority": false,
+  "route": "/healthcare-research-innovation-leaders/",
+  "runtime_criteria": {
+    "publication_status": "specified_not_prepassed",
+    "s1": 40,
+    "s2": 120,
+    "total": 160
+  },
+  "schema_version": "1.0",
+  "schemas_total": 18,
+  "source_archive": {
+    "bytes": 594992,
+    "members": 23,
+    "sha256": "79b4a3c6a974061e52348ea9c6b7e5027afc95982802397b4fe203933d2655c6",
+    "supplied_name": "DISCOVER-Healthcare-Research-Innovation-Leader-Pack.zip"
+  },
+  "source_files": [
+    {
+      "bytes": 1675649,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Hermes-Program.md",
+      "source_sha256": "58ba1c8746efc335060948a666b5c1ac836e2b0cc9b36fe498256b5bfd74d238",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; recomputed the 17 normalized component hashes in the complete-program table and markers while preserving component order and content parity",
+      "upstream_bytes": 1675125,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Hermes-Program.md",
+      "upstream_sha256": "61e900ac5c2b10ee240086ab8d24617ff9ea272bdb18b7bd181a8c60cd6102b5"
+    },
+    {
+      "bytes": 202457,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Setup-Guide.docx",
+      "source_sha256": "87ee88d44c0c924043349dce857210e669fc2853bbd298e4724fe0fec968dd6d",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 202457,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Setup-Guide.docx",
+      "upstream_sha256": "87ee88d44c0c924043349dce857210e669fc2853bbd298e4724fe0fec968dd6d"
+    },
+    {
+      "bytes": 29210,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Setup-Guide.md",
+      "source_sha256": "1950b1fac912b40b661d75d99778932d190fa41fdd702a4c7e05a475b8b89a01",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; replaced supplied descriptive/alias download list with the single canonical governed web-release filename and direct-inspection explanation; upstream bytes and hash remain recorded",
+      "upstream_bytes": 29324,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Setup-Guide.md",
+      "upstream_sha256": "81a5cc2ea0f394102805a3e71900324b2bb202478b28568eee1d9aec0e0642fc"
+    },
+    {
+      "bytes": 485,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/README.md",
+      "source_sha256": "68c4a581d73845ca11f20dc900580ee9e4efd8234abca4efc60658fe8fee789a",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 481,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/README.md",
+      "upstream_sha256": "c505d80398cdf7ee96afe80feed0a9a28518ba0ae8e24af7fdd642f7e2d0e77a"
+    },
+    {
+      "bytes": 1995,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/00-Standalone-Healthcare-Research-Innovation-Leadership-Lane.md",
+      "source_sha256": "e9355d4809026f5401814770f72bf8ebacfc2cdde955d2d5effb1c07aac0e233",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 1995,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/00-Standalone-Healthcare-Research-Innovation-Leadership-Lane.md",
+      "upstream_sha256": "e9355d4809026f5401814770f72bf8ebacfc2cdde955d2d5effb1c07aac0e233"
+    },
+    {
+      "bytes": 8737,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/01-Research-Participant-Workforce-Organization-and-Community-Trust-Shield.md",
+      "source_sha256": "39042ade3de84a6aed8ecdebc9288beea097ee0977c3d6fd07682af90d263b9f",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 8737,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/01-Research-Participant-Workforce-Organization-and-Community-Trust-Shield.md",
+      "upstream_sha256": "39042ade3de84a6aed8ecdebc9288beea097ee0977c3d6fd07682af90d263b9f"
+    },
+    {
+      "bytes": 2085,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/02-DISCOVER-Operating-Core.md",
+      "source_sha256": "243c4b4285631aa62d150616dcf914b6e0ddf6b7b5d8ec0a03766842d00a2b2c",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 2085,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/02-DISCOVER-Operating-Core.md",
+      "upstream_sha256": "243c4b4285631aa62d150616dcf914b6e0ddf6b7b5d8ec0a03766842d00a2b2c"
+    },
+    {
+      "bytes": 4423,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/03-Nurse-AI-OS-Mission-Control-and-Dashboard-Integration.md",
+      "source_sha256": "43a22e263c9d5fb3ba7cc6a334667cfd68e4d960e5ad4a8567a74465fe160fd8",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 4419,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/core/03-Nurse-AI-OS-Mission-Control-and-Dashboard-Integration.md",
+      "upstream_sha256": "12e4b792dd2e3756340cc1818961a8d11d1887fbe69ca57c006e15822763a686"
+    },
+    {
+      "bytes": 2818,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/01-D-Direction-Discovery-and-Dignity.md",
+      "source_sha256": "d946502250496ff1500274dc73cfb1593ecb112ec0a8ed5c7a6f60845cc14673",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 2806,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/01-D-Direction-Discovery-and-Dignity.md",
+      "upstream_sha256": "1869f6503e235bedff21278962c624a7803597114318c49682c0e1ee15825f09"
+    },
+    {
+      "bytes": 2938,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/02-I-Inquiry-Integrity-and-Information-Stewardship.md",
+      "source_sha256": "345453e67000786123d74b183438329be142d7345f177a425ea5f82eeb772eda",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 2926,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/02-I-Inquiry-Integrity-and-Information-Stewardship.md",
+      "upstream_sha256": "5b3b66c3e318fdc2a197fa1785e81fa6c4dc07bdd59aca5ae3e620a475ca6e67"
+    },
+    {
+      "bytes": 2935,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/03-S-Study-Design-Safety-and-Scientific-Rigor.md",
+      "source_sha256": "bb105afae51bd3849e1dd81c118734837046c50d2f8aebe4bedfd0f1441d1ee2",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 2923,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/03-S-Study-Design-Safety-and-Scientific-Rigor.md",
+      "upstream_sha256": "398624711c72c382f600a739be49cc607a8007a9c467a4a360b3fec67ac3cc37"
+    },
+    {
+      "bytes": 2864,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/04-C-Collaboration-Community-and-Capability.md",
+      "source_sha256": "4d040f7f167012fd1f6287b1737b4d690d7790c5b42b5079797d40c4e9b0b4ca",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 2852,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/04-C-Collaboration-Community-and-Capability.md",
+      "upstream_sha256": "d72f311fcf7fd4483efa3d0e374c348785ea7aab65174eab341d91e7e819646e"
+    },
+    {
+      "bytes": 5757,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/05-OV-Operations-Value-and-Translation.md",
+      "source_sha256": "9d689fc8ee41932ce66122de27ce9a090931843c4d5d7c0d6c56b9b336ba8dc9",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 5733,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/05-OV-Operations-Value-and-Translation.md",
+      "upstream_sha256": "d8481ccb07e67f3e99146622366d4334b8db547a351e194933f7c4bc2c08a68d"
+    },
+    {
+      "bytes": 5959,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/06-ER-Evidence-Responsible-Innovation-and-Renewal.md",
+      "source_sha256": "5b4a33bd4b6874551a264d093138505f4c9a5901b88ec155b6afb1b7d00e6f42",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 5935,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/discover/06-ER-Evidence-Responsible-Innovation-and-Renewal.md",
+      "upstream_sha256": "e5f5b578fc9750a5c56d06a3323baac9af41d298d009e04e6ea942f23ea57f3e"
+    },
+    {
+      "bytes": 10150,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/foundation/00-Research-Innovation-Life-Leadership-and-Operations-Foundation.md",
+      "source_sha256": "cf78ba50e32e5b4550649ec23999c7f169956196cb2fc83630c8fb8380f9b405",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 10148,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/foundation/00-Research-Innovation-Life-Leadership-and-Operations-Foundation.md",
+      "upstream_sha256": "0cbf7c1b0b37048dd5c6760481058ffafe27e33710917f3457739a6de8b6c1ed"
+    },
+    {
+      "bytes": 2878,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/manifest/01-DISCOVER-Installation-Manifest.md",
+      "source_sha256": "105d6fce6a70f1906511d89ceb5fbe786627b15422a515d75b3fb92f615b0a94",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 2868,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/manifest/01-DISCOVER-Installation-Manifest.md",
+      "upstream_sha256": "157ef320981710d6abcbab4aa102dedb3362ca981fd4b9741f2564312f66ddcb"
+    },
+    {
+      "bytes": 133681,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/templates/01-DISCOVER-Functional-Templates.md",
+      "source_sha256": "7b04a7e30449a170d83be94e21ef690206e59c6b5dbb14a07bd7ef6847a4f82a",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 133681,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/templates/01-DISCOVER-Functional-Templates.md",
+      "upstream_sha256": "7b04a7e30449a170d83be94e21ef690206e59c6b5dbb14a07bd7ef6847a4f82a"
+    },
+    {
+      "bytes": 1016582,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/tests/01-DISCOVER-Release-and-Runtime-Tests.md",
+      "source_sha256": "1783bd7fed2be3ffc351b60107945555c956b9b8515a4aa99b1dfb075802afb2",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 1016562,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/tests/01-DISCOVER-Release-and-Runtime-Tests.md",
+      "upstream_sha256": "199982825ea43ba9217b4b6c4d3e3334de05799756187801c75c48c8212864ff"
+    },
+    {
+      "bytes": 58544,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/01-DISCOVER-Runnable-Workflows.md",
+      "source_sha256": "80389929123486ee4287ae104324a228b47f516eaee72882bef9d77cb7108c5d",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 58158,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/01-DISCOVER-Runnable-Workflows.md",
+      "upstream_sha256": "bfab52248cbd06f0385a0b6d9363f9a507a39ec518fdae17c5ac3820f7c17e56"
+    },
+    {
+      "bytes": 4613,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/02-DISCOVER-Setting-Role-and-Situation-Recipes.md",
+      "source_sha256": "8f2ca58570cf85bfbb0f7a1763d322ec1c746131446441b6f95f14e1dd58eb3c",
+      "transformation": "none; byte-for-byte copy from the supplied archive",
+      "upstream_bytes": 4613,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/02-DISCOVER-Setting-Role-and-Situation-Recipes.md",
+      "upstream_sha256": "8f2ca58570cf85bfbb0f7a1763d322ec1c746131446441b6f95f14e1dd58eb3c"
+    },
+    {
+      "bytes": 395377,
+      "packaged_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/03-DISCOVER-Schemas-and-Agents.md",
+      "source_sha256": "063dff06fe7652ff3e24fa5328b13f56f4540608ac41d08f668db0f01efd90be",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order",
+      "upstream_bytes": 395371,
+      "upstream_path": "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0/workflows/03-DISCOVER-Schemas-and-Agents.md",
+      "upstream_sha256": "530279d475b9f7c202dbe438648ccb1c2d76150898c3d7f1029087cec0e5b335"
+    },
+    {
+      "bytes": 14380,
+      "packaged_path": "README.md",
+      "source_sha256": "fa275f2c161eae77d79f946ee418cb735e90e5c4cb659920fd0cbbce59788ea2",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; corrected the supplied SHA256SUMS.txt reference to distinguish upstream provenance from the published normalized package ledger; corrected supplied package-count, checksum-ledger, alias, and verification wording to match the governed 26-file canonical web release; upstream bytes and hash remain recorded",
+      "upstream_bytes": 13915,
+      "upstream_path": "README.md",
+      "upstream_sha256": "75c5bf166fd9812a752b1165fe73b52d04f71f22d0281c92fb983b3938bf22ff"
+    },
+    {
+      "bytes": 4041,
+      "packaged_path": "UPSTREAM-SHA256SUMS.txt",
+      "source_sha256": "96dea95bb060c7425e1872b79a7bfd85976f69b1ba802573637f9f351c9e82b0",
+      "transformation": "renamed from SHA256SUMS.txt to distinguish supplied-source provenance from PACKAGE-CHECKSUMS.sha256",
+      "upstream_bytes": 4041,
+      "upstream_path": "SHA256SUMS.txt",
+      "upstream_sha256": "96dea95bb060c7425e1872b79a7bfd85976f69b1ba802573637f9f351c9e82b0"
+    }
+  ],
+  "standalone_interdisciplinary_lane": true,
+  "suggested_agents_active_after_install": 0,
+  "suggested_agents_total": 10,
+  "templates_total": 30,
+  "workflows_total": 24
+}

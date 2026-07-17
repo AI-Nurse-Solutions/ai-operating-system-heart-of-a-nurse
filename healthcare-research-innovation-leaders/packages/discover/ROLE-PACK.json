@@ -26,7 +26,7 @@
   "optional_superpowers_active_after_install": 0,
   "optional_superpowers_total": 24,
   "package_id": "naio-healthcare-research-innovation-discover",
-  "package_version": "2026.07.16.1",
+  "package_version": "2026.07.16.2",
   "participant_recruitment_or_enrollment": false,
   "person_level_data_allowed": false,
   "population_lane": "healthcare_research_innovation_leadership",
@@ -54,10 +54,10 @@
   },
   "source_files": [
     {
-      "bytes": 1688328,
+      "bytes": 1690172,
       "packaged_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Hermes-Program.md",
-      "source_sha256": "dd9b375581bc1e1ab9441fad6c8eb43a929aa65dce2af84492d1b0efb267157f",
-      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; recomputed the 17 normalized component hashes in the complete-program table and markers while preserving component order and content parity; embedded the four release-hardening component corrections with refreshed component hashes; upstream bytes and hash remain recorded",
+      "source_sha256": "1903134361533a7dc76dc450ebd85aff388e850df94e0fa8ee4ac4df90077333",
+      "transformation": "replaced supplied Markdown trailing-space hard breaks with explicit <br> tags for semantic rendering and a whitespace-clean repository without changing text or order; recomputed the 17 normalized component hashes in the complete-program table and markers while preserving component order and content parity; embedded the four release-hardening component corrections with refreshed component hashes; upstream bytes and hash remain recorded; added the exact combined DISCOVER Activation Card contract, no-state stop, exact post-card command, and material-change reapproval rule to the controlling one-file program after independent safety review; upstream bytes and hash remain recorded",
       "upstream_bytes": 1675125,
       "upstream_path": "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Hermes-Program.md",
       "upstream_sha256": "61e900ac5c2b10ee240086ab8d24617ff9ea272bdb18b7bd181a8c60cd6102b5"

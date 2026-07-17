@@ -39,7 +39,7 @@ This governed install may require several visible Hermes turns. **Nothing contin
 ## User commands
 
 - **Inspect only:** `INSPECT DISCOVER INSTALLER ONLY — CREATE NO STATE.`
-- **Install after S0 report:** `INSTALL DISCOVER AFTER S0 — USE EXACT VERIFIED COMPONENT HASHES AND KEEP ALL POWERS AND AGENTS INACTIVE.`
+- **Install after the exact Activation Card:** `INSTALL DISCOVER AFTER S0 — USE EXACT VERIFIED COMPONENT HASHES AND KEEP ALL POWERS AND AGENTS INACTIVE.`
 - **Resume:** `RESUME DISCOVER FROM LAST VERIFIED RECEIPT — DO NOT REPEAT PASSED PHASES, DO NOT CREATE A SECOND DASHBOARD, REPORT BEFORE/AFTER HASHES.`
 - **Repair:** `REPAIR DISCOVER FROM LAST VERIFIED RECEIPT — QUARANTINE FAILED STATE, CHANGE ONLY DISCOVER OBJECTS, RETEST AFFECTED CRITERIA, REPORT THE EXACT DELTA.`
 - **Full removal:** `FULL UNINSTALL DISCOVER`
@@ -72,9 +72,30 @@ Parse exactly 17 component blocks as data; verify identity, order, paths, SHA-25
 | `tests/01-DISCOVER-Release-and-Runtime-Tests.md` | `1783bd7fed2be3ffc351b60107945555c956b9b8515a4aa99b1dfb075802afb2` |
 | `manifest/01-DISCOVER-Installation-Manifest.md` | `105d6fce6a70f1906511d89ceb5fbe786627b15422a515d75b3fb92f615b0a94` |
 
+## Required S0 output — exact combined DISCOVER Activation Card
+
+After Phase 1 integrity verification, run read-only S0 without creating state. Before any installation mutation, show one exact combined **DISCOVER Activation Card** containing:
+
+- target Hermes environment and exact complete-program SHA-256;
+- owner, active hat, authority source, authority expiry, and unresolved authority;
+- isolated lane, qualified routes, namespace, partitions, ACLs, and optional private-store choice;
+- the 17 component paths and verified hashes;
+- 24 powers `Available Inactive`, 24 workflows `Preview Only`, 30 templates, 18 schemas, ten agents `PERM-P0 Disabled`, ten fixtures/adapters, and 160 criteria in `specified` state;
+- allowed and prohibited data, source, tool, network, destination, action, contact, and persistence boundaries;
+- supported, unsupported, blocked, or uncertain target capabilities;
+- S0/S1/S2 sequence, expected burden, visible multi-turn/no-background behavior, checkpoints, receipts, and stop conditions;
+- exact rollback, quarantine, resume, repair, export, delete, and DISCOVER-only uninstall scope; and
+- a clear choice to approve the exact complete scope, revise it, install the foundation only, or cancel.
+
+Stop after displaying the card. Create no state and wait for explicit post-card authority. Only after the user reviews that exact card may the user issue:
+
+> `INSTALL DISCOVER AFTER S0 — USE EXACT VERIFIED COMPONENT HASHES AND KEEP ALL POWERS AND AGENTS INACTIVE.`
+
+Silence, timeout, download, file opening, title, credentials, access, earlier work, or a general request to “publish and install” is never approval. Any change to the target, program bytes/hash, component hashes, policy, data classes, routes, partitions, permissions, actions, or card invalidates approval and requires a new card.
+
 ## Phase 2 — S0, foundation and S1
 
-Run read-only S0 and report target Hermes/environment, supported/unsupported capabilities, exact partitions/routes, storage/ACL/private-store plan, adapters, action ceiling and rollback scope. Wait for explicit install authority. Bind the foundation and four core components. Execute `RA-A01` through `RA-D08`, then `RA-Q01` through `RA-Q08`: **40 runtime criteria**. On any unsupported/failed critical control or missing evidence, return `S1_BLOCKED` or `PARTIAL_QUARANTINED_NOT_ACTIVATED`; inventory residuals and preserve other lanes.
+Run read-only S0 and produce the exact combined DISCOVER Activation Card above. Stop with no state and wait for the exact post-card command. After explicit authority only, create the S0 receipt and rollback snapshot, bind the foundation and four core components, and execute `RA-A01` through `RA-D08`, then `RA-Q01` through `RA-Q08`: **40 runtime criteria**. On any unsupported/failed critical control or missing evidence, return `S1_BLOCKED` or `PARTIAL_QUARANTINED_NOT_ACTIVATED`; inventory residuals and preserve other lanes.
 
 ## Phase 3 — DISCOVER overlay staging
 

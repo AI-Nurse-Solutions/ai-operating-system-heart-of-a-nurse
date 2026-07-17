@@ -600,6 +600,7 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 .home-role-video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
 .home-resident-video,
 .home-rt-video,
+.home-discover-video,
 .home-admin-lane {
   max-width: 720px;
   margin: 3rem auto 0;
@@ -612,18 +613,27 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 }
 .home-resident-video h3,
 .home-rt-video h3,
+.home-discover-video h3,
 .home-admin-lane h3 { margin: .25rem 0 .45rem; }
 .home-resident-video > p:not(.eyebrow):not(.cta-line),
 .home-rt-video > p:not(.eyebrow):not(.cta-line),
+.home-discover-video > p:not(.eyebrow):not(.cta-line),
 .home-admin-lane > p:not(.eyebrow):not(.cta-line) { margin: 0; color: var(--ink-600); }
 .home-resident-video .home-short-frame,
-.home-rt-video .home-short-frame { margin-top: 1.15rem; }
+.home-rt-video .home-short-frame,
+.home-discover-video .home-short-frame { margin-top: 1.15rem; }
 .home-resident-video .cta-line { margin: 1rem 0 0; }
 .home-rt-video {
   margin-top: 1.5rem;
   border-color: var(--navy-700);
   background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(230,242,250,.92));
 }
+.home-discover-video {
+  margin-top: 1.5rem;
+  border-color: var(--teal-600);
+  background: linear-gradient(145deg, rgba(255,255,255,.95), rgba(231,245,241,.92));
+}
+.home-discover-video .cta-line { margin: 1rem 0 0; }
 .home-admin-lane {
   margin-top: 1.5rem;
   border-color: #0b7d7b;

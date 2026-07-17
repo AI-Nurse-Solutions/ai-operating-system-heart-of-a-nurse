@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STEWARD Governance Preview — Hospital &amp; Clinic Administration</title>
+<meta name="description" content="A non-executable public governance specification for future AI-assisted hospital and clinic administration. The installable Complete AI OS claim is paused pending enforceable controls and runtime evidence.">
+<link rel="canonical" href="https://nurse-ai-os.org/hospital-clinic-administrators/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+  .steward-page{--steward-navy:#153149;--steward-teal:#0b7d7b;--steward-mint:#e8f6f2;--steward-gold:#c89535;--steward-red:#9d2a24}
+  .steward-page .hero{background:linear-gradient(145deg,#091923 0%,#153149 56%,#0b7d7b 140%)}
+  .steward-page .site-header{border-bottom:1px solid rgba(255,255,255,.08)}
+  .steward-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem}
+  .steward-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steward-card{background:rgba(255,255,255,.95);border-top:4px solid var(--steward-teal);border-radius:var(--radius);padding:1.35rem;box-shadow:var(--shadow-sm)}
+  .steward-card h3{margin-top:0}
+  .steward-badge{display:inline-block;margin:.2rem .35rem .4rem 0;padding:.25rem .7rem;border-radius:999px;background:var(--steward-mint);color:var(--steward-navy);font-weight:700;font-size:.83rem}
+  .steward-boundary{border-left:5px solid var(--steward-gold);background:#fff8e8;border-radius:0 var(--radius) var(--radius) 0;padding:1.1rem 1.3rem;margin:1.4rem 0}
+  .steward-stop{border:2px solid var(--steward-red);background:#fff1f0;color:#74221d;border-radius:var(--radius);padding:1rem 1.2rem;margin:1.3rem 0;font-weight:700}
+  .steward-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;margin:1.5rem 0}
+  .steward-status div{background:#fff;border:1px solid #ced9df;border-radius:var(--radius);padding:.9rem;text-align:center}
+  .steward-status strong{display:block;color:var(--steward-navy)}
+  .steward-status span{display:block;color:#5a6875;font-size:.9rem;margin-top:.25rem}
+  .steward-mantra{font-family:var(--font-display);font-size:1.2rem;color:var(--steward-navy);text-align:center;margin:2rem auto 0}
+  .integrity-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
+  .integrity-row .btn{white-space:normal;text-align:center}
+  .integrity-row .btn-secondary{background:transparent;border-color:var(--steward-navy);color:var(--steward-navy)}
+  .integrity-row .btn-secondary:hover{background:var(--steward-mint);color:var(--steward-navy)}
+  @media(max-width:900px){.steward-status{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:850px){.steward-grid,.steward-grid.two{grid-template-columns:1fr}}
+  @media(max-width:620px){.steward-status{grid-template-columns:1fr}.integrity-row .btn{width:100%;box-sizing:border-box}.steward-card{min-width:0}}
+</style>
+</head>
+<body class="clinical-sketch-page steward-page" id="top">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="STEWARD preview navigation">
+    <a class="brand" href="#top"><span class="lamp" aria-hidden="true">◉</span> STEWARD</a>
+    <div class="nav-links">
+      <a href="#architecture">Architecture</a>
+      <a href="#boundaries">Boundaries</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#integrity">Evidence</a>
+      <a class="nav-cta" href="preview/STEWARD-Governance-Specification.pdf">Read specification</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+<section class="hero">
+  <div class="container narrow">
+    <p class="kicker">Public governance preview · Hospital and clinic administration</p>
+    <h1>STEWARD Governance Specification</h1>
+    <p class="lede">Keep the doctrine. Expose the gaps. Build enforcement before activation.</p>
+    <p>STEWARD proposes a governance architecture for future AI-assisted administrative preparation across hospitals, health systems, clinics, ambulatory organizations, practices, service lines, and bounded programs. It preserves human authority while making mandate, data, uncertainty, organizational coordination, and agent boundaries visible.</p>
+    <div>
+      <span class="steward-badge">Non-executable</span>
+      <span class="steward-badge">Not institution-approved</span>
+      <span class="steward-badge">No operational data</span>
+      <span class="steward-badge">Runtime not implemented</span>
+      <span class="steward-badge">Complete AI OS claim paused</span>
+    </div>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="preview/STEWARD-Governance-Specification.pdf">Read the publication PDF →</a>
+      <a class="btn btn-secondary" href="preview/STEWARD-Governance-Specification.md">Read canonical Markdown</a>
+    </div>
+    <p class="hero-note"><strong>This is a specification, not software.</strong> It contains no installer, executable agent, production connector, authority-verification service, pre-model data control, or institution-ready runtime.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+    <p class="eyebrow">Current maturity</p>
+    <h2>Placed in the correct state—not abandoned</h2>
+    <div class="steward-status">
+      <div><strong>Doctrine</strong><span>Available for review</span></div>
+      <div><strong>Public preview</strong><span>Available</span></div>
+      <div><strong>Runtime</strong><span>Not implemented</span></div>
+      <div><strong>Institutional use</strong><span>Not authorized</span></div>
+    </div>
+    <div class="steward-boundary"><strong>Why the claim changed:</strong> independent review found that the supplied package described strong safeguards in prose but did not include the technical adapter or evidence needed to prove pre-model data prevention, identity-bound authority, segregation of duties, permission denial, memory isolation, purge, rollback, or production-safe aggregation.</div>
+    <p>NAIO will not represent a requirement as enforcement or a declared test as passed evidence. The installable <strong>Complete AI OS</strong> designation remains paused until enforceable controls and an evidence-bearing runtime ledger exist.</p>
+  </div>
+</section>
+
+<section class="section section-alt" id="architecture">
+  <div class="container">
+    <p class="eyebrow">Architecture kept</p>
+    <h2>One administrative lane, explicit context variants</h2>
+    <p class="section-intro">The future architecture reserves one proposed population, <code>hospital_clinic_administration</code>, and one proposed namespace, <code>hcadmin_steward.*</code>. These identifiers create no runtime or permission today.</p>
+    <div class="steward-grid">
+      <article class="steward-card"><h3>Shared doctrine</h3><p>Hospital, health-system, clinic, ambulatory, practice, service-line, program, and bounded-project leaders share recurring needs around mandate, operations, resources, workforce dignity, quality, resilience, and agent governance.</p></article>
+      <article class="steward-card"><h3>Distinct authority</h3><p>Enterprise executive, hospital administrator, clinic manager, multi-site operator, service-line leader, project lead, dual-hat clinician-administrator, analyst, consultant, trainee, and unknown-authority contexts are never treated as interchangeable.</p></article>
+      <article class="steward-card"><h3>No inferred permission</h3><p>Title, employment, access, clinical license, technical capability, or prior approval does not establish delegation, threshold, committee role, financial authority, or institutional mandate.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Doctrine kept</p>
+    <h2>Three proposed control frameworks</h2>
+    <div class="steward-grid">
+      <article class="steward-card"><h3>CHART</h3><p><strong>Authority before preparation.</strong> Context and consequence; Human authority; Authorization and access; Regulation, risk, resources, and records; Trace, transition, expiry, and termination.</p><p>A future pass would permit preparation only. It would never confer the underlying authority.</p></article>
+      <article class="steward-card"><h3>ALIGN</h3><p><strong>Human-owned organizational coordination.</strong> Aim, accountable owner, interdependencies, official systems, governance gates, named receiver, reconciliation, and expiry.</p><p>It must not become a shadow command, task, minutes, incident, or policy system.</p></article>
+      <article class="steward-card"><h3>ORBIT</h3><p><strong>Bounded agent governance.</strong> Objective, human owner, role, risk, data, typed tools and destinations, permission budget, tests, handoff, kill, rollback, purge, retirement, and evidence.</p><p>This preview ships zero agents.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="boundaries">
+  <div class="container narrow">
+    <p class="eyebrow">Dignity and data</p>
+    <h2>No operational data, surveillance, or consequential action</h2>
+    <div class="steward-stop">Do not submit PHI, patient or employee narratives, workforce records, incidents, claims, credentials, complaints, evaluations, contracts, bids, legal material, security details, nonpublic financial records, screenshots, recordings, exports, tokens, or secrets. Prompt-level refusal is not a privacy control.</div>
+    <p>STEWARD must not rank, risk-score, profile, monitor, or predict employees, applicants, clinicians, teams, sites, patients, communities, or vendors. It must not infer sentiment, burnout, impairment, misconduct, protected characteristics, competence, credential status, productivity, performance, staffing adequacy, cause, blame, or reportability.</p>
+    <p>It must not perform or stage clinical, employment, staffing, credentialing, financial, contracting, legal, policy, security, emergency, incident-closure, or official-record actions. Human approval does not convert a categorically prohibited function into an allowed one.</p>
+  </div>
+</section>
+
+<section class="section" id="roadmap">
+  <div class="container">
+    <p class="eyebrow">Florence-X + EDENA build path</p>
+    <h2>The audit defines what enforcement must prove next</h2>
+    <div class="steward-grid two">
+      <article class="steward-card"><h3>Critical controls</h3><ul><li>Pre-model sensitive-data prevention</li><li>Executable schemas and synthetic fixtures</li><li>Authenticated identity and delegation</li><li>Requester–approver–executor separation</li><li>Typed tools, destinations, and deny rules</li></ul></article>
+      <article class="steward-card"><h3>Evidence controls</h3><ul><li>Aggregate suppression and re-identification tests</li><li>Separate whole-life, development, delegation, and succession domains</li><li>Retention, purge, rollback, and uninstall probes</li><li>Independent per-criterion release ledger</li><li>Institution-specific authorization and expiry</li></ul></article>
+    </div>
+    <div class="steward-boundary"><strong>Smallest next step:</strong> build one synthetic, local-only authority-and-data preflight adapter that accepts no free-form operational narrative, binds a test identity to one context variant, rejects prohibited data before any model call, emits a machine-readable Pass/Question/Block receipt, and performs no external action.</div>
+    <p><a href="preview/STEWARD-Enforcement-Gap-Register.md">Read the complete enforcement gap register →</a></p>
+  </div>
+</section>
+
+<section class="section section-alt" id="integrity">
+  <div class="container">
+    <p class="eyebrow">Inspect before you trust</p>
+    <h2>Specification, provenance, and checksums</h2>
+    <div class="steward-grid">
+      <article class="steward-card"><h3>Governance specification</h3><p>The canonical doctrine, one-lane/context-variant architecture, nonclaims, control frameworks, evidence standard, and implementation gates.</p><p><a href="preview/STEWARD-Governance-Specification.md">Markdown →</a><br><a href="preview/STEWARD-Governance-Specification.pdf">Publication PDF →</a></p></article>
+      <article class="steward-card"><h3>Gap register</h3><p>Sixteen open enforcement gaps with priorities, risks, required evidence, staged implementation, and the smallest credible next step.</p><p><a href="preview/STEWARD-Enforcement-Gap-Register.md">Open gap register →</a></p></article>
+      <article class="steward-card"><h3>Source integrity</h3><p>Static archive, checksum, inventory, parity, and Office-container audit facts. Runtime enforcement was not established, and the original installer-facing payload is not distributed.</p><p><a href="preview/SOURCE-PROVENANCE.json">Source provenance →</a><br><a href="preview/PACKAGE-CHECKSUMS.sha256">Preview file checksums →</a><br><a href="downloads/manifest.json">Public manifest →</a></p></article>
+    </div>
+    <div class="integrity-row">
+      <a class="btn btn-primary" href="downloads/steward-governance-preview.zip" download>Download governance preview bundle →</a>
+      <a class="btn btn-secondary" href="downloads/CHECKSUMS.sha256">Verify bundle checksum</a>
+      <a class="btn btn-secondary" href="https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse/tree/main/hospital-clinic-administrators">Browse public source</a>
+    </div>
+    <p class="steward-mantra">Keep the doctrine. Prove the controls. Restore the product claim only when the evidence earns it.</p>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">STEWARD · Public governance preview for hospital and clinic administration.</p>
+    <p>Published by NAIO Institute for inspection and critique. It is not software, an institutional deployment, a compliance certification, or authority to use operational data.</p>
+    <div class="footer-links"><a href="../about.html">Publisher</a><a href="../privacy.html">Privacy</a><a href="../licensing.html">Licensing</a><a href="../SAFETY.md">Safety</a></div>
+  </div>
+</footer>
+</body>
+</html>

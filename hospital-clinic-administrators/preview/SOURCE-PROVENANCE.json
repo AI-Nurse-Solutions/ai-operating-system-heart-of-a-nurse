@@ -1,0 +1,52 @@
+{
+  "audit_date": "2026-07-16",
+  "audit_disposition": "source_integrity_verified_runtime_enforcement_not_established",
+  "office_container_review": {
+    "activex_found": false,
+    "embedded_executable_or_ole_object_found": false,
+    "external_relationship_found": false,
+    "macro_or_vba_found": false
+  },
+  "public_distribution": {
+    "activation_instructions_included": false,
+    "complete_ai_os_claim": "paused",
+    "executable_or_installer_included": false,
+    "operational_data_authorized": false,
+    "original_source_payload_included": false,
+    "published_artifact_class": "non_executable_governance_preview"
+  },
+  "source_archive": {
+    "bytes": 363602,
+    "crc_passed": true,
+    "internal_checksum_entries": 22,
+    "internal_checksum_matches": 22,
+    "members": 23,
+    "path_or_member_safety_findings": 0,
+    "sha256": "30d44b5372390318ce324d973d854a73a6aa840e889b2f960df4340d58ee2752",
+    "supplied_name": "STEWARD-Hospital-Clinic-Administrator-Pack.zip"
+  },
+  "source_inventory": {
+    "agent_declarations": 10,
+    "agent_runtime_artifacts": 0,
+    "component_files": 17,
+    "declared_release_criteria": 160,
+    "executable_schema_artifacts": 0,
+    "power_declarations": 24,
+    "schema_declarations": 18,
+    "template_declarations": 30,
+    "workflow_declarations": 24
+  },
+  "source_parity": {
+    "embedded_components_matched": 17,
+    "embedded_components_total": 17,
+    "passed": true
+  },
+  "review_context": {
+    "evidence_location": "Private local audit workspace; not included in the public preview",
+    "publicly_reproducible_from_preview_alone": false,
+    "review_type": "NAIO prepublication static source review; not third-party certification",
+    "superseded_when": "Source archive digest, preview artifacts, or review scope changes",
+    "tooling_scope": "Local archive, checksum, container/XML, inventory, and text-parity checks"
+  },
+  "statement": "The source archive was audited as untrusted input. Static source integrity and declaration inventories were verified. No package instructions or runtime criteria were executed. The original source payload is intentionally omitted from the public preview because it contains installer-facing language unsupported by enforceable runtime evidence. These provenance statements are not independently reproducible from the public preview alone and do not constitute external certification."
+}

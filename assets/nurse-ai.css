@@ -38,6 +38,18 @@ body {
   background: var(--linen-50);
 }
 
+.skip-link {
+  position: fixed; top: .5rem; left: .5rem; z-index: 1000;
+  transform: translateY(-160%); padding: .65rem 1rem; border-radius: 8px;
+  background: var(--gold-300); color: var(--navy-900); font-weight: 800;
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: none !important;
+  outline: 3px solid var(--teal-600);
+  outline-offset: 2px;
+}
+
 /* Decorative nursing-sketch background for the public front door and pathways.
    A strong cream veil keeps the supplied clinical collage contextual—not
    instructional—and protects text contrast while the artwork stays visible. */
@@ -240,7 +252,7 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 .section-navy h2, .section-navy h3 { color: var(--white); }
 .section-navy .card h2, .section-navy .card h3 { color: var(--navy-900); }
 .eyebrow {
-  color: var(--teal-600); text-transform: uppercase; letter-spacing: .13em;
+  color: #116b69; text-transform: uppercase; letter-spacing: .13em;
   font-weight: 700; font-size: .82rem; margin-bottom: .4rem;
 }
 .section-navy .eyebrow { color: var(--gold-300); }
@@ -367,7 +379,8 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 }
 .home-role-video-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
 .home-resident-video,
-.home-rt-video {
+.home-rt-video,
+.home-admin-lane {
   max-width: 720px;
   margin: 3rem auto 0;
   padding: 1.4rem;
@@ -378,9 +391,11 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
   text-align: center;
 }
 .home-resident-video h3,
-.home-rt-video h3 { margin: .25rem 0 .45rem; }
+.home-rt-video h3,
+.home-admin-lane h3 { margin: .25rem 0 .45rem; }
 .home-resident-video > p:not(.eyebrow):not(.cta-line),
-.home-rt-video > p:not(.eyebrow):not(.cta-line) { margin: 0; color: var(--ink-600); }
+.home-rt-video > p:not(.eyebrow):not(.cta-line),
+.home-admin-lane > p:not(.eyebrow):not(.cta-line) { margin: 0; color: var(--ink-600); }
 .home-resident-video .home-short-frame,
 .home-rt-video .home-short-frame { margin-top: 1.15rem; }
 .home-resident-video .cta-line { margin: 1rem 0 0; }
@@ -389,6 +404,12 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
   border-color: var(--navy-700);
   background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(230,242,250,.92));
 }
+.home-admin-lane {
+  margin-top: 1.5rem;
+  border-color: #0b7d7b;
+  background: linear-gradient(145deg, rgba(255,255,255,.95), rgba(232,246,242,.94));
+}
+.home-admin-lane .cta-line { margin: 1rem 0 0; }
 
 /* ---------- Offer table ---------- */
 .offer-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
@@ -468,5 +489,15 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
     background-position: center top, 66% top;
     background-size: auto, 720px auto;
     background-attachment: scroll, scroll;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

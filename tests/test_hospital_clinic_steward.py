@@ -172,6 +172,7 @@ class StewardGovernancePreviewTests(unittest.TestCase):
             "git ls-files --error-unmatch",
             "git status --porcelain --untracked-files=all",
             "target.relative_to(root)",
+            "python3 scripts/check-steward-pdf.py --self-test",
         ):
             self.assertIn(phrase, self.workflow)
         requirement = (ROOT / "scripts" / "requirements-steward-pdf.txt").read_text(encoding="utf-8")

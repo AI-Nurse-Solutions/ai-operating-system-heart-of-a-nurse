@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from pypdf import PdfReader
-from pypdf.generic import ArrayObject, DictionaryObject, IndirectObject
+from pypdf.generic import ArrayObject, DictionaryObject, IndirectObject, NameObject
 
 ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "hospital-clinic-administrators" / "preview" / "STEWARD-Governance-Specification.pdf"
@@ -81,6 +81,8 @@ def assert_inert_object_graph(reader: PdfReader) -> None:
                 return
             seen.add(identity)
             value = value.get_object()
+        if isinstance(value, NameObject) and str(value) in forbidden:
+            fail(f"forbidden active-content value present at {path}: {value}")
         if isinstance(value, DictionaryObject):
             for key, child in value.items():
                 key_text = str(key)
@@ -94,10 +96,32 @@ def assert_inert_object_graph(reader: PdfReader) -> None:
     walk(reader.trailer, "trailer")
 
 
+def run_adversarial_self_test() -> None:
+    action = DictionaryObject({NameObject("/S"): NameObject("/Launch")})
+    trailer = DictionaryObject({NameObject("/A"): action})
+
+    class AdversarialReader:
+        def __init__(self, value: DictionaryObject) -> None:
+            self.trailer = value
+
+    reader = AdversarialReader(trailer)
+    try:
+        assert_inert_object_graph(reader)  # type: ignore[arg-type]
+    except SystemExit as exc:
+        if "forbidden active-content value present" in str(exc):
+            print("STEWARD_PDF_SELF_TEST=passed value_only_launch_action=refused")
+            return
+        raise
+    fail("adversarial /S /Launch value was accepted")
+
+
 def main() -> None:
+    if sys.argv[1:] == ["--self-test"]:
+        run_adversarial_self_test()
+        return
     pdf_path = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else PDF
     if len(sys.argv) > 2:
-        fail("usage: check-steward-pdf.py [pdf-path]")
+        fail("usage: check-steward-pdf.py [--self-test | pdf-path]")
 
     reader = PdfReader(str(pdf_path))
     assert_inert_object_graph(reader)
@@ -119,6 +143,8 @@ def main() -> None:
         fail("interactive form fields are prohibited")
 
     metadata = reader.metadata
+    if not metadata:
+        fail("missing document metadata")
     expected_metadata = {
         "title": EXPECTED_TITLE,
         "author": EXPECTED_AUTHOR,
@@ -157,5 +183,5 @@ def main() -> None:
 if __name__ == "__main__":
     try:
         main()
-    except (OSError, ValueError) as exc:
+    except Exception as exc:
         fail(str(exc))

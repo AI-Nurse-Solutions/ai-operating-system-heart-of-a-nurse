@@ -72,7 +72,9 @@ jobs:
       - name: Run STEWARD preview, nonclaim, and isolation tests
         run: python3 tests/test_hospital_clinic_steward.py
       - name: Verify tagged PDF semantics, parity, and inertness
-        run: python3 scripts/check-steward-pdf.py
+        run: |
+          python3 scripts/check-steward-pdf.py --self-test
+          python3 scripts/check-steward-pdf.py
       - name: Run shared adjacent-lane regressions
         run: |
           python3 tests/test_medical_resident_rounds.py

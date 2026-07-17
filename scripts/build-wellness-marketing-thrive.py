@@ -20,7 +20,7 @@ PROGRAM_NAME='Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-
 SOURCE_PACK='Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0'
 WRAPPER_DIGESTS={
  '00-READ-FIRST.md':'12941b98af5cabc887a9f164b43e7ed4c82aa450d9b94231d544726a0ccbe8b1',
- 'ROLE-PACK.json':'c086060d61453f1ad9b6ad62f9e1be6216e23ac24e3b6b255f0d5c6fd15a6183',
+ 'ROLE-PACK.json':'40fbb009ccf2c5d421535c368c5e13904b26839cf0b30f032af79ff1e7a832c6',
 }
 
 def sha256(path:Path)->str:return hashlib.sha256(path.read_bytes()).hexdigest()

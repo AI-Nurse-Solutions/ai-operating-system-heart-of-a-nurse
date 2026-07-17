@@ -73,9 +73,9 @@
       "upstream_sha256": "5f4558b0b6e4a1b11454730ade8c59085d6857ff168cf9436c876a57197c4297"
     },
     {
-      "bytes": 959098,
+      "bytes": 960962,
       "packaged_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Hermes-Program.md",
-      "source_sha256": "8131c8d6748971136af7d94c7f30d80a6630bfdc977d7b441647f54a1993f2d2",
+      "source_sha256": "e9f231c6f314365ee9e08498639fcaa8b0510c7d9491d8abf52c4b76a7939e85",
       "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; embedded normalized direct components and refreshed all 17 component hashes; added the exact digest-bound THRIVE Activation Card, no-state stop, exact post-card command, and material-change invalidation; embedded hardened agent and control-receipt schemas; upstream bytes and hash retained",
       "upstream_bytes": 952145,
       "upstream_path": "Wellness-Services-Marketer-and-Manager-Complete-AI-OS-with-THRIVE-SuperPowers-Hermes-Program.md",
@@ -253,10 +253,10 @@
       "upstream_sha256": "ace3f6a1cac5eb5d5cbf767305f839d75db543b16242c511cf8f0c7e80ee5951"
     },
     {
-      "bytes": 738905,
+      "bytes": 740769,
       "packaged_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/workflows/03-THRIVE-Schemas-and-Agents.md",
-      "source_sha256": "eaaea618df2c299c539cade3ddf02720ac63f0833a1f5028e238dc6279b53b48",
-      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; hardened P0/P1/P2/P3 agent-state and record-state constraints plus blocked/unsupported/rejected zero-delta receipt semantics; refreshed canonical schema hashes; upstream bytes and hash retained",
+      "source_sha256": "a9c08002da4c5ba0eb7d653bfc674b455dea5a3922b1373167be28705b67ff8e",
+      "transformation": "normalized supplied two-space Markdown hard breaks to explicit <br>; required approval.decision=approve for every approved_by_human record; hardened P0/P1/P2/P3 agent-state, record-state, and armed-kill constraints plus blocked/unsupported/rejected zero-delta receipt semantics; refreshed canonical schema hashes; upstream bytes and hash retained",
       "upstream_bytes": 735275,
       "upstream_path": "Wellness-Services-Marketer-and-Manager-THRIVE-SuperPowers-Pack-v1.0/workflows/03-THRIVE-Schemas-and-Agents.md",
       "upstream_sha256": "f85813f3aaf18b9cb62919fe6e7b74d556c14f076270aa5361db40368dda1e90"

@@ -5,6 +5,7 @@ on:
     paths:
       - "healthcare-research-innovation-leaders/**"
       - "scripts/build-healthcare-research-innovation-discover.py"
+      - "scripts/validate-healthcare-research-innovation-discover-schemas.py"
       - "scripts/scan-public-healthcare-artifacts.py"
       - "tests/test_healthcare_research_innovation_discover.py"
       - "tests/test_medical_resident_rounds.py"
@@ -20,6 +21,7 @@ on:
     paths:
       - "healthcare-research-innovation-leaders/**"
       - "scripts/build-healthcare-research-innovation-discover.py"
+      - "scripts/validate-healthcare-research-innovation-discover-schemas.py"
       - "scripts/scan-public-healthcare-artifacts.py"
       - "tests/test_healthcare_research_innovation_discover.py"
       - "tests/test_medical_resident_rounds.py"
@@ -45,6 +47,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install pinned Draft 2020-12 validator
+        run: python3 -m pip install --disable-pip-version-check jsonschema==4.25.1
       - name: Rebuild committed DISCOVER release bytes twice
         run: |
           python3 scripts/build-healthcare-research-innovation-discover.py
@@ -55,6 +59,8 @@ jobs:
           git diff --exit-code
       - name: Run DISCOVER package, consent, and isolation tests
         run: python3 tests/test_healthcare_research_innovation_discover.py
+      - name: Compile schemas and prove conditional evidence is fail-closed
+        run: python3 scripts/validate-healthcare-research-innovation-discover-schemas.py
       - name: Run shared adjacent-lane homepage regressions
         run: |
           python3 tests/test_medical_resident_rounds.py
@@ -63,7 +69,7 @@ jobs:
         run: python3 scripts/scan-public-healthcare-artifacts.py healthcare-research-innovation-leaders --label DISCOVER
       - name: Verify page links and Python syntax
         run: |
-          python3 -m py_compile scripts/build-healthcare-research-innovation-discover.py tests/test_healthcare_research_innovation_discover.py
+          python3 -m py_compile scripts/build-healthcare-research-innovation-discover.py scripts/validate-healthcare-research-innovation-discover-schemas.py tests/test_healthcare_research_innovation_discover.py
           python3 - <<'PY'
           from html.parser import HTMLParser
           from pathlib import Path

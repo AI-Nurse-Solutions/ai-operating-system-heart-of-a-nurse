@@ -130,6 +130,32 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
             self.assertEqual(document["type"], "object")
             self.assertFalse(document["additionalProperties"])
             self.assertFalse(document["unevaluatedProperties"])
+            self.assertIn("approval", document["required"], name)
+            self.assertIn("aggregate_export_evidence_or_null", document["required"], name)
+            approval_branches = [
+                item for item in document["allOf"]
+                if item.get("then", {}).get("properties", {}).get("approval") == {"$ref": "#/$defs/approvalEvidence"}
+                and "record_state" in item.get("if", {}).get("properties", {})
+            ]
+            has_approval_state = bool(approval_branches)
+            aggregate_branches = [
+                item for item in document["allOf"]
+                if item.get("then", {}).get("properties", {}).get("aggregate_export_evidence_or_null")
+                == {"$ref": "#/$defs/aggregateExportEvidence"}
+            ]
+            data_class = document["properties"]["data_class"]
+            allows_d2 = data_class.get("const") == "DATA-D2" or "DATA-D2" in data_class.get("enum", [])
+            self.assertEqual(bool(aggregate_branches), allows_d2, name)
+            if not has_approval_state:
+                self.assertEqual(name, "whole_life_private")
+                self.assertEqual(document["properties"]["approval"], {"description": "Owner self-review is not institutional approval.", "type": "null"})
+                self.assertEqual(data_class, {"const": "DATA-D3-PRIVATE"})
+
+        validator_script = ROOT / "scripts" / "validate-healthcare-research-innovation-discover-schemas.py"
+        workflow = (ROOT / ".github" / "workflows" / "healthcare-research-innovation-discover.yml").read_text(encoding="utf-8")
+        self.assertTrue(validator_script.is_file())
+        self.assertIn("jsonschema==4.25.1", workflow)
+        self.assertIn("validate-healthcare-research-innovation-discover-schemas.py", workflow)
 
     def test_fixtures_adapters_criteria_and_variants_are_exact(self):
         release = (SOURCE_PACK / "tests" / "01-DISCOVER-Release-and-Runtime-Tests.md").read_text(encoding="utf-8")

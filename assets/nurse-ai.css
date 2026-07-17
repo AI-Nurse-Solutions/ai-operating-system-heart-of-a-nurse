@@ -630,7 +630,7 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 }
 .home-discover-video {
   margin-top: 1.5rem;
-  border-color: var(--teal-700);
+  border-color: var(--teal-600);
   background: linear-gradient(145deg, rgba(255,255,255,.95), rgba(231,245,241,.92));
 }
 .home-discover-video .cta-line { margin: 1rem 0 0; }

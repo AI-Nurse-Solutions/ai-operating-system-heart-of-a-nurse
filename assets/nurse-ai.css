@@ -245,6 +245,226 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 .hero-note { font-size: .95rem; color: #a9bccb; }
 .hero-note strong { color: var(--gold-300); }
 
+/* ---------- The Steward's Charter ---------- */
+.stewards-charter {
+  position: relative;
+  overflow: hidden;
+  padding: 5.5rem 0;
+  color: #e8eef4;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(236, 200, 127, .16), transparent 30rem),
+    radial-gradient(circle at 88% 90%, rgba(29, 156, 153, .15), transparent 34rem),
+    linear-gradient(155deg, #091624 0%, var(--navy-900) 48%, #122c3e 100%);
+  border-top: 1px solid rgba(236, 200, 127, .48);
+  border-bottom: 1px solid rgba(236, 200, 127, .34);
+}
+.charter-shell {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4.5rem);
+  background: linear-gradient(145deg, rgba(22, 48, 74, .92), rgba(9, 22, 36, .96));
+  border: 1px solid rgba(236, 200, 127, .42);
+  border-radius: 28px;
+  box-shadow: 0 28px 70px rgba(2, 10, 18, .42), inset 0 0 0 1px rgba(255,255,255,.035);
+}
+.charter-shell::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(236, 200, 127, .16);
+  border-radius: 20px;
+  pointer-events: none;
+}
+.charter-header { position: relative; text-align: center; margin: 0 auto 3rem; }
+.charter-lamp {
+  line-height: 1;
+  margin: 0 auto 1.1rem;
+  font-size: 2.25rem;
+  filter: drop-shadow(0 0 14px rgba(217, 164, 65, .42));
+}
+.charter-kicker {
+  margin: 0 0 .45rem;
+  color: var(--gold-300);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+}
+.charter-header h2 {
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(2.3rem, 6vw, 4.3rem);
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+.charter-subtitle {
+  margin: .45rem 0 0;
+  color: #b9cad8;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.5vw, 1.55rem);
+  font-style: italic;
+  text-wrap: balance;
+}
+.charter-opening,
+.charter-responsibility,
+.charter-future { position: relative; max-width: 760px; margin: 0 auto; }
+.charter-opening > p:first-child { font-size: 1.17rem; color: #d7e2eb; }
+.charter-question {
+  margin: 2.2rem 0;
+  padding: 1.5rem 1.7rem;
+  background: rgba(9, 22, 36, .62);
+  border-left: 4px solid var(--gold-500);
+  border-radius: 0 12px 12px 0;
+}
+.charter-question p { margin: 0; }
+.charter-question p + p { margin-top: .5rem; color: var(--white); font-size: 1.16rem; }
+.charter-responsibility {
+  margin-top: 2.6rem;
+  padding-top: 2.6rem;
+  border-top: 1px solid rgba(236, 200, 127, .2);
+  color: #c9d7e2;
+}
+.charter-responsibility p { margin: 0 0 .9rem; }
+.charter-responsibility .charter-we-do {
+  margin: 1.4rem 0 .25rem;
+  color: var(--gold-300);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1;
+}
+.charter-covenant {
+  position: relative;
+  display: grid;
+  gap: .8rem;
+  max-width: 800px;
+  margin: 3rem auto;
+}
+.charter-covenant p {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  color: #d8e3eb;
+  background: rgba(226, 243, 242, .055);
+  border: 1px solid rgba(226, 243, 242, .12);
+  border-radius: 12px;
+}
+.charter-covenant span { color: var(--gold-300); font-weight: 700; }
+.charter-doctrine {
+  position: relative;
+  margin: 3.8rem auto;
+  padding: clamp(2rem, 5vw, 3.6rem);
+  text-align: center;
+  background: linear-gradient(145deg, rgba(243, 238, 228, .98), rgba(250, 247, 241, .94));
+  border: 2px solid var(--gold-500);
+  border-radius: 20px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.28);
+}
+.charter-doctrine::before {
+  content: "✦";
+  position: absolute;
+  top: -1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  color: var(--navy-900);
+  background: var(--gold-300);
+  border-radius: 50%;
+}
+.charter-doctrine-label {
+  margin: 0 0 1.2rem;
+  color: var(--ink-600);
+  font-size: .84rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.charter-doctrine .charter-doctrine-line {
+  margin: 0;
+  color: var(--navy-900);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.7rem);
+  font-weight: 600;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+.charter-doctrine footer {
+  margin-top: 1.35rem;
+  color: var(--ink-600);
+  font-size: .98rem;
+}
+.charter-future { color: #d2dee7; }
+.charter-build-line {
+  margin: 1.9rem 0 0;
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 3.5vw, 2.05rem);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.charter-commitment {
+  position: relative;
+  margin-top: 3.8rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(236, 200, 127, .28);
+}
+.charter-commitment-intro { max-width: 680px; margin: 0 auto 1.8rem; text-align: center; }
+.charter-commitment h3 { margin: 0; color: var(--white); font-size: clamp(1.8rem, 4vw, 2.6rem); }
+.charter-commitment-intro > p:last-child { margin: .55rem 0 0; color: #b9cad8; }
+.charter-commitments {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.charter-commitments li {
+  position: relative;
+  min-height: 4.25rem;
+  padding: 1rem 1rem 1rem 2.8rem;
+  color: #e0e9f0;
+  background: rgba(9, 22, 36, .55);
+  border: 1px solid rgba(236, 200, 127, .18);
+  border-radius: 12px;
+}
+.charter-commitments li::before {
+  content: "✓";
+  position: absolute;
+  top: .95rem;
+  left: 1rem;
+  color: var(--gold-300);
+  font-weight: 800;
+}
+.charter-closing {
+  position: relative;
+  max-width: 760px;
+  margin: 3.8rem auto 0;
+  padding-top: 3rem;
+  text-align: center;
+  border-top: 1px solid rgba(236, 200, 127, .28);
+}
+.charter-closing p { margin: 0 0 .75rem; color: #c8d6e1; }
+.charter-closing .charter-welcome { margin: 1.7rem 0 1rem; color: var(--white); font-family: var(--font-display); font-size: 1.75rem; }
+.charter-closing .charter-intent { color: var(--gold-300); font-family: var(--font-display); font-size: clamp(1.7rem, 4vw, 2.5rem); text-wrap: balance; }
+.charter-closing .charter-signature { margin-top: 2.2rem; color: #9cc7c5; font-family: var(--font-display); font-size: 1.08rem; font-style: italic; }
+.charter-scope-note {
+  position: relative;
+  max-width: 760px;
+  margin: 2.8rem auto 0;
+  padding: .9rem 1rem;
+  color: #aebfcd;
+  font-size: .86rem;
+  text-align: center;
+  background: rgba(9, 22, 36, .48);
+  border: 1px solid rgba(174, 191, 205, .16);
+  border-radius: 10px;
+}
+.charter-scope-note strong { color: #d6e1e9; }
+
 /* ---------- Sections ---------- */
 .section { padding: 3.75rem 0; }
 .section-alt { background: var(--linen-100); }
@@ -472,6 +692,14 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
 @media (max-width: 620px) {
   .site-header { position: static; }
   .cols-2, .cols-3, .cols-4, .resource-list { grid-template-columns: 1fr; }
+  .stewards-charter { padding: 3rem 0; }
+  .charter-shell { padding: 2.25rem 1.25rem; border-radius: 20px; }
+  .charter-shell::before { inset: 8px; border-radius: 14px; }
+  .charter-header { margin-bottom: 2.25rem; }
+  .charter-question { padding: 1.2rem; }
+  .charter-doctrine { margin: 3rem auto; padding: 2.3rem 1.15rem; }
+  .charter-commitments { grid-template-columns: 1fr; }
+  .charter-commitments li { min-height: 0; }
   .nav-links { gap: .75rem; font-size: .9rem; }
   .language-nav-inner { justify-content: center; overflow-x: visible; flex-wrap: wrap; padding: .55rem .35rem; gap: .25rem; }
   .language-nav-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }

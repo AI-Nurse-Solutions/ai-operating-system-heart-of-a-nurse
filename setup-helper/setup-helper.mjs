@@ -187,7 +187,7 @@ function renderComplete() {
     <div class="completion-grid"><div><strong>Route</strong>${summary.route === 'mac' ? 'macOS Hermes' : 'Browser-first'}</div><div><strong>Broad identity</strong>${escapeHtml(summary.identity)}</div><div><strong>Post-setup lane</strong>${escapeHtml(summary.lane)}</div><div><strong>Governance posture</strong>Shadow / observe-only; human executes</div></div>
     <div class="task-box"><strong>Keep this first-task prompt</strong>\n${escapeHtml(summary.task)}</div>
     <div class="stage-note"><strong>Boundary:</strong> ${escapeHtml(summary.boundary)}<br><strong>Posture:</strong> ${escapeHtml(summary.posture)}</div>
-    <p><a class="btn btn-primary" href="../post-setup/">Review the six English post-setup lane packages →</a> <button id="print-summary" class="btn btn-quiet" type="button">Print this summary</button></p>
+    <p><a class="btn btn-primary" href="../switchboard/">Map my roles in the Switchboard preview →</a> <a class="btn btn-quiet" href="../post-setup/">Review post-setup packages</a> <button id="print-summary" class="btn btn-quiet" type="button">Print this summary</button></p>
     <p><strong>Agents propose. Humans judge. Nurses steward.</strong></p>`);
 }
 

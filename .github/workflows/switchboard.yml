@@ -1,0 +1,78 @@
+name: Nurse AI OS Switchboard Preview
+
+on:
+  pull_request:
+    paths:
+      - "assets/nurse-ai.css"
+      - "switchboard/**"
+      - "tests/test_switchboard.py"
+      - "tests/test_switchboard_browser.mjs"
+      - "tests/test_switchboard_schema.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - "setup-helper/**"
+      - "post-setup/index.html"
+      - "privacy.html"
+      - "README.md"
+      - "sitemap.xml"
+      - ".github/workflows/switchboard.yml"
+  push:
+    branches: [main]
+    paths:
+      - "assets/nurse-ai.css"
+      - "switchboard/**"
+      - "tests/test_switchboard.py"
+      - "tests/test_switchboard_browser.mjs"
+      - "tests/test_switchboard_schema.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - "setup-helper/**"
+      - "post-setup/index.html"
+      - "privacy.html"
+      - "README.md"
+      - "sitemap.xml"
+      - ".github/workflows/switchboard.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install pinned test dependencies
+        run: npm ci --ignore-scripts
+      - name: Run deterministic Switchboard tests
+        run: python3 tests/test_switchboard.py
+      - name: Check JavaScript syntax
+        run: |
+          node --check switchboard/switchboard-model.mjs
+          node --check switchboard/switchboard.mjs
+          node --check setup-helper/setup-helper.mjs
+          node --check tests/test_switchboard_browser.mjs
+          node --check tests/test_switchboard_schema.mjs
+      - name: Validate JSON Schemas and registry entries
+        run: npm run test:switchboard-schema
+      - name: Run browser interaction and responsive smoke test
+        run: npm run test:switchboard-browser
+      - name: Confirm existing role distributions remain byte-for-byte unchanged
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "No parent commit exists; package-diff guard is not applicable."
+            exit 0
+          fi
+          git diff --exit-code "$BASE_SHA" HEAD -- post-setup/packages post-setup/downloads healthcare-research-innovation-leaders/packages healthcare-research-innovation-leaders/downloads

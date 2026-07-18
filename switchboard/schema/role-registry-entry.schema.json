@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.org/switchboard/schema/role-registry-entry.schema.json",
+  "title": "Nurse AI OS Role and Capability Registry Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "displayName", "description", "status", "credentialPosture", "allowed", "prohibited", "compatibleCapabilities", "contexts", "edenaStatus", "autonomyCeiling", "defaultActive", "authoritySource", "rollback", "review"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9-]{2,80}$"},
+    "kind": {"enum": ["professional-community-role", "functional-assignment", "capability", "context-adapter"]},
+    "displayName": {"type": "string", "minLength": 2, "maxLength": 100},
+    "description": {"type": "string", "minLength": 20, "maxLength": 500},
+    "status": {"enum": ["stable-public-reference", "draft-preview", "retired", "superseded"]},
+    "publicPath": {"type": ["string", "null"]},
+    "credentialPosture": {"type": "string", "minLength": 20},
+    "authoritySource": {"type": "string", "minLength": 20},
+    "allowed": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "prohibited": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "compatibleCapabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9-]{2,80}$"}},
+    "contexts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["all", "personal", "facility-a", "facility-b", "school-a", "clinic-a", "committee-a", "community-a", "association-a"]}},
+    "edenaStatus": {"const": "not-evaluated"},
+    "autonomyCeiling": {"const": "A0"},
+    "defaultActive": {"const": false},
+    "rollback": {"type": "string", "minLength": 20},
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "sourceClaims", "edena", "syntheticTests", "independent", "revalidateOn"],
+      "properties": {
+        "classification": {"type": "boolean"},
+        "sourceClaims": {"type": "boolean"},
+        "edena": {"type": "boolean"},
+        "syntheticTests": {"type": "boolean"},
+        "independent": {"type": "boolean"},
+        "revalidateOn": {"type": "string", "minLength": 10}
+      }
+    }
+  }
+}

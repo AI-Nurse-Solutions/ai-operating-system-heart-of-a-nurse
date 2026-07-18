@@ -9,6 +9,7 @@ import {
   ROLE_REGISTRY,
   CAPABILITY_REGISTRY,
   createInitialState,
+  createSyntheticDemoState,
   normalizeState,
   addLocalRole,
   removeLocalExtension,
@@ -41,6 +42,8 @@ const localRoleList = document.querySelector('#local-role-list');
 const statusMessage = document.querySelector('#status-message');
 const legacyBanner = document.querySelector('#legacy-banner');
 const importInput = document.querySelector('#import-state');
+const exportButton = document.querySelector('#export-state');
+const resetButton = document.querySelector('#reset-state');
 
 let initialStorageWarning = '';
 let expiryTimer = null;
@@ -50,6 +53,18 @@ const dialogA11yState = new WeakMap();
 let state = loadState();
 let legacyState = loadLegacyState();
 let legacyMigrationAvailable = Boolean(legacyState && migrateLegacySetupState(legacyState, new Date().toISOString(), 'legacy-availability-check'));
+const syntheticDemoState = createSyntheticDemoState();
+let syntheticDemoDashboardId = syntheticDemoState.activeDashboardId;
+
+function isSyntheticDemoMode() {
+  return state.dashboards.length === 0;
+}
+
+function visibleState() {
+  if (!isSyntheticDemoMode()) return state;
+  syntheticDemoState.activeDashboardId = syntheticDemoDashboardId;
+  return syntheticDemoState;
+}
 
 function escapeHtml(value = '') {
   return String(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
@@ -198,7 +213,11 @@ function randomSuffix() {
 }
 
 function render() {
-  dashboardCount.textContent = String(state.dashboards.length);
+  const demoMode = isSyntheticDemoMode();
+  dashboardCount.textContent = String(visibleState().dashboards.length);
+  exportButton.disabled = demoMode;
+  exportButton.title = demoMode ? 'Create a local dashboard before exporting your own configuration.' : '';
+  resetButton.textContent = demoMode ? 'Clear saved local data' : 'Clear local Switchboard';
   renderLegacyBanner();
   renderDashboardRail();
   renderLocalRegistry();
@@ -226,14 +245,14 @@ function renderLegacyBanner() {
 }
 
 function renderDashboardRail() {
-  if (!state.dashboards.length) {
-    dashboardList.innerHTML = '<p class="rail-empty">No dashboards yet.</p>';
-    return;
-  }
-  dashboardList.innerHTML = state.dashboards.map((dashboard) => {
-    const role = roleById(dashboard.primaryRoleId, state);
-    const current = dashboard.id === state.activeDashboardId;
-    return `<button class="dashboard-link" type="button" data-dashboard-id="${escapeHtml(dashboard.id)}" aria-pressed="${current ? 'true' : 'false'}"><strong>${escapeHtml(role?.displayName || 'Unknown role')}</strong><span>${escapeHtml(labelFor(CONTEXTS, dashboard.contextKey))} · ${escapeHtml(labelFor(DEPARTMENTS, dashboard.departmentKey))}</span></button>`;
+  const renderedState = visibleState();
+  const demoMode = isSyntheticDemoMode();
+  document.querySelector('.rail-heading strong').textContent = demoMode ? 'Synthetic examples' : 'My dashboards';
+  dashboardList.innerHTML = renderedState.dashboards.map((dashboard) => {
+    const role = roleById(dashboard.primaryRoleId, renderedState);
+    const current = dashboard.id === renderedState.activeDashboardId;
+    const dataAttribute = demoMode ? 'data-demo-dashboard-id' : 'data-dashboard-id';
+    return `<button class="dashboard-link" type="button" ${dataAttribute}="${escapeHtml(dashboard.id)}" aria-pressed="${current ? 'true' : 'false'}"><strong>${escapeHtml(role?.displayName || 'Unknown role')}</strong><span>${escapeHtml(labelFor(CONTEXTS, dashboard.contextKey))} · ${escapeHtml(labelFor(DEPARTMENTS, dashboard.departmentKey))}</span>${demoMode ? '<small>Synthetic · review only</small>' : ''}</button>`;
   }).join('');
 }
 
@@ -242,20 +261,32 @@ function renderLocalRegistry() {
   localRoleList.innerHTML = state.localRoles.length ? state.localRoles.map((item) => `<div class="local-role-item"><span><strong>${escapeHtml(item.displayName)}</strong><small>${escapeHtml(item.kind.replaceAll('-', ' '))} · not reviewed</small></span><button class="text-button" type="button" data-remove-local-role="${escapeHtml(item.id)}">Remove</button></div>`).join('') : '<p class="rail-empty">No local drafts.</p>';
 }
 
+function scopeList(items, emptyLabel) {
+  return items?.length ? `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : `<p>${escapeHtml(emptyLabel)}</p>`;
+}
+
+function assessmentCard(item, label, open = false) {
+  return `<details class="assessment-card" ${open ? 'open' : ''}><summary><span>${escapeHtml(label)}</span><strong>${escapeHtml(item?.displayName || 'Unknown')}</strong></summary><div class="assessment-card-body"><p>${escapeHtml(item?.description || item?.boundary || 'No reviewed description is available.')}</p><div class="assessment-limits"><div><h6>Preparation allowed</h6>${scopeList(item?.allowed, 'No reviewed allowed-use list.')}</div><div><h6>Not allowed</h6>${scopeList(item?.prohibited, 'No reviewed prohibited-use list.')}</div></div></div></details>`;
+}
+
 function renderDashboardView() {
-  const dashboard = state.dashboards.find((item) => item.id === state.activeDashboardId) || state.dashboards[0];
-  if (!dashboard) {
-    dashboardView.innerHTML = `<div class="empty-dashboard"><span class="empty-icon" aria-hidden="true">✦</span><h3>Build your first role dashboard</h3><p>A manager can also be a graduate student. A staff nurse can enter a committee with DISCOVER. An NP educator can keep faculty, practice, and learner contexts separate.</p><button class="btn btn-primary" type="button" data-action="create-dashboard">Create a dashboard →</button></div>`;
-    return;
-  }
-  if (state.activeDashboardId !== dashboard.id) state.activeDashboardId = dashboard.id;
-  const card = configurationPosture(dashboard, state);
-  const role = roleById(dashboard.primaryRoleId, state);
-  const capabilities = dashboard.capabilityIds.map((id) => capabilityById(id, state)).filter(Boolean);
+  const renderedState = visibleState();
+  const demoMode = isSyntheticDemoMode();
+  const dashboard = renderedState.dashboards.find((item) => item.id === renderedState.activeDashboardId) || renderedState.dashboards[0];
+  if (!dashboard) return;
+  if (demoMode) syntheticDemoDashboardId = dashboard.id;
+  else if (state.activeDashboardId !== dashboard.id) state.activeDashboardId = dashboard.id;
+  const card = configurationPosture(dashboard, renderedState);
+  const role = roleById(dashboard.primaryRoleId, renderedState);
+  const capabilities = dashboard.capabilityIds.map((id) => capabilityById(id, renderedState)).filter(Boolean);
+  const actions = demoMode
+    ? '<button class="btn btn-quiet" type="button" data-action="bridge">Why sending is unavailable</button>'
+    : `<button class="btn btn-quiet" type="button" data-action="bridge">Why sending is unavailable</button>${card.active ? '<button class="btn btn-quiet" type="button" data-action="end-session">End session</button>' : ''}<button class="text-button" type="button" data-action="remove-dashboard">Remove</button>`;
   dashboardView.innerHTML = `
+    ${demoMode ? '<div class="demo-notice"><div><span>Synthetic demo · not saved</span><strong>Review a populated Switchboard before configuring anything.</strong><p>Switch the three examples in the left rail. Expand the role and capability cards below to inspect what is allowed and prohibited.</p></div><button class="btn btn-primary" type="button" data-action="create-dashboard">Create my own →</button></div>' : ''}
     <div class="dashboard-head">
-      <div><p class="dashboard-kicker">Working identity · ${escapeHtml(card.active ? 'declared window active' : 'inactive or expired')}</p><h3>${escapeHtml(dashboardTitle(dashboard, state))}</h3><p>${escapeHtml(labelFor(ASSIGNMENT_STATUSES, dashboard.assignmentStatus))} · ${escapeHtml(labelFor(SHIFT_WINDOWS, dashboard.shiftWindow))}</p></div>
-      <div class="dashboard-head-actions"><button class="btn btn-quiet" type="button" data-action="bridge">Why sending is unavailable</button>${card.active ? '<button class="btn btn-quiet" type="button" data-action="end-session">End session</button>' : ''}<button class="text-button" type="button" data-action="remove-dashboard">Remove</button></div>
+      <div><p class="dashboard-kicker">${demoMode ? 'Synthetic working identity · review only' : `Working identity · ${escapeHtml(card.active ? 'declared window active' : 'inactive or expired')}`}</p><h3>${escapeHtml(dashboardTitle(dashboard, renderedState))}</h3><p>${escapeHtml(labelFor(ASSIGNMENT_STATUSES, dashboard.assignmentStatus))} · ${escapeHtml(labelFor(SHIFT_WINDOWS, dashboard.shiftWindow))}</p></div>
+      <div class="dashboard-head-actions">${actions}</div>
     </div>
     <section class="authority-card ${card.active ? '' : 'inactive'}" aria-labelledby="configuration-posture-title">
       <div class="authority-card-head"><h4 id="configuration-posture-title">Dashboard Configuration Posture</h4><div class="authority-badges"><span>EDENA: ${escapeHtml(card.edena)}</span><span>${escapeHtml(card.autonomy)}</span><span>${escapeHtml(card.disposition)}</span></div></div>
@@ -268,6 +299,11 @@ function renderDashboardView() {
       <section class="dashboard-panel"><h4>Role</h4><div class="tag-list"><span class="tag">Primary · ${escapeHtml(role?.displayName || 'Unknown')}</span><span class="tag draft">One role per preview dashboard</span></div></section>
       <section class="dashboard-panel"><h4>Capability stack</h4><div class="tag-list">${capabilities.map((item) => `<span class="tag">${escapeHtml(item.displayName)}</span>`).join('') || '<span class="tag draft">No capabilities selected</span>'}</div></section>
     </div>
+    <section class="assessment-panel" aria-labelledby="assessment-title">
+      <div class="assessment-heading"><div><p class="dashboard-kicker">Assessment view</p><h4 id="assessment-title">Inspect what this configuration means</h4></div><p>These cards describe preparation boundaries, not executable tools or professional authority.</p></div>
+      <div class="assessment-grid">${assessmentCard(role, 'Primary role', true)}${capabilities.map((item) => assessmentCard(item, 'Capability')).join('')}</div>
+    </section>
+    <section class="preview-functions" aria-labelledby="preview-functions-title"><h4 id="preview-functions-title">What works in this preview</h4><div><article><strong>Switch context</strong><span>Compare separate role dashboards without blending their metadata.</span></article><article><strong>Inspect boundaries</strong><span>Review allowed preparation, prohibited activity, and the A0 posture.</span></article><article><strong>Configure locally</strong><span>Create, export, import, end, or remove your own browser-local dashboards.</span></article></div></section>
     <div class="dashboard-boundary"><strong>Separate but linked:</strong> only dashboard configuration metadata shares this Switchboard. Opening another dashboard changes the visible working identity; it does not transfer or merge a work artifact, employer data, file, memory, connector, or permission. This preview performs no clinical, external, or Hermes action.</div>`;
 }
 
@@ -343,6 +379,15 @@ roleForm.addEventListener('submit', (event) => {
 });
 
 dashboardList.addEventListener('click', (event) => {
+  const demoButton = event.target.closest('[data-demo-dashboard-id]');
+  if (demoButton) {
+    syntheticDemoDashboardId = demoButton.dataset.demoDashboardId;
+    render();
+    dashboardView.focus();
+    const selected = syntheticDemoState.dashboards.find((item) => item.id === syntheticDemoDashboardId);
+    announce(`Synthetic example selected: ${dashboardTitle(selected, syntheticDemoState)}. Nothing was saved.`);
+    return;
+  }
   const button = event.target.closest('[data-dashboard-id]');
   if (!button) return;
   try {
@@ -404,7 +449,7 @@ document.querySelector('#create-role').addEventListener('click', () => {
   showDialog(roleDialog);
   setTimeout(() => document.querySelector('#local-role-name')?.focus(), 0);
 });
-document.querySelector('#export-state').addEventListener('click', downloadJson);
+exportButton.addEventListener('click', downloadJson);
 document.querySelector('#import-button').addEventListener('click', () => importInput.click());
 importInput.addEventListener('change', () => importJson(importInput.files?.[0]));
 document.addEventListener('click', (event) => {
@@ -430,7 +475,7 @@ document.addEventListener('keydown', (event) => {
   else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
   else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
 });
-document.querySelector('#reset-state').addEventListener('click', () => {
+resetButton.addEventListener('click', () => {
   if (!window.confirm('Clear every local Switchboard dashboard and local draft role from this browser?')) return;
   try {
     localStorage.removeItem(STORAGE_KEY);
@@ -439,7 +484,7 @@ document.querySelector('#reset-state').addEventListener('click', () => {
     return announce('Local storage could not be cleared. Use your browser’s stored-site-data settings before relying on reset.', true);
   }
   state = createInitialState();
-  announce('Local Switchboard cleared. Existing downloads and Hermes profiles were not changed.');
+  announce('Saved local Switchboard data cleared. Synthetic review examples remain visible; existing downloads and Hermes profiles were not changed.');
   render();
 });
 document.querySelector('#migrate-legacy').addEventListener('click', () => {

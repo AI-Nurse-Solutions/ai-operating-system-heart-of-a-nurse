@@ -69,6 +69,35 @@ try {
   });
   await page.reload();
 
+  assert.equal(await page.locator('.rail-heading strong').textContent(), 'Synthetic examples');
+  assert.equal(await page.locator('#dashboard-count').textContent(), '3');
+  assert.equal(await page.locator('[data-demo-dashboard-id]').count(), 3, 'first run must expose three reviewable examples');
+  assert.equal(await page.locator('[data-demo-dashboard-id][aria-pressed="true"]').count(), 1);
+  assert.equal(await page.locator('#export-state').isDisabled(), true, 'synthetic examples must never be exported as personal state');
+  assert.equal(await page.locator('#reset-state').textContent(), 'Clear saved local data');
+  await assert.doesNotReject(() => page.getByText('Synthetic demo · not saved').waitFor());
+  await assert.doesNotReject(() => page.getByText('What works in this preview').waitFor());
+  assert.ok(await page.locator('.assessment-card').count() >= 4, 'role and capability boundaries must be immediately assessable');
+  assert.equal(await page.locator('.assessment-card[open]').count(), 1, 'primary role scope must be expanded by default');
+  assert.equal(await page.evaluate(() => localStorage.getItem('naio.switchboard.preview.v2')), null, 'reviewing examples must not create saved state');
+  const demoButtons = page.locator('[data-demo-dashboard-id]');
+  await demoButtons.nth(1).click();
+  assert.match(await page.locator('.dashboard-head h3').textContent(), /Nurse Educator/);
+  await demoButtons.nth(2).click();
+  assert.match(await page.locator('.dashboard-head h3').textContent(), /Nurse Community Organizer-Developer/);
+  assert.equal(await page.evaluate(() => localStorage.getItem('naio.switchboard.preview.v2')), null, 'switching synthetic examples must remain ephemeral');
+  await page.setViewportSize({ width: 320, height: 720 });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, '320px synthetic review mode must not overflow');
+  const demoCtaBox = await page.getByRole('button', { name: 'Create my own →' }).boundingBox();
+  const assessmentSummaryBox = await page.locator('.assessment-card summary').first().boundingBox();
+  assert.ok(demoCtaBox.height >= 44, `synthetic demo CTA target height ${demoCtaBox.height}`);
+  assert.ok(assessmentSummaryBox.height >= 44, `assessment disclosure target height ${assessmentSummaryBox.height}`);
+  await page.getByRole('button', { name: 'Create my own →' }).click();
+  await page.locator('#dashboard-dialog[open]').waitFor();
+  await page.getByRole('button', { name: 'Cancel' }).click();
+  assert.equal(await page.locator('[data-demo-dashboard-id]').count(), 3);
+  await page.setViewportSize({ width: 1280, height: 720 });
+
   await page.evaluate(() => {
     window.scrollTo(0, 600);
     document.querySelector('footer').inert = true;
@@ -92,10 +121,17 @@ try {
   assert.ok(fallbackMetrics.top >= 0 && fallbackMetrics.bottom <= fallbackMetrics.viewportHeight, `fallback must be visible in viewport: ${JSON.stringify(fallbackMetrics)}`);
   await page.evaluate(() => document.querySelector('#export-state').focus());
   assert.equal(await page.evaluate(() => document.querySelector('#dashboard-dialog').contains(document.activeElement)), true, 'fallback background must be inert');
-  await page.locator('#dashboard-dialog .btn-quiet[data-close-dialog="dashboard-dialog"]').focus();
+  await page.evaluate(() => {
+    const focusable = [...document.querySelectorAll('#dashboard-dialog button:not([disabled]), #dashboard-dialog [href], #dashboard-dialog input:not([disabled]), #dashboard-dialog select:not([disabled]), #dashboard-dialog textarea:not([disabled]), #dashboard-dialog [tabindex]:not([tabindex="-1"])')];
+    focusable.at(-1).focus();
+  });
   await page.keyboard.press('Tab');
-  const fallbackFocus = await page.evaluate(() => ({ tag: document.activeElement?.tagName, className: document.activeElement?.className, text: document.activeElement?.textContent }));
-  assert.equal(String(fallbackFocus.className).includes('dialog-close'), true, `fallback Tab must wrap to first control: ${JSON.stringify(fallbackFocus)}`);
+  const fallbackFocus = await page.evaluate(() => {
+    const first = document.querySelector('#dashboard-dialog button:not([disabled]), #dashboard-dialog [href], #dashboard-dialog input:not([disabled]), #dashboard-dialog select:not([disabled]), #dashboard-dialog textarea:not([disabled]), #dashboard-dialog [tabindex]:not([tabindex="-1"])');
+    return { wrapped: document.activeElement === first, contained: document.querySelector('#dashboard-dialog').contains(document.activeElement), tag: document.activeElement?.tagName, className: document.activeElement?.className };
+  });
+  assert.equal(fallbackFocus.wrapped, true, `fallback Tab must wrap to its first focusable control: ${JSON.stringify(fallbackFocus)}`);
+  assert.equal(fallbackFocus.contained, true);
   await page.keyboard.press('Escape');
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'create-dashboard', 'fallback close must restore invoking focus');
   assert.equal(await page.evaluate(() => document.querySelector('main').inert), false, 'fallback close must restore background interactivity');
@@ -118,12 +154,13 @@ try {
 
   await page.getByRole('button', { name: '+ Create dashboard' }).click();
   await page.getByRole('button', { name: 'Cancel' }).click();
-  assert.equal(await page.locator('#dashboard-count').textContent(), '0', 'Cancel must not create a dashboard');
+  assert.equal(await page.locator('#dashboard-count').textContent(), '3', 'Cancel must return to the three synthetic examples');
+  assert.equal(await page.evaluate(() => localStorage.getItem('naio.switchboard.preview.v2')), null);
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'create-dashboard', 'native Cancel must restore invoking focus');
 
   await page.getByRole('button', { name: '+ Create dashboard' }).click();
   await page.getByRole('button', { name: 'Close dashboard form' }).click();
-  assert.equal(await page.locator('#dashboard-count').textContent(), '0', 'Close must not create a dashboard');
+  assert.equal(await page.locator('#dashboard-count').textContent(), '3', 'Close must not replace the synthetic review mode');
 
   await page.setViewportSize({ width: 320, height: 720 });
   await page.getByRole('button', { name: '+ Create dashboard' }).click();
@@ -146,6 +183,8 @@ try {
   await page.getByRole('button', { name: '+ Create dashboard' }).click();
   await page.getByRole('button', { name: 'Create separate dashboard' }).click();
   assert.equal(await page.locator('#dashboard-count').textContent(), '1');
+  assert.equal(await page.locator('[data-demo-dashboard-id]').count(), 0, 'saved dashboard must replace synthetic review mode without mixing states');
+  assert.equal(await page.locator('#export-state').isEnabled(), true);
   await page.getByRole('button', { name: '+ Create dashboard' }).click();
   await page.locator('#dashboard-context').selectOption('facility-a');
   await page.locator('#dashboard-department').selectOption('critical-care');
@@ -194,8 +233,9 @@ try {
 
   page.once('dialog', (dialog) => dialog.accept());
   await page.locator('#import-state').setInputFiles({ name: 'switchboard.json', mimeType: 'application/json', buffer: Buffer.from(emptyState) });
-  await page.waitForFunction(() => document.querySelector('#dashboard-count')?.textContent === '0');
-  assert.equal(await page.locator('#dashboard-count').textContent(), '0');
+  await page.waitForFunction(() => document.querySelector('#dashboard-count')?.textContent === '3');
+  assert.equal(await page.locator('[data-demo-dashboard-id]').count(), 3, 'an imported empty state must return to synthetic review mode');
+  assert.equal(await page.locator('#export-state').isDisabled(), true);
 
   await page.getByRole('button', { name: '+ Add local role or assignment' }).click();
   await page.locator('#local-role-name').fill('Jane Doe MRN 123');
@@ -209,7 +249,7 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, '390px layout must not overflow horizontally');
   await page.evaluate(() => { Storage.prototype.removeItem = () => { throw new Error('blocked'); }; });
   page.once('dialog', (dialog) => dialog.accept());
-  await page.getByRole('button', { name: 'Clear local Switchboard' }).click();
+  await page.getByRole('button', { name: 'Clear saved local data' }).click();
   await page.getByText('Local storage could not be cleared.').waitFor();
   assert(!(await page.locator('#status-message').textContent())?.includes('Existing downloads'), 'reset must not announce success when removal fails');
   assert.deepEqual(errors, [], `browser console errors: ${errors.join(' | ')}`);

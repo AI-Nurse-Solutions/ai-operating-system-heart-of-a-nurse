@@ -67,8 +67,10 @@ class SwitchboardModelTests(unittest.TestCase):
         result = node_eval("""
           import {createSyntheticDemoState,configurationPosture} from './switchboard/switchboard-model.mjs';
           const state=createSyntheticDemoState('2026-01-01T00:00:00.000Z');
+          const repeated=createSyntheticDemoState('2026-01-01T00:00:00.000Z');
           console.log(JSON.stringify({
             ids:state.dashboards.map((item)=>item.id),
+            repeatedIds:repeated.dashboards.map((item)=>item.id),
             roles:state.dashboards.map((item)=>item.primaryRoleId),
             inactive:state.dashboards.every((item)=>item.assignmentStatus==='not-current'&&item.shiftWindow==='not-current'),
             postures:state.dashboards.map((item)=>configurationPosture(item,state,'2026-01-01T00:00:00.000Z'))
@@ -77,6 +79,7 @@ class SwitchboardModelTests(unittest.TestCase):
         self.assertEqual(result["roles"], ["staff-nurse", "nurse-educator", "nurse-community-organizer-developer"])
         self.assertEqual(len(result["ids"]), 3)
         self.assertEqual(len(set(result["ids"])), 3)
+        self.assertEqual(result["ids"], result["repeatedIds"])
         self.assertTrue(result["inactive"])
         self.assertTrue(all(not posture["active"] for posture in result["postures"]))
         self.assertTrue(all(posture["edena"] == "Not evaluated" and posture["autonomy"] == "A0 · no action" for posture in result["postures"]))

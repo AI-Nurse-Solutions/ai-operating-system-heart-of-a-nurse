@@ -57,7 +57,7 @@ const syntheticDemoState = createSyntheticDemoState();
 let syntheticDemoDashboardId = syntheticDemoState.activeDashboardId;
 
 function isSyntheticDemoMode() {
-  return state.dashboards.length === 0;
+  return state.dashboards.length === 0 && state.localRoles.length === 0;
 }
 
 function visibleState() {
@@ -248,6 +248,10 @@ function renderDashboardRail() {
   const renderedState = visibleState();
   const demoMode = isSyntheticDemoMode();
   document.querySelector('.rail-heading strong').textContent = demoMode ? 'Synthetic examples' : 'My dashboards';
+  if (!renderedState.dashboards.length) {
+    dashboardList.innerHTML = '<p class="rail-empty">No local dashboards yet.</p>';
+    return;
+  }
   dashboardList.innerHTML = renderedState.dashboards.map((dashboard) => {
     const role = roleById(dashboard.primaryRoleId, renderedState);
     const current = dashboard.id === renderedState.activeDashboardId;
@@ -273,7 +277,10 @@ function renderDashboardView() {
   const renderedState = visibleState();
   const demoMode = isSyntheticDemoMode();
   const dashboard = renderedState.dashboards.find((item) => item.id === renderedState.activeDashboardId) || renderedState.dashboards[0];
-  if (!dashboard) return;
+  if (!dashboard) {
+    dashboardView.innerHTML = '<div class="empty-dashboard"><span class="empty-icon" aria-hidden="true">✦</span><h3>Your local draft is saved</h3><p>Create a dashboard when you are ready to place that draft inside a separate context, assignment, and capability stack.</p><button class="btn btn-primary" type="button" data-action="create-dashboard">Create a dashboard →</button></div>';
+    return;
+  }
   if (demoMode) syntheticDemoDashboardId = dashboard.id;
   else if (state.activeDashboardId !== dashboard.id) state.activeDashboardId = dashboard.id;
   const card = configurationPosture(dashboard, renderedState);

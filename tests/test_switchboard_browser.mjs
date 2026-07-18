@@ -245,11 +245,21 @@ try {
   assert((await page.locator('#role-form-error').textContent())?.includes('not exhaustive PHI detection'));
   await page.getByRole('button', { name: 'Cancel' }).click();
 
+  await page.getByRole('button', { name: '+ Add local role or assignment' }).click();
+  await page.locator('#local-role-name').fill('Nurse Innovation Fellow');
+  await page.locator('#local-role-no-identifiers').check();
+  await page.getByRole('button', { name: 'Add local draft' }).click();
+  assert.equal(await page.locator('#dashboard-count').textContent(), '0');
+  assert.equal(await page.locator('[data-demo-dashboard-id]').count(), 0, 'persisted local-role-only state must exit synthetic mode');
+  await assert.doesNotReject(() => page.getByRole('heading', { name: 'Your local draft is saved' }).waitFor());
+  assert.equal(await page.locator('#export-state').isEnabled(), true, 'local-role-only state must remain exportable');
+  assert.equal(await page.locator('#reset-state').textContent(), 'Clear local Switchboard');
+
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, '390px layout must not overflow horizontally');
   await page.evaluate(() => { Storage.prototype.removeItem = () => { throw new Error('blocked'); }; });
   page.once('dialog', (dialog) => dialog.accept());
-  await page.getByRole('button', { name: 'Clear saved local data' }).click();
+  await page.getByRole('button', { name: 'Clear local Switchboard' }).click();
   await page.getByText('Local storage could not be cleared.').waitFor();
   assert(!(await page.locator('#status-message').textContent())?.includes('Existing downloads'), 'reset must not announce success when removal fails');
   assert.deepEqual(errors, [], `browser console errors: ${errors.join(' | ')}`);

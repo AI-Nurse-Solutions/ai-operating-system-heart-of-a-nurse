@@ -1,4 +1,5 @@
 import { normalizeSavedState as normalizeLegacySetupState } from '../setup-helper/setup-helper-model.mjs';
+import roleRegistryData from './data/role-registry.json' with { type: 'json' };
 
 export const STORAGE_KEY = 'naio.switchboard.preview.v2';
 export const LEGACY_SETUP_KEY = 'naio.setup-helper.phase1.v1';
@@ -47,34 +48,22 @@ export const SHIFT_WINDOWS = Object.freeze([
   { value: 'not-current', label: 'No active shift or assignment' }
 ]);
 
-export const ROLE_REGISTRY = Object.freeze([
-  { id: 'student-learner', displayName: 'Student / Learner', kind: 'professional-community-role', status: 'draft-preview', contexts: ['personal','school-a','facility-a','facility-b','clinic-a'], capabilities: ['future','discover','communicate'], boundary: 'No enrollment, credential, grading, or program authority is verified.' },
-  { id: 'staff-nurse', displayName: 'Staff Nurse / Quality Contributor', kind: 'professional-community-role', status: 'draft-preview', contexts: ['personal','facility-a','facility-b','committee-a'], capabilities: ['shift','discover','future','improve','communicate'], boundary: 'No license, employment, assignment, delegation, quality appointment, or clinical authority is verified.' },
-  { id: 'nurse-leader-manager', displayName: 'Nurse Leader / Manager', kind: 'professional-community-role', status: 'draft-preview', contexts: ['personal','facility-a','facility-b','committee-a','association-a'], capabilities: ['lead','discover','future','govern','communicate','organize'], boundary: 'No managerial appointment, staffing, budget, disciplinary, or organizational authority is verified.' },
-  { id: 'nurse-educator', displayName: 'Nurse Educator / Instructional Designer', kind: 'professional-community-role', status: 'draft-preview', contexts: ['school-a','facility-a','facility-b','personal'], capabilities: ['teach','future','discover','communicate'], boundary: 'No faculty, teaching, grading, accommodation, curriculum, or accreditation authority is verified.' },
-  { id: 'nurse-practitioner-usa', displayName: 'Nurse Practitioner (USA)', kind: 'professional-community-role', status: 'draft-preview', contexts: ['clinic-a','school-a','personal'], capabilities: ['np-wings','future','discover','teach'], boundary: 'No NP license, certification, population focus, privileges, prescribing, or clinical authority is verified.' },
-  { id: 'committee-member', displayName: 'Committee / Shared-Governance Member', kind: 'functional-assignment', status: 'draft-preview', contexts: ['committee-a','facility-a','facility-b','school-a','community-a'], capabilities: ['discover','future','improve','govern','communicate','organize'], boundary: 'No committee appointment, vote, chair, sponsor, research, QI, or institutional authority is verified.' },
-  { id: 'nurse-informaticist', displayName: 'Nurse Informaticist', kind: 'professional-community-role', status: 'draft-preview', contexts: ['facility-a','facility-b','clinic-a','committee-a'], capabilities: ['discover','future','build','govern','communicate','orchestrate'], boundary: 'No informatics appointment, system access, configuration, procurement, or deployment authority is verified.' },
-  { id: 'legal-nurse-consultant', displayName: 'Medico-Legal / Legal Nurse Consultant', kind: 'professional-community-role', status: 'draft-preview', contexts: ['personal','association-a','committee-a'], capabilities: ['discover','future','communicate','govern'], boundary: 'No consultant qualification, attorney relationship, expert-witness status, case authority, or records access is verified.' },
-  { id: 'nurse-ai-agent-orchestrator', displayName: 'Nurse AI Agent Orchestrator', kind: 'professional-community-role', status: 'draft-preview', contexts: ['personal','committee-a','facility-a','facility-b','community-a'], capabilities: ['orchestrate','govern','discover','future','build'], boundary: 'No AI appointment, tool permission, connector, deployment, or institutional authority is verified.' },
-  { id: 'nurse-community-organizer-developer', displayName: 'Nurse Community Organizer-Developer', kind: 'professional-community-role', status: 'draft-preview', contexts: ['community-a','association-a','committee-a','personal'], capabilities: ['organize','discover','future','build','communicate','govern'], boundary: 'No community mandate, participant consent, organizational office, fundraising, outreach, or political authority is verified.' },
-  { id: 'nurse-connected-ally', displayName: 'Nurse-Connected Ally', kind: 'professional-community-role', status: 'draft-preview', contexts: ['personal','community-a','association-a'], capabilities: ['discover','future','build','communicate','organize'], boundary: 'No nursing identity, license, clinical authority, employment, or institutional mandate is verified.' }
-]);
+function runtimeRegistryEntry(entry) {
+  return Object.freeze({
+    ...entry,
+    contexts: Object.freeze([...entry.contexts]),
+    compatibleCapabilities: Object.freeze([...entry.compatibleCapabilities]),
+    allowed: Object.freeze([...entry.allowed]),
+    prohibited: Object.freeze([...entry.prohibited]),
+    review: Object.freeze({ ...entry.review }),
+    capabilities: Object.freeze([...entry.compatibleCapabilities]),
+    ceiling: entry.autonomyCeiling,
+    boundary: `${entry.credentialPosture} ${entry.authoritySource}`
+  });
+}
 
-export const CAPABILITY_REGISTRY = Object.freeze([
-  { id: 'discover', displayName: 'DISCOVER', ceiling: 'A0', boundary: 'Proposed universal capability taxonomy, distinct from the existing DISCOVER distribution. Formal research, QI, data-use, recruitment, publication, and institutional determinations remain human-authorized.' },
-  { id: 'future', displayName: 'FUTURE', ceiling: 'A0', boundary: 'Proposed universal capability taxonomy, distinct from the existing Student/Assistant FUTURE package. Enrollment, grading, credentialing, and clinical authority are not created.' },
-  { id: 'shift', displayName: 'SHIFT', ceiling: 'A0', boundary: 'Private no-PHI practice preparation only; no clinical, reporting, staffing, quality-data, or workforce authority.' },
-  { id: 'lead', displayName: 'LEAD', ceiling: 'A0', boundary: 'Leadership preparation only; no staffing, budget, personnel, surveillance, or organizational approval authority.' },
-  { id: 'teach', displayName: 'TEACH', ceiling: 'A0', boundary: 'Teaching preparation only; no student records, autonomous grading, learner ranking, or institutional release.' },
-  { id: 'np-wings', displayName: 'NP Wings', ceiling: 'A0', boundary: 'Non-clinical preparation only; no diagnosis, treatment, prescribing, or patient-specific recommendation.' },
-  { id: 'improve', displayName: 'IMPROVE', ceiling: 'A0', boundary: 'Process-improvement preparation only; no QI/research determination, official reporting, or implementation authority.' },
-  { id: 'build', displayName: 'BUILD', ceiling: 'A0', boundary: 'Local synthetic prototypes only; no production deployment, clinical integration, secrets, or automatic publication.' },
-  { id: 'govern', displayName: 'GOVERN', ceiling: 'A0', boundary: 'Stewardship preparation only; no legal, compliance, procurement, credentialing, or institutional determination.' },
-  { id: 'communicate', displayName: 'COMMUNICATE', ceiling: 'A0', boundary: 'Human-reviewed drafts only; no automatic sending, claimed representation, or confidential disclosure.' },
-  { id: 'organize', displayName: 'ORGANIZE', ceiling: 'A0', boundary: 'Community preparation only; no automatic outreach, participant enrollment, sensitive-data collection, or claimed mandate.' },
-  { id: 'orchestrate', displayName: 'ORCHESTRATE', ceiling: 'A0', boundary: 'Agent planning only; no agent execution, hidden delegation, connector activation, or autonomous clinical action.' }
-]);
+export const ROLE_REGISTRY = Object.freeze(roleRegistryData.entries.filter((entry) => entry.kind !== 'capability').map(runtimeRegistryEntry));
+export const CAPABILITY_REGISTRY = Object.freeze(roleRegistryData.entries.filter((entry) => entry.kind === 'capability').map(runtimeRegistryEntry));
 
 const ROLE_IDS = new Set(ROLE_REGISTRY.map((item) => item.id));
 const CAPABILITY_IDS = new Set(CAPABILITY_REGISTRY.map((item) => item.id));
@@ -329,8 +318,10 @@ export function expireElapsedAssignments(state, now) {
   const timestamp = new Date(nowIso(now)).getTime();
   let changed = false;
   for (const dashboard of normalized.dashboards) {
-    if (!['8-hours', '12-hours'].includes(dashboard.shiftWindow)) continue;
-    if (new Date(dashboard.assignmentExpiresAt).getTime() > timestamp) continue;
+    if (!['session', '8-hours', '12-hours'].includes(dashboard.shiftWindow)) continue;
+    const startsInFuture = new Date(dashboard.assignmentStartedAt).getTime() > timestamp;
+    const fixedWindowExpired = ['8-hours', '12-hours'].includes(dashboard.shiftWindow) && new Date(dashboard.assignmentExpiresAt).getTime() <= timestamp;
+    if (!startsInFuture && !fixedWindowExpired) continue;
     dashboard.assignmentStatus = 'not-current';
     dashboard.shiftWindow = 'not-current';
     dashboard.assignmentStartedAt = null;
@@ -353,11 +344,12 @@ export function configurationPosture(dashboard, state, now) {
   const timestamp = new Date(nowIso(now)).getTime();
   const fixedWindow = ['8-hours', '12-hours'].includes(dashboard.shiftWindow);
   const malformedWindow = !assignmentWindowIsValid(dashboard);
+  const notStarted = dashboard.assignmentStartedAt ? new Date(dashboard.assignmentStartedAt).getTime() > timestamp : false;
   const expired = fixedWindow && dashboard.assignmentExpiresAt ? new Date(dashboard.assignmentExpiresAt).getTime() <= timestamp : false;
-  const inactive = malformedWindow || dashboard.assignmentStatus === 'not-current' || dashboard.shiftWindow === 'not-current' || expired;
+  const inactive = malformedWindow || dashboard.assignmentStatus === 'not-current' || dashboard.shiftWindow === 'not-current' || notStarted || expired;
   const capabilities = dashboard.capabilityIds.map((id) => capabilityById(id, state)).filter(Boolean);
   const reasons = [
-    inactive ? (malformedWindow ? 'The assignment window is inconsistent. The preview fails closed.' : expired ? 'The declared assignment window expired.' : 'No current assignment is active.') : 'The assignment is self-declared or otherwise unverified by this preview.',
+    inactive ? (malformedWindow ? 'The assignment window is inconsistent. The preview fails closed.' : notStarted ? 'The declared assignment window has not started. The preview fails closed.' : expired ? 'The declared assignment window expired.' : 'No current assignment is active.') : 'The assignment is self-declared or otherwise unverified by this preview.',
     'This is a configuration posture, not an EDENA assessment, credential check, or authority envelope.',
     'Role and capability selection personalize navigation; they do not create professional or institutional authority.',
     'This browser preview cannot install, connect, schedule, message, publish, or perform a clinical action.'

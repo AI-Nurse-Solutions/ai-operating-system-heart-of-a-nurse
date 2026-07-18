@@ -24,6 +24,8 @@ The first independent architecture, security, and UX/release review requested ch
 | Imported session assignments could be resurrected | P1 | Fixed: import now expires reload-bound sessions and elapsed fixed windows before replacement; browser import regression added. |
 | Context isolation wording exceeded actual shared-state behavior | P1 | Fixed: disclosures say separation is navigational and metadata-level, not a secure sandbox. |
 | Fixed-window and role composition invariants were incomplete | P1/P2 | Fixed in deterministic runtime normalization; structural schema explicitly identifies runtime-only invariants. |
+| Future-dated imported assignment windows could appear current | P2 | Fixed: configuration posture fails closed before start, and load/import canonicalization marks future session and fixed windows `not-current`. |
+| Runtime governance summaries could drift from the declarative registry | P2 | Fixed: runtime roles and capabilities are projected directly from canonical `role-registry.json`; CI compares every canonical field and derived alias. |
 | State schema could be mistaken for the complete import contract | P2 | Fixed: schema and architecture label it structural; tests prove runtime rejects noncanonical duration, dangling active references, and duplicate IDs. |
 | Obvious `Patient Jane Doe` titles passed the heuristic | P2 | Fixed: generic local titles containing `patient` or identifier labels are rejected; disclosure still says checks are not exhaustive DLP. |
 | Complete legacy objects with malformed timestamps migrated | P2 | Fixed: legacy `updatedAt` must be canonical ISO before migration. |
@@ -52,8 +54,8 @@ The first independent architecture, security, and UX/release review requested ch
 
 Latest completed local validation before the final re-review:
 
-- Full repository Python suite: **216 tests passed**.
-- Switchboard Python suite: **26 tests passed**.
+- Full repository Python suite: **217 tests passed**.
+- Switchboard Python suite: **27 tests passed**.
 - Draft 2020-12 AJV validation: **23 current registry entries passed**; an A2 mutation was rejected.
 - Browser test: route 200, malformed-storage cleanup, legacy dismissal/completion markers across reload, viewport-fixed fallback with role/ARIA/backdrop/all-sibling inertness/prior-state restoration/focus trap and return, native dialog containment and focus return, selected styling persistence, Cancel/close, context filtering, dashboard creation and switching, import replacement, imported-session expiry, 320 px touch targets, 390 px overflow, reset failure, and clean console.
 - The final browser evidence suite passed **five consecutive runs** after asynchronous import assertions were changed to wait for the actual state transition.

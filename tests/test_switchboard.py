@@ -136,6 +136,29 @@ class SwitchboardModelTests(unittest.TestCase):
         self.assertEqual(result["dashboard"]["shiftWindow"], "not-current")
         self.assertFalse(result["card"]["active"])
 
+    def test_future_assignment_windows_fail_closed(self) -> None:
+        result = node_eval("""
+          import {createInitialState,addDashboard,expireElapsedAssignments,configurationPosture} from './switchboard/switchboard-model.mjs';
+          const input={contextKey:'personal',departmentKey:'personal-learning',primaryRoleId:'staff-nurse',supportingRoleIds:[],capabilityIds:['discover','future'],assignmentStatus:'self-declared'};
+          let fixed=createInitialState('2026-07-17T02:00:00Z');
+          fixed=addDashboard(fixed,{...input,shiftWindow:'8-hours'},'2026-07-17T02:00:00Z','future-fixed').state;
+          let session=createInitialState('2026-07-17T02:00:00Z');
+          session=addDashboard(session,{...input,shiftWindow:'session'},'2026-07-17T02:00:00Z','future-session').state;
+          const fixedCard=configurationPosture(fixed.dashboards[0],fixed,'2026-07-17T01:00:00Z');
+          const sessionCard=configurationPosture(session.dashboards[0],session,'2026-07-17T01:00:00Z');
+          fixed=expireElapsedAssignments(fixed,'2026-07-17T01:00:00Z');
+          session=expireElapsedAssignments(session,'2026-07-17T01:00:00Z');
+          console.log(JSON.stringify({fixedCard,sessionCard,fixed:fixed.dashboards[0],session:session.dashboards[0]}));
+        """)
+        self.assertFalse(result["fixedCard"]["active"])
+        self.assertFalse(result["sessionCard"]["active"])
+        self.assertIn("has not started", result["fixedCard"]["reasons"][0])
+        for dashboard in (result["fixed"], result["session"]):
+            self.assertEqual(dashboard["assignmentStatus"], "not-current")
+            self.assertEqual(dashboard["shiftWindow"], "not-current")
+            self.assertIsNone(dashboard["assignmentStartedAt"])
+            self.assertIsNone(dashboard["assignmentExpiresAt"])
+
     def test_local_role_rejects_narrative_punctuation_and_unknown_type(self) -> None:
         result = node_eval("""
           import {createInitialState,addLocalRole} from './switchboard/switchboard-model.mjs';
@@ -293,22 +316,32 @@ class RegistryAndSchemaTests(unittest.TestCase):
         ):
             self.assertIn(identifier, ids)
 
-    def test_model_and_machine_registry_have_same_role_and_capability_ids(self) -> None:
-        registry_ids = {entry["id"] for entry in REGISTRY["entries"]}
-        model_ids = set(re.findall(r"\{ id: '([^']+)'", MODEL))
-        self.assertEqual(registry_ids, model_ids)
+    def test_runtime_registry_is_complete_projection_of_canonical_json(self) -> None:
+        result = node_eval("""
+          import registryData from './switchboard/data/role-registry.json' with { type: 'json' };
+          import {ROLE_REGISTRY,CAPABILITY_REGISTRY} from './switchboard/switchboard-model.mjs';
+          const runtime=[...ROLE_REGISTRY,...CAPABILITY_REGISTRY];
+          const failures=[];
+          for (const source of registryData.entries) {
+            const projected=runtime.find((entry)=>entry.id===source.id);
+            if (!projected) { failures.push(`${source.id}:missing`); continue; }
+            for (const key of Object.keys(source)) {
+              if (JSON.stringify(projected[key]) !== JSON.stringify(source[key])) failures.push(`${source.id}:${key}`);
+            }
+            if (JSON.stringify(projected.capabilities) !== JSON.stringify(source.compatibleCapabilities)) failures.push(`${source.id}:capabilities-alias`);
+            if (projected.ceiling !== source.autonomyCeiling) failures.push(`${source.id}:ceiling-alias`);
+            if (projected.boundary !== `${source.credentialPosture} ${source.authoritySource}`) failures.push(`${source.id}:boundary-alias`);
+          }
+          console.log(JSON.stringify({sourceCount:registryData.entries.length,runtimeCount:runtime.length,failures}));
+        """)
+        self.assertEqual(result, {"sourceCount": 23, "runtimeCount": 23, "failures": []})
 
     def test_registry_role_contexts_match_model_and_capabilities_are_universal(self) -> None:
-        registry_by_id = {entry["id"]: entry for entry in REGISTRY["entries"]}
-        role_rows = re.findall(r"\{ id: '([^']+)', displayName: '[^']+', kind: '(?:professional-community-role|functional-assignment)', status: 'draft-preview', contexts: \[([^\]]+)\], capabilities: \[([^\]]*)\]", MODEL)
-        self.assertEqual(len(role_rows), 11)
-        for role_id, context_source, capability_source in role_rows:
-            model_contexts = {value.strip().strip("'") for value in context_source.split(",")}
-            model_capabilities = {value.strip().strip("'") for value in capability_source.split(",") if value.strip()}
-            self.assertEqual(set(registry_by_id[role_id]["contexts"]), model_contexts, role_id)
-            self.assertEqual(set(registry_by_id[role_id]["compatibleCapabilities"]), model_capabilities, role_id)
-            self.assertIn("discover", model_capabilities, role_id)
-            self.assertIn("future", model_capabilities, role_id)
+        roles = [entry for entry in REGISTRY["entries"] if entry["kind"] != "capability"]
+        self.assertEqual(len(roles), 11)
+        for entry in roles:
+            self.assertIn("discover", entry["compatibleCapabilities"], entry["id"])
+            self.assertIn("future", entry["compatibleCapabilities"], entry["id"])
         for entry in REGISTRY["entries"]:
             if entry["kind"] == "capability":
                 self.assertEqual(entry["contexts"], ["all"], entry["id"])

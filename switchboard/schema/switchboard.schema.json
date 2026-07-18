@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.org/switchboard/schema/switchboard.schema.json",
+  "title": "Nurse AI OS Switchboard Preview Structural State Shape",
+  "description": "Structural JSON Schema only. Successful import also requires switchboard-model.mjs normalizeState(), which enforces exact fixed-window duration, role/context/capability compatibility, identifier collision rules, unique dashboard IDs, and active-dashboard referential integrity that portable JSON Schema cannot fully express.",
+  "$comment": "Do not treat schema validation alone as import acceptance or authority evidence. The deterministic runtime normalizer is authoritative.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "activeDashboardId", "dashboards", "localRoles", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"const": 2},
+    "activeDashboardId": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+    "updatedAt": {"$ref": "#/$defs/timestamp"},
+    "dashboards": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/dashboard"}
+    },
+    "localRoles": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/localRole"}
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,79}$"},
+    "timestamp": {"type": "string", "format": "date-time", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"},
+    "dashboard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "contextKey", "departmentKey", "primaryRoleId", "supportingRoleIds", "capabilityIds", "assignmentStatus", "shiftWindow", "assignmentStartedAt", "assignmentExpiresAt", "createdAt", "updatedAt"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "contextKey": {"enum": ["personal", "facility-a", "facility-b", "school-a", "clinic-a", "committee-a", "community-a", "association-a"]},
+        "departmentKey": {"enum": ["personal-learning", "bedside", "critical-care", "emergency", "administration", "education", "informatics", "quality", "research", "committee", "community", "legal-consulting", "other"]},
+        "primaryRoleId": {"$ref": "#/$defs/id"},
+        "supportingRoleIds": {"type": "array", "maxItems": 0},
+        "capabilityIds": {"type": "array", "uniqueItems": true, "maxItems": 10, "items": {"$ref": "#/$defs/id"}},
+        "assignmentStatus": {"enum": ["self-declared", "organization-assigned-unverified", "education-enrolled-unverified", "community-assigned-unverified", "not-current"]},
+        "shiftWindow": {"enum": ["session", "8-hours", "12-hours", "not-current"]},
+        "assignmentStartedAt": {"oneOf": [{"$ref": "#/$defs/timestamp"}, {"type": "null"}]},
+        "assignmentExpiresAt": {"oneOf": [{"$ref": "#/$defs/timestamp"}, {"type": "null"}]},
+        "createdAt": {"$ref": "#/$defs/timestamp"},
+        "updatedAt": {"$ref": "#/$defs/timestamp"}
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "assignmentStatus": {"const": "not-current"},
+            "shiftWindow": {"const": "not-current"},
+            "assignmentStartedAt": {"type": "null"},
+            "assignmentExpiresAt": {"type": "null"}
+          }
+        },
+        {
+          "properties": {
+            "assignmentStatus": {"enum": ["self-declared", "organization-assigned-unverified", "education-enrolled-unverified", "community-assigned-unverified"]},
+            "shiftWindow": {"const": "session"},
+            "assignmentStartedAt": {"$ref": "#/$defs/timestamp"},
+            "assignmentExpiresAt": {"type": "null"}
+          }
+        },
+        {
+          "properties": {
+            "assignmentStatus": {"enum": ["self-declared", "organization-assigned-unverified", "education-enrolled-unverified", "community-assigned-unverified"]},
+            "shiftWindow": {"enum": ["8-hours", "12-hours"]},
+            "assignmentStartedAt": {"$ref": "#/$defs/timestamp"},
+            "assignmentExpiresAt": {"$ref": "#/$defs/timestamp"}
+          }
+        }
+      ]
+    },
+    "localRole": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName", "kind", "status", "createdAt"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "displayName": {"type": "string", "minLength": 2, "maxLength": 60, "pattern": "^[A-Za-z0-9][A-Za-z0-9 &/()'’-]{1,59}$"},
+        "kind": {"enum": ["professional-community-role", "functional-assignment"]},
+        "status": {"const": "local-draft-not-reviewed"},
+        "createdAt": {"$ref": "#/$defs/timestamp"}
+      }
+    }
+  }
+}

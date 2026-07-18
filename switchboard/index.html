@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nurse AI OS Switchboard Preview — One Nurse, Many Hats</title>
+<meta name="description" content="Create separate, linked role dashboards for the different contexts, assignments, shifts, learning roles, committees, and community roles nurses occupy. Browser-local preview. No installation or credential verification; PHI is prohibited.">
+<link rel="canonical" href="https://nurse-ai-os.org/switchboard/">
+<link rel="icon" type="image/svg+xml" href="../assets/img/favicon-lamp.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<link rel="stylesheet" href="switchboard.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to Switchboard</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="../index.html"><span class="lamp" aria-hidden="true">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="../start-here.html">Start Here</a>
+      <a href="../setup-helper/">Setup Helper</a>
+      <a href="../post-setup/">Role Packs</a>
+      <a href="../privacy.html">Privacy</a>
+      <a class="nav-cta active" href="./" aria-current="page">Switchboard</a>
+    </div>
+  </nav>
+</header>
+
+<section class="switchboard-hero">
+  <div class="container switchboard-hero-grid">
+    <div>
+      <p class="kicker">Browser-local architecture preview · no installation</p>
+      <h1>One nurse. Many contexts. Many hats.</h1>
+      <p class="lede">Create a separate dashboard for each role, department, committee, school, facility, shift, or community assignment—then move between them without pretending they share the same authority.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#main-content">Open the Switchboard →</a>
+        <a class="btn btn-secondary" href="ARCHITECTURE.md">Read the architecture</a>
+      </div>
+    </div>
+    <aside class="hero-rule-card" aria-label="Switchboard governing rule">
+      <p>Governing rule</p>
+      <strong>Install broadly.<br>Activate by context.<br>Authorize narrowly.</strong>
+      <span>Person ≠ credential ≠ role ≠ assignment ≠ authority.</span>
+    </aside>
+  </div>
+</section>
+
+<section class="preview-boundary" aria-label="Preview boundaries">
+  <div class="container boundary-grid">
+    <div><strong>Browser-local preview</strong><span>Configuration stays in this browser unless you export it.</span></div>
+    <div><strong>PHI and records prohibited</strong><span>Do not enter patient, learner, workforce, case, or confidential information. Browser checks are not exhaustive DLP.</span></div>
+    <div><strong>No authority by selection</strong><span>Roles and assignments are self-declared or otherwise unverified.</span></div>
+    <div><strong>No Hermes mutation</strong><span>No profile, skill, memory, connector, cron, or agent is installed or activated.</span></div>
+  </div>
+</section>
+
+<main id="main-content" tabindex="-1">
+  <section class="section switchboard-section">
+    <div class="container">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow">Your local station board</p>
+          <h2>Separate dashboards, integrated navigation</h2>
+          <p class="section-intro">Dashboard links switch context only. They do not copy memory, files, credentials, connectors, or authority. Cross-dashboard transfer is not implemented in this preview. Separation here is navigational and metadata-level—not a secure sandbox.</p>
+        </div>
+        <div class="switchboard-actions" aria-label="Switchboard actions">
+          <button id="create-dashboard" class="btn btn-primary" type="button">+ Create dashboard</button>
+          <button id="create-role" class="btn btn-quiet" type="button">+ Add local role or assignment</button>
+          <button id="export-state" class="btn btn-quiet" type="button">Export JSON</button>
+          <button id="import-button" class="btn btn-quiet file-button" type="button">Import JSON</button>
+          <input id="import-state" class="visually-hidden" type="file" accept="application/json,.json" tabindex="-1" aria-hidden="true">
+          <button id="reset-state" class="text-button" type="button">Clear local Switchboard</button>
+        </div>
+      </div>
+
+      <div id="legacy-banner" class="legacy-banner" hidden>
+        <div><strong>Setup Helper lane found.</strong><span>You can create one inactive starter dashboard from that older single-lane choice. Review it before using it.</span></div>
+        <button id="migrate-legacy" class="btn btn-quiet btn-sm" type="button">Create starter dashboard</button>
+        <button id="dismiss-legacy" class="text-button" type="button">Not now</button>
+      </div>
+
+      <div id="status-message" class="status-message" role="status" aria-live="polite"></div>
+
+      <div class="switchboard-shell">
+        <aside class="dashboard-rail" aria-label="Role dashboards">
+          <div class="rail-heading"><strong>My dashboards</strong><span id="dashboard-count">0</span></div>
+          <nav id="dashboard-list" class="dashboard-list" aria-label="Switch dashboard"></nav>
+          <div class="local-registry-head"><strong>Local drafts</strong><span id="local-role-count">0</span></div>
+          <div id="local-role-list" class="local-role-list"></div>
+          <div class="rail-note"><strong>Links, not leaks.</strong> Selecting another dashboard changes the visible context. It does not transfer data.</div>
+        </aside>
+
+        <section id="dashboard-view" class="dashboard-view" tabindex="-1">
+          <div class="empty-dashboard">
+            <span class="empty-icon" aria-hidden="true">✦</span>
+            <h3>Build your first role dashboard</h3>
+            <p>A manager can also be a graduate student. A staff nurse can enter a committee with DISCOVER. An NP educator can keep faculty, practice, and learner contexts separate.</p>
+            <button class="btn btn-primary" type="button" data-action="create-dashboard">Create a dashboard →</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="registry">
+    <div class="container">
+      <p class="eyebrow">A living role library</p>
+      <h2>The launch roles are a beginning—not a ceiling</h2>
+      <p class="section-intro">The registry separates professional or community roles, temporary assignments, reusable capabilities, and future context adapters. DISCOVER and FUTURE are proposed universal taxonomy labels in this preview; they are distinct from the existing standalone public distributions. New public roles require classification, source and claim review, EDENA review, synthetic tests, and independent review. Local roles stay visibly unreviewed.</p>
+      <div class="registry-seeds">
+        <article class="card"><p class="role-tag">Draft role</p><h3>Medico-Legal / Legal Nurse Consultant</h3><p>Public-source review, synthetic chronology templates, evidence organization, and question framing. No legal advice, expert-witness status, case authority, or records access is inferred.</p></article>
+        <article class="card"><p class="role-tag">Draft role</p><h3>Nurse Informaticist</h3><p>Workflow maps, requirements drafts, terminology review, and governance preparation. No production EHR, configuration, procurement, or deployment authority is inferred.</p></article>
+        <article class="card"><p class="role-tag">Draft role</p><h3>Nurse AI Agent Orchestrator</h3><p>No-PHI agent maps, review queues, stop rules, and escalation design. No agent execution, hidden delegation, connector activation, or autonomous clinical action.</p></article>
+        <article class="card"><p class="role-tag">Draft role</p><h3>Nurse Community Organizer-Developer</h3><p>Community listening, coalition stewardship, participatory development, resource navigation, public education, and safe tool building. No mandate, automatic outreach, fundraising, or political authority is inferred.</p></article>
+      </div>
+      <p class="registry-links"><a href="data/role-registry.json">Inspect the draft registry →</a> · <a href="schema/role-registry-entry.schema.json">Inspect the registry schema →</a> · <a href="BASELINE-EVIDENCE.md">Read baseline evidence →</a> · <a href="AUDIT-REPORT.md">Read the audit report →</a> · <a href="ROLLBACK.md">Read the rollback runbook →</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <p class="eyebrow">What comes later</p>
+      <h2>This preview proves the model before installation</h2>
+      <div class="boundary future-boundary">
+        <strong>Not implemented here:</strong> Hermes profile composition, cross-dashboard artifact transfer, credential verification, employer SSO, institutional deployment, PHI interception, EHR integration, connectors, cron, background agents, or external actions. A future composer must pass disposable-profile isolation, update, rollback, wrong-context, digest-bound approval, and independent audit gates first.
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links"><a href="../index.html">Home</a><a href="../setup-helper/">Setup Helper</a><a href="../post-setup/">Role Packs</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div>
+    <p>Browser-local architecture preview · PHI prohibited · No clinical decisions · No installation.</p>
+  </div>
+</footer>
+
+<dialog id="dashboard-dialog" aria-labelledby="dashboard-dialog-title">
+  <form id="dashboard-form" method="dialog">
+    <div class="dialog-head"><div><p class="kicker">Separate context, visible boundary</p><h2 id="dashboard-dialog-title">Create a role dashboard</h2></div><button class="dialog-close" type="button" data-close-dialog="dashboard-dialog" aria-label="Close dashboard form">×</button></div>
+    <div class="form-boundary"><strong>Do not enter names or narratives.</strong> Choose generic context labels only. This preview needs no employer, school, patient, colleague, learner, case, or community-member information.</div>
+    <div class="form-grid">
+      <label>Context<select id="dashboard-context" required></select></label>
+      <label>Department / setting<select id="dashboard-department" required></select></label>
+      <label>Primary role<select id="dashboard-role" required></select></label>
+      <label>Assignment status<select id="dashboard-assignment" required></select></label>
+      <label>Shift / assignment window<select id="dashboard-shift" required></select></label>
+    </div>
+    <div class="form-boundary"><strong>One role per preview dashboard.</strong> Supporting-role composition is deferred until compatibility and authority-intersection rules are independently validated.</div>
+    <fieldset><legend>Additive capabilities <span>(optional; never authority)</span></legend><div id="capability-options" class="check-grid capabilities"></div></fieldset>
+    <div id="dashboard-form-error" class="form-error" role="alert" hidden></div>
+    <div class="dialog-actions"><button class="btn btn-primary" type="submit">Create separate dashboard</button><button class="btn btn-quiet" type="button" data-close-dialog="dashboard-dialog">Cancel</button></div>
+  </form>
+</dialog>
+
+<dialog id="role-dialog" aria-labelledby="role-dialog-title">
+  <form id="role-form" method="dialog">
+    <div class="dialog-head"><div><p class="kicker">Local extension</p><h2 id="role-dialog-title">Add a local draft role or assignment</h2></div><button class="dialog-close" type="button" data-close-dialog="role-dialog" aria-label="Close local extension form">×</button></div>
+    <div class="form-boundary"><strong>Title only.</strong> Do not enter a person's name, organization, patient, case, learner, workforce information, record identifier, or narrative. Local drafts are not NAIO-reviewed. The preview blocks some obvious identifier labels but cannot reliably detect every form of PHI.</div>
+    <label>Short role title<input id="local-role-name" type="text" maxlength="60" placeholder="Example: Nurse Navigation Steward" required></label>
+    <label>Extension type<select id="local-role-kind" required><option value="professional-community-role">Professional or community role</option><option value="functional-assignment">Functional assignment</option></select></label>
+    <label class="check-option"><input id="local-role-no-identifiers" type="checkbox" required><span>I confirm this generic title contains no person, organization, patient, learner, workforce, case, or record identifier.<small>This confirmation is required because automated detection is not reliable.</small></span></label>
+    <p class="local-draft-stamp">Local Draft · Not NAIO-reviewed · No authority created</p>
+    <div id="role-form-error" class="form-error" role="alert" hidden></div>
+    <div class="dialog-actions"><button class="btn btn-primary" type="submit">Add local draft</button><button class="btn btn-quiet" type="button" data-close-dialog="role-dialog">Cancel</button></div>
+  </form>
+</dialog>
+
+<dialog id="bridge-dialog" aria-labelledby="bridge-dialog-title">
+  <form method="dialog">
+    <div class="dialog-head"><div><p class="kicker">Future governed bridge</p><h2 id="bridge-dialog-title">Navigation does not transfer data</h2></div><button class="dialog-close" type="button" data-close-dialog="bridge-dialog" aria-label="Close bridge explanation">×</button></div>
+    <p>This preview intentionally provides no cross-dashboard copy, synchronization, shared memory, connector, or action. A future bridge must preview the exact artifact and destination, screen for prohibited content without claiming exhaustive DLP, require human confirmation, copy rather than move, and emit a metadata-only receipt.</p>
+    <div class="boundary"><strong>Current behavior:</strong> switch dashboard only. No data moves.</div>
+    <div class="dialog-actions"><button class="btn btn-primary" type="button" data-close-dialog="bridge-dialog">Understood</button></div>
+  </form>
+</dialog>
+
+<noscript><div class="noscript">The Switchboard preview needs JavaScript to keep local dashboards. No installation is required. You can still read the <a href="ARCHITECTURE.md">architecture decision</a>.</div></noscript>
+<script type="module" src="switchboard.mjs"></script>
+</body>
+</html>

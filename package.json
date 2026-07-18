@@ -1,0 +1,12 @@
+{
+  "name": "nurse-ai-os-static-site-tests",
+  "private": true,
+  "scripts": {
+    "test:switchboard-browser": "node tests/test_switchboard_browser.mjs",
+    "test:switchboard-schema": "node tests/test_switchboard_schema.mjs"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "playwright-core": "1.61.1"
+  }
+}

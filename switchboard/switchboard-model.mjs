@@ -264,6 +264,43 @@ export function addDashboard(state, input, now, idSuffix = '') {
   return { state: normalized, dashboardId: dashboard.id };
 }
 
+export function createSyntheticDemoState(now = '2026-01-01T00:00:00.000Z') {
+  const examples = [
+    {
+      idSuffix: 'synthetic-staff-nurse',
+      contextKey: 'facility-a',
+      departmentKey: 'critical-care',
+      primaryRoleId: 'staff-nurse',
+      capabilityIds: ['shift', 'discover', 'future']
+    },
+    {
+      idSuffix: 'synthetic-nurse-educator',
+      contextKey: 'school-a',
+      departmentKey: 'education',
+      primaryRoleId: 'nurse-educator',
+      capabilityIds: ['teach', 'discover', 'future', 'communicate']
+    },
+    {
+      idSuffix: 'synthetic-community-organizer',
+      contextKey: 'community-a',
+      departmentKey: 'community',
+      primaryRoleId: 'nurse-community-organizer-developer',
+      capabilityIds: ['organize', 'discover', 'future', 'build', 'communicate', 'govern']
+    }
+  ];
+  let demo = createInitialState(now);
+  for (const example of examples) {
+    demo = addDashboard(demo, {
+      ...example,
+      supportingRoleIds: [],
+      assignmentStatus: 'not-current',
+      shiftWindow: 'not-current'
+    }, now, example.idSuffix).state;
+  }
+  demo.activeDashboardId = demo.dashboards[0].id;
+  return demo;
+}
+
 export function removeDashboard(state, dashboardId, now) {
   const normalized = normalizeState(state);
   if (!normalized) throw new Error('Invalid Switchboard state');

@@ -11,7 +11,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -86,6 +89,56 @@ def validate_sources() -> None:
         raise ValueError("STEWARD build-kit provenance is not pinned")
 
 
+def _safe_member_path(root: Path, member_name: str) -> Path:
+    if not member_name or member_name.startswith(("/", "\\")) or "\x00" in member_name:
+        raise ValueError(f"Unsafe STEWARD build-kit member path: {member_name!r}")
+    if "\\" in member_name:
+        raise ValueError(f"Backslash path is not allowed in STEWARD build kit: {member_name!r}")
+    parts = Path(member_name).parts
+    if any(part in {"", ".", ".."} for part in parts):
+        raise ValueError(f"Traversal path is not allowed in STEWARD build kit: {member_name!r}")
+    target = (root / member_name).resolve()
+    target.relative_to(root.resolve())
+    return target
+
+
+def _run_bundled_build_kit_verifier(zip_path: Path, archive: zipfile.ZipFile) -> None:
+    """Run the package's own release verifier without mutating the repository."""
+    seen = set()
+    for info in archive.infolist():
+        if info.filename in seen:
+            raise ValueError(f"Duplicate STEWARD build-kit ZIP member: {info.filename}")
+        seen.add(info.filename)
+        if (info.external_attr >> 16) & 0o170000 == 0o120000:
+            raise ValueError(f"Symlink is not allowed in STEWARD build kit: {info.filename}")
+    with tempfile.TemporaryDirectory(prefix="steward-build-kit-verify-") as temp_name:
+        temp = Path(temp_name)
+        for info in archive.infolist():
+            target = _safe_member_path(temp, info.filename)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(archive.read(info))
+            mode = (info.external_attr >> 16) & 0o777
+            os.chmod(target, mode or 0o644)
+        package_root = temp / BUILD_KIT_ROOT
+        verifier = package_root / "tools" / "verify-build-kit.py"
+        if not verifier.is_file():
+            raise ValueError("STEWARD build kit missing bundled verifier")
+        for args in (("--package", str(package_root)), ("--zip", str(zip_path))):
+            completed = subprocess.run(
+                [sys.executable, str(verifier), *args],
+                cwd=REPO,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                check=False,
+            )
+            if completed.returncode != 0:
+                raise ValueError(
+                    "Bundled STEWARD build-kit verifier failed for "
+                    f"{' '.join(args)}:\n{completed.stdout[-4000:]}"
+                )
+
+
 def validate_build_kit() -> None:
     path = DOWNLOADS / BUILD_KIT_NAME
     if not path.is_file():
@@ -105,6 +158,7 @@ def validate_build_kit() -> None:
         if manifest_name not in archive.namelist():
             raise ValueError("STEWARD build kit missing RELEASE-MANIFEST.json")
         manifest = json.loads(archive.read(manifest_name))
+        _run_bundled_build_kit_verifier(path, archive)
     if manifest["target"] != {
         "home": "My STEWARD",
         "lane": "hospital_clinic_administration",

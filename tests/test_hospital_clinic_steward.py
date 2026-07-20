@@ -182,6 +182,16 @@ class StewardGovernancePreviewTests(unittest.TestCase):
             "python3 scripts/check-steward-pdf.py --self-test",
         ):
             self.assertIn(phrase, self.workflow)
+        builder = (ROOT / "scripts" / "build-hospital-clinic-steward.py").read_text(encoding="utf-8")
+        for phrase in (
+            "_run_bundled_build_kit_verifier",
+            "verify-build-kit.py",
+            "--package",
+            "--zip",
+            "Duplicate STEWARD build-kit ZIP member",
+            "Symlink is not allowed in STEWARD build kit",
+        ):
+            self.assertIn(phrase, builder)
         requirement = (ROOT / "scripts" / "requirements-steward-pdf.txt").read_text(encoding="utf-8")
         self.assertEqual(
             requirement,

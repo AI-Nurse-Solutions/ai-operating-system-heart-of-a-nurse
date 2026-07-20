@@ -24,6 +24,10 @@ DOCX = PACKAGE / "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-
 MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "discover-healthcare-research-innovation-leader-complete-edition.zip"
 ZIP_PREFIX = "DISCOVER-Healthcare-Research-Innovation-Leader-Complete-Edition/"
+BUILD_KIT_ZIP = DOWNLOADS / "DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+BUILD_KIT_ROOT = "DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0/"
+BUILD_KIT_SHA256 = "e028046039800232db75c3d0a09e1105b46f4acfc97071e841b3317f0afcf018"
+BUILD_KIT_BYTES = 7287900
 
 
 def sha256(path: Path) -> str:
@@ -200,7 +204,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         self.assertEqual(self.manifest["runtime_criteria"]["publication_status"], "specified_not_prepassed")
         self.assertIn("specified—not pre-passed", self.read_first)
         self.assertIn("160 criteria specified—not pre-passed", self.page)
-        self.assertIn("does not prove they ran in a target Hermes environment", self.page)
+        self.assertIn("does not prove the 160 runtime criteria ran in a target Hermes environment", self.page)
 
     def test_preinstall_consent_and_installation_order(self):
         for phrase in (
@@ -289,15 +293,27 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
 
     def test_public_page_contract_video_and_separate_route(self):
         for phrase in (
-            "Standalone interdisciplinary lane · Healthcare research and innovation leadership",
-            "A leadership lane is not institutional authority",
+            "Verified Hermes build kit · Healthcare Researcher &amp; Innovator lane",
+            "A researcher-and-innovator lane is not institutional authority",
+            "Downloading, opening, or unzipping does nothing automatically",
+            "Give the ZIP to your own Hermes",
+            "not operational software until a user-approved Hermes build completes",
+            BUILD_KIT_SHA256,
             "24 powers inactive",
             "10 agents disabled",
             "160 criteria specified—not pre-passed",
             "Download ≠ installation",
+            "Give Hermes the entire build-kit ZIP",
+            "GIVE-THIS-PACKAGE-TO-HERMES.md",
+            "README-FIRST.md",
+            "Review the exact Implementation Activation Card",
+            "APPROVE</code>, <code>REVISE</code>, or <code>CANCEL",
+            "independently reviewed CI validator",
+            "without executing artifact-controlled code",
             "AI prepares. Leaders verify and govern. Authorized humans decide",
         ):
             self.assertIn(phrase, self.page)
+        self.assertIn(f'href="downloads/{BUILD_KIT_ZIP.name}"', self.page)
         self.assertIn('href="downloads/discover-healthcare-research-innovation-leader-complete-edition.zip"', self.page)
         self.assertIn("https://www.youtube-nocookie.com/embed/o6fRkTt12zU", self.page)
         self.assertNotIn("https://www.youtube.com/embed/o6fRkTt12zU", self.page)
@@ -314,7 +330,9 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         self.assertLess(region.index("o6fRkTt12zU"), region.index("steward-governance-preview"))
         self.assertEqual(region.count("o6fRkTt12zU"), 1)
         self.assertIn('class="home-discover-video"', region)
-        self.assertIn("Explore the standalone DISCOVER lane", region)
+        self.assertIn("Healthcare Researcher &amp; Innovator", region)
+        self.assertIn("governed self-install Hermes build kit", region)
+        self.assertIn("Explore the DISCOVER build kit", region)
         css = (ROOT / "assets" / "nurse-ai.css").read_text(encoding="utf-8")
         self.assertIn(".home-discover-video", css)
 
@@ -351,6 +369,69 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
                 self.assertEqual(archive.read(ZIP_PREFIX + relative), path.read_bytes(), relative)
                 self.assertEqual((archive.getinfo(ZIP_PREFIX + relative).external_attr >> 16) & 0o777, 0o644)
 
+    def test_self_install_build_kit_is_public_safe_derivative_and_independently_validated(self):
+        self.assertTrue(BUILD_KIT_ZIP.is_file())
+        self.assertEqual(BUILD_KIT_ZIP.stat().st_size, BUILD_KIT_BYTES)
+        self.assertEqual(sha256(BUILD_KIT_ZIP), BUILD_KIT_SHA256)
+        with zipfile.ZipFile(BUILD_KIT_ZIP) as archive:
+            self.assertIsNone(archive.testzip())
+            infos = archive.infolist()
+            self.assertEqual(len(infos), 116)
+            self.assertTrue(all(info.filename.startswith(BUILD_KIT_ROOT) for info in infos))
+            self.assertTrue(all(".." not in Path(info.filename).parts and "\\" not in info.filename for info in infos))
+            names = archive.namelist()
+            self.assertIn(BUILD_KIT_ROOT + "tools/verify-build-kit.py", names)
+            self.assertEqual(
+                hashlib.sha256(archive.read(BUILD_KIT_ROOT + "tools/verify-build-kit.py")).hexdigest(),
+                "b1580412e01da1a02c98d72c43ebae7dd592f5a78a777cdb6d465bc1fbca1383",
+            )
+            notes = archive.read(BUILD_KIT_ROOT + "SOURCE-NOTES.md").decode("utf-8")
+            self.assertIn("Public-safe derivative note", notes)
+            self.assertIn("RESTRICTED_RECORD_PLACEHOLDER_123456", notes)
+            qa = archive.read(BUILD_KIT_ROOT + "source/baseline-qa-reference/test_discover_mission_control_v2_dom.mjs").decode("utf-8")
+            self.assertIn("RESTRICTED_RECORD_PLACEHOLDER_123456", qa)
+            self.assertNotRegex(qa, r"MRN\s*(?:number)?\s*[:=]")
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-healthcare-research-innovation-discover.py"))
+        builder_source = (ROOT / "scripts" / "build-healthcare-research-innovation-discover.py").read_text(encoding="utf-8")
+        self.assertNotIn("import subprocess", builder_source)
+        self.assertNotIn("subprocess.run", builder_source)
+        record = namespace["validate_build_kit"]()
+        self.assertEqual(record["artifact_class"], "hermes_functional_build_kit_self_install")
+        self.assertEqual(record["runtime_status"], "not_built_until_user_hermes_runs_approved_program")
+        self.assertFalse(record["institutional_authorization"])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            temp = Path(tmp)
+            package = namespace["_extract_build_kit_for_verification"](BUILD_KIT_ZIP, temp / "extract")
+            manifest = namespace["_validate_extracted_build_kit"](package)
+            self.assertEqual(manifest["target"]["product_id"], "discover-healthcare-research-innovation-leader-mission-control")
+            ledger = (package / "SHA256SUMS.txt").read_text(encoding="utf-8")
+            (package / "SHA256SUMS.txt").write_text(
+                ledger.replace(
+                    "b1580412e01da1a02c98d72c43ebae7dd592f5a78a777cdb6d465bc1fbca1383  tools/verify-build-kit.py",
+                    "0" * 64 + "  tools/verify-build-kit.py",
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "checksum ledger mismatch: tools/verify-build-kit.py"):
+                namespace["_validate_extracted_build_kit"](package)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            temp = Path(tmp)
+            tampered = temp / "wrong-root.zip"
+            with zipfile.ZipFile(BUILD_KIT_ZIP) as source, zipfile.ZipFile(tampered, "w") as target:
+                infos = source.infolist()
+                for index, info in enumerate(infos):
+                    data = source.read(info.filename)
+                    clone = zipfile.ZipInfo(info.filename, date_time=info.date_time)
+                    if index == 0:
+                        clone.filename = info.filename.replace(BUILD_KIT_ROOT, "EXTRA-ROOT/", 1)
+                    clone.compress_type = info.compress_type
+                    clone.external_attr = info.external_attr
+                    target.writestr(clone, data)
+            with self.assertRaisesRegex(ValueError, "ZIP root mismatch"):
+                namespace["_extract_build_kit_for_verification"](tampered, temp / "bad-extract")
+
     def test_builder_is_deterministic_and_public_manifest_matches(self):
         before = sha256(ZIP)
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-healthcare-research-innovation-discover.py"))
@@ -361,8 +442,17 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         self.assertEqual(record["bytes"], ZIP.stat().st_size)
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(public["installation_status"], "not_installed")
-        self.assertEqual(public["packages"], [record])
-        self.assertEqual((DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8"), f"{after}  {ZIP.name}\n")
+        self.assertEqual(public["packages"][0], record)
+        build_kit = public["packages"][1]
+        self.assertEqual(build_kit["artifact_class"], "hermes_functional_build_kit_self_install")
+        self.assertEqual(build_kit["sha256"], BUILD_KIT_SHA256)
+        self.assertEqual(build_kit["bytes"], BUILD_KIT_BYTES)
+        self.assertEqual(build_kit["runtime_status"], "not_built_until_user_hermes_runs_approved_program")
+        self.assertFalse(build_kit["institutional_authorization"])
+        self.assertEqual(
+            (DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8"),
+            f"{BUILD_KIT_SHA256}  {BUILD_KIT_ZIP.name}\n{after}  {ZIP.name}\n",
+        )
 
     def test_public_scanner_reads_nested_release_artifacts(self):
         scanner = runpy.run_path(str(ROOT / "scripts" / "scan-public-healthcare-artifacts.py"))
@@ -375,6 +465,10 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
                 archive.writestr("payload.txt", "patient name: Alex Example")
             findings = scanner["scan_paths"]([unsafe])
             self.assertTrue(any(label == "patient or mrn example" for label, _ in findings))
+            self.assertNotEqual(
+                scanner["extract_text"](unsafe.name, unsafe.read_bytes()),
+                [],
+            )
 
     def test_sitemap_and_local_public_links(self):
         sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")

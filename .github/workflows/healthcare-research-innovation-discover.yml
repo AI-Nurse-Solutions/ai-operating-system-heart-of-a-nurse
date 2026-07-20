@@ -76,6 +76,7 @@ jobs:
             / \
             /healthcare-research-innovation-leaders/ \
             /healthcare-research-innovation-leaders/downloads/manifest.json \
+            /healthcare-research-innovation-leaders/downloads/DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
             /healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip
           do
             curl --retry 20 --retry-connrefused --retry-delay 1 --fail --silent --show-error \

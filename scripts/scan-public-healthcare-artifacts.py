@@ -122,7 +122,10 @@ def main() -> int:
     if not args.root.exists():
         parser.error(f"root does not exist: {args.root}")
     run_self_probes()
-    paths = sorted(path for path in args.root.rglob("*") if path.is_file())
+    if args.root.is_file():
+        paths = [args.root]
+    else:
+        paths = sorted(path for path in args.root.rglob("*") if path.is_file())
     findings = scan_paths(paths)
     if findings:
         summary = ", ".join(f"{label} in {source}" for label, source in findings)

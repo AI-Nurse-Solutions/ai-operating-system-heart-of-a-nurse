@@ -11,10 +11,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
+from pathlib import PurePosixPath
 
 REPO = Path(__file__).resolve().parents[1]
 ROOT = REPO / "healthcare-research-innovation-leaders"
@@ -22,6 +25,14 @@ PACKAGE = ROOT / "packages" / "discover"
 DOWNLOADS = ROOT / "downloads"
 ZIP_NAME = "discover-healthcare-research-innovation-leader-complete-edition.zip"
 ZIP_PREFIX = "DISCOVER-Healthcare-Research-Innovation-Leader-Complete-Edition"
+BUILD_KIT_ZIP_NAME = "DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+BUILD_KIT_ROOT = "DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0"
+BUILD_KIT_EXPECTED = {
+    "bytes": 7287900,
+    "members": 116,
+    "sha256": "e028046039800232db75c3d0a09e1105b46f4acfc97071e841b3317f0afcf018",
+    "verifier_sha256": "b1580412e01da1a02c98d72c43ebae7dd592f5a78a777cdb6d465bc1fbca1383",
+}
 FIXED_ZIP_TIME = (2026, 7, 16, 0, 0, 0)
 PROGRAM_NAME = "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Hermes-Program.md"
 SOURCE_PACK = "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0"
@@ -33,6 +44,161 @@ WRAPPER_DIGESTS = {
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _safe_zip_target(root: Path, member: str) -> Path:
+    normalized = member.replace("\\", "/")
+    relative = PurePosixPath(normalized)
+    if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+        raise ValueError(f"Unsafe DISCOVER build-kit ZIP path: {member}")
+    target = root.joinpath(*relative.parts).resolve()
+    if not str(target).startswith(str(root.resolve()) + os.sep):
+        raise ValueError(f"DISCOVER build-kit ZIP path escapes extraction root: {member}")
+    return target
+
+
+def _extract_build_kit_for_verification(zip_path: Path, root: Path) -> Path:
+    seen: set[str] = set()
+    folded: set[str] = set()
+    normalized_forms: set[str] = set()
+    with zipfile.ZipFile(zip_path) as archive:
+        if archive.testzip() is not None:
+            raise ValueError("DISCOVER build-kit ZIP CRC verification failed")
+        infos = archive.infolist()
+        if len(infos) != BUILD_KIT_EXPECTED["members"]:
+            raise ValueError("DISCOVER build-kit ZIP member count mismatch")
+        roots = {info.filename.split("/", 1)[0] for info in infos if info.filename}
+        if roots != {BUILD_KIT_ROOT}:
+            raise ValueError(f"DISCOVER build-kit ZIP root mismatch: {sorted(roots)}")
+        for info in infos:
+            name = info.filename
+            if name in seen:
+                raise ValueError(f"Duplicate DISCOVER build-kit ZIP member: {name}")
+            seen.add(name)
+            lowered = name.casefold()
+            if lowered in folded:
+                raise ValueError(f"DISCOVER build-kit ZIP case-fold collision: {name}")
+            folded.add(lowered)
+            import unicodedata
+            normalized = unicodedata.normalize("NFC", name)
+            if normalized in normalized_forms:
+                raise ValueError(f"DISCOVER build-kit ZIP Unicode collision: {name}")
+            normalized_forms.add(normalized)
+            mode_type = (info.external_attr >> 16) & 0o170000
+            if mode_type == 0o120000:
+                raise ValueError(f"DISCOVER build-kit ZIP symlink is forbidden: {name}")
+            if mode_type not in {0, 0o040000, 0o100000}:
+                raise ValueError(f"DISCOVER build-kit ZIP special file is forbidden: {name}")
+            target = _safe_zip_target(root, name)
+            if info.is_dir():
+                target.mkdir(parents=True, exist_ok=True)
+                continue
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(archive.read(info))
+            mode = (info.external_attr >> 16) & 0o777
+            if mode:
+                target.chmod(mode)
+    package = root / BUILD_KIT_ROOT
+    if not package.is_dir():
+        raise ValueError("DISCOVER build-kit ZIP root directory mismatch")
+    return package
+
+
+def _parse_checksum_ledger(package: Path) -> dict[str, str]:
+    ledger: dict[str, str] = {}
+    for line in (package / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        digest, relative = line.split("  ", 1)
+        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValueError(f"DISCOVER build-kit checksum ledger digest is invalid: {relative}")
+        if relative in ledger:
+            raise ValueError(f"DISCOVER build-kit checksum ledger duplicate path: {relative}")
+        _safe_zip_target(package, relative)
+        ledger[relative] = digest
+    return ledger
+
+
+def _validate_extracted_build_kit(package: Path) -> dict:
+    actual_files = sorted(path.relative_to(package).as_posix() for path in package.rglob("*") if path.is_file())
+    if len(actual_files) != BUILD_KIT_EXPECTED["members"]:
+        raise ValueError("DISCOVER build-kit extracted file count mismatch")
+    if "RELEASE-MANIFEST.json" not in actual_files or "SHA256SUMS.txt" not in actual_files:
+        raise ValueError("DISCOVER build-kit missing manifest or checksum ledger")
+    manifest = json.loads((package / "RELEASE-MANIFEST.json").read_text(encoding="utf-8"))
+    inventory = manifest.get("files_excluding_manifest_and_checksums")
+    if not isinstance(inventory, list):
+        raise ValueError("DISCOVER build-kit manifest inventory missing")
+    declared: dict[str, dict] = {}
+    for record in inventory:
+        relative = record.get("path")
+        if not isinstance(relative, str) or relative in declared:
+            raise ValueError(f"DISCOVER build-kit manifest inventory path invalid: {relative!r}")
+        if relative in {"RELEASE-MANIFEST.json", "SHA256SUMS.txt"}:
+            raise ValueError(f"DISCOVER build-kit manifest inventory includes generated ledger file: {relative}")
+        _safe_zip_target(package, relative)
+        declared[relative] = record
+    expected_inventory = set(actual_files) - {"RELEASE-MANIFEST.json", "SHA256SUMS.txt"}
+    if set(declared) != expected_inventory:
+        raise ValueError("DISCOVER build-kit manifest inventory does not match extracted files")
+
+    ledger = _parse_checksum_ledger(package)
+    if set(ledger) != set(actual_files) - {"SHA256SUMS.txt"}:
+        raise ValueError("DISCOVER build-kit checksum ledger does not cover every expected file")
+    for relative in actual_files:
+        if relative == "SHA256SUMS.txt":
+            continue
+        path = package / relative
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if ledger[relative] != digest:
+            raise ValueError(f"DISCOVER build-kit checksum ledger mismatch: {relative}")
+        if relative in declared:
+            record = declared[relative]
+            if record.get("sha256") != digest or record.get("bytes") != path.stat().st_size:
+                raise ValueError(f"DISCOVER build-kit manifest byte/hash mismatch: {relative}")
+    if ledger.get("tools/verify-build-kit.py") != BUILD_KIT_EXPECTED["verifier_sha256"]:
+        raise ValueError("DISCOVER build-kit bundled verifier hash mismatch")
+    return manifest
+
+
+def validate_build_kit() -> dict:
+    zip_path = DOWNLOADS / BUILD_KIT_ZIP_NAME
+    if not zip_path.is_file():
+        raise FileNotFoundError(zip_path)
+    if zip_path.stat().st_size != BUILD_KIT_EXPECTED["bytes"] or sha256(zip_path) != BUILD_KIT_EXPECTED["sha256"]:
+        raise ValueError("DISCOVER public build-kit derivative digest or byte count mismatch")
+    with tempfile.TemporaryDirectory() as tmp:
+        package = _extract_build_kit_for_verification(zip_path, Path(tmp))
+        manifest = _validate_extracted_build_kit(package)
+        if manifest.get("build_kit", {}).get("id") != "HRILAIOS-DISCOVER-FUNCTIONAL-BUILD-KIT-1.0.0":
+            raise ValueError("DISCOVER build-kit manifest ID mismatch")
+        if manifest.get("target", {}).get("version") != "2.0.0":
+            raise ValueError("DISCOVER build-kit target version mismatch")
+        if manifest.get("defaults", {}).get("agents") != "PERM-P0 Disabled":
+            raise ValueError("DISCOVER build-kit does not default agents to P0 disabled")
+        if manifest.get("defaults", {}).get("powers") != "Available Inactive":
+            raise ValueError("DISCOVER build-kit does not default powers to inactive")
+        if manifest.get("defaults", {}).get("connectors_schedules_sharing_external_actions") != "Off":
+            raise ValueError("DISCOVER build-kit connectors/actions default is not Off")
+        notes = (package / "SOURCE-NOTES.md").read_text(encoding="utf-8")
+        if "Public-safe derivative note" not in notes or "RESTRICTED_RECORD_PLACEHOLDER_123456" not in notes:
+            raise ValueError("DISCOVER public-safe derivative note missing")
+    return {
+        "artifact_class": "hermes_functional_build_kit_self_install",
+        "bytes": BUILD_KIT_EXPECTED["bytes"],
+        "download": f"downloads/{BUILD_KIT_ZIP_NAME}",
+        "installation_status": "not_installed",
+        "institutional_authorization": False,
+        "package_id": "HRILAIOS-DISCOVER-FUNCTIONAL-BUILD-KIT-1.0.0",
+        "public_safety": "public_safe_derivative_mrn_shaped_qa_probe_replaced",
+        "readiness": "not_operational_build_required",
+        "role": "Healthcare Research & Innovation / Researcher & Innovator — DISCOVER",
+        "runtime_status": "not_built_until_user_hermes_runs_approved_program",
+        "sha256": BUILD_KIT_EXPECTED["sha256"],
+        "target_product": "discover-healthcare-research-innovation-leader-mission-control",
+        "target_version": "2.0.0",
+        "version": "1.0.0",
+    }
 
 
 def package_files() -> dict[str, Path]:
@@ -279,6 +445,7 @@ def refresh_ledger(manifest: dict) -> None:
 def build() -> dict:
     manifest = validate_package()
     refresh_ledger(manifest)
+    build_kit_record = validate_build_kit()
     files = package_files()
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     output = DOWNLOADS / ZIP_NAME
@@ -319,15 +486,21 @@ def build() -> dict:
     }
     public = {
         "installation_status": "not_installed",
-        "packages": [record],
+        "packages": [record, build_kit_record],
         "purpose": "standalone Healthcare Research and Innovation leadership lane within Nurse AI OS; isolated from nursing, medical-resident, respiratory-care, and hospital-administration state",
         "release": manifest["package_version"],
         "schema_version": "1.0",
     }
     (DOWNLOADS / "manifest.json").write_text(json.dumps(public, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    (DOWNLOADS / "CHECKSUMS.sha256").write_text(f"{record['sha256']}  {ZIP_NAME}\n", encoding="utf-8")
-    print("DISCOVER_PACKAGES=1")
+    (DOWNLOADS / "CHECKSUMS.sha256").write_text(
+        f"{build_kit_record['sha256']}  {BUILD_KIT_ZIP_NAME}\n"
+        f"{record['sha256']}  {ZIP_NAME}\n",
+        encoding="utf-8",
+    )
+    print("DISCOVER_PACKAGES=2")
     print("INSTALLATION_STATUS=not_installed")
+    print(f"DISCOVER_BUILD_KIT_SHA256={build_kit_record['sha256']}")
+    print(f"DISCOVER_BUILD_KIT_BYTES={build_kit_record['bytes']}")
     print(f"DISCOVER_ZIP_SHA256={record['sha256']}")
     print(f"DISCOVER_ZIP_BYTES={record['bytes']}")
     return record

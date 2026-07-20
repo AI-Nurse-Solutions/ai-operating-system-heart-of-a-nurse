@@ -1,15 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://nurse-ai-os.org/naio-os/schema/naio-soul.schema.json",
-  "title": "NAIO SOUL Export",
-  "description": "Machine-readable personalization bridge emitted by the SOUL Quiz and consumed by the NAIO installer to configure a governed Hermes Desktop. Contains NO PHI.",
+  "title": "NAIO SOUL Export v1/v2",
+  "description": "Backward-compatible, no-PHI personalization bridge emitted by the SOUL Quiz. Version 2 adds a multidimensional role constellation, development, coordinated Mission Controls, and explicit no-authority governance fields.",
   "type": "object",
   "required": ["schema_version", "generated_at", "identity", "spheres", "tier_ceilings", "boundaries", "doctrine"],
   "additionalProperties": false,
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "1.0.0"
+      "enum": ["1.0.0", "2.0.0"]
     },
     "generated_at": {
       "type": "string",
@@ -108,7 +108,160 @@
         },
         "wellbeing_rule": { "type": "string" },
         "decisions_always_mine": { "type": "array", "items": { "type": "string" } },
-        "drafts_without_asking": { "type": "array", "items": { "type": "string" } }
+        "drafts_without_asking": { "type": "array", "items": { "type": "string" } },
+        "no_academic_dishonesty_confirmed": { "type": "boolean", "const": true },
+        "no_credential_inference_confirmed": { "type": "boolean", "const": true },
+        "memory_allowed": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 200 } },
+        "memory_forbidden": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 200 } },
+        "escalation_triggers": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 300 } },
+        "delegation_matrix": {
+          "$ref": "#/definitions/delegation_matrix"
+        }
+      }
+    },
+    "role_constellation": {
+      "type": "object",
+      "required": ["primary", "supporting", "emerging", "contextual", "synergies", "tensions", "custom_roles"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "allOf": [{ "$ref": "#/definitions/role_entry" }, { "properties": { "status": { "const": "primary" } } }] } },
+        "supporting": { "type": "array", "maxItems": 23, "items": { "allOf": [{ "$ref": "#/definitions/role_entry" }, { "properties": { "status": { "const": "supporting" } } }] } },
+        "emerging": { "type": "array", "maxItems": 23, "items": { "allOf": [{ "$ref": "#/definitions/role_entry" }, { "properties": { "status": { "const": "emerging" } } }] } },
+        "contextual": { "type": "array", "maxItems": 23, "items": { "allOf": [{ "$ref": "#/definitions/role_entry" }, { "properties": { "status": { "const": "contextual" } } }] } },
+        "synergies": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 1000 } },
+        "tensions": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 1000 } },
+        "custom_roles": { "type": "array", "maxItems": 12, "items": { "$ref": "#/definitions/custom_role" } }
+      }
+    },
+    "development": {
+      "type": "object",
+      "required": ["stages", "confidence_is_not_competence", "quiz_verifies_competence"],
+      "additionalProperties": false,
+      "properties": {
+        "stages": { "type": "array", "maxItems": 11, "uniqueItems": true, "items": { "type": "string" } },
+        "confidence_is_not_competence": { "type": "boolean", "const": true },
+        "quiz_verifies_competence": { "type": "boolean", "const": false }
+      }
+    },
+    "capacity": {
+      "type": "object",
+      "required": ["current_pressures", "self_reported_load", "wellness_limit", "performance_or_fitness_assessment"],
+      "additionalProperties": false,
+      "properties": {
+        "current_pressures": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 200 } },
+        "self_reported_load": { "$ref": "#/definitions/rating" },
+        "wellness_limit": { "type": "string", "maxLength": 2000 },
+        "performance_or_fitness_assessment": { "type": "boolean", "const": false }
+      }
+    },
+    "role_module_context": {
+      "type": "object",
+      "maxProperties": 12,
+      "propertyNames": { "pattern": "^[a-z0-9][a-z0-9-]{0,79}$" },
+      "additionalProperties": { "$ref": "#/definitions/module_context" }
+    },
+    "advanced_studies": {
+      "type": "object",
+      "required": ["active", "pathways"],
+      "additionalProperties": false,
+      "properties": {
+        "active": { "type": "boolean" },
+        "pathways": { "type": "array", "maxItems": 8, "items": { "$ref": "#/definitions/study_pathway" } }
+      },
+      "allOf": [{
+        "if": { "properties": { "active": { "const": true } } },
+        "then": { "properties": { "pathways": { "minItems": 1 } } },
+        "else": { "properties": { "pathways": { "maxItems": 0 } } }
+      }]
+    },
+    "mission": {
+      "type": "object",
+      "required": ["purpose", "populations_and_systems", "shared_goals", "commitment_boundaries", "motivations", "strengths", "work_styles", "learning_styles"],
+      "additionalProperties": false,
+      "properties": {
+        "purpose": { "type": "string", "maxLength": 3000 },
+        "populations_and_systems": { "type": "string", "maxLength": 3000 },
+        "shared_goals": { "type": "string", "maxLength": 3000 },
+        "commitment_boundaries": { "type": "string", "maxLength": 3000 },
+        "motivations": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 200 } },
+        "strengths": { "type": "string", "maxLength": 3000 },
+        "work_styles": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 200 } },
+        "learning_styles": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 200 } }
+      }
+    },
+    "decision_style": {
+      "type": "object",
+      "required": ["evidence", "uncertainty", "risk", "collaboration", "accountability", "innovation", "conflict", "timePressure", "ethicalConcerns", "competingPriorities"],
+      "additionalProperties": false,
+      "properties": {
+        "evidence": { "$ref": "#/definitions/rating" },
+        "uncertainty": { "$ref": "#/definitions/rating" },
+        "risk": { "$ref": "#/definitions/rating" },
+        "collaboration": { "$ref": "#/definitions/rating" },
+        "accountability": { "$ref": "#/definitions/rating" },
+        "innovation": { "$ref": "#/definitions/rating" },
+        "conflict": { "$ref": "#/definitions/rating" },
+        "timePressure": { "$ref": "#/definitions/rating" },
+        "ethicalConcerns": { "$ref": "#/definitions/rating" },
+        "competingPriorities": { "$ref": "#/definitions/rating" }
+      }
+    },
+    "ai_operating_preferences": {
+      "type": "object",
+      "required": ["primary_mode", "relationship_modes", "delegation_matrix"],
+      "additionalProperties": false,
+      "properties": {
+        "primary_mode": { "type": "string", "maxLength": 80 },
+        "relationship_modes": { "type": "array", "maxItems": 15, "uniqueItems": true, "items": { "type": "string", "maxLength": 80 } },
+        "delegation_matrix": {
+          "$ref": "#/definitions/delegation_matrix"
+        }
+      }
+    },
+    "mission_controls": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "shared_foundation", "autonomy", "roles_supported", "human_review", "data_boundaries"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,79}$" },
+          "name": { "type": "string", "maxLength": 160 },
+          "shared_foundation": { "type": "string", "const": "one-core-soul" },
+          "autonomy": { "type": "string", "const": "A0-recommendation-only" },
+          "roles_supported": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 160 } },
+          "human_review": { "type": "array", "minItems": 1, "maxItems": 24, "items": { "type": "string", "maxLength": 500 } },
+          "data_boundaries": { "type": "array", "minItems": 1, "maxItems": 24, "items": { "type": "string", "maxLength": 500 } }
+        }
+      }
+    },
+    "recommended_agents": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "activation", "human_gate"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,79}$" },
+          "name": { "type": "string", "maxLength": 160 },
+          "activation": { "type": "string", "const": "not-authorized" },
+          "human_gate": { "type": "string", "minLength": 1, "maxLength": 1000 }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["self_reported_profile", "credentials_verified", "competence_verified", "employment_or_assignment_verified", "professional_authority_granted", "institutional_authority_granted"],
+      "additionalProperties": false,
+      "properties": {
+        "self_reported_profile": { "type": "boolean", "const": true },
+        "credentials_verified": { "type": "boolean", "const": false },
+        "competence_verified": { "type": "boolean", "const": false },
+        "employment_or_assignment_verified": { "type": "boolean", "const": false },
+        "professional_authority_granted": { "type": "boolean", "const": false },
+        "institutional_authority_granted": { "type": "boolean", "const": false }
       }
     },
     "doctrine": {
@@ -119,6 +272,153 @@
         "edena": { "type": "string", "pattern": "^edena-policy@\\d+\\.\\d+\\.\\d+$" },
         "florence_x": { "type": "string", "pattern": "^florence-x@\\d+\\.\\d+\\.\\d+$" },
         "core_line": { "type": "string", "const": "Agents propose. Humans judge. Nurses steward." }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "2.0.0" } } },
+      "then": {
+        "required": ["voice", "values", "role_constellation", "development", "capacity", "role_module_context", "advanced_studies", "mission", "decision_style", "ai_operating_preferences", "mission_controls", "recommended_agents", "authority"],
+        "properties": {
+          "boundaries": {
+            "required": ["no_phi_confirmed", "no_clinical_decisions_confirmed", "no_academic_dishonesty_confirmed", "no_credential_inference_confirmed", "memory_allowed", "memory_forbidden", "escalation_triggers", "delegation_matrix"]
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "anyOf": [
+            { "required": ["role_constellation"] },
+            { "required": ["development"] },
+            { "required": ["capacity"] },
+            { "required": ["role_module_context"] },
+            { "required": ["advanced_studies"] },
+            { "required": ["mission"] },
+            { "required": ["decision_style"] },
+            { "required": ["ai_operating_preferences"] },
+            { "required": ["mission_controls"] },
+            { "required": ["recommended_agents"] },
+            { "required": ["authority"] }
+          ]
+        },
+        "properties": {
+          "boundaries": {
+            "not": {
+              "anyOf": [
+                { "required": ["no_academic_dishonesty_confirmed"] },
+                { "required": ["no_credential_inference_confirmed"] },
+                { "required": ["memory_allowed"] },
+                { "required": ["memory_forbidden"] },
+                { "required": ["escalation_triggers"] },
+                { "required": ["delegation_matrix"] }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "delegation_matrix": {
+      "type": "object",
+      "required": ["public-source-summary", "private-plan-draft", "external-send", "patient-specific-clinical-decision", "graded-or-evaluative-work", "institutional-change", "academic-learning-support", "credential-or-competence-claim"],
+      "additionalProperties": false,
+      "properties": {
+        "public-source-summary": { "type": "string", "enum": ["independent-private", "prepare-only", "explicit-confirmation", "professional-supervision", "accountable-human-judgment", "licensed-human-judgment", "never-delegate"] },
+        "private-plan-draft": { "type": "string", "enum": ["independent-private", "prepare-only", "explicit-confirmation", "professional-supervision", "accountable-human-judgment", "licensed-human-judgment", "never-delegate"] },
+        "external-send": { "type": "string", "enum": ["explicit-confirmation", "professional-supervision", "accountable-human-judgment", "licensed-human-judgment", "never-delegate"] },
+        "patient-specific-clinical-decision": { "const": "never-delegate" },
+        "graded-or-evaluative-work": { "type": "string", "enum": ["professional-supervision", "accountable-human-judgment", "licensed-human-judgment", "never-delegate"] },
+        "institutional-change": { "type": "string", "enum": ["accountable-human-judgment", "licensed-human-judgment", "never-delegate"] },
+        "academic-learning-support": { "type": "string", "enum": ["prepare-only", "explicit-confirmation", "professional-supervision", "accountable-human-judgment", "licensed-human-judgment", "never-delegate"] },
+        "credential-or-competence-claim": { "const": "never-delegate" }
+      }
+    },
+    "role_entry": {
+      "type": "object",
+      "required": ["role_id", "label", "domain_id", "status", "intensity", "attention", "responsibility", "identity_salience", "confidence", "authorization", "competence_evidence", "credential_status", "verification", "authority_granted"],
+      "additionalProperties": false,
+      "properties": {
+        "role_id": { "type": "string", "anyOf": [
+          { "enum": ["prelicensure-nursing-student", "nursing-assistant-pct", "newly-licensed-clinician", "bedside-nurse", "allied-health-clinician", "advanced-practice-clinician", "nurse-practitioner", "clinical-nurse-specialist", "medical-resident-fellow", "physician", "clinical-preceptor", "nurse-educator", "faculty-instructor", "simulation-facilitator", "nurse-manager", "healthcare-leader", "charge-nurse-team-lead", "hospital-administrator", "clinic-manager", "operations-program-manager", "quality-improvement-specialist", "patient-safety-governance-specialist", "nurse-researcher", "evidence-practice-specialist", "nurse-informaticist", "ai-innovator", "health-technology-specialist", "clinical-product-developer", "nurse-entrepreneur", "healthcare-business-owner", "community-population-health-professional", "community-organizer", "wellness-manager", "wellness-coach-advocate", "professional-advocate-steward", "family-caregiver"] },
+          { "pattern": "^local-role-[a-z0-9][a-z0-9-]{0,69}$" }
+        ] },
+        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "domain_id": { "type": "string", "enum": ["learning-formation", "direct-clinical-care", "advanced-clinical-practice", "education-mentorship", "leadership-management", "administration-operations", "quality-safety-governance", "research-evidence", "informatics-technology-ai", "innovation-product", "entrepreneurship-business", "community-population-health", "wellness-sustainability", "advocacy-stewardship"] },
+        "status": { "type": "string", "enum": ["primary", "supporting", "emerging", "contextual"] },
+        "intensity": { "type": "integer", "minimum": 47, "maximum": 160 },
+        "attention": { "$ref": "#/definitions/rating" },
+        "responsibility": { "$ref": "#/definitions/rating" },
+        "identity_salience": { "$ref": "#/definitions/rating" },
+        "confidence": { "$ref": "#/definitions/rating" },
+        "authorization": { "type": "string", "enum": ["self-declared", "in-training-supervised", "delegated-role-unverified", "formally-assigned-unverified", "licensed-or-credentialed-unverified", "not-current"] },
+        "competence_evidence": { "type": "string", "enum": ["not-assessed", "developing-not-verified", "supervised-demonstration-not-verified", "self-reported-practice-not-verified", "formal-verification-not-imported"] },
+        "credential_status": { "type": "string", "enum": ["not-claimed", "in-progress-not-verified", "aspirational-not-verified", "self-reported-not-verified"] },
+        "verification": { "type": "string", "const": "self-reported-not-verified" },
+        "authority_granted": { "type": "boolean", "const": false }
+      }
+    },
+    "custom_role": {
+      "type": "object",
+      "required": ["role_id", "label", "domain_id", "status", "authority_granted"],
+      "additionalProperties": false,
+      "properties": {
+        "role_id": { "type": "string", "pattern": "^local-role-[a-z0-9][a-z0-9-]{0,69}$" },
+        "label": { "type": "string", "minLength": 2, "maxLength": 60 },
+        "domain_id": { "type": "string", "enum": ["learning-formation", "direct-clinical-care", "advanced-clinical-practice", "education-mentorship", "leadership-management", "administration-operations", "quality-safety-governance", "research-evidence", "informatics-technology-ai", "innovation-product", "entrepreneurship-business", "community-population-health", "wellness-sustainability", "advocacy-stewardship"] },
+        "status": { "type": "string", "const": "local-draft-not-reviewed" },
+        "authority_granted": { "type": "boolean", "const": false }
+      }
+    },
+    "module_context": {
+      "type": "object",
+      "required": ["verification", "authority_granted", "answers"],
+      "additionalProperties": false,
+      "properties": {
+        "verification": { "type": "string", "const": "self-reported-context-not-verification" },
+        "authority_granted": { "type": "boolean", "const": false },
+        "answers": {
+          "type": "object",
+          "maxProperties": 24,
+          "propertyNames": { "pattern": "^[A-Za-z][A-Za-z0-9]{1,79}$" },
+          "additionalProperties": { "type": "string", "maxLength": 3000 }
+        }
+      }
+    },
+    "study_pathway": {
+      "type": "object",
+      "required": ["id", "type", "target", "stage", "verification", "authority_granted"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^study-pathway-[a-z0-9-]{1,48}$" },
+        "type": { "type": "string", "enum": ["specialty-certification", "professional-certification", "continuing-competency", "advanced-clinical-training", "bachelors-degree", "masters-degree", "doctoral-degree", "postdoctoral-study", "residency-fellowship", "formal-specialization", "leadership-management-credential", "education-research-informatics-credential", "business-entrepreneurship-education", "continuing-professional-development", "career-transition-preparation"] },
+        "target": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "motivation": { "type": "string", "maxLength": 2000 },
+        "outcome": { "type": "string", "maxLength": 2000 },
+        "stage": { "type": "string", "enum": ["exploring", "admission-or-application", "enrolled", "active-preparation", "milestone-review", "exam-ready-self-reported", "renewal", "paused"] },
+        "milestoneDate": { "type": "string", "pattern": "^$|^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "requiredCompetencies": { "type": "string", "maxLength": 3000 },
+        "progressEvidence": { "type": "string", "maxLength": 3000 },
+        "gaps": { "type": "string", "maxLength": 3000 },
+        "priorities": { "type": "string", "maxLength": 3000 },
+        "formats": { "type": "array", "maxItems": 24, "items": { "type": "string", "maxLength": 160 } },
+        "availableTime": { "type": "string", "maxLength": 300 },
+        "constraints": { "type": "string", "maxLength": 1000 },
+        "accountability": { "type": "string", "maxLength": 1000 },
+        "mentorship": { "type": "string", "maxLength": 1000 },
+        "roleRelationship": { "type": "string", "maxLength": 2000 },
+        "financialBarriers": { "type": "string", "maxLength": 1000 },
+        "workloadBarriers": { "type": "string", "maxLength": 1000 },
+        "familyResponsibilities": { "type": "string", "maxLength": 1000 },
+        "wellnessConsiderations": { "type": "string", "maxLength": 1000 },
+        "institutionalSupport": { "type": "string", "maxLength": 1000 },
+        "applicationOpportunities": { "type": "string", "maxLength": 2000 },
+        "renewalRequirements": { "type": "string", "maxLength": 1000 },
+        "integrityBoundary": { "type": "string", "maxLength": 2000 },
+        "verification": { "type": "string", "const": "self-reported-not-verified" },
+        "authority_granted": { "type": "boolean", "const": false }
       }
     }
   }

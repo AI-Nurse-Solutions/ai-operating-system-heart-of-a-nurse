@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase23",
+  "latest_version": "2.0.1-phase23",
   "minimum_installer_phase": 23,
-  "published_at": "2026-06-27T00:00:00Z",
+  "published_at": "2026-07-20T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "383e4a2d8cb6813a22d61d8c36431a12c28a18185e906ea7159fb7b7f85beb5f",
+    "sha256": "0ef4e4de64334c0b17eb0b5867fec1552694d5da606f295518387ec2e85fefa4",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -155,5 +155,5 @@
     "no procurement or clinical deployment approval"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward.",
-  "summary": "Commercial Activation Pack for Founding Steward Cohort applications and pilot conversations without PHI, clinical decisions, certification, procurement/deployment approval, payment automation, or automatic outreach/reporting claims."
+  "summary": "SOUL Quiz v2 role-constellation schema and fail-closed importer patch for the Phase 23 bundle, without PHI, clinical decisions, credential inference, or autonomous activation."
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.0-phase23",
+  "latest_version": "2.0.1-phase23",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -138,6 +138,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 23,
       "summary": "Commercial Activation Pack for Founding Steward Cohort applications and pilot conversations without PHI, clinical decisions, certification, procurement/deployment approval, payment automation, or automatic outreach/reporting claims."
+    },
+    {
+      "version": "2.0.1-phase23",
+      "date": "2026-07-20",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 23,
+      "summary": "Patch release for SOUL Quiz v2 role-constellation schema, fail-closed import validation, and explicit validator dependency gating without expanding authority or autonomy."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

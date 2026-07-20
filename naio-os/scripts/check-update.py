@@ -25,17 +25,17 @@ ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_BASE_URL = "https://nurse-ai-os.org/naio-os"
 
 
-def version_rank(version: str) -> tuple[int, int]:
+def version_rank(version: str) -> tuple[int, int, int, int]:
     """Return sortable rank for versions shaped like 2.0.0-phase8."""
     if "-phase" not in version:
-        return (0, 0)
+        return (0, 0, 0, 0)
     base, phase = version.rsplit("-phase", 1)
     try:
-        major = int(base.split(".", 1)[0])
+        major, minor, patch = (int(part) for part in base.split("."))
         phase_num = int("".join(ch for ch in phase if ch.isdigit()) or "0")
-        return (major, phase_num)
+        return (major, phase_num, minor, patch)
     except Exception:
-        return (0, 0)
+        return (0, 0, 0, 0)
 
 
 def load_json(path: Path) -> dict:

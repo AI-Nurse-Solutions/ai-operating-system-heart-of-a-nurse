@@ -75,4 +75,57 @@ jobs:
             echo "No parent commit exists; package-diff guard is not applicable."
             exit 0
           fi
-          git diff --exit-code "$BASE_SHA" HEAD -- post-setup/packages post-setup/downloads healthcare-research-innovation-leaders/packages healthcare-research-innovation-leaders/downloads
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+
+          base = os.environ["BASE_SHA"]
+          allowed_download_changes = {
+              "post-setup/downloads/CHECKSUMS.sha256",
+              "post-setup/downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "post-setup/downloads/manifest.json",
+              "post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip",
+          }
+
+          def git(*args):
+              return subprocess.check_output(["git", *args], text=True)
+
+          changed = set(filter(None, git("diff", "--name-only", base, "HEAD", "--", "post-setup/packages", "post-setup/downloads", "healthcare-research-innovation-leaders/packages", "healthcare-research-innovation-leaders/downloads").splitlines()))
+          unexpected = changed - allowed_download_changes
+          if unexpected:
+              raise SystemExit("Unexpected published distribution changes:\n" + "\n".join(sorted(unexpected)))
+
+          status = {}
+          for line in git("diff", "--name-status", base, "HEAD", "--", *sorted(allowed_download_changes)).splitlines():
+              code, path = line.split("\t", 1)
+              status[path] = code
+          expected_status = {
+              "post-setup/downloads/CHECKSUMS.sha256": "M",
+              "post-setup/downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              "post-setup/downloads/manifest.json": "M",
+              "post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip": "D",
+          }
+          if status != expected_status:
+              raise SystemExit(f"Lane 01 migration status mismatch: {status!r}")
+
+          base_manifest = json.loads(git("show", f"{base}:post-setup/downloads/manifest.json"))
+          head_manifest = json.loads(open("post-setup/downloads/manifest.json", encoding="utf-8").read())
+          base_by_folder = {package["folder"]: package for package in base_manifest["packages"]}
+          head_by_folder = {package["folder"]: package for package in head_manifest["packages"]}
+          if set(base_by_folder) != set(head_by_folder):
+              raise SystemExit("Manifest package set changed outside the approved Lane 01 migration.")
+          for folder in sorted(base_by_folder):
+              if folder != "01-Student-Nurse" and base_by_folder[folder] != head_by_folder[folder]:
+                  raise SystemExit(f"Manifest changed for protected package {folder}.")
+
+          base_checksums = git("show", f"{base}:post-setup/downloads/CHECKSUMS.sha256").splitlines()
+          head_checksums = open("post-setup/downloads/CHECKSUMS.sha256", encoding="utf-8").read().splitlines()
+          if base_checksums[1:] != head_checksums[1:]:
+              raise SystemExit("Checksum ledger changed outside the approved Lane 01 entry.")
+          expected_lane_one = "96894a215efea70885bdc16a51e48067ba05b436599e93a80d4d03c0fba8f78f  FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+          if head_checksums[0] != expected_lane_one:
+              raise SystemExit("Lane 01 checksum entry does not match the approved FUTURE build-kit artifact.")
+
+          print("LANE_01_MIGRATION_GUARD=passed; other published distributions unchanged")
+          PY

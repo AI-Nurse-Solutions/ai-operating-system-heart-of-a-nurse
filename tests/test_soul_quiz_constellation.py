@@ -524,6 +524,17 @@ class SoulQuizConstellationTests(unittest.TestCase):
         self.assertIn("No PHI", self.quiz)
         self.assertIn("one integrated professional soul", self.quiz.lower())
 
+    def test_quiz_uses_headerless_full_width_layout_with_guidance_below(self) -> None:
+        self.assertNotIn('<header class="site-header">', self.quiz)
+        self.assertIn('<div class="container quiz-layout">', self.quiz)
+        self.assertNotIn('<div class="container narrow quiz-layout">', self.quiz)
+        self.assertLess(self.quiz.index('<div class="quiz-shell">'), self.quiz.index('<aside class="quiz-aside"'))
+        self.assertIn(".quiz-layout{display:grid;grid-template-columns:minmax(0,1fr);", self.css)
+        self.assertIn(".quiz-aside{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));", self.css)
+        self.assertRegex(self.css, r"@media\(max-width:700px\)\{.*?\.quiz-aside\{grid-template-columns:1fr\}")
+        self.assertNotIn("grid-template-columns:minmax(0,1fr) 17rem", self.css)
+        self.assertNotIn(".quiz-aside{position:sticky", self.css)
+
     def test_ui_controls_preserve_labels_pathways_and_schema_limits(self) -> None:
         self.assertNotIn('aria-label="${attr(name)}"', self.app)
         self.assertIn("const primaryOptions = AI_RELATIONSHIP_MODES;", self.app)

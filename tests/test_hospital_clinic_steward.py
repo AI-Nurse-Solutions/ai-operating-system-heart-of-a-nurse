@@ -21,7 +21,9 @@ PDF = PREVIEW / "STEWARD-Governance-Specification.pdf"
 GAPS = PREVIEW / "STEWARD-Enforcement-Gap-Register.md"
 PROVENANCE = PREVIEW / "SOURCE-PROVENANCE.json"
 ZIP = DOWNLOADS / "steward-governance-preview.zip"
+BUILD_KIT = DOWNLOADS / "STEWARD-Hospital-Clinic-Administrator-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
 ZIP_PREFIX = "STEWARD-Governance-Preview/"
+BUILD_KIT_ROOT = "STEWARD-Hospital-Clinic-Administrator-Mission-Control-Hermes-Build-Kit-v1.0.0/"
 
 
 def sha256(path: Path) -> str:
@@ -118,6 +120,11 @@ class StewardGovernancePreviewTests(unittest.TestCase):
         self.assertEqual(self.provenance["source_inventory"]["executable_schema_artifacts"], 0)
         self.assertFalse(self.provenance["public_distribution"]["executable_or_installer_included"])
         self.assertFalse(self.provenance["public_distribution"]["activation_instructions_included"])
+        kit = self.provenance["build_kit_distribution"]
+        self.assertEqual(kit["sha256"], "c7efccc78b6947466f0e5c48cbd0f1321f9eeecc6ca0b0ce675c07dd4837c306")
+        self.assertFalse(kit["install_on_download"])
+        self.assertTrue(kit["pre_install_disclosure_required"])
+        self.assertEqual(kit["readiness"], "not_operational_build_required")
 
     def test_gap_register_has_sixteen_open_enforcement_gates(self):
         ids = [f"STW-G{i:02d}" for i in range(1, 17)]
@@ -135,7 +142,7 @@ class StewardGovernancePreviewTests(unittest.TestCase):
         self.assertTrue(archive["crc_passed"])
         self.assertEqual(archive["internal_checksum_matches"], 22)
         self.assertEqual(self.provenance["source_parity"]["embedded_components_matched"], 17)
-        self.assertEqual(self.provenance["audit_disposition"], "source_integrity_verified_runtime_enforcement_not_established")
+        self.assertEqual(self.provenance["audit_disposition"], "source_integrity_verified_runtime_enforcement_not_established_build_kit_verified_for_user_self_install")
         self.assertFalse(self.provenance["public_distribution"]["original_source_payload_included"])
         review = self.provenance["review_context"]
         self.assertFalse(review["publicly_reproducible_from_preview_alone"])
@@ -183,18 +190,18 @@ class StewardGovernancePreviewTests(unittest.TestCase):
 
     def test_public_page_is_preview_not_product_or_installer(self):
         for phrase in (
-            "Public governance preview · Hospital and clinic administration",
-            "This is a specification, not software",
-            "Complete AI OS claim paused",
-            "Runtime not implemented",
+            "Verified Hermes build kit · Hospital and clinic administration",
+            "Download the kit. Let your own Hermes inspect it",
+            "Downloading, opening, or unzipping does nothing automatically",
+            "read-only preflight",
+            "implementation activation card",
+            "Runtime not operational yet",
             "Not institution-approved",
-            "This preview ships zero agents",
+            "It is not an installed application",
             "Smallest next step",
         ):
             self.assertIn(phrase, self.page)
         self.assertNotIn("Install safely", self.page)
-        self.assertNotIn("Activation Card", self.page)
-        self.assertNotIn("Complete Edition", self.page)
         self.assertNotIn("Hermes-Program", self.page)
         self.assertIn("youtube-nocookie.com/embed/xdlnYkMJQl4", self.page)
         self.assertIn("vision narrative, not evidence", self.page)
@@ -206,6 +213,7 @@ class StewardGovernancePreviewTests(unittest.TestCase):
             'href="preview/STEWARD-Enforcement-Gap-Register.md"',
             'href="preview/SOURCE-PROVENANCE.json"',
             'href="downloads/steward-governance-preview.zip"',
+            'href="downloads/STEWARD-Hospital-Clinic-Administrator-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"',
         ):
             self.assertIn(link, self.page)
         self.assertNotIn("steward-hospital-clinic-administrator-complete-edition", self.page)
@@ -219,7 +227,7 @@ class StewardGovernancePreviewTests(unittest.TestCase):
         self.assertLess(page.index('class="home-thrive-video"'), admin)
         self.assertLess(admin, page.index("<!-- ============ ROLE CARDS"))
         region = page[admin:page.index("<!-- ============ ROLE CARDS")]
-        for phrase in ("Public governance preview", "STEWARD Governance Specification", "Non-executable", "Complete AI OS claim remains paused"):
+        for phrase in ("Verified build kit", "STEWARD Mission Control Build Kit", "download/unzip does nothing", "Not operational"):
             self.assertIn(phrase, region)
         self.assertIn("youtube-nocookie.com/embed/xdlnYkMJQl4", region)
 
@@ -245,16 +253,28 @@ class StewardGovernancePreviewTests(unittest.TestCase):
 
     def test_public_manifest_and_zip_contract(self):
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
-        record = public["packages"][0]
-        self.assertEqual(record["artifact_class"], "non_executable_governance_preview")
-        self.assertEqual(record["runtime_status"], "not_implemented")
-        self.assertEqual(record["complete_ai_os_claim"], "paused")
-        self.assertFalse(record["activation_available"])
-        self.assertFalse(record["institutional_authorization"])
-        self.assertFalse(record["operational_data_authorized"])
-        self.assertEqual(record["sha256"], sha256(ZIP))
-        self.assertEqual(record["bytes"], ZIP.stat().st_size)
-        self.assertEqual((DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8"), f"{sha256(ZIP)}  {ZIP.name}\n")
+        self.assertEqual(len(public["packages"]), 2)
+        preview = next(p for p in public["packages"] if p["artifact_class"] == "non_executable_governance_preview")
+        kit = next(p for p in public["packages"] if p["artifact_class"] == "hermes_functional_build_kit_self_install")
+        self.assertEqual(preview["runtime_status"], "not_implemented")
+        self.assertEqual(preview["complete_ai_os_claim"], "paused")
+        self.assertFalse(preview["activation_available"])
+        self.assertFalse(preview["institutional_authorization"])
+        self.assertFalse(preview["operational_data_authorized"])
+        self.assertEqual(preview["sha256"], sha256(ZIP))
+        self.assertEqual(preview["bytes"], ZIP.stat().st_size)
+        self.assertTrue(kit["activation_available"])
+        self.assertFalse(kit["install_on_download"])
+        self.assertTrue(kit["pre_install_disclosure_required"])
+        self.assertEqual(kit["activation_contract"], "user_initiated_read_only_preflight_then_exact_activation_card_approval")
+        self.assertEqual(kit["runtime_status"], "not_built_until_user_hermes_runs_approved_program")
+        self.assertEqual(kit["complete_ai_os_claim"], "not_operational_build_required")
+        self.assertEqual(kit["sha256"], sha256(BUILD_KIT))
+        self.assertEqual(kit["bytes"], BUILD_KIT.stat().st_size)
+        self.assertEqual(
+            (DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8"),
+            f"{sha256(ZIP)}  {ZIP.name}\n{sha256(BUILD_KIT)}  {BUILD_KIT.name}\n",
+        )
 
     def test_deterministic_zip_has_only_preview_artifacts(self):
         with zipfile.ZipFile(ZIP) as archive:
@@ -275,6 +295,28 @@ class StewardGovernancePreviewTests(unittest.TestCase):
             for forbidden in ("Hermes-Program", "Setup-Guide", "SuperPowers-Pack", "ROLE-PACK"):
                 self.assertNotIn(forbidden, names)
 
+    def test_self_install_build_kit_is_pinned_and_requires_user_hermes_approval(self):
+        self.assertEqual(sha256(BUILD_KIT), "c7efccc78b6947466f0e5c48cbd0f1321f9eeecc6ca0b0ce675c07dd4837c306")
+        self.assertEqual(BUILD_KIT.stat().st_size, 6818049)
+        with zipfile.ZipFile(BUILD_KIT) as archive:
+            self.assertIsNone(archive.testzip())
+            self.assertEqual(len(archive.infolist()), 116)
+            names = archive.namelist()
+            self.assertTrue(all(name.startswith(BUILD_KIT_ROOT) for name in names))
+            self.assertIn(BUILD_KIT_ROOT + "GIVE-THIS-PACKAGE-TO-HERMES.md", names)
+            self.assertIn(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json", names)
+            manifest = json.loads(archive.read(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json"))
+            handoff = archive.read(BUILD_KIT_ROOT + "GIVE-THIS-PACKAGE-TO-HERMES.md").decode("utf-8")
+        self.assertEqual(manifest["target"]["lane"], "hospital_clinic_administration")
+        self.assertEqual(manifest["target"]["version"], "2.0.0")
+        self.assertEqual(manifest["target"]["readiness"], "not_operational_build_required")
+        self.assertEqual(manifest["counts"]["control_matrix_rows"], 149)
+        self.assertEqual(manifest["counts"]["acceptance_checks"], 200)
+        self.assertEqual(manifest["defaults"]["agents"], "PERM-P0 Disabled")
+        self.assertIn("read-only", handoff.lower())
+        self.assertIn("Implementation Activation Card", handoff)
+        self.assertIn("explicit", handoff.lower())
+
     def test_builder_rejects_document_tampering(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-hospital-clinic-steward.py"))
         validator = namespace["validate_sources"]
@@ -291,8 +333,11 @@ class StewardGovernancePreviewTests(unittest.TestCase):
     def test_deterministic_builder_reproduces_committed_zip(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-hospital-clinic-steward.py"))
         before = sha256(ZIP)
-        record = namespace["build"]()
+        manifest = namespace["build"]()
+        record = next(p for p in manifest["packages"] if p["artifact_class"] == "non_executable_governance_preview")
+        kit = next(p for p in manifest["packages"] if p["artifact_class"] == "hermes_functional_build_kit_self_install")
         self.assertEqual(record["sha256"], before)
+        self.assertEqual(kit["sha256"], sha256(BUILD_KIT))
         self.assertEqual(sha256(ZIP), before)
 
 

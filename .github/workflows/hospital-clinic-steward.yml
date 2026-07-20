@@ -1,4 +1,4 @@
-name: STEWARD Governance Preview
+name: STEWARD Build Kit and Governance Preview
 
 on:
   pull_request:
@@ -59,17 +59,18 @@ jobs:
           python-version: "3.11"
       - name: Install hash-pinned PDF checker dependency
         run: python3 -m pip install --disable-pip-version-check --require-hashes -r scripts/requirements-steward-pdf.txt
-      - name: Rebuild committed non-executable preview bytes
+      - name: Rebuild committed preview manifest and verify build-kit bytes
         run: |
           python3 scripts/build-hospital-clinic-steward.py
           git diff --exit-code
           git ls-files --error-unmatch \
             hospital-clinic-administrators/downloads/CHECKSUMS.sha256 \
             hospital-clinic-administrators/downloads/manifest.json \
+            hospital-clinic-administrators/downloads/STEWARD-Hospital-Clinic-Administrator-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
             hospital-clinic-administrators/downloads/steward-governance-preview.zip \
             hospital-clinic-administrators/preview/PACKAGE-CHECKSUMS.sha256
           test -z "$(git status --porcelain --untracked-files=all)"
-      - name: Run STEWARD preview, nonclaim, and isolation tests
+      - name: Run STEWARD build-kit, nonclaim, and isolation tests
         run: python3 tests/test_hospital_clinic_steward.py
       - name: Verify tagged PDF semantics, parity, and inertness
         run: |

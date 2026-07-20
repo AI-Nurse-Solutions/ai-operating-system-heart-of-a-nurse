@@ -1,6 +1,18 @@
 {
-  "audit_date": "2026-07-16",
-  "audit_disposition": "source_integrity_verified_runtime_enforcement_not_established",
+  "audit_date": "2026-07-20",
+  "audit_disposition": "source_integrity_verified_runtime_enforcement_not_established_build_kit_verified_for_user_self_install",
+  "build_kit_distribution": {
+    "activation_contract": "user_initiated_read_only_preflight_then_exact_activation_card_approval",
+    "bytes": 6818049,
+    "install_on_download": false,
+    "members": 116,
+    "operational_data_authorized": false,
+    "pre_install_disclosure_required": true,
+    "readiness": "not_operational_build_required",
+    "sha256": "c7efccc78b6947466f0e5c48cbd0f1321f9eeecc6ca0b0ce675c07dd4837c306",
+    "supplied_name": "STEWARD-Hospital-Clinic-Administrator-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+    "target_application_version": "2.0.0"
+  },
   "office_container_review": {
     "activex_found": false,
     "embedded_executable_or_ole_object_found": false,
@@ -42,11 +54,11 @@
     "passed": true
   },
   "review_context": {
-    "evidence_location": "Private local audit workspace; not included in the public preview",
+    "evidence_location": "Private local audit workspace plus public-safe derivative build-kit ZIP digest; preview alone is not runtime evidence",
     "publicly_reproducible_from_preview_alone": false,
     "review_type": "NAIO prepublication static source review; not third-party certification",
-    "superseded_when": "Source archive digest, preview artifacts, or review scope changes",
-    "tooling_scope": "Local archive, checksum, container/XML, inventory, and text-parity checks"
+    "superseded_when": "Source archive digest, build-kit digest, preview artifacts, or review scope changes",
+    "tooling_scope": "Local archive, checksum, container/XML, inventory, text-parity, and build-kit manifest checks"
   },
-  "statement": "The source archive was audited as untrusted input. Static source integrity and declaration inventories were verified. No package instructions or runtime criteria were executed. The original source payload is intentionally omitted from the public preview because it contains installer-facing language unsupported by enforceable runtime evidence. These provenance statements are not independently reproducible from the public preview alone and do not constitute external certification."
+  "statement": "The original source archive was audited as untrusted input. Static source integrity and declaration inventories were verified. A newer Hermes functional build kit is distributed as an inert self-install ZIP for users to give their own Hermes. The public ZIP is a public-safe derivative of the verified kit with one synthetic MRN-like refusal-test fixture replaced by a non-person placeholder. Downloading, opening, or unzipping it installs nothing. Runtime enforcement remains not operational until a user's Hermes completes read-only preflight, presents an exact activation card, receives explicit approval, builds the target, and executes evidence-bearing tests. These provenance statements are not third-party certification, clinical validation, compliance assurance, or institutional authorization."
 }

@@ -3,7 +3,7 @@
     {
       "activation_available": false,
       "artifact_class": "non_executable_governance_preview",
-      "bytes": 429787,
+      "bytes": 430230,
       "complete_ai_os_claim": "paused",
       "download": "downloads/steward-governance-preview.zip",
       "executable_or_installer_included": false,
@@ -14,11 +14,30 @@
       "population_lane_proposed": "hospital_clinic_administration",
       "route": "/hospital-clinic-administrators/",
       "runtime_status": "not_implemented",
-      "sha256": "8842946b9d0715421d4d5b08a7aa474c50fb879fac63965d6519ccd8fc94a4bb",
+      "sha256": "faec3ce3b3e22408fa54482990bfad676b59422d275237b13aeec3e840513f42",
       "version": "2026.07.16-preview.1"
+    },
+    {
+      "activation_available": true,
+      "activation_contract": "user_initiated_read_only_preflight_then_exact_activation_card_approval",
+      "artifact_class": "hermes_functional_build_kit_self_install",
+      "build_kit_version": "1.0.0",
+      "bytes": 6818049,
+      "complete_ai_os_claim": "not_operational_build_required",
+      "download": "downloads/STEWARD-Hospital-Clinic-Administrator-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+      "install_on_download": false,
+      "institutional_authorization": false,
+      "operational_data_authorized": false,
+      "population_architecture": "one_lane_with_explicit_context_variants",
+      "population_lane": "hospital_clinic_administration",
+      "pre_install_disclosure_required": true,
+      "route": "/hospital-clinic-administrators/",
+      "runtime_status": "not_built_until_user_hermes_runs_approved_program",
+      "sha256": "c7efccc78b6947466f0e5c48cbd0f1321f9eeecc6ca0b0ce675c07dd4837c306",
+      "target_application_version": "2.0.0"
     }
   ],
-  "purpose": "public non-executable STEWARD governance preview for hospital and clinic administration",
-  "release_posture": "doctrine_kept_installable_complete_ai_os_paused",
+  "purpose": "STEWARD hospital and clinic administration public preview plus verified self-install Hermes build kit",
+  "release_posture": "preview_available_build_kit_available_runtime_not_operational_until_user_approved_build",
   "schema_version": "1.0"
 }

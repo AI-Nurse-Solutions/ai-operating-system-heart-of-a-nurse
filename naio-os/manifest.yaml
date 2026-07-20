@@ -1,6 +1,6 @@
-version: 2.0.0-phase23
+version: 2.0.1-phase23
 bundle_id: naio-os
-created: '2026-06-27'
+created: '2026-07-20'
 doctrine: Agents propose. Humans judge. Nurses steward.
 policies:
   edena: edena-policy@2.0.0
@@ -49,16 +49,19 @@ contents:
   sha256: 21391abd36d361c6a49c0f54031ac7aa93afe1f8a735cc853f8641ed303a372d
 - path: schema/naio-soul.schema.json
   role: schema-soul
-  sha256: 1dd940533c0fdef0a1bdd9d0c36d7c3f9980e493f66947f39d0264de1a0360fe
+  sha256: 67931e3b50cc99189ee8b26f26dedb0da46cf328b0e5629a1c22723a94d756ff
 - path: schema/naio-projects.schema.json
   role: schema-projects
   sha256: 022f12f1fec33c8e4c7381ac58fb0c314b4d6234afe8e068e705704e15705fe0
 - path: scripts/preflight.sh
   role: preflight
-  sha256: c2b01c44dbe67444096e3c9d13f61c31f5c89900f3c39a4e118e0704a2ef8f7e
+  sha256: 85e5d69de9f87eb7c7b9d081c6c2c60dcb106edf7355fa7d91e8eaa0ff356f94
 - path: scripts/import-soul.py
   role: import-soul
-  sha256: c5c1d69754e960e68aeb46fde7a9918cc9ce83a4637a935ccd423f3a82bbdd0f
+  sha256: 973a221ab2fda002e6c3ebf41b3e4a1565b2f2d36fd224c91c5bb6f2f3f420bc
+- path: requirements-import-soul.txt
+  role: importer-and-release-validator-dependencies
+  sha256: 680320fabb8ce26c0b57ffa72ef8703d35b8fdad5ea95bdaa3b2237855915552
 - path: scripts/import-projects.py
   role: import-projects
   sha256: 41502978031d7fe162e276c94e7b2b83a7ea077ae6e1252a92719dccaf24fab1
@@ -91,13 +94,13 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: b6dc334b00e8014c92cd2489ae99b6ff9354028c5f25a6788a1ae935658a645c
+  sha256: 80b6bc757b5c1846410dbf8348947d728becdfac2c3ca8a27e3eeb79d92828d0
 - path: release-history.json
   role: release-history
-  sha256: 7282789f852a60b820f3c47a87f46ee59ad5d700348bc2cfc2bef67425656d99
+  sha256: 91d6d0967e0786eb2f12c20d701147408c53932a1e9b8d60b91c8e76c62a97cf
 - path: scripts/check-update.py
   role: update-advisory
-  sha256: bc93033bfd83eae3d96dafe6136e3a74410e9614e20f40c7ee8b4a299118880a
+  sha256: 7745aab586317474cd68cb1f9d80816fd5e64975ee26a2689f46ebb691c09f7b
 - path: scripts/recovery.py
   role: recovery-drill
   sha256: 313df2f922f14e08356a2fa41c4e1ec69152ae910401ab2f484638ae5e8cdead

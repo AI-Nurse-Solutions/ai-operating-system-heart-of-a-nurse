@@ -53,14 +53,15 @@ def verify_signature(manifest: Path, sig: Path, pub: Path) -> tuple[bool, str]:
     return r.returncode == 0, msg or f"openssl exit={r.returncode}"
 
 
-def version_rank(version: str) -> tuple[int, int]:
+def version_rank(version: str) -> tuple[int, int, int, int]:
     if "-phase" not in version:
-        return (0, 0)
+        return (0, 0, 0, 0)
     base, phase = version.rsplit("-phase", 1)
     try:
-        return (int(base.split(".", 1)[0]), int("".join(ch for ch in phase if ch.isdigit()) or "0"))
+        major, minor, patch = (int(part) for part in base.split("."))
+        return (major, int("".join(ch for ch in phase if ch.isdigit()) or "0"), minor, patch)
     except Exception:
-        return (0, 0)
+        return (0, 0, 0, 0)
 
 
 def main() -> int:

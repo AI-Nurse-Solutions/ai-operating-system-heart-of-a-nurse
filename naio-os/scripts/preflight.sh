@@ -49,10 +49,10 @@ else
   fail "python3 not found — required for validation + healthcheck"
 fi
 
-# --- Python deps (jsonschema, pyyaml) — optional but recommended ---
+# --- Python deps required by fail-closed import and release verification ---
 if [ "$PY_OK" = "1" ] 2>/dev/null; then
-  if python3 -c 'import jsonschema' 2>/dev/null; then ok "python jsonschema"; else warn "python jsonschema missing — full schema validation will be skipped"; fi
-  if python3 -c 'import yaml' 2>/dev/null;      then ok "python pyyaml";     else warn "python pyyaml missing — YAML parsing will be skipped"; fi
+  if python3 -c 'import jsonschema' 2>/dev/null; then ok "python jsonschema"; else fail "python jsonschema missing — install naio-os/requirements-import-soul.txt in an isolated environment"; fi
+  if python3 -c 'import yaml' 2>/dev/null;      then ok "python pyyaml";     else fail "python pyyaml missing — required for signed release verification"; fi
 fi
 
 # --- openssl (release signature verification) ---

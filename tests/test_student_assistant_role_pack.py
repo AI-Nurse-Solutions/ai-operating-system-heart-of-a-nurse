@@ -21,6 +21,10 @@ GUIDE = PACKAGE / "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-Supe
 DOCX = PACKAGE / "Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx"
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "nurse-ai-os-post-setup-student-nurse.zip"
+BUILD_KIT = DOWNLOADS / "FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+BUILD_KIT_ROOT = "FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0"
+BUILD_KIT_SHA256 = "96894a215efea70885bdc16a51e48067ba05b436599e93a80d4d03c0fba8f78f"
+BUILD_KIT_VERIFIER_SHA256 = "f86b6bccab9bfa75c123afddfec82eacbb03af4c9c3c417e843a21eebba3dcc2"
 RESUME = (
     "Resume FUTURE Complete Edition installation from the last approved checkpoint. "
     "Revalidate the authenticated owner, selected pathway, active context, privacy and no-PHI boundaries, "
@@ -157,24 +161,32 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
     def test_public_copy_classifies_lane_one_as_complete_edition(self):
         page = (ROOT / "post-setup" / "index.html").read_text(encoding="utf-8")
         for phrase in (
-            "Nursing Student &amp; Nursing Assistant Complete AI OS with FUTURE SuperPowers",
-            "136 embedded release checks",
-            "all eighteen optional FUTURE SuperPowers remain inactive",
+            "FUTURE Mission Control Self-Install Hermes Build Kit",
+            "download does not install",
+            BUILD_KIT_SHA256,
+            "Give the complete ZIP to your own Hermes",
+            "GIVE-THIS-PACKAGE-TO-HERMES.md",
+            "README-FIRST.md",
+            "Implementation Activation Card",
+            "213 target full-stack tests",
+            "all ten agents remain disabled",
             "Nursing Student, Nursing Assistant, or Bridge",
-            "Complete Edition lanes 01, 02, 03, 04, and 06",
+            "Lane 01 self-install build kit",
             "For review-first lane 05",
         ):
             self.assertIn(phrase, page)
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 02, 03, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Lane 01 now ships as the FUTURE Mission Control self-install Hermes build kit", readme)
         self.assertIn("Review-first lane 05 includes", readme)
-        self.assertIn("Nursing Student and Nursing Assistant ZIP is a separately governed Complete Edition", readme)
+        self.assertIn("Nursing Student and Nursing Assistant ZIP is a governed self-install Hermes build kit", readme)
 
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):
-        self.assertTrue(ZIP.is_file(), ZIP)
+        self.assertFalse(ZIP.exists(), "Legacy lane-01 folder ZIP must not remain as stale public artifact")
+        self.assertTrue(BUILD_KIT.is_file(), BUILD_KIT)
         manifest = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
         record = next(item for item in manifest["packages"] if item["role"] == "Nursing Student and Nursing Assistant")
         self.assertFalse(record["install_on_download"])
+        self.assertEqual(record["download_type"], "self_install_hermes_build_kit")
         self.assertTrue(record["pre_install_disclosure_required"])
         self.assertEqual(record["activation"], "user_initiated_guided_complete_setup_with_combined_activation_card")
         self.assertEqual(record["acceptance_tests"]["total"], 136)
@@ -182,17 +194,74 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
         self.assertTrue(record["future_overlay_second"])
         self.assertEqual(record["optional_superpowers_total"], 18)
         self.assertEqual(record["optional_superpowers_active_after_install"], 0)
-        self.assertEqual(record["sha256"], sha256(ZIP))
+        self.assertEqual(record["download"], f"downloads/{BUILD_KIT.name}")
+        self.assertEqual(record["bytes"], 6520440)
+        self.assertEqual(record["sha256"], BUILD_KIT_SHA256)
+        self.assertEqual(record["sha256"], sha256(BUILD_KIT))
+        self.assertEqual(record["build_kit_root"], BUILD_KIT_ROOT)
+        self.assertEqual(record["build_kit_member_count"], 105)
+        self.assertEqual(record["build_kit_verifier_sha256"], BUILD_KIT_VERIFIER_SHA256)
+        self.assertEqual(record["readiness"], "not_operational_build_required")
+        self.assertEqual(record["target_route"], "/nursing-students-assistants/dashboard")
+        self.assertEqual(record["published_state"], "published_not_installed_not_activated_not_operational_not_institutionally_authorized")
+        self.assertEqual(record["ci_validation"], "tracked_repository_validator_no_artifact_controlled_code_execution")
+        self.assertEqual(record["handoff_entrypoint"], "GIVE-THIS-PACKAGE-TO-HERMES.md")
+        self.assertEqual(record["build_kit_counts"]["total_target_full_stack_tests"], 213)
+        self.assertEqual(record["build_kit_counts"]["target_control_tests"], 169)
+        self.assertEqual(record["build_kit_counts"]["total_required_execution_records"], 349)
         ledger = (DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8")
-        self.assertIn(f"{sha256(ZIP)}  {ZIP.name}", ledger)
-        with zipfile.ZipFile(ZIP) as archive:
-            prefix = "01-Student-Nurse/"
+        self.assertIn(f"{BUILD_KIT_SHA256}  {BUILD_KIT.name}", ledger)
+        self.assertNotIn("nurse-ai-os-post-setup-student-nurse.zip", ledger)
+        with zipfile.ZipFile(BUILD_KIT) as archive:
+            self.assertIsNone(archive.testzip())
+            self.assertEqual(len(archive.infolist()), 105)
+            prefix = f"{BUILD_KIT_ROOT}/"
             names = set(archive.namelist())
-            expected = {prefix + path.name for path in PACKAGE.iterdir() if path.is_file()}
-            self.assertEqual(names, expected)
-            for path in PACKAGE.iterdir():
-                if path.is_file():
-                    self.assertEqual(archive.read(prefix + path.name), path.read_bytes())
+            for required in (
+                "README-FIRST.md",
+                "GIVE-THIS-PACKAGE-TO-HERMES.md",
+                "RELEASE-MANIFEST.json",
+                "SHA256SUMS.txt",
+                "tools/verify-build-kit.py",
+            ):
+                self.assertIn(prefix + required, names)
+            bundled_manifest = json.loads(archive.read(prefix + "RELEASE-MANIFEST.json"))
+            self.assertEqual(bundled_manifest["target"]["lane"], "nursing_student_assistant")
+            self.assertEqual(bundled_manifest["target"]["readiness"], "not_operational_build_required")
+            self.assertEqual(bundled_manifest["defaults"]["agents"], "PERM-P0 Disabled")
+            self.assertEqual(bundled_manifest["defaults"]["powers"], "Available Inactive")
+            self.assertEqual(
+                hashlib.sha256(archive.read(prefix + "tools/verify-build-kit.py")).hexdigest(),
+                BUILD_KIT_VERIFIER_SHA256,
+            )
+
+    def test_tracked_builder_validates_build_kit_without_executing_artifact_code(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        role = next(item for item in namespace["ROLES"] if item["label"] == "Nursing Student and Nursing Assistant")
+        validate = namespace["validate_public_build_kit_zip"]
+        self.assertEqual(validate(BUILD_KIT, role)["sha256"], BUILD_KIT_SHA256)
+        source = (ROOT / "scripts" / "build-post-setup-role-packs.py").read_text(encoding="utf-8")
+        self.assertNotIn("subprocess", source)
+        self.assertIn("Validate a public self-install build-kit ZIP without executing its code", source)
+
+    def test_tracked_builder_rejects_tampered_build_kit_verifier_bytes(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        role = next(item for item in namespace["ROLES"] if item["label"] == "Nursing Student and Nursing Assistant")
+        validate = namespace["validate_public_build_kit_zip"]
+        with tempfile.TemporaryDirectory() as tmp:
+            tampered = Path(tmp) / BUILD_KIT.name
+            with zipfile.ZipFile(BUILD_KIT) as src, zipfile.ZipFile(tampered, "w", compression=zipfile.ZIP_DEFLATED) as dst:
+                for info in src.infolist():
+                    data = src.read(info.filename)
+                    if info.filename == f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py":
+                        data += b"\n# tampered verifier\n"
+                    dst.writestr(info, data)
+            role = dict(role)
+            role["public_build_kit"] = dict(role["public_build_kit"])
+            role["public_build_kit"]["bytes"] = tampered.stat().st_size
+            role["public_build_kit"]["sha256"] = sha256(tampered)
+            with self.assertRaisesRegex(ValueError, "checksum|manifest|verifier"):
+                validate(tampered, role)
 
     def test_import_source_can_seed_separately_governed_student_assistant_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))

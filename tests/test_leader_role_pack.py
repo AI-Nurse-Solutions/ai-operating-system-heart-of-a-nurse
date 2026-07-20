@@ -137,7 +137,7 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
             "113 release checks in total",
             "all sixteen optional SuperPowers remain inactive",
             "Without that approval, Hermes must make no installation changes",
-            "Complete Edition lanes 01, 02, 03, 04, and 06",
+            "Complete Edition lanes 02, 03, 04, and 06",
             "For review-first lane 05",
         ):
             self.assertIn(phrase, page)
@@ -145,7 +145,7 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
         self.assertNotIn("Lanes 01–05 contain", page)
 
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 02, 03, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Lane 01 now ships as the FUTURE Mission Control self-install Hermes build kit", readme)
         self.assertIn("Review-first lane 05 includes", readme)
         self.assertIn("The Nurse Leader and Manager ZIP is a separately governed Complete Edition", readme)
         self.assertIn("All sixteen optional SuperPowers remain inactive", readme)

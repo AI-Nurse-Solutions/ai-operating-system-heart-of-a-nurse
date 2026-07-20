@@ -14,6 +14,7 @@ import os
 import re
 import shutil
 import sys
+import unicodedata
 import zipfile
 from pathlib import Path
 
@@ -44,6 +45,34 @@ ROLES = [
         "required_prebuilt_wrapper_digests": {
             "00-READ-FIRST.md": "3e92e58bf5968eab8202d7f5aebfeacdff9720f5b1ce42082ecd667c7673a875",
             "ROLE-PACK.json": "20ca38fd696f02652193baf831be6b35fce55e955945a7b94c2263b3ab5beb49",
+        },
+        "public_build_kit": {
+            "filename": "FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+            "root": "FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0",
+            "bytes": 6520440,
+            "sha256": "96894a215efea70885bdc16a51e48067ba05b436599e93a80d4d03c0fba8f78f",
+            "member_count": 105,
+            "verifier_sha256": "f86b6bccab9bfa75c123afddfec82eacbb03af4c9c3c417e843a21eebba3dcc2",
+            "target_product": "FUTURE — Nursing Student & Nursing Assistant Mission Control",
+            "target_product_id": "future-nursing-student-assistant-mission-control",
+            "target_version": "2.0.0",
+            "target_route": "/nursing-students-assistants/dashboard",
+            "target_namespace": "future.*",
+            "target_readiness": "not_operational_build_required",
+            "counts": {
+                "canonical_foundation_checks": 24,
+                "canonical_overlay_checks": 96,
+                "canonical_integration_checks": 16,
+                "canonical_compatibility_checks": 136,
+                "total_target_full_stack_tests": 213,
+                "target_control_tests": 169,
+                "total_required_execution_records": 349,
+                "superpowers": 18,
+                "agents": 10,
+                "workflows": 18,
+                "templates": 5,
+                "pathways": 3,
+            },
         },
     },
     {
@@ -569,6 +598,139 @@ def validate_prebuilt_inventory(package: Path, role: dict) -> None:
         )
 
 
+def validate_public_build_kit_zip(path: Path, role: dict) -> dict:
+    """Validate a public self-install build-kit ZIP without executing its code."""
+    config = role["public_build_kit"]
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    if path.stat().st_size != config["bytes"]:
+        raise ValueError(f"Build-kit byte-count mismatch: {path}")
+    if sha256(path) != config["sha256"]:
+        raise ValueError(f"Build-kit SHA-256 mismatch: {path}")
+
+    with zipfile.ZipFile(path) as archive:
+        if archive.testzip() is not None:
+            raise ValueError(f"Build-kit CRC check failed: {path}")
+        infos = archive.infolist()
+        if len(infos) != config["member_count"]:
+            raise ValueError(f"Build-kit member-count mismatch: {path}")
+        names = [info.filename for info in infos]
+        roots = {name.split("/", 1)[0] for name in names if name}
+        if roots != {config["root"]}:
+            raise ValueError(f"Build-kit root mismatch: {path}")
+        seen: set[str] = set()
+        lowered: set[str] = set()
+        normalized: set[str] = set()
+        for info in infos:
+            name = info.filename
+            if name in seen:
+                raise ValueError(f"Duplicate build-kit member: {name}")
+            seen.add(name)
+            lower = name.lower()
+            if lower in lowered:
+                raise ValueError(f"Case-colliding build-kit member: {name}")
+            lowered.add(lower)
+            normalized_name = unicodedata.normalize("NFC", name)
+            if normalized_name in normalized:
+                raise ValueError(f"Unicode-colliding build-kit member: {name}")
+            normalized.add(normalized_name)
+            relative = Path(name)
+            if name.startswith("/") or ".." in relative.parts or "\\" in name or "\x00" in name:
+                raise ValueError(f"Unsafe build-kit path: {name}")
+            mode = (info.external_attr >> 16) & 0o777777
+            file_type = mode & 0o170000
+            if mode and file_type not in (0, 0o100000, 0o040000):
+                raise ValueError(f"Unsafe build-kit file mode {oct(mode)}: {name}")
+            if file_type == 0o120000:
+                raise ValueError(f"Symlink in build kit: {name}")
+
+        root = config["root"]
+        required = {
+            "README-FIRST.md",
+            "GIVE-THIS-PACKAGE-TO-HERMES.md",
+            "RELEASE-MANIFEST.json",
+            "SHA256SUMS.txt",
+            "tools/verify-build-kit.py",
+        }
+        for required_file in required:
+            if f"{root}/{required_file}" not in names:
+                raise FileNotFoundError(f"{path}!{root}/{required_file}")
+
+        manifest = json.loads(archive.read(f"{root}/RELEASE-MANIFEST.json"))
+        target = manifest.get("target", {})
+        expected_target = {
+            "product": config["target_product"],
+            "product_id": config["target_product_id"],
+            "version": config["target_version"],
+            "lane": "nursing_student_assistant",
+            "route": config["target_route"],
+            "namespace": config["target_namespace"],
+            "readiness": config["target_readiness"],
+            "home": "FUTURE Mission Control",
+        }
+        for key, expected in expected_target.items():
+            if target.get(key) != expected:
+                raise ValueError(f"Build-kit target mismatch for {key}: {target.get(key)!r}")
+        defaults = manifest.get("defaults", {})
+        expected_defaults = {
+            "agents": "PERM-P0 Disabled",
+            "powers": "Available Inactive",
+            "connectors_schedules_sharing_external_actions_background_agents": "Off",
+            "memory": "session_only",
+            "workflows": "Preview Only",
+        }
+        for key, expected in expected_defaults.items():
+            if defaults.get(key) != expected:
+                raise ValueError(f"Build-kit safe-default mismatch for {key}: {defaults.get(key)!r}")
+        counts = manifest.get("counts", {})
+        for key, expected in config["counts"].items():
+            if counts.get(key) != expected:
+                raise ValueError(f"Build-kit count mismatch for {key}: {counts.get(key)!r}")
+
+        all_files = {
+            name.removeprefix(f"{root}/")
+            for name in names
+            if name.startswith(f"{root}/") and not name.endswith("/")
+        }
+        ledger: dict[str, str] = {}
+        for line_number, line in enumerate(archive.read(f"{root}/SHA256SUMS.txt").decode("utf-8").splitlines(), start=1):
+            if not line:
+                continue
+            match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
+            if not match:
+                raise ValueError(f"Invalid build-kit checksum line {line_number}")
+            relative = match.group(2)
+            if relative in ledger:
+                raise ValueError(f"Duplicate build-kit checksum path: {relative}")
+            if Path(relative).is_absolute() or ".." in Path(relative).parts or "\\" in relative:
+                raise ValueError(f"Unsafe build-kit checksum path: {relative}")
+            ledger[relative] = match.group(1)
+        if set(ledger) != all_files - {"SHA256SUMS.txt"}:
+            raise ValueError("Build-kit checksum ledger inventory mismatch")
+        for relative, expected_hash in ledger.items():
+            actual_hash = hashlib.sha256(archive.read(f"{root}/{relative}")).hexdigest()
+            if actual_hash != expected_hash:
+                raise ValueError(f"Build-kit checksum mismatch: {relative}")
+
+        inventory = manifest.get("files_excluding_manifest_and_checksums")
+        if not isinstance(inventory, list):
+            raise ValueError("Build-kit manifest inventory missing")
+        inventory_paths = {record.get("path") for record in inventory}
+        if inventory_paths != all_files - {"RELEASE-MANIFEST.json", "SHA256SUMS.txt"}:
+            raise ValueError("Build-kit manifest inventory mismatch")
+        for record in inventory:
+            relative = record["path"]
+            data = archive.read(f"{root}/{relative}")
+            if record.get("bytes") != len(data):
+                raise ValueError(f"Build-kit manifest byte mismatch: {relative}")
+            if record.get("sha256") != hashlib.sha256(data).hexdigest():
+                raise ValueError(f"Build-kit manifest hash mismatch: {relative}")
+        verifier_hash = hashlib.sha256(archive.read(f"{root}/tools/verify-build-kit.py")).hexdigest()
+        if verifier_hash != config["verifier_sha256"]:
+            raise ValueError("Build-kit bundled verifier hash mismatch")
+    return config
+
+
 def import_prebuilt_role(source_root: Path, role: dict) -> None:
     """Import an exact separately governed package without rewriting it."""
     source = source_root / role["folder"]
@@ -594,16 +756,21 @@ def deterministic_zip(role: dict) -> dict:
         validate_role_package(source, role)
     refresh_package_checksums(source)
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
-    output = DOWNLOADS / f"nurse-ai-os-post-setup-{role['slug']}.zip"
-    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-        for path in sorted(source.rglob("*")):
-            if not path.is_file():
-                continue
-            arcname = (Path(role["folder"]) / path.relative_to(source)).as_posix()
-            info = zipfile.ZipInfo(arcname, FIXED_ZIP_TIME)
-            info.compress_type = zipfile.ZIP_DEFLATED
-            info.external_attr = 0o100644 << 16
-            archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+    build_kit = role.get("public_build_kit")
+    if build_kit:
+        output = DOWNLOADS / build_kit["filename"]
+        validate_public_build_kit_zip(output, role)
+    else:
+        output = DOWNLOADS / f"nurse-ai-os-post-setup-{role['slug']}.zip"
+        with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+            for path in sorted(source.rglob("*")):
+                if not path.is_file():
+                    continue
+                arcname = (Path(role["folder"]) / path.relative_to(source)).as_posix()
+                info = zipfile.ZipInfo(arcname, FIXED_ZIP_TIME)
+                info.compress_type = zipfile.ZIP_DEFLATED
+                info.external_attr = 0o100644 << 16
+                archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
     role_manifest = json.loads((source / "ROLE-PACK.json").read_text(encoding="utf-8"))
     record = {
         "role": role["label"],
@@ -637,6 +804,26 @@ def deterministic_zip(role: dict) -> dict:
     ):
         if key in role_manifest:
             record[key] = role_manifest[key]
+    if build_kit:
+        record.update(
+            {
+                "download_type": "self_install_hermes_build_kit",
+                "build_kit_root": build_kit["root"],
+                "build_kit_member_count": build_kit["member_count"],
+                "build_kit_verifier_sha256": build_kit["verifier_sha256"],
+                "target_product": build_kit["target_product"],
+                "target_product_id": build_kit["target_product_id"],
+                "target_version": build_kit["target_version"],
+                "target_route": build_kit["target_route"],
+                "target_namespace": build_kit["target_namespace"],
+                "readiness": build_kit["target_readiness"],
+                "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+                "ci_validation": "tracked_repository_validator_no_artifact_controlled_code_execution",
+                "handoff_entrypoint": "GIVE-THIS-PACKAGE-TO-HERMES.md",
+                "first_read": "README-FIRST.md",
+            }
+        )
+        record["build_kit_counts"] = build_kit["counts"]
     return record
 
 

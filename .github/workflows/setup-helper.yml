@@ -12,6 +12,7 @@ on:
       - "tests/test_np_role_pack.py"
       - "post-setup/**"
       - "scripts/build-post-setup-role-packs.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
       - "setup.html"
       - "start-here.html"
       - "privacy.html"
@@ -34,6 +35,7 @@ on:
       - "tests/test_np_role_pack.py"
       - "post-setup/**"
       - "scripts/build-post-setup-role-packs.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
       - "setup.html"
       - "start-here.html"
       - "privacy.html"
@@ -78,6 +80,7 @@ jobs:
           node --check setup-helper/setup-helper.mjs
       - name: Refuse accidental secrets or PHI examples
         run: |
+          python3 scripts/scan-public-healthcare-artifacts.py post-setup --label POST_SETUP
           python3 - <<'PY'
           import re
           from pathlib import Path

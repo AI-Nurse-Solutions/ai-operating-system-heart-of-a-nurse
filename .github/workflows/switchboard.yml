@@ -103,17 +103,25 @@ jobs:
           if unexpected:
               raise SystemExit("Unexpected post-setup/downloads changes: " + ", ".join(sorted(unexpected)))
 
-          status = {}
-          for line in git("diff", "--name-status", base, "HEAD", "--", *sorted(allowed_download_changes)).splitlines():
-              code, path = line.split("\t", 1)
-              status[path] = code
-          wrong_status = {
-              path: status.get(path)
-              for path, expected in allowed_download_changes.items()
-              if status.get(path) != expected
-          }
-          if wrong_status:
-              raise SystemExit("Unexpected Staff SHIFT migration status: " + json.dumps(wrong_status, sort_keys=True))
+          if changed:
+              missing = set(allowed_download_changes) - changed
+              if missing:
+                  raise SystemExit("Incomplete Staff SHIFT migration: " + ", ".join(sorted(missing)))
+
+              status = {}
+              for line in git("diff", "--name-status", base, "HEAD", "--", *sorted(allowed_download_changes)).splitlines():
+                  code, path = line.split("\t", 1)
+                  status[path] = code
+              wrong_status = {
+                  path: status.get(path)
+                  for path, expected in allowed_download_changes.items()
+                  if status.get(path) != expected
+              }
+              if wrong_status:
+                  raise SystemExit("Unexpected Staff SHIFT migration status: " + json.dumps(wrong_status, sort_keys=True))
+              mode = "migration"
+          else:
+              mode = "steady-state"
 
           manifest = json.loads(open("post-setup/downloads/manifest.json", encoding="utf-8").read())
           staff = next(item for item in manifest["packages"] if item["folder"] == "02-Staff-Nurse")
@@ -128,5 +136,5 @@ jobs:
           for key, value in expected.items():
               if staff.get(key) != value:
                   raise SystemExit(f"Staff SHIFT manifest mismatch for {key}: {staff.get(key)!r}")
-          print("STAFF_SHIFT_DOWNLOAD_MIGRATION_GUARD=passed")
+          print(f"STAFF_SHIFT_DOWNLOAD_MIGRATION_GUARD=passed mode={mode}")
           PY

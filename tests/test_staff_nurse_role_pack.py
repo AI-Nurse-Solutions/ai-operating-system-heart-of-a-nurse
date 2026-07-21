@@ -5,10 +5,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import runpy
 import shutil
+import subprocess
+import sys
 import tempfile
+import textwrap
 import unittest
 import zipfile
 from pathlib import Path
@@ -234,6 +238,25 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
             imported = function.__globals__["PACKAGES"] / role["folder"]
             self.assertEqual((imported / "ROLE-PACK.json").read_bytes(), ROLE_MANIFEST.read_bytes())
             self.assertTrue((imported / "PACKAGE-CHECKSUMS.sha256").is_file())
+
+    def test_switchboard_staff_migration_guard_accepts_post_merge_steady_state(self):
+        workflow = (ROOT / ".github" / "workflows" / "switchboard.yml").read_text(encoding="utf-8")
+        marker = "python3 - <<'PY'\n"
+        self.assertIn(marker, workflow)
+        embedded = workflow.split(marker, 1)[1].split("\n          PY", 1)[0]
+        script = textwrap.dedent(embedded)
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+        completed = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=ROOT,
+            env={**os.environ, "BASE_SHA": head},
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout)
+        self.assertIn("STAFF_SHIFT_DOWNLOAD_MIGRATION_GUARD=passed mode=steady-state", completed.stdout)
 
 
 if __name__ == "__main__":

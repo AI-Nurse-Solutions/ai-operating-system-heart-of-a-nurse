@@ -67,7 +67,7 @@ jobs:
         run: npm run test:switchboard-schema
       - name: Run browser interaction and responsive smoke test
         run: npm run test:switchboard-browser
-      - name: Confirm existing role distributions remain byte-for-byte unchanged
+      - name: Confirm existing role distributions remain protected except governed educator migration
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
@@ -75,4 +75,66 @@ jobs:
             echo "No parent commit exists; package-diff guard is not applicable."
             exit 0
           fi
-          git diff --exit-code "$BASE_SHA" HEAD -- post-setup/packages post-setup/downloads healthcare-research-innovation-leaders/packages healthcare-research-innovation-leaders/downloads
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+
+          base = os.environ["BASE_SHA"]
+          allowed_download_changes = {
+              "post-setup/downloads/CHECKSUMS.sha256",
+              "post-setup/downloads/manifest.json",
+              "post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip",
+          }
+
+          changed_packages = subprocess.run(
+              ["git", "diff", "--name-only", base, "HEAD", "--", "post-setup/packages", "healthcare-research-innovation-leaders/packages", "healthcare-research-innovation-leaders/downloads"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout.splitlines()
+          if changed_packages:
+              raise SystemExit("Protected package/download paths changed unexpectedly: " + ", ".join(changed_packages))
+
+          changed_downloads = set(subprocess.run(
+              ["git", "diff", "--name-only", base, "HEAD", "--", "post-setup/downloads"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout.splitlines())
+          unexpected = changed_downloads - allowed_download_changes
+          if unexpected:
+              raise SystemExit("Unexpected post-setup download changes: " + ", ".join(sorted(unexpected)))
+
+          deleted = set(subprocess.run(
+              ["git", "diff", "--name-only", "--diff-filter=D", base, "HEAD", "--", "post-setup/downloads"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout.splitlines())
+          if deleted != {"post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip"}:
+              raise SystemExit("Educator migration must delete only the prior educator ZIP")
+
+          added = set(subprocess.run(
+              ["git", "diff", "--name-only", "--diff-filter=A", base, "HEAD", "--", "post-setup/downloads"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout.splitlines())
+          if added != {"post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"}:
+              raise SystemExit("Educator migration must add only the TEACH build-kit ZIP")
+
+          manifest = json.loads(open("post-setup/downloads/manifest.json", encoding="utf-8").read())
+          educator = next(item for item in manifest["packages"] if item["folder"] == "04-Nurse-Educator")
+          if educator.get("download_type") != "self_install_hermes_build_kit":
+              raise SystemExit("Educator package must be published as a self-install Hermes build kit")
+          if educator.get("download") != "downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip":
+              raise SystemExit("Educator package download target mismatch")
+          if educator.get("sha256") != "fe9f96b4b908602cdae1e35f1643225d70b6f5068049cba1b707f2b8e66104dd":
+              raise SystemExit("Educator build-kit digest mismatch")
+          if educator.get("readiness") != "not_operational_build_required":
+              raise SystemExit("Educator build-kit must remain not operational / build required")
+          if educator.get("published_state") != "published_not_installed_not_activated_not_operational_not_institutionally_authorized":
+              raise SystemExit("Educator build-kit publication state mismatch")
+          PY

@@ -20,7 +20,13 @@ PROGRAM = PACKAGE / "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-wi
 GUIDE = PACKAGE / "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.md"
 DOCX = PACKAGE / "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.docx"
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
-ZIP = DOWNLOADS / "nurse-ai-os-post-setup-nurse-educator.zip"
+ZIP = DOWNLOADS / "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+BUILD_KIT_ROOT = "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0"
+BUILD_KIT_SHA256 = "fe9f96b4b908602cdae1e35f1643225d70b6f5068049cba1b707f2b8e66104dd"
+BUILD_KIT_BYTES = 6823419
+BUILD_KIT_MEMBER_COUNT = 121
+BUILD_KIT_VERIFIER_SHA256 = "c79581cde1a4ede0c49bd2bc806d6ec74150859d34700a9fad19fc57873f7ae3"
+SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE = "8b7e8290382f7df5830554ad740a8fd280c3d2be5e8948d1a539afe074416cb9"
 RESUME = "Resume TEACH Complete Edition installation from the last approved checkpoint."
 
 
@@ -160,7 +166,13 @@ class EducatorCompleteEditionTests(unittest.TestCase):
         for phrase in (
             "Nurse Educator &amp; Instructional Designer",
             "TEACH SuperPowers",
-            "169 embedded release checks",
+            "169 canonical checks",
+            "264 explicit target rows",
+            "433 required execution records",
+            "self-install Hermes build kit",
+            "approximately 6.82 MB",
+            "not operational—build required",
+            "TEACH Implementation Activation Card",
             "all twenty optional TEACH SuperPowers remain inactive",
             "Complete Edition lanes 01, 02, 03, 04, and 06",
             "For review-first lane 05",
@@ -170,16 +182,43 @@ class EducatorCompleteEditionTests(unittest.TestCase):
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
         record = next(item for item in public["packages"] if item["role"] == "Nurse Educator and Instructional Designer")
+        self.assertEqual(record["download"], f"downloads/{ZIP.name}")
+        self.assertEqual(record["download_type"], "self_install_hermes_build_kit")
+        self.assertEqual(record["published_state"], "published_not_installed_not_activated_not_operational_not_institutionally_authorized")
+        self.assertEqual(record["ci_validation"], "tracked_repository_validator_no_artifact_controlled_code_execution")
+        self.assertEqual(record["sha256"], BUILD_KIT_SHA256)
         self.assertEqual(record["sha256"], sha256(ZIP))
+        self.assertEqual(record["bytes"], BUILD_KIT_BYTES)
+        self.assertEqual(ZIP.stat().st_size, BUILD_KIT_BYTES)
+        self.assertEqual(record["readiness"], "not_operational_build_required")
+        self.assertEqual(record["target_product"], "TEACH — Nurse Educator & Instructional Designer Mission Control")
+        self.assertEqual(record["target_route"], "/nurse-educators-designers/dashboard")
+        self.assertEqual(record["target_version"], "2.0.0")
+        self.assertEqual(record["target_namespace"], "neid_teach.*")
+        self.assertEqual(record["build_kit_root"], BUILD_KIT_ROOT)
+        self.assertEqual(record["build_kit_member_count"], BUILD_KIT_MEMBER_COUNT)
+        self.assertEqual(record["build_kit_verifier_sha256"], BUILD_KIT_VERIFIER_SHA256)
+        self.assertEqual(record["source_zip_sha256_before_derivative"], SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE)
         self.assertEqual(record["acceptance_tests"]["total"], 169)
+        self.assertEqual(record["build_kit_counts"]["canonical_compatibility_checks"], 169)
+        self.assertEqual(record["build_kit_counts"]["total_target_full_stack_tests"], 264)
+        self.assertEqual(record["build_kit_counts"]["total_required_execution_records"], 433)
+        self.assertEqual(record["build_kit_counts"]["agents"], 10)
+        self.assertEqual(record["build_kit_counts"]["workflows"], 18)
+        self.assertEqual(record["build_kit_counts"]["templates"], 24)
         self.assertEqual(record["optional_superpowers_active_after_install"], 0)
         with zipfile.ZipFile(ZIP) as archive:
-            prefix = "04-Nurse-Educator/"
-            expected = {prefix + path.relative_to(PACKAGE).as_posix() for path in PACKAGE.rglob("*") if path.is_file()}
-            self.assertEqual(set(archive.namelist()), expected)
-            for path in PACKAGE.rglob("*"):
-                if path.is_file():
-                    self.assertEqual(archive.read(prefix + path.relative_to(PACKAGE).as_posix()), path.read_bytes())
+            self.assertEqual(len(archive.infolist()), BUILD_KIT_MEMBER_COUNT)
+            self.assertEqual({name.split("/", 1)[0] for name in archive.namelist()}, {BUILD_KIT_ROOT})
+            manifest = json.loads(archive.read(f"{BUILD_KIT_ROOT}/RELEASE-MANIFEST.json"))
+            self.assertEqual(manifest["target"]["readiness"], "not_operational_build_required")
+            self.assertEqual(manifest["defaults"]["agents"], "PERM-P0 Disabled")
+            self.assertEqual(manifest["defaults"]["powers"], "Available Inactive")
+            self.assertEqual(manifest["defaults"]["workflows"], "Preview Only")
+            self.assertEqual(manifest["defaults"]["connectors_schedules_sharing_external_actions_background_agents"], "Off")
+            self.assertEqual(manifest["public_safe_derivative"]["source_zip_sha256_before_derivative"], SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE)
+            self.assertIn("PUBLIC_SAFE_EDUCATOR_QA_CONTEXT_PLACEHOLDER", archive.read(f"{BUILD_KIT_ROOT}/source/baseline-qa-reference/test_discover_mission_control_v2_dom.mjs").decode("utf-8"))
+            self.assertEqual(hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py")).hexdigest(), BUILD_KIT_VERIFIER_SHA256)
 
     def test_import_source_can_seed_separately_governed_educator_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))

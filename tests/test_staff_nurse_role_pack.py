@@ -5,10 +5,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import runpy
 import shutil
+import subprocess
+import sys
 import tempfile
+import textwrap
 import unittest
 import zipfile
 from pathlib import Path
@@ -20,7 +24,7 @@ PROGRAM = PACKAGE / "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHI
 GUIDE = PACKAGE / "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.md"
 DOCX = PACKAGE / "Staff-Nurse-and-Quality-Contributor-Complete-AI-OS-with-SHIFT-SuperPowers-Setup-Guide.docx"
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
-ZIP = DOWNLOADS / "nurse-ai-os-post-setup-staff-nurse.zip"
+ZIP = DOWNLOADS / "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
 RESUME = "Resume SHIFT Complete Edition installation from the last approved checkpoint."
 
 
@@ -162,7 +166,10 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
         for phrase in (
             "Staff Nurse &amp; Quality Contributor",
             "SHIFT SuperPowers",
-            "176 embedded release checks",
+            "176 canonical checks",
+            "self-install Hermes build kit",
+            "approximately 6.91 MB",
+            "not operational—build required",
             "all twenty optional SHIFT SuperPowers remain inactive",
             "Complete Edition lanes 01, 02, 03, 04, and 06",
             "review-first lane 05",
@@ -181,6 +188,19 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
         self.assertFalse(record["install_on_download"])
         self.assertTrue(record["pre_install_disclosure_required"])
         self.assertEqual(record["activation"], "user_initiated_guided_complete_setup_with_combined_activation_card")
+        self.assertEqual(record["download"], "downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip")
+        self.assertEqual(record["download_type"], "self_install_hermes_build_kit")
+        self.assertEqual(record["published_state"], "published_not_installed_not_activated_not_operational_not_institutionally_authorized")
+        self.assertEqual(record["readiness"], "not_operational_build_required")
+        self.assertEqual(record["bytes"], 6914990)
+        self.assertEqual(record["sha256"], "e0ebaff0ad8840ac2e4670a28168a9ac1fdaf17a0c8e3ae72973c8496cb0f709")
+        self.assertEqual(record["build_kit_member_count"], 114)
+        self.assertEqual(record["build_kit_root"], "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0")
+        self.assertEqual(record["build_kit_verifier_sha256"], "075b327b7bda027be02b0b2bcf58289f9a463df652019e013fa1382ba4c8923b")
+        self.assertEqual(record["source_zip_sha256_before_derivative"], "f10fe10a1675759772ea53cc60c1b354ea0342b38efd01d6510d7ac0c986b5ae")
+        self.assertEqual(record["target_product_id"], "staff-nurse-life-practice-mission-control")
+        self.assertEqual(record["target_route"], "/staff-nurses/dashboard")
+        self.assertEqual(record["build_kit_counts"]["total_required_execution_records"], 440)
         self.assertTrue(record["foundation_first"])
         self.assertTrue(record["shift_overlay_second"])
         self.assertEqual(record["optional_superpowers_total"], 20)
@@ -188,12 +208,21 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
         self.assertEqual(record["acceptance_tests"]["total"], 176)
         self.assertEqual(record["optional_superpowers_active_after_install"], 0)
         with zipfile.ZipFile(ZIP) as archive:
-            prefix = "02-Staff-Nurse/"
-            expected = {prefix + path.relative_to(PACKAGE).as_posix() for path in PACKAGE.rglob("*") if path.is_file()}
-            self.assertEqual(set(archive.namelist()), expected)
-            for path in PACKAGE.rglob("*"):
-                if path.is_file():
-                    self.assertEqual(archive.read(prefix + path.relative_to(PACKAGE).as_posix()), path.read_bytes())
+            names = archive.namelist()
+            prefix = "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0/"
+            self.assertEqual(len(names), 114)
+            self.assertEqual(len(names), len(set(names)))
+            self.assertIn(prefix + "README-FIRST.md", names)
+            self.assertIn(prefix + "GIVE-THIS-PACKAGE-TO-HERMES.md", names)
+            self.assertIn(prefix + "RELEASE-MANIFEST.json", names)
+            self.assertIn(prefix + "SHA256SUMS.txt", names)
+            self.assertIn(prefix + "tools/verify-build-kit.py", names)
+            kit_manifest = json.loads(archive.read(prefix + "RELEASE-MANIFEST.json"))
+            self.assertEqual(kit_manifest["target"]["readiness"], "not_operational_build_required")
+            self.assertEqual(kit_manifest["defaults"]["agents"], "PERM-P0 Disabled")
+            self.assertEqual(kit_manifest["defaults"]["powers"], "Available Inactive")
+            self.assertEqual(kit_manifest["defaults"]["connectors_schedules_sharing_external_actions_background_agents"], "Off")
+            self.assertEqual(kit_manifest["public_safe_derivative"]["source_zip_sha256_before_derivative"], "f10fe10a1675759772ea53cc60c1b354ea0342b38efd01d6510d7ac0c986b5ae")
 
     def test_import_source_can_seed_separately_governed_staff_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
@@ -210,6 +239,25 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
             imported = function.__globals__["PACKAGES"] / role["folder"]
             self.assertEqual((imported / "ROLE-PACK.json").read_bytes(), ROLE_MANIFEST.read_bytes())
             self.assertTrue((imported / "PACKAGE-CHECKSUMS.sha256").is_file())
+
+    def test_switchboard_staff_migration_guard_accepts_post_merge_steady_state(self):
+        workflow = (ROOT / ".github" / "workflows" / "switchboard.yml").read_text(encoding="utf-8")
+        marker = "python3 - <<'PY'\n"
+        self.assertIn(marker, workflow)
+        embedded = workflow.split(marker, 1)[1].split("\n          PY", 1)[0]
+        script = textwrap.dedent(embedded)
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+        completed = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=ROOT,
+            env={**os.environ, "BASE_SHA": head},
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout)
+        self.assertIn("STAFF_SHIFT_DOWNLOAD_MIGRATION_GUARD=passed mode=steady-state", completed.stdout)
 
 
 if __name__ == "__main__":

@@ -14,6 +14,7 @@ import os
 import re
 import shutil
 import sys
+import unicodedata
 import zipfile
 from pathlib import Path
 
@@ -148,6 +149,52 @@ ROLES = [
 ]
 
 FIXED_ZIP_TIME = (2026, 7, 13, 0, 0, 0)
+
+BUILD_KIT_DOWNLOADS = {
+    "staff-nurse": {
+        "filename": "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+        "root": "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0",
+        "bytes": 6914990,
+        "sha256": "e0ebaff0ad8840ac2e4670a28168a9ac1fdaf17a0c8e3ae72973c8496cb0f709",
+        "member_count": 114,
+        "verifier_sha256": "075b327b7bda027be02b0b2bcf58289f9a463df652019e013fa1382ba4c8923b",
+        "source_zip_sha256_before_derivative": "f10fe10a1675759772ea53cc60c1b354ea0342b38efd01d6510d7ac0c986b5ae",
+        "source_zip_bytes_before_derivative": 6914738,
+        "target": {
+            "home": "My SHIFT Mission Control",
+            "lane": "staff_nurse_life_practice",
+            "namespace": "snqi_shift.*",
+            "product": "SHIFT — Staff Nurse Life & Practice Mission Control",
+            "product_id": "staff-nurse-life-practice-mission-control",
+            "readiness": "not_operational_build_required",
+            "route": "/staff-nurses/dashboard",
+            "version": "2.0.0",
+        },
+        "counts": {
+            "acceptance_ledger_explicit_target_test_rows": 264,
+            "agents": 10,
+            "canonical_compatibility_checks": 176,
+            "canonical_foundation_checks": 40,
+            "canonical_integration_checks": 16,
+            "canonical_overlay_checks": 120,
+            "capability_criteria_including_capstone": 77,
+            "capability_domains": 17,
+            "control_matrix_rows": 216,
+            "core_launchers": 4,
+            "cross_cutting_full_stack_scenarios": 48,
+            "deployment_contexts": 2,
+            "mastery_levels": 4,
+            "protected_workspaces": 5,
+            "role_adapters": 4,
+            "superpowers": 20,
+            "target_control_tests": 216,
+            "templates": 25,
+            "total_required_execution_records": 440,
+            "total_target_full_stack_tests": 264,
+            "workflows": 18,
+        },
+    },
+}
 
 
 def sha256(path: Path) -> str:
@@ -569,6 +616,124 @@ def validate_prebuilt_inventory(package: Path, role: dict) -> None:
         )
 
 
+def validate_build_kit_zip(role: dict, config: dict) -> dict:
+    """Validate a public Hermes build-kit ZIP as data without executing bundled code."""
+    validate_prebuilt_inventory(PACKAGES / role["folder"], role)
+    path = DOWNLOADS / config["filename"]
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    if path.stat().st_size != config["bytes"] or sha256(path) != config["sha256"]:
+        raise ValueError(f"Build-kit byte or SHA-256 mismatch: {path}")
+    with zipfile.ZipFile(path) as archive:
+        infos = archive.infolist()
+        names = [info.filename for info in infos]
+        if len(infos) != config["member_count"]:
+            raise ValueError(f"Build-kit member count mismatch: {path}")
+        if len(names) != len(set(names)):
+            raise ValueError(f"Duplicate build-kit members: {path}")
+        roots = {name.split("/", 1)[0] for name in names if name}
+        if roots != {config["root"]}:
+            raise ValueError(f"Build-kit must have one expected root: {path}")
+        normalized = {unicodedata.normalize("NFC", name).casefold() for name in names}
+        if len(normalized) != len(names):
+            raise ValueError(f"Build-kit has case/Unicode-colliding members: {path}")
+        for info in infos:
+            name = info.filename
+            candidate = Path(name)
+            mode = (info.external_attr >> 16) & 0o777777
+            if (
+                not name
+                or name.startswith("/")
+                or "\\" in name
+                or "\x00" in name
+                or ".." in candidate.parts
+                or ":" in candidate.parts[0]
+            ):
+                raise ValueError(f"Unsafe build-kit member path: {name!r}")
+            if (mode & 0o170000) == 0o120000:
+                raise ValueError(f"Build-kit symlink member rejected: {name}")
+            if (mode & 0o170000) not in (0, 0o100000, 0o040000):
+                raise ValueError(f"Build-kit special-file member rejected: {name}")
+            if info.flag_bits & 0x1:
+                raise ValueError(f"Build-kit encrypted member rejected: {name}")
+        bad_crc = archive.testzip()
+        if bad_crc:
+            raise ValueError(f"Build-kit CRC failure: {bad_crc}")
+
+        root = config["root"]
+        required = {
+            "README-FIRST.md",
+            "GIVE-THIS-PACKAGE-TO-HERMES.md",
+            "RELEASE-MANIFEST.json",
+            "SHA256SUMS.txt",
+            "tools/verify-build-kit.py",
+        }
+        files = {name[len(root) + 1:] for name in names if not name.endswith("/")}
+        missing = required - files
+        if missing:
+            raise ValueError("Build-kit missing required files: " + ", ".join(sorted(missing)))
+        manifest = json.loads(archive.read(f"{root}/RELEASE-MANIFEST.json"))
+        if manifest.get("target") != config["target"]:
+            raise ValueError(f"Build-kit target contract mismatch: {path}")
+        if manifest.get("counts") != config["counts"]:
+            raise ValueError(f"Build-kit count contract mismatch: {path}")
+        defaults = manifest.get("defaults", {})
+        if defaults.get("agents") != "PERM-P0 Disabled" or defaults.get("powers") != "Available Inactive":
+            raise ValueError(f"Build-kit safe defaults mismatch: {path}")
+        if defaults.get("connectors_schedules_sharing_external_actions_background_agents") != "Off":
+            raise ValueError(f"Build-kit connector/action defaults must stay off: {path}")
+        derivative = manifest.get("public_safe_derivative", {})
+        if derivative.get("source_zip_sha256_before_derivative") != config["source_zip_sha256_before_derivative"]:
+            raise ValueError(f"Build-kit derivative provenance mismatch: {path}")
+        if derivative.get("source_zip_bytes_before_derivative") != config["source_zip_bytes_before_derivative"]:
+            raise ValueError(f"Build-kit derivative byte provenance mismatch: {path}")
+        if sha256_bytes := hashlib.sha256(archive.read(f"{root}/tools/verify-build-kit.py")).hexdigest():
+            if sha256_bytes != config["verifier_sha256"]:
+                raise ValueError(f"Bundled verifier bytes changed: {path}")
+
+        ledger: dict[str, str] = {}
+        for line_number, line in enumerate(archive.read(f"{root}/SHA256SUMS.txt").decode("utf-8").splitlines(), start=1):
+            match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
+            if not match:
+                raise ValueError(f"Invalid build-kit checksum line {line_number}: {path}")
+            rel = match.group(2)
+            if rel in ledger or rel.startswith("/") or ".." in Path(rel).parts or "\\" in rel:
+                raise ValueError(f"Unsafe or duplicate build-kit checksum path: {rel}")
+            ledger[rel] = match.group(1)
+        expected_ledger = files - {"SHA256SUMS.txt"}
+        if set(ledger) != expected_ledger:
+            raise ValueError(f"Build-kit checksum inventory mismatch: {path}")
+        mismatches = [
+            rel
+            for rel, digest in ledger.items()
+            if hashlib.sha256(archive.read(f"{root}/{rel}")).hexdigest() != digest
+        ]
+        if mismatches:
+            raise ValueError("Build-kit checksum mismatches: " + ", ".join(sorted(mismatches)))
+
+    return {
+        "build_kit_counts": config["counts"],
+        "build_kit_member_count": config["member_count"],
+        "build_kit_root": config["root"],
+        "build_kit_verifier_sha256": config["verifier_sha256"],
+        "bytes": config["bytes"],
+        "ci_validation": "tracked_repository_validator_no_artifact_controlled_code_execution",
+        "download": path.relative_to(POST_SETUP).as_posix(),
+        "download_type": "self_install_hermes_build_kit",
+        "first_read": "README-FIRST.md",
+        "handoff_entrypoint": "GIVE-THIS-PACKAGE-TO-HERMES.md",
+        "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+        "readiness": config["target"]["readiness"],
+        "sha256": config["sha256"],
+        "source_zip_sha256_before_derivative": config["source_zip_sha256_before_derivative"],
+        "target_namespace": config["target"]["namespace"],
+        "target_product": config["target"]["product"],
+        "target_product_id": config["target"]["product_id"],
+        "target_route": config["target"]["route"],
+        "target_version": config["target"]["version"],
+    }
+
+
 def import_prebuilt_role(source_root: Path, role: dict) -> None:
     """Import an exact separately governed package without rewriting it."""
     source = source_root / role["folder"]
@@ -594,6 +759,31 @@ def deterministic_zip(role: dict) -> dict:
         validate_role_package(source, role)
     refresh_package_checksums(source)
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
+    role_manifest = json.loads((source / "ROLE-PACK.json").read_text(encoding="utf-8"))
+    if role["slug"] in BUILD_KIT_DOWNLOADS:
+        record = {
+            "role": role["label"],
+            "folder": role["folder"],
+            "install_on_download": False,
+            "intended_stage": "after_soul_files_and_hermes_setup",
+            "activation": role_manifest["activation"],
+            "package_version": role_manifest["package_version"],
+            "pre_install_disclosure_required": role_manifest.get("pre_install_disclosure_required", False),
+        }
+        record.update(validate_build_kit_zip(role, BUILD_KIT_DOWNLOADS[role["slug"]]))
+        for key in (
+            "acceptance_tests",
+            "foundation_first",
+            "shift_overlay_second",
+            "role_adapters",
+            "automatic_shared_access",
+            "optional_superpowers_total",
+            "optional_superpowers_active_after_install",
+            "institutional_deployment_requires_separate_authorization",
+        ):
+            if key in role_manifest:
+                record[key] = role_manifest[key]
+        return record
     output = DOWNLOADS / f"nurse-ai-os-post-setup-{role['slug']}.zip"
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for path in sorted(source.rglob("*")):
@@ -604,7 +794,6 @@ def deterministic_zip(role: dict) -> dict:
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
-    role_manifest = json.loads((source / "ROLE-PACK.json").read_text(encoding="utf-8"))
     record = {
         "role": role["label"],
         "folder": role["folder"],

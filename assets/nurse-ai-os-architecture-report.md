@@ -21,7 +21,7 @@ Nurse AI OS has moved beyond a conceptual architecture. It now has:
 - 46 passing unit tests and 8 of 8 passing synthetic trajectory evaluations;
 - a verified immutable local release with preserved trust-anchor continuity;
 - a public Governed Harness architecture and evidence surface;
-- a live post-setup distribution with six English-language role-specific downloads, including Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions;
+- a live post-setup distribution with six English-language role-specific downloads, including Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer Complete Editions, one Nurse-Connected Ally review-first overlay, and the USA-only Nurse Practitioner WINGS self-install Hermes build kit;
 - deterministic ZIP checksums and explicit `not_installed` package status.
 
 That progress is substantial, but the system must **not** yet be described as a unified enforcement architecture. Four P0 control-plane gaps prevent that claim:
@@ -46,7 +46,7 @@ Keep the current default profile in shadow mode. Do not activate canary enforcem
 
 The strongest current architectural description is:
 
-> **Nurse AI OS is a nurse-centered control plane over Hermes, designed around nurse-governance principles. SOUL establishes accountable identity and boundaries; the signed EDENA Harness evaluates runtime actions; Florence-X provides build, verification, and coordination discipline; Hermes executes tools, skills, profiles, memory, scheduling, and delegation; a local metadata-minimized ledger records governance evidence; signed releases preserve provenance; and a public post-setup layer offers six English role packages—one review-first overlay plus Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions with read-only preflights and exact activation cards. The current operating posture is observation-only shadow governance, not clinical deployment, institutional authorization, or default-profile enforcement.**
+> **Nurse AI OS is a nurse-centered control plane over Hermes, designed around nurse-governance principles. SOUL establishes accountable identity and boundaries; the signed EDENA Harness evaluates runtime actions; Florence-X provides build, verification, and coordination discipline; Hermes executes tools, skills, profiles, memory, scheduling, and delegation; a local metadata-minimized ledger records governance evidence; signed releases preserve provenance; and a public post-setup layer offers six English role packages—one review-first overlay, four Complete Editions with read-only preflights and exact activation cards, and the USA-only Nurse Practitioner WINGS self-install Hermes build kit with package verification and exact WINGS Implementation Activation Card approval before any local build mutation. The current operating posture is observation-only shadow governance, not clinical deployment, institutional authorization, or default-profile enforcement.**
 
 ---
 
@@ -470,7 +470,7 @@ The live post-setup distribution has six lanes:
 5. Nurse-Connected Ally
 6. Nurse Practitioner (USA only)
 
-Each live package includes a role manifest and declares `install_on_download: false`. Lane 05 uses review-first approval. Lane 01 uses a read-only Nursing Student and Nursing Assistant FUTURE Complete Edition preflight, one exact combined activation card, a foundation-first/FUTURE-second sequence, 136 embedded release checks, three protected pathways, and eighteen inactive optional powers. Lane 02 uses the Staff Nurse and Quality Contributor SHIFT sequence with four bounded authority adapters, 40 foundation checks, 120 SHIFT tests, 16 integration checks, and twenty inactive optional powers. Lane 03 uses the equivalent governed Nurse Leader sequence with 113 release checks. Lane 04 uses the Nurse Educator and Instructional Designer TEACH sequence with three authority adapters, 33 foundation checks, 120 TEACH tests, 16 integration checks, and twenty inactive optional powers. Lane 06 uses the governed USA-only NP sequence with 145 embedded acceptance tests.
+Each live package declares `install_on_download: false`. Lane 05 uses review-first approval. Lane 01 uses a read-only Nursing Student and Nursing Assistant FUTURE Complete Edition preflight, one exact combined activation card, a foundation-first/FUTURE-second sequence, 136 embedded release checks, three protected pathways, and eighteen inactive optional powers. Lane 02 uses the Staff Nurse and Quality Contributor SHIFT sequence with four bounded authority adapters, 40 foundation checks, 120 SHIFT tests, 16 integration checks, and twenty inactive optional powers. Lane 03 uses the equivalent governed Nurse Leader sequence with 113 release checks. Lane 04 uses the Nurse Educator and Instructional Designer TEACH sequence with three authority adapters, 33 foundation checks, 120 TEACH tests, 16 integration checks, and twenty inactive optional powers. Lane 06 uses the USA-only WINGS self-install Hermes build kit with package verification, README-FIRST/GIVE-THIS-PACKAGE-TO-HERMES handoff, exact WINGS Implementation Activation Card approval, 410 required execution records, and not-operational/build-required readiness before any local build.
 
 ## 7.3 Handoff gap
 
@@ -899,7 +899,7 @@ Nurse AI OS now has a credible technical spine:
 - a signed Hermes-native Harness;
 - a local metadata-only evidence ledger;
 - immutable releases and rollback;
-- a live six-lane English post-setup distribution, including Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions.
+- a live six-lane English post-setup distribution, including Nursing Student and Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer Complete Editions, one Nurse-Connected Ally review-first overlay, and the USA-only Nurse Practitioner WINGS self-install Hermes build kit.
 
 Its next phase is not “more agents.” It is **coherence, evidence adjudication, and human governance**.
 

@@ -1,6 +1,6 @@
 # Nurse AI OS Post-Setup Role Packs
 
-These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 01, 02, 03, 04, and 06 are separately governed Complete Editions with read-only preflight and exact activation-card approval before any installation mutation.
+These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 01, 02, 03, and 04 are separately governed Complete Editions with read-only preflight and exact activation-card approval before any installation mutation. Lane 06 is a separately governed WINGS self-install Hermes build kit with package verification, read-only preflight, exact WINGS Implementation Activation Card approval, and approved local build mutation only after that gate.
 
 ## Role folders
 
@@ -27,7 +27,7 @@ Nothing is installed or activated. Every package declares:
 }
 ```
 
-The user unzips one role folder. Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. The Nursing Student and Nursing Assistant, Staff Nurse and Quality Contributor, Nurse Leader, Nurse Educator and Instructional Designer, and USA-only Nurse Practitioner Complete Editions use their supplied one-file Hermes programs, read-only preflights, exact combined activation cards, phased checkpoints, and explicit approval before any installation mutation.
+The user unzips one role folder or gives the WINGS build-kit ZIP to their own Hermes. Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. The Nursing Student and Nursing Assistant, Staff Nurse and Quality Contributor, Nurse Leader, and Nurse Educator and Instructional Designer Complete Editions use their supplied one-file Hermes programs, read-only preflights, exact activation cards, phased checkpoints, and explicit approval before any installation mutation. The USA-only Nurse Practitioner lane uses the WINGS build-kit handoff: `README-FIRST.md`, `GIVE-THIS-PACKAGE-TO-HERMES.md`, `RELEASE-MANIFEST.json`, `SHA256SUMS.txt`, read-only preflight, exact WINGS Implementation Activation Card, and explicit approval before any local build mutation.
 
 ## Package contents
 

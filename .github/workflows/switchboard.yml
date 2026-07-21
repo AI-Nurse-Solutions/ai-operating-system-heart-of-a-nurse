@@ -107,14 +107,17 @@ jobs:
           if unexpected:
               raise SystemExit("Unexpected post-setup download changes: " + ", ".join(sorted(unexpected)))
 
+          educator_migration_paths = {
+              "post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip",
+              "post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+          }
+
           deleted = set(subprocess.run(
               ["git", "diff", "--name-only", "--diff-filter=D", base, "HEAD", "--", "post-setup/downloads"],
               check=True,
               text=True,
               stdout=subprocess.PIPE,
           ).stdout.splitlines())
-          if deleted != {"post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip"}:
-              raise SystemExit("Educator migration must delete only the prior educator ZIP")
 
           added = set(subprocess.run(
               ["git", "diff", "--name-only", "--diff-filter=A", base, "HEAD", "--", "post-setup/downloads"],
@@ -122,8 +125,11 @@ jobs:
               text=True,
               stdout=subprocess.PIPE,
           ).stdout.splitlines())
-          if added != {"post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"}:
-              raise SystemExit("Educator migration must add only the TEACH build-kit ZIP")
+          if educator_migration_paths & changed_downloads:
+              if deleted != {"post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip"}:
+                  raise SystemExit("Educator migration must delete only the prior educator ZIP")
+              if added != {"post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"}:
+                  raise SystemExit("Educator migration must add only the TEACH build-kit ZIP")
 
           manifest = json.loads(open("post-setup/downloads/manifest.json", encoding="utf-8").read())
           educator = next(item for item in manifest["packages"] if item["folder"] == "04-Nurse-Educator")

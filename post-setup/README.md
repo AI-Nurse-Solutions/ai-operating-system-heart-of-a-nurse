@@ -9,7 +9,7 @@ These are separate post-setup downloads for users who have already completed the
 | `01-Student-Nurse` | Nursing Student and Nursing Assistant | `downloads/nurse-ai-os-post-setup-student-nurse.zip` |
 | `02-Staff-Nurse` | Staff Nurse and Quality Contributor | `downloads/nurse-ai-os-post-setup-staff-nurse.zip` |
 | `03-Nurse-Leader-and-Manager` | Nurse Leader and Manager | `downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip` |
-| `04-Nurse-Educator` | Nurse Educator and Instructional Designer | `downloads/nurse-ai-os-post-setup-nurse-educator.zip` |
+| `04-Nurse-Educator` | Nurse Educator and Instructional Designer | `downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `05-Nurse-Connected-Ally` | Nurse-Connected Ally | `downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip` |
 | `06-Nurse-Practitioner-USA` | Nurse Practitioner (USA) | `downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip` |
 
@@ -75,16 +75,17 @@ The Nurse Leader and Manager ZIP is a separately governed Complete Edition. It i
 
 The Leader program establishes, repairs, or binds the foundation first, runs 21 foundation tests, adds the LEAD Library as an inactive overlay, and runs 80 LEAD tests plus 12 integration checks. All sixteen optional SuperPowers remain inactive. Downloading does not install it. Role selection does not verify managerial or organizational authority, and private-workspace approval does not authorize organizational deployment.
 
-The Nurse Educator and Instructional Designer ZIP is a separately governed Complete Edition. It includes:
+The Nurse Educator and Instructional Designer TEACH ZIP is a separately governed self-install Hermes build kit. It includes:
 
-- `00-READ-FIRST.md`
-- `ROLE-PACK.json`
-- `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Hermes-Program.md` — complete one-file guided installer
-- `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.md`
-- `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.docx`
-- `PACKAGE-CHECKSUMS.sha256`
+- `README-FIRST.md`
+- `GIVE-THIS-PACKAGE-TO-HERMES.md`
+- `RELEASE-MANIFEST.json`
+- `SHA256SUMS.txt`
+- `SOURCE-INVENTORY.json`
+- `tools/verify-build-kit.py`
+- TEACH implementation, schemas, controls, templates, synthetic examples, and baseline QA references needed for a future local build
 
-The TEACH program supports Nurse Educator, Instructional Designer, and Hybrid / Faculty Developer adapters. It creates, repairs, or binds the Nurse Educator foundation first, runs 33 foundation checks, adds the Trust Shield, TEACH Core, Command Studio, templates, and twenty optional SuperPowers as an inactive overlay, and runs 120 TEACH tests plus 16 integration checks—169 embedded release checks in total. All twenty optional TEACH SuperPowers remain inactive. Downloading does not install it. Adapter selection does not verify employment, faculty status, instructional-design assignment, teaching, grading, clinical, accommodation, academic-integrity, curriculum, accreditation, research, release, or institutional authority. Private-workspace approval does not authorize LMS, classroom, clinical-site, program, employer, accreditation, research, multi-user, or institutional deployment.
+The TEACH build kit supports Nurse Educator, Instructional Designer, and Hybrid / Faculty Developer adapters. It remains `not_operational_build_required` on download. A local Hermes must verify the manifest and checksums, complete read-only preflight, show the exact TEACH Implementation Activation Card, and receive explicit approval before any local build mutation. Its pinned contract preserves 33 foundation checks, 120 TEACH overlay checks, and 16 integration checks—169 canonical checks, 264 explicit target rows, and 433 required execution records. All twenty optional TEACH SuperPowers remain inactive. Downloading does not install it. Adapter selection does not verify employment, faculty status, instructional-design assignment, teaching, grading, clinical, accommodation, academic-integrity, curriculum, accreditation, research, release, or institutional authority. Private-workspace approval does not authorize LMS, classroom, clinical-site, program, employer, accreditation, research, multi-user, or institutional deployment.
 
 The Nurse Practitioner ZIP is a separately governed Complete Edition. It includes:
 

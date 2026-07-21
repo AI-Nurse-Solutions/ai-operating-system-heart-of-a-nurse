@@ -511,7 +511,7 @@ A `naio-soul.schema.json` v1.1 may either add `educator` or preserve the four on
 | Student Nurse | `nurse-ai-os-post-setup-student-nurse.zip` | Live, checksummed, not installed |
 | Staff Nurse | `nurse-ai-os-post-setup-staff-nurse.zip` | Live, checksummed, not installed |
 | Nurse Leader and Manager | `nurse-ai-os-post-setup-nurse-leader-and-manager.zip` | Live, checksummed, not installed |
-| Nurse Educator | `nurse-ai-os-post-setup-nurse-educator.zip` | Live, checksummed, not installed |
+| Nurse Educator | `TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Self-install Hermes build kit; checksummed; not installed; not operational/build required |
 | Nurse-Connected Ally | `nurse-ai-os-post-setup-nurse-connected-ally.zip` | Live, checksummed, not installed |
 
 ## 8.2 Package safety contract
@@ -945,7 +945,7 @@ This report is self-contained for public review. An earlier internal Harness wor
 - [Download the Student Nurse role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip)
 - [Download the Staff Nurse role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip)
 - [Download the Nurse Leader and Manager role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip)
-- [Download the Nurse Educator role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip)
+- [Download the Nurse Educator TEACH build kit](https://nurse-ai-os.org/post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
 - [Download the Nurse-Connected Ally role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip)
 
 ---

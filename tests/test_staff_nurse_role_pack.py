@@ -164,13 +164,15 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
             "SHIFT SuperPowers",
             "176 embedded release checks",
             "all twenty optional SHIFT SuperPowers remain inactive",
-            "Complete Edition lanes 01, 02, 03, 04, and 06",
+            "Complete Edition lanes 01, 02, 03, and 04",
+            "Lane 06 WINGS",
             "review-first lane 05",
         ):
             self.assertIn(phrase, page)
 
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 02, 03, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Lanes 01, 02, 03, and 04 are separately governed Complete Editions", readme)
+        self.assertIn("Lane 06 is a separately governed WINGS self-install Hermes build kit", readme)
         self.assertIn("Review-first lane 05 includes", readme)
 
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):

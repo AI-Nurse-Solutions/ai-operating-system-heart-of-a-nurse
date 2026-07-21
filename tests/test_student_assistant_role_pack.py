@@ -161,12 +161,14 @@ class StudentAssistantCompleteEditionTests(unittest.TestCase):
             "136 embedded release checks",
             "all eighteen optional FUTURE SuperPowers remain inactive",
             "Nursing Student, Nursing Assistant, or Bridge",
-            "Complete Edition lanes 01, 02, 03, 04, and 06",
+            "Complete Edition lanes 01, 02, 03, and 04",
+            "Lane 06 WINGS",
             "For review-first lane 05",
         ):
             self.assertIn(phrase, page)
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 02, 03, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Lanes 01, 02, 03, and 04 are separately governed Complete Editions", readme)
+        self.assertIn("Lane 06 is a separately governed WINGS self-install Hermes build kit", readme)
         self.assertIn("Review-first lane 05 includes", readme)
         self.assertIn("Nursing Student and Nursing Assistant ZIP is a separately governed Complete Edition", readme)
 

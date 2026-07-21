@@ -395,6 +395,28 @@ class RoundsMedicalResidentTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "regular-file entries"):
                     validator(archive_path, enforce_pins=False)
 
+    def test_public_safety_scanner_covers_extensionless_env_and_script_files(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "scan-public-healthcare-artifacts.py"))
+        extract_text = namespace["extract_text"]
+        patterns = namespace["PATTERNS"]
+        probes = {
+            ".env": b"API_KEY=abcdefghijklmnop",
+            ".env.example": b"Patient: John",
+            "VERSION": b"MRN: A1B2C3",
+            "start-discover.sh": b"TOKEN=abcdefghijklmnop",
+            "Start-DISCOVER.command": b"MRN number=A1B2C3",
+            "Start-DISCOVER.bat": b"Patient: John",
+        }
+        for name, payload in probes.items():
+            with self.subTest(name=name):
+                texts = extract_text(name, payload)
+                self.assertTrue(texts, name)
+                text = "\n".join(value for _, value in texts)
+                self.assertTrue(
+                    patterns["patient or mrn example"].search(text) or patterns["generic api key"].search(text),
+                    name,
+                )
+
     def test_builder_rejects_source_wrapper_and_ledger_tampering(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-medical-resident-rounds.py"))
         validator = namespace["validate_package"]

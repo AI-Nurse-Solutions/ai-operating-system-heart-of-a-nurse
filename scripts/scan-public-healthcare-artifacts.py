@@ -11,9 +11,11 @@ import zipfile
 from pathlib import Path, PurePosixPath
 
 TEXT_SUFFIXES = {
-    ".css", ".csv", ".html", ".js", ".json", ".md", ".mjs", ".py",
-    ".rels", ".toml", ".txt", ".xml", ".yaml", ".yml",
+    ".bat", ".command", ".css", ".csv", ".env", ".example", ".html",
+    ".js", ".json", ".md", ".mjs", ".py", ".rels", ".sh", ".toml",
+    ".txt", ".xml", ".yaml", ".yml",
 }
+TEXT_FILENAMES = {".env", ".env.example", "LICENSE", "NOTICE", "VERSION"}
 ARCHIVE_SUFFIXES = {".docx", ".zip"}
 MAX_DEPTH = 3
 MAX_MEMBER_BYTES = 16 * 1024 * 1024
@@ -45,7 +47,8 @@ def _safe_member_name(name: str) -> str:
 
 def extract_text(name: str, data: bytes, *, depth: int = 0) -> list[tuple[str, str]]:
     """Return textual payloads from a file, recursively unpacking ZIP/DOCX."""
-    suffix = Path(name).suffix.lower()
+    path = Path(name)
+    suffix = path.suffix.lower()
     if suffix in ARCHIVE_SUFFIXES:
         if depth >= MAX_DEPTH:
             raise ScanError(f"archive nesting exceeds {MAX_DEPTH}: {name}")
@@ -72,9 +75,24 @@ def extract_text(name: str, data: bytes, *, depth: int = 0) -> list[tuple[str, s
                 member_data = archive.read(info)
                 payloads.extend(extract_text(f"{name}!{member}", member_data, depth=depth + 1))
         return payloads
-    if suffix in TEXT_SUFFIXES:
+    if suffix in TEXT_SUFFIXES or path.name in TEXT_FILENAMES or (not suffix and _looks_like_text(data)):
         return [(name, data.decode("utf-8", errors="ignore"))]
     return []
+
+
+def _looks_like_text(data: bytes) -> bool:
+    """Return true for extensionless UTF-8-ish config/scripts while skipping binary blobs."""
+    if b"\x00" in data:
+        return False
+    if not data:
+        return True
+    sample = data[:4096]
+    try:
+        sample.decode("utf-8")
+    except UnicodeDecodeError:
+        return False
+    control = sum(1 for byte in sample if byte < 32 and byte not in (9, 10, 13))
+    return control / len(sample) < 0.02
 
 
 def scan_paths(paths: list[Path]) -> list[tuple[str, str]]:
@@ -105,13 +123,19 @@ def run_self_probes() -> None:
     docx_payload = _probe_archive("word/document.xml", b"<w:t>Patient: John</w:t>")
     nested_payload = _probe_archive("nested.zip", zip_payload)
     for name, payload in (
+        (".env", b"API_KEY=abcdefghijklmnop"),
+        (".env.example", b"Patient: John"),
+        ("VERSION", b"MRN: A1B2C3"),
+        ("start-discover.sh", b"TOKEN=abcdefghijklmnop"),
+        ("Start-DISCOVER.command", b"MRN number=A1B2C3"),
+        ("Start-DISCOVER.bat", b"Patient: John"),
         ("probe.zip", zip_payload),
         ("probe.docx", docx_payload),
         ("nested.zip", nested_payload),
     ):
         texts = extract_text(name, payload)
-        if not any(phi.search(text) for _, text in texts):
-            raise ScanError(f"compressed PHI probe failed: {name}")
+        if not any(phi.search(text) or PATTERNS["generic api key"].search(text) for _, text in texts):
+            raise ScanError(f"text extraction probe failed: {name}")
 
 
 def main() -> int:

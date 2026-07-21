@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import re
 import sys
 import zipfile
@@ -19,10 +20,11 @@ REPO = Path(__file__).resolve().parents[1]
 ROOT = REPO / "respiratory-care"
 PACKAGE = ROOT / "packages" / "breathe"
 DOWNLOADS = ROOT / "downloads"
+BUILD_KIT_SOURCE = ROOT / "build-kit"
 ZIP_NAME = "breathe-respiratory-care-complete-edition.zip"
 ZIP_PREFIX = "BREATHE-Respiratory-Care-Complete-Edition"
 BUILD_KIT_NAME = "BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
-BUILD_KIT_SHA256 = "044ce2f37d65e3329c9bbfebd64e107c7abe84e06a4e936586a52fbff261ca65"
+BUILD_KIT_SHA256 = "71f4b243b91de932d2d3f0f3477608eb115edb1cf598786c21481c889ba3f079"
 BUILD_KIT_BYTES = 6965721
 BUILD_KIT_MEMBERS = 151
 BUILD_KIT_ROOT = "BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
@@ -447,6 +449,54 @@ def _safe_build_kit_member(name: str) -> None:
         raise ValueError(f"Traversal path is not allowed in BREATHE build kit: {name!r}")
 
 
+def build_kit_source_files() -> list[Path]:
+    source = BUILD_KIT_SOURCE / BUILD_KIT_ROOT
+    if not source.is_dir():
+        raise ValueError(f"Missing tracked BREATHE build-kit source tree: {source}")
+    files = sorted(path for path in source.rglob("*") if path.is_file())
+    if len(files) != BUILD_KIT_MEMBERS:
+        raise ValueError(f"BREATHE tracked build-kit source inventory changed: {len(files)}")
+    if any(path.is_symlink() for path in source.rglob("*")):
+        raise ValueError("BREATHE tracked build-kit source tree must not contain symlinks")
+    return files
+
+
+def build_build_kit_zip() -> None:
+    files = build_kit_source_files()
+    output = DOWNLOADS / BUILD_KIT_NAME
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+        for path in files:
+            relative = path.relative_to(BUILD_KIT_SOURCE / BUILD_KIT_ROOT).as_posix()
+            _safe_build_kit_member(f"{BUILD_KIT_ROOT}/{relative}")
+            info = zipfile.ZipInfo(f"{BUILD_KIT_ROOT}/{relative}", FIXED_ZIP_TIME)
+            info.create_system = 3
+            info.compress_type = zipfile.ZIP_DEFLATED
+            mode = 0o755 if path.name == "verify-build-kit.py" else 0o644
+            info.external_attr = (0o100000 | mode) << 16
+            archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+
+
+def run_bundled_build_kit_verifier() -> None:
+    package = BUILD_KIT_SOURCE / BUILD_KIT_ROOT
+    verifier = package / "tools" / "verify-build-kit.py"
+    if not verifier.is_file():
+        raise ValueError("Tracked BREATHE build-kit source missing bundled verifier")
+    if sha256(verifier) != BUILD_KIT_VERIFIER_SHA256:
+        raise ValueError("BREATHE tracked bundled verifier bytes changed")
+    completed = subprocess.run(
+        [sys.executable, str(verifier), "--package", str(package), "--zip", str(DOWNLOADS / BUILD_KIT_NAME)],
+        cwd=REPO,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise ValueError(f"Bundled BREATHE build-kit verifier failed:\n{completed.stdout[-4000:]}")
+    if "VERIFIED BREATHE RESPIRATORY CARE BUILD KIT" not in completed.stdout:
+        raise ValueError("Bundled BREATHE verifier did not emit the expected verification summary")
+
+
 def _ledger_records(text: str, expected: set[str], label: str) -> dict[str, str]:
     records: dict[str, str] = {}
     for line_number, line in enumerate(text.splitlines(), 1):
@@ -467,17 +517,16 @@ def _ledger_records(text: str, expected: set[str], label: str) -> dict[str, str]
     return records
 
 
-def validate_build_kit() -> dict:
-    path = DOWNLOADS / BUILD_KIT_NAME
+def validate_build_kit_zip_structure(path: Path, *, enforce_pins: bool = True) -> dict:
     if not path.is_file():
-        raise ValueError(f"Missing BREATHE build kit: {BUILD_KIT_NAME}")
-    if path.stat().st_size != BUILD_KIT_BYTES or sha256(path) != BUILD_KIT_SHA256:
+        raise ValueError(f"Missing BREATHE build kit: {path}")
+    if enforce_pins and (path.stat().st_size != BUILD_KIT_BYTES or sha256(path) != BUILD_KIT_SHA256):
         raise ValueError("BREATHE build kit bytes changed")
     with zipfile.ZipFile(path) as archive:
         if archive.testzip() is not None:
             raise ValueError("BREATHE build kit ZIP CRC check failed")
         infos = archive.infolist()
-        if len(infos) != BUILD_KIT_MEMBERS:
+        if enforce_pins and len(infos) != BUILD_KIT_MEMBERS:
             raise ValueError(f"BREATHE build kit member count changed: {len(infos)}")
         seen: set[str] = set()
         normalized: set[str] = set()
@@ -491,8 +540,8 @@ def validate_build_kit() -> dict:
             normalized.add(key)
             _safe_build_kit_member(info.filename)
             mode = info.external_attr >> 16
-            if mode & 0o170000 in {0o120000, 0o060000, 0o020000, 0o010000}:
-                raise ValueError(f"Special file is not allowed in BREATHE build kit: {info.filename}")
+            if mode & 0o170000 != 0o100000:
+                raise ValueError(f"BREATHE build kit allows only regular-file entries: {info.filename}")
         roots = {info.filename.split("/", 1)[0] for info in infos if info.filename}
         if roots != {BUILD_KIT_ROOT}:
             raise ValueError(f"BREATHE build kit root mismatch: {sorted(roots)}")
@@ -513,6 +562,13 @@ def validate_build_kit() -> dict:
         for name, digest in ledger.items():
             if hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/{name}")).hexdigest() != digest:
                 raise ValueError(f"BREATHE build-kit checksum mismatch: {name}")
+    return manifest
+
+
+def validate_build_kit() -> dict:
+    path = DOWNLOADS / BUILD_KIT_NAME
+    manifest = validate_build_kit_zip_structure(path)
+    run_bundled_build_kit_verifier()
     if manifest["target"] != {
         "foundation_namespace": "resp_breathe.*",
         "home": "My BREATHE",
@@ -564,9 +620,10 @@ def validate_build_kit() -> dict:
 
 def build() -> dict:
     manifest = validate_package()
-    build_kit_manifest = validate_build_kit()
     refresh_ledger()
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
+    build_build_kit_zip()
+    build_kit_manifest = validate_build_kit()
     output = DOWNLOADS / ZIP_NAME
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for name in sorted(EXPECTED_FILES):

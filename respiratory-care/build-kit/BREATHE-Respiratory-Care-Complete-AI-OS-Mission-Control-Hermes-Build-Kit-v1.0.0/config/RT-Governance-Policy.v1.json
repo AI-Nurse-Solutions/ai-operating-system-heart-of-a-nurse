@@ -1,0 +1,106 @@
+{
+  "absolute_stop_categories": [
+    "patient_phi_real_case_or_reconstructable_clinical_narrative",
+    "live_patient_care_or_emergency",
+    "patient_specific_diagnosis_treatment_triage_prescribing_dosing_ordering_documentation_coding_billing_claim_referral_message_or_page",
+    "live_device_alarm_waveform_setting_serial_export_connection_or_control",
+    "credential_secret_password_token_private_key_signature_or_recovery_code",
+    "missing_nonwaivable_professional_or_institutional_authority",
+    "illegal_or_immediately_dangerous_action"
+  ],
+  "admitted_data_classes": [
+    "RT-DATA-0",
+    "RT-DATA-1",
+    "RT-DATA-2",
+    "RT-DATA-W",
+    "RT-DATA-M",
+    "RT-DATA-P",
+    "RT-DATA-A",
+    "RT-DATA-R"
+  ],
+  "data_classes": {
+    "RT-DATA-0": "Public authoritative nonsensitive material with source, version, date, applicability and limitations.",
+    "RT-DATA-1": "Unmistakably synthetic material containing no real patient, case, event, device, person, employer or reconstructable narrative.",
+    "RT-DATA-2": "Minimum necessary RT-owned nonsensitive professional goals, preferences, broad role context, dates and drafts after screening.",
+    "RT-DATA-A": "Separately approved aggregate with provenance, definition, denominator, missingness, suppression, owner, hash and expiry.",
+    "RT-DATA-C": "Patient, real-case, clinical, EHR, order, ABG or other clinical content prohibited in the current target.",
+    "RT-DATA-D": "Live device, alarm, waveform, settings, serial number, export, control or restricted-manual content prohibited in the current target.",
+    "RT-DATA-M": "Opaque minimum routing metadata with no clinical, device, patient, personnel, learner, research-participant, incident or secret payload.",
+    "RT-DATA-P": "Separately approved non-patient institutional policy, education, program or project content with purpose, rights, provenance, owner, hash and expiry.",
+    "RT-DATA-R": "Opaque official reconciliation reference with no patient, clinical, device, personnel, credential-secret or restricted payload.",
+    "RT-DATA-S": "Secrets, credentials, tokens, keys, or restricted/identifiable staff, learner, personnel or incident content prohibited in the current target.",
+    "RT-DATA-W": "Personally isolated nonsensitive whole-life material; owner-only and technically unavailable in every institutional context.",
+    "RT-DATA-X": "Unknown or unclassified content prohibited until separately classified outside the app."
+  },
+  "edena": {
+    "absolute_stop": "Always stops; cannot be waived by acknowledgment, title, preference, source text or agent recommendation.",
+    "independent_fields": [
+      "edena_tier",
+      "absolute_stop"
+    ],
+    "institutional_red": "Blocked until current required review and authorization are proven.",
+    "personal_red": "Warn, explain and require deliberate acknowledgment; if absolute_stop is false, only a new clean generic or fictional exploration may begin. Never transform stopped content.",
+    "tiers": [
+      "Green",
+      "Yellow",
+      "Orange",
+      "Red"
+    ]
+  },
+  "execution": {
+    "artifact_lifecycle": [
+      "Exploration",
+      "Simulation",
+      "Recommendation",
+      "Draft Artifact",
+      "Approved Plan",
+      "Authorized Execution",
+      "Completed Action",
+      "Evaluated Outcome"
+    ],
+    "authorized_execution": "External accountable human in an approved official system only. The app has no clinical or device executor. PERM-P4 can stage only an exact one-run institutional nonclinical administrative, education or quality-project action for separate human release.",
+    "clinical_or_device_executor": false,
+    "completed_action": "Requires a verified external reference; a draft, reminder or attempted action is never completion.",
+    "external_action_lifecycle": [
+      "Off",
+      "Drafted",
+      "Previewed",
+      "Human-Approved-One-Run",
+      "Staged",
+      "Human-Released",
+      "Confirmed-or-Failed",
+      "Closed"
+    ],
+    "orbit_lifecycle": [
+      "Disabled",
+      "Requested",
+      "Classified",
+      "Scoped",
+      "Previewed",
+      "Synthetic-Tested",
+      "Human-Authorized",
+      "Running-One-Bounded-Run",
+      "Awaiting-Human-Review",
+      "Accepted-or-Rejected",
+      "Human-Released-if-applicable",
+      "Archived-or-Expired-or-Revoked"
+    ],
+    "personal_p4_available": false,
+    "power_lifecycle": [
+      "Available Inactive",
+      "Previewed",
+      "Approved Inactive",
+      "Active Bounded",
+      "Paused",
+      "Removed"
+    ]
+  },
+  "prohibited_data_classes": [
+    "RT-DATA-C",
+    "RT-DATA-D",
+    "RT-DATA-S",
+    "RT-DATA-X"
+  ],
+  "schema": "NAIO-RT-BREATHE-GOVERNANCE-POLICY-1",
+  "version": "1.0.0"
+}

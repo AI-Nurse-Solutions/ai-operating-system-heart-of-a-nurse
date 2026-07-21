@@ -1,0 +1,124 @@
+{
+  "schema": "NAIO-ROLE-DASHBOARDS-1",
+  "version": "2.0.0",
+  "default_role_id": "shared-identity",
+  "role_states": [
+    "primary",
+    "supporting",
+    "emerging",
+    "contextual"
+  ],
+  "selection_rules": {
+    "minimum_selected": 1,
+    "exactly_one_primary": true,
+    "shared_soul_profile": true,
+    "separate_dashboard_partition_per_role": true,
+    "role_selection_grants_authority": false,
+    "role_with_existing_missions_may_be_removed": false
+  },
+  "roles": [
+    {
+      "id": "shared-identity",
+      "name": "My Shared Mission Control",
+      "summary": "A neutral whole-person starting view for values, learning, planning, life goals and governed AI boundaries before any professional role is selected.",
+      "recommended_workflow_ids": ["DSC-WF-01", "DSC-WF-02", "DSC-WF-05", "DSC-WF-24"]
+    },
+    {
+      "id": "research-innovation",
+      "name": "Healthcare Research & Innovation Leader",
+      "summary": "Cross-portfolio mission, evidence, implementation, human partnership and responsible innovation.",
+      "recommended_workflow_ids": ["DSC-WF-01", "DSC-WF-03", "DSC-WF-04", "DSC-WF-13", "DSC-WF-19", "DSC-WF-20"]
+    },
+    {
+      "id": "prelicensure-support",
+      "name": "Pre-licensure Student or Nursing Assistant",
+      "summary": "Foundational learning, supervised care, academic integrity, escalation, work-school balance and future formation.",
+      "recommended_workflow_ids": ["DSC-WF-01", "DSC-WF-02", "DSC-WF-08", "DSC-WF-23"]
+    },
+    {
+      "id": "staff-nurse",
+      "name": "Staff Nurse & Quality Contributor",
+      "summary": "Practice improvement, evidence, teamwork, safe escalation, quality participation and professional renewal.",
+      "recommended_workflow_ids": ["DSC-WF-02", "DSC-WF-04", "DSC-WF-05", "DSC-WF-20"]
+    },
+    {
+      "id": "advanced-practice",
+      "name": "Advanced-Practice Clinician",
+      "summary": "Advanced assessment support, evidence synthesis, care orchestration, professional growth and accountable judgment.",
+      "recommended_workflow_ids": ["DSC-WF-05", "DSC-WF-07", "DSC-WF-09", "DSC-WF-20"]
+    },
+    {
+      "id": "nurse-educator",
+      "name": "Nurse Educator or Clinical Preceptor",
+      "summary": "Learner-centered design, simulation, assessment integrity, feedback, faculty workflow and evidence-based education.",
+      "recommended_workflow_ids": ["DSC-WF-05", "DSC-WF-07", "DSC-WF-10", "DSC-WF-21"]
+    },
+    {
+      "id": "medical-resident",
+      "name": "Medical Resident or Fellow",
+      "summary": "Postgraduate learning, care orchestration, evidence, team communication and governed AI-agent supervision.",
+      "recommended_workflow_ids": ["DSC-WF-05", "DSC-WF-08", "DSC-WF-13", "DSC-WF-22"]
+    },
+    {
+      "id": "nurse-manager",
+      "name": "Nurse Leader or Healthcare Manager",
+      "summary": "People, quality, operations, staffing, culture, strategy and accountable organizational decisions.",
+      "recommended_workflow_ids": ["DSC-WF-01", "DSC-WF-03", "DSC-WF-11", "DSC-WF-20"]
+    },
+    {
+      "id": "clinic-manager",
+      "name": "Clinic Manager",
+      "summary": "Access, flow, patient experience, workforce coordination, quality, capacity and community responsiveness.",
+      "recommended_workflow_ids": ["DSC-WF-02", "DSC-WF-08", "DSC-WF-13", "DSC-WF-20"]
+    },
+    {
+      "id": "hospital-administrator",
+      "name": "Hospital Administrator",
+      "summary": "Enterprise strategy, operations, quality, finance questions, governance, innovation and stakeholder alignment.",
+      "recommended_workflow_ids": ["DSC-WF-03", "DSC-WF-13", "DSC-WF-17", "DSC-WF-20"]
+    },
+    {
+      "id": "wellness-manager",
+      "name": "Wellness Services Marketer or Manager",
+      "summary": "Ethical service design, engagement, trust, outcomes, marketing boundaries and sustainable growth.",
+      "recommended_workflow_ids": ["DSC-WF-02", "DSC-WF-10", "DSC-WF-17", "DSC-WF-21"]
+    },
+    {
+      "id": "quality-safety",
+      "name": "Quality, Safety or Governance Contributor",
+      "summary": "Measures, risk, improvement cycles, systems learning, escalation and responsible implementation.",
+      "recommended_workflow_ids": ["DSC-WF-04", "DSC-WF-09", "DSC-WF-14", "DSC-WF-20"]
+    },
+    {
+      "id": "researcher",
+      "name": "Researcher or Evidence Specialist",
+      "summary": "Question design, reproducible evidence, study rigor, dissemination and integrity.",
+      "recommended_workflow_ids": ["DSC-WF-05", "DSC-WF-07", "DSC-WF-09", "DSC-WF-19"]
+    },
+    {
+      "id": "digital-ai",
+      "name": "Digital Health, Informatics or Responsible-AI Leader",
+      "summary": "Intended use, data governance, human factors, monitoring, agent containment, kill and rollback.",
+      "recommended_workflow_ids": ["DSC-WF-06", "DSC-WF-16", "DSC-WF-18", "DSC-WF-22"]
+    },
+    {
+      "id": "entrepreneur",
+      "name": "Healthcare Entrepreneur or Consultant",
+      "summary": "Need validation, bounded experimentation, responsible value, partnership, commercialization and scale/stop choices.",
+      "recommended_workflow_ids": ["DSC-WF-02", "DSC-WF-12", "DSC-WF-16", "DSC-WF-18"]
+    },
+    {
+      "id": "community",
+      "name": "Community, Family or Personal Advocate",
+      "summary": "Personal, family, business and community missions supported by safe planning, learning and service.",
+      "recommended_workflow_ids": ["DSC-WF-01", "DSC-WF-02", "DSC-WF-10", "DSC-WF-24"]
+    },
+    {
+      "id": "advanced-studies",
+      "name": "Advanced Studies Overlay",
+      "summary": "Certification, degree, residency, fellowship, specialization or continuing professional development alongside another role.",
+      "recommended_workflow_ids": ["DSC-WF-01", "DSC-WF-05", "DSC-WF-23", "DSC-WF-24"]
+    }
+  ],
+  "governance_note": "Role dashboards are planning contexts. Selecting a role does not verify identity, competence, licensure, employment scope, policy authority, or permission."
+}

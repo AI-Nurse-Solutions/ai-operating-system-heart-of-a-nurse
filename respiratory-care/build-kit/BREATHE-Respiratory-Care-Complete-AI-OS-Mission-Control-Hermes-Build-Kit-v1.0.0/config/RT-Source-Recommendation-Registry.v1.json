@@ -1,0 +1,118 @@
+{
+  "count": 13,
+  "entries": [
+    {
+      "id": "RT-SRC-01",
+      "purpose": "Evidence hub; preserve each document's date and current or retired category",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "AARC Clinical Practice Guidelines",
+      "url": "https://www.aarc.org/resource/clinical-practice-guidelines/"
+    },
+    {
+      "id": "RT-SRC-02",
+      "purpose": "Model only; never substitute for current state law or board rules",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "AARC Model Practice Act",
+      "url": "https://www.aarc.org/advocacy/aarc-model-practice-act/"
+    },
+    {
+      "id": "RT-SRC-03",
+      "purpose": "Optional licensed evidence context; never assign staff or prove adequacy",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "AARC Safe and Effective Staffing Guide",
+      "url": "https://sesg.aarc.org/"
+    },
+    {
+      "id": "RT-SRC-04",
+      "purpose": "Official credential-status source separated from licensure and local scope",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "NBRC Credentialed Practitioners and Credential Maintenance",
+      "url": "https://www.nbrc.org/credentialed-practitioners/"
+    },
+    {
+      "id": "RT-SRC-05",
+      "purpose": "Education-program context; never infer individual competency or product accreditation",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "CoARC Accreditation and Program Resources",
+      "url": "https://coarc.com/"
+    },
+    {
+      "id": "RT-SRC-06",
+      "purpose": "Institutional privacy design; local privacy and legal owners interpret applicability",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "HHS HIPAA Minimum Necessary",
+      "url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/minimum-necessary-requirement/index.html"
+    },
+    {
+      "id": "RT-SRC-07",
+      "purpose": "Real de-identification requires an approved method; self-redaction is not accepted in Private mode",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "HHS De-identification Guidance",
+      "url": "https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html"
+    },
+    {
+      "id": "RT-SRC-08",
+      "purpose": "Institutional cloud authorization, risk analysis and agreement context",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "HHS HIPAA Cloud Computing",
+      "url": "https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html"
+    },
+    {
+      "id": "RT-SRC-09",
+      "purpose": "Human teamwork and communication reference; AI never closes the loop",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "AHRQ TeamSTEPPS 3.0",
+      "url": "https://www.ahrq.gov/teamstepps-program/index.html"
+    },
+    {
+      "id": "RT-SRC-10",
+      "purpose": "AI governance reference with watched version and revision status",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "NIST AI Risk Management Framework",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "id": "RT-SRC-11",
+      "purpose": "Regulatory reference; determination remains a qualified-human function",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "FDA Clinical Decision Support Software Guidance",
+      "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software"
+    },
+    {
+      "id": "RT-SRC-12",
+      "purpose": "Medical-device cybersecurity reference; target has no device connection",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "FDA Medical-Device Cybersecurity Guidance",
+      "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/cybersecurity-medical-devices-quality-management-system-considerations-and-content-premarket"
+    },
+    {
+      "id": "RT-SRC-13",
+      "purpose": "Accessibility design and test reference",
+      "reviewed_at": "2026-07-15",
+      "source_defined": true,
+      "title": "W3C Web Content Accessibility Guidelines 2.2",
+      "url": "https://www.w3.org/TR/WCAG22/"
+    }
+  ],
+  "notice": "Recommendations do not prove current applicability, local adoption, clinical validity, institutional approval, credentials, authority or permission to act.",
+  "rules": {
+    "current_official_and_local_rules_take_precedence": true,
+    "hash_mismatch_behavior": "disable_and_require_review",
+    "recommendation_grants_authority": false,
+    "unknown_id_behavior": "reject"
+  },
+  "schema": "NAIO-RT-BREATHE-SOURCE-RECOMMENDATION-REGISTRY-1",
+  "version": "1.0.0"
+}

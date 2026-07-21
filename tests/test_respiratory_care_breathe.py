@@ -8,6 +8,8 @@ import json
 import re
 import runpy
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -343,7 +345,7 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
                     self.assertEqual(archive.read(ZIP_PREFIX + path.relative_to(PACKAGE).as_posix()), path.read_bytes())
 
     def test_self_install_build_kit_is_pinned_and_not_operational(self):
-        self.assertEqual(sha256(BUILD_KIT), "044ce2f37d65e3329c9bbfebd64e107c7abe84e06a4e936586a52fbff261ca65")
+        self.assertEqual(sha256(BUILD_KIT), "71f4b243b91de932d2d3f0f3477608eb115edb1cf598786c21481c889ba3f079")
         self.assertEqual(BUILD_KIT.stat().st_size, 6965721)
         with zipfile.ZipFile(BUILD_KIT) as archive:
             self.assertIsNone(archive.testzip())
@@ -382,10 +384,14 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         builder = (ROOT / "scripts" / "build-respiratory-care-breathe.py").read_text(encoding="utf-8")
         workflow = (ROOT / ".github" / "workflows" / "respiratory-care-breathe.yml").read_text(encoding="utf-8")
         for phrase in (
+            "build_build_kit_zip",
+            "BUILD_KIT_SOURCE",
             "validate_build_kit",
+            "validate_build_kit_zip_structure",
+            "run_bundled_build_kit_verifier",
             "BREATHE bundled verifier bytes changed",
             "Case-colliding BREATHE build-kit ZIP member",
-            "Special file is not allowed in BREATHE build kit",
+            "BREATHE build kit allows only regular-file entries",
             "BUILD_KIT_VERIFIER_SHA256",
         ):
             self.assertIn(phrase, builder)
@@ -394,6 +400,39 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             "test -z \"$(git status --porcelain --untracked-files=all)\"",
         ):
             self.assertIn(phrase, workflow)
+
+    def test_bundled_build_kit_verifier_runs_against_package_and_zip(self):
+        verifier = ROOT / "respiratory-care" / "build-kit" / BUILD_KIT_ROOT.strip("/") / "tools" / "verify-build-kit.py"
+        package = ROOT / "respiratory-care" / "build-kit" / BUILD_KIT_ROOT.strip("/")
+        completed = subprocess.run(
+            [sys.executable, str(verifier), "--package", str(package), "--zip", str(BUILD_KIT)],
+            cwd=ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout[-4000:])
+        self.assertIn("VERIFIED BREATHE RESPIRATORY CARE BUILD KIT", completed.stdout)
+
+    def test_build_kit_validator_rejects_socket_and_other_special_entries(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-respiratory-care-breathe.py"))
+        validator = namespace["validate_build_kit_zip_structure"]
+        special_modes = {
+            "socket": 0o140000,
+            "symlink": 0o120000,
+            "directory": 0o040000,
+        }
+        for label, mode in special_modes.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temp:
+                archive_path = Path(temp) / f"{label}.zip"
+                with zipfile.ZipFile(archive_path, "w") as archive:
+                    info = zipfile.ZipInfo(BUILD_KIT_ROOT + "README-FIRST.md")
+                    info.create_system = 3
+                    info.external_attr = mode << 16
+                    archive.writestr(info, b"not a regular file")
+                with self.assertRaisesRegex(ValueError, "regular-file entries"):
+                    validator(archive_path, enforce_pins=False)
 
     def test_builder_rejects_source_wrapper_and_ledger_tampering(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-respiratory-care-breathe.py"))

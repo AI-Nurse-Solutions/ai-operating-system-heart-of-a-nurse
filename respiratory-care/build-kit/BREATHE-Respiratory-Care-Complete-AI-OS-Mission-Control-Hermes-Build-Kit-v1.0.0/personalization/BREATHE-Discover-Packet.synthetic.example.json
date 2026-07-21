@@ -1,0 +1,62 @@
+{
+  "adapter_version": "1.0-draft",
+  "ai_boundaries": {
+    "default_support": "prepare_only",
+    "external_actions": "off",
+    "memory_default": "session_only",
+    "never_delegate": [
+      "patient care",
+      "prescribing",
+      "credential claims",
+      "final professional decisions"
+    ]
+  },
+  "capacity": "balanced",
+  "career_stage": "established",
+  "current_season": "build",
+  "demo": true,
+  "display_name": "Synthetic Respiratory Care Explorer",
+  "goals": {
+    "long_term": [
+      "Develop a sustainable portfolio career"
+    ],
+    "medium_term": [
+      "Build a reviewed evidence portfolio"
+    ],
+    "near_term": [
+      "Complete one synthetic BREATHE mission"
+    ],
+    "protected_life": [
+      "Keep one evening free each week"
+    ]
+  },
+  "local_title": "Synthetic respiratory-care learner",
+  "priorities": [
+    "Prepare one fictional quality-improvement concept",
+    "Protect two recovery blocks"
+  ],
+  "professional_status": "unknown_stale_expired_or_conflicting",
+  "schema": "NAIO-RT-DISCOVER-PACKET-ADAPTER-1",
+  "task_hats": [
+    "quality_research_and_innovation",
+    "career_whole_life_and_recovery"
+  ],
+  "uncertainties": [
+    "No title, credential, license, competency, scope, order, protocol or institutional authority has been verified"
+  ],
+  "values": [
+    "truth",
+    "care",
+    "agency",
+    "family"
+  ],
+  "working_preferences": {
+    "cadence": "weekly review",
+    "communication": "direct and warm",
+    "decision": "options with uncertainty visible",
+    "learning": [
+      "worked examples",
+      "reflection"
+    ]
+  }
+}

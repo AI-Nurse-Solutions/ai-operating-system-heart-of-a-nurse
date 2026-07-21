@@ -53,6 +53,7 @@ jobs:
           git diff --exit-code
           git ls-files --error-unmatch respiratory-care/downloads/breathe-respiratory-care-complete-edition.zip
           git ls-files --error-unmatch respiratory-care/downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip
+          git ls-files --error-unmatch respiratory-care/build-kit/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0/tools/verify-build-kit.py
           git ls-files --error-unmatch respiratory-care/downloads/manifest.json
           git ls-files --error-unmatch respiratory-care/downloads/CHECKSUMS.sha256
           test -z "$(git status --porcelain --untracked-files=all)"

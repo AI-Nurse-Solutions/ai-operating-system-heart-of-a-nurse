@@ -1,0 +1,34 @@
+{
+  "schema": "NAIO-DISCOVER-PACKET-ADAPTER-1",
+  "packet_schema_version": "1.0-draft",
+  "generated_at": "2026-07-20T12:00:00.000Z",
+  "mission_statement": "Help a healthcare team learn, improve and care for people without losing dignity, evidence or human accountability.",
+  "core_values": ["human dignity", "psychological safety", "evidence", "accountability"],
+  "current_priorities": ["Build one sustainable improvement rhythm", "Protect team capacity", "Learn responsible AI supervision"],
+  "goals": {
+    "short_term": ["Complete one bounded mission through Evaluate within 30 days"],
+    "medium_term": ["Create a reusable, human-reviewed improvement workflow within six months"],
+    "long_term": ["Develop responsible AI-agent orchestration capability without expanding professional authority"]
+  },
+  "working_preferences": {
+    "communication_style": "clear, warm and concise",
+    "decision_style": "evidence-informed with visible uncertainty and human review",
+    "learning_preferences": ["worked examples", "reflection", "small experiments"]
+  },
+  "role_goals": [
+    { "role_id": "nurse-manager", "goal": "Strengthen a learning culture", "success_measure": "One evaluated improvement cycle with team feedback", "priority": 90, "default_edena": "yellow" },
+    { "role_id": "quality-safety", "goal": "Make assumptions and measures visible", "success_measure": "A reviewed measure and rollback plan", "priority": 75, "default_edena": "yellow" }
+  ],
+  "ai_boundaries": {
+    "default_autonomy": "prepare_only",
+    "may_support": ["research public sources", "compare options", "draft checklists"],
+    "requires_confirmation": ["finalize a plan", "share an artifact", "record external completion"],
+    "never_delegate": ["clinical judgment", "personnel decisions", "institutional approval", "external execution"]
+  },
+  "governance_preferences": { "risk_tolerance": "conservative", "default_edena": "yellow", "default_retention": "session_only" },
+  "recommended_workflow_ids": ["DSC-WF-01", "DSC-WF-03", "DSC-WF-20", "DSC-WF-22"],
+  "recommended_capability_ids": ["structured-problem-solving", "edena-governance", "evaluation-qi", "agent-supervision"],
+  "uncertainties": ["Synthetic example only; no real role, authority, organization or outcome is represented."],
+  "source_provenance": ["Synthetic deidentified demonstration generated with Mission Control v2.0.0."],
+  "demo": true
+}

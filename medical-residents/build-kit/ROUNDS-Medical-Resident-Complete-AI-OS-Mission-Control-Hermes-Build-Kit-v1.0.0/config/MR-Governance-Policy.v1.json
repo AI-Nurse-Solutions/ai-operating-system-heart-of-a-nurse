@@ -1,0 +1,251 @@
+{
+  "absolute_stop_categories": [
+    "patient_phi_real_case_or_reconstructable_clinical_narrative",
+    "live_patient_care_or_emergency",
+    "patient_specific_diagnosis_treatment_triage_prescribing_dosing_ordering_documentation_coding_billing_claim_referral_message_or_page",
+    "real_handoff_consult_signout_event_report_m_and_m_or_clinical_communication",
+    "resident_learner_staff_or_patient_ranking_prediction_surveillance_or_coercion",
+    "milestone_ccc_promotion_remediation_competence_credential_or_fitness_determination",
+    "credential_secret_password_token_private_key_signature_or_recovery_code",
+    "missing_nonwaivable_supervision_or_institutional_authority",
+    "illegal_deceptive_or_immediately_dangerous_action"
+  ],
+  "admitted_data_classes": [
+    "MR-DATA-0",
+    "MR-DATA-1",
+    "MR-DATA-2",
+    "MR-DATA-W",
+    "MR-DATA-M",
+    "MR-DATA-R"
+  ],
+  "data_classes": {
+    "MR-DATA-0": "Public authoritative nonsensitive material with source, version, date, applicability and limitations.",
+    "MR-DATA-1": "Unmistakably synthetic material containing no real patient, case, event, person, institution or reconstructable narrative.",
+    "MR-DATA-2": "Minimum necessary resident-owned nonsensitive goals, preferences, broad training context, dates, drafts and abstract screened non-reconstructable reflection.",
+    "MR-DATA-A": "Separately approved aggregate with provenance, definition, denominator, missingness, suppression, owner, hash and expiry; declared but unavailable in this target.",
+    "MR-DATA-C": "Patient, real-case, clinical, EHR, order, sign-out, consult, note, image, recording, device or other live-care content prohibited in the current target.",
+    "MR-DATA-E": "Identifiable or restricted evaluation, Milestones, CCC, peer-review, event, personnel, learner, research-participant or institutional content prohibited in the current target.",
+    "MR-DATA-M": "Opaque minimum routing metadata with no clinical, patient, evaluation, personnel, learner, research-participant, incident or secret payload.",
+    "MR-DATA-P": "Separately approved non-patient institutional policy, education, program or project content with purpose, rights, provenance, owner, hash and expiry; declared but unavailable in this target.",
+    "MR-DATA-R": "Locally generated non-resolving receipt reference in `MRREF-<UUIDv4>` form. It stores no official identifier, direct identifier, case/event/evaluation ID, URL, URI, token, secret, encoded payload or mapping to restricted content.",
+    "MR-DATA-S": "Secrets, credentials, tokens, keys, signatures, recovery codes or controlled-substance identifiers prohibited in the current target.",
+    "MR-DATA-W": "Personally isolated nonsensitive whole-life material; owner-only and technically unavailable in every institutional context.",
+    "MR-DATA-X": "Unknown or unclassified content prohibited until separately classified outside the app."
+  },
+  "edena": {
+    "absolute_stop": "Always stops; cannot be waived by acknowledgment, title, preference, source text or agent recommendation.",
+    "independent_fields": [
+      "edena_tier",
+      "absolute_stop"
+    ],
+    "institutional_red": "Blocked; no institutional runtime is provisioned by this kit.",
+    "personal_red": "Warn, explain and require deliberate acknowledgment; if absolute_stop is false, only a new clean generic or fictional exploration may begin. Never transform stopped content.",
+    "source_status": "implementation_generated",
+    "tiers": [
+      "Unclassified",
+      "Green",
+      "Yellow",
+      "Orange",
+      "Red"
+    ],
+    "unclassified": "Incomplete; no model, agent, export or recommendation may run."
+  },
+  "execution": {
+    "artifact_lifecycle": [
+      "Exploration",
+      "Simulation",
+      "Recommendation",
+      "Draft Artifact",
+      "Approved Plan",
+      "Authorized Execution",
+      "Completed Action",
+      "Evaluated Outcome"
+    ],
+    "artifact_lifecycle_reachable_in_target": [
+      "Exploration",
+      "Simulation",
+      "Recommendation",
+      "Draft Artifact",
+      "Approved Plan"
+    ],
+    "artifact_lifecycle_unreachable_reference_only": [
+      "Authorized Execution",
+      "Completed Action",
+      "Evaluated Outcome"
+    ],
+    "authorized_execution": "External accountable human in an approved official system only. This personal target has no clinical, institutional or communication executor. Any separately provisioned institution-managed system is outside this package and cannot be enabled, reached or simulated here.",
+    "clinical_executor": false,
+    "completed_action": "Unreachable in this personal target. Only an accountable human may complete an action in an approved external system; this app cannot verify or import that completion and must label any owner-entered note resident-reported_external_status_unverified.",
+    "executor_shipped": false,
+    "external_action_lifecycle": [
+      "Off",
+      "Drafted",
+      "Previewed",
+      "Human-Approved-One-Run",
+      "Staged",
+      "Human-Released",
+      "Confirmed-or-Failed",
+      "Closed"
+    ],
+    "external_action_lifecycle_reference_only": true,
+    "external_action_transitions_available_in_target": [],
+    "institutional_context_provisioned": false,
+    "orbit_lifecycle": [
+      "Disabled",
+      "Requested",
+      "Classified",
+      "Scoped",
+      "Previewed",
+      "Synthetic-Tested",
+      "Human-Authorized",
+      "Running-One-Bounded-Run",
+      "Awaiting-Human-Review",
+      "Accepted-or-Rejected",
+      "Human-Released-if-applicable",
+      "Archived-or-Expired-or-Revoked"
+    ],
+    "orbit_personal_early_termination": "Any nonterminal state may terminate only to Archived-or-Expired-or-Revoked and return permission to P0; no release state is entered.",
+    "orbit_personal_forward_transition": "Disabled -> Requested -> Classified -> Scoped -> Previewed -> Synthetic-Tested -> Human-Authorized -> Running-One-Bounded-Run -> Awaiting-Human-Review -> Accepted-or-Rejected -> Archived-or-Expired-or-Revoked",
+    "orbit_personal_reachable_states": [
+      "Disabled",
+      "Requested",
+      "Classified",
+      "Scoped",
+      "Previewed",
+      "Synthetic-Tested",
+      "Human-Authorized",
+      "Running-One-Bounded-Run",
+      "Awaiting-Human-Review",
+      "Accepted-or-Rejected",
+      "Archived-or-Expired-or-Revoked"
+    ],
+    "orbit_personal_unreachable_reference_only_states": [
+      "Human-Released-if-applicable"
+    ],
+    "personal_p4_available": false,
+    "power_lifecycle": [
+      "Available Inactive",
+      "Previewed",
+      "Approved Inactive",
+      "Active Bounded",
+      "Paused",
+      "Removed"
+    ],
+    "reconciliation_reference_contract": {
+      "can_advance_artifact_lifecycle": false,
+      "data_class": "MR-DATA-R",
+      "is_official_reference": false,
+      "owner_note_label_if_used": "resident-reported_external_status_unverified",
+      "pattern": "^MRREF-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "reject": [
+        "direct_identifier",
+        "patient_case_event_evaluation_or_personnel_identifier",
+        "url_or_uri",
+        "token_secret_or_credential",
+        "encoded_or_mapped_restricted_payload"
+      ],
+      "resolvable_by_app": false,
+      "stores_external_identifier_or_mapping": false
+    }
+  },
+  "institutional_declared_unavailable": [
+    "MR-DATA-P",
+    "MR-DATA-A"
+  ],
+  "partitions": {
+    "institutional_declared_unavailable": [
+      "institution_clinical",
+      "institution_education",
+      "institution_quality_safety",
+      "institution_research",
+      "institution_program_gme",
+      "institution_agent"
+    ],
+    "personal_available": [
+      "resident_private",
+      "whole_life_private",
+      "synthetic_learning"
+    ],
+    "rule": "Institutional partition identifiers are declared for compatibility only. This target has no route, store, toggle, import, bind, connector or permission transition capable of activating them."
+  },
+  "processing_eligibility": {
+    "agent_payload_eligible_subject_to_each_agent_contract": [
+      "MR-DATA-0",
+      "MR-DATA-1",
+      "MR-DATA-2"
+    ],
+    "declared_but_unavailable": [
+      "MR-DATA-P",
+      "MR-DATA-A"
+    ],
+    "local_control_metadata_never_prompt_or_agent_payload": [
+      "MR-DATA-M",
+      "MR-DATA-R"
+    ],
+    "local_storage_eligible_after_admission": [
+      "MR-DATA-0",
+      "MR-DATA-1",
+      "MR-DATA-2",
+      "MR-DATA-W",
+      "MR-DATA-M",
+      "MR-DATA-R"
+    ],
+    "manual_local_only_never_model_agent_tool_or_provider": [
+      "MR-DATA-W"
+    ],
+    "model_prompt_eligible_after_exact_consent_and_task_screen": [
+      "MR-DATA-0",
+      "MR-DATA-1",
+      "MR-DATA-2"
+    ],
+    "rejected_before_echo_or_processing": [
+      "MR-DATA-C",
+      "MR-DATA-E",
+      "MR-DATA-S",
+      "MR-DATA-X"
+    ]
+  },
+  "prohibited_data_classes": [
+    "MR-DATA-C",
+    "MR-DATA-E",
+    "MR-DATA-S",
+    "MR-DATA-X"
+  ],
+  "readiness_gate": {
+    "core_operational_ai_setup_pending": {
+      "blocked_rows_must_equal_subset_of_live_backend_only_records": true,
+      "only_allowed_block_reason": "absent_configured_backend_after_controlled_unconfigured_path_passed",
+      "required": [
+        "424_of_424_reconciled",
+        "zero_not_run",
+        "zero_failed",
+        "zero_blocked_outside_live_backend_only_records",
+        "controlled_unconfigured_ai_path_passed"
+      ]
+    },
+    "live_backend_only_records": [
+      "CTL-AI-002",
+      "CTL-AI-003",
+      "CTL-AI-004",
+      "CTL-AI-005",
+      "CTL-AI-006",
+      "CTL-AI-007",
+      "INT-044"
+    ],
+    "not_applicable_allowed": false,
+    "not_operational": "Any unmet predicate, any extra Blocked row, any Failed row, any Not Run row, or any blocker reason other than the exact absent-configured-backend condition.",
+    "operational": {
+      "required": [
+        "424_of_424_reconciled",
+        "zero_not_run",
+        "zero_failed",
+        "zero_blocked",
+        "genuine_authenticated_incremental_streaming_passed",
+        "server_work_cancellation_passed"
+      ]
+    },
+    "total_execution_records": 424
+  },
+  "schema": "NAIO-MR-ROUNDS-GOVERNANCE-POLICY-1",
+  "version": "1.0.0"
+}

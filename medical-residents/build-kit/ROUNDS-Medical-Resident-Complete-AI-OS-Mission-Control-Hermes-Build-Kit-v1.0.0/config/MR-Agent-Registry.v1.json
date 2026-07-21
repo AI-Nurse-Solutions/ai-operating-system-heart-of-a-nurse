@@ -1,0 +1,844 @@
+{
+  "entries": [
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [
+        "MR-DATA-1",
+        "MR-DATA-2"
+      ],
+      "allowed_modes": [
+        "private_nonsensitive_one_run"
+      ],
+      "allowed_outputs": [
+        "private_capacity_plan",
+        "recovery_questions",
+        "minimum_mode_draft"
+      ],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-01",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "run once within the exact personal contract and ORBIT charter",
+        "use only the enumerated data classes and modes",
+        "return only an enumerated output for named-human review"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Day & Capacity Planner",
+      "personal_available": true,
+      "personal_blocked_permissions": [
+        "PERM-P2",
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P1",
+      "personal_permission_transitions": [
+        "P0-to-one-run-P1-to-P0"
+      ],
+      "purpose": "Prepare a resident-owned nonsensitive duty, capacity, recovery or minimum-mode plan without compliance or fitness determinations; MR-DATA-W remains manual and is never sent to an agent.",
+      "requires": [
+        "ATTEND receipt",
+        "exact ORBIT one-run charter",
+        "minimum admitted context",
+        "visible human owner",
+        "hash-bound mode/data/output/router",
+        "limits and expiry",
+        "stop and kill",
+        "content-free receipt",
+        "automatic return to P0"
+      ],
+      "router": "rounds-role-duty-life",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P1"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-2"
+      ],
+      "allowed_modes": [
+        "public_source_one_run",
+        "approved_read_only_one_run"
+      ],
+      "allowed_outputs": [
+        "source_brief",
+        "claim_source_map",
+        "unresolved_conflict_list"
+      ],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-02",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "run once within the exact personal contract and ORBIT charter",
+        "use only the enumerated data classes and modes",
+        "return only an enumerated output for named-human review"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Evidence Scout",
+      "personal_available": true,
+      "personal_blocked_permissions": [
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P2",
+      "personal_permission_transitions": [
+        "P0-to-one-run-P1-to-P0",
+        "P0-to-one-run-P2-to-P0"
+      ],
+      "purpose": "Find and compare exact public or resident-approved nonsensitive sources with limitations preserved.",
+      "requires": [
+        "ATTEND receipt",
+        "exact ORBIT one-run charter",
+        "minimum admitted context",
+        "visible human owner",
+        "hash-bound mode/data/output/router",
+        "limits and expiry",
+        "stop and kill",
+        "content-free receipt",
+        "automatic return to P0"
+      ],
+      "router": "rounds-learning-reasoning-evidence",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P2"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [
+        "MR-DATA-1"
+      ],
+      "allowed_modes": [
+        "synthetic_one_run"
+      ],
+      "allowed_outputs": [
+        "fictional_reasoning_feedback",
+        "bias_reflection_questions"
+      ],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-03",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "run once within the exact personal contract and ORBIT charter",
+        "use only the enumerated data classes and modes",
+        "return only an enumerated output for named-human review"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Synthetic Case Coach",
+      "personal_available": true,
+      "personal_blocked_permissions": [
+        "PERM-P2",
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P1",
+      "personal_permission_transitions": [
+        "P0-to-one-run-P1-to-P0"
+      ],
+      "purpose": "Coach only an unmistakably fictional resident-authored case after independent reasoning is captured.",
+      "requires": [
+        "ATTEND receipt",
+        "exact ORBIT one-run charter",
+        "minimum admitted context",
+        "visible human owner",
+        "hash-bound mode/data/output/router",
+        "limits and expiry",
+        "stop and kill",
+        "content-free receipt",
+        "automatic return to P0"
+      ],
+      "router": "rounds-learning-reasoning-evidence",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P1"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-2"
+      ],
+      "allowed_modes": [
+        "public_source_one_run",
+        "approved_read_only_one_run"
+      ],
+      "allowed_outputs": [
+        "source_audit",
+        "claim_verification_table",
+        "uncertainty_register"
+      ],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-04",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "run once within the exact personal contract and ORBIT charter",
+        "use only the enumerated data classes and modes",
+        "return only an enumerated output for named-human review"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Source & Claim Verifier",
+      "personal_available": true,
+      "personal_blocked_permissions": [
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P2",
+      "personal_permission_transitions": [
+        "P0-to-one-run-P1-to-P0",
+        "P0-to-one-run-P2-to-P0"
+      ],
+      "purpose": "Audit citations, claims, versions, uncertainty and source applicability without deciding care or authority.",
+      "requires": [
+        "ATTEND receipt",
+        "exact ORBIT one-run charter",
+        "minimum admitted context",
+        "visible human owner",
+        "hash-bound mode/data/output/router",
+        "limits and expiry",
+        "stop and kill",
+        "content-free receipt",
+        "automatic return to P0"
+      ],
+      "router": "rounds-learning-reasoning-evidence",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P2"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [],
+      "allowed_modes": [],
+      "allowed_outputs": [],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-05",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "appear in the canonical catalog and Preview-only documentation"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Care-Orchestration Assistant",
+      "personal_available": false,
+      "personal_blocked_permissions": [
+        "PERM-P1",
+        "PERM-P2",
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P0",
+      "personal_permission_transitions": [],
+      "purpose": "Canonical role retained for preview only; its P3 care-orchestration premise has no personal executable route.",
+      "requires": [
+        "remain PERM-P0",
+        "display unavailable_personal_preview_only",
+        "provide a synthetic manual-workflow alternative"
+      ],
+      "router": "unavailable_personal_preview_only",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P3"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [],
+      "allowed_modes": [],
+      "allowed_outputs": [],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-06",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "appear in the canonical catalog and Preview-only documentation"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Handoff & Consult Draft Assistant",
+      "personal_available": false,
+      "personal_blocked_permissions": [
+        "PERM-P1",
+        "PERM-P2",
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P0",
+      "personal_permission_transitions": [],
+      "purpose": "Canonical role retained for preview only; its P3 handoff/consult premise has no personal executable route.",
+      "requires": [
+        "remain PERM-P0",
+        "display unavailable_personal_preview_only",
+        "provide a synthetic manual-workflow alternative"
+      ],
+      "router": "unavailable_personal_preview_only",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P3"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1"
+      ],
+      "allowed_modes": [
+        "synthetic_one_run",
+        "public_source_one_run"
+      ],
+      "allowed_outputs": [
+        "synthetic_quality_map",
+        "human_determination_questions"
+      ],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-07",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "run once within the exact personal contract and ORBIT charter",
+        "use only the enumerated data classes and modes",
+        "return only an enumerated output for named-human review"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Quality Mapper",
+      "personal_available": true,
+      "personal_blocked_permissions": [
+        "PERM-P2",
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P1",
+      "personal_permission_transitions": [
+        "P0-to-one-run-P1-to-P0"
+      ],
+      "purpose": "Prepare only a synthetic/public quality map and human determination questions; never run a real PDSA or use institutional data.",
+      "requires": [
+        "ATTEND receipt",
+        "exact ORBIT one-run charter",
+        "minimum admitted context",
+        "visible human owner",
+        "hash-bound mode/data/output/router",
+        "limits and expiry",
+        "stop and kill",
+        "content-free receipt",
+        "automatic return to P0"
+      ],
+      "router": "rounds-development-quality-scholarship",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P3"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1"
+      ],
+      "allowed_modes": [
+        "synthetic_one_run",
+        "public_source_one_run"
+      ],
+      "allowed_outputs": [
+        "synthetic_protocol_outline",
+        "human_research_determination_questions"
+      ],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-08",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "run once within the exact personal contract and ORBIT charter",
+        "use only the enumerated data classes and modes",
+        "return only an enumerated output for named-human review"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Research Steward",
+      "personal_available": true,
+      "personal_blocked_permissions": [
+        "PERM-P2",
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P1",
+      "personal_permission_transitions": [
+        "P0-to-one-run-P1-to-P0"
+      ],
+      "purpose": "Prepare only public/synthetic research-learning questions; never determine status, use real data, submit or publish.",
+      "requires": [
+        "ATTEND receipt",
+        "exact ORBIT one-run charter",
+        "minimum admitted context",
+        "visible human owner",
+        "hash-bound mode/data/output/router",
+        "limits and expiry",
+        "stop and kill",
+        "content-free receipt",
+        "automatic return to P0"
+      ],
+      "router": "rounds-development-quality-scholarship",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P3"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1"
+      ],
+      "allowed_modes": [
+        "synthetic_one_run",
+        "public_source_one_run"
+      ],
+      "allowed_outputs": [
+        "synthetic_teaching_draft",
+        "accessibility_and_copyright_checklist"
+      ],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-09",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "run once within the exact personal contract and ORBIT charter",
+        "use only the enumerated data classes and modes",
+        "return only an enumerated output for named-human review"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Teaching Builder",
+      "personal_available": true,
+      "personal_blocked_permissions": [
+        "PERM-P2",
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P1",
+      "personal_permission_transitions": [
+        "P0-to-one-run-P1-to-P0"
+      ],
+      "purpose": "Prepare only public/synthetic teaching drafts without identifiable cases, learner evaluation, grading or release.",
+      "requires": [
+        "ATTEND receipt",
+        "exact ORBIT one-run charter",
+        "minimum admitted context",
+        "visible human owner",
+        "hash-bound mode/data/output/router",
+        "limits and expiry",
+        "stop and kill",
+        "content-free receipt",
+        "automatic return to P0"
+      ],
+      "router": "rounds-development-quality-scholarship",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P3"
+    },
+    {
+      "absolute_stops": [
+        "possible patient_or_real_case_content",
+        "formal_evaluation_peer_review_event_or_restricted_content",
+        "authority_or_competence_determination",
+        "clinical_or_institutional_action",
+        "permission_or_tool_widening",
+        "changed_hash_context_source_model_destination_or_expiry",
+        "timeout_failure_or_unknown_state"
+      ],
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-2"
+      ],
+      "allowed_modes": [
+        "private_nonsensitive_one_run",
+        "approved_read_only_one_run"
+      ],
+      "allowed_outputs": [
+        "private_decision_questions",
+        "career_option_brief",
+        "nonsensitive_whole_life_questions"
+      ],
+      "build_layer_status": "canonical_source_mapping",
+      "id": "AGT-10",
+      "installed_permission": "PERM-P0 Disabled",
+      "may": [
+        "run once within the exact personal contract and ORBIT charter",
+        "use only the enumerated data classes and modes",
+        "return only an enumerated output for named-human review"
+      ],
+      "may_not": [
+        "process patient, real-case, event, formal-evaluation, peer-review or restricted institutional information",
+        "support live patient care",
+        "diagnose",
+        "treat",
+        "triage",
+        "prescribe",
+        "dose",
+        "order",
+        "chart",
+        "code",
+        "bill",
+        "submit",
+        "send or page",
+        "declare role, supervision, competence, credentials, license, privileges, research status or institutional approval",
+        "activate itself",
+        "add memory",
+        "enable a connector",
+        "expand tools",
+        "continue in the background",
+        "recursively delegate",
+        "run at a permission not explicitly listed in personal_permission_transitions",
+        "use an unlisted data class, mode, output or router"
+      ],
+      "name": "Career & Whole-Life Planner",
+      "personal_available": true,
+      "personal_blocked_permissions": [
+        "PERM-P3",
+        "PERM-P4",
+        "PERM-P5"
+      ],
+      "personal_maximum": "PERM-P2",
+      "personal_permission_transitions": [
+        "P0-to-one-run-P1-to-P0",
+        "P0-to-one-run-P2-to-P0"
+      ],
+      "purpose": "Prepare resident-owned nonsensitive career, purpose and whole-life questions without legal, financial, credential, eligibility or outcome determinations; MR-DATA-W remains manual and is never sent to an agent.",
+      "requires": [
+        "ATTEND receipt",
+        "exact ORBIT one-run charter",
+        "minimum admitted context",
+        "visible human owner",
+        "hash-bound mode/data/output/router",
+        "limits and expiry",
+        "stop and kill",
+        "content-free receipt",
+        "automatic return to P0"
+      ],
+      "router": "rounds-credentials-career-future",
+      "source_defined": true,
+      "source_proposed_maximum": "PERM-P2"
+    }
+  ],
+  "notice": "The source programs propose ten agent roles. Stable AGT IDs and every personal permission, router, mode, data, output and stop field in this registry are restrictive build-layer mappings; none grants autonomy or authority.",
+  "orbit_framework": [
+    "Objective & owner",
+    "Role, risk & responsibility",
+    "Boundaries & budget",
+    "Inspect & test",
+    "Transfer or terminate"
+  ],
+  "orbit_lifecycle": [
+    "Disabled",
+    "Requested",
+    "Classified",
+    "Scoped",
+    "Previewed",
+    "Synthetic-Tested",
+    "Human-Authorized",
+    "Running-One-Bounded-Run",
+    "Awaiting-Human-Review",
+    "Accepted-or-Rejected",
+    "Human-Released-if-applicable",
+    "Archived-or-Expired-or-Revoked"
+  ],
+  "orbit_personal_early_termination": "Any nonterminal state may terminate only to Archived-or-Expired-or-Revoked and return permission to P0; no release state is entered.",
+  "orbit_personal_forward_transition": "Disabled -> Requested -> Classified -> Scoped -> Previewed -> Synthetic-Tested -> Human-Authorized -> Running-One-Bounded-Run -> Awaiting-Human-Review -> Accepted-or-Rejected -> Archived-or-Expired-or-Revoked",
+  "orbit_personal_reachable_states": [
+    "Disabled",
+    "Requested",
+    "Classified",
+    "Scoped",
+    "Previewed",
+    "Synthetic-Tested",
+    "Human-Authorized",
+    "Running-One-Bounded-Run",
+    "Awaiting-Human-Review",
+    "Accepted-or-Rejected",
+    "Archived-or-Expired-or-Revoked"
+  ],
+  "orbit_personal_unreachable_reference_only_states": [
+    "Human-Released-if-applicable"
+  ],
+  "permission_ladder": {
+    "PERM-P0 Disabled": "Installed but cannot run.",
+    "PERM-P1 Private Nonsensitive or Synthetic Draft": "One exact approved run; no tools or external action.",
+    "PERM-P2 Private Approved Read-Only": "One exact approved run against one personally controlled approved source; no write or external action.",
+    "PERM-P3 Institution-Approved Read or Sandbox": "Schema-visible but unavailable in this personal target; requires a separately provisioned exact institutional partition and purpose.",
+    "PERM-P4 One-Run Staged Nonclinical Write": "Schema-visible vocabulary only and technically unavailable in this target. Any institution-managed implementation is a separate system outside this package; clinical care and communication remain prohibited.",
+    "PERM-P5 Prohibited": "Autonomous clinical action or monitoring, patient communication, clinical-system write, resident or learner evaluation, credential/competency decision, self-expansion, hidden persistence, permission escalation or recursive delegation."
+  },
+  "personal_p4_available": false,
+  "schema": "NAIO-MR-ROUNDS-AGENT-REGISTRY-1",
+  "version": "1.0.0",
+  "whole_life_private_agent_access": false
+}

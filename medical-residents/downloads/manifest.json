@@ -9,6 +9,7 @@
         "total": 160
       },
       "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "artifact_class": "legacy_complete_edition_source_package",
       "bytes": 243095,
       "download": "downloads/medical-resident-rounds-complete-edition.zip",
       "foundation_first": true,
@@ -31,9 +32,30 @@
       "suggested_agents_total": 10,
       "templates_total": 30,
       "workflows_total": 24
+    },
+    {
+      "activation_available": true,
+      "activation_contract": "user_initiated_read_only_preflight_then_exact_implementation_activation_card_approval",
+      "artifact_class": "hermes_functional_build_kit_self_install",
+      "build_kit_version": "1.0.0",
+      "bytes": 6993919,
+      "complete_ai_os_claim": "not_operational_build_required",
+      "download": "downloads/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+      "install_on_download": false,
+      "institutional_authorization": false,
+      "operational_data_authorized": false,
+      "population_lane": "medical_resident",
+      "pre_install_disclosure_required": true,
+      "readiness": "not_operational_build_required",
+      "route": "/medical-residents/",
+      "runtime_status": "not_built_until_user_hermes_runs_approved_program",
+      "sha256": "9da287f43df9398eec648addf3524d8f12415a90af33fa2c9d31e92972bef666",
+      "target_application_version": "2.0.0",
+      "total_required_execution_records": 424
     }
   ],
   "purpose": "standalone adjacent clinical lane for medical residents; separate from Nurse AI OS post-setup lanes",
   "release": "2026.07.16.1",
+  "release_posture": "source_package_available_build_kit_available_runtime_not_operational_until_user_approved_build",
   "schema_version": "1.0"
 }

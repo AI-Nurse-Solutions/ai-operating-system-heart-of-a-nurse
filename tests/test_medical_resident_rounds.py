@@ -8,6 +8,8 @@ import json
 import re
 import runpy
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -23,6 +25,8 @@ DOCX = PACKAGE / "Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-
 MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "medical-resident-rounds-complete-edition.zip"
 ZIP_PREFIX = "ROUNDS-Medical-Resident-Complete-Edition/"
+BUILD_KIT = DOWNLOADS / "ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+BUILD_KIT_ROOT = "ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0/"
 
 
 def sha256(path: Path) -> str:
@@ -205,11 +209,17 @@ class RoundsMedicalResidentTests(unittest.TestCase):
             "Non-nurse means separate—not absorbed",
             "24 powers inactive",
             "10 agents disabled",
-            "160 declared checks",
-            "Download ≠ installation",
+            "160 assurance checks",
+            "424 execution records",
+            "Download ≠ build, activation, operation, or authorization",
+            "Downloading, opening, or unzipping changes nothing",
+            "Give this ZIP to your own Hermes",
+            "Implementation Activation Card",
+            "Not operational:",
             "AI prepares. Residents reason and escalate. Authorized humans decide",
         ):
             self.assertIn(phrase, page)
+        self.assertIn('href="downloads/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"', page)
         self.assertIn('href="downloads/medical-resident-rounds-complete-edition.zip"', page)
 
     def test_homepage_embeds_resident_short_below_all_nurse_videos(self):
@@ -256,14 +266,29 @@ class RoundsMedicalResidentTests(unittest.TestCase):
 
     def test_public_manifest_checksum_and_zip_bytes(self):
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
-        record = public["packages"][0]
+        self.assertEqual(len(public["packages"]), 2)
+        record = next(p for p in public["packages"] if p["artifact_class"] == "legacy_complete_edition_source_package")
+        kit = next(p for p in public["packages"] if p["artifact_class"] == "hermes_functional_build_kit_self_install")
         self.assertEqual(public["installation_status"], "not_installed")
+        self.assertEqual(public["release_posture"], "source_package_available_build_kit_available_runtime_not_operational_until_user_approved_build")
         self.assertEqual(record["sha256"], sha256(ZIP))
         self.assertEqual(record["bytes"], ZIP.stat().st_size)
         self.assertEqual(record["acceptance_tests"]["total"], 160)
         self.assertFalse(record["nursing_population_state_shared"])
+        self.assertTrue(kit["activation_available"])
+        self.assertEqual(kit["activation_contract"], "user_initiated_read_only_preflight_then_exact_implementation_activation_card_approval")
+        self.assertFalse(kit["install_on_download"])
+        self.assertFalse(kit["institutional_authorization"])
+        self.assertFalse(kit["operational_data_authorized"])
+        self.assertTrue(kit["pre_install_disclosure_required"])
+        self.assertEqual(kit["complete_ai_os_claim"], "not_operational_build_required")
+        self.assertEqual(kit["runtime_status"], "not_built_until_user_hermes_runs_approved_program")
+        self.assertEqual(kit["readiness"], "not_operational_build_required")
+        self.assertEqual(kit["total_required_execution_records"], 424)
+        self.assertEqual(kit["sha256"], sha256(BUILD_KIT))
+        self.assertEqual(kit["bytes"], BUILD_KIT.stat().st_size)
         checksum = (DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8")
-        self.assertEqual(checksum, f"{sha256(ZIP)}  {ZIP.name}\n")
+        self.assertEqual(checksum, f"{sha256(ZIP)}  {ZIP.name}\n{sha256(BUILD_KIT)}  {BUILD_KIT.name}\n")
         with zipfile.ZipFile(ZIP) as archive:
             expected = {ZIP_PREFIX + path.name for path in PACKAGE.iterdir() if path.is_file()}
             self.assertEqual(set(archive.namelist()), expected)
@@ -275,6 +300,100 @@ class RoundsMedicalResidentTests(unittest.TestCase):
             for path in PACKAGE.iterdir():
                 if path.is_file():
                     self.assertEqual(archive.read(ZIP_PREFIX + path.name), path.read_bytes())
+
+    def test_self_install_build_kit_is_pinned_and_not_operational(self):
+        self.assertEqual(sha256(BUILD_KIT), "9da287f43df9398eec648addf3524d8f12415a90af33fa2c9d31e92972bef666")
+        self.assertEqual(BUILD_KIT.stat().st_size, 6993919)
+        with zipfile.ZipFile(BUILD_KIT) as archive:
+            self.assertIsNone(archive.testzip())
+            self.assertEqual(len(archive.infolist()), 149)
+            names = archive.namelist()
+            self.assertTrue(all(name.startswith(BUILD_KIT_ROOT) for name in names))
+            self.assertIn(BUILD_KIT_ROOT + "README-FIRST.md", names)
+            self.assertIn(BUILD_KIT_ROOT + "GIVE-THIS-PACKAGE-TO-HERMES.md", names)
+            self.assertIn(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json", names)
+            self.assertIn(BUILD_KIT_ROOT + "SHA256SUMS.txt", names)
+            self.assertIn(BUILD_KIT_ROOT + "tools/verify-build-kit.py", names)
+            manifest = json.loads(archive.read(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json"))
+            handoff = archive.read(BUILD_KIT_ROOT + "GIVE-THIS-PACKAGE-TO-HERMES.md").decode("utf-8")
+            read_first = archive.read(BUILD_KIT_ROOT + "README-FIRST.md").decode("utf-8")
+            baseline_qa = archive.read(BUILD_KIT_ROOT + "source/baseline-qa-reference/test_discover_mission_control_v2_dom.mjs").decode("utf-8")
+        self.assertEqual(manifest["target"]["lane"], "medical_resident")
+        self.assertEqual(manifest["target"]["namespace"], "medres_rounds.*")
+        self.assertEqual(manifest["target"]["readiness"], "not_operational_build_required")
+        self.assertEqual(manifest["counts"]["total_required_execution_records"], 424)
+        self.assertEqual(manifest["counts"]["canonical_assurance_checks"], 160)
+        self.assertEqual(manifest["defaults"]["agents"], "PERM-P0 Disabled")
+        self.assertEqual(manifest["defaults"]["powers"], "Available Inactive")
+        self.assertEqual(manifest["defaults"]["external_actions"], "Off")
+        self.assertEqual(manifest["defaults"]["memory"], "session_only")
+        self.assertIn("RESTRICTED_RECORD_PLACEHOLDER_123456", baseline_qa)
+        self.assertNotIn("MRN: 123456", baseline_qa)
+        for phrase in (
+            "Perform only read-only preflight",
+            "read-only preflight",
+            "Implementation Activation Card",
+            "Stop for exact approval",
+            "Do not use PHI",
+            "Keep connectors, external actions, new persistent memory, schedules, tools, agents, and background work Off",
+            "Not operational",
+        ):
+            self.assertIn(phrase, handoff + read_first)
+
+    def test_builder_tracks_build_kit_with_independent_validator(self):
+        builder = (ROOT / "scripts" / "build-medical-resident-rounds.py").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github" / "workflows" / "medical-resident-rounds.yml").read_text(encoding="utf-8")
+        for phrase in (
+            "build_build_kit_zip",
+            "BUILD_KIT_SOURCE",
+            "validate_build_kit",
+            "validate_build_kit_zip_structure",
+            "run_bundled_build_kit_verifier",
+            "ROUNDS bundled verifier bytes changed",
+            "Case-colliding ROUNDS build-kit ZIP member",
+            "ROUNDS build kit allows only regular-file entries",
+            "BUILD_KIT_VERIFIER_SHA256",
+        ):
+            self.assertIn(phrase, builder)
+        for phrase in (
+            "git ls-files --error-unmatch medical-residents/downloads/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+            "git ls-files --error-unmatch medical-residents/build-kit/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0/tools/verify-build-kit.py",
+            "test -z \"$(git status --porcelain --untracked-files=all)\"",
+        ):
+            self.assertIn(phrase, workflow)
+
+    def test_bundled_build_kit_verifier_runs_against_package_and_zip(self):
+        verifier = ROOT / "medical-residents" / "build-kit" / BUILD_KIT_ROOT.strip("/") / "tools" / "verify-build-kit.py"
+        package = ROOT / "medical-residents" / "build-kit" / BUILD_KIT_ROOT.strip("/")
+        completed = subprocess.run(
+            [sys.executable, str(verifier), "--package", str(package), "--zip", str(BUILD_KIT)],
+            cwd=ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout[-4000:])
+        self.assertIn("VERIFIED ROUNDS MEDICAL RESIDENT BUILD KIT", completed.stdout)
+
+    def test_build_kit_validator_rejects_socket_and_other_special_entries(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-medical-resident-rounds.py"))
+        validator = namespace["validate_build_kit_zip_structure"]
+        special_modes = {
+            "socket": 0o140000,
+            "symlink": 0o120000,
+            "directory": 0o040000,
+        }
+        for label, mode in special_modes.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temp:
+                archive_path = Path(temp) / f"{label}.zip"
+                with zipfile.ZipFile(archive_path, "w") as archive:
+                    info = zipfile.ZipInfo(BUILD_KIT_ROOT + "README-FIRST.md")
+                    info.create_system = 3
+                    info.external_attr = mode << 16
+                    archive.writestr(info, b"not a regular file")
+                with self.assertRaisesRegex(ValueError, "regular-file entries"):
+                    validator(archive_path, enforce_pins=False)
 
     def test_builder_rejects_source_wrapper_and_ledger_tampering(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-medical-resident-rounds.py"))
@@ -295,7 +414,7 @@ class RoundsMedicalResidentTests(unittest.TestCase):
         build = namespace["build"]
         before = sha256(ZIP)
         record = build()
-        self.assertEqual(record["sha256"], before)
+        self.assertEqual(record["sha256"], sha256(BUILD_KIT))
         self.assertEqual(sha256(ZIP), before)
 
 

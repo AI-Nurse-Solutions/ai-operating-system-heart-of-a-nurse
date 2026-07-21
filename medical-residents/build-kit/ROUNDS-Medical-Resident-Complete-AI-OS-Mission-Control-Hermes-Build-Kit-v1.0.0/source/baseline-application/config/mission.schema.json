@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.local/schemas/mission.schema.json",
+  "title": "Nurse AI OS Mission Record",
+  "description": "Local Mission Control record for the repeatable Assess–Define–Plan–Implement–Evaluate loop.",
+  "$comment": "The application also applies content heuristics, selected-role membership, ordered artifact-state transitions, EDENA gates, human-review attestations, and stage-completion rules. Backup import rejects records where sample is true; the local synthetic example is allowed only in the running app.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "schema",
+    "title",
+    "roleId",
+    "edition",
+    "edena",
+    "edenaReason",
+    "artifactState",
+    "missionStatus",
+    "retentionMode",
+    "summary",
+    "iteration",
+    "parentMissionId",
+    "sample",
+    "riskAcknowledged",
+    "approvalAttested",
+    "approvalReference",
+    "revision",
+    "createdAt",
+    "updatedAt",
+    "stages",
+    "history"
+  ],
+  "properties": {
+    "id": { "$ref": "#/$defs/uuid" },
+    "schema": { "const": "NAIO-MISSION-1" },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "pattern": ".*\\S.*"
+    },
+    "roleId": {
+      "enum": [
+        "shared-identity",
+        "research-innovation",
+        "prelicensure-support",
+        "staff-nurse",
+        "advanced-practice",
+        "nurse-educator",
+        "medical-resident",
+        "nurse-manager",
+        "clinic-manager",
+        "hospital-administrator",
+        "wellness-manager",
+        "quality-safety",
+        "researcher",
+        "digital-ai",
+        "entrepreneur",
+        "community",
+        "advanced-studies"
+      ]
+    },
+    "edition": {
+      "enum": ["personal", "institutional_preview"]
+    },
+    "edena": {
+      "enum": ["unclassified", "green", "yellow", "orange", "red"]
+    },
+    "edenaReason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "pattern": ".*\\S.*"
+    },
+    "artifactState": {
+      "enum": [
+        "exploration",
+        "simulation",
+        "recommendation",
+        "draft_artifact",
+        "approved_plan",
+        "authorized_execution",
+        "completed_action",
+        "evaluated_outcome"
+      ]
+    },
+    "missionStatus": {
+      "enum": ["active", "paused", "completed", "archived"]
+    },
+    "retentionMode": {
+      "enum": ["session_only", "local_non_sensitive"]
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "iteration": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "parentMissionId": {
+      "oneOf": [
+        { "$ref": "#/$defs/uuid" },
+        { "type": "null" }
+      ]
+    },
+    "sample": {
+      "type": "boolean"
+    },
+    "riskAcknowledged": {
+      "type": "boolean"
+    },
+    "approvalAttested": {
+      "type": "boolean"
+    },
+    "approvalReference": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "stages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assess", "define", "plan", "implement", "evaluate"],
+      "properties": {
+        "assess": { "$ref": "#/$defs/stage" },
+        "define": { "$ref": "#/$defs/stage" },
+        "plan": { "$ref": "#/$defs/stage" },
+        "implement": { "$ref": "#/$defs/stage" },
+        "evaluate": { "$ref": "#/$defs/stage" }
+      }
+    },
+    "history": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["revision", "changedStages", "at"],
+        "properties": {
+          "revision": {
+            "type": "integer"
+          },
+          "changedStages": {
+            "type": "array",
+            "items": {
+              "enum": ["assess", "define", "plan", "implement", "evaluate"]
+            }
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["notes", "outcome", "complete", "needsReview", "revision"],
+      "properties": {
+        "notes": {
+          "type": "string",
+          "maxLength": 5000
+        },
+        "outcome": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "needsReview": {
+          "type": "boolean"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

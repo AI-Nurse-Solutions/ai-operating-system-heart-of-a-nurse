@@ -208,9 +208,10 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
         self.assertEqual(record["acceptance_tests"]["total"], 176)
         self.assertEqual(record["optional_superpowers_active_after_install"], 0)
         with zipfile.ZipFile(ZIP) as archive:
-            names = set(archive.namelist())
+            names = archive.namelist()
             prefix = "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0/"
             self.assertEqual(len(names), 114)
+            self.assertEqual(len(names), len(set(names)))
             self.assertIn(prefix + "README-FIRST.md", names)
             self.assertIn(prefix + "GIVE-THIS-PACKAGE-TO-HERMES.md", names)
             self.assertIn(prefix + "RELEASE-MANIFEST.json", names)

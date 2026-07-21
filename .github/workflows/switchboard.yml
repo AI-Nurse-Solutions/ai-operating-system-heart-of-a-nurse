@@ -12,6 +12,8 @@ on:
       - "package-lock.json"
       - "setup-helper/**"
       - "post-setup/index.html"
+      - "post-setup/downloads/**"
+      - "post-setup/README.md"
       - "privacy.html"
       - "README.md"
       - "sitemap.xml"
@@ -28,6 +30,8 @@ on:
       - "package-lock.json"
       - "setup-helper/**"
       - "post-setup/index.html"
+      - "post-setup/downloads/**"
+      - "post-setup/README.md"
       - "privacy.html"
       - "README.md"
       - "sitemap.xml"
@@ -67,7 +71,7 @@ jobs:
         run: npm run test:switchboard-schema
       - name: Run browser interaction and responsive smoke test
         run: npm run test:switchboard-browser
-      - name: Confirm existing role distributions remain byte-for-byte unchanged
+      - name: Confirm existing role distributions remain governed and allowlisted
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
@@ -75,4 +79,71 @@ jobs:
             echo "No parent commit exists; package-diff guard is not applicable."
             exit 0
           fi
-          git diff --exit-code "$BASE_SHA" HEAD -- post-setup/packages post-setup/downloads healthcare-research-innovation-leaders/packages healthcare-research-innovation-leaders/downloads
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+
+          base = os.environ["BASE_SHA"]
+          old_np_zip = "post-setup/downloads/" + "nurse-ai-os-post-setup-" + "nurse-practitioner-usa.zip"
+          wings_zip = "post-setup/downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+          changed_packages = subprocess.run(
+              ["git", "diff", "--name-only", base, "HEAD", "--", "post-setup/packages", "healthcare-research-innovation-leaders/packages", "healthcare-research-innovation-leaders/downloads"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout.splitlines()
+          if changed_packages:
+              raise SystemExit("Unexpected package source changes: " + ", ".join(changed_packages))
+
+          allowed_download_changes = {
+              "post-setup/downloads/CHECKSUMS.sha256",
+              "post-setup/downloads/manifest.json",
+              wings_zip,
+              old_np_zip,
+          }
+          changed_downloads = set(subprocess.run(
+              ["git", "diff", "--name-only", base, "HEAD", "--", "post-setup/downloads"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout.splitlines())
+          unexpected = changed_downloads - allowed_download_changes
+          if unexpected:
+              raise SystemExit("Unexpected post-setup download changes: " + ", ".join(sorted(unexpected)))
+
+          np_migration_paths = {
+              old_np_zip,
+              wings_zip,
+          }
+          deleted = set(subprocess.run(
+              ["git", "diff", "--name-only", "--diff-filter=D", base, "HEAD", "--", "post-setup/downloads"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout.splitlines())
+          added = set(subprocess.run(
+              ["git", "diff", "--name-only", "--diff-filter=A", base, "HEAD", "--", "post-setup/downloads"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout.splitlines())
+          if np_migration_paths.intersection(changed_downloads):
+              if deleted != {old_np_zip}:
+                  raise SystemExit("NP migration must delete only the prior NP ZIP")
+              if added != {wings_zip}:
+                  raise SystemExit("NP migration must add only the WINGS build-kit ZIP")
+
+          manifest = json.loads(open("post-setup/downloads/manifest.json", encoding="utf-8").read())
+          np_record = next(item for item in manifest["packages"] if item["folder"] == "06-Nurse-Practitioner-USA")
+          if np_record.get("download_type") != "self_install_hermes_build_kit":
+              raise SystemExit("NP package must be published as a self-install Hermes build kit")
+          if np_record.get("download") != "downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip":
+              raise SystemExit("NP package download target mismatch")
+          if np_record.get("sha256") != "b9fb59545f2057a1f27172ed36a4ddaa3fc97bfbf5ed9ef66ab4e0846c70f22a":
+              raise SystemExit("NP WINGS build-kit digest mismatch")
+          if np_record.get("readiness") != "not_operational_build_required":
+              raise SystemExit("NP WINGS build-kit must remain not operational / build required")
+          if np_record.get("published_state") != "published_not_installed_not_activated_not_operational_not_institutionally_authorized":
+              raise SystemExit("NP WINGS build-kit publication state mismatch")
+          PY

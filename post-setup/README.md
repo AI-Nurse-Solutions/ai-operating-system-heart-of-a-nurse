@@ -11,7 +11,7 @@ These are separate post-setup downloads for users who have already completed the
 | `03-Nurse-Leader-and-Manager` | Nurse Leader and Manager | `downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip` |
 | `04-Nurse-Educator` | Nurse Educator and Instructional Designer | `downloads/nurse-ai-os-post-setup-nurse-educator.zip` |
 | `05-Nurse-Connected-Ally` | Nurse-Connected Ally | `downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip` |
-| `06-Nurse-Practitioner-USA` | Nurse Practitioner (USA) | `downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip` |
+| `06-Nurse-Practitioner-USA` | Nurse Practitioner (USA) | `downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 
 ## What downloading does
 
@@ -86,16 +86,17 @@ The Nurse Educator and Instructional Designer ZIP is a separately governed Compl
 
 The TEACH program supports Nurse Educator, Instructional Designer, and Hybrid / Faculty Developer adapters. It creates, repairs, or binds the Nurse Educator foundation first, runs 33 foundation checks, adds the Trust Shield, TEACH Core, Command Studio, templates, and twenty optional SuperPowers as an inactive overlay, and runs 120 TEACH tests plus 16 integration checks—169 embedded release checks in total. All twenty optional TEACH SuperPowers remain inactive. Downloading does not install it. Adapter selection does not verify employment, faculty status, instructional-design assignment, teaching, grading, clinical, accommodation, academic-integrity, curriculum, accreditation, research, release, or institutional authority. Private-workspace approval does not authorize LMS, classroom, clinical-site, program, employer, accreditation, research, multi-user, or institutional deployment.
 
-The Nurse Practitioner ZIP is a separately governed Complete Edition. It includes:
+The Nurse Practitioner WINGS ZIP is a separately governed self-install Hermes build kit. It includes:
 
-- `00-READ-FIRST.md`
-- `ROLE-PACK.json`
-- `NP-Complete-AI-OS-with-Wings-Hermes-Program.md` — complete one-file guided installer
-- `NP-Complete-AI-OS-with-Wings-Setup-Guide.md`
-- `NP-Complete-AI-OS-with-Wings-Setup-Guide.docx`
-- `PACKAGE-CHECKSUMS.sha256`
+- `README-FIRST.md`
+- `GIVE-THIS-PACKAGE-TO-HERMES.md`
+- `RELEASE-MANIFEST.json`
+- `SHA256SUMS.txt`
+- `SOURCE-INVENTORY.json`
+- `tools/verify-build-kit.py`
+- WINGS implementation, schemas, controls, workflows, templates, synthetic examples, and baseline QA references needed for a future local build
 
-The NP program is English-language and United States-only. It establishes the foundation first, adds NP Wings as an inactive overlay, and contains 63 foundation plus 82 Wings acceptance tests. Downloading does not install it. Role selection does not verify NP licensure, certification, population focus, privileges, prescriptive authority, competence, employment authority, or institutional approval.
+The WINGS build kit is English-language and United States-only. It remains `not_operational_build_required` on download. A local Hermes must verify the manifest and checksums, complete read-only preflight, show the exact WINGS Implementation Activation Card, and receive explicit approval before any local build mutation. Its pinned contract preserves 63 foundation checks, 82 Wings checks, 1 complete integration check, and 410 required execution records. All fifteen optional Wings remain inactive. Downloading does not install it. Role selection does not verify NP licensure, certification, population focus, privileges, prescriptive authority, competence, employment authority, prescribing authority, clinical authority, billing authority, or institutional approval.
 
 Role selection provides personalization only. It does not verify licensure, enrollment, employment, faculty status, instructional-design assignment, teaching or grading authority, managerial authority, accreditation authority, institutional authorization, or permission to process patient, student, employee, or personnel information.
 

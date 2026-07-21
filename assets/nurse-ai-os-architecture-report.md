@@ -516,7 +516,7 @@ A `naio-soul.schema.json` v1.1 may either add `educator` or preserve the four on
 | Nurse Leader and Manager | `nurse-ai-os-post-setup-nurse-leader-and-manager.zip` | Complete Edition; 113 checks; 16 optional powers inactive; checksummed; not installed |
 | Nurse Educator and Instructional Designer | `nurse-ai-os-post-setup-nurse-educator.zip` | Complete Edition; 169 checks; 20 optional powers inactive; checksummed; not installed |
 | Nurse-Connected Ally | `nurse-ai-os-post-setup-nurse-connected-ally.zip` | Live, checksummed, not installed |
-| Nurse Practitioner (USA only) | `nurse-ai-os-post-setup-nurse-practitioner-usa.zip` | Complete Edition; 145 tests; 15 optional Wings inactive; checksummed; not installed |
+| Nurse Practitioner (USA only) | `WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Self-install Hermes build kit; 146 canonical checks; 410 required execution records; 15 optional Wings inactive; checksummed; not installed; not operational/build required |
 
 ## 8.2 Package safety contract
 
@@ -948,4 +948,4 @@ This report is self-contained for public review. An earlier internal Harness wor
 
 # Appendix B — Live post-setup downloads
 
-[Nursing Student and Nursing Assistant](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip) · [Staff Nurse and Quality Contributor](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip) · [Nurse Leader and Manager](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip) · [Nurse Educator and Instructional Designer](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip) · [Nurse-Connected Ally](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip) · [Nurse Practitioner (USA only)](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip)
+[Nursing Student and Nursing Assistant](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip) · [Staff Nurse and Quality Contributor](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip) · [Nurse Leader and Manager](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip) · [Nurse Educator and Instructional Designer](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip) · [Nurse-Connected Ally](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip) · [Nurse Practitioner WINGS Build Kit (USA only)](https://nurse-ai-os.org/post-setup/downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)

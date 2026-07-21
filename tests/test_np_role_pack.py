@@ -20,7 +20,13 @@ PROGRAM = PACKAGE / "NP-Complete-AI-OS-with-Wings-Hermes-Program.md"
 GUIDE = PACKAGE / "NP-Complete-AI-OS-with-Wings-Setup-Guide.md"
 DOCX = PACKAGE / "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx"
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
-ZIP = DOWNLOADS / "nurse-ai-os-post-setup-nurse-practitioner-usa.zip"
+ZIP = DOWNLOADS / "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+BUILD_KIT_ROOT = "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
+BUILD_KIT_BYTES = 7699618
+BUILD_KIT_SHA256 = "b9fb59545f2057a1f27172ed36a4ddaa3fc97bfbf5ed9ef66ab4e0846c70f22a"
+BUILD_KIT_MEMBER_COUNT = 131
+BUILD_KIT_VERIFIER_SHA256 = "dc30dc4eb78b68e0b7439bbe6a07d851f2d1d4c07bb477e38e917f0b429f47cc"
+SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE = "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501"
 RESUME = (
     "Resume NP Complete Edition installation from the last approved checkpoint. "
     "Revalidate identity, privacy, permissions, versions, current dashboard state, "
@@ -137,16 +143,33 @@ class NursePractitionerLaneTests(unittest.TestCase):
         self.assertTrue(record["pre_install_disclosure_required"])
         self.assertEqual(record["activation"], "user_initiated_guided_complete_setup_with_combined_activation_card")
         self.assertEqual(record["acceptance_tests"]["total"], 145)
+        self.assertEqual(record["download_type"], "self_install_hermes_build_kit")
+        self.assertEqual(record["readiness"], "not_operational_build_required")
+        self.assertEqual(record["published_state"], "published_not_installed_not_activated_not_operational_not_institutionally_authorized")
+        self.assertEqual(record["target_product"], "NP WINGS — Nurse Practitioner Life, Practice & Purpose Mission Control")
+        self.assertEqual(record["target_route"], "/nurse-practitioners/dashboard")
+        self.assertEqual(record["build_kit_member_count"], BUILD_KIT_MEMBER_COUNT)
+        self.assertEqual(record["build_kit_root"], BUILD_KIT_ROOT)
+        self.assertEqual(record["build_kit_verifier_sha256"], BUILD_KIT_VERIFIER_SHA256)
+        self.assertEqual(record["source_zip_sha256_before_derivative"], SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE)
+        self.assertEqual(record["bytes"], BUILD_KIT_BYTES)
+        self.assertEqual(record["sha256"], BUILD_KIT_SHA256)
         self.assertEqual(record["sha256"], sha256(ZIP))
         ledger = (DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8")
         self.assertIn(f"{sha256(ZIP)}  {ZIP.name}", ledger)
         with zipfile.ZipFile(ZIP) as archive:
+            self.assertEqual(len(archive.infolist()), BUILD_KIT_MEMBER_COUNT)
             names = set(archive.namelist())
-            prefix = "06-Nurse-Practitioner-USA/"
-            for path in PACKAGE.iterdir():
-                if path.is_file():
-                    self.assertIn(prefix + path.name, names)
-                    self.assertEqual(archive.read(prefix + path.name), path.read_bytes())
+            self.assertIn(f"{BUILD_KIT_ROOT}/README-FIRST.md", names)
+            self.assertIn(f"{BUILD_KIT_ROOT}/GIVE-THIS-PACKAGE-TO-HERMES.md", names)
+            self.assertIn(f"{BUILD_KIT_ROOT}/RELEASE-MANIFEST.json", names)
+            self.assertIn(f"{BUILD_KIT_ROOT}/SHA256SUMS.txt", names)
+            release = json.loads(archive.read(f"{BUILD_KIT_ROOT}/RELEASE-MANIFEST.json"))
+            self.assertEqual(release["target"]["readiness"], "not_operational_build_required")
+            self.assertEqual(release["counts"]["total_required_execution_records"], 410)
+            self.assertEqual(release["counts"]["superpowers"], 15)
+            verifier_sha = hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py")).hexdigest()
+            self.assertEqual(verifier_sha, BUILD_KIT_VERIFIER_SHA256)
 
     def test_import_source_can_seed_separately_governed_np_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))

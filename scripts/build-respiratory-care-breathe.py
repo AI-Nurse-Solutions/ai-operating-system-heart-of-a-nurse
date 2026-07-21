@@ -21,6 +21,12 @@ PACKAGE = ROOT / "packages" / "breathe"
 DOWNLOADS = ROOT / "downloads"
 ZIP_NAME = "breathe-respiratory-care-complete-edition.zip"
 ZIP_PREFIX = "BREATHE-Respiratory-Care-Complete-Edition"
+BUILD_KIT_NAME = "BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+BUILD_KIT_SHA256 = "044ce2f37d65e3329c9bbfebd64e107c7abe84e06a4e936586a52fbff261ca65"
+BUILD_KIT_BYTES = 6965721
+BUILD_KIT_MEMBERS = 151
+BUILD_KIT_ROOT = "BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
+BUILD_KIT_VERIFIER_SHA256 = "f65d7e8cb15894ec7f858c6f2423ac6bc1b5a8cf9732c3b0c5210024b249776d"
 FIXED_ZIP_TIME = (2026, 7, 16, 0, 0, 0)
 SOURCE_RECORDS = {'README.md': {'bytes': 6744,
                'packaged_path': 'README.md',
@@ -433,8 +439,132 @@ def refresh_ledger() -> None:
     (PACKAGE / "PACKAGE-CHECKSUMS.sha256").write_text(content, encoding="utf-8")
 
 
+def _safe_build_kit_member(name: str) -> None:
+    if not name or name.startswith(("/", "\\")) or "\x00" in name or "\\" in name:
+        raise ValueError(f"Unsafe BREATHE build-kit member path: {name!r}")
+    parts = Path(name).parts
+    if any(part in {"", ".", ".."} for part in parts):
+        raise ValueError(f"Traversal path is not allowed in BREATHE build kit: {name!r}")
+
+
+def _ledger_records(text: str, expected: set[str], label: str) -> dict[str, str]:
+    records: dict[str, str] = {}
+    for line_number, line in enumerate(text.splitlines(), 1):
+        if not line.strip():
+            continue
+        match = re.fullmatch(r"([0-9a-f]{64})  ([^\\]+)", line)
+        if not match:
+            raise ValueError(f"Malformed BREATHE {label} checksum line {line_number}")
+        relative = Path(match.group(2))
+        if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+            raise ValueError(f"Unsafe BREATHE {label} checksum path: {relative}")
+        name = relative.as_posix()
+        if name in records:
+            raise ValueError(f"Duplicate BREATHE {label} checksum path: {name}")
+        records[name] = match.group(1)
+    if set(records) != expected:
+        raise ValueError(f"BREATHE {label} checksum inventory mismatch")
+    return records
+
+
+def validate_build_kit() -> dict:
+    path = DOWNLOADS / BUILD_KIT_NAME
+    if not path.is_file():
+        raise ValueError(f"Missing BREATHE build kit: {BUILD_KIT_NAME}")
+    if path.stat().st_size != BUILD_KIT_BYTES or sha256(path) != BUILD_KIT_SHA256:
+        raise ValueError("BREATHE build kit bytes changed")
+    with zipfile.ZipFile(path) as archive:
+        if archive.testzip() is not None:
+            raise ValueError("BREATHE build kit ZIP CRC check failed")
+        infos = archive.infolist()
+        if len(infos) != BUILD_KIT_MEMBERS:
+            raise ValueError(f"BREATHE build kit member count changed: {len(infos)}")
+        seen: set[str] = set()
+        normalized: set[str] = set()
+        for info in infos:
+            if info.filename in seen:
+                raise ValueError(f"Duplicate BREATHE build-kit ZIP member: {info.filename}")
+            seen.add(info.filename)
+            key = info.filename.casefold()
+            if key in normalized:
+                raise ValueError(f"Case-colliding BREATHE build-kit ZIP member: {info.filename}")
+            normalized.add(key)
+            _safe_build_kit_member(info.filename)
+            mode = info.external_attr >> 16
+            if mode & 0o170000 in {0o120000, 0o060000, 0o020000, 0o010000}:
+                raise ValueError(f"Special file is not allowed in BREATHE build kit: {info.filename}")
+        roots = {info.filename.split("/", 1)[0] for info in infos if info.filename}
+        if roots != {BUILD_KIT_ROOT}:
+            raise ValueError(f"BREATHE build kit root mismatch: {sorted(roots)}")
+        required = {
+            f"{BUILD_KIT_ROOT}/README-FIRST.md",
+            f"{BUILD_KIT_ROOT}/GIVE-THIS-PACKAGE-TO-HERMES.md",
+            f"{BUILD_KIT_ROOT}/RELEASE-MANIFEST.json",
+            f"{BUILD_KIT_ROOT}/SHA256SUMS.txt",
+            f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py",
+        }
+        if not required.issubset(seen):
+            raise ValueError("BREATHE build kit missing required handoff, manifest, checksum, or verifier files")
+        manifest = json.loads(archive.read(f"{BUILD_KIT_ROOT}/RELEASE-MANIFEST.json"))
+        if hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py")).hexdigest() != BUILD_KIT_VERIFIER_SHA256:
+            raise ValueError("BREATHE bundled verifier bytes changed")
+        expected_files = {name.removeprefix(f"{BUILD_KIT_ROOT}/") for name in seen if name != f"{BUILD_KIT_ROOT}/SHA256SUMS.txt"}
+        ledger = _ledger_records(archive.read(f"{BUILD_KIT_ROOT}/SHA256SUMS.txt").decode("utf-8"), expected_files, "build-kit")
+        for name, digest in ledger.items():
+            if hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/{name}")).hexdigest() != digest:
+                raise ValueError(f"BREATHE build-kit checksum mismatch: {name}")
+    if manifest["target"] != {
+        "foundation_namespace": "resp_breathe.*",
+        "home": "My BREATHE",
+        "lane": "respiratory_care",
+        "namespace": "resp_breathe.*",
+        "product": "BREATHE — Respiratory Care Complete AI OS Mission Control",
+        "product_id": "respiratory-care-breathe-mission-control",
+        "readiness": "not_operational_build_required",
+        "route": "/respiratory-care",
+        "version": "2.0.0",
+    }:
+        raise ValueError("BREATHE build kit target contract changed")
+    expected_counts = {
+        "agents": 10,
+        "canonical_assurance_checks": 160,
+        "capability_criteria_including_capstone": 77,
+        "capability_domains": 17,
+        "control_matrix_rows": 216,
+        "core_launchers": 4,
+        "cross_cutting_full_stack_scenarios": 48,
+        "deployment_contexts": 2,
+        "mastery_levels": 4,
+        "operational_partitions": 9,
+        "protected_workspaces": 5,
+        "record_schemas": 18,
+        "role_lane": 1,
+        "superpowers": 24,
+        "task_hats": 7,
+        "templates": 30,
+        "total_required_execution_records": 424,
+        "workflows": 24,
+    }
+    for key, value in expected_counts.items():
+        if manifest["counts"].get(key) != value:
+            raise ValueError(f"BREATHE build kit count changed: {key}")
+    if manifest["defaults"] != {
+        "agents": "PERM-P0 Disabled",
+        "external_actions": "Off",
+        "memory": "session_only",
+        "optional_fifth_launcher": "Empty",
+        "perm_p5": "Prohibited",
+        "personal_perm_p4": "Unavailable",
+        "powers": "Available Inactive",
+        "workflows": "Preview Only",
+    }:
+        raise ValueError("BREATHE build kit defaults changed")
+    return manifest
+
+
 def build() -> dict:
     manifest = validate_package()
+    build_kit_manifest = validate_build_kit()
     refresh_ledger()
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     output = DOWNLOADS / ZIP_NAME
@@ -446,9 +576,10 @@ def build() -> dict:
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
-    record = {
+    source_record = {
         "acceptance_tests": manifest["acceptance_tests"],
         "activation": manifest["activation"],
+        "artifact_class": "legacy_complete_edition_source_package",
         "breathe_overlay_second": True,
         "bytes": output.stat().st_size,
         "device_control": False,
@@ -476,20 +607,47 @@ def build() -> dict:
         "templates_total": 30,
         "workflows_total": 24,
     }
+    build_kit_record = {
+        "activation_available": True,
+        "activation_contract": "user_initiated_read_only_preflight_then_exact_implementation_activation_card_approval",
+        "artifact_class": "hermes_functional_build_kit_self_install",
+        "bytes": BUILD_KIT_BYTES,
+        "build_kit_version": "1.0.0",
+        "complete_ai_os_claim": "not_operational_build_required",
+        "download": f"downloads/{BUILD_KIT_NAME}",
+        "install_on_download": False,
+        "institutional_authorization": False,
+        "operational_data_authorized": False,
+        "population_lane": "respiratory_care",
+        "pre_install_disclosure_required": True,
+        "readiness": build_kit_manifest["target"]["readiness"],
+        "route": "/respiratory-care/",
+        "runtime_status": "not_built_until_user_hermes_runs_approved_program",
+        "sha256": BUILD_KIT_SHA256,
+        "target_application_version": build_kit_manifest["target"]["version"],
+        "total_required_execution_records": build_kit_manifest["counts"]["total_required_execution_records"],
+    }
     public = {
         "installation_status": "not_installed",
-        "packages": [record],
-        "purpose": "standalone adjacent clinical lane for respiratory care professionals; separate from Nurse AI OS and Medical Resident ROUNDS",
+        "packages": [source_record, build_kit_record],
+        "purpose": "standalone adjacent clinical lane for respiratory care professionals; separate from Nurse AI OS and Medical Resident ROUNDS; includes verified self-install Hermes build kit",
         "release": manifest["package_version"],
+        "release_posture": "source_package_available_build_kit_available_runtime_not_operational_until_user_approved_build",
         "schema_version": "1.0",
     }
     (DOWNLOADS / "manifest.json").write_text(json.dumps(public, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    (DOWNLOADS / "CHECKSUMS.sha256").write_text(f"{record['sha256']}  {ZIP_NAME}\n", encoding="utf-8")
+    (DOWNLOADS / "CHECKSUMS.sha256").write_text(
+        f"{source_record['sha256']}  {ZIP_NAME}\n{BUILD_KIT_SHA256}  {BUILD_KIT_NAME}\n",
+        encoding="utf-8",
+    )
     print("BREATHE_PACKAGES=1")
+    print("BREATHE_BUILD_KIT_PACKAGES=1")
     print("INSTALLATION_STATUS=not_installed")
-    print(f"BREATHE_ZIP_SHA256={record['sha256']}")
-    print(f"BREATHE_ZIP_BYTES={record['bytes']}")
-    return record
+    print(f"BREATHE_ZIP_SHA256={source_record['sha256']}")
+    print(f"BREATHE_ZIP_BYTES={source_record['bytes']}")
+    print(f"BREATHE_BUILD_KIT_SHA256={BUILD_KIT_SHA256}")
+    print(f"BREATHE_BUILD_KIT_BYTES={BUILD_KIT_BYTES}")
+    return build_kit_record
 
 
 def main() -> int:

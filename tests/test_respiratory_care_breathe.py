@@ -24,6 +24,8 @@ DOCX = PACKAGE / "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup
 MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "breathe-respiratory-care-complete-edition.zip"
 ZIP_PREFIX = "BREATHE-Respiratory-Care-Complete-Edition/"
+BUILD_KIT = DOWNLOADS / "BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+BUILD_KIT_ROOT = "BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0/"
 
 
 def sha256(path: Path) -> str:
@@ -262,11 +264,14 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             "No device data or control",
             "24 powers inactive",
             "10 agents disabled",
-            "160 declared checks",
-            "Download ≠ installation",
+            "424 required execution records",
+            "Download ≠ build, activation, operation, or authorization",
+            "Give the ZIP to your own Hermes",
+            "BREATHE Implementation Activation Card",
             "AI prepares. Respiratory professionals verify and escalate. Authorized humans decide",
         ):
             self.assertIn(phrase, page)
+        self.assertIn('href="downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"', page)
         self.assertIn('href="downloads/breathe-respiratory-care-complete-edition.zip"', page)
         self.assertIn('href="packages/breathe/UPSTREAM-SHA256SUMS.txt"', page)
 
@@ -279,7 +284,8 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         self.assertEqual(video_region.count("MKKx9Ie6GmY"), 1)
         rt = video_region.split('class="home-rt-video"', 1)[1]
         self.assertIn("Adjacent clinical lane · Respiratory care professionals", rt)
-        self.assertIn("BREATHE — Respiratory Care Complete AI OS", rt)
+        self.assertIn("BREATHE — Respiratory Care Mission Control Build Kit", rt)
+        self.assertIn("Download/unzip does nothing", rt)
         self.assertIn("https://www.youtube-nocookie.com/embed/MKKx9Ie6GmY", rt)
         self.assertIn('loading="lazy"', rt)
         self.assertIn('referrerpolicy="strict-origin-when-cross-origin"', rt)
@@ -297,16 +303,31 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
 
     def test_public_manifest_checksum_and_zip_bytes(self):
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
-        record = public["packages"][0]
+        self.assertEqual(len(public["packages"]), 2)
+        record = next(p for p in public["packages"] if p["artifact_class"] == "legacy_complete_edition_source_package")
+        kit = next(p for p in public["packages"] if p["artifact_class"] == "hermes_functional_build_kit_self_install")
         self.assertEqual(public["installation_status"], "not_installed")
+        self.assertEqual(public["release_posture"], "source_package_available_build_kit_available_runtime_not_operational_until_user_approved_build")
         self.assertEqual(record["sha256"], sha256(ZIP))
         self.assertEqual(record["bytes"], ZIP.stat().st_size)
         self.assertEqual(record["acceptance_tests"]["total"], 160)
         self.assertFalse(record["nursing_population_state_shared"])
         self.assertFalse(record["medical_resident_population_state_shared"])
         self.assertFalse(record["device_control"])
+        self.assertTrue(kit["activation_available"])
+        self.assertEqual(kit["activation_contract"], "user_initiated_read_only_preflight_then_exact_implementation_activation_card_approval")
+        self.assertFalse(kit["install_on_download"])
+        self.assertFalse(kit["institutional_authorization"])
+        self.assertFalse(kit["operational_data_authorized"])
+        self.assertTrue(kit["pre_install_disclosure_required"])
+        self.assertEqual(kit["complete_ai_os_claim"], "not_operational_build_required")
+        self.assertEqual(kit["runtime_status"], "not_built_until_user_hermes_runs_approved_program")
+        self.assertEqual(kit["readiness"], "not_operational_build_required")
+        self.assertEqual(kit["total_required_execution_records"], 424)
+        self.assertEqual(kit["sha256"], sha256(BUILD_KIT))
+        self.assertEqual(kit["bytes"], BUILD_KIT.stat().st_size)
         checksum = (DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8")
-        self.assertEqual(checksum, f"{sha256(ZIP)}  {ZIP.name}\n")
+        self.assertEqual(checksum, f"{sha256(ZIP)}  {ZIP.name}\n{sha256(BUILD_KIT)}  {BUILD_KIT.name}\n")
         with zipfile.ZipFile(ZIP) as archive:
             package_files = {p.relative_to(PACKAGE).as_posix() for p in PACKAGE.rglob("*") if p.is_file()}
             expected = {ZIP_PREFIX + name for name in package_files}
@@ -320,6 +341,59 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             for path in PACKAGE.rglob("*"):
                 if path.is_file():
                     self.assertEqual(archive.read(ZIP_PREFIX + path.relative_to(PACKAGE).as_posix()), path.read_bytes())
+
+    def test_self_install_build_kit_is_pinned_and_not_operational(self):
+        self.assertEqual(sha256(BUILD_KIT), "044ce2f37d65e3329c9bbfebd64e107c7abe84e06a4e936586a52fbff261ca65")
+        self.assertEqual(BUILD_KIT.stat().st_size, 6965721)
+        with zipfile.ZipFile(BUILD_KIT) as archive:
+            self.assertIsNone(archive.testzip())
+            self.assertEqual(len(archive.infolist()), 151)
+            names = archive.namelist()
+            self.assertTrue(all(name.startswith(BUILD_KIT_ROOT) for name in names))
+            self.assertIn(BUILD_KIT_ROOT + "README-FIRST.md", names)
+            self.assertIn(BUILD_KIT_ROOT + "GIVE-THIS-PACKAGE-TO-HERMES.md", names)
+            self.assertIn(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json", names)
+            self.assertIn(BUILD_KIT_ROOT + "SHA256SUMS.txt", names)
+            self.assertIn(BUILD_KIT_ROOT + "tools/verify-build-kit.py", names)
+            manifest = json.loads(archive.read(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json"))
+            handoff = archive.read(BUILD_KIT_ROOT + "GIVE-THIS-PACKAGE-TO-HERMES.md").decode("utf-8")
+            read_first = archive.read(BUILD_KIT_ROOT + "README-FIRST.md").decode("utf-8")
+        self.assertEqual(manifest["target"]["lane"], "respiratory_care")
+        self.assertEqual(manifest["target"]["namespace"], "resp_breathe.*")
+        self.assertEqual(manifest["target"]["readiness"], "not_operational_build_required")
+        self.assertEqual(manifest["counts"]["total_required_execution_records"], 424)
+        self.assertEqual(manifest["counts"]["canonical_assurance_checks"], 160)
+        self.assertEqual(manifest["defaults"]["agents"], "PERM-P0 Disabled")
+        self.assertEqual(manifest["defaults"]["powers"], "Available Inactive")
+        self.assertEqual(manifest["defaults"]["external_actions"], "Off")
+        self.assertEqual(manifest["defaults"]["memory"], "session_only")
+        for phrase in (
+            "Perform only the read-only preflight first",
+            "read-only preflight",
+            "Implementation Activation Card",
+            "Stop for exact approval",
+            "Do not use PHI, real-case content",
+            "Keep connectors, external actions, new memory, schedules, tools, agents and background automation off",
+            "Not operational",
+        ):
+            self.assertIn(phrase, handoff + read_first)
+
+    def test_builder_tracks_build_kit_with_independent_validator(self):
+        builder = (ROOT / "scripts" / "build-respiratory-care-breathe.py").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github" / "workflows" / "respiratory-care-breathe.yml").read_text(encoding="utf-8")
+        for phrase in (
+            "validate_build_kit",
+            "BREATHE bundled verifier bytes changed",
+            "Case-colliding BREATHE build-kit ZIP member",
+            "Special file is not allowed in BREATHE build kit",
+            "BUILD_KIT_VERIFIER_SHA256",
+        ):
+            self.assertIn(phrase, builder)
+        for phrase in (
+            "git ls-files --error-unmatch respiratory-care/downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+            "test -z \"$(git status --porcelain --untracked-files=all)\"",
+        ):
+            self.assertIn(phrase, workflow)
 
     def test_builder_rejects_source_wrapper_and_ledger_tampering(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-respiratory-care-breathe.py"))
@@ -360,7 +434,7 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         build = namespace["build"]
         before = sha256(ZIP)
         record = build()
-        self.assertEqual(record["sha256"], before)
+        self.assertEqual(record["sha256"], sha256(BUILD_KIT))
         self.assertEqual(sha256(ZIP), before)
 
 

@@ -687,9 +687,9 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             raise ValueError(f"Build-kit derivative provenance mismatch: {path}")
         if derivative.get("source_zip_bytes_before_derivative") != config["source_zip_bytes_before_derivative"]:
             raise ValueError(f"Build-kit derivative byte provenance mismatch: {path}")
-        if sha256_bytes := hashlib.sha256(archive.read(f"{root}/tools/verify-build-kit.py")).hexdigest():
-            if sha256_bytes != config["verifier_sha256"]:
-                raise ValueError(f"Bundled verifier bytes changed: {path}")
+        verifier_sha256 = hashlib.sha256(archive.read(f"{root}/tools/verify-build-kit.py")).hexdigest()
+        if verifier_sha256 != config["verifier_sha256"]:
+            raise ValueError(f"Bundled verifier bytes changed: {path}")
 
         ledger: dict[str, str] = {}
         for line_number, line in enumerate(archive.read(f"{root}/SHA256SUMS.txt").decode("utf-8").splitlines(), start=1):

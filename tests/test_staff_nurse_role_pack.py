@@ -164,6 +164,7 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
             "SHIFT SuperPowers",
             "176 canonical checks",
             "self-install Hermes build kit",
+            "approximately 6.91 MB",
             "not operational—build required",
             "all twenty optional SHIFT SuperPowers remain inactive",
             "Complete Edition lanes 01, 02, 03, 04, and 06",

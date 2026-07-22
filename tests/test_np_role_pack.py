@@ -141,7 +141,14 @@ class NursePractitionerLaneTests(unittest.TestCase):
         record = next(item for item in manifest["packages"] if item["role"] == "Nurse Practitioner (USA)")
         self.assertFalse(record["install_on_download"])
         self.assertTrue(record["pre_install_disclosure_required"])
-        self.assertEqual(record["activation"], "user_initiated_guided_complete_setup_with_combined_activation_card")
+        self.assertEqual(
+            record["activation"],
+            "user_initiated_read_only_preflight_with_exact_wings_implementation_activation_card",
+        )
+        self.assertEqual(record["legacy_source_activation_contract"], "user_initiated_guided_complete_setup_with_combined_activation_card")
+        self.assertEqual(record["legacy_source_package_version"], "2026.07.14.2")
+        self.assertEqual(record["package_version"], "1.0.0")
+        self.assertEqual(record["build_kit_version"], "1.0.0")
         self.assertEqual(record["acceptance_tests"]["total"], 145)
         self.assertEqual(record["download_type"], "self_install_hermes_build_kit")
         self.assertEqual(record["readiness"], "not_operational_build_required")
@@ -170,6 +177,26 @@ class NursePractitionerLaneTests(unittest.TestCase):
             self.assertEqual(release["counts"]["superpowers"], 15)
             verifier_sha = hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py")).hexdigest()
             self.assertEqual(verifier_sha, BUILD_KIT_VERIFIER_SHA256)
+
+    def test_public_checksum_ledger_is_complete_and_matches_every_archive(self):
+        ledger = {}
+        for line in (DOWNLOADS / "CHECKSUMS.sha256").read_text(encoding="utf-8").splitlines():
+            match = re.fullmatch(r"([0-9a-f]{64})  ([^/\\]+\.zip)", line)
+            if match is None:
+                self.fail(f"Invalid checksum-ledger line: {line!r}")
+            filename = match.group(2)
+            self.assertNotIn(filename, ledger)
+            ledger[filename] = match.group(1)
+        archives = {path.name for path in DOWNLOADS.glob("*.zip")}
+        self.assertEqual(set(ledger), archives)
+        for filename, expected in ledger.items():
+            self.assertEqual(sha256(DOWNLOADS / filename), expected, filename)
+
+    def test_shared_builder_keeps_shift_and_wings_configs(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        configs = namespace["BUILD_KIT_DOWNLOADS"]
+        self.assertIn("staff-nurse", configs)
+        self.assertIn("nurse-practitioner-usa", configs)
 
     def test_import_source_can_seed_separately_governed_np_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))

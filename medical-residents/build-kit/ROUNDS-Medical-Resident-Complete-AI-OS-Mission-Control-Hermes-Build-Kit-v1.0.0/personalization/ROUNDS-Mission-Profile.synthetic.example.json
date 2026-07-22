@@ -1,0 +1,1199 @@
+{
+  "active_deployment_context": "private_resident_os",
+  "active_partition": "synthetic_learning",
+  "active_record_scope_id": "rounds-learning-reasoning-evidence",
+  "ai_preferences": {
+    "agent_permission_state": "PERM-P0 Disabled",
+    "agent_state": "disabled",
+    "background_automation": "off",
+    "default_support": "prepare_only",
+    "external_actions": "off",
+    "maximum_personal_permission": "P2",
+    "p3_available": false,
+    "p4_available": false,
+    "tools": "disabled"
+  },
+  "canonical_route": "/medical-residents",
+  "core_values": [
+    "truth",
+    "care",
+    "agency",
+    "equity",
+    "family"
+  ],
+  "created_at": "2026-07-20T12:00:00Z",
+  "current_priorities": [
+    "Build a public-source evidence routine",
+    "Protect one post-call recovery block"
+  ],
+  "data_boundary": {
+    "agent_payload_eligible": [
+      "MR-DATA-0",
+      "MR-DATA-1",
+      "MR-DATA-2"
+    ],
+    "default": "MR-DATA-1",
+    "institutional_declared_unavailable": [
+      "MR-DATA-P",
+      "MR-DATA-A"
+    ],
+    "local_control_metadata_only": [
+      "MR-DATA-M",
+      "MR-DATA-R"
+    ],
+    "manual_local_only": [
+      "MR-DATA-W"
+    ],
+    "model_prompt_eligible": [
+      "MR-DATA-0",
+      "MR-DATA-1",
+      "MR-DATA-2"
+    ],
+    "personal_admitted": [
+      "MR-DATA-0",
+      "MR-DATA-1",
+      "MR-DATA-2",
+      "MR-DATA-W",
+      "MR-DATA-M",
+      "MR-DATA-R"
+    ],
+    "rejected_before_echo_and_persistence": [
+      "MR-DATA-C",
+      "MR-DATA-E",
+      "MR-DATA-S",
+      "MR-DATA-X"
+    ]
+  },
+  "declared_contexts": [
+    "private_resident_os",
+    "institution_approved_resident_workspace"
+  ],
+  "demo": true,
+  "display_name": "Synthetic Resident Explorer",
+  "field_provenance": [
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-001",
+      "field": "product_id",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "product_id",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-002",
+      "field": "lane",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "lane",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-003",
+      "field": "foundation_namespace",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "foundation_namespace",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-004",
+      "field": "namespace",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "namespace",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-005",
+      "field": "canonical_route",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "canonical_route",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-006",
+      "field": "display_name",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "display_name",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-007",
+      "field": "resident_status",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "resident_status",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-008",
+      "field": "local_title",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "local_title",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-009",
+      "field": "program",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "program",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-010",
+      "field": "specialty",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "specialty",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-011",
+      "field": "pgy",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "pgy",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-012",
+      "field": "site",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "site",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-013",
+      "field": "rotation_or_service",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "rotation_or_service",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-014",
+      "field": "role_adapters",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "role_adapters",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-015",
+      "field": "primary_role_adapter",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "user_entered",
+      "source_adapter_schema": "DIRECT-OWNER-ENTRY-1",
+      "source_adapter_version": "1.0",
+      "source_field": "owner_selection.primary_role_adapter",
+      "source_record_hash": "e58982dcad6ff25b89763fcf3a9f8c351fa32aa8c7a8267259ce68d63717edad",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-016",
+      "field": "task_hats",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "task_hats",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-017",
+      "field": "primary_task_hat",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "user_entered",
+      "source_adapter_schema": "DIRECT-OWNER-ENTRY-1",
+      "source_adapter_version": "1.0",
+      "source_field": "owner_selection.primary_task_hat",
+      "source_record_hash": "b71d899ae28b0174c0b539117ea21224c5b5077dc0c3a5e3a107a00b5f180ec2",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-018",
+      "field": "secondary_task_hat",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "user_entered",
+      "source_adapter_schema": "DIRECT-OWNER-ENTRY-1",
+      "source_adapter_version": "1.0",
+      "source_field": "owner_selection.secondary_task_hat",
+      "source_record_hash": "a6f322140378af80927e89e59a3fba0147867045053e2909d1ba735832dca3e1",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-019",
+      "field": "mission_statement",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "soul_adapter",
+      "source_adapter_schema": "NAIO-MR-SOUL-PROFILE-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "mission_statement",
+      "source_record_hash": "1ef30a0f3d32015bf5eda0a7e670a3513e0c93ec17dce83749037fe724d05c00",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-020",
+      "field": "core_values",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "soul_adapter",
+      "source_adapter_schema": "NAIO-MR-SOUL-PROFILE-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "core_values",
+      "source_record_hash": "1ef30a0f3d32015bf5eda0a7e670a3513e0c93ec17dce83749037fe724d05c00",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-021",
+      "field": "current_priorities",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "priorities",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-022",
+      "field": "goals",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "discover_adapter",
+      "source_adapter_schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "goals",
+      "source_record_hash": "7a35d072d63cd727153939203fbc04fc37ccba5d47d3e715b0dcd4a39c8c7b59",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-023",
+      "field": "record_scopes",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "record_scopes",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-024",
+      "field": "active_record_scope_id",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "user_entered",
+      "source_adapter_schema": "DIRECT-OWNER-ENTRY-1",
+      "source_adapter_version": "1.0",
+      "source_field": "owner_selection.active_record_scope_id",
+      "source_record_hash": "86f92257651f3da6db905d8b95167fbf705a018b1ea5231218e8624c55b5b88c",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-025",
+      "field": "active_partition",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "user_entered",
+      "source_adapter_schema": "DIRECT-OWNER-ENTRY-1",
+      "source_adapter_version": "1.0",
+      "source_field": "owner_selection.active_partition",
+      "source_record_hash": "9a0af5334390bbb79cc8c37dc86fb7d2817d3e4186c953815ef28f81a59fdacf",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Synthetic and unverified; owner review required",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-026",
+      "field": "declared_contexts",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "declared_contexts",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-027",
+      "field": "active_deployment_context",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "active_deployment_context",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-028",
+      "field": "institutional_context_available",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "institutional_context_available",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-029",
+      "field": "supervision_context",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "supervision_context",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-030",
+      "field": "supervision_state",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "supervision_state",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-031",
+      "field": "practice_boundaries",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "practice_boundaries",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-032",
+      "field": "data_boundary",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "data_boundary",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-033",
+      "field": "ai_preferences",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "ai_preferences",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-034",
+      "field": "memory_preferences",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "memory_preferences",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-035",
+      "field": "governance_preferences",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "governance_preferences",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-036",
+      "field": "whole_life_available",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "whole_life_available",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    },
+    {
+      "approval": "proposed",
+      "consent_state": "not_yet_consented",
+      "derivation_rule_id": "MR-MAP-037",
+      "field": "recommended_assets",
+      "reviewed_at": null,
+      "reviewed_by": "not_yet_reviewed",
+      "source": "system_default",
+      "source_adapter_schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+      "source_adapter_version": "1.0-draft",
+      "source_field": "recommended_assets",
+      "source_record_hash": "00fb3210d7a297a48494531e41515e092ae68bc4c55a469bd334acb0497d20c9",
+      "source_record_hash_algorithm": "sha256_sorted_canonical_json_utf8",
+      "source_value_stored": false,
+      "uncertainty": "Implementation invariant; verify package version and policy before approval",
+      "updated_at": "2026-07-20T12:00:00Z",
+      "user_edited": false
+    }
+  ],
+  "foundation_namespace": "medres_rounds.*",
+  "goals": {
+    "long_term": [
+      "Develop a sustainable practice and life"
+    ],
+    "medium_term": [
+      "Build a reviewed AI-stewardship portfolio"
+    ],
+    "near_term": [
+      "Complete one synthetic ROUNDS mission"
+    ],
+    "protected_life": [
+      "Keep one evening free each week"
+    ]
+  },
+  "governance_preferences": {
+    "absolute_stops_enforced": true,
+    "classification_location": "per_mission_server_derived",
+    "edition": "personal",
+    "nonabsolute_personal_red_requires_ack": true,
+    "risk_tolerance": "conservative",
+    "unclassified_blocks_ai_export": true
+  },
+  "institutional_context_available": false,
+  "institutional_context_requires_separate_runtime_bind": true,
+  "institutional_runtime_bind": null,
+  "lane": "medical_resident",
+  "local_title": "Synthetic PGY-2 resident",
+  "memory_preferences": {
+    "allowed_categories": [
+      "approved nonsensitive goals"
+    ],
+    "default": "session_only",
+    "denied_categories": [
+      "patient information",
+      "formal evaluations",
+      "private program and whole-life data outside their scope"
+    ],
+    "retention_days": 0
+  },
+  "mission_statement": "Learn deliberately, escalate early, and protect the physician and person I am becoming.",
+  "namespace": "medres_rounds.*",
+  "persistence_state": "ephemeral_preview",
+  "pgy": "PGY-2",
+  "practice_boundaries": {
+    "emergency_bypass_to_official_procedures": true,
+    "human_accountability_explicit": true,
+    "no_authority_competence_or_fitness_inference": true,
+    "no_clinical_or_institutional_executor": true,
+    "no_clinical_system_content": true,
+    "no_formal_evaluation_ranking_prediction_or_surveillance": true,
+    "no_live_patient_care": true,
+    "no_patient_specific_guidance": true,
+    "no_phi_or_real_case": true,
+    "no_private_life_in_badges_analytics_or_institutional_exports": true,
+    "no_qi_research_determination_or_execution": true,
+    "no_real_handoff_consult_order_note_page_or_message": true
+  },
+  "primary_role_adapter": "advancing_resident",
+  "primary_task_hat": "learner_or_exam_candidate",
+  "product_id": "medical-resident-rounds-mission-control",
+  "profile_id": "f4a74083-b71d-4e98-8ec6-1fa9ec9197cd",
+  "profile_version": "1.0-draft",
+  "program": "Synthetic Internal Medicine Program",
+  "recommended_assets": {
+    "agents": [
+      {
+        "id": "AGT-01",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-02",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-03",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-04",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-05",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-06",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-07",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-08",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-09",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-10",
+        "permission": "PERM-P0 Disabled"
+      }
+    ],
+    "powers": [
+      {
+        "id": "PWR-01",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-02",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-03",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-04",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-05",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-06",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-07",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-08",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-09",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-10",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-11",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-12",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-13",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-14",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-15",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-16",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-17",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-18",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-19",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-20",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-21",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-22",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-23",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-24",
+        "state": "available_inactive"
+      }
+    ],
+    "source_recommendations": [
+      "MR-SRC-01",
+      "MR-SRC-02",
+      "MR-SRC-03",
+      "MR-SRC-04",
+      "MR-SRC-05",
+      "MR-SRC-06",
+      "MR-SRC-07",
+      "MR-SRC-08",
+      "MR-SRC-09",
+      "MR-SRC-10",
+      "MR-SRC-11",
+      "MR-SRC-12",
+      "MR-SRC-13",
+      "MR-SRC-14"
+    ],
+    "templates": [
+      "TPL-01",
+      "TPL-02",
+      "TPL-03",
+      "TPL-04",
+      "TPL-05",
+      "TPL-06",
+      "TPL-07",
+      "TPL-08",
+      "TPL-09",
+      "TPL-10",
+      "TPL-11",
+      "TPL-12",
+      "TPL-13",
+      "TPL-14",
+      "TPL-15",
+      "TPL-16",
+      "TPL-17",
+      "TPL-18",
+      "TPL-19",
+      "TPL-20",
+      "TPL-21",
+      "TPL-22",
+      "TPL-23",
+      "TPL-24",
+      "TPL-25",
+      "TPL-26",
+      "TPL-27",
+      "TPL-28",
+      "TPL-29",
+      "TPL-30"
+    ],
+    "workflows": [
+      {
+        "id": "WF-01",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-02",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-03",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-04",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-05",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-06",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-07",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-08",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-09",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-10",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-11",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-12",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-13",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-14",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-15",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-16",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-17",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-18",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-19",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-20",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-21",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-22",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-23",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-24",
+        "state": "preview_only"
+      }
+    ]
+  },
+  "record_scopes": [
+    {
+      "active": false,
+      "id": "rounds-role-duty-life",
+      "title": "Role, Duty & Life"
+    },
+    {
+      "active": true,
+      "id": "rounds-learning-reasoning-evidence",
+      "title": "Learning, Reasoning & Evidence"
+    },
+    {
+      "active": false,
+      "id": "rounds-supervision-communication-orchestration",
+      "title": "Supervision, Communication & Orchestration"
+    },
+    {
+      "active": false,
+      "id": "rounds-development-quality-scholarship",
+      "title": "Development, Quality & Scholarship"
+    },
+    {
+      "active": false,
+      "id": "rounds-credentials-career-future",
+      "title": "Credentials, Career & Future"
+    }
+  ],
+  "rejection_behavior": "delete_payload_and_store_content_free_tombstone_only",
+  "resident_status": "advancing_resident",
+  "retirement_behavior": "delete_profile_payload_and_store_content_free_tombstone_only",
+  "role_adapters": [
+    "advancing_resident"
+  ],
+  "rotation_or_service": "General Medicine",
+  "schema": "NAIO-MR-ROUNDS-MISSION-PROFILE-1",
+  "secondary_task_hat": "personal_private",
+  "site": "Synthetic Teaching Hospital",
+  "specialty": "Internal Medicine",
+  "status": "proposed",
+  "supervision_context": {
+    "activity_active_hat": {
+      "effective_at": null,
+      "expires_at": null,
+      "human_owner_role": null,
+      "source_ref": null,
+      "source_version": null,
+      "state": "verification_needed",
+      "verified_at": null
+    },
+    "decision_documentation_destination": {
+      "effective_at": null,
+      "expires_at": null,
+      "human_owner_role": null,
+      "source_ref": null,
+      "source_version": null,
+      "state": "verification_needed",
+      "verified_at": null
+    },
+    "environment_evidence_data": {
+      "effective_at": null,
+      "expires_at": null,
+      "human_owner_role": null,
+      "source_ref": null,
+      "source_version": null,
+      "state": "verification_needed",
+      "verified_at": null
+    },
+    "need_for_escalation": {
+      "effective_at": null,
+      "expires_at": null,
+      "human_owner_role": null,
+      "source_ref": null,
+      "source_version": null,
+      "state": "verification_needed",
+      "verified_at": null
+    },
+    "team_attending": {
+      "effective_at": null,
+      "expires_at": null,
+      "human_owner_role": null,
+      "source_ref": null,
+      "source_version": null,
+      "state": "verification_needed",
+      "verified_at": null
+    },
+    "training_task_entrustment": {
+      "effective_at": null,
+      "expires_at": null,
+      "human_owner_role": null,
+      "source_ref": null,
+      "source_version": null,
+      "state": "verification_needed",
+      "verified_at": null
+    }
+  },
+  "supervision_state": "unverified",
+  "task_hats": [
+    "learner_or_exam_candidate",
+    "personal_private"
+  ],
+  "uncertainties": [
+    "All resident and supervision fields are synthetic and unverified",
+    "This demo profile is not personal fact, authority or badge evidence"
+  ],
+  "updated_at": "2026-07-20T12:00:00Z",
+  "whole_life_available": true
+}

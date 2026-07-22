@@ -1,0 +1,102 @@
+{
+  "schema": "NAIO-SOUL-PROFILE-ADAPTER-1",
+  "profile_schema_version": "1.0-draft",
+  "quiz_definition_version": "pending",
+  "scoring_model_version": "pending",
+  "completed_at": "2026-07-20T12:00:00.000Z",
+  "user_confirmed_at": null,
+  "role_constellation": [
+    {
+      "role_id": "nurse-manager",
+      "label": "Nurse Leader or Healthcare Manager",
+      "state": "primary",
+      "priority": 100,
+      "authorization_status": "unverified"
+    },
+    {
+      "role_id": "nurse-educator",
+      "label": "Nurse Educator or Clinical Preceptor",
+      "state": "supporting",
+      "priority": 72,
+      "authorization_status": "unverified"
+    },
+    {
+      "role_id": "advanced-studies",
+      "label": "Advanced Studies Overlay",
+      "state": "emerging",
+      "priority": 64,
+      "authorization_status": "unverified"
+    }
+  ],
+  "core_values": [
+    "human dignity",
+    "practical stewardship",
+    "evidence before certainty",
+    "shared growth"
+  ],
+  "mission_and_purpose": {
+    "mission": "Help people and teams grow safer, wiser and more capable through governed learning and improvement.",
+    "populations": ["learners", "care teams"],
+    "guiding_principles": ["judgment first", "tools second", "make uncertainty visible"]
+  },
+  "learner_and_developmental_stage": [
+    "experienced clinician",
+    "emerging AI orchestrator"
+  ],
+  "advanced_studies": [
+    {
+      "label": "Responsible AI leadership certificate",
+      "status": "active",
+      "target_date": null
+    }
+  ],
+  "working_and_learning_preferences": {
+    "communication_style": "concise, humane and direct",
+    "decision_style": "evidence-informed with explicit review gates",
+    "learning_preferences": ["worked examples", "reflection", "small experiments"]
+  },
+  "presentation_preferences": {
+    "theme_token": "connection",
+    "tone": "warm, direct and systems-aware"
+  },
+  "role_synergies": [
+    "education strengthens leadership",
+    "quality work creates learning opportunities"
+  ],
+  "role_tensions": [
+    "protected learning time competes with operational demand"
+  ],
+  "wellness_limits": [
+    "protect recovery time after demanding work"
+  ],
+  "ai_relationship_preferences": [
+    "thought partner",
+    "research assistant",
+    "workflow coordinator",
+    "governance monitor"
+  ],
+  "governance_boundaries": {
+    "may_support": ["learning plans", "scenario comparison", "drafting"],
+    "prepare_only": ["organizational recommendations"],
+    "requires_confirmation": ["sharing an artifact"],
+    "requires_supervision": ["clinical education decisions"],
+    "requires_accountable_human_judgment": ["clinical, employment and institutional decisions"],
+    "never_delegate": ["professional accountability", "final clinical judgment"],
+    "memory_allowed": ["non-sensitive preferences and goals"],
+    "memory_denied": ["PHI, secrets and confidential personnel data"],
+    "escalation_rules": ["pause when authority, data class or evidence is uncertain"]
+  },
+  "dashboard_recommendations": [
+    "nurse-manager",
+    "nurse-educator",
+    "advanced-studies",
+    "quality-safety"
+  ],
+  "uncertainties": [
+    "No competence, licensure or organizational authority was verified."
+  ],
+  "source_provenance": [
+    "Deidentified synthetic sample for interface demonstration."
+  ],
+  "demo": true
+}

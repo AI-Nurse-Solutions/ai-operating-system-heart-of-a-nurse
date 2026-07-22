@@ -1,0 +1,506 @@
+{
+  "schema": "NAIO-FUTURE-MISSION-PROFILE-1",
+  "profile_version": "1.0-draft",
+  "product_id": "future-nursing-student-assistant-mission-control",
+  "lane": "nursing_student_assistant",
+  "namespace": "future.*",
+  "canonical_route": "/nursing-students-assistants/dashboard",
+  "profile_id": "20000000-0000-4000-8000-000000000001",
+  "status": "proposed",
+  "created_at": "2026-07-20T12:05:00.000Z",
+  "updated_at": "2026-07-20T12:05:00.000Z",
+  "approved_at": null,
+  "display_name": "Synthetic Bridge Learner",
+  "mission_statement": "Build knowledge, judgment and sustainable learning habits while staying inside verified academic, role, supervision and privacy boundaries.",
+  "core_values": [
+    "human dignity",
+    "honest learning",
+    "patient safety",
+    "curiosity",
+    "sustainable growth"
+  ],
+  "current_priorities": [
+    "Create a four-week retrieval and teach-back rhythm",
+    "Separate academic learning, work growth and private life information",
+    "Verify school and employer AI-use rules with the responsible humans"
+  ],
+  "strengths_and_growth": {
+    "strengths": [
+      "asks for clarification",
+      "values practical learning",
+      "connects learning to service"
+    ],
+    "growth_areas": [
+      "source verification",
+      "realistic capacity planning",
+      "confidence with respectful escalation"
+    ]
+  },
+  "situation_context": {
+    "situation_types": [
+      "work_school_balance",
+      "bridge_transition",
+      "learning_gap"
+    ],
+    "urgency": "routine",
+    "time_horizon": "Synthetic 90-day horizon",
+    "capacity_mode": "standard",
+    "notes": [
+      "All content is synthetic and contains no patient, student, worker or employer-level data.",
+      "The learner must select an active protected context before each mission."
+    ]
+  },
+  "goals": {
+    "near_term": [
+      "Complete four learner-authored study sprints with teach-back and source checks"
+    ],
+    "medium_term": [
+      "Build a truthful, human-reviewed learning portfolio without credential claims"
+    ],
+    "long_term": [
+      "Pursue a verified nursing-education pathway while protecting work, learning and recovery boundaries"
+    ]
+  },
+  "working_preferences": {
+    "communication_style": "brief, kind and direct",
+    "decision_style": "compare a few realistic options, label uncertainty and verify requirements with the responsible human",
+    "learning_preferences": [
+      "retrieval practice",
+      "fictional scenarios",
+      "teach-back",
+      "visual checklists"
+    ],
+    "cadence": "Two short study blocks and one weekly review",
+    "time_constraints": [
+      "Variable synthetic work schedule",
+      "Protect recovery time after demanding days"
+    ]
+  },
+  "role_workspaces": [
+    {
+      "workspace_type": "bridge_academic_learning",
+      "label": "Bridge Learning Studio",
+      "pathway": "bridge",
+      "protected_context": "learning",
+      "operational_context": "academic_learning",
+      "relationship": "primary",
+      "priority": 100,
+      "authorization_status": "unknown",
+      "current_priorities": [
+        "Retrieval practice and teach-back",
+        "Academic-integrity rule verification",
+        "Approved-source skills preparation"
+      ],
+      "goals": [
+        "Build durable general knowledge without using live assessment content",
+        "Prepare questions for authorized faculty review"
+      ],
+      "situation_types": [
+        "bridge_transition",
+        "learning_gap",
+        "graded_work_integrity_question"
+      ],
+      "recommended_assets": {
+        "activation_state": "recommendations_only_inactive",
+        "agent_permission_state": "PERM-P0 Disabled",
+        "tool_state": "disabled",
+        "future_workflow_ids": [
+          "FUT-WF-01",
+          "FUT-WF-03",
+          "FUT-WF-05",
+          "FUT-WF-07",
+          "FUT-WF-10",
+          "FUT-WF-13"
+        ],
+        "future_power_ids": [
+          "FUT-PWR-01",
+          "FUT-PWR-04",
+          "FUT-PWR-05",
+          "FUT-PWR-07",
+          "FUT-PWR-09",
+          "FUT-PWR-15"
+        ],
+        "future_template_ids": [
+          "FUT-TPL-01",
+          "FUT-TPL-02",
+          "FUT-TPL-03",
+          "FUT-TPL-05"
+        ],
+        "capability_ids": [
+          "ai-literacy",
+          "critical-thinking",
+          "privacy-stewardship",
+          "ethical-ai",
+          "role-development"
+        ],
+        "agent_ids": [
+          "FUT-AGT-02",
+          "FUT-AGT-05"
+        ],
+        "tool_ids": [],
+        "dashboard_modules": [
+          "learning_targets",
+          "retrieval_schedule",
+          "human_question_queue",
+          "academic_integrity_receipts"
+        ],
+        "source_recommendation_ids": [
+          "DSC-WF-01",
+          "DSC-WF-08",
+          "DSC-WF-23"
+        ]
+      }
+    },
+    {
+      "workspace_type": "nursing_assistant_work_growth",
+      "label": "Nursing Assistant Work-Growth Lane",
+      "pathway": "nursing_assistant",
+      "protected_context": "work_growth",
+      "operational_context": "employment_growth",
+      "relationship": "supporting",
+      "priority": 82,
+      "authorization_status": "user_asserted",
+      "current_priorities": [
+        "Clarify local role and supervision questions without entering employer-confidential information",
+        "Rehearse respectful communication using fictional scenarios"
+      ],
+      "goals": [
+        "Prepare a general question list for an authorized supervisor",
+        "Keep all real patient and worker information outside FUTURE"
+      ],
+      "situation_types": [
+        "faculty_or_supervisor_conversation",
+        "work_school_balance"
+      ],
+      "recommended_assets": {
+        "activation_state": "recommendations_only_inactive",
+        "agent_permission_state": "PERM-P0 Disabled",
+        "tool_state": "disabled",
+        "future_workflow_ids": [
+          "FUT-WF-04",
+          "FUT-WF-05",
+          "FUT-WF-15"
+        ],
+        "future_power_ids": [
+          "FUT-PWR-05",
+          "FUT-PWR-14",
+          "FUT-PWR-16"
+        ],
+        "future_template_ids": [
+          "FUT-TPL-03"
+        ],
+        "capability_ids": [
+          "structured-problem-solving",
+          "ethical-ai",
+          "role-development"
+        ],
+        "agent_ids": [
+          "FUT-AGT-03",
+          "FUT-AGT-08"
+        ],
+        "tool_ids": [],
+        "dashboard_modules": [
+          "active_context",
+          "role_rule_status",
+          "supervisor_question_queue"
+        ],
+        "source_recommendation_ids": []
+      }
+    },
+    {
+      "workspace_type": "private_life_capacity",
+      "label": "Private Capacity and Recovery",
+      "pathway": "personal",
+      "protected_context": "life",
+      "operational_context": "personal_life",
+      "relationship": "contextual",
+      "priority": 70,
+      "authorization_status": "user_asserted",
+      "current_priorities": [
+        "Protect sleep and recovery",
+        "Use minimum mode during high-load weeks"
+      ],
+      "goals": [
+        "Maintain a realistic private plan that is not visible to a school or employer by default"
+      ],
+      "situation_types": [
+        "work_school_balance",
+        "overload_reentry"
+      ],
+      "recommended_assets": {
+        "activation_state": "recommendations_only_inactive",
+        "agent_permission_state": "PERM-P0 Disabled",
+        "tool_state": "disabled",
+        "future_workflow_ids": [
+          "FUT-WF-02",
+          "FUT-WF-18"
+        ],
+        "future_power_ids": [
+          "FUT-PWR-02",
+          "FUT-PWR-03"
+        ],
+        "future_template_ids": [
+          "FUT-TPL-01"
+        ],
+        "capability_ids": [
+          "project-management",
+          "structured-problem-solving"
+        ],
+        "agent_ids": [
+          "FUT-AGT-01"
+        ],
+        "tool_ids": [],
+        "dashboard_modules": [
+          "capacity_mode",
+          "minimum_plan",
+          "reentry_plan"
+        ],
+        "source_recommendation_ids": [
+          "DSC-WF-02"
+        ]
+      }
+    }
+  ],
+  "authority_context": {
+    "selected_pathway": "bridge",
+    "local_role_or_program_title": "Synthetic bridge learner and nursing assistant",
+    "learning_setting": null,
+    "work_setting": null,
+    "active_context": "learning",
+    "active_operational_context": "academic_learning",
+    "academic_rule_status": "unknown",
+    "employer_rule_status": "unknown",
+    "scope_delegation_status": "unknown",
+    "clinical_learning_mode": "fictional_simulation_only",
+    "verified_at": null,
+    "expires_at": null,
+    "human_routes": [
+      "Authorized faculty or program contact — exact route not configured",
+      "Authorized supervising nurse or employer supervisor — exact route not configured"
+    ]
+  },
+  "academic_integrity": {
+    "attempt_before_answer": true,
+    "learner_authorship_required": true,
+    "rule_check_required": true,
+    "disclosure_status": "unknown",
+    "prohibited_uses": [
+      "live_exam_or_restricted_assessment",
+      "deceptive_completion",
+      "fabricated_source",
+      "fabricated_experience_or_hours",
+      "fabricated_competency_or_reflection",
+      "fabricated_credential_or_signature",
+      "undisclosed_ghost_authorship"
+    ]
+  },
+  "ai_preferences": {
+    "default_support": "suggest_only",
+    "may_support": [
+      "general concept explanation",
+      "retrieval questions",
+      "fictional rehearsal",
+      "private plan options",
+      "source comparison"
+    ],
+    "requires_confirmation": [
+      "adopt a plan",
+      "save a non-sensitive preference",
+      "use a draft outside the sandbox"
+    ],
+    "requires_human_supervision": [
+      "skills-lab preparation",
+      "role-specific clinical learning",
+      "scope or delegation questions"
+    ],
+    "never_delegate": [
+      "learner authorship",
+      "clinical judgment or real patient care",
+      "academic assessment or grading",
+      "scope, delegation or competency decisions",
+      "credential or experience claims",
+      "external execution"
+    ],
+    "agent_state": "disabled",
+    "tool_state": "disabled",
+    "automation_state": "manual_preview_only",
+    "external_action_state": "off"
+  },
+  "memory_preferences": {
+    "enabled": false,
+    "allowed_categories": [],
+    "denied_categories": [
+      "PHI and patient-linked content",
+      "person-level school or employer records",
+      "live assessment content",
+      "credentials, passwords, tokens and secrets"
+    ],
+    "default_retention_days": 0
+  },
+  "governance_preferences": {
+    "edition": "personal",
+    "risk_tolerance": "conservative",
+    "default_edena": "yellow",
+    "default_retention": "session_only",
+    "data_boundary": "synthetic_public_owner_nonsensitive"
+  },
+  "recommended_assets": {
+    "activation_state": "recommendations_only_inactive",
+    "agent_permission_state": "PERM-P0 Disabled",
+    "tool_state": "disabled",
+    "future_workflow_ids": [
+      "FUT-WF-01",
+      "FUT-WF-02",
+      "FUT-WF-03",
+      "FUT-WF-04",
+      "FUT-WF-05",
+      "FUT-WF-07",
+      "FUT-WF-10",
+      "FUT-WF-13",
+      "FUT-WF-15",
+      "FUT-WF-18"
+    ],
+    "future_power_ids": [
+      "FUT-PWR-01",
+      "FUT-PWR-02",
+      "FUT-PWR-03",
+      "FUT-PWR-04",
+      "FUT-PWR-05",
+      "FUT-PWR-07",
+      "FUT-PWR-09",
+      "FUT-PWR-14",
+      "FUT-PWR-15",
+      "FUT-PWR-16"
+    ],
+    "future_template_ids": [
+      "FUT-TPL-01",
+      "FUT-TPL-02",
+      "FUT-TPL-03",
+      "FUT-TPL-05"
+    ],
+    "capability_ids": [
+      "ai-literacy",
+      "critical-thinking",
+      "structured-problem-solving",
+      "project-management",
+      "privacy-stewardship",
+      "ethical-ai",
+      "role-development"
+    ],
+    "agent_ids": [
+      "FUT-AGT-01",
+      "FUT-AGT-02",
+      "FUT-AGT-03",
+      "FUT-AGT-05",
+      "FUT-AGT-08"
+    ],
+    "tool_ids": [],
+    "dashboard_modules": [
+      "active_context",
+      "today_top_three",
+      "learning_targets",
+      "retrieval_schedule",
+      "human_question_queue",
+      "academic_integrity_receipts",
+      "capacity_mode",
+      "passport_progress",
+      "future_library"
+    ],
+    "source_recommendation_ids": [
+      "DSC-WF-01",
+      "DSC-WF-02",
+      "DSC-WF-08",
+      "DSC-WF-23"
+    ]
+  },
+  "presentation_preferences": {
+    "theme_token": "direction",
+    "tone": "hopeful, practical and nonjudgmental"
+  },
+  "accessibility_preferences": {
+    "visual_density": "comfortable",
+    "reduced_motion": true,
+    "high_contrast": false,
+    "language": "en-US"
+  },
+  "field_provenance": [
+    {
+      "field": "/mission_statement",
+      "source_type": "resolved_conflict",
+      "source_ref": "synthetic-adapter-pair-1",
+      "source_field": "/mission_statement",
+      "mapping_rule_id": "MAP-FUTURE-MISSION-1",
+      "derivation": "conflict_resolution",
+      "uncertainty": "Awaiting synthetic user review",
+      "approval_status": "proposed",
+      "approved_at": null,
+      "updated_at": "2026-07-20T12:05:00.000Z"
+    },
+    {
+      "field": "/role_workspaces",
+      "source_type": "first_run_user_input",
+      "source_ref": "synthetic-first-run-1",
+      "source_field": "/selected_pathway",
+      "mapping_rule_id": "MAP-FUTURE-WORKSPACE-CANDIDATE-1",
+      "derivation": "role_candidate",
+      "uncertainty": "Pathway and local rules are unverified",
+      "approval_status": "proposed",
+      "approved_at": null,
+      "updated_at": "2026-07-20T12:05:00.000Z"
+    },
+    {
+      "field": "/recommended_assets",
+      "source_type": "discover_derived",
+      "source_ref": "synthetic-discover-adapter-1",
+      "source_field": "/recommended_workflow_ids",
+      "mapping_rule_id": "MAP-FUTURE-CATALOG-RESOLUTION-1",
+      "derivation": "recommendation_candidate",
+      "uncertainty": "Inactive recommendations only; build-layer IDs require pinned catalog resolution",
+      "approval_status": "proposed",
+      "approved_at": null,
+      "updated_at": "2026-07-20T12:05:00.000Z"
+    },
+    {
+      "field": "/recommended_assets/agent_ids",
+      "source_type": "first_run_user_input",
+      "source_ref": "synthetic-task-intent-review-1",
+      "source_field": "/declared_support_preferences",
+      "mapping_rule_id": "MAP-FUTURE-AGENT-CANDIDATE-1",
+      "derivation": "recommendation_candidate",
+      "uncertainty": "Recommendations only; every listed agent remains PERM-P0 Disabled and has no tool, data, memory, permission or run grant",
+      "approval_status": "proposed",
+      "approved_at": null,
+      "updated_at": "2026-07-20T12:05:00.000Z"
+    },
+    {
+      "field": "/working_preferences",
+      "source_type": "soul_derived",
+      "source_ref": "synthetic-soul-adapter-1",
+      "source_field": "/working_and_learning_preferences",
+      "mapping_rule_id": "MAP-FUTURE-WORKSTYLE-1",
+      "derivation": "direct_copy",
+      "uncertainty": "Awaiting synthetic user review",
+      "approval_status": "proposed",
+      "approved_at": null,
+      "updated_at": "2026-07-20T12:05:00.000Z"
+    },
+    {
+      "field": "/authority_context",
+      "source_type": "first_run_user_input",
+      "source_ref": "synthetic-first-run-1",
+      "source_field": "/authority_questions",
+      "mapping_rule_id": "MAP-FUTURE-AUTHORITY-1",
+      "derivation": "user_entered",
+      "uncertainty": "All local authority and rule fields remain unknown",
+      "approval_status": "proposed",
+      "approved_at": null,
+      "updated_at": "2026-07-20T12:05:00.000Z"
+    }
+  ],
+  "uncertainties": [
+    "Synthetic demonstration only; no person, patient, school, employer, program or outcome is represented.",
+    "No enrollment, employment, role scope, delegation, competence, certification, licensure, policy or authority is verified.",
+    "All recommended powers, workflows and templates are inactive; agents and tools are disabled."
+  ],
+  "demo": true
+}

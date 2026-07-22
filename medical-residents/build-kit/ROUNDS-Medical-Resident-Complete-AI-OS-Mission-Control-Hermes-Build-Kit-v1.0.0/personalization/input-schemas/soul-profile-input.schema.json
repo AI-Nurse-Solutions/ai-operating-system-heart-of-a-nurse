@@ -1,0 +1,251 @@
+{
+  "$id": "https://medical-resident-ai-os.local/schemas/rounds-soul-profile-adapter-1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Approved derived identity fields only. Raw quiz answers, raw SOUL.md, patient/event content and authority claims are never admitted.",
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "raw_answers"
+        ]
+      },
+      {
+        "required": [
+          "raw_quiz_answers"
+        ]
+      },
+      {
+        "required": [
+          "raw_soul"
+        ]
+      },
+      {
+        "required": [
+          "soul_md"
+        ]
+      },
+      {
+        "required": [
+          "SOUL.md"
+        ]
+      },
+      {
+        "required": [
+          "patient_data"
+        ]
+      },
+      {
+        "required": [
+          "clinical_case"
+        ]
+      },
+      {
+        "required": [
+          "event_narrative"
+        ]
+      },
+      {
+        "required": [
+          "formal_evaluation"
+        ]
+      },
+      {
+        "required": [
+          "authority_claims"
+        ]
+      },
+      {
+        "required": [
+          "institutional_approval"
+        ]
+      }
+    ]
+  },
+  "properties": {
+    "adapter_version": {
+      "const": "1.0-draft"
+    },
+    "ai_permission_preferences": {
+      "additionalProperties": false,
+      "properties": {
+        "agents": {
+          "const": "disabled_until_one_run_approval"
+        },
+        "external_actions": {
+          "const": "off"
+        },
+        "maximum_model_permission": {
+          "enum": [
+            "P0",
+            "P1",
+            "P2"
+          ]
+        },
+        "tools": {
+          "const": "disabled_until_one_run_approval"
+        }
+      },
+      "required": [
+        "maximum_model_permission",
+        "agents",
+        "tools",
+        "external_actions"
+      ],
+      "type": "object"
+    },
+    "communication_style": {
+      "maxLength": 240,
+      "type": "string"
+    },
+    "core_values": {
+      "items": {
+        "maxLength": 100,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "decision_style": {
+      "maxLength": 240,
+      "type": "string"
+    },
+    "demo": {
+      "type": "boolean"
+    },
+    "growth_areas": {
+      "items": {
+        "maxLength": 160,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "guiding_principles": {
+      "items": {
+        "maxLength": 240,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "learning_preferences": {
+      "items": {
+        "maxLength": 160,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "memory_preferences": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed": {
+          "items": {
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 12,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "default": {
+          "enum": [
+            "session_only",
+            "approved_nonsensitive_local"
+          ]
+        },
+        "never": {
+          "items": {
+            "maxLength": 240,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 24,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "default",
+        "allowed",
+        "never"
+      ],
+      "type": "object"
+    },
+    "mission_statement": {
+      "maxLength": 600,
+      "minLength": 1,
+      "type": "string"
+    },
+    "nonnegotiable_boundaries": {
+      "items": {
+        "maxLength": 240,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 24,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "risk_tolerance": {
+      "enum": [
+        "conservative",
+        "balanced",
+        "exploratory_with_review"
+      ]
+    },
+    "schema": {
+      "const": "NAIO-MR-SOUL-PROFILE-ADAPTER-1"
+    },
+    "strengths": {
+      "items": {
+        "maxLength": 160,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "uncertainties": {
+      "items": {
+        "maxLength": 300,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 30,
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema",
+    "adapter_version",
+    "mission_statement",
+    "core_values",
+    "guiding_principles",
+    "strengths",
+    "growth_areas",
+    "communication_style",
+    "decision_style",
+    "learning_preferences",
+    "risk_tolerance",
+    "memory_preferences",
+    "ai_permission_preferences",
+    "nonnegotiable_boundaries",
+    "uncertainties",
+    "demo"
+  ],
+  "title": "ROUNDS Soul Profile Adapter",
+  "type": "object"
+}

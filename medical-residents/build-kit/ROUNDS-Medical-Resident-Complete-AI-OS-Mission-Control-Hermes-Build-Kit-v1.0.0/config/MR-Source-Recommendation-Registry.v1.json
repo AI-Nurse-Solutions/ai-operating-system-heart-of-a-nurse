@@ -1,0 +1,182 @@
+{
+  "count": 14,
+  "entries": [
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-01",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Current residency requirements hub; local program implementation still controls",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "ACGME Common Program Requirements \u2014 Residency",
+      "url": "https://www.acgme.org/programs-and-institutions/programs/common-program-requirements/"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-02",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Frozen source recommendation; verify current effective version and specialty requirements",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "ACGME 2026 Common Program Requirements",
+      "url": "https://www.acgme.org/globalassets/pfassets/programrequirements/2026-prs/cprresidency_2026.pdf"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-03",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Learning-environment reference; never infer program compliance",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "ACGME CLER Pathways to Excellence 3.0",
+      "url": "https://www.acgme.org/globalassets/pdfs/cler/acgme-cler-2024-pte3.pdf"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-04",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Responsible-AI reference; does not grant local approval",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "AAMC Principles for Responsible AI in Medical Education",
+      "url": "https://www.aamc.org/about-us/mission-areas/medical-education/principles-ai-use"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-05",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Competency-development context; not a resident assessment or credential",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "AAMC AI Competencies status",
+      "url": "https://www.aamc.org/about-us/medical-education/ai-competencies"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-06",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Professional AI principles; verify current version and applicability",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "AMA Principles for Augmented Intelligence",
+      "url": "https://www.ama-assn.org/system/files/ama-ai-principles.pdf"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-07",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Medical-board policy reference; state law and board rules remain controlling",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "FSMB physician AI policy",
+      "url": "https://www.fsmb.org/siteassets/advocacy/policies/incorporation-of-ai-into-practice.pdf"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-08",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Human teamwork and communication reference; AI never closes a clinical loop",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "AHRQ TeamSTEPPS 3.0",
+      "url": "https://www.ahrq.gov/teamstepps-program/index.html"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-09",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Institutional privacy reference; this personal target accepts no PHI",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "HHS HIPAA Minimum Necessary",
+      "url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/minimum-necessary-requirement/index.html"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-10",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Approved de-identification occurs outside this product; name removal is insufficient",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "HHS HIPAA De-identification Guidance",
+      "url": "https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-11",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Global health-AI governance reference",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "WHO Ethics and Governance of AI for Health",
+      "url": "https://www.who.int/publications/i/item/9789240029200"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-12",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Health-focused generative-AI risk reference",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "WHO Guidance on Large Multimodal Models",
+      "url": "https://www.who.int/publications/i/item/9789240084759"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-13",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Accessibility and nondiscrimination reference; qualified local review remains required",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "HHS Section 504 Final Rule Fact Sheet",
+      "url": "https://www.hhs.gov/civil-rights/for-individuals/disability/section-504-rehabilitation-act-of-1973/part-84-final-rule-fact-sheet/index.html"
+    },
+    {
+      "canonical_source_captured_at": "2026-07-20",
+      "id": "MR-SRC-14",
+      "live_status": "not_checked_by_build_kit",
+      "purpose": "Accessibility design and test reference",
+      "refresh_required_at_install": true,
+      "source_defined": true,
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "title": "W3C Web Content Accessibility Guidelines 2.2",
+      "url": "https://www.w3.org/TR/WCAG22/"
+    }
+  ],
+  "notice": "Recommendations do not prove current applicability, local adoption, clinical validity, institutional approval, credentials, authority or permission to act.",
+  "rules": {
+    "current_official_and_local_rules_take_precedence": true,
+    "hash_mismatch_behavior": "disable_and_require_review",
+    "recommendation_grants_authority": false,
+    "unknown_id_behavior": "reject"
+  },
+  "schema": "NAIO-MR-ROUNDS-SOURCE-RECOMMENDATION-REGISTRY-1",
+  "version": "1.0.0"
+}

@@ -1,0 +1,70 @@
+{
+  "adapter_version": "1.0-draft",
+  "ai_boundaries": {
+    "default_support": "prepare_only",
+    "external_actions": "off",
+    "memory_default": "session_only",
+    "never_delegate": [
+      "patient care",
+      "supervision decisions",
+      "prescribing",
+      "credential or competence claims",
+      "formal evaluation"
+    ]
+  },
+  "capacity": "balanced",
+  "current_season": "build",
+  "demo": true,
+  "display_name": "Synthetic Resident Explorer",
+  "goals": {
+    "long_term": [
+      "Develop a sustainable practice and life"
+    ],
+    "medium_term": [
+      "Build a reviewed AI-stewardship portfolio"
+    ],
+    "near_term": [
+      "Complete one synthetic ROUNDS mission"
+    ],
+    "protected_life": [
+      "Keep one evening free each week"
+    ]
+  },
+  "local_title": "Synthetic PGY-2 resident",
+  "pgy": "PGY-2",
+  "priorities": [
+    "Build a public-source evidence routine",
+    "Protect one post-call recovery block"
+  ],
+  "program": "Synthetic Internal Medicine Program",
+  "resident_status": "advancing_resident",
+  "role_adapters": [
+    "advancing_resident"
+  ],
+  "rotation_or_service": "General Medicine",
+  "schema": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1",
+  "site": "Synthetic Teaching Hospital",
+  "specialty": "Internal Medicine",
+  "task_hats": [
+    "learner_or_exam_candidate",
+    "personal_private"
+  ],
+  "uncertainties": [
+    "All program, PGY, site, rotation and supervision fields are synthetic and unverified"
+  ],
+  "values": [
+    "truth",
+    "care",
+    "agency",
+    "family"
+  ],
+  "working_preferences": {
+    "cadence": "weekly review",
+    "communication": "direct and warm",
+    "decision": "options with uncertainty visible",
+    "learning": [
+      "worked examples",
+      "reflection"
+    ]
+  }
+}

@@ -162,8 +162,7 @@ class EducatorCompleteEditionTests(unittest.TestCase):
             "TEACH SuperPowers",
             "169 embedded release checks",
             "all twenty optional TEACH SuperPowers remain inactive",
-            "Complete Edition lanes 01, 02, 03, and 04",
-            "Lane 06 WINGS",
+            "Complete Edition lane 04",
             "For review-first lane 05",
         ):
             self.assertIn(phrase, page)

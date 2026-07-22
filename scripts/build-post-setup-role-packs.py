@@ -769,6 +769,7 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
     }
     if "source_zip_sha256_before_derivative" in config:
         record["source_zip_sha256_before_derivative"] = config["source_zip_sha256_before_derivative"]
+        record["source_zip_bytes_before_derivative"] = config["source_zip_bytes_before_derivative"]
     else:
         record["source_zip_sha256"] = config["source_zip_sha256"]
     if "route" in config["target"]:
@@ -805,22 +806,30 @@ def deterministic_zip(role: dict) -> dict:
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     role_manifest = json.loads((source / "ROLE-PACK.json").read_text(encoding="utf-8"))
     if role["slug"] in BUILD_KIT_DOWNLOADS:
+        config = BUILD_KIT_DOWNLOADS[role["slug"]]
         record = {
             "role": role["label"],
             "folder": role["folder"],
             "install_on_download": False,
             "intended_stage": "after_soul_files_and_hermes_setup",
-            "activation": role_manifest["activation"],
-            "package_version": role_manifest["package_version"],
+            "activation": config.get("activation", role_manifest["activation"]),
+            "package_version": config.get("package_version", role_manifest["package_version"]),
             "pre_install_disclosure_required": role_manifest.get("pre_install_disclosure_required", False),
         }
-        record.update(validate_build_kit_zip(role, BUILD_KIT_DOWNLOADS[role["slug"]]))
+        if "activation" in config:
+            record["legacy_source_activation_contract"] = role_manifest["activation"]
+        if "package_version" in config:
+            record["legacy_source_package_version"] = role_manifest["package_version"]
+        record.update(validate_build_kit_zip(role, config))
         for key in (
             "acceptance_tests",
             "foundation_first",
+            "future_overlay_second",
             "lead_overlay_second",
             "shift_overlay_second",
+            "pathways",
             "role_adapters",
+            "bridge_context_transfer_automatic",
             "automatic_shared_access",
             "optional_superpowers_total",
             "optional_superpowers_active_after_install",
@@ -901,6 +910,9 @@ def build(source_root: Path | None) -> None:
             import_role(source_root, role)
         for role in prebuilt_roles:
             import_prebuilt_role(source_root, role)
+    future_builder = runpy.run_path(str(REPO / "scripts" / "build-future-student-assistant-build-kit.py"))
+    future_config = future_builder["build"]()
+    BUILD_KIT_DOWNLOADS["student-nurse"] = future_config
     lead_builder = runpy.run_path(str(REPO / "scripts" / "build-lead-nurse-leader-build-kit.py"))
     lead_config = lead_builder["build"]()
     lead_config["ci_validation"] = "tracked_source_builder_and_tracked_verifier_package_and_outer_zip"
@@ -908,7 +920,7 @@ def build(source_root: Path | None) -> None:
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.21.1",
+        "release": "2026.07.22.1",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,

@@ -1,12 +1,12 @@
 # Nurse AI OS Post-Setup Role Packs
 
-These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 02 and 03 are reproducible self-install Hermes build kits. Lanes 01, 04, and 06 are separately governed Complete Editions. Every lane requires review or read-only preflight and exact human approval before any installation mutation.
+These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 01, 02, and 03 are reproducible self-install Hermes build kits. Lanes 04 and 06 are separately governed Complete Editions. Every lane requires review or read-only preflight and exact human approval before any installation mutation.
 
 ## Role folders
 
 | Folder | User-facing role | Download |
 |---|---|---|
-| `01-Student-Nurse` | Nursing Student and Nursing Assistant | `downloads/nurse-ai-os-post-setup-student-nurse.zip` |
+| `01-Student-Nurse` | Nursing Student and Nursing Assistant | `downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `02-Staff-Nurse` | Staff Nurse and Quality Contributor | `downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `03-Nurse-Leader-and-Manager` | Nurse Leader and Manager | `downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `04-Nurse-Educator` | Nurse Educator and Instructional Designer | `downloads/nurse-ai-os-post-setup-nurse-educator.zip` |
@@ -27,7 +27,7 @@ Nothing is installed or activated. Every package declares:
 }
 ```
 
-Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. Self-install lanes 02 and 03 require the complete ZIP, package verification, read-only environment preflight, and one exact Implementation Activation Card. Complete Edition lanes 01, 04, and 06 use their supplied one-file Hermes programs and exact combined activation cards. No lane mutates the target before explicit approval.
+Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. Self-install lanes 01, 02, and 03 require the complete ZIP, package verification, read-only environment preflight, and one exact Implementation Activation Card. Complete Edition lanes 04 and 06 use their supplied one-file Hermes programs and exact combined activation cards. No lane mutates the target before explicit approval.
 
 ## Package contents
 
@@ -42,16 +42,16 @@ Review-first lane 05 includes:
 - Shared SuperPowers User Guide, retained as reference material
 - `PACKAGE-CHECKSUMS.sha256`
 
-The Nursing Student and Nursing Assistant ZIP is a separately governed Complete Edition. It includes:
+The Nursing Student and Nursing Assistant download is a reproducible governed self-install Hermes build kit. The tracked public-safe source includes:
 
-- `00-READ-FIRST.md`
-- `ROLE-PACK.json`
-- `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Hermes-Program.md` — complete one-file guided installer
-- `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md`
-- `Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx`
-- `PACKAGE-CHECKSUMS.sha256`
+- `README-FIRST.md` and `GIVE-THIS-PACKAGE-TO-HERMES.md`
+- `RELEASE-MANIFEST.json`, `SOURCE-INVENTORY.json`, and `SHA256SUMS.txt`
+- `BUILD-STATUS.md`, implementation contracts, personalization schemas, and safe synthetic fixtures
+- the pinned working Mission Control baseline and FUTURE specialization corpus under `source/`
+- the legacy Complete Edition program and guides under `source/legacy-reference/` as provenance—not as the public handoff
+- `tools/verify-build-kit.py`
 
-The FUTURE program supports Nursing Student, Nursing Assistant, and Bridge pathways. It creates, repairs, or binds the foundation first, runs 24 foundation tests, adds the FUTURE Library and Passport as an inactive overlay, and runs 96 FUTURE tests plus 16 integration checks—136 embedded release checks in total. All eighteen optional SuperPowers remain inactive. Bridge keeps academic and employment contexts separate. Downloading does not install it. Pathway selection does not verify enrollment, certification, employment, scope, delegation, supervision, competence, or institutional permission, and private-workspace approval does not authorize school, clinical-site, employer, community, or organizational deployment.
+The dedicated tracked-source builder normalizes the outer ZIP, validates all 105 members and the original-source derivative provenance, and executes the tracked verifier against both the package directory and outer ZIP. FUTURE supports Nursing Student, Nursing Assistant, and Bridge pathways. Its target contract contains 24 foundation, 96 FUTURE overlay, and 16 integration checks—136 canonical compatibility checks—plus 169 control tests and 44 cross-cutting scenarios, for 349 required execution records. Every result begins `Not Run`. All eighteen optional SuperPowers remain `Available Inactive`; all ten suggested agents remain `PERM-P0 Disabled`; workflows remain `Preview Only`; connectors, sharing, schedules, external actions, new persistent memory categories, and background automation remain off. Downloading does not install it. Pathway selection does not verify enrollment, certification, employment, scope, delegation, supervision, competence, or institutional permission, and a private build does not authorize school, clinical-site, employer, community, or organizational deployment.
 
 The Staff Nurse and Quality Contributor download is a governed self-install Hermes build kit. Its immutable role source includes:
 

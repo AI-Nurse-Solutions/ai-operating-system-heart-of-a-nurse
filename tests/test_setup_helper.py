@@ -193,7 +193,7 @@ class SetupHelperTests(unittest.TestCase):
         self.assertEqual(len(result), 6)
         self.assertTrue(all(result.values()))
 
-    def test_student_assistant_complete_edition_is_preflight_first(self):
+    def test_student_assistant_build_kit_is_preflight_first(self):
         result = node_eval("""
           import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
           const lane=POST_SETUP_LANES.find(x=>x.value==='student_nurse');
@@ -204,14 +204,17 @@ class SetupHelperTests(unittest.TestCase):
         self.assertIn("without opening or requiring a package file", task)
         self.assertIn("one-page readiness checklist", task)
         self.assertIn("one synthetic seven-day first-win plan", task)
-        self.assertIn("whether my SOUL files and Hermes setup are complete", task)
-        self.assertIn("at the later post-setup stage", task)
-        self.assertIn("finish the read-only preflight", task)
+        self.assertIn("whether my SOUL files and basic Hermes setup are complete", task)
+        self.assertIn("At the later post-setup stage", task)
+        self.assertIn("give Hermes the complete ZIP", task)
+        self.assertIn("manifest, checksums, source provenance", task)
         self.assertIn("Do not install, save, connect, share, transfer school or work context, or activate anything", task)
-        self.assertIn("downloading and unzipping do not install anything", task)
-        self.assertIn("FUTURE Complete Edition Activation Card", task)
-        self.assertIn("136 embedded release checks", task)
-        self.assertIn("all eighteen optional SuperPowers off", task)
+        self.assertIn("downloading, selecting, opening, or unzipping the ZIP does not install or activate anything", task)
+        self.assertIn("one exact Implementation Activation Card with APPROVE, REVISE, and CANCEL", task)
+        self.assertIn("136 canonical compatibility checks", task)
+        self.assertIn("349 required execution records that all begin Not Run", task)
+        self.assertIn("All eighteen optional FUTURE SuperPowers remain Available Inactive", task)
+        self.assertIn("all ten suggested agents remain PERM-P0 Disabled", task)
         self.assertIn("Bridge contexts stay separate", task)
         self.assertIn("does not authorize school, clinical-site, employer, community, or organizational deployment", task)
 

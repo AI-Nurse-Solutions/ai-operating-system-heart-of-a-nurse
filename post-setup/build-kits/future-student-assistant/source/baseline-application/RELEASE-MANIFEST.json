@@ -1,0 +1,223 @@
+{
+  "catalog_counts": {
+    "artifact_states": 8,
+    "capabilities": 17,
+    "guide_sections": 12,
+    "mastery_levels": 4,
+    "mission_stages": 5,
+    "powers": 24,
+    "roles": 17,
+    "templates": 30,
+    "workflows": 24
+  },
+  "compatibility": {
+    "browser": "current desktop browser with JavaScript and localStorage",
+    "optional_local_server": "Node.js 18 or newer",
+    "portable_mode": "index.html; separate browser-storage origin from server mode"
+  },
+  "discover_packet": {
+    "adapter_schema": "NAIO-DISCOVER-PACKET-ADAPTER-1",
+    "input_status": "derived non-sensitive configuration only; raw notes prohibited",
+    "neutral_mode_supported": true
+  },
+  "files_excluding_manifest_and_checksums": [
+    {
+      "bytes": 3594,
+      "path": "CHANGELOG.md",
+      "sha256": "8977429ac497eb8532d6bc9a71714b3b63628cb72aa12a32b22256e1dc67ad23"
+    },
+    {
+      "bytes": 1284,
+      "path": "LICENSE.md",
+      "sha256": "86c51ba0fa2dc3cbcaa728f5580d59fbb5eb1949fad0544fd23f0dfd556f80a0"
+    },
+    {
+      "bytes": 5195,
+      "path": "PRIVACY.md",
+      "sha256": "fc436bd81e47e67b621a5a0138b0ece303d3d4b999ae30838bd8ddd6d4f3a72a"
+    },
+    {
+      "bytes": 4687,
+      "path": "README-FIRST.md",
+      "sha256": "775ce58ef8614f57af74fa8885c69261258355fef6cd00a5c3648fca9e5cd23a"
+    },
+    {
+      "bytes": 10873,
+      "path": "README.md",
+      "sha256": "0ffb0256b4bc62e905ee654f3f5a43f7c5bbfa820f9e7870c083a1a2087d718d"
+    },
+    {
+      "bytes": 2127,
+      "path": "SBOM-or-Dependency-Record.json",
+      "sha256": "19a9cdd2649a9faec1aff9a87a1b85609b9f5789c8e6599e2306a8a13c062a04"
+    },
+    {
+      "bytes": 5468,
+      "path": "SECURITY.md",
+      "sha256": "f5b64f9c7ad30de668ee2a6dc4b314e0a0499b2c75f956a3807e2ad248367928"
+    },
+    {
+      "bytes": 791,
+      "path": "Start-DISCOVER.bat",
+      "sha256": "d9d6ccc5bb4d0d0f8eeee460e2c7ca70b2c5192a15c6f056d0e58ccfc7ab40cd"
+    },
+    {
+      "bytes": 677,
+      "path": "Start-DISCOVER.command",
+      "sha256": "507a9de94233b1ef2edf16e362514b87aded1e968608b825ced06d548c4fab0f"
+    },
+    {
+      "bytes": 2991,
+      "path": "UNINSTALL.md",
+      "sha256": "e2fa66aa6d066e46896ef8509dbfda4aff9950139240de19530648ea6f90d340"
+    },
+    {
+      "bytes": 6,
+      "path": "VERSION",
+      "sha256": "c28fcca53637bc88e124af1725df13cb98c69dedefd62fb3cdbe1cdb6b760624"
+    },
+    {
+      "bytes": 183492,
+      "path": "assets/app.js",
+      "sha256": "1274744854565ccd03a52b02d36c3e08a0b6fc12725244282236e930937dcb93"
+    },
+    {
+      "bytes": 41311,
+      "path": "assets/styles.css",
+      "sha256": "92e95874ff68c8aafec11cabc3a0e3ff25a61cbb14245bf01c7fefce6b67e8cc"
+    },
+    {
+      "bytes": 1675125,
+      "path": "base-pack/DISCOVER-Complete-AI-OS-Hermes-Installer.md",
+      "sha256": "61e900ac5c2b10ee240086ab8d24617ff9ea272bdb18b7bd181a8c60cd6102b5"
+    },
+    {
+      "bytes": 202457,
+      "path": "base-pack/DISCOVER-Complete-AI-OS-Setup-Guide.docx",
+      "sha256": "87ee88d44c0c924043349dce857210e669fc2853bbd298e4724fe0fec968dd6d"
+    },
+    {
+      "bytes": 29324,
+      "path": "base-pack/DISCOVER-Complete-AI-OS-Setup-Guide.md",
+      "sha256": "81a5cc2ea0f394102805a3e71900324b2bb202478b28568eee1d9aec0e0642fc"
+    },
+    {
+      "bytes": 2870,
+      "path": "config/capability-evidence.schema.json",
+      "sha256": "95807f8141ba9956f28d0d2381b9accb818447331b76d3cce5c969929b0917cc"
+    },
+    {
+      "bytes": 5146,
+      "path": "config/discover-packet-input.schema.json",
+      "sha256": "e9fa2f44d37de10089ce2801dec29899609c826c9a3e0d27385201d55cc3526c"
+    },
+    {
+      "bytes": 6159,
+      "path": "config/edena-policy.json",
+      "sha256": "2f7295db54c7a820610ce921d37c405f5cf1515b04427d201adb11105db2a159"
+    },
+    {
+      "bytes": 4046,
+      "path": "config/mission-control-manifest.json",
+      "sha256": "cf11fb14f12663494a7b0da16a1ab944970b39e34302fbd7cd32b51bc6764a84"
+    },
+    {
+      "bytes": 5025,
+      "path": "config/mission.schema.json",
+      "sha256": "20977278409288804afd22104123651ef9212cf0be0b51764ec2869dc26e4d36"
+    },
+    {
+      "bytes": 5950,
+      "path": "config/role-dashboards.json",
+      "sha256": "cabbcdec07fa4b41665112da89796347a4bf37ab55c5d20a4a3bc3ccac6aa27c"
+    },
+    {
+      "bytes": 7000,
+      "path": "config/soul-profile-input.schema.json",
+      "sha256": "f7c886e99dac3b2280da273c8485b9828279e67fc0975569019a3b6e2ddeb6d3"
+    },
+    {
+      "bytes": 2408,
+      "path": "examples/deidentified-discover-packet.json",
+      "sha256": "b1d93f3b06c7eb8b114a417e59be9bd99b07c2973116e38d95578fccecd0d58c"
+    },
+    {
+      "bytes": 3320,
+      "path": "examples/deidentified-soul-profile.json",
+      "sha256": "2e0d5001e60aa17b38a06f3c8ac78fb8d717068d82b4da4c8c3c003584a1d26e"
+    },
+    {
+      "bytes": 3542,
+      "path": "examples/sample-mission.json",
+      "sha256": "da2b5dd50be21b95ec23eb2e9a87c341d5723e9838c1b36ae3ae695150ecfe9a"
+    },
+    {
+      "bytes": 18978,
+      "path": "guide/DISCOVER-Mission-Control-Setup-Guide.md",
+      "sha256": "2b7e2d35c51a023f31946c8767707f4661312e1572e25095bf52ad669a626a07"
+    },
+    {
+      "bytes": 15158,
+      "path": "hermes/DISCOVER-Dashboard-Hermes-Integration-Installer.md",
+      "sha256": "bdd892f671926151f692a5d7221183199e6f39f0827cf4b2fa7efe4f677aa6ec"
+    },
+    {
+      "bytes": 6312,
+      "path": "hermes/Hermes-Capability-State.md",
+      "sha256": "aecd4802f94e0163d6aef2dc77d43a3b89d4f9ee4b67d8d2815ba83e73dc38b1"
+    },
+    {
+      "bytes": 60184,
+      "path": "index.html",
+      "sha256": "15c3fcea3b2553f4bd87fb739b8a1a4f5b14511f73fece32470fdf6526484045"
+    },
+    {
+      "bytes": 4411,
+      "path": "server.mjs",
+      "sha256": "5fffdbb33ecf2888f4e94c7f31cd352f03469680d6f96d72dcd5e3372729fc6e"
+    },
+    {
+      "bytes": 758,
+      "path": "start-discover.sh",
+      "sha256": "2e269cf2065ae5e9f2e7c9722a9766e647063e62a5fdbda2006985d6550a34b0"
+    }
+  ],
+  "generated_at": "2026-07-20T09:58:27.647524+00:00",
+  "governance": {
+    "badges_are_credentials": false,
+    "edena_policy": "EDENA-MC-ADVISORY@1.0.0-draft",
+    "human_accountability": true,
+    "institutional_red": "blocked transition in local policy preview; real enforcement requires a managed edition",
+    "personal_red": "prominent advisory plus deliberate acknowledgment; sanitized exploration only"
+  },
+  "hermes_companion_id": "NAIOS-MISSION-CONTROL-LOCAL-2.0.0",
+  "integration": {
+    "background_execution": false,
+    "external_actions": false,
+    "host": "Hermes-powered Nurse AI OS",
+    "institutional_policy_mode": "preview only; not managed or tamper-resistant enforcement",
+    "mode": "downloaded local static application with manual reviewed handoffs",
+    "network_calls_from_dashboard": 0
+  },
+  "privacy": {
+    "browser_storage_encrypted": false,
+    "explicit_backup_may_contain_mission_text": true,
+    "prohibited_data": [
+      "PHI",
+      "confidential institutional information",
+      "credentials",
+      "secrets"
+    ],
+    "session_only_missions_persisted": false
+  },
+  "product": "DISCOVER \u00b7 Nurse AI OS Mission Control",
+  "product_id": "discover-nurse-ai-os-mission-control",
+  "schema": "NAIO-MISSION-CONTROL-RELEASE-2",
+  "soul_profile": {
+    "adapter_schema": "NAIO-SOUL-PROFILE-ADAPTER-1",
+    "neutral_mode_supported": true,
+    "quiz_definition_status": "provisional and replaceable",
+    "raw_answers_imported_or_persisted": false
+  },
+  "version": "2.0.0"
+}

@@ -97,7 +97,12 @@ jobs:
               "post-setup/downloads/CHECKSUMS.sha256": "M",
               "post-setup/downloads/manifest.json": "M",
           }
+          retired_student_download = "post-setup/downloads/" + "nurse-ai-os-post-setup-" + "student-nurse.zip"
           lane_changes = {
+              "future_student_assistant": {
+                  retired_student_download: "D",
+                  "post-setup/downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
               "staff_shift": {
                   "post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip": "D",
                   "post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
@@ -154,6 +159,31 @@ jobs:
               mode = "steady-state"
 
           manifest = json.loads(open("post-setup/downloads/manifest.json", encoding="utf-8").read())
+          future = next(item for item in manifest["packages"] if item["folder"] == "01-Student-Nurse")
+          expected_future = {
+              "activation": "user_initiated_read_only_preflight_with_exact_implementation_activation_card",
+              "build_kit_member_count": 105,
+              "build_kit_version": "1.0.0",
+              "bytes": 6520918,
+              "ci_validation": "tracked_source_builder_and_tracked_verifier_package_and_outer_zip",
+              "download": "downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "download_type": "self_install_hermes_build_kit",
+              "legacy_source_activation_contract": "user_initiated_guided_complete_setup_with_combined_activation_card",
+              "legacy_source_package_version": "2026.07.15.3",
+              "package_version": "1.0.0",
+              "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+              "readiness": "not_operational_build_required",
+              "sha256": "b95b413fc25f990f3505fcf7af81c2c483a62da2150f4f77b371ff847b173e76",
+              "source_zip_bytes_before_derivative": 6520141,
+              "source_zip_sha256_before_derivative": "737968eac95347887eb55f3146c1d964541193e7843ea1f94b5bdc4e171a96c6",
+              "target_namespace": "future.*",
+              "target_product_id": "future-nursing-student-assistant-mission-control",
+              "target_route": "/nursing-students-assistants/dashboard",
+              "target_version": "2.0.0",
+          }
+          for key, value in expected_future.items():
+              if future.get(key) != value:
+                  raise SystemExit(f"FUTURE manifest mismatch for {key}: {future.get(key)!r}")
           staff = next(item for item in manifest["packages"] if item["folder"] == "02-Staff-Nurse")
           expected = {
               "build_kit_version": "1.0.0",

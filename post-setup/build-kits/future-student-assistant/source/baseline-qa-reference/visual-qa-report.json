@@ -1,0 +1,206 @@
+{
+  "generated_at": "2026-07-20T09:57:57.477Z",
+  "screenshots": [
+    {
+      "filename": "01-first-run-processing.png",
+      "full_page": false
+    },
+    {
+      "filename": "02-first-run-safety.png",
+      "full_page": false
+    },
+    {
+      "filename": "03-desktop-dashboard.png",
+      "full_page": false
+    },
+    {
+      "filename": "04-desktop-discover-adapter.png",
+      "full_page": false
+    },
+    {
+      "filename": "05-desktop-soul-adapter.png",
+      "full_page": false
+    },
+    {
+      "filename": "06-desktop-mission-loop.png",
+      "full_page": false
+    },
+    {
+      "filename": "07-desktop-capabilities.png",
+      "full_page": false
+    },
+    {
+      "filename": "08-desktop-guide.png",
+      "full_page": false
+    },
+    {
+      "filename": "09-desktop-guide-bottom.png",
+      "full_page": false
+    },
+    {
+      "filename": "10-mobile-dashboard.png",
+      "full_page": false
+    },
+    {
+      "filename": "11-mobile-navigation.png",
+      "full_page": false
+    },
+    {
+      "filename": "12-mobile-missions.png",
+      "full_page": false
+    }
+  ],
+  "checks": [
+    {
+      "name": "first-run processing dialog opens",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "first-run close cannot bypass the safety step",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "walkthrough completion closes the dialog",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-dashboard has no page-level horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-dashboard has no clipped visible main controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Discover Packet preview is explicitly synthetic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-discover-adapter has no page-level horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-discover-adapter has no clipped visible main controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Discover Packet applies without enabling authority",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-soul-adapter has no page-level horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-soul-adapter has no clipped visible main controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-mission-loop has no page-level horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-mission-loop has no clipped visible main controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all five visible mission stages exist",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "sample remains explicitly synthetic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-capabilities has no page-level horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-capabilities has no clipped visible main controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "17 capability cards are visible",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-guide has no page-level horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "desktop-guide has no clipped visible main controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Guide contains 12 sections",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "real-browser axe has no critical or serious violations",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "mobile-dashboard has no page-level horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "mobile-dashboard has no clipped visible main controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "mobile navigation exposes Missions and Guide",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "mobile-missions has no page-level horizontal overflow",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "mobile-missions has no clipped visible main controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "keyboard navigation reaches visible-focus controls",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "browser console has no errors",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "axe": [],
+  "console_errors": [],
+  "summary": {
+    "passed": 29,
+    "failed": 0
+  }
+}

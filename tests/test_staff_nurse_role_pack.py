@@ -171,21 +171,21 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
             "approximately 6.91 MB",
             "not operational—build required",
             "all twenty optional SHIFT SuperPowers remain inactive",
-            "Self-install build-kit lanes 02 and 03",
-            "Complete Edition lanes 01, 04, and 06",
+            "Self-install build-kit lanes 01, 02, and 03",
+            "Complete Edition lanes 04 and 06",
             "review-first lane 05",
         ):
             self.assertIn(phrase, page)
 
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 02 and 03 are reproducible self-install Hermes build kits", readme)
-        self.assertIn("Lanes 01, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Lanes 01, 02, and 03 are reproducible self-install Hermes build kits", readme)
+        self.assertIn("Lanes 04 and 06 are separately governed Complete Editions", readme)
         self.assertIn("Review-first lane 05 includes", readme)
 
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):
         self.assertTrue(ZIP.is_file(), ZIP)
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
-        self.assertEqual(public["release"], "2026.07.21.1")
+        self.assertEqual(public["release"], "2026.07.22.1")
         record = next(item for item in public["packages"] if item["role"] == "Staff Nurse and Quality Contributor")
         self.assertFalse(record["install_on_download"])
         self.assertTrue(record["pre_install_disclosure_required"])

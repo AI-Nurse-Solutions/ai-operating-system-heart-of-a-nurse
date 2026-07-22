@@ -4,6 +4,13 @@ on:
   pull_request:
     paths:
       - "assets/nurse-ai.css"
+      - "architecture-report.html"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.md"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/nurse-ai-os-architecture-report.pdf"
+      - "assets/nurse-ai-os-media-packet.md"
+      - "assets/nurse-ai-os-media-packet.pdf"
       - "switchboard/**"
       - "tests/test_switchboard.py"
       - "tests/test_switchboard_browser.mjs"
@@ -12,6 +19,7 @@ on:
       - "package-lock.json"
       - "setup-helper/**"
       - "post-setup/index.html"
+      - "post-setup/README.md"
       - "post-setup/build-kits/lead-nurse-leader/**"
       - "post-setup/downloads/**"
       - "scripts/build-lead-nurse-leader-build-kit.py"
@@ -28,6 +36,13 @@ on:
     branches: [main]
     paths:
       - "assets/nurse-ai.css"
+      - "architecture-report.html"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.md"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/nurse-ai-os-architecture-report.pdf"
+      - "assets/nurse-ai-os-media-packet.md"
+      - "assets/nurse-ai-os-media-packet.pdf"
       - "switchboard/**"
       - "tests/test_switchboard.py"
       - "tests/test_switchboard_browser.mjs"
@@ -36,6 +51,7 @@ on:
       - "package-lock.json"
       - "setup-helper/**"
       - "post-setup/index.html"
+      - "post-setup/README.md"
       - "post-setup/build-kits/lead-nurse-leader/**"
       - "post-setup/downloads/**"
       - "scripts/build-lead-nurse-leader-build-kit.py"

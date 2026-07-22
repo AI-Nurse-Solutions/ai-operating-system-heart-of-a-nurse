@@ -256,6 +256,24 @@ class EducatorBuildKitTests(unittest.TestCase):
             verifier_mode = (archive.getinfo(verifier_name).external_attr >> 16) & 0o777
             self.assertEqual(verifier_mode, 0o755)
 
+    def test_workflow_path_filters_cover_all_enforced_public_documents(self):
+        required = (
+            '"README.md"',
+            '"architecture-report.html"',
+            '"assets/2026-07-13-nurse-ai-os-updated-architecture-report.md"',
+            '"assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf"',
+            '"assets/nurse-ai-os-architecture-report.md"',
+            '"assets/nurse-ai-os-architecture-report.pdf"',
+            '"assets/nurse-ai-os-media-packet.md"',
+            '"assets/nurse-ai-os-media-packet.pdf"',
+        )
+        for relative in (".github/workflows/setup-helper.yml", ".github/workflows/switchboard.yml"):
+            workflow = (ROOT / relative).read_text(encoding="utf-8")
+            for path in required:
+                self.assertEqual(workflow.count(path), 2, f"{relative} must cover pull and push changes to {path}")
+        switchboard = (ROOT / ".github/workflows/switchboard.yml").read_text(encoding="utf-8")
+        self.assertEqual(switchboard.count('"post-setup/README.md"'), 2)
+
     def test_rotation_utility_is_idempotent_and_preserves_current_identity(self):
         script = ROOT / "scripts" / "rotate-teach-verifier-portability.py"
         with tempfile.TemporaryDirectory() as tmp:

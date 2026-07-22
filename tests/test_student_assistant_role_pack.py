@@ -318,6 +318,36 @@ class StudentAssistantBuildKitTests(unittest.TestCase):
             self.assertEqual(config["member_count"], EXPECTED_MEMBER_COUNT)
             self.assertEqual(rebuilt.read_bytes(), ZIP.read_bytes())
 
+    def test_dedicated_builder_zip_modes_ignore_host_checkout_modes(self):
+        namespace = runpy.run_path(str(BUILDER))
+        build = namespace["build"]
+        verifier_success = subprocess.CompletedProcess(
+            args=["tracked-verifier"],
+            returncode=0,
+            stdout="",
+            stderr="",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "source"
+            shutil.copytree(KIT_SOURCE, source)
+            for path in source.rglob("*"):
+                if path.is_file():
+                    path.chmod(0o644)
+            build.__globals__["SOURCE"] = source
+            rebuilt = Path(tmp) / ZIP.name
+            with mock.patch.object(namespace["subprocess"], "run", return_value=verifier_success):
+                build(rebuilt)
+            prefix = ROOT_NAME + "/"
+            with zipfile.ZipFile(rebuilt) as archive:
+                modes = {
+                    item.filename.removeprefix(prefix): (item.external_attr >> 16) & 0o777
+                    for item in archive.infolist()
+                }
+            self.assertEqual(modes["tools/verify-build-kit.py"], 0o755)
+            self.assertEqual(modes["source/baseline-application/start-discover.sh"], 0o755)
+            self.assertEqual(modes["source/baseline-application/Start-DISCOVER.command"], 0o755)
+            self.assertEqual(modes["README-FIRST.md"], 0o644)
+
     def test_tracked_verifier_passes_package_and_outer_zip(self):
         verifier = KIT_SOURCE / "tools" / "verify-build-kit.py"
         with tempfile.TemporaryDirectory() as tmp:

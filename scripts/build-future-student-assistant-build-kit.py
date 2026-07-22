@@ -212,6 +212,16 @@ def validate_source() -> tuple[dict[str, Path], dict[str, Any]]:
     return files, manifest
 
 
+def zip_member_mode(relative: str) -> int:
+    """Return the canonical ZIP mode without consulting host checkout metadata."""
+    executable = (
+        relative == "tools/verify-build-kit.py"
+        or relative.endswith(".sh")
+        or relative.endswith(".command")
+    )
+    return 0o100755 if executable else 0o100644
+
+
 def build(output: Path = OUTPUT) -> dict[str, Any]:
     """Build and verify the deterministic FUTURE outer ZIP."""
     files, manifest = validate_source()
@@ -225,8 +235,7 @@ def build(output: Path = OUTPUT) -> dict[str, Any]:
                 info = zipfile.ZipInfo(f"{ROOT_NAME}/{relative}", FIXED_ZIP_TIME)
                 info.create_system = 3
                 info.compress_type = zipfile.ZIP_DEFLATED
-                mode = 0o100755 if path.stat().st_mode & 0o111 else 0o100644
-                info.external_attr = mode << 16
+                info.external_attr = zip_member_mode(relative) << 16
                 archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
         package = staging / ROOT_NAME
         shutil.copytree(SOURCE, package)

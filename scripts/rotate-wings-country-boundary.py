@@ -23,6 +23,7 @@ DEFAULT_ZIP = REPO / "post-setup" / "downloads" / (
 )
 ROOT = "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
 COUNTRIES = ["United States"]
+OUTER_ZIP_ARGUMENT = f"../{DEFAULT_ZIP.name}"
 BOUNDARY = (
     "Availability boundary: this build kit is available only in the United States. "
     "If the target user or intended use is outside the United States, stop before "
@@ -41,6 +42,14 @@ def add_after(text: str, anchor: str, addition: str) -> str:
     if anchor not in text:
         raise ValueError(f"Required patch anchor is missing: {anchor!r}")
     return text.replace(anchor, anchor + "\n\n" + addition, 1)
+
+
+def replace_instruction(text: str, old: str, new: str) -> str:
+    if new in text:
+        return text
+    if old not in text:
+        raise ValueError(f"Required instruction anchor is missing: {old!r}")
+    return text.replace(old, new, 1)
 
 
 def load_entries(path: Path) -> tuple[list[zipfile.ZipInfo], dict[str, bytes], bytes]:
@@ -68,8 +77,20 @@ def rotate(path: Path) -> None:
     manifest_path = prefix + "RELEASE-MANIFEST.json"
     checksum_path = prefix + "SHA256SUMS.txt"
     verifier_path = prefix + "tools/verify-build-kit.py"
+    install_path = prefix + "INSTALL.md"
+    readme_path = prefix + "README.md"
+    start_here_path = prefix + "START_HERE.md"
 
-    for required in (read_first, give, manifest_path, checksum_path, verifier_path):
+    for required in (
+        read_first,
+        give,
+        install_path,
+        readme_path,
+        start_here_path,
+        manifest_path,
+        checksum_path,
+        verifier_path,
+    ):
         if required not in data:
             raise ValueError(f"Required WINGS entry is missing: {required}")
 
@@ -88,6 +109,39 @@ def rotate(path: Path) -> None:
         BOUNDARY,
     )
     data[give] = give_text.encode("utf-8")
+
+    bare_verifier = "python3 tools/verify-build-kit.py --package ."
+    governed_verifier = (
+        f"python3 tools/verify-build-kit.py --package . --zip {OUTER_ZIP_ARGUMENT}"
+    )
+    install_text = data[install_path].decode("utf-8")
+    install_text = replace_instruction(
+        install_text,
+        f"4. Run `{bare_verifier}`.",
+        "4. Keep the unchanged original ZIP immediately beside the extracted package "
+        f"folder, then run `{governed_verifier}`.",
+    )
+    data[install_path] = install_text.encode("utf-8")
+
+    readme_text = data[readme_path].decode("utf-8")
+    readme_text = replace_instruction(
+        readme_text,
+        f"Run `{bare_verifier}`. Passing verifies this build kit only. Hermes must still "
+        "build and test the target application.",
+        "Keep the unchanged original ZIP immediately beside the extracted package folder. "
+        f"Run `{governed_verifier}`. Passing verifies this build kit only. Hermes must "
+        "still build and test the target application.",
+    )
+    data[readme_path] = readme_text.encode("utf-8")
+
+    start_here_text = data[start_here_path].decode("utf-8")
+    start_here_text = replace_instruction(
+        start_here_text,
+        f"3. Extract a working copy and verify it with `{bare_verifier}`.",
+        "3. Extract a working copy into a folder immediately beside the unchanged original "
+        f"ZIP and verify it with `{governed_verifier}`.",
+    )
+    data[start_here_path] = start_here_text.encode("utf-8")
 
     verifier = data[verifier_path].decode("utf-8")
     old_target = (

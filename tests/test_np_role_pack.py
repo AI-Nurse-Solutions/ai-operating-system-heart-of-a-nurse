@@ -24,8 +24,8 @@ DOCX = PACKAGE / "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx"
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
 BUILD_KIT_ROOT = "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
-BUILD_KIT_BYTES = 7696693
-BUILD_KIT_SHA256 = "ea9a9e631c6bb97ff8f1392d014c6a695dc634e823f9c9a375b95cd7657b5166"
+BUILD_KIT_BYTES = 7696949
+BUILD_KIT_SHA256 = "484f5510a0c2f30dd0ae41854e9322eec9004bbe65c8585af607b0a88fc086f1"
 BUILD_KIT_MEMBER_COUNT = 131
 BUILD_KIT_VERIFIER_SHA256 = "72d1b4628c9ad578e9579ce3eec86de9e4b1637b21fd3f6415115250333f6b1c"
 SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE = "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501"
@@ -233,19 +233,32 @@ class NursePractitionerLaneTests(unittest.TestCase):
             extracted = Path(tmp) / "package"
             with zipfile.ZipFile(ZIP) as archive:
                 archive.extractall(extracted)
+                governed_command = (
+                    "python3 tools/verify-build-kit.py --package . "
+                    f"--zip ../{ZIP.name}"
+                )
+                for document in ("INSTALL.md", "README.md", "START_HERE.md"):
+                    text = archive.read(f"{BUILD_KIT_ROOT}/{document}").decode("utf-8")
+                    self.assertIn(governed_command, text)
+                    self.assertNotIn(
+                        "`python3 tools/verify-build-kit.py --package .`",
+                        text,
+                    )
             package = extracted / BUILD_KIT_ROOT
+            shutil.copy2(ZIP, extracted / ZIP.name)
             completed = subprocess.run(
                 [
                     sys.executable,
-                    str(package / "tools" / "verify-build-kit.py"),
+                    "tools/verify-build-kit.py",
                     "--package",
-                    str(package),
+                    ".",
                     "--zip",
-                    str(ZIP),
+                    f"../{ZIP.name}",
                 ],
                 check=False,
                 capture_output=True,
                 text=True,
+                cwd=package,
             )
             self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
             self.assertIn("Final ZIP preserves normalized safe file modes", completed.stdout)

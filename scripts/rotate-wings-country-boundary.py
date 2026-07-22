@@ -127,6 +127,43 @@ def rotate(path: Path) -> None:
             verifier_anchor + "\n    " + verifier_check,
             1,
         )
+
+    if "import os\n" not in verifier:
+        import_anchor = "import json\n"
+        if import_anchor not in verifier:
+            raise ValueError("Bundled verifier import anchor is missing")
+        verifier = verifier.replace(import_anchor, import_anchor + "import os\n", 1)
+
+    old_mode_function = "def check_package_filesystem(c: Checks, package: Path) -> None:"
+    new_mode_function = "def check_package_filesystem(c: Checks, package: Path, enforce_modes: bool) -> None:"
+    if new_mode_function not in verifier:
+        if old_mode_function not in verifier:
+            raise ValueError("Bundled verifier filesystem-mode function anchor is missing")
+        verifier = verifier.replace(old_mode_function, new_mode_function, 1)
+
+    old_mode_result = '    c.check(not unsafe_modes, "Package modes are normalized and safe", unsafe_modes[:10])'
+    new_mode_result = (
+        '    if enforce_modes:\n'
+        '        c.check(not unsafe_modes, "Package modes are normalized and safe", unsafe_modes[:10])\n'
+        '    elif unsafe_modes:\n'
+        '        c.warn("Extracted filesystem modes are non-authoritative; outer-ZIP modes remain mandatory", unsafe_modes[:10])\n'
+        '    else:\n'
+        '        c.check(True, "Package modes are normalized and safe")'
+    )
+    if new_mode_result not in verifier:
+        if old_mode_result not in verifier:
+            raise ValueError("Bundled verifier filesystem-mode result anchor is missing")
+        verifier = verifier.replace(old_mode_result, new_mode_result, 1)
+
+    broken_mode_call = "        check_package_filesystem(c, package, enforce_modes=args.zip is None and os.name != \"nt\")"
+    old_mode_call = "        check_package_filesystem(c, package)"
+    new_mode_call = "        check_package_filesystem(c, package, enforce_modes=args.zip_path is None and os.name != \"nt\")"
+    if broken_mode_call in verifier:
+        verifier = verifier.replace(broken_mode_call, new_mode_call, 1)
+    elif new_mode_call not in verifier:
+        if old_mode_call not in verifier:
+            raise ValueError("Bundled verifier filesystem-mode call anchor is missing")
+        verifier = verifier.replace(old_mode_call, new_mode_call, 1)
     data[verifier_path] = verifier.encode("utf-8")
 
     manifest = json.loads(data[manifest_path])

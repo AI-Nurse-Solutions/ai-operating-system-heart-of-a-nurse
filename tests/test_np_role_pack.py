@@ -24,10 +24,10 @@ DOCX = PACKAGE / "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx"
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
 BUILD_KIT_ROOT = "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
-BUILD_KIT_BYTES = 7696594
-BUILD_KIT_SHA256 = "63987d053f22cd390c249cfc3bfa22568f03940bbfa017f4f5347895f7971e93"
+BUILD_KIT_BYTES = 7696693
+BUILD_KIT_SHA256 = "ea9a9e631c6bb97ff8f1392d014c6a695dc634e823f9c9a375b95cd7657b5166"
 BUILD_KIT_MEMBER_COUNT = 131
-BUILD_KIT_VERIFIER_SHA256 = "68f296261ca467935a4655ee0476844246f0b5833117c2de159c39c81aa7b052"
+BUILD_KIT_VERIFIER_SHA256 = "72d1b4628c9ad578e9579ce3eec86de9e4b1637b21fd3f6415115250333f6b1c"
 SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE = "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501"
 RESUME = (
     "Resume NP Complete Edition installation from the last approved checkpoint. "
@@ -227,6 +227,29 @@ class NursePractitionerLaneTests(unittest.TestCase):
             )
             self.assertEqual(candidate.stat().st_size, BUILD_KIT_BYTES)
             self.assertEqual(hashlib.sha256(candidate.read_bytes()).hexdigest(), BUILD_KIT_SHA256)
+
+    def test_bundled_verifier_accepts_python_standard_extraction_with_outer_zip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            extracted = Path(tmp) / "package"
+            with zipfile.ZipFile(ZIP) as archive:
+                archive.extractall(extracted)
+            package = extracted / BUILD_KIT_ROOT
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(package / "tools" / "verify-build-kit.py"),
+                    "--package",
+                    str(package),
+                    "--zip",
+                    str(ZIP),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+            self.assertIn("Final ZIP preserves normalized safe file modes", completed.stdout)
+            self.assertNotIn("FAIL ", completed.stdout)
 
     def test_import_source_can_seed_separately_governed_np_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))

@@ -1,0 +1,227 @@
+{
+  "generated_at": "2026-07-20T09:58:00.090Z",
+  "app": "DISCOVER-NURSE-AI-OS-MISSION-CONTROL-2.0.0",
+  "passed": 43,
+  "failed": 0,
+  "assertions": [
+    {
+      "name": "dashboard initializes without runtime errors",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "processing message is displayed on first run",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "required first-run walkthrough completes only after safety acknowledgment",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "24 workflows render",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "24 SuperPowers render",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "30 templates render",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "17 role recipes including a neutral shared identity are available",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "17 capability pathways render",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Guide contains 12 numbered sections",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "permanent safety boundary is visible",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "synthetic Discover Packet is explicitly labeled",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "derived Discover Packet adapter applies without raw notes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "synthetic Discover Packet remains labeled as demo",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Discover role goals add supporting dashboards without changing authority",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "synthetic Soul profile is explicitly labeled",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "derived Soul adapter applies without raw answers",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "synthetic Soul profile remains labeled as demo",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Soul adaptation preserves exactly one primary role",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "raw quiz answers are absent from local storage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "multi-role constellation persists under one identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "manual constellation has exactly one primary role",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "role dashboards have distinct opaque partitions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "session-only mission is not written to localStorage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "explicit local non-sensitive retention persists mission",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "artifact states cannot jump from Exploration to Evaluated Outcome",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "five-stage mission can be completed only with Evaluate reviewed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "EDENA changes reopen Plan through Evaluate and clear completed status",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Personal Red permits sanitized reviewable exploration handoff",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Institutional Red policy preview blocks Approved Plan transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "reviewed stages can be re-completed after governance reclassification",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "evidence-based Basic level requires four distinct records",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "capability page carries noncredential warning",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "duplicate evidence does not manufacture badge progress",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "obvious identifier marker blocks workflow handoff",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "workflow handoff records EDENA advisory and reason",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "non-HTTP Hermes address is rejected",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "remote plaintext HTTP Hermes address is rejected",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "trusted Hermes address opens separately without prompt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "explicit backup download is clearly versioned",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "closed-schema backup with Discover Packet and EDENA review metadata restores",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "closed-schema backup import rejects unexpected fields",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "axe finds no critical or serious DOM accessibility violations",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no asynchronous runtime errors occurred",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "axe": {
+    "violations": []
+  },
+  "runtime_errors": []
+}

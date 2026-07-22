@@ -1,0 +1,360 @@
+{
+  "$id": "https://medical-resident-ai-os.local/schemas/rounds-discover-packet-adapter-1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Closed, minimum, user-reviewable derived input. It grants no resident status, supervision, competence, credential, patient-data permission or institutional authority.",
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "raw_answers"
+        ]
+      },
+      {
+        "required": [
+          "raw_discover_packet"
+        ]
+      },
+      {
+        "required": [
+          "raw_soul"
+        ]
+      },
+      {
+        "required": [
+          "soul_md"
+        ]
+      },
+      {
+        "required": [
+          "SOUL.md"
+        ]
+      },
+      {
+        "required": [
+          "patient_data"
+        ]
+      },
+      {
+        "required": [
+          "clinical_case"
+        ]
+      },
+      {
+        "required": [
+          "event_narrative"
+        ]
+      },
+      {
+        "required": [
+          "formal_evaluation"
+        ]
+      },
+      {
+        "required": [
+          "milestone_record"
+        ]
+      },
+      {
+        "required": [
+          "ccc_record"
+        ]
+      },
+      {
+        "required": [
+          "authority_attestation"
+        ]
+      }
+    ]
+  },
+  "properties": {
+    "adapter_version": {
+      "const": "1.0-draft"
+    },
+    "ai_boundaries": {
+      "additionalProperties": false,
+      "properties": {
+        "default_support": {
+          "enum": [
+            "suggest_only",
+            "prepare_only",
+            "bounded_draft"
+          ]
+        },
+        "external_actions": {
+          "const": "off"
+        },
+        "memory_default": {
+          "enum": [
+            "session_only",
+            "approved_nonsensitive_local"
+          ]
+        },
+        "never_delegate": {
+          "items": {
+            "maxLength": 240,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 24,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "default_support",
+        "memory_default",
+        "external_actions",
+        "never_delegate"
+      ],
+      "type": "object"
+    },
+    "capacity": {
+      "enum": [
+        "open",
+        "balanced",
+        "tight",
+        "recovery",
+        "unknown"
+      ]
+    },
+    "current_season": {
+      "enum": [
+        "launch",
+        "build",
+        "sustain",
+        "recover",
+        "transition",
+        "unknown"
+      ]
+    },
+    "demo": {
+      "type": "boolean"
+    },
+    "display_name": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": "string"
+    },
+    "goals": {
+      "additionalProperties": false,
+      "properties": {
+        "long_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "medium_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "near_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "protected_life": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "near_term",
+        "medium_term",
+        "long_term",
+        "protected_life"
+      ],
+      "type": "object"
+    },
+    "local_title": {
+      "maxLength": 160,
+      "minLength": 1,
+      "type": "string"
+    },
+    "pgy": {
+      "maxLength": 40,
+      "minLength": 1,
+      "type": "string"
+    },
+    "priorities": {
+      "items": {
+        "maxLength": 240,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "program": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string"
+    },
+    "resident_status": {
+      "enum": [
+        "intern_or_early_resident",
+        "advancing_resident",
+        "senior_or_team_lead_resident",
+        "chief_resident",
+        "off_service_visiting_or_cross_cover_resident",
+        "unknown_stale_expired_or_conflicting"
+      ]
+    },
+    "role_adapters": {
+      "items": {
+        "enum": [
+          "intern_or_early_resident",
+          "advancing_resident",
+          "senior_or_team_lead_resident",
+          "chief_resident",
+          "off_service_visiting_or_cross_cover_resident"
+        ]
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "rotation_or_service": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "NAIO-MR-DISCOVER-PACKET-ADAPTER-1"
+    },
+    "site": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string"
+    },
+    "specialty": {
+      "maxLength": 160,
+      "minLength": 1,
+      "type": "string"
+    },
+    "task_hats": {
+      "items": {
+        "enum": [
+          "clinical_team_member",
+          "cross_cover_or_on_call",
+          "senior_or_team_lead",
+          "chief_clinical",
+          "chief_administrative",
+          "educator",
+          "quality_or_patient_safety_contributor",
+          "researcher_or_scholar",
+          "learner_or_exam_candidate",
+          "fellowship_or_career_applicant",
+          "personal_private"
+        ]
+      },
+      "maxItems": 11,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "uncertainties": {
+      "items": {
+        "maxLength": 300,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 30,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "values": {
+      "items": {
+        "maxLength": 100,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "working_preferences": {
+      "additionalProperties": false,
+      "properties": {
+        "cadence": {
+          "maxLength": 160,
+          "type": "string"
+        },
+        "communication": {
+          "maxLength": 200,
+          "type": "string"
+        },
+        "decision": {
+          "maxLength": 200,
+          "type": "string"
+        },
+        "learning": {
+          "items": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "communication",
+        "decision",
+        "learning",
+        "cadence"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "adapter_version",
+    "display_name",
+    "resident_status",
+    "local_title",
+    "program",
+    "specialty",
+    "pgy",
+    "site",
+    "rotation_or_service",
+    "role_adapters",
+    "task_hats",
+    "values",
+    "priorities",
+    "goals",
+    "current_season",
+    "capacity",
+    "working_preferences",
+    "ai_boundaries",
+    "uncertainties",
+    "demo"
+  ],
+  "title": "ROUNDS Discover Packet Adapter",
+  "type": "object"
+}

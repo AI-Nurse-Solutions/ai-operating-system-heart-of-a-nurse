@@ -1,0 +1,606 @@
+{
+  "artifact_lifecycle_reachable_in_target": [
+    "Exploration",
+    "Simulation",
+    "Recommendation",
+    "Draft Artifact",
+    "Approved Plan"
+  ],
+  "artifact_lifecycle_unreachable_reference_only": [
+    "Authorized Execution",
+    "Completed Action",
+    "Evaluated Outcome"
+  ],
+  "core_four": [
+    "Orient My Day & Duty",
+    "Learn & Reason",
+    "Orchestrate & Communicate",
+    "Review, Escalate & Close"
+  ],
+  "counts": {
+    "powers": 24,
+    "templates": 30,
+    "workflows": 24
+  },
+  "executor_shipped": false,
+  "external_action_lifecycle": [
+    "Off",
+    "Drafted",
+    "Previewed",
+    "Human-Approved-One-Run",
+    "Staged",
+    "Human-Released",
+    "Confirmed-or-Failed",
+    "Closed"
+  ],
+  "external_action_lifecycle_reference_only": true,
+  "external_action_transitions_available_in_target": [],
+  "notice": "PWR, WF and TPL IDs, display names and ordering preserve the canonical ROUNDS complete program.",
+  "optional_fifth_launcher": null,
+  "power_lifecycle": [
+    "Available Inactive",
+    "Previewed",
+    "Approved Inactive",
+    "Active Bounded",
+    "Paused",
+    "Removed"
+  ],
+  "powers": [
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Rotation & Call Readiness Navigator",
+      "external_actions": "off",
+      "family": "R",
+      "id": "PWR-01",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Duty-Hours, Fatigue & Safe-Transport Shield",
+      "external_actions": "off",
+      "family": "R",
+      "id": "PWR-02",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Capacity, Leave, Recovery & Human-Support Navigator",
+      "external_actions": "off",
+      "family": "R",
+      "id": "PWR-03",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Mission, Finances, Family & Future Compass",
+      "external_actions": "off",
+      "family": "R",
+      "id": "PWR-04",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Supervision-Aware Care Orchestration Mapper",
+      "external_actions": "off",
+      "family": "O",
+      "id": "PWR-05",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Consult, Interdisciplinary Team & Closed-Loop Coordination Studio",
+      "external_actions": "off",
+      "family": "O",
+      "id": "PWR-06",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Handoff, Cross-Cover & Transition Reliability Rehearsal",
+      "external_actions": "off",
+      "family": "O",
+      "id": "PWR-07",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Follow-Up, Barrier & Contingency Reliability Planner",
+      "external_actions": "off",
+      "family": "O",
+      "id": "PWR-08",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Evidence, Guideline & Uncertainty Navigator",
+      "external_actions": "off",
+      "family": "U",
+      "id": "PWR-09",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Synthetic Clinical Reasoning & Diagnostic Calibration Lab",
+      "external_actions": "off",
+      "family": "U",
+      "id": "PWR-10",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Journal Club, Adaptive Learning & Knowledge Synthesis Studio",
+      "external_actions": "off",
+      "family": "U",
+      "id": "PWR-11",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Quality, Patient Safety & Implementation Lab",
+      "external_actions": "off",
+      "family": "U",
+      "id": "PWR-12",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Graduated Responsibility, Supervision & Escalation Compass",
+      "external_actions": "off",
+      "family": "N",
+      "id": "PWR-13",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Milestones, EPAs, Feedback & Development Map",
+      "external_actions": "off",
+      "family": "N",
+      "id": "PWR-14",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "License, Exam, Procedure Authorization & Credential Radar",
+      "external_actions": "off",
+      "family": "N",
+      "id": "PWR-15",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Fellowship, Career, Contract & Opportunity Navigator",
+      "external_actions": "off",
+      "family": "N",
+      "id": "PWR-16",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Human Communication, Consent & Difficult-Conversation Rehearsal",
+      "external_actions": "off",
+      "family": "D",
+      "id": "PWR-17",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Teaching, Bedside Education & Case-Conference Studio",
+      "external_actions": "off",
+      "family": "D",
+      "id": "PWR-18",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Research, Scholarship, Authorship & Professional Voice Forge",
+      "external_actions": "off",
+      "family": "D",
+      "id": "PWR-19",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Feedback, Conflict, Mistreatment & Psychological-Safety Navigator",
+      "external_actions": "off",
+      "family": "D",
+      "id": "PWR-20",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "AI Agent Charter, Tool, Permission & Data Registry",
+      "external_actions": "off",
+      "family": "S",
+      "id": "PWR-21",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Multi-Agent Orchestration & Human-Handoff Designer",
+      "external_actions": "off",
+      "family": "S",
+      "id": "PWR-22",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Agent Output, Source, Bias, Security & Trace Auditor",
+      "external_actions": "off",
+      "family": "S",
+      "id": "PWR-23",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Agent Incident, Pause, Failover, Rollback & Retirement Controller",
+      "external_actions": "off",
+      "family": "S",
+      "id": "PWR-24",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    }
+  ],
+  "reconciliation_reference_contract": {
+    "can_advance_artifact_lifecycle": false,
+    "data_class": "MR-DATA-R",
+    "is_official_reference": false,
+    "owner_note_label_if_used": "resident-reported_external_status_unverified",
+    "pattern": "^MRREF-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+    "reject": [
+      "direct_identifier",
+      "patient_case_event_evaluation_or_personnel_identifier",
+      "url_or_uri",
+      "token_secret_or_credential",
+      "encoded_or_mapped_restricted_payload"
+    ],
+    "resolvable_by_app": false,
+    "stores_external_identifier_or_mapping": false
+  },
+  "schema": "NAIO-MR-ROUNDS-CATALOG-1",
+  "templates": [
+    {
+      "display_name": "Resident ROUNDS True North & Protected-Life Promise",
+      "id": "TPL-01",
+      "source_defined": true
+    },
+    {
+      "display_name": "Active Hat, Program, Site, Rotation & Decision-Rights Card",
+      "id": "TPL-02",
+      "source_defined": true
+    },
+    {
+      "display_name": "Graduated Responsibility & Supervision Matrix",
+      "id": "TPL-03",
+      "source_defined": true
+    },
+    {
+      "display_name": "ATTEND Gate Receipt",
+      "id": "TPL-04",
+      "source_defined": true
+    },
+    {
+      "display_name": "Daily or Call Orientation Card",
+      "id": "TPL-05",
+      "source_defined": true
+    },
+    {
+      "display_name": "Duty-Hour, Call, Moonlighting & Recovery Reality Log",
+      "id": "TPL-06",
+      "source_defined": true
+    },
+    {
+      "display_name": "Fatigue Relief, Safe-Commute & Support Plan",
+      "id": "TPL-07",
+      "source_defined": true
+    },
+    {
+      "display_name": "Rotation or Site Onboarding & Escalation Map",
+      "id": "TPL-08",
+      "source_defined": true
+    },
+    {
+      "display_name": "CIRCLE Care-Orchestration Map",
+      "id": "TPL-09",
+      "source_defined": true
+    },
+    {
+      "display_name": "Handoff or Cross-Cover Closed-Loop Card",
+      "id": "TPL-10",
+      "source_defined": true
+    },
+    {
+      "display_name": "Consult Question, Contact, Acknowledgment & Follow-Up Card",
+      "id": "TPL-11",
+      "source_defined": true
+    },
+    {
+      "display_name": "Transition, Disposition & Follow-Up Responsibility Map",
+      "id": "TPL-12",
+      "source_defined": true
+    },
+    {
+      "display_name": "Evidence, Guideline & Source Brief",
+      "id": "TPL-13",
+      "source_defined": true
+    },
+    {
+      "display_name": "Synthetic Clinical-Reasoning & Bias Reflection Sheet",
+      "id": "TPL-14",
+      "source_defined": true
+    },
+    {
+      "display_name": "Procedure or Skill Deliberate-Practice Plan",
+      "id": "TPL-15",
+      "source_defined": true
+    },
+    {
+      "display_name": "Attending, Program, Advocacy or Difficult-Conversation Brief",
+      "id": "TPL-16",
+      "source_defined": true
+    },
+    {
+      "display_name": "Feedback & Milestone Self-Evidence Log",
+      "id": "TPL-17",
+      "source_defined": true
+    },
+    {
+      "display_name": "CCC Self-Reflection & Questions Packet",
+      "id": "TPL-18",
+      "source_defined": true
+    },
+    {
+      "display_name": "Exam, License, Credential & Procedure-Authorization Radar",
+      "id": "TPL-19",
+      "source_defined": true
+    },
+    {
+      "display_name": "Teaching Session or Microteaching Brief",
+      "id": "TPL-20",
+      "source_defined": true
+    },
+    {
+      "display_name": "Safety or M&M Reflection & Official-System Boundary Card",
+      "id": "TPL-21",
+      "source_defined": true
+    },
+    {
+      "display_name": "Quality Charter, PDSA, Measure, Equity & Balance Record",
+      "id": "TPL-22",
+      "source_defined": true
+    },
+    {
+      "display_name": "QI-versus-Research Human Determination Receipt",
+      "id": "TPL-23",
+      "source_defined": true
+    },
+    {
+      "display_name": "Research, IRB, Data, Methods, Authorship & Release Plan",
+      "id": "TPL-24",
+      "source_defined": true
+    },
+    {
+      "display_name": "Fellowship, Career, Portfolio & Evidence Map",
+      "id": "TPL-25",
+      "source_defined": true
+    },
+    {
+      "display_name": "Contract, Benefits, Finance & Decision Questions Brief",
+      "id": "TPL-26",
+      "source_defined": true
+    },
+    {
+      "display_name": "Whole-Life Capacity, Family, Purpose & Minimum-Mode Plan",
+      "id": "TPL-27",
+      "source_defined": true
+    },
+    {
+      "display_name": "ORBIT Agent Definition & Permission Envelope",
+      "id": "TPL-28",
+      "source_defined": true
+    },
+    {
+      "display_name": "Agent Preview, Test, Run, Review, Release & Termination Receipt",
+      "id": "TPL-29",
+      "source_defined": true
+    },
+    {
+      "display_name": "Seven-Day Launch & Ninety-Day Development Plan",
+      "id": "TPL-30",
+      "source_defined": true
+    }
+  ],
+  "version": "1.0.0",
+  "workflows": [
+    {
+      "display_name": "Resident Whole-Day or Call Orientation",
+      "external_actions": "off",
+      "id": "WF-01",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Weekly Rotation & Whole-Life Reset",
+      "external_actions": "off",
+      "id": "WF-02",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Duty-Hour & Schedule Reality Review",
+      "external_actions": "off",
+      "id": "WF-03",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Post-Call Recovery, Relief & Safe-Commute Plan",
+      "external_actions": "off",
+      "id": "WF-04",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Rotation or Site Onboarding",
+      "external_actions": "off",
+      "id": "WF-05",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "General Evidence or Guideline Brief",
+      "external_actions": "off",
+      "id": "WF-06",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Synthetic Case Reasoning & Cognitive-Bias Simulation",
+      "external_actions": "off",
+      "id": "WF-07",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Procedure or Skill Deliberate-Practice Plan",
+      "external_actions": "off",
+      "id": "WF-08",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "CIRCLE Rounds or Care-Orchestration Rehearsal",
+      "external_actions": "off",
+      "id": "WF-09",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Handoff & Cross-Cover Reliability Preparation",
+      "external_actions": "off",
+      "id": "WF-10",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Consult Question, Request, Response & Follow-Up Brief",
+      "external_actions": "off",
+      "id": "WF-11",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Transition, Disposition & Follow-Up Coordination Brief",
+      "external_actions": "off",
+      "id": "WF-12",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Attending Escalation, Advocacy or Difficult-Conversation Prep",
+      "external_actions": "off",
+      "id": "WF-13",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Feedback, Debrief & Milestone Self-Evidence Review",
+      "external_actions": "off",
+      "id": "WF-14",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "CCC Self-Reflection & Questions Packet",
+      "external_actions": "off",
+      "id": "WF-15",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "In-Training or Board Exam, License & Credential Plan",
+      "external_actions": "off",
+      "id": "WF-16",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Teaching, Bedside Education or Conference Build",
+      "external_actions": "off",
+      "id": "WF-17",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Patient-Safety Event or M&M Preparation",
+      "external_actions": "off",
+      "id": "WF-18",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Quality, PDSA & Systems-Improvement Project",
+      "external_actions": "off",
+      "id": "WF-19",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Research, IRB, Methods & Manuscript Project",
+      "external_actions": "off",
+      "id": "WF-20",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Fellowship, Job, Portfolio & Interview Pathway",
+      "external_actions": "off",
+      "id": "WF-21",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Contract, Benefits, Debt & Financial Decision Brief",
+      "external_actions": "off",
+      "id": "WF-22",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "Family, Health, Relationships, Purpose & Minimum Mode",
+      "external_actions": "off",
+      "id": "WF-23",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    },
+    {
+      "display_name": "ORBIT Agent Preview, Synthetic Test, One-Run Receipt & Termination",
+      "external_actions": "off",
+      "id": "WF-24",
+      "installation_state": "preview_only",
+      "source": "rounds_complete_program"
+    }
+  ]
+}

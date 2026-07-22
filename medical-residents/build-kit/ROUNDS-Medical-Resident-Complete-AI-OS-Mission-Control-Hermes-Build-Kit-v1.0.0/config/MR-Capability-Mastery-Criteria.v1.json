@@ -1,0 +1,3205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "contextual_human_review_policy": {
+    "applies_to_all_levels": true,
+    "red_rule": "EDENA Red is ineligible until a separate governance route permits a clean eligible artifact; an absolute stop is never waivable.",
+    "required_result": "current_scope_matched_named_human_process_review_before_award",
+    "triggers": [
+      "professional_or_portfolio_evidence",
+      "credential_or_required_education_evidence",
+      "employment_or_institutional_context",
+      "quality_scholarship_or_project_outcome_evidence",
+      "edena_yellow_or_orange",
+      "otherwise_consequential_artifact_or_claim"
+    ]
+  },
+  "counts": {
+    "capstone_criteria": 9,
+    "domain_criteria": 68,
+    "domains": 17,
+    "levels": 4,
+    "total_criteria": 77
+  },
+  "domains": [
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Identifies model limits, unavailable capabilities, human ownership and a no-AI fallback in one eligible mission.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-01-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-01"
+          },
+          "id": "CAP-01-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Identifies model limits, unavailable capabilities, human ownership and a no-AI fallback in one eligible mission.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Compares a provider capability receipt with the feature claim and corrects at least one unsupported or unavailable behavior.",
+          "eligible_evidence": [
+            "provider_capability_receipt",
+            "correction_record"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-01-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-01"
+          },
+          "id": "CAP-01-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Compares a provider capability receipt with the feature claim and corrects at least one unsupported or unavailable behavior.",
+          "prerequisite": "CAP-01-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "provider_capability_receipt",
+              "correction_record"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Detects hallucination, automation bias or false completion in a controlled failure and preserves the uncertainty and safe fallback.",
+          "eligible_evidence": [
+            "safety_drill",
+            "failure_recovery_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-01-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-01"
+          },
+          "id": "CAP-01-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Detects hallucination, automation bias or false completion in a controlled failure and preserves the uncertainty and safe fallback.",
+          "prerequisite": "CAP-01-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "failure_recovery_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Designs and reviews a bounded AI/no-AI route with genuine capability checks, cancellation and a manual alternative.",
+          "eligible_evidence": [
+            "provider_capability_receipt",
+            "evaluated_mission",
+            "failure_recovery_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-01-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-01"
+          },
+          "id": "CAP-01-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Designs and reviews a bounded AI/no-AI route with genuine capability checks, cancellation and a manual alternative.",
+          "prerequisite": "CAP-01-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "provider_capability_receipt",
+              "evaluated_mission",
+              "failure_recovery_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Truthful model, tool and runtime capability literacy",
+      "id": "CAP-01",
+      "name": "AI literacy",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Authors a prompt with one objective, permitted context, prohibited data, non-goals and named human reviewer.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "evidence_assignment_record"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-02-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-02"
+          },
+          "id": "CAP-02-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Authors a prompt with one objective, permitted context, prohibited data, non-goals and named human reviewer.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "evidence_assignment_record"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Adds a closed output contract, source expectations, uncertainty fields, stop conditions and revision instructions, then tests the result.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "evaluated_mission"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-02-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-02"
+          },
+          "id": "CAP-02-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Adds a closed output contract, source expectations, uncertainty fields, stop conditions and revision instructions, then tests the result.",
+          "prerequisite": "CAP-02-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "evaluated_mission"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Red-teams ambiguity, prompt injection and unsafe scope expansion and records a corrected version with changed-hash review.",
+          "eligible_evidence": [
+            "safety_drill",
+            "correction_record",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-02-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-02"
+          },
+          "id": "CAP-02-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Red-teams ambiguity, prompt injection and unsafe scope expansion and records a corrected version with changed-hash review.",
+          "prerequisite": "CAP-02-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "correction_record",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Freezes a hash-bound prompt and agent handoff whose data, tools, budget, retry, destination and expiry remain inside P1-P2.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "agent_run_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-02-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-02"
+          },
+          "id": "CAP-02-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Freezes a hash-bound prompt and agent handoff whose data, tools, budget, retry, destination and expiry remain inside P1-P2.",
+          "prerequisite": "CAP-02-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "agent_run_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Bounded prompt design with explicit non-goals and review",
+      "id": "CAP-02",
+      "name": "Prompt design",
+      "safety_domain": false,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Links a bounded nonclinical claim to an opened public source and records version, date, applicability and limitations.",
+          "eligible_evidence": [
+            "source_audit",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-03-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-03"
+          },
+          "id": "CAP-03-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 1,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Links a bounded nonclinical claim to an opened public source and records version, date, applicability and limitations.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "source_audit",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources",
+          "synthetic_evidence_requires_opened_public_source_supplement": true,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Compares at least two current public sources and keeps disagreement, staleness and local-applicability questions visible.",
+          "eligible_evidence": [
+            "source_audit",
+            "evaluated_mission"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-03-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-03"
+          },
+          "id": "CAP-03-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 1,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Compares at least two current public sources and keeps disagreement, staleness and local-applicability questions visible.",
+          "prerequisite": "CAP-03-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "source_audit",
+              "evaluated_mission"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources",
+          "synthetic_evidence_requires_opened_public_source_supplement": true,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Independently verifies citations and corrects an unsupported quotation, statistic or inference without inventing replacement evidence.",
+          "eligible_evidence": [
+            "source_audit",
+            "correction_record",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-03-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-03"
+          },
+          "id": "CAP-03-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 1,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Independently verifies citations and corrects an unsupported quotation, statistic or inference without inventing replacement evidence.",
+          "prerequisite": "CAP-03-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "source_audit",
+              "correction_record",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources",
+          "synthetic_evidence_requires_opened_public_source_supplement": true,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Uses separate scout and verifier roles at P1-P2 and requires a human to resolve source conflict before accepting the artifact.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "source_audit",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-03-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-03"
+          },
+          "id": "CAP-03-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 1,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Uses separate scout and verifier roles at P1-P2 and requires a human to resolve source conflict before accepting the artifact.",
+          "prerequisite": "CAP-03-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "source_audit",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources",
+          "synthetic_evidence_requires_opened_public_source_supplement": true,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Traceable public-source research and claim verification",
+      "id": "CAP-03",
+      "name": "Evidence-informed research",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Separates fact, inference, assumption and unknown in a generic or unmistakably fictional exercise.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-04-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-04"
+          },
+          "id": "CAP-04-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Separates fact, inference, assumption and unknown in a generic or unmistakably fictional exercise.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Captures resident reasoning before AI exposure and compares alternatives, disconfirming evidence and escalation questions afterward.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-04-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-04"
+          },
+          "id": "CAP-04-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Captures resident reasoning before AI exposure and compares alternatives, disconfirming evidence and escalation questions afterward.",
+          "prerequisite": "CAP-04-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Finds a bias, contradiction or unsupported inference, revises the reasoning trace and avoids any competence or live-care claim.",
+          "eligible_evidence": [
+            "correction_record",
+            "source_audit",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-04-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-04"
+          },
+          "id": "CAP-04-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Finds a bias, contradiction or unsupported inference, revises the reasoning trace and avoids any competence or live-care claim.",
+          "prerequisite": "CAP-04-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "correction_record",
+              "source_audit",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Resolves a controlled disagreement between agents through evidence and named-human review rather than vote, confidence or consensus.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "decision_log",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-04-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-04"
+          },
+          "id": "CAP-04-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Resolves a controlled disagreement between agents through evidence and named-human review rather than vote, confidence or consensus.",
+          "prerequisite": "CAP-04-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "decision_log",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Independent reasoning, uncertainty and bias checks",
+      "id": "CAP-04",
+      "name": "Critical thinking and reasoning",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Defines one nonclinical problem, beneficiary, owner, non-goals, success signal and stop condition.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-05-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-05"
+          },
+          "id": "CAP-05-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Defines one nonclinical problem, beneficiary, owner, non-goals, success signal and stop condition.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Completes Assess-Define-Plan-Implement-Evaluate with Implement limited to a draft, simulation or bounded P1 run.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-05-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-05"
+          },
+          "id": "CAP-05-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Completes Assess-Define-Plan-Implement-Evaluate with Implement limited to a draft, simulation or bounded P1 run.",
+          "prerequisite": "CAP-05-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Tests an alternative and failure path, measures burden and unintended effects and records a justified revise, pause or remove decision.",
+          "eligible_evidence": [
+            "safety_drill",
+            "failure_recovery_receipt",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-05-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-05"
+          },
+          "id": "CAP-05-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Tests an alternative and failure path, measures burden and unintended effects and records a justified revise, pause or remove decision.",
+          "prerequisite": "CAP-05-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "failure_recovery_receipt",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Coordinates bounded subtasks while preserving one human decision owner, explicit handoffs and a no-agent fallback.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "agent_run_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-05-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-05"
+          },
+          "id": "CAP-05-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Coordinates bounded subtasks while preserving one human decision owner, explicit handoffs and a no-agent fallback.",
+          "prerequisite": "CAP-05-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "agent_run_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Five-stage bounded problem-solving",
+      "id": "CAP-05",
+      "name": "Structured problem-solving",
+      "safety_domain": false,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Maps a personal or synthetic workflow with trigger, inputs, owners, decisions, outputs and official non-app destination.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-06-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-06"
+          },
+          "id": "CAP-06-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Maps a personal or synthetic workflow with trigger, inputs, owners, decisions, outputs and official non-app destination.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Adds human checkpoints, data boundaries, expiry, manual fallback and accessible degraded behavior.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "accessibility_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-06-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-06"
+          },
+          "id": "CAP-06-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Adds human checkpoints, data boundaries, expiry, manual fallback and accessible degraded behavior.",
+          "prerequisite": "CAP-06-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "accessibility_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Runs a controlled failure, cancellation and rollback exercise without recording a false action or closed loop.",
+          "eligible_evidence": [
+            "safety_drill",
+            "failure_recovery_receipt",
+            "deletion_or_rollback_receipt"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-06-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-06"
+          },
+          "id": "CAP-06-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Runs a controlled failure, cancellation and rollback exercise without recording a false action or closed loop.",
+          "prerequisite": "CAP-06-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "failure_recovery_receipt",
+              "deletion_or_rollback_receipt"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Designs a multi-agent sequence with frozen dependencies and human handoffs while keeping institutional execution unavailable.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "agent_run_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-06-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-06"
+          },
+          "id": "CAP-06-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Designs a multi-agent sequence with frozen dependencies and human handoffs while keeping institutional execution unavailable.",
+          "prerequisite": "CAP-06-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "agent_run_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Human-owned workflow and degraded-mode design",
+      "id": "CAP-06",
+      "name": "Workflow design",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Creates a bounded project brief with owner, scope, deliverable, dates, capacity, expiry and stop condition.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-07-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-07"
+          },
+          "id": "CAP-07-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Creates a bounded project brief with owner, scope, deliverable, dates, capacity, expiry and stop condition.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Tracks dependencies, risks, review burden, decisions and a feasible protected-time plan without inventing institutional support.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-07-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-07"
+          },
+          "id": "CAP-07-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Tracks dependencies, risks, review burden, decisions and a feasible protected-time plan without inventing institutional support.",
+          "prerequisite": "CAP-07-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Applies change control, source and artifact versioning, rollback and an evidence-based retain, revise, pause or remove decision.",
+          "eligible_evidence": [
+            "correction_record",
+            "deletion_or_rollback_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-07-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-07"
+          },
+          "id": "CAP-07-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Applies change control, source and artifact versioning, rollback and an evidence-based retain, revise, pause or remove decision.",
+          "prerequisite": "CAP-07-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "correction_record",
+              "deletion_or_rollback_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Uses bounded P1-P2 support for project coordination while a human retains prioritization, approval and release.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "agent_run_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-07-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-07"
+          },
+          "id": "CAP-07-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Uses bounded P1-P2 support for project coordination while a human retains prioritization, approval and release.",
+          "prerequisite": "CAP-07-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "agent_run_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Bounded project planning and change control",
+      "id": "CAP-07",
+      "name": "Project management",
+      "safety_domain": false,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Correctly classifies an eligible fixture and rejects a prohibited patient, real-case, evaluation or secret fixture before provider use.",
+          "eligible_evidence": [
+            "data_admission_receipt",
+            "safety_drill"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-08-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-08"
+          },
+          "id": "CAP-08-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Correctly classifies an eligible fixture and rejects a prohibited patient, real-case, evaluation or secret fixture before provider use.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "data_admission_receipt",
+              "safety_drill"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Demonstrates purpose-bound partition, retention, export and deletion behavior with content-free receipts.",
+          "eligible_evidence": [
+            "data_admission_receipt",
+            "deletion_or_rollback_receipt"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-08-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-08"
+          },
+          "id": "CAP-08-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Demonstrates purpose-bound partition, retention, export and deletion behavior with content-free receipts.",
+          "prerequisite": "CAP-08-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "data_admission_receipt",
+              "deletion_or_rollback_receipt"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Defeats reidentification, misleading deidentification, cross-partition lookup and secret-injection attempts with zero sensitive retention.",
+          "eligible_evidence": [
+            "safety_drill",
+            "data_admission_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-08-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-08"
+          },
+          "id": "CAP-08-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Defeats reidentification, misleading deidentification, cross-partition lookup and secret-injection attempts with zero sensitive retention.",
+          "prerequisite": "CAP-08-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "data_admission_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Designs a least-privilege P1-P2 data flow and obtains independent privacy-process review before any run.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "data_admission_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-08-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-08"
+          },
+          "id": "CAP-08-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Designs a least-privilege P1-P2 data flow and obtains independent privacy-process review before any run.",
+          "prerequisite": "CAP-08-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "data_admission_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Data admission, privacy and partition isolation",
+      "id": "CAP-08",
+      "name": "Data and privacy stewardship",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Identifies the affected person, human decision owner, material AI contribution, plausible harm and right to correct or decline.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-09-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-09"
+          },
+          "id": "CAP-09-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Identifies the affected person, human decision owner, material AI contribution, plausible harm and right to correct or decline.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Documents disclosure, accessibility, bias, equity and burden checks for an eligible artifact.",
+          "eligible_evidence": [
+            "accessibility_review",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-09-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-09"
+          },
+          "id": "CAP-09-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Documents disclosure, accessibility, bias, equity and burden checks for an eligible artifact.",
+          "prerequisite": "CAP-09-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "accessibility_review",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Rejects protected-trait inference, ranking, surveillance, coercion or concealment in an adversarial exercise.",
+          "eligible_evidence": [
+            "safety_drill",
+            "correction_record",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-09-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-09"
+          },
+          "id": "CAP-09-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Rejects protected-trait inference, ranking, surveillance, coercion or concealment in an adversarial exercise.",
+          "prerequisite": "CAP-09-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "correction_record",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Resolves a conflict between agent convenience and human dignity through explicit human review and a safer alternative.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "decision_log",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-09-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-09"
+          },
+          "id": "CAP-09-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Resolves a conflict between agent convenience and human dignity through explicit human review and a safer alternative.",
+          "prerequisite": "CAP-09-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "decision_log",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Human-centered, transparent and non-coercive AI use",
+      "id": "CAP-09",
+      "name": "Ethical AI practice",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Classifies EDENA tier and absolute_stop independently and explains why neither field grants authority.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "data_admission_receipt"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-10-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-10"
+          },
+          "id": "CAP-10-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Classifies EDENA tier and absolute_stop independently and explains why neither field grants authority.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "data_admission_receipt"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Routes Yellow and Orange work to bounded preparation with sources, limitations, human owner and no external action.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-10-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-10"
+          },
+          "id": "CAP-10-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Routes Yellow and Orange work to bounded preparation with sources, limitations, human owner and no external action.",
+          "prerequisite": "CAP-10-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Overrides a malicious Green label, blocks an absolute stop and permits only a clean fictional restart where policy allows.",
+          "eligible_evidence": [
+            "safety_drill",
+            "correction_record",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-10-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-10"
+          },
+          "id": "CAP-10-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Overrides a malicious Green label, blocks an absolute stop and permits only a clean fictional restart where policy allows.",
+          "prerequisite": "CAP-10-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "correction_record",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Preserves the highest applicable EDENA tier and stop state across every agent handoff and terminates on drift.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "agent_run_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-10-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-10"
+          },
+          "id": "CAP-10-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Preserves the highest applicable EDENA tier and stop state across every agent handoff and terminates on drift.",
+          "prerequisite": "CAP-10-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "agent_run_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "EDENA classification and nonwaivable stop enforcement",
+      "id": "CAP-10",
+      "name": "EDENA governance",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Inspects a P0 agent charter and identifies objective, owner, allowed data, tools, outputs, expiry and kill path.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-11-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-11"
+          },
+          "id": "CAP-11-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Inspects a P0 agent charter and identifies objective, owner, allowed data, tools, outputs, expiry and kill path.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Authorizes one eligible P1 run, reviews the result and proves automatic return to P0.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-11-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-11"
+          },
+          "id": "CAP-11-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Authorizes one eligible P1 run, reviews the result and proves automatic return to P0.",
+          "prerequisite": "CAP-11-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Exercises prompt injection, tool failure, cancellation, kill, rollback and purge with no hidden retry or widening.",
+          "eligible_evidence": [
+            "safety_drill",
+            "failure_recovery_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-11-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-11"
+          },
+          "id": "CAP-11-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Exercises prompt injection, tool failure, cancellation, kill, rollback and purge with no hidden retry or widening.",
+          "prerequisite": "CAP-11-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "failure_recovery_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Supervises two frozen roles or one agent plus an independent verifier at P1-P2 with distinct evidence and human acceptance.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "agent_run_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-11-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-11"
+          },
+          "id": "CAP-11-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Supervises two frozen roles or one agent plus an independent verifier at P1-P2 with distinct evidence and human acceptance.",
+          "prerequisite": "CAP-11-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "agent_run_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "One-run agent supervision and least privilege",
+      "id": "CAP-11",
+      "name": "Agent supervision",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Maps prospective agent roles, dependencies, handoffs and prohibited recursion before any execution.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "permission_envelope"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-12-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-12"
+          },
+          "id": "CAP-12-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Maps prospective agent roles, dependencies, handoffs and prohibited recursion before any execution.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "permission_envelope"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Runs two frozen synthetic roles with separated outputs and an explicit human checkpoint.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-12-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-12"
+          },
+          "id": "CAP-12-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Runs two frozen synthetic roles with separated outputs and an explicit human checkpoint.",
+          "prerequisite": "CAP-12-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Handles agent disagreement, timeout, cost limit and cancellation without consensus-as-truth or false completion.",
+          "eligible_evidence": [
+            "safety_drill",
+            "failure_recovery_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-12-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-12"
+          },
+          "id": "CAP-12-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Handles agent disagreement, timeout, cost limit and cancellation without consensus-as-truth or false completion.",
+          "prerequisite": "CAP-12-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "failure_recovery_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Completes a capstone-eligible orchestration using new evidence that was not consumed by its prerequisite domain awards.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "evidence_assignment_record",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-12-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-12"
+          },
+          "id": "CAP-12-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Completes a capstone-eligible orchestration using new evidence that was not consumed by its prerequisite domain awards.",
+          "prerequisite": "CAP-12-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "evidence_assignment_record",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Transparent multi-agent orchestration",
+      "id": "CAP-12",
+      "name": "Multi-agent orchestration",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Creates a source record with publisher, title, version, retrieval date, supported claim, limits and expiry.",
+          "eligible_evidence": [
+            "source_audit",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-13-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-13"
+          },
+          "id": "CAP-13-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 1,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Creates a source record with publisher, title, version, retrieval date, supported claim, limits and expiry.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "source_audit",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources",
+          "synthetic_evidence_requires_opened_public_source_supplement": true,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Builds a small public-source collection with deduplication, provenance and explicit exclusion of restricted content.",
+          "eligible_evidence": [
+            "source_audit",
+            "data_admission_receipt"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-13-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-13"
+          },
+          "id": "CAP-13-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 1,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Builds a small public-source collection with deduplication, provenance and explicit exclusion of restricted content.",
+          "prerequisite": "CAP-13-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "source_audit",
+              "data_admission_receipt"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources",
+          "synthetic_evidence_requires_opened_public_source_supplement": true,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Detects stale, poisoned or prompt-injecting content and demonstrates correction, removal and dependent-artifact review.",
+          "eligible_evidence": [
+            "safety_drill",
+            "correction_record",
+            "deletion_or_rollback_receipt"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-13-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-13"
+          },
+          "id": "CAP-13-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 1,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Detects stale, poisoned or prompt-injecting content and demonstrates correction, removal and dependent-artifact review.",
+          "prerequisite": "CAP-13-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "correction_record",
+              "deletion_or_rollback_receipt"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources",
+          "synthetic_evidence_requires_opened_public_source_supplement": true,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Uses separate retrieval and verification roles while an independent source audit controls acceptance.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "source_audit",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-13-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-13"
+          },
+          "id": "CAP-13-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 1,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Uses separate retrieval and verification roles while an independent source audit controls acceptance.",
+          "prerequisite": "CAP-13-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "source_audit",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources",
+          "synthetic_evidence_requires_opened_public_source_supplement": true,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Source-governed knowledge-base development",
+      "id": "CAP-13",
+      "name": "Knowledge-base development",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only_not_sufficient_without_opened_public_sources"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Distinguishes reminder, draft, attempted action, completed action and unavailable execution in one workflow.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-14-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-14"
+          },
+          "id": "CAP-14-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Distinguishes reminder, draft, attempted action, completed action and unavailable execution in one workflow.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Previews a bounded no-action automation with exact trigger, owner, stop, expiry and manual fallback.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-14-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-14"
+          },
+          "id": "CAP-14-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Previews a bounded no-action automation with exact trigger, owner, stop, expiry and manual fallback.",
+          "prerequisite": "CAP-14-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Proves timeout is not approval and blocks hidden retry, background continuation and false completion during failure.",
+          "eligible_evidence": [
+            "safety_drill",
+            "failure_recovery_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-14-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-14"
+          },
+          "id": "CAP-14-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Proves timeout is not approval and blocks hidden retry, background continuation and false completion during failure.",
+          "prerequisite": "CAP-14-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "failure_recovery_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Designs an agent-plus-reviewer automation at P1-P2 while preserving the target's absent external executor.",
+          "eligible_evidence": [
+            "permission_envelope",
+            "agent_run_receipt",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-14-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-14"
+          },
+          "id": "CAP-14-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Designs an agent-plus-reviewer automation at P1-P2 while preserving the target's absent external executor.",
+          "prerequisite": "CAP-14-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "permission_envelope",
+              "agent_run_receipt",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Non-executing automation design and truthful state",
+      "id": "CAP-14",
+      "name": "Automation design",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Creates a labeled draft showing source, uncertainty, AI contribution, human owner, expiry and no-send state.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "source_audit"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-15-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-15"
+          },
+          "id": "CAP-15-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Creates a labeled draft showing source, uncertainty, AI contribution, human owner, expiry and no-send state.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "source_audit"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Reviews audience, accessibility, copyright, privacy, limitations and required disclosure before acceptance.",
+          "eligible_evidence": [
+            "accessibility_review",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-15-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-15"
+          },
+          "id": "CAP-15-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Reviews audience, accessibility, copyright, privacy, limitations and required disclosure before acceptance.",
+          "prerequisite": "CAP-15-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "accessibility_review",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Demonstrates hash-bound approval invalidation after a material change and records correction without false release.",
+          "eligible_evidence": [
+            "correction_record",
+            "decision_log",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-15-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-15"
+          },
+          "id": "CAP-15-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Demonstrates hash-bound approval invalidation after a material change and records correction without false release.",
+          "prerequisite": "CAP-15-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "correction_record",
+              "decision_log",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Separates agent drafting, independent review and human acceptance using distinct evidence items and no external release claim.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "evidence_assignment_record",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-15-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-15"
+          },
+          "id": "CAP-15-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Separates agent drafting, independent review and human acceptance using distinct evidence items and no external release claim.",
+          "prerequisite": "CAP-15-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "evidence_assignment_record",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Artifact provenance and human release review",
+      "id": "CAP-15",
+      "name": "Artifact creation and human release review",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Defines outcome, process, balancing, burden and independence measures for a synthetic or personal AI-process mission.",
+          "eligible_evidence": [
+            "reviewed_artifact",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-16-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-16"
+          },
+          "id": "CAP-16-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Defines outcome, process, balancing, burden and independence measures for a synthetic or personal AI-process mission.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "reviewed_artifact",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Records baseline, comparison, missingness, source limits and what the evaluation cannot establish.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "source_audit"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-16-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-16"
+          },
+          "id": "CAP-16-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Records baseline, comparison, missingness, source limits and what the evaluation cannot establish.",
+          "prerequisite": "CAP-16-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "source_audit"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Preserves null, adverse and partial results, corrected errors and a justified retain, revise, pause or remove decision.",
+          "eligible_evidence": [
+            "correction_record",
+            "evaluated_mission",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-16-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-16"
+          },
+          "id": "CAP-16-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Preserves null, adverse and partial results, corrected errors and a justified retain, revise, pause or remove decision.",
+          "prerequisite": "CAP-16-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "correction_record",
+              "evaluated_mission",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Runs a bounded AI-process experiment with a reviewer independent of the generating agent and makes no clinical or institutional outcome claim.",
+          "eligible_evidence": [
+            "agent_run_receipt",
+            "evaluated_mission",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-16-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-16"
+          },
+          "id": "CAP-16-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Runs a bounded AI-process experiment with a reviewer independent of the generating agent and makes no clinical or institutional outcome claim.",
+          "prerequisite": "CAP-16-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "agent_run_receipt",
+              "evaluated_mission",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "AI-process evaluation, quality and implementation learning",
+      "id": "CAP-16",
+      "name": "Evaluation, quality and implementation learning",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Completes ATTEND for a personal or synthetic mission and records supervision uncertainty, human route and one protected-life boundary.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-17-L1",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-17"
+          },
+          "id": "CAP-17-L1",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L1",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 1,
+          "minimum_distinct_eligible_missions": 1,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Completes ATTEND for a personal or synthetic mission and records supervision uncertainty, human route and one protected-life boundary.",
+          "prerequisite": null,
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "reviewed_artifact"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Uses CIRCLE or ORBIT only when relevant and preserves owners, closed-loop status, expiry and manual fallback.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "decision_log"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-17-L2",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-17"
+          },
+          "id": "CAP-17-L2",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L2",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 2,
+          "minimum_distinct_eligible_missions": 2,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Uses CIRCLE or ORBIT only when relevant and preserves owners, closed-loop status, expiry and manual fallback.",
+          "prerequisite": "CAP-17-L1",
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "decision_log"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": false
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": false,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Handles role, site, supervision or capacity change by invalidating stale approval, entering Minimum Mode when needed and keeping private-life evidence out of badges.",
+          "eligible_evidence": [
+            "safety_drill",
+            "correction_record",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "domain_criterion",
+            "criterion_id_required": "CAP-17-L3",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-17"
+          },
+          "id": "CAP-17-L3",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L3",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+          "minimum_cumulative_distinct_eligible_missions": 3,
+          "minimum_distinct_eligible_missions": 3,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Handles role, site, supervision or capacity change by invalidating stale approval, entering Minimum Mode when needed and keeping private-life evidence out of badges.",
+          "prerequisite": "CAP-17-L2",
+          "required_evidence_combination": {
+            "all_of": [
+              "safety_drill",
+              "correction_record",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "cumulative_requirement_includes_prior_levels": true,
+          "description": "Integrates a complete resident AI-stewardship mission with independent process review and no clinical competence, authority or wellbeing-outcome claim.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "evidence_assignment_record",
+            "independent_human_review"
+          ],
+          "evidence_assignment": {
+            "award_gate": "global_orchestration_capstone",
+            "criterion_id_required": "CAP-17-L4",
+            "one_evidence_item_id_one_criterion": true,
+            "primary_domain_required": "CAP-17"
+          },
+          "id": "CAP-17-L4",
+          "independent_evidence_rule": "For L3-L4, at least one required evidence item must come from a different artifact and a reviewer or verification process independent of the generating agent.",
+          "level": "L4",
+          "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+          "minimum_cumulative_distinct_eligible_missions": 5,
+          "minimum_distinct_eligible_missions": 5,
+          "minimum_opened_public_source_records_when_required": 0,
+          "mission_requirement_kind": "cumulative_floor",
+          "observable_rubric": "Integrates a complete resident AI-stewardship mission with independent process review and no clinical competence, authority or wellbeing-outcome claim.",
+          "prerequisite": "CAP-17-L3",
+          "required_evidence_combination": {
+            "all_of": [
+              "evaluated_mission",
+              "evidence_assignment_record",
+              "independent_human_review"
+            ],
+            "distinct_evidence_item_ids": true,
+            "same_artifact_may_not_supply_every_required_item": true
+          },
+          "requires_human_review": true,
+          "requires_independent_evidence": true,
+          "synthetic_evidence_limit": "Resident-authored fictional evidence can show only the named AI-stewardship control or process. It never evidences medical knowledge, clinical reasoning quality, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional authority; where opened public sources are required, synthetic evidence is not sufficient alone.",
+          "synthetic_evidence_policy": "process_only",
+          "synthetic_evidence_requires_opened_public_source_supplement": false,
+          "synthetic_process_evidence_eligible": true
+        }
+      ],
+      "focus": "Resident ATTEND/CIRCLE/ORBIT stewardship and whole-life sustainability",
+      "id": "CAP-17",
+      "name": "medical-resident development, ATTEND/CIRCLE/ORBIT stewardship and whole-life sustainability",
+      "safety_domain": true,
+      "synthetic_evidence_policy": "process_only"
+    }
+  ],
+  "eligibility": {
+    "allowed_evidence_types": [
+      "evaluated_mission",
+      "reviewed_artifact",
+      "source_audit",
+      "correction_record",
+      "safety_drill",
+      "accessibility_review",
+      "agent_run_receipt",
+      "data_admission_receipt",
+      "permission_envelope",
+      "decision_log",
+      "independent_human_review",
+      "provider_capability_receipt",
+      "deletion_or_rollback_receipt",
+      "failure_recovery_receipt",
+      "evidence_assignment_record"
+    ],
+    "excluded": [
+      "preloaded_starter_or_system_generated_activity",
+      "clicks_page_views_or_time_in_app",
+      "ai_self_assessment_or_praise",
+      "patient_phi_or_reconstructable_clinical_information",
+      "live_care_or_clinical_decision_activity",
+      "fabricated_outcome_authorship_hour_credential_or_evidence",
+      "credential_secret_or_controlled_substance_identifier",
+      "restricted_employee_learner_research_participant_contract_or_institutional_information",
+      "private_wellbeing_relationship_financial_health_schedule_or_family_information_in_badge_evidence",
+      "unbound_institutional_activity",
+      "external_action_or_production_automation"
+    ],
+    "recompute_triggers": [
+      "correction",
+      "deletion",
+      "expiry",
+      "supersession",
+      "revocation",
+      "criteria_version_change",
+      "integrity_or_authority_conflict"
+    ],
+    "synthetic_evidence_rule": "A resident-authored fictional exercise may support only the explicitly named AI-stewardship control or process criterion or orchestration capstone. Preloaded/system-generated samples never count. Synthetic evidence never supports a medical-knowledge or clinical-reasoning-quality claim, clinical competence, procedure authorization, credential, Milestone, promotion, patient outcome, wellbeing outcome or institutional-authority claim, and it is not sufficient where a criterion requires opened current public sources."
+  },
+  "evidence_reuse_policy": {
+    "capstone_execution_evidence_must_be_new_and_not_consumed_by_domain_prerequisites": true,
+    "one_artifact_hash_maximum_primary_domains": 1,
+    "one_artifact_hash_maximum_total_domain_assignments": 2,
+    "one_evidence_item_id_one_criterion": true,
+    "preloaded_or_system_generated_evidence_reuse": "prohibited",
+    "same_artifact_cannot_satisfy_all_levels_of_one_domain": true,
+    "secondary_domain_assignment_requires_distinct_observable_and_independent_review": true,
+    "shared_source_citation_is_not_shared_source_audit_evidence": true
+  },
+  "global_orchestration_capstone": {
+    "agent_permission_ceiling": "P2",
+    "criteria": [
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "A new resident-authored low-risk AI-stewardship objective records outcome, process, balancing, burden and independence measures.",
+        "id": "CAPSTONE-01",
+        "required_evidence_combination": {
+          "all_of": [
+            "evaluated_mission",
+            "decision_log"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      },
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "At least two frozen agents, or one agent plus an independent verifier, operate only at P1-P2 with distinct evidence IDs.",
+        "id": "CAPSTONE-02",
+        "required_evidence_combination": {
+          "all_of": [
+            "permission_envelope",
+            "agent_run_receipt",
+            "evidence_assignment_record"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      },
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "Context, data, tools, time, cost, token, retry, destination, expiry and human gates are frozen before the run.",
+        "id": "CAPSTONE-03",
+        "required_evidence_combination": {
+          "all_of": [
+            "permission_envelope",
+            "independent_human_review"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      },
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "Adversarial tests reject unauthorized handoff, recursion, permission widening and background continuation.",
+        "id": "CAPSTONE-04",
+        "required_evidence_combination": {
+          "all_of": [
+            "safety_drill",
+            "failure_recovery_receipt"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      },
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "Cancellation or a safe fictional failure-and-recovery path proves no false completion and a working rollback or purge.",
+        "id": "CAPSTONE-05",
+        "required_evidence_combination": {
+          "all_of": [
+            "failure_recovery_receipt",
+            "deletion_or_rollback_receipt"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      },
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "A source audit independent of the generating agent reviews consequential claims and retains conflicts and unknowns.",
+        "id": "CAPSTONE-06",
+        "required_evidence_combination": {
+          "all_of": [
+            "source_audit",
+            "independent_human_review"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      },
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "Evaluate records benefit, burden, accessibility, independence, unintended effects and the next-cycle decision.",
+        "id": "CAPSTONE-07",
+        "required_evidence_combination": {
+          "all_of": [
+            "evaluated_mission",
+            "accessibility_review",
+            "decision_log"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      },
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "A complete receipt distinguishes resident work, agent work, human decisions, corrections, disclosures and exclusions.",
+        "id": "CAPSTONE-08",
+        "required_evidence_combination": {
+          "all_of": [
+            "agent_run_receipt",
+            "correction_record",
+            "evidence_assignment_record"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      },
+      {
+        "claim_scope": "ai_stewardship_process_only",
+        "description": "A current scope-matched named human independently reviews AI-process quality without asserting clinical competence, licensure, certification, privileges or authority.",
+        "id": "CAPSTONE-09",
+        "required_evidence_combination": {
+          "all_of": [
+            "independent_human_review",
+            "reviewed_artifact"
+          ],
+          "distinct_evidence_item_ids": true
+        }
+      }
+    ],
+    "external_actions": "unsupported",
+    "id": "CAPSTONE-AI-ORCH-01",
+    "prerequisites": {
+      "all_advanced_safety_domains_required": true,
+      "capstone_evidence_may_reuse_prerequisite_evidence": false,
+      "generating_agent_cannot_be_the_independent_reviewer": true,
+      "independent_evidence_required": true,
+      "minimum_independent_evidence_items": 2,
+      "minimum_new_distinct_capstone_missions": 2,
+      "required_current_domain_criteria": [
+        "CAP-01-L3",
+        "CAP-03-L3",
+        "CAP-04-L3",
+        "CAP-06-L3",
+        "CAP-08-L3",
+        "CAP-09-L3",
+        "CAP-10-L3",
+        "CAP-11-L3",
+        "CAP-12-L3",
+        "CAP-13-L3",
+        "CAP-14-L3",
+        "CAP-15-L3",
+        "CAP-16-L3",
+        "CAP-17-L3"
+      ]
+    },
+    "required_for_level": "L4"
+  },
+  "legacy_identity": {
+    "complete_program": "MRAIOS-ROUNDS-COMPLETE-1.0",
+    "expansion": "MRAIOS-ROUNDS-1.0",
+    "foundation": "MRAIOS-LIFE-TRAINING-PRACTICE-1.0",
+    "namespace": "medres_rounds.*",
+    "notice": "The four-level system, CAP IDs, criteria and badge records are build-layer additions."
+  },
+  "levels": [
+    {
+      "agent_permission_ceiling": "P1",
+      "award_requires_global_capstone": false,
+      "id": "L1",
+      "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+      "minimum_cumulative_distinct_eligible_missions": 1,
+      "name": "Basic",
+      "prerequisite_level": null
+    },
+    {
+      "agent_permission_ceiling": "P1",
+      "award_requires_global_capstone": false,
+      "id": "L2",
+      "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+      "minimum_cumulative_distinct_eligible_missions": 2,
+      "name": "Intermediate",
+      "prerequisite_level": "L1"
+    },
+    {
+      "agent_permission_ceiling": "P2",
+      "award_requires_global_capstone": false,
+      "id": "L3",
+      "minimum_additional_distinct_eligible_missions_since_prior_level": 1,
+      "minimum_cumulative_distinct_eligible_missions": 3,
+      "name": "Advanced",
+      "prerequisite_level": "L2"
+    },
+    {
+      "agent_permission_ceiling": "P2",
+      "award_requires_global_capstone": true,
+      "id": "L4",
+      "minimum_additional_distinct_eligible_missions_since_prior_level": 2,
+      "minimum_cumulative_distinct_eligible_missions": 5,
+      "name": "AI Agent Orchestration Master",
+      "prerequisite_level": "L3"
+    }
+  ],
+  "mission_requirement_policy": {
+    "by_level": [
+      {
+        "additional_since_prior": 1,
+        "cumulative": 1,
+        "level": "L1"
+      },
+      {
+        "additional_since_prior": 1,
+        "cumulative": 2,
+        "level": "L2"
+      },
+      {
+        "additional_since_prior": 1,
+        "cumulative": 3,
+        "level": "L3"
+      },
+      {
+        "additional_since_prior": 2,
+        "cumulative": 5,
+        "level": "L4"
+      }
+    ],
+    "monotonic": true,
+    "semantics": "Cumulative is the total distinct eligible mission floor at the level; additional is the new distinct mission count required after the prior level. Prior-level missions remain counted but cannot be relabeled as new additional missions."
+  },
+  "noncredential_notice": "Developmental AI-stewardship evidence only; not continuing-education credit, a Milestone or EPA, clinical competence, procedure authorization, licensure, credentialing, privilege, promotion, employment validation, research determination, institutional approval or authorization to practice.",
+  "rounds_alignment": {
+    "core_four": [
+      "Orient My Day & Duty",
+      "Learn & Reason",
+      "Orchestrate & Communicate",
+      "Review, Escalate & Close"
+    ],
+    "powers": [
+      "Rotation & Call Readiness Navigator",
+      "Duty-Hours, Fatigue & Safe-Transport Shield",
+      "Capacity, Leave, Recovery & Human-Support Navigator",
+      "Mission, Finances, Family & Future Compass",
+      "Supervision-Aware Care Orchestration Mapper",
+      "Consult, Interdisciplinary Team & Closed-Loop Coordination Studio",
+      "Handoff, Cross-Cover & Transition Reliability Rehearsal",
+      "Follow-Up, Barrier & Contingency Reliability Planner",
+      "Evidence, Guideline & Uncertainty Navigator",
+      "Synthetic Clinical Reasoning & Diagnostic Calibration Lab",
+      "Journal Club, Adaptive Learning & Knowledge Synthesis Studio",
+      "Quality, Patient Safety & Implementation Lab",
+      "Graduated Responsibility, Supervision & Escalation Compass",
+      "Milestones, EPAs, Feedback & Development Map",
+      "License, Exam, Procedure Authorization & Credential Radar",
+      "Fellowship, Career, Contract & Opportunity Navigator",
+      "Human Communication, Consent & Difficult-Conversation Rehearsal",
+      "Teaching, Bedside Education & Case-Conference Studio",
+      "Research, Scholarship, Authorship & Professional Voice Forge",
+      "Feedback, Conflict, Mistreatment & Psychological-Safety Navigator",
+      "AI Agent Charter, Tool, Permission & Data Registry",
+      "Multi-Agent Orchestration & Human-Handoff Designer",
+      "Agent Output, Source, Bias, Security & Trace Auditor",
+      "Agent Incident, Pause, Failover, Rollback & Retirement Controller"
+    ],
+    "source_defined_badge_system": false
+  },
+  "schema": "NAIO-MR-ROUNDS-CAPABILITY-MASTERY-CRITERIA-1",
+  "status": "normative_build_layer_contract",
+  "version": "1.0.0"
+}

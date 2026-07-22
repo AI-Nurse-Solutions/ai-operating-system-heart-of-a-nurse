@@ -9,6 +9,8 @@
 **Architecture status:** **Signed implementation candidate · active shadow governance · live post-setup distribution · no clinical or PHI authorization**  
 **Decision doctrine:** *Agents propose. Humans judge. Nurses steward.*
 
+> **Link-maintenance note — July 22, 2026:** This remains a July 13 evidence snapshot. The Student, Staff Nurse, Nurse Leader, and Nurse Educator download URLs in Section 8 and Appendix B now point to their governed successor build kits so public links do not fail. Those successor artifacts are outside the original July 13 five-ZIP verification claim and begin published but not installed, activated, operational, or institutionally authorized.
+
 ---
 
 ## Executive decision
@@ -508,10 +510,10 @@ A `naio-soul.schema.json` v1.1 may either add `educator` or preserve the four on
 
 | Lane | Live artifact | State |
 |---|---|---|
-| Student Nurse | `nurse-ai-os-post-setup-student-nurse.zip` | Live, checksummed, not installed |
-| Staff Nurse | `nurse-ai-os-post-setup-staff-nurse.zip` | Live, checksummed, not installed |
-| Nurse Leader and Manager | `nurse-ai-os-post-setup-nurse-leader-and-manager.zip` | Live, checksummed, not installed |
-| Nurse Educator | `TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Self-install Hermes build kit; checksummed; not installed; not operational/build required |
+| Student Nurse | `FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Successor link updated July 22; reproducible self-install build kit; outside the original snapshot's five-ZIP proof set; not installed, activated, operational, or institutionally authorized |
+| Staff Nurse | `STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Successor link updated July 21; self-install build kit; outside the original snapshot's five-ZIP proof set; not installed, activated, operational, or institutionally authorized |
+| Nurse Leader and Manager | `LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Successor link updated July 21; reproducible self-install build kit; outside the original snapshot's five-ZIP proof set; not installed, activated, operational, or institutionally authorized |
+| Nurse Educator | `TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Successor link updated July 22; self-install build kit; outside the original snapshot's five-ZIP proof set; not installed, activated, operational, or institutionally authorized |
 | Nurse-Connected Ally | `nurse-ai-os-post-setup-nurse-connected-ally.zip` | Live, checksummed, not installed |
 
 ## 8.2 Package safety contract
@@ -536,7 +538,7 @@ This is the correct honesty posture, but it means the current role packages are 
 
 ## 8.4 Integrity posture
 
-The five ZIPs were live-verified over HTTPS. Each matched the SHA-256 value in the live manifest and opened as a valid ZIP with eight expected files.
+At the July 13 evidence snapshot, the five original ZIPs were live-verified over HTTPS. Each matched the then-live SHA-256 value and opened as a valid ZIP with eight expected files. That historical statement does not attest the later FUTURE, SHIFT, LEAD, or TEACH successor build kits; their current manifests, ledgers, and verifiers govern those releases.
 
 Residual integrity gap:
 
@@ -942,10 +944,10 @@ This report is self-contained for public review. An earlier internal Harness wor
 
 # Appendix B — Live post-setup downloads
 
-- [Download the Student Nurse role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-student-nurse.zip)
-- [Download the Staff Nurse role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip)
-- [Download the Nurse Leader and Manager role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip)
-- [Download the Nurse Educator TEACH build kit](https://nurse-ai-os.org/post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
+- [Download the current FUTURE Nursing Student and Nursing Assistant self-install build kit](https://nurse-ai-os.org/post-setup/downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
+- [Download the current Staff Nurse SHIFT self-install build kit](https://nurse-ai-os.org/post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
+- [Download the current Nurse Leader LEAD self-install build kit](https://nurse-ai-os.org/post-setup/downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
+- [Download the current Nurse Educator TEACH self-install build kit](https://nurse-ai-os.org/post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
 - [Download the Nurse-Connected Ally role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip)
 
 ---

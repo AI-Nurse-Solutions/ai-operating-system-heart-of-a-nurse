@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Acceptance and packaging tests for the Educator/Designer TEACH Complete Edition."""
+"""Acceptance and packaging tests for the Educator/Designer TEACH build kit."""
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 import re
 import runpy
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -22,19 +25,23 @@ DOCX = PACKAGE / "Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
 BUILD_KIT_ROOT = "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0"
-BUILD_KIT_SHA256 = "fe9f96b4b908602cdae1e35f1643225d70b6f5068049cba1b707f2b8e66104dd"
-BUILD_KIT_BYTES = 6823419
+BUILD_KIT_SHA256 = "39d7a83a79b6137d50b6b5da639cd44d0427e4e06e30fc9d7f3b19805b4080f3"
+BUILD_KIT_BYTES = 6820684
 BUILD_KIT_MEMBER_COUNT = 121
-BUILD_KIT_VERIFIER_SHA256 = "c79581cde1a4ede0c49bd2bc806d6ec74150859d34700a9fad19fc57873f7ae3"
+BUILD_KIT_VERIFIER_SHA256 = "3b6017d9e07793f06a470d74f7a1632fbe34f6f5f5c02b7322172cfd9d4e1cfb"
 SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE = "8b7e8290382f7df5830554ad740a8fd280c3d2be5e8948d1a539afe074416cb9"
 RESUME = "Resume TEACH Complete Edition installation from the last approved checkpoint."
+GOVERNED_VERIFY_COMMAND = (
+    "python3 tools/verify-build-kit.py --package . --zip "
+    "../TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
+)
 
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-class EducatorCompleteEditionTests(unittest.TestCase):
+class EducatorBuildKitTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.program = PROGRAM.read_text(encoding="utf-8")
@@ -161,7 +168,7 @@ class EducatorCompleteEditionTests(unittest.TestCase):
         self.assertIn("exact **Resume TEACH Complete Edition installation", self.read_first)
         self.assertIn("does not continue in the background", self.read_first)
 
-    def test_public_copy_classifies_lane_four_as_complete_edition(self):
+    def test_public_copy_classifies_lane_four_as_self_install_build_kit(self):
         page = (ROOT / "post-setup" / "index.html").read_text(encoding="utf-8")
         for phrase in (
             "Nurse Educator &amp; Instructional Designer",
@@ -170,11 +177,12 @@ class EducatorCompleteEditionTests(unittest.TestCase):
             "264 explicit target rows",
             "433 required execution records",
             "self-install Hermes build kit",
-            "approximately 6.82 MB",
+            "exactly 6,820,684 bytes",
             "not operational—build required",
             "TEACH Implementation Activation Card",
             "all twenty optional TEACH SuperPowers remain inactive",
-            "Complete Edition lanes 01, 02, 03, 04, and 06",
+            "Self-install build-kit lanes 01, 02, 03, and 04",
+            "Complete Edition lane 06",
             "For review-first lane 05",
         ):
             self.assertIn(phrase, page)
@@ -219,6 +227,47 @@ class EducatorCompleteEditionTests(unittest.TestCase):
             self.assertEqual(manifest["public_safe_derivative"]["source_zip_sha256_before_derivative"], SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE)
             self.assertIn("PUBLIC_SAFE_EDUCATOR_QA_CONTEXT_PLACEHOLDER", archive.read(f"{BUILD_KIT_ROOT}/source/baseline-qa-reference/test_discover_mission_control_v2_dom.mjs").decode("utf-8"))
             self.assertEqual(hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py")).hexdigest(), BUILD_KIT_VERIFIER_SHA256)
+
+    def test_documented_verification_and_portability_contract_are_archive_native(self):
+        with zipfile.ZipFile(ZIP) as archive:
+            for relative in (
+                "README-FIRST.md",
+                "INSTALL.md",
+                "START_HERE.md",
+                "implementation/EDUCATOR-User-Installation-Guide.md",
+            ):
+                text = archive.read(f"{BUILD_KIT_ROOT}/{relative}").decode("utf-8")
+                self.assertIn(GOVERNED_VERIFY_COMMAND, text, relative)
+                command_lines = [line.strip() for line in text.splitlines() if "verify-build-kit.py" in line]
+                self.assertTrue(command_lines, relative)
+                self.assertEqual(command_lines, [GOVERNED_VERIFY_COMMAND], relative)
+
+            verifier_name = f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py"
+            verifier = archive.read(verifier_name).decode("utf-8")
+            ast.parse(verifier)
+            self.assertIn("def check_modes(c: Checks, package: Path, enforce_modes: bool) -> None:", verifier)
+            self.assertIn("if enforce_modes:", verifier)
+            self.assertIn("Extracted filesystem modes are non-authoritative; outer-ZIP modes remain mandatory", verifier)
+            self.assertIn('check_modes(c, package, enforce_modes=args.zip_path is None and os.name != "nt")', verifier)
+            self.assertIn("check_outer_zip(c, package, resolved_zip)", verifier)
+            verifier_mode = (archive.getinfo(verifier_name).external_attr >> 16) & 0o777
+            self.assertEqual(verifier_mode, 0o755)
+
+    def test_rotation_utility_is_idempotent_and_preserves_current_identity(self):
+        script = ROOT / "scripts" / "rotate-teach-verifier-portability.py"
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate = Path(tmp) / ZIP.name
+            shutil.copy2(ZIP, candidate)
+            for _ in range(2):
+                subprocess.run(
+                    [sys.executable, str(script), "--zip", str(candidate)],
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
+                self.assertEqual(candidate.stat().st_size, BUILD_KIT_BYTES)
+                self.assertEqual(sha256(candidate), BUILD_KIT_SHA256)
 
     def test_import_source_can_seed_separately_governed_educator_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))

@@ -263,6 +263,68 @@ try {
   await page.getByText('Local storage could not be cleared.').waitFor();
   assert(!(await page.locator('#status-message').textContent())?.includes('Existing downloads'), 'reset must not announce success when removal fails');
   assert.deepEqual(errors, [], `browser console errors: ${errors.join(' | ')}`);
+
+  const postSetupPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  const postSetupErrors = [];
+  const postSetupFailedResponses = [];
+  const postSetupFailedRequests = [];
+  const isOptionalFontUrl = (url) => url.startsWith('https://fonts.googleapis.com/') || url.startsWith('https://fonts.gstatic.com/');
+  postSetupPage.on('console', (message) => {
+    const location = message.location().url || '';
+    if (message.type() === 'error' && !isOptionalFontUrl(location)) {
+      postSetupErrors.push(`${message.text()} @ ${location || 'unknown'}`);
+    }
+  });
+  postSetupPage.on('pageerror', (error) => postSetupErrors.push(error.message));
+  postSetupPage.on('response', (response) => {
+    if (response.status() >= 400 && !isOptionalFontUrl(response.url())) {
+      postSetupFailedResponses.push(`${response.status()} ${response.url()}`);
+    }
+  });
+  postSetupPage.on('requestfailed', (request) => {
+    if (!isOptionalFontUrl(request.url())) {
+      postSetupFailedRequests.push(`${request.url()} ${request.failure()?.errorText || 'failed'}`);
+    }
+  });
+  for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
+    await postSetupPage.setViewportSize(viewport);
+    const postSetupResponse = await postSetupPage.goto(`http://127.0.0.1:${port}/post-setup/`);
+    assert.equal(postSetupResponse?.status(), 200, `post-setup route must return HTTP 200 at ${viewport.width}px`);
+    const leadCard = postSetupPage.locator('article').filter({ hasText: 'Nurse Leader Complete AI OS with LEAD SuperPowers' });
+    assert.equal(await leadCard.count(), 1, 'exactly one Nurse Leader LEAD card must render');
+    const leadLink = leadCard.locator('a[download]');
+    assert.equal(await leadLink.getAttribute('href'), 'downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip');
+    assert.equal((await leadLink.textContent())?.trim(), 'Download LEAD Build Kit →');
+    const journey = postSetupPage.getByRole('heading', { name: 'What happens after a self-install build-kit download?' });
+    assert.equal(await journey.count(), 1, 'post-download journey must render once');
+    const responsive = await postSetupPage.evaluate(() => {
+      const heading = [...document.querySelectorAll('h3')].find((node) => node.textContent?.includes('Nurse Leader Complete'));
+      const card = heading?.closest('article');
+      const link = card?.querySelector('a[download]');
+      const journeyHeading = [...document.querySelectorAll('h3')].find((node) => node.textContent?.includes('What happens after'));
+      const viewportWidth = document.documentElement.clientWidth;
+      const bounds = card?.getBoundingClientRect();
+      return {
+        pageOverflow: document.documentElement.scrollWidth > viewportWidth,
+        cardOverflow: Boolean(card && card.scrollWidth > card.clientWidth),
+        linkOverflow: Boolean(link && link.scrollWidth > link.clientWidth),
+        cardWithinViewport: Boolean(bounds && bounds.left >= 0 && bounds.right <= viewportWidth),
+        digestPresent: Boolean(card?.innerText.includes('78293c6eaef4fa277f4afecf14eeb87b90f3385ba71be3189faaca2466c90974')),
+        journeySteps: journeyHeading?.parentElement?.querySelectorAll('li').length || 0,
+      };
+    });
+    assert.equal(responsive.pageOverflow, false, `post-setup page must not overflow at ${viewport.width}px`);
+    assert.equal(responsive.cardOverflow, false, `LEAD card must not overflow at ${viewport.width}px`);
+    assert.equal(responsive.linkOverflow, false, `LEAD CTA must not overflow at ${viewport.width}px`);
+    assert.equal(responsive.cardWithinViewport, true, `LEAD card must stay within ${viewport.width}px viewport`);
+    assert.equal(responsive.digestPresent, true, 'visible LEAD digest must remain present');
+    assert.equal(responsive.journeySteps, 6, 'post-download journey must retain six steps');
+  }
+  assert.deepEqual(postSetupErrors, [], `post-setup browser console errors: ${postSetupErrors.join(' | ')}; failed responses: ${postSetupFailedResponses.join(' | ')}; failed requests: ${postSetupFailedRequests.join(' | ')}`);
+  assert.deepEqual(postSetupFailedResponses, [], `post-setup failed responses: ${postSetupFailedResponses.join(' | ')}`);
+  assert.deepEqual(postSetupFailedRequests, [], `post-setup failed requests: ${postSetupFailedRequests.join(' | ')}`);
+  await postSetupPage.close();
+  console.log('POST_SETUP_LEAD_BROWSER_SMOKE_OK');
   console.log('SWITCHBOARD_BROWSER_SMOKE_OK');
 } finally {
   await browser.close();

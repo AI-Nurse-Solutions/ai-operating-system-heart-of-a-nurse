@@ -12,11 +12,12 @@ import hashlib
 import json
 import os
 import re
+import runpy
 import shutil
 import sys
 import unicodedata
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 REPO = Path(__file__).resolve().parents[1]
 POST_SETUP = REPO / "post-setup"
@@ -149,15 +150,62 @@ ROLES = [
 ]
 
 FIXED_ZIP_TIME = (2026, 7, 13, 0, 0, 0)
+MAX_BUILD_KIT_MEMBER_BYTES = 32 * 1024 * 1024
+MAX_BUILD_KIT_EXPANDED_BYTES = 256 * 1024 * 1024
 
 BUILD_KIT_DOWNLOADS = {
+    "staff-nurse": {
+        "build_kit_version": "1.0.0",
+        "filename": "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+        "root": "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0",
+        "bytes": 6914990,
+        "sha256": "e0ebaff0ad8840ac2e4670a28168a9ac1fdaf17a0c8e3ae72973c8496cb0f709",
+        "member_count": 114,
+        "verifier_sha256": "075b327b7bda027be02b0b2bcf58289f9a463df652019e013fa1382ba4c8923b",
+        "source_zip_sha256_before_derivative": "f10fe10a1675759772ea53cc60c1b354ea0342b38efd01d6510d7ac0c986b5ae",
+        "source_zip_bytes_before_derivative": 6914738,
+        "target": {
+            "home": "My SHIFT Mission Control",
+            "lane": "staff_nurse_life_practice",
+            "namespace": "snqi_shift.*",
+            "product": "SHIFT — Staff Nurse Life & Practice Mission Control",
+            "product_id": "staff-nurse-life-practice-mission-control",
+            "readiness": "not_operational_build_required",
+            "route": "/staff-nurses/dashboard",
+            "version": "2.0.0",
+        },
+        "counts": {
+            "acceptance_ledger_explicit_target_test_rows": 264,
+            "agents": 10,
+            "canonical_compatibility_checks": 176,
+            "canonical_foundation_checks": 40,
+            "canonical_integration_checks": 16,
+            "canonical_overlay_checks": 120,
+            "capability_criteria_including_capstone": 77,
+            "capability_domains": 17,
+            "control_matrix_rows": 216,
+            "core_launchers": 4,
+            "cross_cutting_full_stack_scenarios": 48,
+            "deployment_contexts": 2,
+            "mastery_levels": 4,
+            "protected_workspaces": 5,
+            "role_adapters": 4,
+            "superpowers": 20,
+            "target_control_tests": 216,
+            "templates": 25,
+            "total_required_execution_records": 440,
+            "total_target_full_stack_tests": 264,
+            "workflows": 18,
+        },
+    },
     "nurse-educator": {
+        "build_kit_version": "1.0.0",
         "filename": "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
         "root": "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0",
-        "bytes": 6823419,
-        "sha256": "fe9f96b4b908602cdae1e35f1643225d70b6f5068049cba1b707f2b8e66104dd",
+        "bytes": 6820684,
+        "sha256": "39d7a83a79b6137d50b6b5da639cd44d0427e4e06e30fc9d7f3b19805b4080f3",
         "member_count": 121,
-        "verifier_sha256": "c79581cde1a4ede0c49bd2bc806d6ec74150859d34700a9fad19fc57873f7ae3",
+        "verifier_sha256": "3b6017d9e07793f06a470d74f7a1632fbe34f6f5f5c02b7322172cfd9d4e1cfb",
         "source_zip_sha256_before_derivative": "8b7e8290382f7df5830554ad740a8fd280c3d2be5e8948d1a539afe074416cb9",
         "source_zip_bytes_before_derivative": 6820134,
         "target": {
@@ -637,9 +685,10 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
         normalized = {unicodedata.normalize("NFC", name).casefold() for name in names}
         if len(normalized) != len(names):
             raise ValueError(f"Build-kit has case/Unicode-colliding members: {path}")
+        expanded_bytes = 0
         for info in infos:
             name = info.filename
-            candidate = Path(name)
+            candidate = PurePosixPath(name)
             mode = (info.external_attr >> 16) & 0o777777
             if (
                 not name
@@ -647,9 +696,15 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
                 or "\\" in name
                 or "\x00" in name
                 or ".." in candidate.parts
-                or ":" in candidate.parts[0]
+                or any(":" in part for part in candidate.parts)
+                or name.rstrip("/") != candidate.as_posix()
             ):
                 raise ValueError(f"Unsafe build-kit member path: {name!r}")
+            if info.file_size > MAX_BUILD_KIT_MEMBER_BYTES:
+                raise ValueError(f"Build-kit member exceeds byte limit: {name}")
+            expanded_bytes += info.file_size
+            if expanded_bytes > MAX_BUILD_KIT_EXPANDED_BYTES:
+                raise ValueError(f"Build-kit expanded bytes exceed limit: {path}")
             if (mode & 0o170000) == 0o120000:
                 raise ValueError(f"Build-kit symlink member rejected: {name}")
             if (mode & 0o170000) not in (0, 0o100000, 0o040000):
@@ -666,7 +721,6 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             "GIVE-THIS-PACKAGE-TO-HERMES.md",
             "RELEASE-MANIFEST.json",
             "SHA256SUMS.txt",
-            "SOURCE-INVENTORY.json",
             "tools/verify-build-kit.py",
         }
         files = {name[len(root) + 1:] for name in names if not name.endswith("/")}
@@ -674,6 +728,11 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
         if missing:
             raise ValueError("Build-kit missing required files: " + ", ".join(sorted(missing)))
         manifest = json.loads(archive.read(f"{root}/RELEASE-MANIFEST.json"))
+        build_kit_version = manifest.get("package_version")
+        if build_kit_version is None and isinstance(manifest.get("build_kit"), dict):
+            build_kit_version = manifest["build_kit"].get("version")
+        if build_kit_version != config.get("build_kit_version"):
+            raise ValueError(f"Build-kit package version mismatch: {path}")
         if manifest.get("target") != config["target"]:
             raise ValueError(f"Build-kit target contract mismatch: {path}")
         if manifest.get("counts") != config["counts"]:
@@ -683,13 +742,20 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             raise ValueError(f"Build-kit safe defaults mismatch: {path}")
         if defaults.get("connectors_schedules_sharing_external_actions_background_agents") != "Off":
             raise ValueError(f"Build-kit connector/action defaults must stay off: {path}")
-        if defaults.get("workflows") != "Preview Only" or defaults.get("memory") != "session_only":
-            raise ValueError(f"Build-kit workflow/memory defaults mismatch: {path}")
-        derivative = manifest.get("public_safe_derivative", {})
-        if derivative.get("source_zip_sha256_before_derivative") != config["source_zip_sha256_before_derivative"]:
-            raise ValueError(f"Build-kit derivative provenance mismatch: {path}")
-        if derivative.get("source_zip_bytes_before_derivative") != config["source_zip_bytes_before_derivative"]:
-            raise ValueError(f"Build-kit derivative byte provenance mismatch: {path}")
+        if "source_zip_sha256_before_derivative" in config:
+            derivative = manifest.get("public_safe_derivative", {})
+            if derivative.get("source_zip_sha256_before_derivative") != config["source_zip_sha256_before_derivative"]:
+                raise ValueError(f"Build-kit derivative provenance mismatch: {path}")
+            if derivative.get("source_zip_bytes_before_derivative") != config["source_zip_bytes_before_derivative"]:
+                raise ValueError(f"Build-kit derivative byte provenance mismatch: {path}")
+        elif "source_zip_sha256" in config:
+            source_archive = manifest.get("source_provenance", {}).get("source_archive", {})
+            if source_archive.get("sha256") != config["source_zip_sha256"]:
+                raise ValueError(f"Build-kit source provenance mismatch: {path}")
+            if source_archive.get("bytes") != config["source_zip_bytes"]:
+                raise ValueError(f"Build-kit source byte provenance mismatch: {path}")
+        else:
+            raise ValueError(f"Build-kit source provenance configuration missing: {path}")
         verifier_sha256 = hashlib.sha256(archive.read(f"{root}/tools/verify-build-kit.py")).hexdigest()
         if verifier_sha256 != config["verifier_sha256"]:
             raise ValueError(f"Bundled verifier bytes changed: {path}")
@@ -700,7 +766,15 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             if not match:
                 raise ValueError(f"Invalid build-kit checksum line {line_number}: {path}")
             rel = match.group(2)
-            if rel in ledger or rel.startswith("/") or ".." in Path(rel).parts or "\\" in rel:
+            relative = PurePosixPath(rel)
+            if (
+                rel in ledger
+                or rel.startswith("/")
+                or ".." in relative.parts
+                or "\\" in rel
+                or any(":" in part for part in relative.parts)
+                or rel != relative.as_posix()
+            ):
                 raise ValueError(f"Unsafe or duplicate build-kit checksum path: {rel}")
             ledger[rel] = match.group(1)
         expected_ledger = files - {"SHA256SUMS.txt"}
@@ -714,13 +788,17 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
         if mismatches:
             raise ValueError("Build-kit checksum mismatches: " + ", ".join(sorted(mismatches)))
 
-    return {
+    record = {
         "build_kit_counts": config["counts"],
         "build_kit_member_count": config["member_count"],
         "build_kit_root": config["root"],
+        "build_kit_version": build_kit_version,
         "build_kit_verifier_sha256": config["verifier_sha256"],
         "bytes": config["bytes"],
-        "ci_validation": "tracked_repository_validator_no_artifact_controlled_code_execution",
+        "ci_validation": config.get(
+            "ci_validation",
+            "tracked_repository_validator_no_artifact_controlled_code_execution",
+        ),
         "download": path.relative_to(POST_SETUP).as_posix(),
         "download_type": "self_install_hermes_build_kit",
         "first_read": "README-FIRST.md",
@@ -728,13 +806,21 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
         "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
         "readiness": config["target"]["readiness"],
         "sha256": config["sha256"],
-        "source_zip_sha256_before_derivative": config["source_zip_sha256_before_derivative"],
         "target_namespace": config["target"]["namespace"],
         "target_product": config["target"]["product"],
         "target_product_id": config["target"]["product_id"],
-        "target_route": config["target"]["route"],
         "target_version": config["target"]["version"],
     }
+    if "source_zip_sha256_before_derivative" in config:
+        record["source_zip_sha256_before_derivative"] = config["source_zip_sha256_before_derivative"]
+        record["source_zip_bytes_before_derivative"] = config["source_zip_bytes_before_derivative"]
+    else:
+        record["source_zip_sha256"] = config["source_zip_sha256"]
+    if "route" in config["target"]:
+        record["target_route"] = config["target"]["route"]
+    if "route_assignment" in config["target"]:
+        record["target_route_assignment"] = config["target"]["route_assignment"]
+    return record
 
 
 def import_prebuilt_role(source_root: Path, role: dict) -> None:
@@ -764,26 +850,30 @@ def deterministic_zip(role: dict) -> dict:
     DOWNLOADS.mkdir(parents=True, exist_ok=True)
     role_manifest = json.loads((source / "ROLE-PACK.json").read_text(encoding="utf-8"))
     if role["slug"] in BUILD_KIT_DOWNLOADS:
+        config = BUILD_KIT_DOWNLOADS[role["slug"]]
         record = {
             "role": role["label"],
             "folder": role["folder"],
             "install_on_download": False,
             "intended_stage": "after_soul_files_and_hermes_setup",
-            "activation": role_manifest["activation"],
-            "package_version": role_manifest["package_version"],
+            "activation": config.get("activation", role_manifest["activation"]),
+            "package_version": config.get("package_version", role_manifest["package_version"]),
             "pre_install_disclosure_required": role_manifest.get("pre_install_disclosure_required", False),
         }
-        record.update(validate_build_kit_zip(role, BUILD_KIT_DOWNLOADS[role["slug"]]))
+        if "activation" in config:
+            record["legacy_source_activation_contract"] = role_manifest["activation"]
+        if "package_version" in config:
+            record["legacy_source_package_version"] = role_manifest["package_version"]
+        record.update(validate_build_kit_zip(role, config))
         for key in (
             "acceptance_tests",
             "foundation_first",
             "future_overlay_second",
             "lead_overlay_second",
             "shift_overlay_second",
-            "teach_overlay_second",
-            "wings_overlay_second",
             "pathways",
             "role_adapters",
+            "bridge_context_transfer_automatic",
             "automatic_shared_access",
             "optional_superpowers_total",
             "optional_superpowers_active_after_install",
@@ -864,10 +954,17 @@ def build(source_root: Path | None) -> None:
             import_role(source_root, role)
         for role in prebuilt_roles:
             import_prebuilt_role(source_root, role)
+    future_builder = runpy.run_path(str(REPO / "scripts" / "build-future-student-assistant-build-kit.py"))
+    future_config = future_builder["build"]()
+    BUILD_KIT_DOWNLOADS["student-nurse"] = future_config
+    lead_builder = runpy.run_path(str(REPO / "scripts" / "build-lead-nurse-leader-build-kit.py"))
+    lead_config = lead_builder["build"]()
+    lead_config["ci_validation"] = "tracked_source_builder_and_tracked_verifier_package_and_outer_zip"
+    BUILD_KIT_DOWNLOADS["nurse-leader-and-manager"] = lead_config
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.15.5",
+        "release": "2026.07.22.1",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,

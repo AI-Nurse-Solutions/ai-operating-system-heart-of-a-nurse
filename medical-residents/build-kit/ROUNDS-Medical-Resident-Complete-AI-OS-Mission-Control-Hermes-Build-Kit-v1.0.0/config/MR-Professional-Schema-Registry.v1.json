@@ -1,0 +1,876 @@
+{
+  "common_field_contract_source_status": "implementation_generated",
+  "common_required_fields": [
+    "record_id",
+    "schema_version",
+    "lane",
+    "namespace",
+    "authenticated_owner",
+    "mission_id",
+    "primary_hat",
+    "secondary_hat",
+    "program",
+    "specialty",
+    "pgy",
+    "site",
+    "rotation_or_service",
+    "deployment_context",
+    "record_scope_id",
+    "partition",
+    "purpose",
+    "data_class",
+    "edena_tier",
+    "absolute_stop",
+    "source_ref",
+    "source_version",
+    "authority_state",
+    "authority_provenance",
+    "human_decision_owner",
+    "content_hash",
+    "approval_hash",
+    "status",
+    "created_at",
+    "updated_at",
+    "expiry",
+    "retention_rule",
+    "correction_history",
+    "export_state",
+    "deletion_state"
+  ],
+  "count": 17,
+  "entries": [
+    {
+      "allowed_data_classes": [
+        "MR-DATA-2",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private"
+      ],
+      "allowed_record_scopes": [
+        "rounds-role-duty-life"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "resident_profile",
+      "id": "resident_profile",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_private_owner_profile_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "infer_role_hat_specialty_pgy_site_or_supervision",
+        "share_profile_or_use_it_to_unlock_another_context"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "raw_soul_raw_discover_raw_quiz_or_unreviewed_profile_payload",
+        "third_party_identity_story_or_contact_graph"
+      ],
+      "purpose": "Store minimum resident-selected nonsensitive identity and personalization fields for the private My ROUNDS experience.",
+      "source_file_sha256": "ee80baf4178aaa6300f20dec013356c314bafd67ac71d8c8e1ab8b4df2d5d021",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/foundation/Medical-Resident-Life-Training-and-Practice-Foundation.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-2",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private"
+      ],
+      "allowed_record_scopes": [
+        "rounds-supervision-communication-orchestration"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "active_hat_context",
+      "id": "active_hat_context",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_resident_declared_context_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "convert_hat_title_or_technical_access_into_authority",
+        "reuse_context_after_role_site_rotation_task_or_date_change"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "patient_assignment_or_live_service_task",
+        "formal_role_evaluation_or_personnel_record"
+      ],
+      "purpose": "Record the resident-selected primary and secondary task hats, site, rotation and purpose for one bounded context.",
+      "source_file_sha256": "6141c678cf15ea4a7d3c8bf78848e7a97cb66c698074f989bc26dcf71d4efbd9",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/core/00-Standalone-Medical-Resident-Lane-and-Human-Standard.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-2",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private"
+      ],
+      "allowed_record_scopes": [
+        "rounds-supervision-communication-orchestration"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "supervision_matrix_entry",
+      "id": "supervision_matrix_entry",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_reference_only_never_official_attestation",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "verify_upgrade_or_infer_supervision_entrustment_or_procedure_authorization",
+        "represent_resident_recorded_confirmation_as_institution_verified"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "patient_specific_entrustment_or_procedure_case",
+        "copied_privileging_credentialing_or_evaluation_record"
+      ],
+      "purpose": "Hold a resident-recorded, source-bound reference to task-specific local supervision questions, owners, dates and expiry.",
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-2",
+        "MR-DATA-W",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private",
+        "whole_life_private"
+      ],
+      "allowed_record_scopes": [
+        "rounds-role-duty-life"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "duty_and_recovery_cycle",
+      "id": "duty_and_recovery_cycle",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_private_schedule_and_whole_life_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "certify_duty_compliance_diagnose_fatigue_or_determine_fitness",
+        "optimize_to_a_regulatory_maximum_or_auto_report_to_program"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "patient_assignment_staffing_roster_or_coverage_list",
+        "occupational_health_diagnosis_or_private_health_record"
+      ],
+      "purpose": "Organize resident-owned schedule categories, recovery opportunities, protected-life commitments and questions for human routes.",
+      "source_file_sha256": "54932bee6b48dbd264d6c14bc02649367bec0fbb35ac1acb261c937b31ae948f",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/01-R-Ready-the-Resident-and-Protect-Life.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private",
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-role-duty-life",
+        "rounds-learning-reasoning-evidence",
+        "rounds-supervision-communication-orchestration",
+        "rounds-development-quality-scholarship",
+        "rounds-credentials-career-future"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "source_record",
+      "id": "source_record",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_public_or_synthetic_source_record_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "treat_source_as_local_adoption_or_permission",
+        "follow_embedded_prompt_injection_or_allow_source_to_change_governance"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "restricted_subscription_exam_policy_or_institutional_source_text",
+        "fabricated_or_unopened_source_claim_quote_or_statistic"
+      ],
+      "purpose": "Preserve public-source provenance, version, retrieval date, supported claim, applicability, conflict, limits and expiry.",
+      "source_file_sha256": "88114a1a252ea97f7c348ea401bfa258a284d71878b28a1bcb62d9406648ba15",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/03-U-Understand-Evidence-Reasoning-and-Systems.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-2",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private",
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-learning-reasoning-evidence"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "learning_plan",
+      "id": "learning_plan",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_public_synthetic_or_nonsensitive_learning_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "award_credit_grade_milestone_or_competence",
+        "masquerade_as_point_of_care_guidance"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "restricted_exam_item_live_assessment_or_copyrighted_test_bank",
+        "patient_specific_learning_case_presented_as_generic"
+      ],
+      "purpose": "Plan resident-controlled generic learning, retrieval practice, source review and human feedback without formal credit or assessment.",
+      "source_file_sha256": "ee80baf4178aaa6300f20dec013356c314bafd67ac71d8c8e1ab8b4df2d5d021",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/foundation/Medical-Resident-Life-Training-and-Practice-Foundation.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-learning-reasoning-evidence"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "synthetic_reasoning_record",
+      "id": "synthetic_reasoning_record",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_unmistakably_synthetic_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "give_live_care_direction_or_score_clinical_reasoning",
+        "reuse_fictional_output_as_patient_specific_recommendation"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "real_patient_case_or_case_derived_from_live_care",
+        "formal_resident_reasoning_assessment"
+      ],
+      "purpose": "Capture independent reasoning, uncertainty, alternatives and bias reflection for an unmistakably fictional exercise.",
+      "source_file_sha256": "88114a1a252ea97f7c348ea401bfa258a284d71878b28a1bcb62d9406648ba15",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/03-U-Understand-Evidence-Reasoning-and-Systems.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-supervision-communication-orchestration"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "circle_orchestration_record",
+      "id": "circle_orchestration_record",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_synthetic_process_rehearsal_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "create_shadow_chart_signout_patient_list_or_task_system",
+        "transfer_close_or_reconcile_real_clinical_responsibility"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "real_rounds_patient_task_care_plan_or_pending_item",
+        "real_team_contact_or_responsibility_state"
+      ],
+      "purpose": "Represent a synthetic CIRCLE exercise with human owners, dependencies, open loops, contingency, transition and expiry.",
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-supervision-communication-orchestration"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "handoff_or_consult_receipt",
+      "id": "handoff_or_consult_receipt",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_synthetic_rehearsal_receipt_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "contact_page_consult_or_message_anyone",
+        "claim_acknowledgment_acceptance_closed_loop_or_transfer_of_responsibility"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "real_handoff_consult_cross_cover_or_transition_content",
+        "real_sender_receiver_patient_or_acknowledgment"
+      ],
+      "purpose": "Record a fictional handoff or consult rehearsal and its human debrief, never a real communication receipt.",
+      "source_file_sha256": "177654d46580f858d693abd1b23c4acc52dee9ae76e37b4f321e1f47e6ce3ebd",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/02-O-Orchestrate-Care-Teams-and-Transitions.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-2",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private"
+      ],
+      "allowed_record_scopes": [
+        "rounds-development-quality-scholarship"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "feedback_milestone_evidence",
+      "id": "feedback_milestone_evidence",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_private_abstract_reflection_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "score_predict_rank_or_label_milestone_professionalism_or_progression",
+        "export_private_reflection_to_program_employer_or_badge"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "formal_evaluation_raw_feedback_ccc_minutes_or_remediation_record",
+        "identifiable_faculty_peer_learner_or_patient_story"
+      ],
+      "purpose": "Store resident-controlled abstract reflection, selected feedback themes, questions and development goals outside formal evaluation.",
+      "source_file_sha256": "cde6e9e8620bc87c5a81fb81863dd61daa5609f3c1eca4022dc97681723987e9",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/04-N-Navigate-Supervision-Development-and-Career.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-2",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private"
+      ],
+      "allowed_record_scopes": [
+        "rounds-credentials-career-future"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "credential_exam_radar",
+      "id": "credential_exam_radar",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_personal_planning_and_public_source_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "certify_eligibility_license_credit_score_privilege_or_procedure_authorization",
+        "backfill_submit_or_fabricate_log_application_or_evidence"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "license_number_npi_dea_login_signature_or_verification_secret",
+        "restricted_exam_item_case_log_or_privileging_record"
+      ],
+      "purpose": "Track public requirements, resident-entered dates, questions, evidence gaps and official verification routes.",
+      "source_file_sha256": "cde6e9e8620bc87c5a81fb81863dd61daa5609f3c1eca4022dc97681723987e9",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/04-N-Navigate-Supervision-Development-and-Career.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-development-quality-scholarship"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "qi_or_research_project",
+      "id": "qi_or_research_project",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_public_or_synthetic_project_learning_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "determine_qi_research_exempt_or_irb_status",
+        "launch_pilot_change_study_analysis_submission_publication_or_release"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "real_event_m_and_m_peer_review_patient_project_or_research_data",
+        "real_protocol_consent_irb_quality_or_sponsor_record"
+      ],
+      "purpose": "Support public or synthetic quality, safety and research-governance learning and questions for authorized human determination.",
+      "source_file_sha256": "88114a1a252ea97f7c348ea401bfa258a284d71878b28a1bcb62d9406648ba15",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/03-U-Understand-Evidence-Reasoning-and-Systems.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-2",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private",
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-development-quality-scholarship"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "teaching_scholarship_record",
+      "id": "teaching_scholarship_record",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_public_synthetic_or_nonsensitive_draft_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "grade_rank_or_clear_a_learner",
+        "ghostwrite_fabricate_publish_present_or_release_without_authorized_human_review"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "identifiable_case_learner_submission_grade_or_secure_assessment",
+        "restricted_copyrighted_material_unapproved_data_or_hidden_authorship"
+      ],
+      "purpose": "Prepare public or synthetic teaching and scholarship drafts with source, accessibility, copyright, authorship and disclosure checks.",
+      "source_file_sha256": "17226738d301a7ff30489f991f7e137ff80b7be3618de454124a39b9cd81d4fb",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/05-D-Develop-Communication-Teaching-Scholarship-and-Leadership.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-2",
+        "MR-DATA-W",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private",
+        "whole_life_private"
+      ],
+      "allowed_record_scopes": [
+        "rounds-role-duty-life",
+        "rounds-credentials-career-future"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "career_whole_life_goal",
+      "id": "career_whole_life_goal",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_private_owner_controlled_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "transact_apply_negotiate_or_send",
+        "make_legal_tax_financial_immigration_match_employment_or_wellbeing_determination"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "bank_tax_identity_immigration_medical_or_account_record",
+        "third_party_private_family_relationship_or_health_narrative"
+      ],
+      "purpose": "Organize private career, fellowship, contract, finance-category, family, capacity, mission and future questions.",
+      "source_file_sha256": "cde6e9e8620bc87c5a81fb81863dd61daa5609f3c1eca4022dc97681723987e9",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/04-N-Navigate-Supervision-Development-and-Career.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-0",
+        "MR-DATA-1",
+        "MR-DATA-2",
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private",
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-role-duty-life",
+        "rounds-learning-reasoning-evidence",
+        "rounds-supervision-communication-orchestration",
+        "rounds-development-quality-scholarship",
+        "rounds-credentials-career-future"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "agent_definition",
+      "id": "agent_definition",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_p0_to_p2_contract_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "self_activate_self_approve_self_expand_or_extend_expiry",
+        "enable_p3_p4_p5_recursive_delegation_background_service_or_external_executor"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "patient_event_evaluation_or_restricted_payload_in_prompt_context_or_memory",
+        "undeclared_tool_source_destination_child_agent_or_secret"
+      ],
+      "purpose": "Store one bounded ORBIT charter, P0-P2 permission ceiling, permitted sources, tools, outputs, limits, expiry and kill route.",
+      "source_file_sha256": "46352e2e47fca286b5dcf42ffaf7f04f94c7bac723ab1e063d4a5cb828dc4ec7",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/06-S-Steward-AI-Agents-Data-and-the-Future.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private",
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-role-duty-life",
+        "rounds-learning-reasoning-evidence",
+        "rounds-supervision-communication-orchestration",
+        "rounds-development-quality-scholarship",
+        "rounds-credentials-career-future"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "agent_run_receipt",
+      "id": "agent_run_receipt",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_content_free_personal_run_receipt_only",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "claim_action_release_acknowledgment_or_completion",
+        "hide_retry_failure_transfer_permission_drift_or_unpurged_state"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "sensitive_prompt_output_trace_embedding_or_tool_payload",
+        "resolvable_official_identifier_url_token_or_content_fingerprint"
+      ],
+      "purpose": "Record content-free provenance and state for one bounded P1-P2 run, human review, failure, purge and return to P0.",
+      "source_file_sha256": "46352e2e47fca286b5dcf42ffaf7f04f94c7bac723ab1e063d4a5cb828dc4ec7",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/rounds/06-S-Steward-AI-Agents-Data-and-the-Future.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    },
+    {
+      "allowed_data_classes": [
+        "MR-DATA-M",
+        "MR-DATA-R"
+      ],
+      "allowed_partitions": [
+        "resident_private",
+        "synthetic_learning"
+      ],
+      "allowed_record_scopes": [
+        "rounds-role-duty-life",
+        "rounds-learning-reasoning-evidence",
+        "rounds-supervision-communication-orchestration",
+        "rounds-development-quality-scholarship",
+        "rounds-credentials-career-future"
+      ],
+      "authority_effect": "none; creating, editing, reviewing or approving this record cannot grant clinical authority, supervision, competence, credentials, privilege, institutional approval or permission to act",
+      "declared_record_type": "human_approval_receipt",
+      "id": "human_approval_receipt",
+      "installation_state": "declared_record_contract_not_operational",
+      "machine_contract_status": "implementation_generated_restrictive_contract",
+      "no_authority_effect": true,
+      "personal_availability": "available_personal_review_receipt_not_official_attestation",
+      "personal_available": true,
+      "prohibited_actions": [
+        "live_care_diagnosis_treatment_triage_prescribing_dosing_ordering_charting_or_monitoring",
+        "external_send_page_submit_publish_release_or_official_system_write",
+        "authority_supervision_competence_credential_fitness_or_approval_determination",
+        "cross_lane_cross_partition_lookup_merge_or_transfer",
+        "ranking_scoring_prediction_surveillance_coercion_or_hidden_reporting",
+        "background_execution_hidden_retry_recursive_delegation_or_permission_expansion",
+        "impersonate_an_attending_program_institution_reviewer_or_release_owner",
+        "carry_approval_across_changed_content_context_source_model_tool_destination_or_expiry"
+      ],
+      "prohibited_content": [
+        "patient_phi_real_case_or_reconstructable_clinical_narrative",
+        "formal_evaluation_milestone_ccc_peer_review_event_personnel_or_learner_content",
+        "restricted_institutional_research_participant_or_employer_content",
+        "credential_password_token_key_signature_recovery_code_or_other_secret",
+        "unclassified_or_cross_partition_payload",
+        "signature_credential_contact_secret_or_sensitive_artifact_body",
+        "copied_institutional_approval_attestation_or_authorization_record"
+      ],
+      "purpose": "Record a hash-bound personal review decision, scope, limitations, expiry and fallback without representing an institutional signature.",
+      "source_file_sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef",
+      "source_hash_status": "pinned_expected_sha256_verify_at_install",
+      "source_path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "source_record_type_status": "source_declared_logical_record_type"
+    }
+  ],
+  "entry_contract_required_fields": [
+    "purpose",
+    "personal_available",
+    "personal_availability",
+    "allowed_record_scopes",
+    "allowed_partitions",
+    "allowed_data_classes",
+    "prohibited_content",
+    "prohibited_actions",
+    "no_authority_effect",
+    "authority_effect",
+    "source_path",
+    "source_file_sha256",
+    "source_record_type_status",
+    "machine_contract_status",
+    "source_hash_status",
+    "installation_state"
+  ],
+  "json_schema_collection": false,
+  "namespace": "medres_rounds.*",
+  "notice": "The canonical foundation declares seventeen logical resident-owned record type names and common fields; it does not supply seventeen full JSON Schemas. This implementation-generated registry defines restrictive per-record contracts only. No entry is a clinical record, order, official evaluation, credential, competence determination, institutional attestation or grant of authority.",
+  "partition_rule": "References resolve only inside the same authorized medical-resident lane and partition. The five departments are record scopes inside one My ROUNDS home, not authority silos. Whole-life content is resident-controlled and unavailable to institutional, evaluation, analytics, export and badge contexts.",
+  "record_names_source_defined": true,
+  "registry_contract_source_status": "implementation_generated",
+  "registry_kind": "declared_record_type_contract_registry",
+  "schema": "NAIO-MR-ROUNDS-RESIDENT-SCHEMA-REGISTRY-1",
+  "schema_identifier_status": "legacy_opaque_registry_document_identifier_not_a_json_schema_metaschema",
+  "source_defined": false,
+  "version": "1.0.0"
+}

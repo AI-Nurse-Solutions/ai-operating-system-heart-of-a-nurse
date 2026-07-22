@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.local/schemas/discover-packet-input.schema.json",
+  "title": "Nurse AI OS Derived Discover Packet Adapter",
+  "description": "Non-sensitive derived settings used to personalize Mission Control. Raw interview notes and sensitive source material are prohibited.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "packet_schema_version", "generated_at", "mission_statement", "core_values", "current_priorities", "goals", "working_preferences", "role_goals", "ai_boundaries", "governance_preferences", "recommended_workflow_ids", "recommended_capability_ids", "uncertainties", "source_provenance", "demo"],
+  "properties": {
+    "schema": { "const": "NAIO-DISCOVER-PACKET-ADAPTER-1" },
+    "packet_schema_version": { "const": "1.0-draft" },
+    "generated_at": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+    "mission_statement": { "type": "string", "maxLength": 600 },
+    "core_values": { "$ref": "#/$defs/shortArray" },
+    "current_priorities": { "$ref": "#/$defs/mediumArray" },
+    "goals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["short_term", "medium_term", "long_term"],
+      "properties": {
+        "short_term": { "$ref": "#/$defs/goalArray" },
+        "medium_term": { "$ref": "#/$defs/goalArray" },
+        "long_term": { "$ref": "#/$defs/goalArray" }
+      }
+    },
+    "working_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["communication_style", "decision_style", "learning_preferences"],
+      "properties": {
+        "communication_style": { "type": "string", "maxLength": 200 },
+        "decision_style": { "type": "string", "maxLength": 200 },
+        "learning_preferences": { "$ref": "#/$defs/preferenceArray" }
+      }
+    },
+    "role_goals": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role_id", "goal", "success_measure", "priority", "default_edena"],
+        "properties": {
+          "role_id": { "$ref": "#/$defs/roleId" },
+          "goal": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "success_measure": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "priority": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "default_edena": { "$ref": "#/$defs/edena" }
+        }
+      }
+    },
+    "ai_boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default_autonomy", "may_support", "requires_confirmation", "never_delegate"],
+      "properties": {
+        "default_autonomy": { "enum": ["suggest_only", "prepare_only", "bounded_draft"] },
+        "may_support": { "$ref": "#/$defs/mediumArray" },
+        "requires_confirmation": { "$ref": "#/$defs/mediumArray" },
+        "never_delegate": { "$ref": "#/$defs/mediumArray" }
+      }
+    },
+    "governance_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["risk_tolerance", "default_edena", "default_retention"],
+      "properties": {
+        "risk_tolerance": { "enum": ["conservative", "balanced", "exploratory_with_review"] },
+        "default_edena": { "$ref": "#/$defs/edena" },
+        "default_retention": { "enum": ["session_only", "local_non_sensitive"] }
+      }
+    },
+    "recommended_workflow_ids": { "type": "array", "uniqueItems": true, "maxItems": 24, "items": { "pattern": "^DSC-WF-(?:0[1-9]|1[0-9]|2[0-4])$", "type": "string" } },
+    "recommended_capability_ids": { "type": "array", "uniqueItems": true, "maxItems": 17, "items": { "$ref": "#/$defs/capabilityId" } },
+    "uncertainties": { "$ref": "#/$defs/mediumArray" },
+    "source_provenance": { "$ref": "#/$defs/mediumArray" },
+    "demo": { "type": "boolean" }
+  },
+  "$defs": {
+    "shortArray": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 120 } },
+    "mediumArray": { "type": "array", "maxItems": 30, "items": { "type": "string", "maxLength": 240 } },
+    "goalArray": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 300 } },
+    "preferenceArray": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 160 } },
+    "edena": { "enum": ["unclassified", "green", "yellow", "orange", "red"] },
+    "roleId": { "enum": ["shared-identity", "research-innovation", "prelicensure-support", "staff-nurse", "advanced-practice", "nurse-educator", "medical-resident", "nurse-manager", "clinic-manager", "hospital-administrator", "wellness-manager", "quality-safety", "researcher", "digital-ai", "entrepreneur", "community", "advanced-studies"] },
+    "capabilityId": { "enum": ["ai-literacy", "prompt-design", "evidence-research", "critical-thinking", "structured-problem-solving", "workflow-design", "project-management", "privacy-stewardship", "ethical-ai", "edena-governance", "agent-supervision", "multi-agent", "knowledge-base", "automation-design", "artifact-creation", "evaluation-qi", "role-development"] }
+  }
+}

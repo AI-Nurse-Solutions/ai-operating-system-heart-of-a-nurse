@@ -12,11 +12,12 @@ import hashlib
 import json
 import os
 import re
+import runpy
 import shutil
 import sys
 import unicodedata
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 REPO = Path(__file__).resolve().parents[1]
 POST_SETUP = REPO / "post-setup"
@@ -149,9 +150,12 @@ ROLES = [
 ]
 
 FIXED_ZIP_TIME = (2026, 7, 13, 0, 0, 0)
+MAX_BUILD_KIT_MEMBER_BYTES = 32 * 1024 * 1024
+MAX_BUILD_KIT_EXPANDED_BYTES = 256 * 1024 * 1024
 
 BUILD_KIT_DOWNLOADS = {
     "staff-nurse": {
+        "build_kit_version": "1.0.0",
         "filename": "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
         "root": "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0",
         "bytes": 6914990,
@@ -637,9 +641,10 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
         normalized = {unicodedata.normalize("NFC", name).casefold() for name in names}
         if len(normalized) != len(names):
             raise ValueError(f"Build-kit has case/Unicode-colliding members: {path}")
+        expanded_bytes = 0
         for info in infos:
             name = info.filename
-            candidate = Path(name)
+            candidate = PurePosixPath(name)
             mode = (info.external_attr >> 16) & 0o777777
             if (
                 not name
@@ -647,9 +652,15 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
                 or "\\" in name
                 or "\x00" in name
                 or ".." in candidate.parts
-                or ":" in candidate.parts[0]
+                or any(":" in part for part in candidate.parts)
+                or name.rstrip("/") != candidate.as_posix()
             ):
                 raise ValueError(f"Unsafe build-kit member path: {name!r}")
+            if info.file_size > MAX_BUILD_KIT_MEMBER_BYTES:
+                raise ValueError(f"Build-kit member exceeds byte limit: {name}")
+            expanded_bytes += info.file_size
+            if expanded_bytes > MAX_BUILD_KIT_EXPANDED_BYTES:
+                raise ValueError(f"Build-kit expanded bytes exceed limit: {path}")
             if (mode & 0o170000) == 0o120000:
                 raise ValueError(f"Build-kit symlink member rejected: {name}")
             if (mode & 0o170000) not in (0, 0o100000, 0o040000):
@@ -673,6 +684,11 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
         if missing:
             raise ValueError("Build-kit missing required files: " + ", ".join(sorted(missing)))
         manifest = json.loads(archive.read(f"{root}/RELEASE-MANIFEST.json"))
+        build_kit_version = manifest.get("package_version")
+        if build_kit_version is None and isinstance(manifest.get("build_kit"), dict):
+            build_kit_version = manifest["build_kit"].get("version")
+        if build_kit_version != config.get("build_kit_version"):
+            raise ValueError(f"Build-kit package version mismatch: {path}")
         if manifest.get("target") != config["target"]:
             raise ValueError(f"Build-kit target contract mismatch: {path}")
         if manifest.get("counts") != config["counts"]:
@@ -682,11 +698,20 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             raise ValueError(f"Build-kit safe defaults mismatch: {path}")
         if defaults.get("connectors_schedules_sharing_external_actions_background_agents") != "Off":
             raise ValueError(f"Build-kit connector/action defaults must stay off: {path}")
-        derivative = manifest.get("public_safe_derivative", {})
-        if derivative.get("source_zip_sha256_before_derivative") != config["source_zip_sha256_before_derivative"]:
-            raise ValueError(f"Build-kit derivative provenance mismatch: {path}")
-        if derivative.get("source_zip_bytes_before_derivative") != config["source_zip_bytes_before_derivative"]:
-            raise ValueError(f"Build-kit derivative byte provenance mismatch: {path}")
+        if "source_zip_sha256_before_derivative" in config:
+            derivative = manifest.get("public_safe_derivative", {})
+            if derivative.get("source_zip_sha256_before_derivative") != config["source_zip_sha256_before_derivative"]:
+                raise ValueError(f"Build-kit derivative provenance mismatch: {path}")
+            if derivative.get("source_zip_bytes_before_derivative") != config["source_zip_bytes_before_derivative"]:
+                raise ValueError(f"Build-kit derivative byte provenance mismatch: {path}")
+        elif "source_zip_sha256" in config:
+            source_archive = manifest.get("source_provenance", {}).get("source_archive", {})
+            if source_archive.get("sha256") != config["source_zip_sha256"]:
+                raise ValueError(f"Build-kit source provenance mismatch: {path}")
+            if source_archive.get("bytes") != config["source_zip_bytes"]:
+                raise ValueError(f"Build-kit source byte provenance mismatch: {path}")
+        else:
+            raise ValueError(f"Build-kit source provenance configuration missing: {path}")
         verifier_sha256 = hashlib.sha256(archive.read(f"{root}/tools/verify-build-kit.py")).hexdigest()
         if verifier_sha256 != config["verifier_sha256"]:
             raise ValueError(f"Bundled verifier bytes changed: {path}")
@@ -697,7 +722,15 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             if not match:
                 raise ValueError(f"Invalid build-kit checksum line {line_number}: {path}")
             rel = match.group(2)
-            if rel in ledger or rel.startswith("/") or ".." in Path(rel).parts or "\\" in rel:
+            relative = PurePosixPath(rel)
+            if (
+                rel in ledger
+                or rel.startswith("/")
+                or ".." in relative.parts
+                or "\\" in rel
+                or any(":" in part for part in relative.parts)
+                or rel != relative.as_posix()
+            ):
                 raise ValueError(f"Unsafe or duplicate build-kit checksum path: {rel}")
             ledger[rel] = match.group(1)
         expected_ledger = files - {"SHA256SUMS.txt"}
@@ -711,13 +744,17 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
         if mismatches:
             raise ValueError("Build-kit checksum mismatches: " + ", ".join(sorted(mismatches)))
 
-    return {
+    record = {
         "build_kit_counts": config["counts"],
         "build_kit_member_count": config["member_count"],
         "build_kit_root": config["root"],
+        "build_kit_version": build_kit_version,
         "build_kit_verifier_sha256": config["verifier_sha256"],
         "bytes": config["bytes"],
-        "ci_validation": "tracked_repository_validator_no_artifact_controlled_code_execution",
+        "ci_validation": config.get(
+            "ci_validation",
+            "tracked_repository_validator_no_artifact_controlled_code_execution",
+        ),
         "download": path.relative_to(POST_SETUP).as_posix(),
         "download_type": "self_install_hermes_build_kit",
         "first_read": "README-FIRST.md",
@@ -725,13 +762,20 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
         "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
         "readiness": config["target"]["readiness"],
         "sha256": config["sha256"],
-        "source_zip_sha256_before_derivative": config["source_zip_sha256_before_derivative"],
         "target_namespace": config["target"]["namespace"],
         "target_product": config["target"]["product"],
         "target_product_id": config["target"]["product_id"],
-        "target_route": config["target"]["route"],
         "target_version": config["target"]["version"],
     }
+    if "source_zip_sha256_before_derivative" in config:
+        record["source_zip_sha256_before_derivative"] = config["source_zip_sha256_before_derivative"]
+    else:
+        record["source_zip_sha256"] = config["source_zip_sha256"]
+    if "route" in config["target"]:
+        record["target_route"] = config["target"]["route"]
+    if "route_assignment" in config["target"]:
+        record["target_route_assignment"] = config["target"]["route_assignment"]
+    return record
 
 
 def import_prebuilt_role(source_root: Path, role: dict) -> None:
@@ -774,11 +818,13 @@ def deterministic_zip(role: dict) -> dict:
         for key in (
             "acceptance_tests",
             "foundation_first",
+            "lead_overlay_second",
             "shift_overlay_second",
             "role_adapters",
             "automatic_shared_access",
             "optional_superpowers_total",
             "optional_superpowers_active_after_install",
+            "organizational_deployment_requires_separate_authorization",
             "institutional_deployment_requires_separate_authorization",
         ):
             if key in role_manifest:
@@ -855,10 +901,14 @@ def build(source_root: Path | None) -> None:
             import_role(source_root, role)
         for role in prebuilt_roles:
             import_prebuilt_role(source_root, role)
+    lead_builder = runpy.run_path(str(REPO / "scripts" / "build-lead-nurse-leader-build-kit.py"))
+    lead_config = lead_builder["build"]()
+    lead_config["ci_validation"] = "tracked_source_builder_and_tracked_verifier_package_and_outer_zip"
+    BUILD_KIT_DOWNLOADS["nurse-leader-and-manager"] = lead_config
     records = [deterministic_zip(role) for role in ROLES]
     manifest = {
         "schema_version": "1.0",
-        "release": "2026.07.15.5",
+        "release": "2026.07.21.1",
         "purpose": "role-specific Nurse AI OS post-setup downloads",
         "installation_status": "not_installed",
         "packages": records,

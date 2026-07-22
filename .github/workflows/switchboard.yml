@@ -12,6 +12,12 @@ on:
       - "package-lock.json"
       - "setup-helper/**"
       - "post-setup/index.html"
+      - "post-setup/build-kits/lead-nurse-leader/**"
+      - "post-setup/downloads/**"
+      - "scripts/build-lead-nurse-leader-build-kit.py"
+      - "scripts/build-post-setup-role-packs.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_leader_role_pack.py"
       - "privacy.html"
       - "README.md"
       - "sitemap.xml"
@@ -28,6 +34,12 @@ on:
       - "package-lock.json"
       - "setup-helper/**"
       - "post-setup/index.html"
+      - "post-setup/build-kits/lead-nurse-leader/**"
+      - "post-setup/downloads/**"
+      - "scripts/build-lead-nurse-leader-build-kit.py"
+      - "scripts/build-post-setup-role-packs.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_leader_role_pack.py"
       - "privacy.html"
       - "README.md"
       - "sitemap.xml"
@@ -67,7 +79,7 @@ jobs:
         run: npm run test:switchboard-schema
       - name: Run browser interaction and responsive smoke test
         run: npm run test:switchboard-browser
-      - name: Confirm existing role distributions remain byte-for-byte unchanged except governed Staff SHIFT migration
+      - name: Confirm exact role-download migrations and pinned build-kit contracts
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
@@ -81,11 +93,19 @@ jobs:
           import subprocess
 
           base = os.environ["BASE_SHA"]
-          allowed_download_changes = {
+          common_changes = {
               "post-setup/downloads/CHECKSUMS.sha256": "M",
               "post-setup/downloads/manifest.json": "M",
-              "post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip": "D",
-              "post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+          }
+          lane_changes = {
+              "staff_shift": {
+                  "post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip": "D",
+                  "post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
+              "nurse_leader_lead": {
+                  "post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip": "D",
+                  "post-setup/downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
           }
 
           def git(*args: str) -> str:
@@ -99,14 +119,24 @@ jobs:
           ])
 
           changed = set(git("diff", "--name-only", base, "HEAD", "--", "post-setup/downloads").splitlines())
-          unexpected = changed - set(allowed_download_changes)
+          all_known = set(common_changes)
+          for paths in lane_changes.values():
+              all_known.update(paths)
+          unexpected = changed - all_known
           if unexpected:
               raise SystemExit("Unexpected post-setup/downloads changes: " + ", ".join(sorted(unexpected)))
 
           if changed:
+              active = [name for name, paths in lane_changes.items() if changed & set(paths)]
+              if len(active) != 1:
+                  raise SystemExit("Expected exactly one governed role-download migration; active=" + json.dumps(active))
+              allowed_download_changes = {**common_changes, **lane_changes[active[0]]}
               missing = set(allowed_download_changes) - changed
               if missing:
-                  raise SystemExit("Incomplete Staff SHIFT migration: " + ", ".join(sorted(missing)))
+                  raise SystemExit(f"Incomplete {active[0]} migration: " + ", ".join(sorted(missing)))
+              extra = changed - set(allowed_download_changes)
+              if extra:
+                  raise SystemExit(f"Combined or unexpected {active[0]} migration paths: " + ", ".join(sorted(extra)))
 
               status = {}
               for line in git("diff", "--name-status", base, "HEAD", "--", *sorted(allowed_download_changes)).splitlines():
@@ -118,14 +148,15 @@ jobs:
                   if status.get(path) != expected
               }
               if wrong_status:
-                  raise SystemExit("Unexpected Staff SHIFT migration status: " + json.dumps(wrong_status, sort_keys=True))
-              mode = "migration"
+                  raise SystemExit(f"Unexpected {active[0]} migration status: " + json.dumps(wrong_status, sort_keys=True))
+              mode = f"migration:{active[0]}"
           else:
               mode = "steady-state"
 
           manifest = json.loads(open("post-setup/downloads/manifest.json", encoding="utf-8").read())
           staff = next(item for item in manifest["packages"] if item["folder"] == "02-Staff-Nurse")
           expected = {
+              "build_kit_version": "1.0.0",
               "bytes": 6914990,
               "download": "downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
               "download_type": "self_install_hermes_build_kit",
@@ -136,5 +167,19 @@ jobs:
           for key, value in expected.items():
               if staff.get(key) != value:
                   raise SystemExit(f"Staff SHIFT manifest mismatch for {key}: {staff.get(key)!r}")
-          print(f"STAFF_SHIFT_DOWNLOAD_MIGRATION_GUARD=passed mode={mode}")
+          lead = next(item for item in manifest["packages"] if item["folder"] == "03-Nurse-Leader-and-Manager")
+          expected_lead = {
+              "build_kit_version": "1.0.0",
+              "bytes": 494164,
+              "download": "downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "download_type": "self_install_hermes_build_kit",
+              "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+              "readiness": "not_operational_build_required",
+              "sha256": "78293c6eaef4fa277f4afecf14eeb87b90f3385ba71be3189faaca2466c90974",
+              "target_route_assignment": "activation_card_required_no_route_preassigned",
+          }
+          for key, value in expected_lead.items():
+              if lead.get(key) != value:
+                  raise SystemExit(f"Nurse Leader LEAD manifest mismatch for {key}: {lead.get(key)!r}")
+          print(f"ROLE_DOWNLOAD_MIGRATION_GUARD=passed mode={mode}")
           PY

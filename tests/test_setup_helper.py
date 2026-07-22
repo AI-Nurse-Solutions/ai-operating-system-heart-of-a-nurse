@@ -240,13 +240,17 @@ class SetupHelperTests(unittest.TestCase):
             "Chartered Staff-Nurse QI Project Lead",
             "one-page no-PHI readiness checklist",
             "one synthetic first-win",
-            "downloading, selecting, opening, and unzipping do not install anything",
-            "complete one-file SHIFT program",
+            "SHIFT functional self-install Hermes build kit",
+            "downloading, selecting, opening, and unzipping the ZIP do not install or activate anything",
+            "complete ZIP",
+            "manifest and checksums",
             "read-only preflight",
-            "SHIFT Complete Edition Activation Card",
-            "176 embedded release checks",
-            "all twenty optional SHIFT SuperPowers",
-            "private-workspace approval does not authorize institutional quality work",
+            "Implementation Activation Card",
+            "176 canonical compatibility checks",
+            "all initially Not Run",
+            "Available Inactive",
+            "PERM-P0 Disabled",
+            "private build does not authorize institutional quality work",
         ):
             self.assertIn(phrase, task)
 
@@ -272,19 +276,27 @@ class SetupHelperTests(unittest.TestCase):
         ):
             self.assertIn(phrase, task)
 
-    def test_nurse_leader_complete_edition_is_preflight_first(self):
+    def test_nurse_leader_build_kit_starter_is_preflight_first(self):
         result = node_eval("""
           import {safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
           console.log(JSON.stringify({task:safeTaskForLane('nurse_leader_manager')}));
         """)
         task = result["task"]
-        self.assertIn("read-only preflight checklist only", task)
-        self.assertIn("Do not install, save, connect, share, or activate anything", task)
-        self.assertIn("downloading and unzipping do not install anything", task)
-        self.assertIn("Nurse Leader Complete Edition Activation Card", task)
-        self.assertIn("113 embedded release checks", task)
-        self.assertIn("all sixteen optional SuperPowers off", task)
-        self.assertIn("private-workspace approval does not authorize organizational deployment", task)
+        for phrase in (
+            "without opening or requiring a package file",
+            "Do not install, save, connect, share, send, schedule, create persistent memory, modify my profile, or activate anything",
+            "downloading, selecting, opening, or unzipping the ZIP does not install or activate anything",
+            "complete ZIP",
+            "manifest, checksums, source provenance",
+            "read-only preflight",
+            "Implementation Activation Card with APPROVE, REVISE, and CANCEL",
+            "113 canonical checks that begin Not Run",
+            "No local route is preassigned",
+            "Available Inactive",
+            "PERM-P0 Disabled",
+            "private build does not authorize organizational deployment",
+        ):
+            self.assertIn(phrase, task)
 
     def test_no_server_calls_or_analytics(self):
         combined = self.app + self.model
@@ -324,11 +336,14 @@ class SetupHelperTests(unittest.TestCase):
     def test_ci_hardening_and_full_public_scan_scope(self):
         workflow = (ROOT / ".github/workflows/setup-helper.yml").read_text(encoding="utf-8")
         self.assertIn("persist-credentials: false", workflow)
+        self.assertIn("scripts/build-lead-nurse-leader-build-kit.py", workflow)
+        self.assertIn("scripts/scan-public-healthcare-artifacts.py setup-helper --label SETUP_HELPER", workflow)
+        self.assertIn("scripts/scan-public-healthcare-artifacts.py post-setup --label POST_SETUP", workflow)
         for path in (
             "setup.html", "start-here.html", "privacy.html", "faq.html", "cheat-sheet.html",
             "hermes-downloads/index.html", "about.html", "hermes-masterclass.html",
         ):
-            self.assertIn(f'Path("{path}")', workflow)
+            self.assertIn(path, workflow)
 
     def test_honest_time_and_nonclaim_copy(self):
         combined = (self.html + self.model + self.app).lower()

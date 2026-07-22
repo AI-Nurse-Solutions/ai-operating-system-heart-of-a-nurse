@@ -66,6 +66,7 @@
       "build_kit_member_count": 114,
       "build_kit_root": "STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0",
       "build_kit_verifier_sha256": "075b327b7bda027be02b0b2bcf58289f9a463df652019e013fa1382ba4c8923b",
+      "build_kit_version": "1.0.0",
       "bytes": 6914990,
       "ci_validation": "tracked_repository_validator_no_artifact_controlled_code_execution",
       "download": "downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
@@ -108,10 +109,27 @@
       },
       "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
       "automatic_shared_access": false,
-      "bytes": 258717,
-      "download": "downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip",
+      "build_kit_counts": {
+        "canonical_foundation_checks": 21,
+        "canonical_integration_checks": 12,
+        "canonical_lead_overlay_checks": 80,
+        "canonical_total_checks": 113,
+        "core_launchers": 4,
+        "foundation_departments": 5,
+        "optional_superpowers": 16
+      },
+      "build_kit_member_count": 16,
+      "build_kit_root": "LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0",
+      "build_kit_verifier_sha256": "3cc461d3b932af8c9d58e178c4c6e219e5f595f198b8b5540b9b923a7abc58c4",
+      "build_kit_version": "1.0.0",
+      "bytes": 494164,
+      "ci_validation": "tracked_source_builder_and_tracked_verifier_package_and_outer_zip",
+      "download": "downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+      "download_type": "self_install_hermes_build_kit",
+      "first_read": "README-FIRST.md",
       "folder": "03-Nurse-Leader-and-Manager",
       "foundation_first": true,
+      "handoff_entrypoint": "GIVE-THIS-PACKAGE-TO-HERMES.md",
       "install_on_download": false,
       "intended_stage": "after_soul_files_and_hermes_setup",
       "lead_overlay_second": true,
@@ -120,8 +138,16 @@
       "organizational_deployment_requires_separate_authorization": true,
       "package_version": "2026.07.14.1",
       "pre_install_disclosure_required": true,
+      "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+      "readiness": "not_operational_build_required",
       "role": "Nurse Leader and Manager",
-      "sha256": "6cb306bc0e1e2c5df28b9ec8afdca193a4f7879c886237ac485a81d8fffabb9c"
+      "sha256": "78293c6eaef4fa277f4afecf14eeb87b90f3385ba71be3189faaca2466c90974",
+      "source_zip_sha256": "1b5bcc016f56735f7d33b8ada746d971ec9ac313e5ef5339fb05382e44c0f4d8",
+      "target_namespace": "nl_lead.*",
+      "target_product": "Nurse Leader Complete AI OS with LEAD SuperPowers",
+      "target_product_id": "NAIO-NL-COMPLETE-LEAD-1.0",
+      "target_route_assignment": "activation_card_required_no_route_preassigned",
+      "target_version": "1.0.0"
     },
     {
       "acceptance_tests": {
@@ -188,6 +214,6 @@
     }
   ],
   "purpose": "role-specific Nurse AI OS post-setup downloads",
-  "release": "2026.07.15.5",
+  "release": "2026.07.21.1",
   "schema_version": "1.0"
 }

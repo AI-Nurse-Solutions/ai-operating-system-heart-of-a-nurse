@@ -538,7 +538,7 @@ This is the correct honesty posture, but it means the current role packages are 
 
 ## 8.4 Integrity posture
 
-At the July 13 evidence snapshot, the five original ZIPs were live-verified over HTTPS. Each matched the then-live SHA-256 value and opened as a valid ZIP with eight expected files. That historical statement does not attest the later FUTURE, SHIFT, or LEAD successor build kits; their current manifests, ledgers, and verifiers govern those releases.
+At the July 13 evidence snapshot, the five original ZIPs were live-verified over HTTPS. Each matched the then-live SHA-256 value and opened as a valid ZIP with eight expected files. That historical statement does not attest the later FUTURE, SHIFT, LEAD, or USA-only NP WINGS successor build kits; their current manifests, ledgers, and verifiers govern those releases.
 
 Residual integrity gap:
 
@@ -947,6 +947,7 @@ This report is self-contained for public review. An earlier internal Harness wor
 - [Download the current FUTURE Nursing Student and Nursing Assistant self-install build kit](https://nurse-ai-os.org/post-setup/downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
 - [Download the current Staff Nurse SHIFT self-install build kit](https://nurse-ai-os.org/post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
 - [Download the current Nurse Leader LEAD self-install build kit](https://nurse-ai-os.org/post-setup/downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
+- [Download the current USA-only Nurse Practitioner WINGS self-install build kit](https://nurse-ai-os.org/post-setup/downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
 - [Download the Nurse Educator role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip)
 - [Download the Nurse-Connected Ally role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip)
 

@@ -443,11 +443,11 @@ Download one role pack
                   │       └─ proposed changes, EDENA tiers, permissions,
                   │          conflicts, rollback → apply / revise / defer / reject
                   │
-                  ├─ Lanes 02, 03: build-kit verification + read-only environment preflight
+                  ├─ Lanes 01, 02, 03, and 06: build-kit verification + read-only environment preflight
                   │       └─ exact Implementation Activation Card → approve /
                   │          revise / cancel
                   │
-                  └─ Lanes 01, 04, 06: read-only Complete Edition preflight
+                  └─ Lane 04: read-only Complete Edition preflight
                           └─ exact combined activation card → approve /
                              edit / foundation only / keep inactive / cancel
 

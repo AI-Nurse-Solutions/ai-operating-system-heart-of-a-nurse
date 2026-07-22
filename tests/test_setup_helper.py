@@ -237,6 +237,8 @@ class SetupHelperTests(unittest.TestCase):
             "RELEASE-MANIFEST.json",
             "SHA256SUMS.txt",
             "WINGS Implementation Activation Card",
+            "explicitly approve that exact card before any local build mutation",
+            "validates 63 foundation checks, 82 Wings checks, and 1 complete integration check",
             "410 required execution records",
             "agents disabled/P0",
             "not_operational_build_required",

@@ -8,6 +8,8 @@ import json
 import re
 import runpy
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -22,10 +24,10 @@ DOCX = PACKAGE / "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx"
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
 BUILD_KIT_ROOT = "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
-BUILD_KIT_BYTES = 7699618
-BUILD_KIT_SHA256 = "b9fb59545f2057a1f27172ed36a4ddaa3fc97bfbf5ed9ef66ab4e0846c70f22a"
+BUILD_KIT_BYTES = 7696594
+BUILD_KIT_SHA256 = "63987d053f22cd390c249cfc3bfa22568f03940bbfa017f4f5347895f7971e93"
 BUILD_KIT_MEMBER_COUNT = 131
-BUILD_KIT_VERIFIER_SHA256 = "dc30dc4eb78b68e0b7439bbe6a07d851f2d1d4c07bb477e38e917f0b429f47cc"
+BUILD_KIT_VERIFIER_SHA256 = "68f296261ca467935a4655ee0476844246f0b5833117c2de159c39c81aa7b052"
 SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE = "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501"
 RESUME = (
     "Resume NP Complete Edition installation from the last approved checkpoint. "
@@ -173,6 +175,7 @@ class NursePractitionerLaneTests(unittest.TestCase):
             self.assertIn(f"{BUILD_KIT_ROOT}/SHA256SUMS.txt", names)
             release = json.loads(archive.read(f"{BUILD_KIT_ROOT}/RELEASE-MANIFEST.json"))
             self.assertEqual(release["target"]["readiness"], "not_operational_build_required")
+            self.assertEqual(release["target"]["country_availability"], ["United States"])
             self.assertEqual(release["counts"]["total_required_execution_records"], 410)
             self.assertEqual(release["counts"]["superpowers"], 15)
             verifier_sha = hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py")).hexdigest()
@@ -197,6 +200,33 @@ class NursePractitionerLaneTests(unittest.TestCase):
         configs = namespace["BUILD_KIT_DOWNLOADS"]
         self.assertIn("staff-nurse", configs)
         self.assertIn("nurse-practitioner-usa", configs)
+        wings_config = configs["nurse-practitioner-usa"]
+        self.assertEqual(wings_config["country_availability"], ["United States"])
+        self.assertEqual(wings_config["target"]["country_availability"], ["United States"])
+
+    def test_wings_country_boundary_is_archive_native_and_verified(self):
+        with zipfile.ZipFile(ZIP) as archive:
+            manifest = json.loads(archive.read(f"{BUILD_KIT_ROOT}/RELEASE-MANIFEST.json"))
+            self.assertEqual(manifest["target"]["country_availability"], ["United States"])
+            for name in ("README-FIRST.md", "GIVE-THIS-PACKAGE-TO-HERMES.md"):
+                text = archive.read(f"{BUILD_KIT_ROOT}/{name}").decode("utf-8")
+                self.assertIn("available only in the United States", text)
+                self.assertIn("stop before build mutation", text)
+            verifier = archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py").decode("utf-8")
+            self.assertIn("USA-only availability is embedded in both Hermes entrypoints", verifier)
+
+    def test_country_boundary_rotation_is_byte_idempotent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate = Path(tmp) / ZIP.name
+            shutil.copy2(ZIP, candidate)
+            subprocess.run(
+                [sys.executable, str(ROOT / "scripts" / "rotate-wings-country-boundary.py"), "--zip", str(candidate)],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(candidate.stat().st_size, BUILD_KIT_BYTES)
+            self.assertEqual(hashlib.sha256(candidate.read_bytes()).hexdigest(), BUILD_KIT_SHA256)
 
     def test_import_source_can_seed_separately_governed_np_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))

@@ -265,9 +265,9 @@
       },
       "build_kit_member_count": 131,
       "build_kit_root": "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0",
-      "build_kit_verifier_sha256": "dc30dc4eb78b68e0b7439bbe6a07d851f2d1d4c07bb477e38e917f0b429f47cc",
+      "build_kit_verifier_sha256": "68f296261ca467935a4655ee0476844246f0b5833117c2de159c39c81aa7b052",
       "build_kit_version": "1.0.0",
-      "bytes": 7699618,
+      "bytes": 7696594,
       "ci_validation": "tracked_repository_validator_no_artifact_controlled_code_execution",
       "country_availability": [
         "United States"
@@ -287,7 +287,7 @@
       "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
       "readiness": "not_operational_build_required",
       "role": "Nurse Practitioner (USA)",
-      "sha256": "b9fb59545f2057a1f27172ed36a4ddaa3fc97bfbf5ed9ef66ab4e0846c70f22a",
+      "sha256": "63987d053f22cd390c249cfc3bfa22568f03940bbfa017f4f5347895f7971e93",
       "source_zip_bytes_before_derivative": 7695951,
       "source_zip_sha256_before_derivative": "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501",
       "target_namespace": "np_wings.*",

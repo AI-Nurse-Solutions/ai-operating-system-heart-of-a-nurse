@@ -207,13 +207,15 @@ BUILD_KIT_DOWNLOADS.update({
         "package_version": "1.0.0",
         "filename": "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
         "root": "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0",
-        "bytes": 7699618,
-        "sha256": "b9fb59545f2057a1f27172ed36a4ddaa3fc97bfbf5ed9ef66ab4e0846c70f22a",
+        "bytes": 7696594,
+        "sha256": "63987d053f22cd390c249cfc3bfa22568f03940bbfa017f4f5347895f7971e93",
         "member_count": 131,
-        "verifier_sha256": "dc30dc4eb78b68e0b7439bbe6a07d851f2d1d4c07bb477e38e917f0b429f47cc",
+        "verifier_sha256": "68f296261ca467935a4655ee0476844246f0b5833117c2de159c39c81aa7b052",
         "source_zip_sha256_before_derivative": "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501",
         "source_zip_bytes_before_derivative": 7695951,
+        "country_availability": ["United States"],
         "target": {
+            "country_availability": ["United States"],
             "foundation_namespace": "np_lppef.*",
             "home": "My NP Life, Practice & Purpose Command Center",
             "lane": "nurse_practitioner",
@@ -740,6 +742,14 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             raise ValueError(f"Build-kit package version mismatch: {path}")
         if manifest.get("target") != config["target"]:
             raise ValueError(f"Build-kit target contract mismatch: {path}")
+        if config.get("country_availability"):
+            boundary = "available only in the United States"
+            entrypoints = [
+                archive.read(f"{root}/README-FIRST.md").decode("utf-8"),
+                archive.read(f"{root}/GIVE-THIS-PACKAGE-TO-HERMES.md").decode("utf-8"),
+            ]
+            if not all(boundary in text for text in entrypoints):
+                raise ValueError(f"Build-kit country boundary missing from Hermes entrypoints: {path}")
         if manifest.get("counts") != config["counts"]:
             raise ValueError(f"Build-kit count contract mismatch: {path}")
         defaults = manifest.get("defaults", {})

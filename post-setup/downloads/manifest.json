@@ -200,7 +200,7 @@
         "teach_overlay": 120,
         "total": 169
       },
-      "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "activation": "user_initiated_read_only_preflight_with_exact_implementation_activation_card",
       "automatic_shared_access": false,
       "build_kit_counts": {
         "acceptance_ledger_explicit_target_test_rows": 264,
@@ -240,6 +240,7 @@
       "install_on_download": false,
       "institutional_deployment_requires_separate_authorization": true,
       "intended_stage": "after_soul_files_and_hermes_setup",
+      "legacy_source_activation_contract": "user_initiated_guided_complete_setup_with_combined_activation_card",
       "optional_superpowers_active_after_install": 0,
       "optional_superpowers_total": 20,
       "package_version": "2026.07.15.1",
@@ -259,7 +260,8 @@
       "target_product": "TEACH \u2014 Nurse Educator & Instructional Designer Mission Control",
       "target_product_id": "nurse-educator-instructional-designer-mission-control",
       "target_route": "/nurse-educators-designers/dashboard",
-      "target_version": "2.0.0"
+      "target_version": "2.0.0",
+      "teach_overlay_second": true
     },
     {
       "activation": "user_initiated_two_step_review_and_explicit_approval",

@@ -112,7 +112,7 @@ This report does not establish:
 | Shadow decisions | 198 observed allows; 147 observed blocks |
 | Payload capture flag | Zero events with `payload_captured=true` |
 | Post-setup page | `https://nurse-ai-os.org/post-setup/`, HTTP 200 |
-| Post-setup packages | Six ZIPs: three self-install build kits, two Complete Editions, and one review-first overlay; repository checksums verified; all `not_installed` on download; deployed bytes require separate post-merge HTTP verification |
+| Post-setup packages | Six ZIPs: four self-install build kits, one Complete Edition, and one review-first overlay; repository checksums verified; all `not_installed` on download; deployed bytes require separate post-merge HTTP verification |
 | Post-setup manifest state | `not_installed` |
 
 The shadow ledger count is a timestamped snapshot, not a release constant. It continues to grow while the plugin observes Hermes activity.
@@ -443,11 +443,11 @@ Download one role pack
                   │       └─ proposed changes, EDENA tiers, permissions,
                   │          conflicts, rollback → apply / revise / defer / reject
                   │
-                  ├─ Lanes 02, 03: build-kit verification + read-only environment preflight
+                  ├─ Lanes 01, 02, 03, 04: complete-ZIP build-kit verification + read-only environment preflight
                   │       └─ exact Implementation Activation Card → approve /
                   │          revise / cancel
                   │
-                  └─ Lanes 01, 04, 06: read-only Complete Edition preflight
+                  └─ Lane 06: read-only Complete Edition preflight
                           └─ exact combined activation card → approve /
                              edit / foundation only / keep inactive / cancel
 
@@ -903,7 +903,7 @@ Nurse AI OS now has a credible technical spine:
 - a signed Hermes-native Harness;
 - a local metadata-only evidence ledger;
 - immutable releases and rollback;
-- a six-lane English post-setup distribution comprising three governed self-install build kits, two Complete Editions, and one review-first overlay.
+- a six-lane English post-setup distribution comprising four governed self-install build kits, one Complete Edition, and one review-first overlay.
 
 Its next phase is not “more agents.” It is **coherence, evidence adjudication, and human governance**.
 

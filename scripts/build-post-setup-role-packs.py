@@ -200,6 +200,7 @@ BUILD_KIT_DOWNLOADS = {
     },
     "nurse-educator": {
         "build_kit_version": "1.0.0",
+        "activation": "user_initiated_read_only_preflight_with_exact_implementation_activation_card",
         "filename": "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
         "root": "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0",
         "bytes": 6820684,
@@ -871,6 +872,7 @@ def deterministic_zip(role: dict) -> dict:
             "future_overlay_second",
             "lead_overlay_second",
             "shift_overlay_second",
+            "teach_overlay_second",
             "pathways",
             "role_adapters",
             "bridge_context_transfer_automatic",

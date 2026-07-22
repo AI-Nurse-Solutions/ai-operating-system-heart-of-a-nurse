@@ -221,6 +221,7 @@ jobs:
                   raise SystemExit(f"Nurse Leader LEAD manifest mismatch for {key}: {lead.get(key)!r}")
           educator = next(item for item in manifest["packages"] if item["folder"] == "04-Nurse-Educator")
           expected_educator = {
+              "activation": "user_initiated_read_only_preflight_with_exact_implementation_activation_card",
               "build_kit_member_count": 121,
               "build_kit_version": "1.0.0",
               "build_kit_verifier_sha256": "3b6017d9e07793f06a470d74f7a1632fbe34f6f5f5c02b7322172cfd9d4e1cfb",
@@ -237,6 +238,7 @@ jobs:
               "target_product_id": "nurse-educator-instructional-designer-mission-control",
               "target_route": "/nurse-educators-designers/dashboard",
               "target_version": "2.0.0",
+              "teach_overlay_second": True,
           }
           for key, value in expected_educator.items():
               if educator.get(key) != value:

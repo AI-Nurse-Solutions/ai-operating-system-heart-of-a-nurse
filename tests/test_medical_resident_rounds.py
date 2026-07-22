@@ -223,6 +223,8 @@ class RoundsMedicalResidentTests(unittest.TestCase):
             self.assertIn(phrase, page)
         self.assertIn('href="downloads/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"', page)
         self.assertIn('href="downloads/medical-resident-rounds-complete-edition.zip"', page)
+        self.assertIn('href="build-kit/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0/README-FIRST.md"', page)
+        self.assertNotIn('href="packages/rounds/00-READ-FIRST.md"', page)
 
     def test_homepage_embeds_resident_short_below_all_nurse_videos(self):
         page = (ROOT / "index.html").read_text(encoding="utf-8")

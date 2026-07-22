@@ -12,13 +12,6 @@ import unicodedata
 import zipfile
 from pathlib import Path, PurePosixPath
 
-TEXT_SUFFIXES = {
-    ".bash", ".bat", ".cfg", ".cmd", ".command", ".css", ".csv", ".env",
-    ".fish", ".html", ".ini", ".js", ".json", ".md", ".mjs", ".ps1",
-    ".py", ".rels", ".sh", ".toml", ".txt", ".xml", ".yaml", ".yml",
-    ".zsh",
-}
-TEXT_BASENAMES = {".env", ".env.example", "LICENSE", "NOTICE", "VERSION"}
 ARCHIVE_SUFFIXES = {".docx", ".zip"}
 MAX_DEPTH = 3
 MAX_MEMBER_BYTES = 16 * 1024 * 1024
@@ -91,14 +84,14 @@ def extract_text(name: str, data: bytes, *, depth: int = 0) -> list[tuple[str, s
                 member_data = archive.read(info)
                 payloads.extend(extract_text(f"{name}!{member}", member_data, depth=depth + 1))
         return payloads
-    basename = Path(name).name
-    extensionless_text = not suffix and b"\x00" not in data
-    if suffix in TEXT_SUFFIXES or basename in TEXT_BASENAMES or extensionless_text:
-        try:
-            return [(name, data.decode("utf-8"))]
-        except UnicodeDecodeError:
-            return []
-    return []
+    # Do not use a text-extension allowlist here. Public credential files commonly
+    # use names such as `.env`, `server.pem`, and `private.key`, and new config
+    # extensions must fail safe without requiring a scanner update. NUL bytes are
+    # the conservative binary discriminator; invalid UTF-8 bytes are ignored so a
+    # single corrupt byte cannot hide readable credentials elsewhere in the file.
+    if b"\x00" in data:
+        return []
+    return [(name, data.decode("utf-8", errors="ignore"))]
 
 
 def scan_paths(paths: list[Path]) -> list[tuple[str, str]]:
@@ -142,10 +135,16 @@ def run_self_probes() -> None:
         ("setup.sh", b"CLIENT_SECRET=abcd/efgh+ijkl=="),
         ("install.command", b"ACCESS_KEY=abcdefghijklmnop"),
         ("VERSION", b"TOKEN=abcdefghijklmnop"),
+        ("corrupt.env", b"\xffTOKEN=abcdefghijklmnop"),
     ):
         texts = extract_text(name, payload)
         if not any(secret.search(text) for _, text in texts):
             raise ScanError(f"text-file secret probe failed: {name}")
+    private_key = PATTERNS["private key"]
+    for name in ("server.pem", "private.key"):
+        texts = extract_text(name, b"\xff-----BEGIN PRIVATE KEY-----\nredacted\n")
+        if not any(private_key.search(text) for _, text in texts):
+            raise ScanError(f"private-key file probe failed: {name}")
     empty_env = "HERMES_API_KEY=\nHERMES_MODEL=\nOPENAI_COMPATIBLE_API_KEY=\n"
     if secret.search(empty_env):
         raise ScanError("empty environment assignment produced a cross-line false positive")

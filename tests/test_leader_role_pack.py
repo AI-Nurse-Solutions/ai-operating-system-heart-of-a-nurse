@@ -452,6 +452,21 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
             self.assertNotEqual(blocked.returncode, 0, blocked.stdout)
             self.assertIn("public-safety scan failed", blocked.stdout)
 
+    def test_public_scanner_cannot_skip_key_extensions_or_corrupt_utf8(self):
+        scanner = runpy.run_path(str(SCANNER))
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            pem = root / "server.pem"
+            key = root / "private.key"
+            env = root / "corrupt.env"
+            pem.write_bytes(b"-----BEGIN PRIVATE KEY-----\nredacted\n")
+            key.write_bytes(b"\xff-----BEGIN PRIVATE KEY-----\nredacted\n")
+            env.write_bytes(b"\xffTOKEN=abcdefghijklmnop")
+            findings = scanner["scan_paths"]([pem, key, env])
+        labels = [label for label, _ in findings]
+        self.assertEqual(labels.count("private key"), 2)
+        self.assertEqual(labels.count("generic api key"), 1)
+
     def test_switchboard_guard_accepts_post_merge_steady_state(self):
         workflow = (ROOT / ".github" / "workflows" / "switchboard.yml").read_text(encoding="utf-8")
         marker = "python3 - <<'PY'\n"

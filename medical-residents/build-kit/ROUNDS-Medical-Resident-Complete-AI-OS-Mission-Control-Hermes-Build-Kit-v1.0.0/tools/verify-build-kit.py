@@ -12,6 +12,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import re
 import stat
 import sys
@@ -2127,6 +2128,12 @@ def check_package_filesystem(c: Checks, package: Path) -> None:
             unsafe_modes.append(f"{relative}:{oct(permissions)} expected one of {sorted(oct(item) for item in expected)}")
     c.check(not symlinks, "Package contains no symlinks", symlinks)
     c.check(not specials, "Package contains no special files", specials)
+    if os.name == "nt":
+        c.warn(
+            "Package mode normalization is not enforceable on Windows",
+            "Outer-ZIP mode metadata is still checked when --zip is supplied",
+        )
+        return
     c.check(not unsafe_modes, "Package modes are normalized and safe", unsafe_modes[:10])
 
 

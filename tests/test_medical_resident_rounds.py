@@ -13,6 +13,7 @@ import sys
 import tempfile
 import unittest
 import zipfile
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +28,7 @@ ZIP = DOWNLOADS / "medical-resident-rounds-complete-edition.zip"
 ZIP_PREFIX = "ROUNDS-Medical-Resident-Complete-Edition/"
 BUILD_KIT = DOWNLOADS / "ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
 BUILD_KIT_ROOT = "ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0/"
+BUILD_KIT_SOURCE = ROUNDS / "build-kit" / BUILD_KIT_ROOT.rstrip("/")
 
 
 def sha256(path: Path) -> str:
@@ -302,8 +304,8 @@ class RoundsMedicalResidentTests(unittest.TestCase):
                     self.assertEqual(archive.read(ZIP_PREFIX + path.name), path.read_bytes())
 
     def test_self_install_build_kit_is_pinned_and_not_operational(self):
-        self.assertEqual(sha256(BUILD_KIT), "9da287f43df9398eec648addf3524d8f12415a90af33fa2c9d31e92972bef666")
-        self.assertEqual(BUILD_KIT.stat().st_size, 6993919)
+        self.assertEqual(sha256(BUILD_KIT), "cc1f458055ee47c311733d8cd38b5ede80c5ce886c4523e28f246fb8cac17784")
+        self.assertEqual(BUILD_KIT.stat().st_size, 6994006)
         with zipfile.ZipFile(BUILD_KIT) as archive:
             self.assertIsNone(archive.testzip())
             self.assertEqual(len(archive.infolist()), 149)
@@ -394,6 +396,22 @@ class RoundsMedicalResidentTests(unittest.TestCase):
                     archive.writestr(info, b"not a regular file")
                 with self.assertRaisesRegex(ValueError, "regular-file entries"):
                     validator(archive_path, enforce_pins=False)
+
+    def test_bundled_verifier_warns_for_windows_filesystem_modes(self):
+        namespace = runpy.run_path(str(BUILD_KIT_SOURCE / "tools" / "verify-build-kit.py"))
+        checks_type = namespace["Checks"]
+        check_filesystem = namespace["check_package_filesystem"]
+        verifier_os = namespace["os"]
+        with tempfile.TemporaryDirectory() as temp:
+            package = Path(temp)
+            sample = package / "README-FIRST.md"
+            sample.write_text("safe\n", encoding="utf-8")
+            sample.chmod(0o600)
+            checks = checks_type()
+            with mock.patch.object(verifier_os, "name", "nt"):
+                check_filesystem(checks, package)
+            self.assertFalse(checks.failed)
+            self.assertTrue(any("not enforceable on Windows" in item for item in checks.warnings))
 
     def test_public_safety_scanner_covers_extensionless_env_and_script_files(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "scan-public-healthcare-artifacts.py"))

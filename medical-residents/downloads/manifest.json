@@ -38,7 +38,7 @@
       "activation_contract": "user_initiated_read_only_preflight_then_exact_implementation_activation_card_approval",
       "artifact_class": "hermes_functional_build_kit_self_install",
       "build_kit_version": "1.0.0",
-      "bytes": 6993919,
+      "bytes": 6994006,
       "complete_ai_os_claim": "not_operational_build_required",
       "download": "downloads/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
       "install_on_download": false,
@@ -49,7 +49,7 @@
       "readiness": "not_operational_build_required",
       "route": "/medical-residents/",
       "runtime_status": "not_built_until_user_hermes_runs_approved_program",
-      "sha256": "9da287f43df9398eec648addf3524d8f12415a90af33fa2c9d31e92972bef666",
+      "sha256": "cc1f458055ee47c311733d8cd38b5ede80c5ce886c4523e28f246fb8cac17784",
       "target_application_version": "2.0.0",
       "total_required_execution_records": 424
     }

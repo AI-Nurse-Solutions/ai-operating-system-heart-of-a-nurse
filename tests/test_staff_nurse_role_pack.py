@@ -161,7 +161,7 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
         for control in ("Pause All", "Safe Reset", "Overlay removal", "Full uninstall"):
             self.assertIn(control, self.read_first)
 
-    def test_public_copy_classifies_lane_two_as_complete_edition(self):
+    def test_public_copy_classifies_lane_two_as_self_install_build_kit(self):
         page = (ROOT / "post-setup" / "index.html").read_text(encoding="utf-8")
         for phrase in (
             "Staff Nurse &amp; Quality Contributor",
@@ -171,19 +171,21 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
             "approximately 6.91 MB",
             "not operational—build required",
             "all twenty optional SHIFT SuperPowers remain inactive",
-            "Complete Edition lanes 01, 02, 03, 04, and 06",
+            "Self-install build-kit lanes 02 and 03",
+            "Complete Edition lanes 01, 04, and 06",
             "review-first lane 05",
         ):
             self.assertIn(phrase, page)
 
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 02, 03, 04, and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Lanes 02 and 03 are reproducible self-install Hermes build kits", readme)
+        self.assertIn("Lanes 01, 04, and 06 are separately governed Complete Editions", readme)
         self.assertIn("Review-first lane 05 includes", readme)
 
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):
         self.assertTrue(ZIP.is_file(), ZIP)
         public = json.loads((DOWNLOADS / "manifest.json").read_text(encoding="utf-8"))
-        self.assertEqual(public["release"], "2026.07.15.5")
+        self.assertEqual(public["release"], "2026.07.21.1")
         record = next(item for item in public["packages"] if item["role"] == "Staff Nurse and Quality Contributor")
         self.assertFalse(record["install_on_download"])
         self.assertTrue(record["pre_install_disclosure_required"])
@@ -257,7 +259,7 @@ class StaffNurseCompleteEditionTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(completed.returncode, 0, completed.stdout)
-        self.assertIn("STAFF_SHIFT_DOWNLOAD_MIGRATION_GUARD=passed mode=steady-state", completed.stdout)
+        self.assertIn("ROLE_DOWNLOAD_MIGRATION_GUARD=passed mode=steady-state", completed.stdout)
 
 
 if __name__ == "__main__":

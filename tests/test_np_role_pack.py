@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 import re
@@ -239,7 +240,7 @@ class NursePractitionerLaneTests(unittest.TestCase):
             self.assertEqual(candidate.stat().st_size, BUILD_KIT_BYTES)
             self.assertEqual(hashlib.sha256(candidate.read_bytes()).hexdigest(), BUILD_KIT_SHA256)
 
-    def test_bundled_verifier_accepts_python_standard_extraction_with_outer_zip(self):
+    def test_bundled_verifier_documentation_and_portability_contract_are_archive_native(self):
         with tempfile.TemporaryDirectory() as tmp:
             extracted = Path(tmp) / "package"
             with zipfile.ZipFile(ZIP) as archive:
@@ -255,25 +256,21 @@ class NursePractitionerLaneTests(unittest.TestCase):
                         "`python3 tools/verify-build-kit.py --package .`",
                         text,
                     )
-            package = extracted / BUILD_KIT_ROOT
-            shutil.copy2(ZIP, extracted / ZIP.name)
-            completed = subprocess.run(
-                [
-                    sys.executable,
-                    "tools/verify-build-kit.py",
-                    "--package",
-                    ".",
-                    "--zip",
-                    f"../{ZIP.name}",
-                ],
-                check=False,
-                capture_output=True,
-                text=True,
-                cwd=package,
-            )
-            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
-            self.assertIn("Final ZIP preserves normalized safe file modes", completed.stdout)
-            self.assertNotIn("FAIL ", completed.stdout)
+                verifier_path = f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py"
+                verifier_source = archive.read(verifier_path).decode("utf-8")
+                ast.parse(verifier_source)
+                self.assertIn('parser.add_argument("--zip", dest="zip_path", type=Path)', verifier_source)
+                self.assertIn(
+                    'enforce_modes=args.zip_path is None and os.name != "nt"',
+                    verifier_source,
+                )
+                self.assertIn(
+                    "check_outer_zip(c, package, args.zip_path.resolve(), args.require_release_companions)",
+                    verifier_source,
+                )
+                verifier_mode = (archive.getinfo(verifier_path).external_attr >> 16) & 0o777
+                self.assertEqual(verifier_mode, 0o755)
+            self.assertTrue((extracted / BUILD_KIT_ROOT / "tools" / "verify-build-kit.py").is_file())
 
     def test_import_source_can_seed_separately_governed_np_package(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))

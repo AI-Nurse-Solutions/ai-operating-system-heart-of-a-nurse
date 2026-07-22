@@ -6,16 +6,12 @@ from __future__ import annotations
 import argparse
 import io
 import re
+import stat
 import sys
+import unicodedata
 import zipfile
 from pathlib import Path, PurePosixPath
 
-TEXT_SUFFIXES = {
-    ".bat", ".command", ".css", ".csv", ".env", ".example", ".html",
-    ".js", ".json", ".md", ".mjs", ".py", ".rels", ".sh", ".toml",
-    ".txt", ".xml", ".yaml", ".yml",
-}
-TEXT_FILENAMES = {".env", ".env.example", "LICENSE", "NOTICE", "VERSION"}
 ARCHIVE_SUFFIXES = {".docx", ".zip"}
 MAX_DEPTH = 3
 MAX_MEMBER_BYTES = 16 * 1024 * 1024
@@ -23,11 +19,12 @@ MAX_ARCHIVE_BYTES = 128 * 1024 * 1024
 PATTERNS = {
     "private key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     "generic api key": re.compile(
-        r"(?:api[_-]?key|token|password)\s*[:=]\s*['\"]?[A-Za-z0-9_\-]{16,}",
+        r"(?:api[_-]?key|access[_-]?key|client[_-]?secret|secret|token|password)"
+        r"[ \t]*[:=][ \t]*['\"]?[A-Za-z0-9_./+\-=]{16,}",
         re.IGNORECASE,
     ),
     "patient or mrn example": re.compile(
-        r"(?:patient\s*(?:name)?|mrn\s*(?:number)?)\s*[:=]\s*[A-Za-z0-9][A-Za-z0-9_-]*",
+        r"(?:patient[ \t]*(?:name)?|mrn[ \t]*(?:number)?)[ \t]*[:=][ \t]*[A-Za-z0-9][A-Za-z0-9_-]*",
         re.IGNORECASE,
     ),
 }
@@ -38,17 +35,21 @@ class ScanError(RuntimeError):
 
 
 def _safe_member_name(name: str) -> str:
+    if not name or "\x00" in name:
+        raise ScanError(f"unsafe archive member path: {name!r}")
     normalized = name.replace("\\", "/")
     path = PurePosixPath(normalized)
-    if path.is_absolute() or ".." in path.parts or not path.parts:
+    if path.is_absolute() or ".." in path.parts or not path.parts or any(":" in part for part in path.parts):
         raise ScanError(f"unsafe archive member path: {name!r}")
-    return normalized
+    canonical = path.as_posix()
+    if normalized.rstrip("/") != canonical:
+        raise ScanError(f"noncanonical archive member path: {name!r}")
+    return canonical
 
 
 def extract_text(name: str, data: bytes, *, depth: int = 0) -> list[tuple[str, str]]:
     """Return textual payloads from a file, recursively unpacking ZIP/DOCX."""
-    path = Path(name)
-    suffix = path.suffix.lower()
+    suffix = Path(name).suffix.lower()
     if suffix in ARCHIVE_SUFFIXES:
         if depth >= MAX_DEPTH:
             raise ScanError(f"archive nesting exceeds {MAX_DEPTH}: {name}")
@@ -60,11 +61,19 @@ def extract_text(name: str, data: bytes, *, depth: int = 0) -> list[tuple[str, s
             raise ScanError(f"invalid compressed artifact: {name}") from exc
         payloads: list[tuple[str, str]] = []
         total = 0
+        normalized_members: set[str] = set()
         with archive:
             for info in archive.infolist():
+                member = _safe_member_name(info.filename)
+                folded = unicodedata.normalize("NFC", member.rstrip("/")).casefold()
+                if folded in normalized_members:
+                    raise ScanError(f"duplicate or case-colliding archive member: {name}!{member}")
+                normalized_members.add(folded)
+                mode = (info.external_attr >> 16) & 0o177777
+                if mode and stat.S_IFMT(mode) not in (0, stat.S_IFREG, stat.S_IFDIR):
+                    raise ScanError(f"symlink or special archive member: {name}!{member}")
                 if info.is_dir():
                     continue
-                member = _safe_member_name(info.filename)
                 if info.flag_bits & 1:
                     raise ScanError(f"encrypted archive member: {name}!{member}")
                 if info.file_size > MAX_MEMBER_BYTES:
@@ -75,24 +84,14 @@ def extract_text(name: str, data: bytes, *, depth: int = 0) -> list[tuple[str, s
                 member_data = archive.read(info)
                 payloads.extend(extract_text(f"{name}!{member}", member_data, depth=depth + 1))
         return payloads
-    if suffix in TEXT_SUFFIXES or path.name in TEXT_FILENAMES or (not suffix and _looks_like_text(data)):
-        return [(name, data.decode("utf-8", errors="ignore"))]
-    return []
-
-
-def _looks_like_text(data: bytes) -> bool:
-    """Return true for extensionless UTF-8-ish config/scripts while skipping binary blobs."""
+    # Do not use a text-extension allowlist here. Public credential files commonly
+    # use names such as `.env`, `server.pem`, and `private.key`, and new config
+    # extensions must fail safe without requiring a scanner update. NUL bytes are
+    # the conservative binary discriminator; invalid UTF-8 bytes are ignored so a
+    # single corrupt byte cannot hide readable credentials elsewhere in the file.
     if b"\x00" in data:
-        return False
-    if not data:
-        return True
-    sample = data[:4096]
-    try:
-        sample.decode("utf-8")
-    except UnicodeDecodeError:
-        return False
-    control = sum(1 for byte in sample if byte < 32 and byte not in (9, 10, 13))
-    return control / len(sample) < 0.02
+        return []
+    return [(name, data.decode("utf-8", errors="ignore"))]
 
 
 def scan_paths(paths: list[Path]) -> list[tuple[str, str]]:
@@ -123,19 +122,58 @@ def run_self_probes() -> None:
     docx_payload = _probe_archive("word/document.xml", b"<w:t>Patient: John</w:t>")
     nested_payload = _probe_archive("nested.zip", zip_payload)
     for name, payload in (
-        (".env", b"API_KEY=abcdefghijklmnop"),
-        (".env.example", b"Patient: John"),
-        ("VERSION", b"MRN: A1B2C3"),
-        ("start-discover.sh", b"TOKEN=abcdefghijklmnop"),
-        ("Start-DISCOVER.command", b"MRN number=A1B2C3"),
-        ("Start-DISCOVER.bat", b"Patient: John"),
         ("probe.zip", zip_payload),
         ("probe.docx", docx_payload),
         ("nested.zip", nested_payload),
     ):
         texts = extract_text(name, payload)
-        if not any(phi.search(text) or PATTERNS["generic api key"].search(text) for _, text in texts):
-            raise ScanError(f"text extraction probe failed: {name}")
+        if not any(phi.search(text) for _, text in texts):
+            raise ScanError(f"compressed PHI probe failed: {name}")
+    secret = PATTERNS["generic api key"]
+    for name, payload in (
+        (".env", b"API_KEY=abcdefghijklmnop"),
+        ("setup.sh", b"CLIENT_SECRET=abcd/efgh+ijkl=="),
+        ("install.command", b"ACCESS_KEY=abcdefghijklmnop"),
+        ("VERSION", b"TOKEN=abcdefghijklmnop"),
+        ("corrupt.env", b"\xffTOKEN=abcdefghijklmnop"),
+    ):
+        texts = extract_text(name, payload)
+        if not any(secret.search(text) for _, text in texts):
+            raise ScanError(f"text-file secret probe failed: {name}")
+    private_key = PATTERNS["private key"]
+    for name in ("server.pem", "private.key"):
+        texts = extract_text(name, b"\xff-----BEGIN PRIVATE KEY-----\nredacted\n")
+        if not any(private_key.search(text) for _, text in texts):
+            raise ScanError(f"private-key file probe failed: {name}")
+    empty_env = "HERMES_API_KEY=\nHERMES_MODEL=\nOPENAI_COMPATIBLE_API_KEY=\n"
+    if secret.search(empty_env):
+        raise ScanError("empty environment assignment produced a cross-line false positive")
+
+    collision_buffer = io.BytesIO()
+    with zipfile.ZipFile(collision_buffer, "w") as archive:
+        archive.writestr("Payload.txt", b"safe")
+        archive.writestr("payload.txt", b"safe")
+    try:
+        extract_text("collision.zip", collision_buffer.getvalue())
+    except ScanError as exc:
+        if "case-colliding" not in str(exc):
+            raise
+    else:
+        raise ScanError("case-colliding archive-member probe failed")
+
+    symlink_buffer = io.BytesIO()
+    symlink = zipfile.ZipInfo("linked.txt")
+    symlink.create_system = 3
+    symlink.external_attr = (stat.S_IFLNK | 0o777) << 16
+    with zipfile.ZipFile(symlink_buffer, "w") as archive:
+        archive.writestr(symlink, b"target.txt")
+    try:
+        extract_text("symlink.zip", symlink_buffer.getvalue())
+    except ScanError as exc:
+        if "symlink or special" not in str(exc):
+            raise
+    else:
+        raise ScanError("symlink archive-member probe failed")
 
 
 def main() -> int:
@@ -146,7 +184,11 @@ def main() -> int:
     if not args.root.exists():
         parser.error(f"root does not exist: {args.root}")
     run_self_probes()
-    paths = sorted(path for path in args.root.rglob("*") if path.is_file())
+    paths = (
+        [args.root]
+        if args.root.is_file()
+        else sorted(path for path in args.root.rglob("*") if path.is_file())
+    )
     findings = scan_paths(paths)
     if findings:
         summary = ", ".join(f"{label} in {source}" for label, source in findings)

@@ -1,0 +1,64 @@
+{
+  "schema": "NAIO-DEPENDENCY-RECORD-1",
+  "generated_at": "2026-07-20T12:00:00.000Z",
+  "product": {
+    "id": "discover-nurse-ai-os-mission-control",
+    "name": "DISCOVER · Nurse AI OS Mission Control",
+    "version": "2.0.0",
+    "distribution": "downloadable static local package"
+  },
+  "bundled_runtime_dependencies": [],
+  "bundled_third_party_libraries": [],
+  "external_service_dependencies": [],
+  "optional_runtime_requirements": [
+    {
+      "id": "standards-based-browser",
+      "purpose": "Open the local dashboard, render HTML and CSS, and run the bundled first-party JavaScript.",
+      "version": "current supported desktop release",
+      "bundled": false,
+      "network_required_by_package": false
+    },
+    {
+      "id": "nodejs",
+      "purpose": "Run the optional loopback-only static server in server.mjs.",
+      "version": "18 or newer",
+      "bundled": false,
+      "required_for_portable_index_html_mode": false,
+      "network_required_by_package": false
+    }
+  ],
+  "first_party_components": [
+    {
+      "path": "index.html",
+      "type": "user-interface"
+    },
+    {
+      "path": "assets/app.js",
+      "type": "application-logic"
+    },
+    {
+      "path": "assets/styles.css",
+      "type": "presentation"
+    },
+    {
+      "path": "server.mjs",
+      "type": "optional-loopback-static-server",
+      "uses_only": ["node:http", "node:fs", "node:path", "node:url"]
+    }
+  ],
+  "network_and_telemetry": {
+    "application_network_requests": false,
+    "telemetry": false,
+    "analytics": false,
+    "automatic_updates": false,
+    "hermes_transport": "manual copy or downloaded handoff; never automatic"
+  },
+  "storage_and_data": {
+    "browser_storage": "localStorage",
+    "application_encryption": false,
+    "session_only_missions_persist": false,
+    "no_phi_or_confidential_data": true
+  },
+  "license_note": "This dependency record inventories the package architecture; it does not grant a license to the Nurse AI OS or DISCOVER materials.",
+  "verification_note": "Release checksums, when present, are maintained separately in SHA256SUMS.txt and the release manifest."
+}

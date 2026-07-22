@@ -11,7 +11,10 @@ on:
       - "tests/test_educator_role_pack.py"
       - "tests/test_np_role_pack.py"
       - "post-setup/**"
+      - "scripts/build-future-student-assistant-build-kit.py"
+      - "scripts/build-lead-nurse-leader-build-kit.py"
       - "scripts/build-post-setup-role-packs.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
       - "setup.html"
       - "start-here.html"
       - "privacy.html"
@@ -33,7 +36,10 @@ on:
       - "tests/test_educator_role_pack.py"
       - "tests/test_np_role_pack.py"
       - "post-setup/**"
+      - "scripts/build-future-student-assistant-build-kit.py"
+      - "scripts/build-lead-nurse-leader-build-kit.py"
       - "scripts/build-post-setup-role-packs.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
       - "setup.html"
       - "start-here.html"
       - "privacy.html"
@@ -78,23 +84,9 @@ jobs:
           node --check setup-helper/setup-helper.mjs
       - name: Refuse accidental secrets or PHI examples
         run: |
-          python3 - <<'PY'
-          import re
-          from pathlib import Path
-          paths = list(Path("setup-helper").rglob("*")) + [
-              *Path("post-setup").rglob("*"),
-              Path("setup.html"), Path("start-here.html"), Path("privacy.html"),
-              Path("faq.html"), Path("cheat-sheet.html"), Path("hermes-downloads/index.html"),
-              Path("about.html"), Path("hermes-masterclass.html"),
-          ]
-          text = "\n".join(p.read_text(errors="ignore") for p in paths if p.is_file())
-          patterns = {
-              "private key": r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
-              "generic api key": r"(?i)(?:api[_-]?key|token|password)\s*[:=]\s*['\"][A-Za-z0-9_\-]{16,}",
-              "patient example": r"(?i)(?:patient|mrn)\s*(?:name|number)?\s*[:=]\s*[A-Z][a-z]+",
-          }
-          hits = [name for name, pattern in patterns.items() if re.search(pattern, text)]
-          if hits:
-              raise SystemExit("Public-safety scan failed: " + ", ".join(hits))
-          print("PUBLIC_SAFETY_SCAN=passed")
-          PY
+          python3 scripts/scan-public-healthcare-artifacts.py setup-helper --label SETUP_HELPER
+          python3 scripts/scan-public-healthcare-artifacts.py post-setup --label POST_SETUP
+          for page in setup.html start-here.html privacy.html faq.html cheat-sheet.html \
+            hermes-downloads/index.html about.html hermes-masterclass.html; do
+            python3 scripts/scan-public-healthcare-artifacts.py "$page" --label SETUP_PAGE
+          done

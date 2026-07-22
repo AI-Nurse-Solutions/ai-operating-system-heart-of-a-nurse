@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "publication_model": "tracked_source_files_wrapped_as_governed_self_install_hermes_build_kit",
+  "source_archive": {
+    "bytes": 254948,
+    "filename": "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Package-v1.0.zip",
+    "sha256": "1b5bcc016f56735f7d33b8ada746d971ec9ac313e5ef5339fb05382e44c0f4d8",
+    "status": "user_supplied_source_archive_not_executed"
+  },
+  "source_files": [
+    {
+      "bytes": 215044,
+      "path": "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Hermes-Program.md",
+      "sha256": "5ac88fdc530c23b7b1b72cb1eefa4d41cf4bfc2996cd383dfff1867315893a08"
+    },
+    {
+      "bytes": 19054,
+      "path": "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.md",
+      "sha256": "79503858ae693d7b4a2f5961e50ffcef5e1f7c3c63af35db156d0a127ee40cc3"
+    },
+    {
+      "bytes": 183332,
+      "path": "Nurse-Leader-Complete-AI-OS-with-LEAD-SuperPowers-Setup-Guide.docx",
+      "sha256": "fc44cf7e636a354d836b44dc924d4710341afcff9fe937458383d0d9a835cfe7"
+    }
+  ],
+  "transformations": [
+    {
+      "class": "wrapper_only",
+      "description": "The three user-supplied source files are copied byte-for-byte from the separately tracked Nurse Leader role package. No source content is rewritten. The public build kit adds provenance, verification, activation-card, safe-default, claim-versus-proof, and final-handoff controls around those immutable inputs."
+    }
+  ],
+  "source_claim_boundary": "The source program's Implementation-ready label is design intent, not runtime evidence. All 113 required checks begin Not Run in each target environment.",
+  "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized"
+}

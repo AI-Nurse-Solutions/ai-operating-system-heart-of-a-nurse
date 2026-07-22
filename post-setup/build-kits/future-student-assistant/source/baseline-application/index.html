@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en" data-theme="aurora" data-soul="default">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>DISCOVER · Nurse AI OS Mission Control</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to Mission Control</a>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">D</div>
+        <div>
+          <p class="eyebrow">Nurse AI OS + Hermes</p>
+          <p class="brand-title">DISCOVER</p>
+          <p class="brand-subtitle">Mission Control</p>
+        </div>
+      </div>
+
+      <nav class="nav-list" aria-label="Mission Control pages">
+        <button class="nav-item is-active" type="button" data-view="dashboard" aria-current="page">
+          <span aria-hidden="true">⌂</span><span>Mission Control</span>
+        </button>
+        <button class="nav-item" type="button" data-view="missions">
+          <span aria-hidden="true">◎</span><span>Missions</span>
+        </button>
+        <button class="nav-item" type="button" data-view="workflows">
+          <span aria-hidden="true">↗</span><span>Workflow Launchers</span>
+        </button>
+        <button class="nav-item" type="button" data-view="powers">
+          <span aria-hidden="true">✦</span><span>24 SuperPowers</span>
+        </button>
+        <button class="nav-item" type="button" data-view="soul">
+          <span aria-hidden="true">◉</span><span>Soul Profile</span>
+        </button>
+        <button class="nav-item" type="button" data-view="roles">
+          <span aria-hidden="true">▦</span><span>My Role Dashboards</span>
+        </button>
+        <button class="nav-item" type="button" data-view="capabilities">
+          <span aria-hidden="true">◆</span><span>Capabilities</span>
+        </button>
+        <button class="nav-item" type="button" data-view="guide">
+          <span aria-hidden="true">?</span><span>Guide</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-safety" aria-label="Safety state">
+        <span class="status-dot" aria-hidden="true"></span>
+        <div>
+          <strong>Governed sandbox</strong>
+          <span>Preview first · Human decides</span>
+        </div>
+      </div>
+
+      <p class="sidebar-version">Mission Control v2.0.0</p>
+    </aside>
+
+    <main id="main-content" class="main-content" tabindex="-1">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menuButton" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">☰</button>
+        <div class="topbar-copy">
+          <p class="eyebrow">Hermes-powered Nurse AI OS · Personal Edition</p>
+          <h1 id="pageTitle">My DISCOVER Mission Control</h1>
+        </div>
+        <div class="role-switcher">
+          <label for="roleSelect">Active role view</label>
+          <select id="roleSelect" aria-describedby="roleViewNote"></select>
+          <span id="roleViewNote" class="sr-only">This changes the dashboard view only and does not grant authority.</span>
+        </div>
+      </header>
+
+      <div class="boundary-banner" role="note">
+        <span class="boundary-icon" aria-hidden="true">◆</span>
+        <div>
+          <strong>Governed local solution laboratory</strong>
+          <span>No automatic network calls or external actions. Do not enter PHI, confidential institutional data, credentials or secrets.</span>
+          <span>AI supports—not replaces—professional judgment. Hermes and Nurse AI OS hold no clinical license or accountability. Verify facts, recommendations, permissions and every final action.</span>
+        </div>
+        <button class="text-button" type="button" data-view-target="guide">Read the guide</button>
+      </div>
+
+      <section class="view is-visible" id="view-dashboard" data-view-panel="dashboard" aria-labelledby="dashboardHeading">
+        <h2 id="dashboardHeading" class="sr-only">Mission Control overview</h2>
+
+        <div class="hero-grid">
+          <article class="hero-card">
+            <div>
+              <span class="pill" id="activeRolePill">Executive view</span>
+              <h2 id="heroTitle">Lead ideas toward responsible impact.</h2>
+              <p id="heroCopy">Your role-aware home for evidence, boundaries, portfolio choices, implementation and renewal.</p>
+            </div>
+            <div class="hero-actions">
+              <button class="primary-button" type="button" id="startMissionHero">Start a Mission</button>
+              <button class="secondary-button" type="button" data-view-target="workflows">Launch a workflow</button>
+              <button class="secondary-button" type="button" id="heroSoulButton" data-view-target="soul">Import Soul results</button>
+            </div>
+            <div class="hero-orbit" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </article>
+
+          <article class="soul-card" id="soulSummaryCard">
+            <div class="soul-emblem" aria-hidden="true">✦</div>
+            <p class="eyebrow">Your DISCOVER signature</p>
+            <h2 id="soulSummaryTitle">Not yet personalized</h2>
+            <p id="soulSummaryCopy">Import an approved derived Soul Profile when available, or continue safely in neutral mode.</p>
+            <button class="text-button" type="button" data-view-target="soul">Open Soul Profile</button>
+          </article>
+        </div>
+
+        <div class="metric-grid" aria-label="DISCOVER capabilities">
+          <article class="metric-card"><strong>24</strong><span>SuperPowers</span></article>
+          <article class="metric-card"><strong>24</strong><span>Preview workflows</span></article>
+          <article class="metric-card"><strong>30</strong><span>Functional templates</span></article>
+          <article class="metric-card"><strong id="missionMetric">0</strong><span>Active missions</span></article>
+          <article class="metric-card"><strong id="roleMetric">1</strong><span>Role dashboards</span></article>
+          <article class="metric-card"><strong id="badgeMetric">0</strong><span>Earned levels</span></article>
+          <article class="metric-card safe-metric"><strong>0</strong><span>External actions</span></article>
+        </div>
+
+        <section class="section-block" aria-labelledby="quickLaunchHeading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Canonical launchers</p>
+              <h2 id="quickLaunchHeading">Four safe ways to begin</h2>
+            </div>
+            <span class="section-note">Every launcher opens in Preview Only</span>
+          </div>
+          <div class="quick-launch-grid" id="quickLaunchGrid"></div>
+        </section>
+
+        <div class="dashboard-columns">
+          <section class="section-block" aria-labelledby="roleFocusHeading">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Role recipe</p>
+                <h2 id="roleFocusHeading">Recommended starting lane</h2>
+              </div>
+            </div>
+            <div id="roleFocusCard"></div>
+          </section>
+
+          <section class="section-block" aria-labelledby="attentionHeading">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Focus now</p>
+                <h2 id="attentionHeading">Your attention queue</h2>
+              </div>
+              <span class="section-note">7 items maximum</span>
+            </div>
+            <ol class="attention-list" id="attentionList"></ol>
+          </section>
+        </div>
+
+        <section class="section-block" aria-labelledby="groupHeading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">The DISCOVER system</p>
+              <h2 id="groupHeading">Six colorful lanes, one governed mission</h2>
+            </div>
+            <button class="text-button" type="button" data-view-target="workflows">See all workflows</button>
+          </div>
+          <div class="group-grid" id="groupGrid"></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-missions" data-view-panel="missions" aria-labelledby="missionsHeading" hidden>
+        <div class="page-intro mission-intro">
+          <div>
+            <p class="eyebrow">Assess → Define → Plan → Implement → Evaluate ↻</p>
+            <h2 id="missionsHeading">Governed Mission Loop</h2>
+            <p>Explore, simulate and prepare better decisions inside a local sandbox. A mission never becomes authority, approval or external action merely because it advances through this loop.</p>
+          </div>
+          <div class="button-row wrap">
+            <button class="primary-button" type="button" id="newMission">Start a Mission</button>
+            <button class="secondary-button" type="button" id="loadSampleMission">Load sample mission</button>
+          </div>
+        </div>
+
+        <div class="sandbox-legend" aria-label="Sandbox artifact states">
+          <span>Exploration</span><span>Simulation</span><span>Recommendation</span><span>Draft artifact</span><span>Approved plan</span><span>Authorized execution</span><span>Completed action</span><span>Evaluated outcome</span>
+        </div>
+
+        <div class="mission-layout">
+          <aside class="mission-library" aria-labelledby="missionLibraryHeading">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">Local workspace</p><h3 id="missionLibraryHeading">My missions</h3></div>
+              <span class="section-note" id="missionCount">0</span>
+            </div>
+            <div class="mission-list" id="missionList"></div>
+            <p class="empty-state" id="missionListEmpty">No missions yet. Start with a non-sensitive goal or open the synthetic example.</p>
+          </aside>
+
+          <section class="mission-workspace section-block" aria-labelledby="missionWorkspaceHeading">
+            <div id="missionEmptyState" class="mission-empty-panel">
+              <div class="empty-orbit" aria-hidden="true">◎</div>
+              <h3 id="missionWorkspaceHeading">Give a goal a disciplined path</h3>
+              <p>Start a mission to separate facts from assumptions, compare options, create a governed plan and learn from the result.</p>
+              <button class="primary-button" type="button" id="emptyStartMission">Start a Mission</button>
+            </div>
+
+            <form id="missionForm" class="mission-form" hidden novalidate>
+              <input id="missionId" type="hidden">
+              <div class="mission-header-grid">
+                <label class="field-block" for="missionTitle"><span>Mission title</span><input id="missionTitle" maxlength="100" required placeholder="A non-sensitive goal or situation"></label>
+                <label class="field-block" for="missionRole"><span>Owning role dashboard</span><select id="missionRole" required></select></label>
+                <label class="field-block" for="missionEdition"><span>Governance context</span><select id="missionEdition"><option value="personal">Personal Edition sandbox</option><option value="institutional_preview">Institutional policy preview</option></select></label>
+                <label class="field-block" for="missionEdena"><span>EDENA advisory</span><select id="missionEdena"><option value="unclassified">Unclassified</option><option value="green">Green · bounded and low consequence</option><option value="yellow">Yellow · verification required</option><option value="orange">Orange · qualified review required</option><option value="red">Red · high-risk advisory/stop</option></select></label>
+                <label class="field-block" for="missionEdenaReason"><span>EDENA classification reason</span><input id="missionEdenaReason" maxlength="300" required placeholder="Why this tier fits; no sensitive details"></label>
+                <label class="field-block" for="missionArtifactState"><span>Current artifact state</span><select id="missionArtifactState"><option value="exploration">Exploration</option><option value="simulation">Simulation</option><option value="recommendation">Recommendation</option><option value="draft_artifact">Draft artifact</option><option value="approved_plan">Approved plan</option><option value="authorized_execution">Authorized execution</option><option value="completed_action">Completed action</option><option value="evaluated_outcome">Evaluated outcome</option></select></label>
+                <label class="field-block" for="missionStatusState"><span>Mission status</span><select id="missionStatusState"><option value="active">Active</option><option value="paused">Paused</option><option value="completed">Completed</option><option value="archived">Archived</option></select></label>
+                <label class="field-block" for="missionRetention"><span>Retention</span><select id="missionRetention"><option value="session_only">Session only · disappears when closed</option><option value="local_non_sensitive">Save locally · unencrypted browser storage</option></select></label>
+              </div>
+
+              <label class="field-block" for="missionSummary"><span>Desired outcome and success definition</span><textarea id="missionSummary" rows="3" maxlength="1000" required placeholder="What should improve, for whom, and how will you know?"></textarea></label>
+
+              <div class="edena-panel" id="missionEdenaPanel" role="note"></div>
+              <div class="gate-panel" id="missionGatePanel" hidden>
+                <div class="quiz-consent">
+                  <input id="missionRiskAck" type="checkbox">
+                  <label for="missionRiskAck">I understand this permits only sanitized sandbox exploration. It does not approve, validate or authorize real-world use.</label>
+                </div>
+                <div id="institutionalGate" hidden>
+                  <div class="quiz-consent">
+                    <input id="missionApprovalAttested" type="checkbox">
+                    <label for="missionApprovalAttested">Required external review or authorization has been recorded outside this app. This is a user attestation—not system verification.</label>
+                  </div>
+                  <label class="field-block" for="missionApprovalRef"><span>Non-sensitive approval reference</span><input id="missionApprovalRef" maxlength="120" placeholder="Policy ticket or review reference; no names or confidential details"></label>
+                </div>
+              </div>
+
+              <div class="loop-progress" id="missionProgress" role="progressbar" aria-label="Mission loop progress" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+                <div class="loop-progress-track"><span id="missionProgressBar"></span></div>
+                <strong id="missionProgressText">0 of 5 stages reviewed</strong>
+              </div>
+
+              <div class="stage-tabs" role="tablist" aria-label="Mission stages">
+                <button id="stageTabAssess" type="button" role="tab" class="stage-tab is-active" data-mission-stage="assess" aria-selected="true" aria-controls="stagePanelAssess" tabindex="0">1 · Assess</button>
+                <button id="stageTabDefine" type="button" role="tab" class="stage-tab" data-mission-stage="define" aria-selected="false" aria-controls="stagePanelDefine" tabindex="-1">2 · Define</button>
+                <button id="stageTabPlan" type="button" role="tab" class="stage-tab" data-mission-stage="plan" aria-selected="false" aria-controls="stagePanelPlan" tabindex="-1">3 · Plan</button>
+                <button id="stageTabImplement" type="button" role="tab" class="stage-tab" data-mission-stage="implement" aria-selected="false" aria-controls="stagePanelImplement" tabindex="-1">4 · Implement</button>
+                <button id="stageTabEvaluate" type="button" role="tab" class="stage-tab" data-mission-stage="evaluate" aria-selected="false" aria-controls="stagePanelEvaluate" tabindex="-1">5 · Evaluate</button>
+              </div>
+
+              <section id="stagePanelAssess" class="mission-stage is-active" role="tabpanel" data-stage-panel="assess" aria-labelledby="stageTabAssess" tabindex="0">
+                <p class="eyebrow">Current and researched state</p><h3 id="assessStageHeading">Assess</h3>
+                <p class="stage-guidance">Separate verified facts, user-provided information, assumptions and unresolved questions. Note constraints, resources, stakeholders and credible sources.</p>
+                <label class="field-block" for="stageAssessNotes"><span>Working notes</span><textarea id="stageAssessNotes" rows="7" maxlength="5000" placeholder="Facts: …&#10;User-provided information: …&#10;Assumptions: …&#10;Unresolved questions: …"></textarea></label>
+                <label class="field-block" for="stageAssessOutcome"><span>Assessment summary</span><textarea id="stageAssessOutcome" rows="3" maxlength="1500" placeholder="What is known, uncertain and still needed?"></textarea></label>
+                <div class="stage-check"><input id="stageAssessComplete" type="checkbox"><label for="stageAssessComplete">Reviewed: data boundary, facts, assumptions, unknowns, constraints and stakeholders are visible.</label></div>
+              </section>
+
+              <section id="stagePanelDefine" class="mission-stage" role="tabpanel" data-stage-panel="define" aria-labelledby="stageTabDefine" tabindex="0" hidden>
+                <p class="eyebrow">Problem, opportunity or decision</p><h3 id="defineStageHeading">Define or Diagnose</h3>
+                <p class="stage-guidance">Name the central issue without pretending to make a clinical diagnosis. Examine causes, competing interpretations, dependencies, risks and knowledge gaps.</p>
+                <label class="field-block" for="stageDefineNotes"><span>Working notes</span><textarea id="stageDefineNotes" rows="7" maxlength="5000" placeholder="Central problem or opportunity: …&#10;Contributing factors: …&#10;Competing interpretations: …&#10;Dependencies and risks: …"></textarea></label>
+                <label class="field-block" for="stageDefineOutcome"><span>Defined problem or opportunity</span><textarea id="stageDefineOutcome" rows="3" maxlength="1500" placeholder="A concise, bounded definition"></textarea></label>
+                <div class="stage-check"><input id="stageDefineComplete" type="checkbox"><label for="stageDefineComplete">Reviewed: scope, contributing factors, risks, dependencies and knowledge gaps are explicit.</label></div>
+              </section>
+
+              <section id="stagePanelPlan" class="mission-stage" role="tabpanel" data-stage-panel="plan" aria-labelledby="stageTabPlan" tabindex="0" hidden>
+                <p class="eyebrow">Compare before committing</p><h3 id="planStageHeading">Plan</h3>
+                <p class="stage-guidance">Compare alternatives by benefit, feasibility, time, cost, burden, ethics and risk. Define milestones, owners, measures, safeguards, stop rules and rollback.</p>
+                <label class="field-block" for="stagePlanNotes"><span>Options and comparison</span><textarea id="stagePlanNotes" rows="7" maxlength="5000" placeholder="Option A: …&#10;Option B: …&#10;Trade-offs: …&#10;Safeguards and stop rules: …"></textarea></label>
+                <label class="field-block" for="stagePlanOutcome"><span>Selected plan and measures</span><textarea id="stagePlanOutcome" rows="3" maxlength="1500" placeholder="Chosen path, success measures and review gates"></textarea></label>
+                <div class="stage-check"><input id="stagePlanComplete" type="checkbox"><label for="stagePlanComplete">Reviewed: alternatives, rationale, milestones, measures, safeguards and rollback are documented.</label></div>
+              </section>
+
+              <section id="stagePanelImplement" class="mission-stage" role="tabpanel" data-stage-panel="implement" aria-labelledby="stageTabImplement" tabindex="0" hidden>
+                <p class="eyebrow">Concrete work with gates</p><h3 id="implementStageHeading">Implement</h3>
+                <p class="stage-guidance">Prepare tasks, prompts, agents, checklists and draft artifacts. This local package never performs external action; it can record only user-reported or independently verified execution.</p>
+                <label class="field-block" for="stageImplementNotes"><span>Tasks, artifacts and approvals</span><textarea id="stageImplementNotes" rows="7" maxlength="5000" placeholder="Tasks: …&#10;Draft artifacts: …&#10;Human confirmation gates: …&#10;Destination and authority needed: …"></textarea></label>
+                <label class="field-block" for="stageImplementOutcome"><span>Implementation record</span><textarea id="stageImplementOutcome" rows="3" maxlength="1500" placeholder="What was prepared, reviewed or user-reported as completed?"></textarea></label>
+                <div class="stage-check"><input id="stageImplementComplete" type="checkbox"><label for="stageImplementComplete">Reviewed: work is accurately labeled as prepared, authorized, user-reported or verified—never implied.</label></div>
+              </section>
+
+              <section id="stagePanelEvaluate" class="mission-stage" role="tabpanel" data-stage-panel="evaluate" aria-labelledby="stageTabEvaluate" tabindex="0" hidden>
+                <p class="eyebrow">Learn and begin again</p><h3 id="evaluateStageHeading">Evaluate</h3>
+                <p class="stage-guidance">Compare results with the original objective. Record evidence, variance, unintended effects, uncertainty and the decision to continue, modify, escalate, stop or begin another iteration.</p>
+                <label class="field-block" for="stageEvaluateNotes"><span>Results and lessons</span><textarea id="stageEvaluateNotes" rows="7" maxlength="5000" placeholder="Expected result: …&#10;Observed result: …&#10;Evidence and uncertainty: …&#10;What worked or failed: …"></textarea></label>
+                <label class="field-block" for="stageEvaluateOutcome"><span>Evaluation decision</span><textarea id="stageEvaluateOutcome" rows="3" maxlength="1500" placeholder="Continue, modify, escalate, stop or goal achieved—and why"></textarea></label>
+                <div class="stage-check"><input id="stageEvaluateComplete" type="checkbox"><label for="stageEvaluateComplete">Reviewed: outcome, limitations, lessons and next-cycle decision are explicit.</label></div>
+              </section>
+
+              <div class="mission-command-row">
+                <div class="button-row wrap">
+                  <button class="primary-button" type="submit" id="saveMission">Save mission</button>
+                  <button class="secondary-button" type="button" id="prepareMissionHandoff">Prepare Hermes stage handoff</button>
+                  <button class="secondary-button" type="button" id="startNextIteration">Begin next iteration</button>
+                </div>
+                <button class="danger-text-button" type="button" id="deleteMission">Delete mission</button>
+              </div>
+              <div class="form-status" id="missionStatus" role="status" aria-live="polite"></div>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="view-workflows" data-view-panel="workflows" aria-labelledby="workflowsHeading" hidden>
+        <div class="page-intro">
+          <div>
+            <p class="eyebrow">24 purpose-matched launchers</p>
+            <h2 id="workflowsHeading">Workflow Launchers</h2>
+            <p>Build a bounded prompt for Hermes. Nothing is sent automatically and nothing runs in the background.</p>
+          </div>
+          <div class="search-wrap">
+            <label for="workflowSearch">Search workflows</label>
+            <input id="workflowSearch" type="search" autocomplete="off" placeholder="Search by title, ID or template">
+          </div>
+        </div>
+        <div class="filter-row" id="workflowFilters" aria-label="Filter workflows by lane"></div>
+        <div class="workflow-grid" id="workflowGrid"></div>
+        <p class="empty-state" id="workflowEmpty" hidden>No workflows match this search.</p>
+      </section>
+
+      <section class="view" id="view-powers" data-view-panel="powers" aria-labelledby="powersHeading" hidden>
+        <div class="page-intro">
+          <div>
+            <p class="eyebrow">Available Inactive by design</p>
+            <h2 id="powersHeading">24 DISCOVER SuperPowers</h2>
+            <p>Capabilities are organized for discoverability. A card never grants permission, authority or autonomous action.</p>
+          </div>
+        </div>
+        <div class="power-sections" id="powerSections"></div>
+        <section class="section-block" aria-labelledby="templatesHeading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Working forms—not approvals</p>
+              <h2 id="templatesHeading">30 functional templates</h2>
+            </div>
+            <span class="section-note">Canonical previews remain governed by this package's safety configuration</span>
+          </div>
+          <div class="template-grid" id="templateLibrary"></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-capabilities" data-view-panel="capabilities" aria-labelledby="capabilitiesHeading" hidden>
+        <div class="page-intro capability-intro">
+          <div>
+            <p class="eyebrow">Evidence, reflection and responsible growth</p>
+            <h2 id="capabilitiesHeading">Capabilities &amp; Mastery</h2>
+            <p>Track development demonstrated through reviewed missions, artifacts, evaluations and safety practices. Clicking, browsing or installing never earns a level.</p>
+          </div>
+          <button class="secondary-button" type="button" id="exportCapabilityReport">Download development report</button>
+        </div>
+
+        <div class="credential-warning" role="note"><strong>Development record—not a credential.</strong> These levels are not licensure, certification, continuing-education credit, institutional authorization or proof of clinical competence. They never unlock agents, permissions, data classes or external action.</div>
+
+        <div class="mastery-levels" aria-label="Mastery levels">
+          <article><span>01</span><strong>Basic</strong><small>One evaluated mission, reviewed artifact, safety check and reflection.</small></article>
+          <article><span>02</span><strong>Intermediate</strong><small>Three distinct missions, revision, measured result or feedback, and non-Green governance practice.</small></article>
+          <article><span>03</span><strong>Advanced</strong><small>Repeated application, reusable workflow, independent review, rollback drill and knowledge transfer.</small></article>
+          <article><span>04</span><strong>AI Agent Orchestration Master</strong><small>Governed multi-agent capstone with permissions, monitoring, conflict adjudication, recovery and evaluation.</small></article>
+        </div>
+
+        <div class="capability-layout">
+          <section class="section-block" aria-labelledby="capabilityLibraryHeading">
+            <div class="section-heading"><div><p class="eyebrow">17 developmental areas</p><h3 id="capabilityLibraryHeading">My capability map</h3></div><span class="section-note" id="capabilityEvidenceCount">0 evidence records</span></div>
+            <div class="capability-grid" id="capabilityGrid"></div>
+          </section>
+
+          <aside class="section-block evidence-panel" aria-labelledby="evidenceHeading">
+            <div class="section-heading compact"><div><p class="eyebrow">Sanitized evidence</p><h3 id="evidenceHeading">Add development evidence</h3></div></div>
+            <form id="evidenceForm" novalidate>
+              <label class="field-block" for="evidenceCapability"><span>Capability</span><select id="evidenceCapability" required></select></label>
+              <label class="field-block" for="evidenceMission"><span>Related mission</span><select id="evidenceMission"><option value="">No mission selected</option></select></label>
+              <label class="field-block" for="evidenceType"><span>Evidence type</span><select id="evidenceType"><option value="mission">Completed mission</option><option value="artifact_review">Reviewed artifact</option><option value="assessment">Assessment or rubric</option><option value="reflection">Structured reflection</option><option value="outcome">Measured outcome</option><option value="human_review">Human review</option><option value="safety_drill">Safety, escalation or rollback drill</option><option value="agent_run">Governed agent-run record</option><option value="knowledge_transfer">Knowledge-transfer activity</option></select></label>
+              <label class="field-block" for="evidenceProvenance"><span>Evidence assurance</span><select id="evidenceProvenance"><option value="app_observed">App-observed</option><option value="user_attested">User-attested</option><option value="human_reviewed_unverified">Human-reviewed · identity unverified</option></select></label>
+              <label class="field-block" for="evidenceEdena"><span>EDENA demonstrated</span><select id="evidenceEdena"><option value="green">Green</option><option value="yellow">Yellow</option><option value="orange">Orange</option><option value="red">Red handled safely</option></select></label>
+              <label class="field-block" for="evidenceSummary"><span>Observable evidence summary</span><textarea id="evidenceSummary" rows="4" maxlength="600" required placeholder="Describe the reviewed activity, outcome, correction, escalation or lesson. No PHI, names, secrets or confidential details."></textarea></label>
+              <div class="quiz-consent"><input id="evidenceAttestation" type="checkbox" required><label for="evidenceAttestation">I confirm this is a truthful, non-sensitive development record. It does not represent a formal credential or verified authority.</label></div>
+              <button class="primary-button" type="submit">Add evidence</button>
+              <div class="form-status" id="evidenceStatus" role="status" aria-live="polite"></div>
+            </form>
+            <div class="evidence-list" id="evidenceList"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-soul" data-view-panel="soul" aria-labelledby="soulHeading" hidden>
+        <div class="page-intro soul-intro">
+          <div>
+            <p class="eyebrow">One evolving Soul · many coordinated roles</p>
+            <h2 id="soulHeading">Soul Profile &amp; Personalization</h2>
+            <p>Import derived results from the redesigned Soul Quiz through a versioned adapter. Personalization may shape colors, language, role recommendations and workflow emphasis—but never authority, competence or safety gates.</p>
+          </div>
+          <div class="privacy-chip">Derived profile only · no raw answers</div>
+        </div>
+
+        <section class="packet-adapter-grid" aria-labelledby="discoverPacketHeading">
+          <article class="section-block soul-import-card">
+            <p class="eyebrow">Discover Packet adapter · draft schema v1</p>
+            <h3 id="discoverPacketHeading">Apply goals, priorities and AI boundaries</h3>
+            <p>Import a reviewed, derived Discover Packet configuration—not raw interview notes. It can tune mission language, priority prompts, workflow order and safe defaults without granting authority or turning on an agent.</p>
+            <ol class="compact-list"><li>Download the template or preview the synthetic example.</li><li>Keep only non-sensitive derived settings.</li><li>Import and inspect every proposed change.</li><li>Apply, replace or clear it at any time.</li></ol>
+            <div class="button-row wrap">
+              <button class="primary-button" type="button" id="downloadDiscoverTemplate">Download Discover template</button>
+              <label class="secondary-button file-button" for="importDiscoverPacket" role="button" tabindex="0">Import Discover Packet</label>
+              <input class="sr-only" id="importDiscoverPacket" type="file" accept="application/json,.json" tabindex="-1">
+              <button class="secondary-button" type="button" id="loadSampleDiscover">Preview synthetic sample</button>
+              <button class="danger-text-button" type="button" id="clearDiscoverPacket">Clear applied packet</button>
+            </div>
+            <div class="form-status" id="discoverPacketStatus" role="status" aria-live="polite"></div>
+          </article>
+
+          <article class="section-block soul-profile-preview" aria-labelledby="discoverPacketPreviewHeading">
+            <p class="eyebrow">Review before applying</p>
+            <h3 id="discoverPacketPreviewHeading">No pending Discover Packet</h3>
+            <div id="discoverPacketPreview"><p class="muted-copy">Mission Control is using neutral priorities and session-only retention.</p></div>
+            <div class="button-row" id="discoverPacketPreviewActions" hidden>
+              <button class="primary-button" type="button" id="applyDiscoverPacket">Apply packet settings</button>
+              <button class="secondary-button" type="button" id="cancelDiscoverPacketPreview">Cancel preview</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="soul-adapter-grid" aria-labelledby="soulAdapterHeading">
+          <article class="section-block soul-import-card">
+            <p class="eyebrow">Replaceable adapter · draft schema v1</p>
+            <h3 id="soulAdapterHeading">Apply Soul Quiz results safely</h3>
+            <p>The final quiz is still being retooled. This dashboard remains useful without results and will reject unknown schemas rather than guessing.</p>
+            <ol class="compact-list"><li>Download the template or use the deidentified sample.</li><li>Import a derived Soul Profile JSON.</li><li>Preview the effect before applying it.</li><li>Confirm role and personalization changes.</li></ol>
+            <div class="button-row wrap">
+              <button class="primary-button" type="button" id="downloadSoulTemplate">Download profile template</button>
+              <label class="secondary-button file-button" for="importSoulProfile" role="button" tabindex="0">Import Soul results</label>
+              <input class="sr-only" id="importSoulProfile" type="file" accept="application/json,.json" tabindex="-1">
+              <button class="secondary-button" type="button" id="loadSampleSoul">Preview deidentified sample</button>
+              <button class="secondary-button" type="button" id="restoreSoulProfile">Restore prior profile</button>
+              <button class="danger-text-button" type="button" id="clearSoulProfile">Clear applied Soul Profile</button>
+            </div>
+            <div class="form-status" id="soulProfileStatus" role="status" aria-live="polite"></div>
+          </article>
+
+          <article class="section-block soul-profile-preview" aria-labelledby="soulProfilePreviewHeading">
+            <p class="eyebrow">Review before applying</p>
+            <h3 id="soulProfilePreviewHeading">No pending profile</h3>
+            <div id="soulProfilePreview"><p class="muted-copy">Your current dashboard is in the neutral Discover-first state.</p></div>
+            <div class="button-row" id="soulPreviewActions" hidden>
+              <button class="primary-button" type="button" id="applySoulProfile">Apply personalization</button>
+              <button class="secondary-button" type="button" id="cancelSoulPreview">Cancel preview</button>
+            </div>
+          </article>
+        </section>
+
+        <details class="legacy-quiz-details">
+          <summary>Open the provisional DISCOVER presentation demo</summary>
+          <div class="provisional-warning" role="note"><strong>Provisional demonstration only.</strong> These 12 prompts are retained to demonstrate local presentation tuning while the multidimensional Nurse AI OS Soul Quiz is redesigned. They are not the final instrument and do not create a complete Role Constellation.</div>
+        <div class="quiz-layout">
+          <form id="soulQuizForm" class="quiz-card" novalidate>
+            <div id="quizQuestions"></div>
+            <div class="quiz-consent">
+              <input id="quizConsent" type="checkbox" required>
+              <label for="quizConsent">I understand this is a reflective preference tool. Only derived scores and display settings will be stored in this browser.</label>
+            </div>
+            <div class="form-status" id="quizStatus" role="status" aria-live="polite"></div>
+            <div class="button-row">
+              <button class="primary-button" type="submit">Reveal my DISCOVER signature</button>
+              <button class="secondary-button" type="reset">Clear answers</button>
+            </div>
+          </form>
+
+          <aside class="quiz-result-card" aria-labelledby="quizResultHeading">
+            <p class="eyebrow">Personalization result</p>
+            <h3 id="quizResultHeading">Your result will appear here</h3>
+            <p id="quizResultCopy">Complete every prompt to create your local signature.</p>
+            <div class="dimension-bars" id="dimensionBars"></div>
+            <div id="quizResultActions" class="result-actions" hidden>
+              <button class="secondary-button" type="button" id="downloadSoulProfile">Download Mission Control backup</button>
+              <button class="danger-text-button" type="button" id="deleteSoulProfile">Delete local result</button>
+            </div>
+          </aside>
+        </div>
+        </details>
+      </section>
+
+      <section class="view" id="view-roles" data-view-panel="roles" aria-labelledby="rolesHeading" hidden>
+        <div class="page-intro">
+          <div>
+            <p class="eyebrow">One person, multiple hats</p>
+            <h2 id="rolesHeading">My Role Dashboards</h2>
+            <p>Build a Role Constellation of primary, supporting, emerging and contextual roles. Advanced Studies can accompany any role. These are coordinated views of one identity—not separate personalities.</p>
+          </div>
+        </div>
+        <form id="roleForm" class="role-selector-card">
+          <fieldset>
+            <legend>Select dashboard views and describe how each role currently operates</legend>
+            <div class="role-grid" id="roleGrid"></div>
+          </fieldset>
+          <div class="form-status" id="roleStatus" role="status" aria-live="polite"></div>
+          <div class="button-row">
+            <button class="primary-button" type="submit">Save role dashboards</button>
+            <button class="secondary-button" type="button" id="exportHermesProfile">Download Hermes profile handoff</button>
+          </div>
+        </form>
+
+        <section class="section-block" aria-labelledby="profileHeading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Portable preferences</p>
+              <h2 id="profileHeading">Export, import or reset</h2>
+            </div>
+          </div>
+          <p class="muted-copy">An explicit backup may contain non-sensitive locally saved mission text, evidence records, role settings, favorites and derived Soul data. It is not encrypted. Review it before moving or sharing it.</p>
+          <div class="button-row wrap">
+            <button class="secondary-button" type="button" id="exportProfile">Export dashboard profile</button>
+            <label class="secondary-button file-button" for="importProfile" role="button" tabindex="0">Import dashboard profile</label>
+            <input class="sr-only" id="importProfile" type="file" accept="application/json,.json" tabindex="-1">
+            <button class="danger-text-button" type="button" id="resetProfile">Reset all local personalization</button>
+          </div>
+          <div class="form-status" id="profileStatus" role="status" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-guide" data-view-panel="guide" aria-labelledby="guideHeading" hidden>
+        <div class="guide-hero">
+          <div>
+            <p class="eyebrow">Built into Mission Control</p>
+            <h2 id="guideHeading">DISCOVER Guide</h2>
+            <p>Install it, build a Role Constellation, run governed mission loops, grow capabilities and hand safe previews to Hermes.</p>
+          </div>
+          <div class="guide-hero-actions"><div class="guide-badge">Local · Offline · Preview Only</div><button class="secondary-button" type="button" id="restartOnboarding">Restart walkthrough</button></div>
+        </div>
+
+        <div class="guide-layout">
+          <nav class="guide-toc" aria-label="Guide sections">
+            <a href="#guide-start">1. Start here</a>
+            <a href="#guide-install">2. Install on your computer</a>
+            <a href="#guide-quiz">3. Discover Packet, Soul Profile and privacy</a>
+            <a href="#guide-roles">4. Coordinated role dashboards</a>
+            <a href="#guide-missions">5. Start and manage a mission</a>
+            <a href="#guide-edena">6. EDENA advisories</a>
+            <a href="#guide-capabilities">7. Capabilities and badges</a>
+            <a href="#guide-hermes">8. Use with Hermes</a>
+            <a href="#guide-rhythm">9. Improvement rhythm</a>
+            <a href="#guide-safety">10. Safety boundary</a>
+            <a href="#guide-recovery">11. Backup, update and uninstall</a>
+            <a href="#guide-help">12. Troubleshooting</a>
+          </nav>
+
+          <div class="guide-content">
+            <article id="guide-start">
+              <span class="guide-number">01</span>
+              <h3>Start here</h3>
+              <p>DISCOVER Mission Control is a local, governed solution laboratory for the Nurse AI OS. It combines 24 SuperPowers, 24 bounded workflows, multiple role dashboards, a repeatable five-stage Mission Loop and evidence-based capability development. It is not an EHR, clinical decision tool, credentialing system or autonomous agent.</p>
+              <ol>
+                <li>Read README-FIRST, Privacy and Security, then open this package locally.</li>
+                <li>Open this dashboard locally.</li>
+                <li>Import an approved derived Soul Profile when available and select your role views.</li>
+                <li>Start a non-sensitive mission or open the synthetic example.</li>
+                <li>Use a mission stage or workflow card to create a Preview Only Hermes handoff.</li>
+              </ol>
+            </article>
+
+            <article id="guide-install">
+              <span class="guide-number">02</span>
+              <h3>Install on your computer</h3>
+              <p>Keep the entire downloaded folder together. Use the included Mac, Windows or Linux launcher; direct opening of <strong>index.html</strong> is a fallback. No cloud account or internet connection is required.</p>
+              <div class="guide-callout warning"><strong>Important:</strong> Browser storage is device-local but not encrypted. Session-only missions disappear when the page is closed. Locally saved missions must remain non-sensitive. Never treat this application as an approved clinical, research, employment or academic record.</div>
+            </article>
+
+            <article id="guide-quiz">
+              <span class="guide-number">03</span>
+              <h3>Discover Packet, Soul Profile and privacy</h3>
+              <p>Mission Control accepts only a strict, derived Discover Packet configuration and a versioned, derived Soul Profile. Review each preview before applying it. Raw interview notes and raw quiz answers are not imported or stored. Packet settings may tune goals, workflow order and safe defaults; Soul results may tune presentation and role recommendations. Neither can verify competence, grant authority, enable an agent or weaken governance.</p>
+            </article>
+
+            <article id="guide-roles">
+              <span class="guide-number">04</span>
+              <h3>Coordinated role dashboards</h3>
+              <p>Open <strong>My Role Dashboards</strong> and select primary, supporting, emerging or contextual views. The top role switcher changes the active dashboard while the Shared Soul foundation remains one. Advanced Studies is a companion overlay. Roles are self-selected navigation labels—not verified credentials or delegated authority.</p>
+            </article>
+
+            <article id="guide-missions">
+              <span class="guide-number">05</span>
+              <h3>Start and manage a mission</h3>
+              <ol><li>Name a non-sensitive goal, desired outcome and owning role.</li><li>Choose session-only or local non-sensitive retention.</li><li>Classify the context with the EDENA advisory and artifact state.</li><li>Work through Assess, Define/Diagnose, Plan, Implement and Evaluate.</li><li>Save, revise, pause or return to an earlier stage. Completing Evaluate enables a new iteration.</li></ol>
+              <p>Later stages may be explored, but their checkboxes are evidence of user review—not external approval. The dashboard cannot perform or verify real-world execution.</p>
+            </article>
+
+            <article id="guide-edena">
+              <span class="guide-number">06</span>
+              <h3>EDENA advisories</h3>
+              <p><strong>Green</strong> is bounded and low consequence. <strong>Yellow</strong> requires verification. <strong>Orange</strong> requires structured qualified review. <strong>Red</strong> signals serious potential consequence or missing authority.</p>
+              <p>In Personal Edition, Red permits sanitized exploration only after deliberate acknowledgment; it never authorizes real use. The Institutional policy preview demonstrates stricter stops but is not tamper-resistant institutional enforcement. A managed Institutional Edition would require centrally controlled policy, identity, audit and approval receipts.</p>
+            </article>
+
+            <article id="guide-capabilities">
+              <span class="guide-number">07</span>
+              <h3>Capabilities and badges</h3>
+              <p>Capability progress comes from sanitized evidence tied to evaluated missions, reviewed artifacts, measurements, feedback, reflections, safety drills and governed agent records—not clicks. Levels are Basic, Intermediate, Advanced and AI Agent Orchestration Master. They are development records, never licenses, credentials, CE credit or authority.</p>
+            </article>
+
+            <article id="guide-hermes">
+              <span class="guide-number">08</span>
+              <h3>Use with Hermes and Nurse AI OS</h3>
+              <ol>
+                <li>Open a workflow card and choose <strong>Prepare Hermes handoff</strong>.</li>
+                <li>Use only public, synthetic or approved aggregate metadata. Keep the optional context box non-sensitive.</li>
+                <li>Copy or download the generated Markdown prompt.</li>
+                <li>Paste it into the DISCOVER lane in Hermes and wait for a visible Preview response.</li>
+                <li>A human reviews the exact output before any decision or official-system action.</li>
+              </ol>
+              <p>The dashboard has no hidden Hermes connection. It never sends a prompt by itself. The included integration installer can ask Hermes to register a local launch link and Guide entry where the platform supports them.</p>
+            </article>
+
+            <article id="guide-rhythm">
+              <span class="guide-number">09</span>
+              <h3>Improvement rhythm</h3>
+              <div class="rhythm-grid">
+                <div><strong>Daily · 5 minutes</strong><span>Check role, safety state and one recommended workflow.</span></div>
+                <div><strong>Weekly · 25 minutes</strong><span>Review favorites, unresolved boundaries and evidence freshness.</span></div>
+                <div><strong>Monthly · 45 minutes</strong><span>Review portfolio assumptions, dependencies and stop/continue questions.</span></div>
+                <div><strong>Quarterly · 60 minutes</strong><span>Revisit mission, capability, succession and responsible scale/stop choices.</span></div>
+              </div>
+            </article>
+
+            <article id="guide-safety">
+              <span class="guide-number">10</span>
+              <h3>Safety boundary</h3>
+              <ul>
+                <li>No PHI, participant-level data, confidential research, credentials, secrets or protected personnel information.</li>
+                <li>No clinical, research, regulatory, financial, safety or employment determination.</li>
+                <li>No submission, publication, recruitment, consent, enrollment, deployment, purchase, send or official-system write.</li>
+                <li>No role selection or Soul result grants authority.</li>
+                <li>All AI-agent concepts remain disabled until separately authorized, bounded and tested by accountable humans.</li>
+              </ul>
+            </article>
+
+            <article id="guide-recovery">
+              <span class="guide-number">11</span>
+              <h3>Backup, update and uninstall</h3>
+              <p>Export the dashboard profile before replacing this folder and review the file because saved mission text is not encrypted. Import only into a trusted compatible release. Reset clears this app's local browser data. Uninstall by erasing local data, removing the dashboard registration from Hermes and deleting this folder. Use the included rollback instructions if an update fails.</p>
+            </article>
+
+            <article id="guide-help">
+              <span class="guide-number">12</span>
+              <h3>Troubleshooting</h3>
+              <dl>
+                <dt>The page looks unstyled.</dt><dd>Keep <strong>index.html</strong> beside the <strong>assets</strong> folder, then reopen it.</dd>
+                <dt>Copy does not work.</dt><dd>Some browsers restrict clipboard access for local files. Select the generated prompt manually or use Download Markdown.</dd>
+                <dt>Personalization disappeared.</dt><dd>Private browsing, browser cleanup or a different browser profile may remove localStorage. Restore a reviewed exported profile.</dd>
+                <dt>Hermes cannot open the dashboard.</dt><dd>Give Hermes the exact local path and use the included integration installer. If local links are unsupported, keep a desktop shortcut and use copy/paste handoffs.</dd>
+              </dl>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="onboardingDialog" aria-labelledby="onboardingTitle">
+    <div class="dialog-shell onboarding-shell">
+      <div class="dialog-header">
+        <div><p class="eyebrow">First-run walkthrough</p><h2 id="onboardingTitle">Preparing your governed Mission Control</h2></div>
+        <button class="icon-button" type="button" id="closeOnboarding" aria-label="Close walkthrough">×</button>
+      </div>
+      <div class="onboarding-progress" aria-label="Walkthrough progress"><span id="onboardingProgress"></span></div>
+      <section class="onboarding-step is-active" data-onboarding-step="0">
+        <div class="onboarding-hero-mark" aria-hidden="true">D</div>
+        <h3>Your Nurse AI OS Mission Control is being prepared.</h3>
+        <p>This process may take several minutes because the system is translating your Discover Packet and Soul Quiz results into a personalized, governed workspace. It is configuring your roles, values, goals, workflows, capability pathways, permissions, and EDENA advisories.</p>
+        <p>You are not simply creating another dashboard. You are establishing a Nurse AI OS shaped by your values, strengthened by disciplined problem-solving, and designed to evolve with your knowledge and experience. Please keep this window open while your Mission Control package is created.</p>
+        <p class="muted-copy">In this local release, personalization is applied visibly through reviewed Soul Profile import, role selection and mission setup; no hidden background generation or external action occurs.</p>
+      </section>
+      <section class="onboarding-step" data-onboarding-step="1" hidden>
+        <h3>Keep the sandbox safe</h3>
+        <ul><li>No PHI, patient identifiers, secrets, credentials or confidential institutional data.</li><li>Browser storage is local but not encrypted.</li><li>Every output remains a draft or recommendation until the correct human reviews it.</li><li>This package performs zero external actions.</li></ul>
+        <div class="quiz-consent"><input id="onboardingSafetyAck" type="checkbox"><label for="onboardingSafetyAck">I understand the local storage and data boundaries.</label></div>
+      </section>
+      <section class="onboarding-step" data-onboarding-step="2" hidden>
+        <h3>One identity, several roles</h3>
+        <p>Your reviewed Discover Packet and Soul Profile can recommend a Role Constellation. You may also select dashboards manually. Each role keeps its own missions, favorites and evidence while sharing one governed foundation.</p>
+        <p><strong>Role selection never proves authorization, competence, licensure or institutional authority.</strong></p>
+      </section>
+      <section class="onboarding-step" data-onboarding-step="3" hidden>
+        <h3>Begin in the solution laboratory</h3>
+        <p>Start a mission, use the five-stage loop, evaluate the result and save only sanitized evidence. Hermes handoffs are manual and reviewable; the prompt is never sent automatically.</p>
+        <div class="ready-check"><span aria-hidden="true">✓</span><div><strong>Ready in neutral mode</strong><p>You can import a reviewed derived Discover Packet and Soul Quiz result later without rebuilding the dashboard.</p></div></div>
+      </section>
+      <div class="button-row onboarding-actions">
+        <button class="secondary-button" type="button" id="onboardingBack">Back</button>
+        <button class="primary-button" type="button" id="onboardingNext">Continue</button>
+        <button class="primary-button" type="button" id="onboardingFinish" hidden>Enter Mission Control</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="missionHandoffDialog" aria-labelledby="missionHandoffTitle">
+    <div class="dialog-shell">
+      <div class="dialog-header">
+        <div><p class="eyebrow" id="missionHandoffMeta">Manual Hermes handoff</p><h2 id="missionHandoffTitle">Mission-stage preview</h2></div>
+        <button class="icon-button" type="button" id="closeMissionHandoff" aria-label="Close mission handoff">×</button>
+      </div>
+      <div class="dialog-boundary" role="note">Generated locally. Execution permission: none. The prompt is never sent, remembered or scheduled automatically.</div>
+      <label for="missionHandoffOutput">Exact handoff content</label>
+      <textarea id="missionHandoffOutput" rows="18" readonly></textarea>
+      <div class="quiz-consent"><input id="missionHandoffReview" type="checkbox"><label for="missionHandoffReview">I reviewed this handoff, removed prohibited data and understand that Copy or Download does not mean Sent or Executed.</label></div>
+      <div class="button-row wrap"><button class="primary-button" type="button" id="copyMissionHandoff" disabled>Copy prompt</button><button class="secondary-button" type="button" id="downloadMissionHandoff" disabled>Download Markdown</button></div>
+      <div class="hermes-open-row"><label for="missionHermesUrl">Optional trusted Hermes address <span>(session only; prompt never enters the URL)</span></label><div class="button-row"><input id="missionHermesUrl" type="url" autocomplete="off" placeholder="http://localhost:… or trusted https:// address"><button class="secondary-button" type="button" id="openMissionHermes">Open Hermes separately</button></div></div>
+      <div class="form-status" id="missionHandoffStatus" role="status" aria-live="polite"></div>
+    </div>
+  </dialog>
+
+  <dialog id="workflowDialog" aria-labelledby="workflowDialogTitle">
+    <form method="dialog" class="dialog-shell" id="workflowDialogForm">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow" id="workflowDialogMeta">Preview workflow</p>
+          <h2 id="workflowDialogTitle">Prepare Hermes handoff</h2>
+        </div>
+        <button class="icon-button" type="button" id="closeWorkflowDialog" aria-label="Close dialog">×</button>
+      </div>
+      <div class="dialog-boundary" role="note">This tool creates text only. It does not contact Hermes, run an agent or perform an external action.</div>
+      <div id="workflowDialogDetails"></div>
+      <div class="mission-header-grid compact-governance-grid">
+        <label class="field-block" for="handoffEdena"><span>EDENA advisory for this handoff</span><select id="handoffEdena" required><option value="unclassified">Unclassified · classify before handoff</option><option value="green">Green · bounded</option><option value="yellow">Yellow · verify</option><option value="orange">Orange · qualified review</option><option value="red">Red · high-risk advisory</option></select></label>
+        <label class="field-block" for="handoffEdenaReason"><span>Classification reason</span><input id="handoffEdenaReason" maxlength="240" required placeholder="Why this tier fits; no sensitive details"></label>
+      </div>
+      <label for="workflowContext">Optional non-sensitive context <span>(not saved)</span></label>
+      <textarea id="workflowContext" rows="5" maxlength="2000" placeholder="Use public, synthetic or approved aggregate metadata only. Do not enter PHI, participant data, confidential research, credentials or secrets."></textarea>
+      <div class="quiz-consent">
+        <input id="handoffConsent" type="checkbox" required>
+        <label for="handoffConsent">I confirm the context is within the allowed data boundary and I want a Preview Only prompt.</label>
+      </div>
+      <div class="form-status" id="handoffStatus" role="status" aria-live="polite"></div>
+      <div class="button-row" id="handoffBuildActions">
+        <button class="primary-button" type="button" id="buildHandoff">Build safe handoff</button>
+        <button class="secondary-button" type="button" id="cancelHandoff">Cancel</button>
+      </div>
+      <div id="handoffOutputWrap" hidden>
+        <label for="handoffOutput">Generated Hermes prompt</label>
+        <textarea id="handoffOutput" rows="14" readonly></textarea>
+        <div class="button-row wrap">
+          <button class="primary-button" type="button" id="copyHandoff">Copy prompt</button>
+          <button class="secondary-button" type="button" id="downloadHandoff">Download Markdown</button>
+          <button class="secondary-button" type="button" id="rebuildHandoff">Edit context</button>
+        </div>
+        <div class="hermes-open-row">
+          <label for="hermesUrl">Optional Hermes address <span>(session only; never receives the prompt automatically)</span></label>
+          <div class="button-row">
+            <input id="hermesUrl" type="url" inputmode="url" autocomplete="off" placeholder="http://localhost:… or your trusted https:// address">
+            <button class="secondary-button" type="button" id="openHermes">Open Hermes separately</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

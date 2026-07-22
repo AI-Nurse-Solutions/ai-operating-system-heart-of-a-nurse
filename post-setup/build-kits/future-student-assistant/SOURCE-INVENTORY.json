@@ -1,0 +1,74 @@
+{
+  "future_domain_source_tree": {
+    "files": [
+      {
+        "path": "README.md",
+        "sha256": "f7db2c16b573c60550e554fe84a682866a0e4727f3112a7c083d67256afdc89c"
+      },
+      {
+        "path": "core/00-FUTURE-Foundation-Runtime.md",
+        "sha256": "4607969829fcfec52ca48fb71e930331b6d69d0c646ebe7e669352e63f80e31e"
+      },
+      {
+        "path": "core/01-Learner-Patient-and-Workforce-Trust-Shield.md",
+        "sha256": "d33d3612d3308aa72d347fb1ca195ee2b7702ca40b83d73b1ff94204a552cf2b"
+      },
+      {
+        "path": "future/01-FUTURE-SuperPowers-System.md",
+        "sha256": "5ca378064c9a76bf14a0c7b7cf87c46e8e5e32fbdc1368179a5289987b646715"
+      },
+      {
+        "path": "manifest.md",
+        "sha256": "dc7b69fbf2b8fe70a854e62d2416190a56e1bfb6626c9ad0f1ae26950061b072"
+      },
+      {
+        "path": "templates/FUTURE-Cards-and-Templates.md",
+        "sha256": "2e62e0423f2a334bbf287824829c18b0b5cf3ffffe45f3784ff99ac7521f9302"
+      },
+      {
+        "path": "tests/Acceptance-Tests.md",
+        "sha256": "d51e58ec885884fa63190598edc30be1fc128fe19a149b5007ba37b4d620d589"
+      },
+      {
+        "path": "workflows/FUTURE-Command-Center.md",
+        "sha256": "d4d08daa703db70e74abdf0b54fc2f505837fb34e477e4fa39e27b5615005910"
+      },
+      {
+        "path": "workflows/Seven-Day-and-Ninety-Day-Launch.md",
+        "sha256": "e045bf66fc6376d99064ae62c5879dedbb58a0488f8d5bdb2dc85f8ea61c4853"
+      }
+    ],
+    "original_standalone_archive_was_available": false,
+    "path": "source/future-domain-pack"
+  },
+  "generated_at": "2026-07-20T17:01:23.336977+00:00",
+  "inputs": [
+    {
+      "id": "functional-build-master-prompt",
+      "path": "source/original-functional-build-master-prompt.md",
+      "role": "immutable functional completeness and readiness source",
+      "sha256": "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2"
+    },
+    {
+      "id": "mission-control-v2-baseline",
+      "path": "source/archives/DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0.zip",
+      "role": "immutable working UI and state-machine baseline",
+      "sha256": "69a4dd86659b41136ce9ceb2ceb52512ab567637ab0be29fdc6f6ab6573223c1"
+    },
+    {
+      "id": "future-legacy-outer-package",
+      "path": "source/archives/Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Package-v1.0.zip",
+      "role": "immutable prior complete program/setup distribution",
+      "sha256": "4d1dbeb08ef5689f7193cc233a79da2f126a20be09435ea552ef1de5d77f2999"
+    }
+  ],
+  "personalization": {
+    "raw_soul_or_quiz_answers_bundled": false,
+    "real_discover_packet_bundled": false,
+    "real_soul_quiz_result_bundled": false,
+    "synthetic_examples_are_badge_evidence": false,
+    "synthetic_examples_are_personal_facts": false
+  },
+  "readiness": "build instructions complete; target application readiness not established",
+  "schema": "NAIO-FUTURE-BUILD-KIT-SOURCE-INVENTORY-1"
+}

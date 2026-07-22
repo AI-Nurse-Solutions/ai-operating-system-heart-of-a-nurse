@@ -84,6 +84,17 @@ class NursePractitionerLaneTests(unittest.TestCase):
         ):
             self.assertIn(phrase, read_first)
 
+    def test_public_surfaces_do_not_overclaim_wings_class_or_tracked_build_source(self):
+        resources = (ROOT / "resources.html").read_text(encoding="utf-8")
+        post_setup = (ROOT / "post-setup" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("USA-only Nurse Practitioner self-install build kit", resources)
+        self.assertNotIn("USA-only Nurse Practitioner Complete Edition", resources)
+        self.assertIn("Governed build-kit ZIPs are checksum-pinned", post_setup)
+        self.assertNotIn(
+            "Every role package and build-kit wrapper remains visible and inspectable",
+            post_setup,
+        )
+
     def test_foundation_and_wings_test_inventory_is_exact(self):
         foundation = self.program.split("# 20. Acceptance tests", 1)[1].split("## Critical release rule", 1)[0]
         wings = self.program.split("# NP Wings Acceptance Tests", 1)[1].split("## Critical release rule", 1)[0]

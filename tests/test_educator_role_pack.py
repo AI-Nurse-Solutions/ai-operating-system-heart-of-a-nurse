@@ -307,6 +307,7 @@ class EducatorBuildKitTests(unittest.TestCase):
             f"{BUILD_KIT_ROOT}/a/./b.txt",
             f"{BUILD_KIT_ROOT}/drive:C.txt",
             f"{BUILD_KIT_ROOT}/../escape.txt",
+            f"{BUILD_KIT_ROOT}/nul\x00suffix.txt",
         ):
             with self.subTest(unsafe=unsafe), self.assertRaisesRegex(ValueError, "Unsafe TEACH ZIP path"):
                 validate_infos([info(unsafe)], expected_count=1)

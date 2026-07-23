@@ -55,13 +55,14 @@ def validate_infos(
     expanded_bytes = 0
     for item in infos:
         name = item.filename
+        raw_name = getattr(item, "orig_filename", name)
         pure = PurePosixPath(name)
         mode = (item.external_attr >> 16) & 0o777777
         if (
             not name
             or name.startswith("/")
             or "\\" in name
-            or "\x00" in name
+            or "\x00" in raw_name
             or ".." in pure.parts
             or any(":" in part for part in pure.parts)
             or name.rstrip("/") != pure.as_posix()

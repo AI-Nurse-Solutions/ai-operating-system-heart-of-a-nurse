@@ -152,6 +152,7 @@ ROLES = [
 FIXED_ZIP_TIME = (2026, 7, 13, 0, 0, 0)
 MAX_BUILD_KIT_MEMBER_BYTES = 32 * 1024 * 1024
 MAX_BUILD_KIT_EXPANDED_BYTES = 256 * 1024 * 1024
+ALLOWED_BUILD_KIT_COMPRESSION = {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}
 
 BUILD_KIT_DOWNLOADS = {
     "staff-nurse": {
@@ -162,6 +163,11 @@ BUILD_KIT_DOWNLOADS = {
         "sha256": "e0ebaff0ad8840ac2e4670a28168a9ac1fdaf17a0c8e3ae72973c8496cb0f709",
         "member_count": 114,
         "verifier_sha256": "075b327b7bda027be02b0b2bcf58289f9a463df652019e013fa1382ba4c8923b",
+        "executable_members": [
+            "source/baseline-application/Start-DISCOVER.command",
+            "source/baseline-application/start-discover.sh",
+            "tools/verify-build-kit.py",
+        ],
         "source_zip_sha256_before_derivative": "f10fe10a1675759772ea53cc60c1b354ea0342b38efd01d6510d7ac0c986b5ae",
         "source_zip_bytes_before_derivative": 6914738,
         "target": {
@@ -730,38 +736,56 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             raise ValueError(f"Build-kit member count mismatch: {path}")
         if len(names) != len(set(names)):
             raise ValueError(f"Duplicate build-kit members: {path}")
-        roots = {name.split("/", 1)[0] for name in names if name}
-        if roots != {config["root"]}:
-            raise ValueError(f"Build-kit must have one expected root: {path}")
         normalized = {unicodedata.normalize("NFC", name).casefold() for name in names}
         if len(normalized) != len(names):
             raise ValueError(f"Build-kit has case/Unicode-colliding members: {path}")
         expanded_bytes = 0
+        executable_members = {
+            f'{config["root"]}/{relative}'
+            for relative in config.get("executable_members", ["tools/verify-build-kit.py"])
+        }
         for info in infos:
             name = info.filename
+            raw_name = getattr(info, "orig_filename", name)
             candidate = PurePosixPath(name)
-            mode = (info.external_attr >> 16) & 0o777777
+            mode = (info.external_attr >> 16) & 0o177777
             if (
                 not name
+                or "\x00" in raw_name
+                or raw_name != name
                 or name.startswith("/")
                 or "\\" in name
-                or "\x00" in name
-                or ".." in candidate.parts
-                or any(":" in part for part in candidate.parts)
-                or name.rstrip("/") != candidate.as_posix()
+                or name != candidate.as_posix()
+                or any(part in ("", ".", "..") or ":" in part for part in candidate.parts)
             ):
                 raise ValueError(f"Unsafe build-kit member path: {name!r}")
+            if info.is_dir():
+                raise ValueError(f"Build-kit directory entry rejected: {name}")
+            if info.flag_bits & 0x1:
+                raise ValueError(f"Build-kit encrypted member rejected: {name}")
+            if info.compress_type not in ALLOWED_BUILD_KIT_COMPRESSION:
+                raise ValueError(f"Build-kit unsupported compression method: {name}")
+            if info.file_size < 0 or info.compress_size < 0:
+                raise ValueError(f"Build-kit member has invalid size metadata: {name}")
             if info.file_size > MAX_BUILD_KIT_MEMBER_BYTES:
                 raise ValueError(f"Build-kit member exceeds byte limit: {name}")
             expanded_bytes += info.file_size
             if expanded_bytes > MAX_BUILD_KIT_EXPANDED_BYTES:
                 raise ValueError(f"Build-kit expanded bytes exceed limit: {path}")
-            if (mode & 0o170000) == 0o120000:
-                raise ValueError(f"Build-kit symlink member rejected: {name}")
-            if (mode & 0o170000) not in (0, 0o100000, 0o040000):
-                raise ValueError(f"Build-kit special-file member rejected: {name}")
-            if info.flag_bits & 0x1:
-                raise ValueError(f"Build-kit encrypted member rejected: {name}")
+            expected_mode = 0o100755 if name in executable_members else 0o100644
+            if mode != expected_mode:
+                raise ValueError(
+                    f"Build-kit mode mismatch: {name} expected={oct(expected_mode)} actual={oct(mode)}"
+                )
+        roots = {name.split("/", 1)[0] for name in names}
+        if roots != {config["root"]}:
+            raise ValueError(f"Build-kit must have one expected root: {path}")
+        names_set = set(names)
+        for name in names:
+            parts = name.split("/")
+            for index in range(1, len(parts)):
+                if "/".join(parts[:index]) in names_set:
+                    raise ValueError(f"Build-kit file/directory collision: {name}")
         bad_crc = archive.testzip()
         if bad_crc:
             raise ValueError(f"Build-kit CRC failure: {bad_crc}")
@@ -1026,6 +1050,11 @@ def build(source_root: Path | None) -> None:
             import_prebuilt_role(source_root, role)
     future_builder = runpy.run_path(str(REPO / "scripts" / "build-future-student-assistant-build-kit.py"))
     future_config = future_builder["build"]()
+    future_config["executable_members"] = [
+        "source/baseline-application/Start-DISCOVER.command",
+        "source/baseline-application/start-discover.sh",
+        "tools/verify-build-kit.py",
+    ]
     BUILD_KIT_DOWNLOADS["student-nurse"] = future_config
     lead_builder = runpy.run_path(str(REPO / "scripts" / "build-lead-nurse-leader-build-kit.py"))
     lead_config = lead_builder["build"]()

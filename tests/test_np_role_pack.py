@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import ast
+import copy
 import hashlib
 import json
 import re
@@ -216,6 +217,74 @@ class NursePractitionerLaneTests(unittest.TestCase):
         wings_config = configs["nurse-practitioner-usa"]
         self.assertEqual(wings_config["country_availability"], ["United States"])
         self.assertEqual(wings_config["target"]["country_availability"], ["United States"])
+
+    def test_shared_builder_rejects_unsafe_metadata_before_crc_or_payload_reads(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-post-setup-role-packs.py"))
+        validate = namespace["validate_build_kit_zip"]
+        config = dict(namespace["BUILD_KIT_DOWNLOADS"]["nurse-practitioner-usa"])
+        role = next(item for item in namespace["ROLES"] if item["slug"] == "nurse-practitioner-usa")
+        with zipfile.ZipFile(ZIP) as archive:
+            baseline = archive.infolist()
+
+        ordinary_index = next(
+            index
+            for index, item in enumerate(baseline)
+            if not item.filename.endswith("/tools/verify-build-kit.py")
+        )
+
+        def mutated(change):
+            infos = [copy.copy(item) for item in baseline]
+            change(infos[ordinary_index])
+            return infos
+
+        def raw_nul(item):
+            item.orig_filename = item.filename + "\x00alias"
+
+        def raw_alias(item):
+            item.orig_filename = item.filename + ".alias"
+
+        def noncanonical(item):
+            item.filename = f"{BUILD_KIT_ROOT}/a//b.txt"
+            item.orig_filename = item.filename
+
+        def encrypted(item):
+            item.flag_bits |= 0x1
+
+        def unsupported_compression(item):
+            item.compress_type = zipfile.ZIP_BZIP2
+
+        def unexpected_executable(item):
+            item.external_attr = 0o100755 << 16
+
+        def symlink(item):
+            item.external_attr = 0o120777 << 16
+
+        def oversized(item):
+            item.file_size = namespace["MAX_BUILD_KIT_MEMBER_BYTES"] + 1
+
+        cases = {
+            "raw-nul": mutated(raw_nul),
+            "raw-alias": mutated(raw_alias),
+            "noncanonical": mutated(noncanonical),
+            "encrypted": mutated(encrypted),
+            "unsupported-compression": mutated(unsupported_compression),
+            "unexpected-executable": mutated(unexpected_executable),
+            "symlink": mutated(symlink),
+            "oversized": mutated(oversized),
+        }
+
+        for label, infos in cases.items():
+            fake = mock.MagicMock()
+            fake.__enter__.return_value = fake
+            fake.__exit__.return_value = False
+            fake.infolist.return_value = infos
+            fake.testzip.side_effect = AssertionError("CRC/payload touched")
+            fake.read.side_effect = AssertionError("payload touched")
+            with self.subTest(label=label), mock.patch.object(zipfile, "ZipFile", return_value=fake):
+                with self.assertRaises(ValueError):
+                    validate(role, config)
+                fake.testzip.assert_not_called()
+                fake.read.assert_not_called()
 
     def test_wings_country_boundary_is_archive_native_and_verified(self):
         with zipfile.ZipFile(ZIP) as archive:

@@ -1,0 +1,61 @@
+{
+  "adapter_version": "1.0-draft",
+  "ai_permission_preferences": {
+    "agents": "disabled_until_one_run_approval",
+    "external_actions": "off",
+    "maximum_model_permission": "P2",
+    "tools": "disabled_until_one_run_approval"
+  },
+  "communication_style": "plain language with concise evidence notes",
+  "core_values": [
+    "truth",
+    "care",
+    "agency",
+    "equity",
+    "family"
+  ],
+  "decision_style": "compare reversible options and name unknowns",
+  "demo": true,
+  "growth_areas": [
+    "delegation",
+    "recovery consistency"
+  ],
+  "guiding_principles": [
+    "Reason independently",
+    "Verify authority",
+    "Escalate uncertainty",
+    "Keep consequential decisions human"
+  ],
+  "learning_preferences": [
+    "fictional simulation",
+    "source comparison",
+    "debrief"
+  ],
+  "memory_preferences": {
+    "allowed": [
+      "approved nonsensitive goals"
+    ],
+    "default": "session_only",
+    "never": [
+      "patient information",
+      "formal evaluations",
+      "private program records"
+    ]
+  },
+  "mission_statement": "Learn deliberately, escalate early, and protect the physician and person I am becoming.",
+  "nonnegotiable_boundaries": [
+    "No patient information",
+    "No live-care guidance",
+    "No authority inflation",
+    "No evaluation or surveillance"
+  ],
+  "risk_tolerance": "conservative",
+  "schema": "NAIO-MR-SOUL-PROFILE-ADAPTER-1",
+  "strengths": [
+    "systems thinking",
+    "communication"
+  ],
+  "uncertainties": [
+    "Synthetic values require user review before adoption"
+  ]
+}

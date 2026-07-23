@@ -1,0 +1,111 @@
+{
+  "schema": "NAIO-DISCOVER-PACKET-ADAPTER-1",
+  "packet_schema_version": "1.0-draft",
+  "generated_at": "2026-07-20T12:00:00.000Z",
+  "mission_statement": "Grow into a capable, compassionate nursing professional while protecting learning, integrity, health and human accountability.",
+  "core_values": [
+    "human dignity",
+    "honest learning",
+    "patient safety",
+    "curiosity",
+    "sustainable growth"
+  ],
+  "current_priorities": [
+    "Build a realistic study and recovery rhythm",
+    "Prepare for supervised skills practice using approved materials",
+    "Clarify a bridge-to-nursing pathway without overstating current authority"
+  ],
+  "goals": {
+    "short_term": [
+      "Complete one learner-authored study sprint and teach-back each week for four weeks"
+    ],
+    "medium_term": [
+      "Create a truthful portfolio of learning evidence and human-reviewed work within six months"
+    ],
+    "long_term": [
+      "Pursue nursing education while remaining within verified role, delegation and academic boundaries"
+    ]
+  },
+  "working_preferences": {
+    "communication_style": "warm, clear and encouraging without hype",
+    "decision_style": "small verified steps with visible uncertainty and a named human route",
+    "learning_preferences": [
+      "retrieval practice",
+      "worked fictional examples",
+      "teach-back",
+      "short focused sessions"
+    ]
+  },
+  "role_goals": [
+    {
+      "role_id": "prelicensure-support",
+      "goal": "Strengthen foundational nursing knowledge and supervised readiness",
+      "success_measure": "Four learner-authored teach-backs reviewed against approved sources",
+      "priority": 100,
+      "default_edena": "yellow"
+    },
+    {
+      "role_id": "advanced-studies",
+      "goal": "Explore a realistic education pathway",
+      "success_measure": "A requirements checklist with every unresolved item routed to an authorized program source",
+      "priority": 78,
+      "default_edena": "yellow"
+    },
+    {
+      "role_id": "community",
+      "goal": "Contribute to one consent-based service-learning idea",
+      "success_measure": "A synthetic project canvas reviewed before any outreach",
+      "priority": 45,
+      "default_edena": "yellow"
+    }
+  ],
+  "ai_boundaries": {
+    "default_autonomy": "suggest_only",
+    "may_support": [
+      "explain general concepts",
+      "ask retrieval and teach-back questions",
+      "organize a private schedule",
+      "draft a fictional rehearsal"
+    ],
+    "requires_confirmation": [
+      "adopt a study plan",
+      "use a draft in coursework",
+      "prepare a faculty or supervisor conversation",
+      "save a non-sensitive preference"
+    ],
+    "never_delegate": [
+      "learner authorship",
+      "clinical judgment or care",
+      "scope, delegation or competency decisions",
+      "assessment completion",
+      "credential or experience claims",
+      "external action"
+    ]
+  },
+  "governance_preferences": {
+    "risk_tolerance": "conservative",
+    "default_edena": "yellow",
+    "default_retention": "session_only"
+  },
+  "recommended_workflow_ids": [
+    "DSC-WF-01",
+    "DSC-WF-02",
+    "DSC-WF-08",
+    "DSC-WF-23"
+  ],
+  "recommended_capability_ids": [
+    "ai-literacy",
+    "critical-thinking",
+    "privacy-stewardship",
+    "ethical-ai",
+    "role-development"
+  ],
+  "uncertainties": [
+    "Synthetic example only; no enrollment, employment, local scope, delegation, rule, competency, credential or authority has been verified.",
+    "The exact academic AI-use policy and employer policy are unknown."
+  ],
+  "source_provenance": [
+    "Synthetic deidentified demonstration created for FUTURE Mission Control build verification."
+  ],
+  "demo": true
+}

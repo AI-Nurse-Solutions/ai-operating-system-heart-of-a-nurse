@@ -1,0 +1,8 @@
+
+# Read Me First — instruction for Hermes
+
+Give Hermes this complete extracted directory and paste:
+
+> Build `ROUNDS — Medical Resident Complete AI OS Mission Control` from this entire package. Display `PROCESSING_MESSAGE.md` first. Verify `RELEASE-MANIFEST.json`, `SHA256SUMS.txt`, `SOURCE-INVENTORY.json`, and every immutable source byte. Read `INPUT-PRECEDENCE.md`, `implementation/MR-Functional-Build-Master-Prompt.md`, and `implementation/HERMES-HANDOFF-README.md`. Perform only read-only preflight. Before presenting one Implementation Activation Card and receiving my exact **Approve**, **Revise**, or **Cancel** response, do not install dependencies, create or edit files, start a service, create a database, download, or connect. Never read, display, copy, index, store, or inject raw `SOUL.md`; only a safe confirmed profile reference/status is permitted. The card must show exact paths, dependencies, licenses, network plan, security, data boundaries, ATTEND supervision model, test plan, checkpoints, and rollback. Preserve unrelated work. Do not use PHI, a real or name-removed clinical narrative, charts, sign-outs, consults, orders, notes, events, formal evaluations, credential secrets, or restricted institutional material. Keep connectors, external actions, new persistent memory, schedules, tools, agents, and background work Off. Build the foundation first and the ROUNDS overlay inactive. Execute and reconcile all 424 records. Never infer completion from this prompt, documentation, a static page, screenshot, mocked response, or development server.
+
+Installation may take several minutes and multiple visible Hermes turns. Resume only from a verified checkpoint receipt.

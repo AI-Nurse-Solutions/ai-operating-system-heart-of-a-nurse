@@ -4,6 +4,13 @@ on:
   pull_request:
     paths:
       - "assets/nurse-ai.css"
+      - "architecture-report.html"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.md"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/nurse-ai-os-architecture-report.pdf"
+      - "assets/nurse-ai-os-media-packet.md"
+      - "assets/nurse-ai-os-media-packet.pdf"
       - "switchboard/**"
       - "tests/test_switchboard.py"
       - "tests/test_switchboard_browser.mjs"
@@ -12,6 +19,15 @@ on:
       - "package-lock.json"
       - "setup-helper/**"
       - "post-setup/index.html"
+      - "post-setup/README.md"
+      - "post-setup/build-kits/lead-nurse-leader/**"
+      - "post-setup/downloads/**"
+      - "scripts/build-lead-nurse-leader-build-kit.py"
+      - "scripts/build-post-setup-role-packs.py"
+      - "scripts/rotate-teach-verifier-portability.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_educator_role_pack.py"
+      - "tests/test_leader_role_pack.py"
       - "privacy.html"
       - "README.md"
       - "sitemap.xml"
@@ -20,6 +36,13 @@ on:
     branches: [main]
     paths:
       - "assets/nurse-ai.css"
+      - "architecture-report.html"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.md"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/nurse-ai-os-architecture-report.pdf"
+      - "assets/nurse-ai-os-media-packet.md"
+      - "assets/nurse-ai-os-media-packet.pdf"
       - "switchboard/**"
       - "tests/test_switchboard.py"
       - "tests/test_switchboard_browser.mjs"
@@ -28,6 +51,15 @@ on:
       - "package-lock.json"
       - "setup-helper/**"
       - "post-setup/index.html"
+      - "post-setup/README.md"
+      - "post-setup/build-kits/lead-nurse-leader/**"
+      - "post-setup/downloads/**"
+      - "scripts/build-lead-nurse-leader-build-kit.py"
+      - "scripts/build-post-setup-role-packs.py"
+      - "scripts/rotate-teach-verifier-portability.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_educator_role_pack.py"
+      - "tests/test_leader_role_pack.py"
       - "privacy.html"
       - "README.md"
       - "sitemap.xml"
@@ -67,7 +99,7 @@ jobs:
         run: npm run test:switchboard-schema
       - name: Run browser interaction and responsive smoke test
         run: npm run test:switchboard-browser
-      - name: Confirm existing role distributions remain byte-for-byte unchanged
+      - name: Confirm exact role-download migrations and pinned build-kit contracts
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
@@ -75,4 +107,157 @@ jobs:
             echo "No parent commit exists; package-diff guard is not applicable."
             exit 0
           fi
-          git diff --exit-code "$BASE_SHA" HEAD -- post-setup/packages post-setup/downloads healthcare-research-innovation-leaders/packages healthcare-research-innovation-leaders/downloads
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+
+          base = os.environ["BASE_SHA"]
+          common_changes = {
+              "post-setup/downloads/CHECKSUMS.sha256": "M",
+              "post-setup/downloads/manifest.json": "M",
+          }
+          retired_student_download = "post-setup/downloads/" + "nurse-ai-os-post-setup-" + "student-nurse.zip"
+          lane_changes = {
+              "future_student_assistant": {
+                  retired_student_download: "D",
+                  "post-setup/downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
+              "staff_shift": {
+                  "post-setup/downloads/nurse-ai-os-post-setup-staff-nurse.zip": "D",
+                  "post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
+              "nurse_leader_lead": {
+                  "post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip": "D",
+                  "post-setup/downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
+              "nurse_educator_teach": {
+                  "post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip": "D",
+                  "post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
+          }
+
+          def git(*args: str) -> str:
+              return subprocess.check_output(["git", *args], text=True).strip()
+
+          subprocess.check_call([
+              "git", "diff", "--exit-code", base, "HEAD", "--",
+              "post-setup/packages",
+              "healthcare-research-innovation-leaders/packages",
+              "healthcare-research-innovation-leaders/downloads",
+          ])
+
+          changed = set(git("diff", "--name-only", base, "HEAD", "--", "post-setup/downloads").splitlines())
+          all_known = set(common_changes)
+          for paths in lane_changes.values():
+              all_known.update(paths)
+          unexpected = changed - all_known
+          if unexpected:
+              raise SystemExit("Unexpected post-setup/downloads changes: " + ", ".join(sorted(unexpected)))
+
+          if changed:
+              active = [name for name, paths in lane_changes.items() if changed & set(paths)]
+              if len(active) != 1:
+                  raise SystemExit("Expected exactly one governed role-download migration; active=" + json.dumps(active))
+              allowed_download_changes = {**common_changes, **lane_changes[active[0]]}
+              missing = set(allowed_download_changes) - changed
+              if missing:
+                  raise SystemExit(f"Incomplete {active[0]} migration: " + ", ".join(sorted(missing)))
+              extra = changed - set(allowed_download_changes)
+              if extra:
+                  raise SystemExit(f"Combined or unexpected {active[0]} migration paths: " + ", ".join(sorted(extra)))
+
+              status = {}
+              for line in git("diff", "--name-status", base, "HEAD", "--", *sorted(allowed_download_changes)).splitlines():
+                  code, path = line.split("\t", 1)
+                  status[path] = code
+              wrong_status = {
+                  path: status.get(path)
+                  for path, expected in allowed_download_changes.items()
+                  if status.get(path) != expected
+              }
+              if wrong_status:
+                  raise SystemExit(f"Unexpected {active[0]} migration status: " + json.dumps(wrong_status, sort_keys=True))
+              mode = f"migration:{active[0]}"
+          else:
+              mode = "steady-state"
+
+          manifest = json.loads(open("post-setup/downloads/manifest.json", encoding="utf-8").read())
+          future = next(item for item in manifest["packages"] if item["folder"] == "01-Student-Nurse")
+          expected_future = {
+              "activation": "user_initiated_read_only_preflight_with_exact_implementation_activation_card",
+              "build_kit_member_count": 105,
+              "build_kit_version": "1.0.0",
+              "bytes": 6520918,
+              "ci_validation": "tracked_source_builder_and_tracked_verifier_package_and_outer_zip",
+              "download": "downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "download_type": "self_install_hermes_build_kit",
+              "legacy_source_activation_contract": "user_initiated_guided_complete_setup_with_combined_activation_card",
+              "legacy_source_package_version": "2026.07.15.3",
+              "package_version": "1.0.0",
+              "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+              "readiness": "not_operational_build_required",
+              "sha256": "b95b413fc25f990f3505fcf7af81c2c483a62da2150f4f77b371ff847b173e76",
+              "source_zip_bytes_before_derivative": 6520141,
+              "source_zip_sha256_before_derivative": "737968eac95347887eb55f3146c1d964541193e7843ea1f94b5bdc4e171a96c6",
+              "target_namespace": "future.*",
+              "target_product_id": "future-nursing-student-assistant-mission-control",
+              "target_route": "/nursing-students-assistants/dashboard",
+              "target_version": "2.0.0",
+          }
+          for key, value in expected_future.items():
+              if future.get(key) != value:
+                  raise SystemExit(f"FUTURE manifest mismatch for {key}: {future.get(key)!r}")
+          staff = next(item for item in manifest["packages"] if item["folder"] == "02-Staff-Nurse")
+          expected = {
+              "build_kit_version": "1.0.0",
+              "bytes": 6914990,
+              "download": "downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "download_type": "self_install_hermes_build_kit",
+              "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+              "readiness": "not_operational_build_required",
+              "sha256": "e0ebaff0ad8840ac2e4670a28168a9ac1fdaf17a0c8e3ae72973c8496cb0f709",
+          }
+          for key, value in expected.items():
+              if staff.get(key) != value:
+                  raise SystemExit(f"Staff SHIFT manifest mismatch for {key}: {staff.get(key)!r}")
+          lead = next(item for item in manifest["packages"] if item["folder"] == "03-Nurse-Leader-and-Manager")
+          expected_lead = {
+              "build_kit_version": "1.0.0",
+              "bytes": 494164,
+              "download": "downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "download_type": "self_install_hermes_build_kit",
+              "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+              "readiness": "not_operational_build_required",
+              "sha256": "78293c6eaef4fa277f4afecf14eeb87b90f3385ba71be3189faaca2466c90974",
+              "target_route_assignment": "activation_card_required_no_route_preassigned",
+          }
+          for key, value in expected_lead.items():
+              if lead.get(key) != value:
+                  raise SystemExit(f"Nurse Leader LEAD manifest mismatch for {key}: {lead.get(key)!r}")
+          educator = next(item for item in manifest["packages"] if item["folder"] == "04-Nurse-Educator")
+          expected_educator = {
+              "activation": "user_initiated_read_only_preflight_with_exact_implementation_activation_card",
+              "build_kit_member_count": 121,
+              "build_kit_version": "1.0.0",
+              "build_kit_verifier_sha256": "3b6017d9e07793f06a470d74f7a1632fbe34f6f5f5c02b7322172cfd9d4e1cfb",
+              "bytes": 6820684,
+              "ci_validation": "tracked_repository_validator_no_artifact_controlled_code_execution",
+              "download": "downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "download_type": "self_install_hermes_build_kit",
+              "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+              "readiness": "not_operational_build_required",
+              "sha256": "39d7a83a79b6137d50b6b5da639cd44d0427e4e06e30fc9d7f3b19805b4080f3",
+              "source_zip_bytes_before_derivative": 6820134,
+              "source_zip_sha256_before_derivative": "8b7e8290382f7df5830554ad740a8fd280c3d2be5e8948d1a539afe074416cb9",
+              "target_namespace": "neid_teach.*",
+              "target_product_id": "nurse-educator-instructional-designer-mission-control",
+              "target_route": "/nurse-educators-designers/dashboard",
+              "target_version": "2.0.0",
+              "teach_overlay_second": True,
+          }
+          for key, value in expected_educator.items():
+              if educator.get(key) != value:
+                  raise SystemExit(f"Nurse Educator TEACH manifest mismatch for {key}: {educator.get(key)!r}")
+          print(f"ROLE_DOWNLOAD_MIGRATION_GUARD=passed mode={mode}")
+          PY

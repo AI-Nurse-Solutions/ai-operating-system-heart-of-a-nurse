@@ -1,0 +1,583 @@
+{
+  "build_kit": {
+    "generated_at": "2026-07-20T17:01:23.349856+00:00",
+    "id": "NAIO-FUTURE-FUNCTIONAL-BUILD-KIT-1.0.0",
+    "name": "FUTURE Nursing Student & Nursing Assistant Mission Control \u2014 Hermes Functional Build Kit",
+    "version": "1.0.0"
+  },
+  "counts": {
+    "acceptance_ledger_explicit_target_test_rows": 213,
+    "agents": 10,
+    "canonical_compatibility_checks": 136,
+    "canonical_foundation_checks": 24,
+    "canonical_integration_checks": 16,
+    "canonical_overlay_checks": 96,
+    "capability_criteria_including_capstone": 77,
+    "capability_domains": 17,
+    "control_matrix_rows": 169,
+    "core_launchers": 4,
+    "cross_cutting_full_stack_scenarios": 44,
+    "mastery_levels": 4,
+    "passport_domains": 6,
+    "passport_stages": 5,
+    "pathways": 3,
+    "protected_spaces": 4,
+    "superpowers": 18,
+    "target_control_tests": 169,
+    "templates": 5,
+    "total_required_execution_records": 349,
+    "total_target_full_stack_tests": 213,
+    "workflows": 18
+  },
+  "defaults": {
+    "agents": "PERM-P0 Disabled",
+    "connectors_schedules_sharing_external_actions_background_agents": "Off",
+    "data": "public_synthetic_owner_authored_nonsensitive_only_after_screening",
+    "memory": "session_only",
+    "mode": "private_learner_os_synthetic_demonstration",
+    "optional_fifth_launcher": "Empty",
+    "powers": "Available Inactive",
+    "workflows": "Preview Only"
+  },
+  "files_excluding_manifest_and_checksums": [
+    {
+      "bytes": 873,
+      "path": ".env.example",
+      "sha256": "261ce3c8ad9eef31730c324c9349f40041aa77d890151dde4342710bc766d1aa"
+    },
+    {
+      "bytes": 1681,
+      "path": "BUILD-STATUS.md",
+      "sha256": "530ac118bd21cb8984ff79c8b4d275d85a959f7774411445921caaf9269b230a"
+    },
+    {
+      "bytes": 628,
+      "path": "CHANGELOG.md",
+      "sha256": "2367cb9c174dbada2bcaea9eec5811a595cbeec84eb95f1dd56e76721a79f0ba"
+    },
+    {
+      "bytes": 10548,
+      "path": "GIVE-THIS-PACKAGE-TO-HERMES.md",
+      "sha256": "208d0763b9a6c6224a90856cbcf946e2adc2626d71940dd88a12c8827cd58f6e"
+    },
+    {
+      "bytes": 1177,
+      "path": "INPUT-PRECEDENCE.md",
+      "sha256": "7c2aa3d702b6b28a6e5ffc804732104285fcf1ea9da51b41f211be2e8ce26b0e"
+    },
+    {
+      "bytes": 539,
+      "path": "LICENSE-NOTICE.md",
+      "sha256": "7c9dd6b2e1bba2bc89842be7062641532b03cc0fd82d627b2a62125818f4cbe1"
+    },
+    {
+      "bytes": 5685,
+      "path": "README-FIRST.md",
+      "sha256": "772b6b7b1c5061276fdfe0dfd7a443dd34159a4a4339caa5c2ec1a41e0d9ecf8"
+    },
+    {
+      "bytes": 2923,
+      "path": "SOURCE-INVENTORY.json",
+      "sha256": "52a518752114d5ac3a85244098c4c357d65d5f6b396373f4f27ffa700edfdb07"
+    },
+    {
+      "bytes": 1228,
+      "path": "SOURCE-NOTES.md",
+      "sha256": "00ea8abaa0a7d01d3134a2001db59795fe28de2f10a70968facf3eee6387769d"
+    },
+    {
+      "bytes": 6,
+      "path": "VERSION",
+      "sha256": "59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03"
+    },
+    {
+      "bytes": 52886,
+      "path": "config/FUTURE-Capability-Mastery-Criteria.v1.json",
+      "sha256": "6959458345b415735e64828f4b033e10ad035606f0bb878f06e48b71c020784b"
+    },
+    {
+      "bytes": 73800,
+      "path": "implementation/FUTURE-Acceptance-and-Test-Ledger.md",
+      "sha256": "93f912a3e2ac9477e486dba21c3aa9ea613916e164fa0a391d250b911a632ded"
+    },
+    {
+      "bytes": 29852,
+      "path": "implementation/FUTURE-Agent-Team-and-Routing.md",
+      "sha256": "1718e8dee9873c291060244f5f6f42dbaf574e8c052d8882c2ee3784bd5ae7c0"
+    },
+    {
+      "bytes": 26556,
+      "path": "implementation/FUTURE-Architecture-and-Data-Model.md",
+      "sha256": "9144108f53511b87e55756b22d453ef2d84997cc6a2ec529d71358f92b70d732"
+    },
+    {
+      "bytes": 16125,
+      "path": "implementation/FUTURE-Baseline-Gap-Report.md",
+      "sha256": "88505c7fc625f4354dd4b80cf0bdbe2683f84ba71f412712afbe05c2691b96a9"
+    },
+    {
+      "bytes": 9838,
+      "path": "implementation/FUTURE-Capability-and-Badge-Evidence-Model.md",
+      "sha256": "9de12555168490e4a045e21bba0b35a53e408d92b520433c209d447feb2e319f"
+    },
+    {
+      "bytes": 48173,
+      "path": "implementation/FUTURE-Control-Completeness-Matrix.csv",
+      "sha256": "7736865efe9dbb165d65a333e634aa4d264be9486666eb08c30758abff1e4dc3"
+    },
+    {
+      "bytes": 38865,
+      "path": "implementation/FUTURE-Functional-Build-Master-Prompt.md",
+      "sha256": "0391da08a5d295c0604c274a29ef6d678e15af2219c95e73535cc2c0cb5fdc0f"
+    },
+    {
+      "bytes": 33557,
+      "path": "implementation/FUTURE-Governance-EDENA-and-Data-Boundaries.md",
+      "sha256": "db1b12c280d13e2d70372450ad1f2430a0786cea6fd5be6bdb38762ff6b5b8ef"
+    },
+    {
+      "bytes": 17596,
+      "path": "implementation/FUTURE-Guide-Page-Content.md",
+      "sha256": "ee20d7547784c01be3dadcaaf99497a10c6b4a87a396ec49941c4f7f7ecf2f4a"
+    },
+    {
+      "bytes": 23939,
+      "path": "implementation/FUTURE-Personalization-Mapping-Crosswalk.md",
+      "sha256": "4fe04af1776e40c31b6f6884ba9d4cf2a15a684bbd0d426f05c6d57ae7cf7a8c"
+    },
+    {
+      "bytes": 11010,
+      "path": "implementation/FUTURE-Product-Specification.md",
+      "sha256": "1a8caf2df08ceb596728eef565aa250de40c2e98205c25c05ddf0bbd76fc13dc"
+    },
+    {
+      "bytes": 8108,
+      "path": "implementation/FUTURE-Security-and-Privacy-Checklist.md",
+      "sha256": "8696e397a7f6085834d3d546bc530be30bda7320090bd5182890f35674b3727b"
+    },
+    {
+      "bytes": 13642,
+      "path": "implementation/FUTURE-Starter-Workspace-Crosswalk.md",
+      "sha256": "19a220d7ae6e34ef4f0fa6a62d3d413e9997cec1d8bc0881cf947decf4c9f183"
+    },
+    {
+      "bytes": 13020,
+      "path": "implementation/FUTURE-Synthetic-Sample-Mission.md",
+      "sha256": "70d6377ef67e15db9765349e8475a0140e0d70160894b93c19e64e72079ff906"
+    },
+    {
+      "bytes": 9200,
+      "path": "implementation/FUTURE-Technical-Implementation-Guide.md",
+      "sha256": "6eecde511e4b73ce45853ea7bd47c1616d095cb00ae8713e2b2318d9d15e6690"
+    },
+    {
+      "bytes": 7059,
+      "path": "implementation/FUTURE-User-Installation-Guide.md",
+      "sha256": "20414f339725f9c30cc2737398ec616da6a1f24f63d9ff51de54d41d05417828"
+    },
+    {
+      "bytes": 25808,
+      "path": "implementation/HERMES-FINAL-HANDOFF-REPORT-TEMPLATE.md",
+      "sha256": "b970bc2a00d14abb0e4b3230937fcc1f7b96f52ef64c1165fa1286fcf0f5bb8a"
+    },
+    {
+      "bytes": 3705,
+      "path": "personalization/FUTURE-Discover-Packet.synthetic.example.json",
+      "sha256": "733781b25475b630a530f47ed5989e8ee654847ce10f85b81fb4f0b9c6643363"
+    },
+    {
+      "bytes": 15813,
+      "path": "personalization/FUTURE-Mission-Profile.synthetic.example.json",
+      "sha256": "77abb1c9be70542eeecfec08e3776732410e57c9fb243ded9a02ab74634d5f10"
+    },
+    {
+      "bytes": 5032,
+      "path": "personalization/FUTURE-Soul-Profile.synthetic.example.json",
+      "sha256": "010b060d608576c765e442b873f4c55a540430bbf8003817451112dbce6ecc47"
+    },
+    {
+      "bytes": 5660,
+      "path": "personalization/README.md",
+      "sha256": "e197316f793ec926c8b95956ffdc1fbe012ea8a4b9f1ea3c99aff8b37a8d6deb"
+    },
+    {
+      "bytes": 5146,
+      "path": "personalization/input-schemas/discover-packet-input.schema.json",
+      "sha256": "e9fa2f44d37de10089ce2801dec29899609c826c9a3e0d27385201d55cc3526c"
+    },
+    {
+      "bytes": 7000,
+      "path": "personalization/input-schemas/soul-profile-input.schema.json",
+      "sha256": "f7c886e99dac3b2280da273c8485b9828279e67fc0975569019a3b6e2ddeb6d3"
+    },
+    {
+      "bytes": 18545,
+      "path": "schemas/FUTURE-Mission-Profile.schema.json",
+      "sha256": "7762ffd512883b9bdcf402501f913097333ea0c81ff5ddeb30426db26fd47216"
+    },
+    {
+      "bytes": 524230,
+      "path": "source/archives/DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0.zip",
+      "sha256": "69a4dd86659b41136ce9ceb2ceb52512ab567637ab0be29fdc6f6ab6573223c1"
+    },
+    {
+      "bytes": 206276,
+      "path": "source/archives/Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Package-v1.0.zip",
+      "sha256": "4d1dbeb08ef5689f7193cc233a79da2f126a20be09435ea552ef1de5d77f2999"
+    },
+    {
+      "bytes": 3594,
+      "path": "source/baseline-application/CHANGELOG.md",
+      "sha256": "8977429ac497eb8532d6bc9a71714b3b63628cb72aa12a32b22256e1dc67ad23"
+    },
+    {
+      "bytes": 1284,
+      "path": "source/baseline-application/LICENSE.md",
+      "sha256": "86c51ba0fa2dc3cbcaa728f5580d59fbb5eb1949fad0544fd23f0dfd556f80a0"
+    },
+    {
+      "bytes": 5195,
+      "path": "source/baseline-application/PRIVACY.md",
+      "sha256": "fc436bd81e47e67b621a5a0138b0ece303d3d4b999ae30838bd8ddd6d4f3a72a"
+    },
+    {
+      "bytes": 4687,
+      "path": "source/baseline-application/README-FIRST.md",
+      "sha256": "775ce58ef8614f57af74fa8885c69261258355fef6cd00a5c3648fca9e5cd23a"
+    },
+    {
+      "bytes": 10873,
+      "path": "source/baseline-application/README.md",
+      "sha256": "0ffb0256b4bc62e905ee654f3f5a43f7c5bbfa820f9e7870c083a1a2087d718d"
+    },
+    {
+      "bytes": 7416,
+      "path": "source/baseline-application/RELEASE-MANIFEST.json",
+      "sha256": "22fed55fd789c933f4e7eb50266f88f8dda47f9fba91ebbe9c2cbe4f0ab99702"
+    },
+    {
+      "bytes": 2127,
+      "path": "source/baseline-application/SBOM-or-Dependency-Record.json",
+      "sha256": "19a9cdd2649a9faec1aff9a87a1b85609b9f5789c8e6599e2306a8a13c062a04"
+    },
+    {
+      "bytes": 5468,
+      "path": "source/baseline-application/SECURITY.md",
+      "sha256": "f5b64f9c7ad30de668ee2a6dc4b314e0a0499b2c75f956a3807e2ad248367928"
+    },
+    {
+      "bytes": 3078,
+      "path": "source/baseline-application/SHA256SUMS.txt",
+      "sha256": "e178993d6185b126cc915f0d3026ddb3b07e7c5c7dd432aaf581152db8a5a40e"
+    },
+    {
+      "bytes": 791,
+      "path": "source/baseline-application/Start-DISCOVER.bat",
+      "sha256": "d9d6ccc5bb4d0d0f8eeee460e2c7ca70b2c5192a15c6f056d0e58ccfc7ab40cd"
+    },
+    {
+      "bytes": 677,
+      "path": "source/baseline-application/Start-DISCOVER.command",
+      "sha256": "507a9de94233b1ef2edf16e362514b87aded1e968608b825ced06d548c4fab0f"
+    },
+    {
+      "bytes": 2991,
+      "path": "source/baseline-application/UNINSTALL.md",
+      "sha256": "e2fa66aa6d066e46896ef8509dbfda4aff9950139240de19530648ea6f90d340"
+    },
+    {
+      "bytes": 6,
+      "path": "source/baseline-application/VERSION",
+      "sha256": "c28fcca53637bc88e124af1725df13cb98c69dedefd62fb3cdbe1cdb6b760624"
+    },
+    {
+      "bytes": 183492,
+      "path": "source/baseline-application/assets/app.js",
+      "sha256": "1274744854565ccd03a52b02d36c3e08a0b6fc12725244282236e930937dcb93"
+    },
+    {
+      "bytes": 41311,
+      "path": "source/baseline-application/assets/styles.css",
+      "sha256": "92e95874ff68c8aafec11cabc3a0e3ff25a61cbb14245bf01c7fefce6b67e8cc"
+    },
+    {
+      "bytes": 1675125,
+      "path": "source/baseline-application/base-pack/DISCOVER-Complete-AI-OS-Hermes-Installer.md",
+      "sha256": "61e900ac5c2b10ee240086ab8d24617ff9ea272bdb18b7bd181a8c60cd6102b5"
+    },
+    {
+      "bytes": 202457,
+      "path": "source/baseline-application/base-pack/DISCOVER-Complete-AI-OS-Setup-Guide.docx",
+      "sha256": "87ee88d44c0c924043349dce857210e669fc2853bbd298e4724fe0fec968dd6d"
+    },
+    {
+      "bytes": 29324,
+      "path": "source/baseline-application/base-pack/DISCOVER-Complete-AI-OS-Setup-Guide.md",
+      "sha256": "81a5cc2ea0f394102805a3e71900324b2bb202478b28568eee1d9aec0e0642fc"
+    },
+    {
+      "bytes": 2870,
+      "path": "source/baseline-application/config/capability-evidence.schema.json",
+      "sha256": "95807f8141ba9956f28d0d2381b9accb818447331b76d3cce5c969929b0917cc"
+    },
+    {
+      "bytes": 5146,
+      "path": "source/baseline-application/config/discover-packet-input.schema.json",
+      "sha256": "e9fa2f44d37de10089ce2801dec29899609c826c9a3e0d27385201d55cc3526c"
+    },
+    {
+      "bytes": 6159,
+      "path": "source/baseline-application/config/edena-policy.json",
+      "sha256": "2f7295db54c7a820610ce921d37c405f5cf1515b04427d201adb11105db2a159"
+    },
+    {
+      "bytes": 4046,
+      "path": "source/baseline-application/config/mission-control-manifest.json",
+      "sha256": "cf11fb14f12663494a7b0da16a1ab944970b39e34302fbd7cd32b51bc6764a84"
+    },
+    {
+      "bytes": 5025,
+      "path": "source/baseline-application/config/mission.schema.json",
+      "sha256": "20977278409288804afd22104123651ef9212cf0be0b51764ec2869dc26e4d36"
+    },
+    {
+      "bytes": 5950,
+      "path": "source/baseline-application/config/role-dashboards.json",
+      "sha256": "cabbcdec07fa4b41665112da89796347a4bf37ab55c5d20a4a3bc3ccac6aa27c"
+    },
+    {
+      "bytes": 7000,
+      "path": "source/baseline-application/config/soul-profile-input.schema.json",
+      "sha256": "f7c886e99dac3b2280da273c8485b9828279e67fc0975569019a3b6e2ddeb6d3"
+    },
+    {
+      "bytes": 2408,
+      "path": "source/baseline-application/examples/deidentified-discover-packet.json",
+      "sha256": "b1d93f3b06c7eb8b114a417e59be9bd99b07c2973116e38d95578fccecd0d58c"
+    },
+    {
+      "bytes": 3320,
+      "path": "source/baseline-application/examples/deidentified-soul-profile.json",
+      "sha256": "2e0d5001e60aa17b38a06f3c8ac78fb8d717068d82b4da4c8c3c003584a1d26e"
+    },
+    {
+      "bytes": 3542,
+      "path": "source/baseline-application/examples/sample-mission.json",
+      "sha256": "da2b5dd50be21b95ec23eb2e9a87c341d5723e9838c1b36ae3ae695150ecfe9a"
+    },
+    {
+      "bytes": 18978,
+      "path": "source/baseline-application/guide/DISCOVER-Mission-Control-Setup-Guide.md",
+      "sha256": "2b7e2d35c51a023f31946c8767707f4661312e1572e25095bf52ad669a626a07"
+    },
+    {
+      "bytes": 15158,
+      "path": "source/baseline-application/hermes/DISCOVER-Dashboard-Hermes-Integration-Installer.md",
+      "sha256": "bdd892f671926151f692a5d7221183199e6f39f0827cf4b2fa7efe4f677aa6ec"
+    },
+    {
+      "bytes": 6312,
+      "path": "source/baseline-application/hermes/Hermes-Capability-State.md",
+      "sha256": "aecd4802f94e0163d6aef2dc77d43a3b89d4f9ee4b67d8d2815ba83e73dc38b1"
+    },
+    {
+      "bytes": 60184,
+      "path": "source/baseline-application/index.html",
+      "sha256": "15c3fcea3b2553f4bd87fb739b8a1a4f5b14511f73fece32470fdf6526484045"
+    },
+    {
+      "bytes": 4411,
+      "path": "source/baseline-application/server.mjs",
+      "sha256": "5fffdbb33ecf2888f4e94c7f31cd352f03469680d6f96d72dcd5e3372729fc6e"
+    },
+    {
+      "bytes": 758,
+      "path": "source/baseline-application/start-discover.sh",
+      "sha256": "2e269cf2065ae5e9f2e7c9722a9766e647063e62a5fdbda2006985d6550a34b0"
+    },
+    {
+      "bytes": 7317,
+      "path": "source/baseline-qa-reference/build_discover_mission_control_v2_release.py",
+      "sha256": "d28cbf77b83b32787d63769bcfdd3ebf8f8d4466d40aa142fa2d1445ad7ff0ba"
+    },
+    {
+      "bytes": 5555,
+      "path": "source/baseline-qa-reference/discover-mission-control-v2-dom-qa.json",
+      "sha256": "8b3d01e473654bd5b127c8824dfda0be4b94e34c85f9bf42d704f8a7388fe71d"
+    },
+    {
+      "bytes": 439080,
+      "path": "source/baseline-qa-reference/screenshots/01-first-run-processing.png",
+      "sha256": "855fff295c72646a7c54ece4f39606b1f5e10e69a663e21b1aedac9dbddb6a5b"
+    },
+    {
+      "bytes": 359354,
+      "path": "source/baseline-qa-reference/screenshots/02-first-run-safety.png",
+      "sha256": "2878d78671b3a3460c4ed460164a60e9843f25fc970a89577e4595959ae4d225"
+    },
+    {
+      "bytes": 658546,
+      "path": "source/baseline-qa-reference/screenshots/03-desktop-dashboard.png",
+      "sha256": "ab4813b4f52912e1296a5962c95bf08caa34765c8f26e7fb098d7108973c99e6"
+    },
+    {
+      "bytes": 539945,
+      "path": "source/baseline-qa-reference/screenshots/04-desktop-discover-adapter.png",
+      "sha256": "171737a2d6b82c78b3b8ba7850617795fbb1132d88808a4faf574e5e0550cf15"
+    },
+    {
+      "bytes": 478099,
+      "path": "source/baseline-qa-reference/screenshots/05-desktop-soul-adapter.png",
+      "sha256": "74c370569a72d952f8b4587f378fbac651acb49f7f617843bb33d187c0d26258"
+    },
+    {
+      "bytes": 432319,
+      "path": "source/baseline-qa-reference/screenshots/06-desktop-mission-loop.png",
+      "sha256": "0e853fd355b9c54d83bc85585c7ce2d856e9421bc4838bdf5cca5e42b0ad8bbe"
+    },
+    {
+      "bytes": 455935,
+      "path": "source/baseline-qa-reference/screenshots/07-desktop-capabilities.png",
+      "sha256": "2d42ef7f0e6bf3d9c58c213df98d99371f3a952f0713eee7ce823be8e79fc678"
+    },
+    {
+      "bytes": 522826,
+      "path": "source/baseline-qa-reference/screenshots/08-desktop-guide.png",
+      "sha256": "b51525665dcbf741337e3c4fc826ed3700656bfd8e6b24879b145f5c47539ef3"
+    },
+    {
+      "bytes": 377188,
+      "path": "source/baseline-qa-reference/screenshots/09-desktop-guide-bottom.png",
+      "sha256": "98dc78f97bacf8d0ce6133a34ab1abf6c1b8347c62f25f2812ad2f23cca3a2db"
+    },
+    {
+      "bytes": 237905,
+      "path": "source/baseline-qa-reference/screenshots/10-mobile-dashboard.png",
+      "sha256": "d2a095bccced126eaabfccd84c83e3b1f361c293cd999029b072584468104c9c"
+    },
+    {
+      "bytes": 186480,
+      "path": "source/baseline-qa-reference/screenshots/11-mobile-navigation.png",
+      "sha256": "562d74f61797b5f5af9c6e50369a7279e39f1f3a3dad8f32adf1525e193c1048"
+    },
+    {
+      "bytes": 147971,
+      "path": "source/baseline-qa-reference/screenshots/12-mobile-missions.png",
+      "sha256": "97fd86bd304e8ee28e3e6abf5f57f5bf70f57b3225896c73b8b4fc7e3b6c2d88"
+    },
+    {
+      "bytes": 23036,
+      "path": "source/baseline-qa-reference/test_discover_mission_control_v2_dom.mjs",
+      "sha256": "f13b7ecb5b56529af4fa8b81a6c4c73d477c728a8be4343d0d200e603f1fd237"
+    },
+    {
+      "bytes": 40914,
+      "path": "source/baseline-qa-reference/validate_discover_mission_control_v2_release.py",
+      "sha256": "8a3c07392f9dc1361ca64f73301ed953ab1b57f60ca6ef15e814970196c26d42"
+    },
+    {
+      "bytes": 4760,
+      "path": "source/baseline-qa-reference/visual-qa-report.json",
+      "sha256": "89fec06375831a1593ea558518a51191135fca6cae523656f6f5b32804ec5661"
+    },
+    {
+      "bytes": 10662,
+      "path": "source/baseline-qa-reference/visual_qa_discover_mission_control_v2.mjs",
+      "sha256": "2195a63675b7681360a1cb16aeccddc3f9d66b7dbfa828f503c9325dc18b7ce6"
+    },
+    {
+      "bytes": 274,
+      "path": "source/future-domain-pack/README.md",
+      "sha256": "f7db2c16b573c60550e554fe84a682866a0e4727f3112a7c083d67256afdc89c"
+    },
+    {
+      "bytes": 2947,
+      "path": "source/future-domain-pack/core/00-FUTURE-Foundation-Runtime.md",
+      "sha256": "4607969829fcfec52ca48fb71e930331b6d69d0c646ebe7e669352e63f80e31e"
+    },
+    {
+      "bytes": 2392,
+      "path": "source/future-domain-pack/core/01-Learner-Patient-and-Workforce-Trust-Shield.md",
+      "sha256": "d33d3612d3308aa72d347fb1ca195ee2b7702ca40b83d73b1ff94204a552cf2b"
+    },
+    {
+      "bytes": 11809,
+      "path": "source/future-domain-pack/future/01-FUTURE-SuperPowers-System.md",
+      "sha256": "5ca378064c9a76bf14a0c7b7cf87c46e8e5e32fbdc1368179a5289987b646715"
+    },
+    {
+      "bytes": 551,
+      "path": "source/future-domain-pack/manifest.md",
+      "sha256": "dc7b69fbf2b8fe70a854e62d2416190a56e1bfb6626c9ad0f1ae26950061b072"
+    },
+    {
+      "bytes": 2057,
+      "path": "source/future-domain-pack/templates/FUTURE-Cards-and-Templates.md",
+      "sha256": "2e62e0423f2a334bbf287824829c18b0b5cf3ffffe45f3784ff99ac7521f9302"
+    },
+    {
+      "bytes": 14507,
+      "path": "source/future-domain-pack/tests/Acceptance-Tests.md",
+      "sha256": "d51e58ec885884fa63190598edc30be1fc128fe19a149b5007ba37b4d620d589"
+    },
+    {
+      "bytes": 1886,
+      "path": "source/future-domain-pack/workflows/FUTURE-Command-Center.md",
+      "sha256": "d4d08daa703db70e74abdf0b54fc2f505837fb34e477e4fa39e27b5615005910"
+    },
+    {
+      "bytes": 2494,
+      "path": "source/future-domain-pack/workflows/Seven-Day-and-Ninety-Day-Launch.md",
+      "sha256": "e045bf66fc6376d99064ae62c5879dedbb58a0488f8d5bdb2dc85f8ea61c4853"
+    },
+    {
+      "bytes": 53593,
+      "path": "source/legacy-reference/Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Hermes-Program.md",
+      "sha256": "6c4826e3f4c9d6decd743be1588f429ce2204ee5917989866fd408f7fd522148"
+    },
+    {
+      "bytes": 185375,
+      "path": "source/legacy-reference/Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.docx",
+      "sha256": "6efefb44e28c70767b565d9607e71919312407454095cadb3568b6482cac9b21"
+    },
+    {
+      "bytes": 12455,
+      "path": "source/legacy-reference/Nursing-Student-and-Assistant-Complete-AI-OS-with-FUTURE-SuperPowers-Setup-Guide.md",
+      "sha256": "872d913a46e3bf1655c8b4f8d3b945c5bcee363c7567240400842341d6412e87"
+    },
+    {
+      "bytes": 33614,
+      "path": "source/original-functional-build-master-prompt.md",
+      "sha256": "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2"
+    },
+    {
+      "bytes": 32242,
+      "path": "tools/verify-build-kit.py",
+      "sha256": "172060eab15f32887edd75f8b0736de65c70c13c59b7b8c04059218c87ecd375"
+    }
+  ],
+  "implementation_notice": "Lane, route, home, FUT catalog IDs, schemas, agents, and permissions are build-layer additions; they are not legacy-source identifiers.",
+  "public_safe_derivative": {
+    "created_for": "public GitHub Pages distribution",
+    "no_phi_claim": "No real PHI was identified; derivative removes PHI-shaped fixture language for public safety.",
+    "source_zip_bytes_before_derivative": 6520141,
+    "source_zip_sha256_before_derivative": "737968eac95347887eb55f3146c1d964541193e7843ea1f94b5bdc4e171a96c6",
+    "transformation": "Replaced one patient/MRN-shaped synthetic QA fixture with PUBLIC_SAFE_LEARNER_CONTEXT_PLACEHOLDER in source/baseline-qa-reference/test_discover_mission_control_v2_dom.mjs."
+  },
+  "schema": "NAIO-FUTURE-HERMES-BUILD-KIT-1",
+  "sources": {
+    "baseline_application_zip": "69a4dd86659b41136ce9ceb2ceb52512ab567637ab0be29fdc6f6ab6573223c1",
+    "future_legacy_outer_zip": "4d1dbeb08ef5689f7193cc233a79da2f126a20be09435ea552ef1de5d77f2999",
+    "original_functional_build_prompt": "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2"
+  },
+  "target": {
+    "home": "FUTURE Mission Control",
+    "lane": "nursing_student_assistant",
+    "namespace": "future.*",
+    "product": "FUTURE \u2014 Nursing Student & Nursing Assistant Mission Control",
+    "product_id": "future-nursing-student-assistant-mission-control",
+    "readiness": "not_operational_build_required",
+    "route": "/nursing-students-assistants/dashboard",
+    "version": "2.0.0"
+  }
+}

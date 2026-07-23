@@ -178,7 +178,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         validator_script = ROOT / "scripts" / "validate-healthcare-research-innovation-discover-schemas.py"
         workflow = (ROOT / ".github" / "workflows" / "healthcare-research-innovation-discover.yml").read_text(encoding="utf-8")
         self.assertTrue(validator_script.is_file())
-        self.assertIn("jsonschema==4.25.1", workflow)
+        self.assertIn("jsonschema[format]==4.25.1", workflow)
         self.assertIn("validate-healthcare-research-innovation-discover-schemas.py", workflow)
         self.assertIn("python3 -m http.server 8765 --bind 127.0.0.1", workflow)
         self.assertIn("curl --retry 20 --retry-connrefused --retry-delay 1", workflow)
@@ -333,6 +333,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "healthcare-research-innovation-discover.yml").read_text(encoding="utf-8")
         self.assertIn("actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5", workflow)
         self.assertIn("actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065", workflow)
+        self.assertIn("'jsonschema[format]==4.25.1'", workflow)
         self.assertIn("python3 -m unittest discover -s tests -p 'test_*.py'", workflow)
         self.assertIn("git ls-files --error-unmatch", workflow)
         self.assertIn('git status --porcelain --untracked-files=all', workflow)

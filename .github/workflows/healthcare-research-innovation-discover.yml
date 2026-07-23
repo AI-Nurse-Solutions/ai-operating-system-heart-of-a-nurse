@@ -39,26 +39,43 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
       - name: Install pinned Draft 2020-12 validator
-        run: python3 -m pip install --disable-pip-version-check jsonschema==4.25.1
+        run: python3 -m pip install --disable-pip-version-check 'jsonschema[format]==4.25.1'
       - name: Rebuild committed DISCOVER release bytes twice
         run: |
+          set -euo pipefail
           python3 scripts/build-healthcare-research-innovation-discover.py
-          first="$(sha256sum healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip | cut -d' ' -f1)"
+          first="$(sha256sum \
+            healthcare-research-innovation-leaders/downloads/DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
+            healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip \
+            healthcare-research-innovation-leaders/downloads/manifest.json \
+            healthcare-research-innovation-leaders/downloads/CHECKSUMS.sha256 | sha256sum | cut -d' ' -f1)"
           python3 scripts/build-healthcare-research-innovation-discover.py
-          second="$(sha256sum healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip | cut -d' ' -f1)"
+          second="$(sha256sum \
+            healthcare-research-innovation-leaders/downloads/DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
+            healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip \
+            healthcare-research-innovation-leaders/downloads/manifest.json \
+            healthcare-research-innovation-leaders/downloads/CHECKSUMS.sha256 | sha256sum | cut -d' ' -f1)"
           test "$first" = "$second"
           git diff --exit-code
+          git ls-files --error-unmatch \
+            healthcare-research-innovation-leaders/downloads/DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
+            healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip \
+            healthcare-research-innovation-leaders/downloads/manifest.json \
+            healthcare-research-innovation-leaders/downloads/CHECKSUMS.sha256
+          test -z "$(git status --porcelain --untracked-files=all)"
       - name: Run DISCOVER package, consent, and isolation tests
         run: python3 tests/test_healthcare_research_innovation_discover.py
+      - name: Run full Python regression suite
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Compile schemas and prove conditional evidence is fail-closed
         run: python3 scripts/validate-healthcare-research-innovation-discover-schemas.py
       - name: Run shared adjacent-lane homepage regressions
@@ -76,6 +93,7 @@ jobs:
             / \
             /healthcare-research-innovation-leaders/ \
             /healthcare-research-innovation-leaders/downloads/manifest.json \
+            /healthcare-research-innovation-leaders/downloads/DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
             /healthcare-research-innovation-leaders/downloads/discover-healthcare-research-innovation-leader-complete-edition.zip
           do
             curl --retry 20 --retry-connrefused --retry-delay 1 --fail --silent --show-error \

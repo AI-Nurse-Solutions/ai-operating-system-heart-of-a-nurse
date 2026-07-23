@@ -503,6 +503,9 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         def raw_nul(infos):
             infos[0].orig_filename = infos[0].filename + "\x00suffix"
 
+        def raw_noncanonical(infos):
+            infos[0].orig_filename = infos[0].filename.replace("/", "//", 1)
+
         def backslash(infos):
             set_name(infos[0], infos[0].filename.replace("/", "\\", 1))
 
@@ -540,6 +543,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
 
         cases = {
             "raw-nul": raw_nul,
+            "raw-noncanonical": raw_noncanonical,
             "backslash": backslash,
             "absolute": absolute,
             "drive-prefix": drive_prefix,

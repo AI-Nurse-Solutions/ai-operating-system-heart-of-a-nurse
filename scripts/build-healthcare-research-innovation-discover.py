@@ -83,6 +83,10 @@ def _extract_build_kit_for_verification(zip_path: Path, root: Path) -> Path:
             raw_name = getattr(info, "orig_filename", name)
             if "\x00" in raw_name:
                 raise ValueError(f"Unsafe DISCOVER build-kit ZIP path: {raw_name!r}")
+            if raw_name != name:
+                raise ValueError(
+                    f"DISCOVER build-kit ZIP raw/normalized path mismatch: {raw_name!r}"
+                )
             _safe_zip_target(root, name)
             roots.add(name.split("/", 1)[0])
             if name in seen:

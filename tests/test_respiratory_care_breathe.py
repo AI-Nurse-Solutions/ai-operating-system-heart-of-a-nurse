@@ -347,8 +347,8 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
                     self.assertEqual(archive.read(ZIP_PREFIX + path.relative_to(PACKAGE).as_posix()), path.read_bytes())
 
     def test_self_install_build_kit_is_pinned_and_not_operational(self):
-        self.assertEqual(sha256(BUILD_KIT), "896394e5a6ed63de5342281edc9e5d96cbbca86c94f632a902214d31261a0e22")
-        self.assertEqual(BUILD_KIT.stat().st_size, 6966473)
+        self.assertEqual(sha256(BUILD_KIT), "f08b6587c74964751e4fd6d2e871777ae72f3d92048747e4d99c099ab2b0f753")
+        self.assertEqual(BUILD_KIT.stat().st_size, 6966563)
         with zipfile.ZipFile(BUILD_KIT) as archive:
             self.assertIsNone(archive.testzip())
             self.assertEqual(len(archive.infolist()), 151)
@@ -366,6 +366,7 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             manifest = json.loads(archive.read(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json"))
             handoff = archive.read(BUILD_KIT_ROOT + "GIVE-THIS-PACKAGE-TO-HERMES.md").decode("utf-8")
             read_first = archive.read(BUILD_KIT_ROOT + "README-FIRST.md").decode("utf-8")
+            install = archive.read(BUILD_KIT_ROOT + "INSTALL.md").decode("utf-8")
         self.assertEqual(manifest["target"]["lane"], "respiratory_care")
         self.assertEqual(manifest["target"]["namespace"], "resp_breathe.*")
         self.assertEqual(manifest["target"]["readiness"], "not_operational_build_required")
@@ -385,6 +386,10 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             "Not operational",
         ):
             self.assertIn(phrase, handoff + read_first)
+        self.assertIn("Require the trusted `CHECKSUMS.sha256` sidecar", install)
+        self.assertIn("before extraction", install)
+        self.assertIn("Stop if the sidecar is missing", install)
+        self.assertNotIn("before extraction when available", install)
 
     def test_builder_tracks_build_kit_with_independent_validator(self):
         builder = (ROOT / "scripts" / "build-respiratory-care-breathe.py").read_text(encoding="utf-8")

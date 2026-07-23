@@ -4,7 +4,7 @@
 ## Owner preparation
 
 1. Keep the downloaded ZIP as a read-only recovery copy.
-2. Verify the checksum sidecar before extraction when available.
+2. Require the trusted `CHECKSUMS.sha256` sidecar and verify the downloaded ZIP against it before extraction. Stop if the sidecar is missing, cannot be authenticated as the publisher's release ledger, or does not match.
 3. Extract into a private local folder that does not synchronize to an unapproved service.
 4. Run `python3 tools/verify-build-kit.py --package .`.
 5. Give the entire folder to Hermes; do not paste only selected pages.

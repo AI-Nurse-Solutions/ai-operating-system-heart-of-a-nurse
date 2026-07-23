@@ -181,8 +181,8 @@ class StudentAssistantBuildKitTests(unittest.TestCase):
             "All eighteen optional FUTURE SuperPowers remain <code>Available Inactive</code>",
             "all ten suggested agents remain <code>PERM-P0 Disabled</code>",
             "Nursing Student, Nursing Assistant, or Bridge",
-            "Self-install build-kit lanes 01, 02, and 03",
-            "Complete Edition lanes 04 and 06",
+            "Self-install build-kit lanes 01, 02, 03, and 04",
+            "Complete Edition lane 06",
             "one exact Implementation Activation Card",
             EXPECTED_SHA256,
             "exactly 6,520,918 bytes (approximately 6.52 MB)",
@@ -193,8 +193,8 @@ class StudentAssistantBuildKitTests(unittest.TestCase):
         self.assertNotIn(RETIRED_ZIP.name, page)
         self.assertNotIn("FUTURE Complete Edition Activation Card", page)
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 02, and 03 are reproducible self-install Hermes build kits", readme)
-        self.assertIn("Lanes 04 and 06 are separately governed Complete Editions", readme)
+        self.assertIn("Lanes 01, 02, 03, and 04 are governed self-install Hermes build kits", readme)
+        self.assertIn("Lane 06 is a separately governed Complete Edition", readme)
         self.assertIn("Review-first lane 05 includes", readme)
         self.assertIn("The Nursing Student and Nursing Assistant download is a reproducible governed self-install Hermes build kit", readme)
         self.assertNotIn(RETIRED_ZIP.name, readme)
@@ -209,9 +209,9 @@ class StudentAssistantBuildKitTests(unittest.TestCase):
         }
         for label, text in current_surfaces.items():
             self.assertNotIn(RETIRED_ZIP.name, text, label)
-        self.assertIn("three governed self-install Hermes build kits", current_surfaces["architecture HTML"])
-        self.assertIn("three governed self-install Hermes build kits", current_surfaces["architecture Markdown"])
-        self.assertIn("three governed self-install Hermes build kits", current_surfaces["media packet"])
+        self.assertIn("four governed self-install Hermes build kits", current_surfaces["architecture HTML"])
+        self.assertIn("four governed self-install Hermes build kits", current_surfaces["architecture Markdown"])
+        self.assertIn("four governed self-install Hermes build kits", current_surfaces["media packet"])
         for architecture_pdf in (
             ROOT / "assets" / "nurse-ai-os-architecture-report.pdf",
             ROOT / "assets" / "2026-07-13-nurse-ai-os-updated-architecture-report.pdf",

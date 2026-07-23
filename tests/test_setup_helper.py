@@ -257,7 +257,7 @@ class SetupHelperTests(unittest.TestCase):
         ):
             self.assertIn(phrase, task)
 
-    def test_educator_designer_complete_edition_starter_is_self_contained(self):
+    def test_educator_designer_build_kit_starter_is_preflight_first(self):
         result = node_eval("""
           import {POST_SETUP_LANES,safeTaskForLane} from './setup-helper/setup-helper-model.mjs';
           const lane=POST_SETUP_LANES.find(x=>x.value==='nurse_educator');
@@ -272,10 +272,15 @@ class SetupHelperTests(unittest.TestCase):
             "one synthetic first-win lesson or learning-design outline",
             "Do not save new memory, connect, share, grade, release, activate, automate, or modify my profile",
             "downloading, selecting, opening, and unzipping do not install anything",
-            "complete one-file TEACH program",
+            "TEACH self-install Hermes build kit",
+            "complete ZIP",
+            "manifest, checksums, authoritative unchanged outer ZIP",
             "read-only preflight",
-            "TEACH Complete Edition Activation Card",
-            "all twenty optional TEACH SuperPowers",
+            "Implementation Activation Card with APPROVE, REVISE, and CANCEL",
+            "169 canonical checks and 433 required execution records that begin Not Run",
+            "All twenty optional TEACH SuperPowers remain Available Inactive",
+            "all ten suggested agents remain PERM-P0 Disabled",
+            "private build does not authorize LMS",
         ):
             self.assertIn(phrase, task)
 

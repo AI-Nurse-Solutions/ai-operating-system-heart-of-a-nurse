@@ -202,12 +202,12 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
             "exactly 494,164 bytes (approximately 0.49 MB)",
             EXPECTED_SHA256,
             "Download LEAD Build Kit",
-            "Browse package and build-kit source on GitHub",
+            "Browse tracked package source on GitHub",
             "tree/main/post-setup\"",
             "What happens after a self-install build-kit download?",
             "Core operational; AI setup pending",
-            "Self-install build-kit lanes 01, 02, and 03",
-            "Complete Edition lanes 04 and 06",
+            "Self-install build-kit lanes 01, 02, 03, and 04",
+            "Complete Edition lane 06",
         ):
             self.assertIn(phrase, page)
         self.assertIn("rel=\"icon\" href=\"data:image/svg+xml", page)
@@ -216,7 +216,7 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
         self.assertNotIn("Nurse Leader Complete Edition Activation Card", page)
 
         readme = (ROOT / "post-setup" / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Lanes 01, 02, and 03 are reproducible self-install Hermes build kits", readme)
+        self.assertIn("Lanes 01, 02, 03, and 04 are governed self-install Hermes build kits", readme)
         self.assertIn("Review-first lane 05 includes", readme)
         self.assertIn("The Nurse Leader and Manager download is a reproducible governed self-install Hermes build kit", readme)
         self.assertIn("All sixteen optional powers remain `Available Inactive`", readme)
@@ -231,10 +231,10 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
         for label, text in current_surfaces.items():
             self.assertNotIn("Staff Nurse and Quality Contributor Complete Edition", text, label)
             self.assertNotIn("Nurse Leader and Manager Complete Edition", text, label)
-        self.assertIn("three governed self-install Hermes build kits", current_surfaces["architecture HTML"])
-        self.assertIn("three governed self-install Hermes build kits", current_surfaces["architecture Markdown"])
-        self.assertIn("three governed self-install Hermes build kits", current_surfaces["media packet"])
-        self.assertIn("Lanes 01, 02, and 03 are governed self-install Hermes build kits", current_surfaces["repository README"])
+        self.assertIn("four governed self-install Hermes build kits", current_surfaces["architecture HTML"])
+        self.assertIn("four governed self-install Hermes build kits", current_surfaces["architecture Markdown"])
+        self.assertIn("four governed self-install Hermes build kits", current_surfaces["media packet"])
+        self.assertIn("Lanes 01, 02, 03, and 04 are governed self-install Hermes build kits", current_surfaces["repository README"])
         self.assertIn("separate post-merge gate", current_surfaces["architecture Markdown"])
         for architecture_source in (
             ROOT / "assets" / "nurse-ai-os-architecture-report.md",

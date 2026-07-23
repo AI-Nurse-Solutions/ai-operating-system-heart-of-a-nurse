@@ -506,6 +506,9 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         def raw_noncanonical(infos):
             infos[0].orig_filename = infos[0].filename.replace("/", "//", 1)
 
+        def repeated_terminal_slash(infos):
+            set_name(infos[0], BUILD_KIT_ROOT.rstrip("/") + "/noncanonical//")
+
         def backslash(infos):
             set_name(infos[0], infos[0].filename.replace("/", "\\", 1))
 
@@ -544,6 +547,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         cases = {
             "raw-nul": raw_nul,
             "raw-noncanonical": raw_noncanonical,
+            "repeated-terminal-slash": repeated_terminal_slash,
             "backslash": backslash,
             "absolute": absolute,
             "drive-prefix": drive_prefix,

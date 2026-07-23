@@ -55,12 +55,13 @@ def _safe_zip_target(root: Path, member: str) -> Path:
     if not member or "\x00" in member or "\\" in member:
         raise ValueError(f"Unsafe DISCOVER build-kit ZIP path: {member!r}")
     relative = PurePosixPath(member)
+    canonical = relative.as_posix() + ("/" if member.endswith("/") else "")
     if (
         relative.is_absolute()
         or ".." in relative.parts
         or not relative.parts
         or any(":" in part for part in relative.parts)
-        or member.rstrip("/") != relative.as_posix()
+        or member != canonical
     ):
         raise ValueError(f"Unsafe DISCOVER build-kit ZIP path: {member}")
     target = root.joinpath(*relative.parts).resolve()

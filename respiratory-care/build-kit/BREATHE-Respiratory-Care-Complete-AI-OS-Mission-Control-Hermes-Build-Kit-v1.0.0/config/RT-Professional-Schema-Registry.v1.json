@@ -1,0 +1,101 @@
+{
+  "common_required_fields": [
+    "record_id",
+    "schema_version",
+    "owner_id",
+    "context",
+    "data_class",
+    "source_version",
+    "fact_interpretation",
+    "human_decision_owner",
+    "status",
+    "created_at",
+    "updated_at",
+    "expiry",
+    "retention_rule",
+    "correction_state",
+    "export_state",
+    "deletion_state"
+  ],
+  "count": 18,
+  "entries": [
+    {
+      "id": "professional_identity_context",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "credential_license_competency",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "scope_order_protocol_source",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "shift_capacity_recovery",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "workload_observation_questions",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "equipment_readiness_generic",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "evidence_guideline_ledger",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "synthetic_learning_case",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "respiratory_care_orchestration",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "handoff_transition_rehearsal",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "quality_safety_project",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "infection_prevention_learning",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "teaching_preceptor_development",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "credential_ce_career",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "research_scholarship_portfolio",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "whole_life_private",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "agent_charter_trace",
+      "installation_state": "schema_only_not_operational"
+    },
+    {
+      "id": "control_audit_receipt",
+      "installation_state": "schema_only_not_operational"
+    }
+  ],
+  "namespace": "resp_breathe.*",
+  "notice": "These typed record names preserve the canonical foundation. They are not clinical records, device records, orders, credentials, competency determinations or authority.",
+  "partition_rule": "References resolve only inside the same authorized respiratory-care lane and partition; whole_life_private is personally controlled and disabled institutionally.",
+  "schema": "NAIO-RT-BREATHE-PROFESSIONAL-SCHEMA-REGISTRY-1",
+  "source_defined": true,
+  "version": "1.0.0"
+}

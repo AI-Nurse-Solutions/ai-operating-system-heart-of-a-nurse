@@ -1,0 +1,2798 @@
+{
+  "$id": "https://nurse-ai-os.local/schemas/breathe-mission-profile-1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "deployment_context": {
+            "const": "institution_approved_respiratory_workspace"
+          }
+        },
+        "required": [
+          "deployment_context"
+        ]
+      },
+      "then": {
+        "properties": {
+          "active_partition": {
+            "enum": [
+              "institution_education",
+              "institution_quality",
+              "institution_research",
+              "institution_operations",
+              "institution_personnel",
+              "institution_agent"
+            ]
+          },
+          "ai_preferences": {
+            "properties": {
+              "p4_available": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "p4_available"
+            ],
+            "type": "object"
+          },
+          "data_boundary": {
+            "properties": {
+              "admitted": {
+                "not": {
+                  "contains": {
+                    "const": "RT-DATA-W"
+                  }
+                }
+              }
+            },
+            "required": [
+              "admitted"
+            ],
+            "type": "object"
+          },
+          "governance_preferences": {
+            "properties": {
+              "edition": {
+                "const": "institutional_managed"
+              }
+            },
+            "required": [
+              "edition"
+            ],
+            "type": "object"
+          },
+          "institutional_runtime_bind": {
+            "type": "object"
+          },
+          "whole_life_available": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "deployment_context": {
+            "const": "private_respiratory_os"
+          }
+        },
+        "required": [
+          "deployment_context"
+        ]
+      },
+      "then": {
+        "properties": {
+          "active_partition": {
+            "enum": [
+              "personal_private",
+              "professional_private",
+              "synthetic_learning"
+            ]
+          },
+          "ai_preferences": {
+            "properties": {
+              "p4_available": {
+                "const": false
+              }
+            },
+            "required": [
+              "p4_available"
+            ],
+            "type": "object"
+          },
+          "governance_preferences": {
+            "properties": {
+              "edition": {
+                "const": "personal"
+              }
+            },
+            "required": [
+              "edition"
+            ],
+            "type": "object"
+          },
+          "institutional_runtime_bind": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_workspace_id": {
+            "const": "breathe-shift-capacity-recovery"
+          }
+        },
+        "required": [
+          "active_workspace_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "workspaces": {
+            "contains": {
+              "properties": {
+                "active": {
+                  "const": true
+                },
+                "id": {
+                  "const": "breathe-shift-capacity-recovery"
+                }
+              },
+              "required": [
+                "id",
+                "active"
+              ],
+              "type": "object"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_workspace_id": {
+            "const": "breathe-evidence-learning-credentials"
+          }
+        },
+        "required": [
+          "active_workspace_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "workspaces": {
+            "contains": {
+              "properties": {
+                "active": {
+                  "const": true
+                },
+                "id": {
+                  "const": "breathe-evidence-learning-credentials"
+                }
+              },
+              "required": [
+                "id",
+                "active"
+              ],
+              "type": "object"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_workspace_id": {
+            "const": "breathe-equipment-technical-reliability"
+          }
+        },
+        "required": [
+          "active_workspace_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "workspaces": {
+            "contains": {
+              "properties": {
+                "active": {
+                  "const": true
+                },
+                "id": {
+                  "const": "breathe-equipment-technical-reliability"
+                }
+              },
+              "required": [
+                "id",
+                "active"
+              ],
+              "type": "object"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_workspace_id": {
+            "const": "breathe-care-orchestration-transitions"
+          }
+        },
+        "required": [
+          "active_workspace_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "workspaces": {
+            "contains": {
+              "properties": {
+                "active": {
+                  "const": true
+                },
+                "id": {
+                  "const": "breathe-care-orchestration-transitions"
+                }
+              },
+              "required": [
+                "id",
+                "active"
+              ],
+              "type": "object"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_workspace_id": {
+            "const": "breathe-teaching-quality-leadership-agents"
+          }
+        },
+        "required": [
+          "active_workspace_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "workspaces": {
+            "contains": {
+              "properties": {
+                "active": {
+                  "const": true
+                },
+                "id": {
+                  "const": "breathe-teaching-quality-leadership-agents"
+                }
+              },
+              "required": [
+                "id",
+                "active"
+              ],
+              "type": "object"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_task_hat": {
+            "const": "professional_practice_and_learning"
+          }
+        },
+        "required": [
+          "active_task_hat"
+        ]
+      },
+      "then": {
+        "properties": {
+          "task_hats": {
+            "contains": {
+              "const": "professional_practice_and_learning"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_task_hat": {
+            "const": "acute_response_transport_and_transition"
+          }
+        },
+        "required": [
+          "active_task_hat"
+        ]
+      },
+      "then": {
+        "properties": {
+          "task_hats": {
+            "contains": {
+              "const": "acute_response_transport_and_transition"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_task_hat": {
+            "const": "equipment_support_and_reliability"
+          }
+        },
+        "required": [
+          "active_task_hat"
+        ]
+      },
+      "then": {
+        "properties": {
+          "task_hats": {
+            "contains": {
+              "const": "equipment_support_and_reliability"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_task_hat": {
+            "const": "preceptor_educator_and_simulation"
+          }
+        },
+        "required": [
+          "active_task_hat"
+        ]
+      },
+      "then": {
+        "properties": {
+          "task_hats": {
+            "contains": {
+              "const": "preceptor_educator_and_simulation"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_task_hat": {
+            "const": "quality_research_and_innovation"
+          }
+        },
+        "required": [
+          "active_task_hat"
+        ]
+      },
+      "then": {
+        "properties": {
+          "task_hats": {
+            "contains": {
+              "const": "quality_research_and_innovation"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_task_hat": {
+            "const": "leadership_operations_and_team_coordination"
+          }
+        },
+        "required": [
+          "active_task_hat"
+        ]
+      },
+      "then": {
+        "properties": {
+          "task_hats": {
+            "contains": {
+              "const": "leadership_operations_and_team_coordination"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "active_task_hat": {
+            "const": "career_whole_life_and_recovery"
+          }
+        },
+        "required": [
+          "active_task_hat"
+        ]
+      },
+      "then": {
+        "properties": {
+          "task_hats": {
+            "contains": {
+              "const": "career_whole_life_and_recovery"
+            },
+            "maxContains": 1,
+            "minContains": 1
+          }
+        }
+      }
+    }
+  ],
+  "description": "Closed, derived and user-approved personalization. Raw answers are prohibited. No field proves identity, title equivalence, credential, license, competence, scope, order, protocol, privilege, approval or authority to act.",
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "raw_answers"
+        ]
+      },
+      {
+        "required": [
+          "raw_discover_packet"
+        ]
+      },
+      {
+        "required": [
+          "raw_quiz_answers"
+        ]
+      },
+      {
+        "required": [
+          "raw_soul"
+        ]
+      },
+      {
+        "required": [
+          "soul_md"
+        ]
+      },
+      {
+        "required": [
+          "SOUL.md"
+        ]
+      },
+      {
+        "required": [
+          "patient_data"
+        ]
+      },
+      {
+        "required": [
+          "clinical_case"
+        ]
+      },
+      {
+        "required": [
+          "device_data"
+        ]
+      }
+    ]
+  },
+  "properties": {
+    "active_partition": {
+      "enum": [
+        "personal_private",
+        "professional_private",
+        "synthetic_learning",
+        "institution_education",
+        "institution_quality",
+        "institution_research",
+        "institution_operations",
+        "institution_personnel",
+        "institution_agent"
+      ]
+    },
+    "active_task_hat": {
+      "enum": [
+        "professional_practice_and_learning",
+        "acute_response_transport_and_transition",
+        "equipment_support_and_reliability",
+        "preceptor_educator_and_simulation",
+        "quality_research_and_innovation",
+        "leadership_operations_and_team_coordination",
+        "career_whole_life_and_recovery"
+      ]
+    },
+    "active_workspace_id": {
+      "enum": [
+        "breathe-shift-capacity-recovery",
+        "breathe-evidence-learning-credentials",
+        "breathe-equipment-technical-reliability",
+        "breathe-care-orchestration-transitions",
+        "breathe-teaching-quality-leadership-agents"
+      ]
+    },
+    "ai_preferences": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_permission_state": {
+          "const": "PERM-P0 Disabled"
+        },
+        "agent_state": {
+          "const": "disabled"
+        },
+        "background_automation": {
+          "const": "off"
+        },
+        "default_support": {
+          "enum": [
+            "suggest_only",
+            "prepare_only",
+            "bounded_draft"
+          ]
+        },
+        "external_actions": {
+          "const": "off"
+        },
+        "p4_available": {
+          "type": "boolean"
+        },
+        "tools": {
+          "const": "disabled"
+        }
+      },
+      "required": [
+        "default_support",
+        "agent_state",
+        "agent_permission_state",
+        "tools",
+        "external_actions",
+        "background_automation",
+        "p4_available"
+      ],
+      "type": "object"
+    },
+    "canonical_route": {
+      "const": "/respiratory-care"
+    },
+    "core_values": {
+      "items": {
+        "maxLength": 100,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "created_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "current_priorities": {
+      "items": {
+        "maxLength": 240,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "data_boundary": {
+      "additionalProperties": false,
+      "properties": {
+        "admitted": {
+          "items": {
+            "enum": [
+              "RT-DATA-0",
+              "RT-DATA-1",
+              "RT-DATA-2",
+              "RT-DATA-W",
+              "RT-DATA-M",
+              "RT-DATA-P",
+              "RT-DATA-A",
+              "RT-DATA-R"
+            ]
+          },
+          "maxItems": 8,
+          "minItems": 3,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "default": {
+          "const": "RT-DATA-1"
+        },
+        "rejected_before_echo_and_persistence": {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "RT-DATA-C"
+            },
+            {
+              "const": "RT-DATA-D"
+            },
+            {
+              "const": "RT-DATA-S"
+            },
+            {
+              "const": "RT-DATA-X"
+            }
+          ],
+          "type": "array"
+        }
+      },
+      "required": [
+        "admitted",
+        "default",
+        "rejected_before_echo_and_persistence"
+      ],
+      "type": "object"
+    },
+    "demo": {
+      "type": "boolean"
+    },
+    "deployment_context": {
+      "enum": [
+        "private_respiratory_os",
+        "institution_approved_respiratory_workspace"
+      ]
+    },
+    "display_name": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": "string"
+    },
+    "field_provenance": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "approval": {
+            "enum": [
+              "proposed",
+              "approved",
+              "rejected"
+            ]
+          },
+          "field": {
+            "maxLength": 160,
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "discover_adapter",
+              "soul_adapter",
+              "user_entered",
+              "system_default"
+            ]
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "source",
+          "approval",
+          "updated_at"
+        ],
+        "type": "object"
+      },
+      "maxItems": 200,
+      "minItems": 8,
+      "type": "array"
+    },
+    "foundation_namespace": {
+      "const": "resp_breathe.*"
+    },
+    "goals": {
+      "additionalProperties": false,
+      "properties": {
+        "long_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "medium_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "near_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "protected_life": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "near_term",
+        "medium_term",
+        "long_term",
+        "protected_life"
+      ],
+      "type": "object"
+    },
+    "governance_preferences": {
+      "additionalProperties": false,
+      "properties": {
+        "absolute_stop": {
+          "type": "boolean"
+        },
+        "edena_tier": {
+          "enum": [
+            "Green",
+            "Yellow",
+            "Orange",
+            "Red"
+          ]
+        },
+        "edition": {
+          "enum": [
+            "personal",
+            "institutional_managed"
+          ]
+        },
+        "human_acknowledgment_required": {
+          "type": "boolean"
+        },
+        "risk_tolerance": {
+          "enum": [
+            "conservative",
+            "balanced",
+            "exploratory_with_review"
+          ]
+        }
+      },
+      "required": [
+        "edition",
+        "risk_tolerance",
+        "edena_tier",
+        "absolute_stop",
+        "human_acknowledgment_required"
+      ],
+      "type": "object"
+    },
+    "institutional_runtime_bind": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "expires_at": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "opaque_ref": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            "status": {
+              "const": "externally_verified"
+            },
+            "verified_at": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "opaque_ref",
+            "verified_at",
+            "expires_at"
+          ],
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "institutional_runtime_bind_required": {
+      "const": true
+    },
+    "lane": {
+      "const": "respiratory_care"
+    },
+    "local_title": {
+      "maxLength": 160,
+      "minLength": 1,
+      "type": "string"
+    },
+    "memory_preferences": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_categories": {
+          "items": {
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 12,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "default": {
+          "const": "session_only"
+        },
+        "denied_categories": {
+          "items": {
+            "maxLength": 240,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 24,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "retention_days": {
+          "maximum": 365,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "default",
+        "allowed_categories",
+        "denied_categories",
+        "retention_days"
+      ],
+      "type": "object"
+    },
+    "mission_statement": {
+      "maxLength": 600,
+      "minLength": 1,
+      "type": "string"
+    },
+    "namespace": {
+      "const": "resp_breathe.*"
+    },
+    "practice_boundaries": {
+      "additionalProperties": false,
+      "properties": {
+        "emergency_bypass_to_official_procedures": {
+          "const": true
+        },
+        "human_accountability_explicit": {
+          "const": true
+        },
+        "no_clinical_device_or_patient_executor": {
+          "const": true
+        },
+        "no_ehr_order_abg_or_clinical_data": {
+          "const": true
+        },
+        "no_live_device_alarm_waveform_setting_or_control": {
+          "const": true
+        },
+        "no_live_patient_care": {
+          "const": true
+        },
+        "no_patient_specific_clinical_guidance": {
+          "const": true
+        },
+        "no_phi_or_real_case": {
+          "const": true
+        },
+        "no_scope_credential_competency_determination": {
+          "const": true
+        },
+        "no_surveillance_or_hidden_evaluation": {
+          "const": true
+        }
+      },
+      "required": [
+        "no_phi_or_real_case",
+        "no_live_patient_care",
+        "no_ehr_order_abg_or_clinical_data",
+        "no_live_device_alarm_waveform_setting_or_control",
+        "no_patient_specific_clinical_guidance",
+        "no_clinical_device_or_patient_executor",
+        "no_scope_credential_competency_determination",
+        "no_surveillance_or_hidden_evaluation",
+        "human_accountability_explicit",
+        "emergency_bypass_to_official_procedures"
+      ],
+      "type": "object"
+    },
+    "product_id": {
+      "const": "respiratory-care-breathe-mission-control"
+    },
+    "professional_status": {
+      "enum": [
+        "licensed_respiratory_therapist_or_rcp",
+        "student_orientee_or_new_graduate",
+        "assistant_technician_or_limited_role",
+        "unknown_stale_expired_or_conflicting"
+      ]
+    },
+    "profile_id": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "profile_version": {
+      "const": "1.0-draft"
+    },
+    "recommended_assets": {
+      "additionalProperties": false,
+      "properties": {
+        "agents": {
+          "items": false,
+          "maxItems": 10,
+          "minItems": 10,
+          "prefixItems": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-01"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-02"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-03"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-04"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-05"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-06"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-07"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-08"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-09"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "AGT-10"
+                },
+                "permission": {
+                  "const": "PERM-P0 Disabled"
+                }
+              },
+              "required": [
+                "id",
+                "permission"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "array"
+        },
+        "powers": {
+          "items": false,
+          "maxItems": 24,
+          "minItems": 24,
+          "prefixItems": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-01"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-02"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-03"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-04"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-05"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-06"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-07"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-08"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-09"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-10"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-11"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-12"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-13"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-14"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-15"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-16"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-17"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-18"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-19"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-20"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-21"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-22"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-23"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "PWR-24"
+                },
+                "state": {
+                  "const": "available_inactive"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "array"
+        },
+        "source_recommendations": {
+          "items": false,
+          "maxItems": 13,
+          "minItems": 13,
+          "prefixItems": [
+            {
+              "const": "RT-SRC-01"
+            },
+            {
+              "const": "RT-SRC-02"
+            },
+            {
+              "const": "RT-SRC-03"
+            },
+            {
+              "const": "RT-SRC-04"
+            },
+            {
+              "const": "RT-SRC-05"
+            },
+            {
+              "const": "RT-SRC-06"
+            },
+            {
+              "const": "RT-SRC-07"
+            },
+            {
+              "const": "RT-SRC-08"
+            },
+            {
+              "const": "RT-SRC-09"
+            },
+            {
+              "const": "RT-SRC-10"
+            },
+            {
+              "const": "RT-SRC-11"
+            },
+            {
+              "const": "RT-SRC-12"
+            },
+            {
+              "const": "RT-SRC-13"
+            }
+          ],
+          "type": "array"
+        },
+        "templates": {
+          "items": false,
+          "maxItems": 30,
+          "minItems": 30,
+          "prefixItems": [
+            {
+              "const": "TPL-01"
+            },
+            {
+              "const": "TPL-02"
+            },
+            {
+              "const": "TPL-03"
+            },
+            {
+              "const": "TPL-04"
+            },
+            {
+              "const": "TPL-05"
+            },
+            {
+              "const": "TPL-06"
+            },
+            {
+              "const": "TPL-07"
+            },
+            {
+              "const": "TPL-08"
+            },
+            {
+              "const": "TPL-09"
+            },
+            {
+              "const": "TPL-10"
+            },
+            {
+              "const": "TPL-11"
+            },
+            {
+              "const": "TPL-12"
+            },
+            {
+              "const": "TPL-13"
+            },
+            {
+              "const": "TPL-14"
+            },
+            {
+              "const": "TPL-15"
+            },
+            {
+              "const": "TPL-16"
+            },
+            {
+              "const": "TPL-17"
+            },
+            {
+              "const": "TPL-18"
+            },
+            {
+              "const": "TPL-19"
+            },
+            {
+              "const": "TPL-20"
+            },
+            {
+              "const": "TPL-21"
+            },
+            {
+              "const": "TPL-22"
+            },
+            {
+              "const": "TPL-23"
+            },
+            {
+              "const": "TPL-24"
+            },
+            {
+              "const": "TPL-25"
+            },
+            {
+              "const": "TPL-26"
+            },
+            {
+              "const": "TPL-27"
+            },
+            {
+              "const": "TPL-28"
+            },
+            {
+              "const": "TPL-29"
+            },
+            {
+              "const": "TPL-30"
+            }
+          ],
+          "type": "array"
+        },
+        "workflows": {
+          "items": false,
+          "maxItems": 24,
+          "minItems": 24,
+          "prefixItems": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-01"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-02"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-03"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-04"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-05"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-06"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-07"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-08"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-09"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-10"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-11"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-12"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-13"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-14"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-15"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-16"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-17"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-18"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-19"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-20"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-21"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-22"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-23"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "const": "WF-24"
+                },
+                "state": {
+                  "const": "preview_only"
+                }
+              },
+              "required": [
+                "id",
+                "state"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "array"
+        }
+      },
+      "required": [
+        "powers",
+        "workflows",
+        "templates",
+        "agents",
+        "source_recommendations"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "NAIO-RT-BREATHE-MISSION-PROFILE-1"
+    },
+    "scope_context": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_competency_current_authorization": {
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "last_verified"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "decision_owner": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "source_ref": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "verified_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "decision_owner": {
+              "oneOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expires_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source_ref": {
+              "oneOf": [
+                {
+                  "maxLength": 300,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "status": {
+              "enum": [
+                "user_entered",
+                "source_linked",
+                "last_verified",
+                "verification_needed",
+                "not_applicable",
+                "unknown"
+              ]
+            },
+            "verified_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "source_ref",
+            "verified_at",
+            "expires_at",
+            "decision_owner"
+          ],
+          "type": "object"
+        },
+        "escalation_end_state_expiry": {
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "last_verified"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "decision_owner": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "source_ref": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "verified_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "decision_owner": {
+              "oneOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expires_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source_ref": {
+              "oneOf": [
+                {
+                  "maxLength": 300,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "status": {
+              "enum": [
+                "user_entered",
+                "source_linked",
+                "last_verified",
+                "verification_needed",
+                "not_applicable",
+                "unknown"
+              ]
+            },
+            "verified_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "source_ref",
+            "verified_at",
+            "expires_at",
+            "decision_owner"
+          ],
+          "type": "object"
+        },
+        "order_protocol_owner_official_source": {
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "last_verified"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "decision_owner": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "source_ref": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "verified_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "decision_owner": {
+              "oneOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expires_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source_ref": {
+              "oneOf": [
+                {
+                  "maxLength": 300,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "status": {
+              "enum": [
+                "user_entered",
+                "source_linked",
+                "last_verified",
+                "verification_needed",
+                "not_applicable",
+                "unknown"
+              ]
+            },
+            "verified_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "source_ref",
+            "verified_at",
+            "expires_at",
+            "decision_owner"
+          ],
+          "type": "object"
+        },
+        "patient_privacy_parameters_permissions_platform": {
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "last_verified"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "decision_owner": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "source_ref": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "verified_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "decision_owner": {
+              "oneOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expires_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source_ref": {
+              "oneOf": [
+                {
+                  "maxLength": 300,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "status": {
+              "enum": [
+                "user_entered",
+                "source_linked",
+                "last_verified",
+                "verification_needed",
+                "not_applicable",
+                "unknown"
+              ]
+            },
+            "verified_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "source_ref",
+            "verified_at",
+            "expires_at",
+            "decision_owner"
+          ],
+          "type": "object"
+        },
+        "setting_service_scope": {
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "last_verified"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "decision_owner": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "source_ref": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "verified_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "decision_owner": {
+              "oneOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expires_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source_ref": {
+              "oneOf": [
+                {
+                  "maxLength": 300,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "status": {
+              "enum": [
+                "user_entered",
+                "source_linked",
+                "last_verified",
+                "verification_needed",
+                "not_applicable",
+                "unknown"
+              ]
+            },
+            "verified_at": {
+              "oneOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "source_ref",
+            "verified_at",
+            "expires_at",
+            "decision_owner"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "setting_service_scope",
+        "credential_competency_current_authorization",
+        "order_protocol_owner_official_source",
+        "patient_privacy_parameters_permissions_platform",
+        "escalation_end_state_expiry"
+      ],
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "approved",
+        "rejected",
+        "retired"
+      ]
+    },
+    "task_hats": {
+      "items": {
+        "enum": [
+          "professional_practice_and_learning",
+          "acute_response_transport_and_transition",
+          "equipment_support_and_reliability",
+          "preceptor_educator_and_simulation",
+          "quality_research_and_innovation",
+          "leadership_operations_and_team_coordination",
+          "career_whole_life_and_recovery"
+        ]
+      },
+      "maxItems": 7,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "uncertainties": {
+      "items": {
+        "maxLength": 300,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 30,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "updated_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "whole_life_available": {
+      "type": "boolean"
+    },
+    "workspaces": {
+      "contains": {
+        "properties": {
+          "active": {
+            "const": true
+          }
+        },
+        "required": [
+          "active"
+        ],
+        "type": "object"
+      },
+      "items": false,
+      "maxContains": 1,
+      "maxItems": 5,
+      "minContains": 1,
+      "minItems": 5,
+      "prefixItems": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "active": {
+              "type": "boolean"
+            },
+            "id": {
+              "const": "breathe-shift-capacity-recovery"
+            },
+            "title": {
+              "const": "Shift, Capacity & Recovery"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "active"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "active": {
+              "type": "boolean"
+            },
+            "id": {
+              "const": "breathe-evidence-learning-credentials"
+            },
+            "title": {
+              "const": "Evidence, Synthetic Learning & Credentials"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "active"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "active": {
+              "type": "boolean"
+            },
+            "id": {
+              "const": "breathe-equipment-technical-reliability"
+            },
+            "title": {
+              "const": "Equipment & Technical Reliability"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "active"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "active": {
+              "type": "boolean"
+            },
+            "id": {
+              "const": "breathe-care-orchestration-transitions"
+            },
+            "title": {
+              "const": "CIRCLE Care Orchestration & Transitions"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "active"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "active": {
+              "type": "boolean"
+            },
+            "id": {
+              "const": "breathe-teaching-quality-leadership-agents"
+            },
+            "title": {
+              "const": "Teaching, Quality, Leadership & Agent Stewardship"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "active"
+          ],
+          "type": "object"
+        }
+      ],
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "profile_version",
+    "product_id",
+    "lane",
+    "foundation_namespace",
+    "namespace",
+    "canonical_route",
+    "profile_id",
+    "status",
+    "created_at",
+    "updated_at",
+    "display_name",
+    "professional_status",
+    "local_title",
+    "mission_statement",
+    "core_values",
+    "current_priorities",
+    "goals",
+    "task_hats",
+    "active_task_hat",
+    "workspaces",
+    "active_workspace_id",
+    "active_partition",
+    "deployment_context",
+    "scope_context",
+    "practice_boundaries",
+    "data_boundary",
+    "ai_preferences",
+    "memory_preferences",
+    "governance_preferences",
+    "whole_life_available",
+    "recommended_assets",
+    "field_provenance",
+    "uncertainties",
+    "institutional_runtime_bind_required",
+    "institutional_runtime_bind",
+    "demo"
+  ],
+  "title": "BREATHE Respiratory Care Mission Profile",
+  "type": "object"
+}

@@ -4,6 +4,13 @@ on:
   pull_request:
     paths:
       - "assets/nurse-ai.css"
+      - "architecture-report.html"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.md"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/nurse-ai-os-architecture-report.pdf"
+      - "assets/nurse-ai-os-media-packet.md"
+      - "assets/nurse-ai-os-media-packet.pdf"
       - "switchboard/**"
       - "tests/test_switchboard.py"
       - "tests/test_switchboard_browser.mjs"
@@ -18,8 +25,10 @@ on:
       - "post-setup/downloads/**"
       - "scripts/build-lead-nurse-leader-build-kit.py"
       - "scripts/build-post-setup-role-packs.py"
+      - "scripts/rotate-teach-verifier-portability.py"
       - "scripts/rotate-wings-country-boundary.py"
       - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_educator_role_pack.py"
       - "tests/test_leader_role_pack.py"
       - "tests/test_np_role_pack.py"
       - "privacy.html"
@@ -30,6 +39,13 @@ on:
     branches: [main]
     paths:
       - "assets/nurse-ai.css"
+      - "architecture-report.html"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.md"
+      - "assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/nurse-ai-os-architecture-report.pdf"
+      - "assets/nurse-ai-os-media-packet.md"
+      - "assets/nurse-ai-os-media-packet.pdf"
       - "switchboard/**"
       - "tests/test_switchboard.py"
       - "tests/test_switchboard_browser.mjs"
@@ -44,8 +60,10 @@ on:
       - "post-setup/downloads/**"
       - "scripts/build-lead-nurse-leader-build-kit.py"
       - "scripts/build-post-setup-role-packs.py"
+      - "scripts/rotate-teach-verifier-portability.py"
       - "scripts/rotate-wings-country-boundary.py"
       - "scripts/scan-public-healthcare-artifacts.py"
+      - "tests/test_educator_role_pack.py"
       - "tests/test_leader_role_pack.py"
       - "tests/test_np_role_pack.py"
       - "privacy.html"
@@ -121,6 +139,10 @@ jobs:
               "nurse_leader_lead": {
                   "post-setup/downloads/nurse-ai-os-post-setup-nurse-leader-and-manager.zip": "D",
                   "post-setup/downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
+              "nurse_educator_teach": {
+                  "post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip": "D",
+                  "post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
               },
               "nurse_practitioner_wings": {
                   "post-setup/downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip": "D",
@@ -226,13 +248,37 @@ jobs:
           for key, value in expected_lead.items():
               if lead.get(key) != value:
                   raise SystemExit(f"Nurse Leader LEAD manifest mismatch for {key}: {lead.get(key)!r}")
+          educator = next(item for item in manifest["packages"] if item["folder"] == "04-Nurse-Educator")
+          expected_educator = {
+              "activation": "user_initiated_read_only_preflight_with_exact_implementation_activation_card",
+              "build_kit_member_count": 121,
+              "build_kit_version": "1.0.0",
+              "build_kit_verifier_sha256": "3b6017d9e07793f06a470d74f7a1632fbe34f6f5f5c02b7322172cfd9d4e1cfb",
+              "bytes": 6820684,
+              "ci_validation": "tracked_repository_validator_no_artifact_controlled_code_execution",
+              "download": "downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "download_type": "self_install_hermes_build_kit",
+              "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+              "readiness": "not_operational_build_required",
+              "sha256": "39d7a83a79b6137d50b6b5da639cd44d0427e4e06e30fc9d7f3b19805b4080f3",
+              "source_zip_bytes_before_derivative": 6820134,
+              "source_zip_sha256_before_derivative": "8b7e8290382f7df5830554ad740a8fd280c3d2be5e8948d1a539afe074416cb9",
+              "target_namespace": "neid_teach.*",
+              "target_product_id": "nurse-educator-instructional-designer-mission-control",
+              "target_route": "/nurse-educators-designers/dashboard",
+              "target_version": "2.0.0",
+              "teach_overlay_second": True,
+          }
+          for key, value in expected_educator.items():
+              if educator.get(key) != value:
+                  raise SystemExit(f"Nurse Educator TEACH manifest mismatch for {key}: {educator.get(key)!r}")
 
           wings = next(item for item in manifest["packages"] if item["folder"] == "06-Nurse-Practitioner-USA")
           expected_wings = {
               "activation": "user_initiated_read_only_preflight_with_exact_wings_implementation_activation_card",
               "build_kit_member_count": 131,
               "build_kit_version": "1.0.0",
-              "bytes": 7696949,
+              "bytes": 7697078,
               "country_availability": ["United States"],
               "download": "downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
               "download_type": "self_install_hermes_build_kit",
@@ -240,7 +286,7 @@ jobs:
               "package_version": "1.0.0",
               "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
               "readiness": "not_operational_build_required",
-              "sha256": "484f5510a0c2f30dd0ae41854e9322eec9004bbe65c8585af607b0a88fc086f1",
+              "sha256": "48461f307d1c2639d35467f803d1fd8e5e1da16e69d57b88eb9dbf987bf652fc",
               "source_zip_bytes_before_derivative": 7695951,
               "source_zip_sha256_before_derivative": "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501",
               "target_namespace": "np_wings.*",

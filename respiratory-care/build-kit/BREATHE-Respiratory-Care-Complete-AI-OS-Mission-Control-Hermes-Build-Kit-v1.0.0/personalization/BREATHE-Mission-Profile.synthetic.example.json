@@ -1,0 +1,514 @@
+{
+  "active_partition": "personal_private",
+  "active_task_hat": "quality_research_and_innovation",
+  "active_workspace_id": "breathe-care-orchestration-transitions",
+  "ai_preferences": {
+    "agent_permission_state": "PERM-P0 Disabled",
+    "agent_state": "disabled",
+    "background_automation": "off",
+    "default_support": "prepare_only",
+    "external_actions": "off",
+    "p4_available": false,
+    "tools": "disabled"
+  },
+  "canonical_route": "/respiratory-care",
+  "core_values": [
+    "truth",
+    "care",
+    "agency",
+    "equity",
+    "family"
+  ],
+  "created_at": "2026-07-20T12:00:00Z",
+  "current_priorities": [
+    "Prepare one fictional quality-improvement concept",
+    "Protect two recovery blocks"
+  ],
+  "data_boundary": {
+    "admitted": [
+      "RT-DATA-0",
+      "RT-DATA-1",
+      "RT-DATA-2",
+      "RT-DATA-W"
+    ],
+    "default": "RT-DATA-1",
+    "rejected_before_echo_and_persistence": [
+      "RT-DATA-C",
+      "RT-DATA-D",
+      "RT-DATA-S",
+      "RT-DATA-X"
+    ]
+  },
+  "demo": true,
+  "deployment_context": "private_respiratory_os",
+  "display_name": "Synthetic Respiratory Care Explorer",
+  "field_provenance": [
+    {
+      "approval": "proposed",
+      "field": "display_name",
+      "source": "discover_adapter",
+      "updated_at": "2026-07-20T12:00:00Z"
+    },
+    {
+      "approval": "proposed",
+      "field": "mission_statement",
+      "source": "soul_adapter",
+      "updated_at": "2026-07-20T12:00:00Z"
+    },
+    {
+      "approval": "proposed",
+      "field": "core_values",
+      "source": "soul_adapter",
+      "updated_at": "2026-07-20T12:00:00Z"
+    },
+    {
+      "approval": "proposed",
+      "field": "current_priorities",
+      "source": "discover_adapter",
+      "updated_at": "2026-07-20T12:00:00Z"
+    },
+    {
+      "approval": "proposed",
+      "field": "goals",
+      "source": "discover_adapter",
+      "updated_at": "2026-07-20T12:00:00Z"
+    },
+    {
+      "approval": "proposed",
+      "field": "task_hats",
+      "source": "discover_adapter",
+      "updated_at": "2026-07-20T12:00:00Z"
+    },
+    {
+      "approval": "proposed",
+      "field": "practice_boundaries",
+      "source": "system_default",
+      "updated_at": "2026-07-20T12:00:00Z"
+    },
+    {
+      "approval": "proposed",
+      "field": "recommended_assets",
+      "source": "system_default",
+      "updated_at": "2026-07-20T12:00:00Z"
+    }
+  ],
+  "foundation_namespace": "resp_breathe.*",
+  "goals": {
+    "long_term": [
+      "Develop a sustainable portfolio career"
+    ],
+    "medium_term": [
+      "Build a reviewed evidence portfolio"
+    ],
+    "near_term": [
+      "Complete one synthetic BREATHE mission"
+    ],
+    "protected_life": [
+      "Keep one evening free each week"
+    ]
+  },
+  "governance_preferences": {
+    "absolute_stop": false,
+    "edena_tier": "Green",
+    "edition": "personal",
+    "human_acknowledgment_required": false,
+    "risk_tolerance": "conservative"
+  },
+  "institutional_runtime_bind": null,
+  "institutional_runtime_bind_required": true,
+  "lane": "respiratory_care",
+  "local_title": "Synthetic respiratory-care learner",
+  "memory_preferences": {
+    "allowed_categories": [
+      "approved nonsensitive goals"
+    ],
+    "default": "session_only",
+    "denied_categories": [
+      "patient information",
+      "credential secrets",
+      "restricted employer information"
+    ],
+    "retention_days": 0
+  },
+  "mission_statement": "Create sustainable professional impact while protecting truth, judgment and the life carrying the work.",
+  "namespace": "resp_breathe.*",
+  "practice_boundaries": {
+    "emergency_bypass_to_official_procedures": true,
+    "human_accountability_explicit": true,
+    "no_clinical_device_or_patient_executor": true,
+    "no_ehr_order_abg_or_clinical_data": true,
+    "no_live_device_alarm_waveform_setting_or_control": true,
+    "no_live_patient_care": true,
+    "no_patient_specific_clinical_guidance": true,
+    "no_phi_or_real_case": true,
+    "no_scope_credential_competency_determination": true,
+    "no_surveillance_or_hidden_evaluation": true
+  },
+  "product_id": "respiratory-care-breathe-mission-control",
+  "professional_status": "unknown_stale_expired_or_conflicting",
+  "profile_id": "f4a74083-b71d-4e98-8ec6-1fa9ec9197cd",
+  "profile_version": "1.0-draft",
+  "recommended_assets": {
+    "agents": [
+      {
+        "id": "AGT-01",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-02",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-03",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-04",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-05",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-06",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-07",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-08",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-09",
+        "permission": "PERM-P0 Disabled"
+      },
+      {
+        "id": "AGT-10",
+        "permission": "PERM-P0 Disabled"
+      }
+    ],
+    "powers": [
+      {
+        "id": "PWR-01",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-02",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-03",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-04",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-05",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-06",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-07",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-08",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-09",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-10",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-11",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-12",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-13",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-14",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-15",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-16",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-17",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-18",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-19",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-20",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-21",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-22",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-23",
+        "state": "available_inactive"
+      },
+      {
+        "id": "PWR-24",
+        "state": "available_inactive"
+      }
+    ],
+    "source_recommendations": [
+      "RT-SRC-01",
+      "RT-SRC-02",
+      "RT-SRC-03",
+      "RT-SRC-04",
+      "RT-SRC-05",
+      "RT-SRC-06",
+      "RT-SRC-07",
+      "RT-SRC-08",
+      "RT-SRC-09",
+      "RT-SRC-10",
+      "RT-SRC-11",
+      "RT-SRC-12",
+      "RT-SRC-13"
+    ],
+    "templates": [
+      "TPL-01",
+      "TPL-02",
+      "TPL-03",
+      "TPL-04",
+      "TPL-05",
+      "TPL-06",
+      "TPL-07",
+      "TPL-08",
+      "TPL-09",
+      "TPL-10",
+      "TPL-11",
+      "TPL-12",
+      "TPL-13",
+      "TPL-14",
+      "TPL-15",
+      "TPL-16",
+      "TPL-17",
+      "TPL-18",
+      "TPL-19",
+      "TPL-20",
+      "TPL-21",
+      "TPL-22",
+      "TPL-23",
+      "TPL-24",
+      "TPL-25",
+      "TPL-26",
+      "TPL-27",
+      "TPL-28",
+      "TPL-29",
+      "TPL-30"
+    ],
+    "workflows": [
+      {
+        "id": "WF-01",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-02",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-03",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-04",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-05",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-06",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-07",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-08",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-09",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-10",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-11",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-12",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-13",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-14",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-15",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-16",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-17",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-18",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-19",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-20",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-21",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-22",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-23",
+        "state": "preview_only"
+      },
+      {
+        "id": "WF-24",
+        "state": "preview_only"
+      }
+    ]
+  },
+  "schema": "NAIO-RT-BREATHE-MISSION-PROFILE-1",
+  "scope_context": {
+    "credential_competency_current_authorization": {
+      "decision_owner": null,
+      "expires_at": null,
+      "source_ref": null,
+      "status": "verification_needed",
+      "verified_at": null
+    },
+    "escalation_end_state_expiry": {
+      "decision_owner": null,
+      "expires_at": null,
+      "source_ref": null,
+      "status": "verification_needed",
+      "verified_at": null
+    },
+    "order_protocol_owner_official_source": {
+      "decision_owner": null,
+      "expires_at": null,
+      "source_ref": null,
+      "status": "verification_needed",
+      "verified_at": null
+    },
+    "patient_privacy_parameters_permissions_platform": {
+      "decision_owner": null,
+      "expires_at": null,
+      "source_ref": null,
+      "status": "verification_needed",
+      "verified_at": null
+    },
+    "setting_service_scope": {
+      "decision_owner": null,
+      "expires_at": null,
+      "source_ref": null,
+      "status": "verification_needed",
+      "verified_at": null
+    }
+  },
+  "status": "proposed",
+  "task_hats": [
+    "quality_research_and_innovation",
+    "career_whole_life_and_recovery"
+  ],
+  "uncertainties": [
+    "All professional authority fields remain unverified",
+    "This synthetic profile is not badge evidence"
+  ],
+  "updated_at": "2026-07-20T12:00:00Z",
+  "whole_life_available": true,
+  "workspaces": [
+    {
+      "active": false,
+      "id": "breathe-shift-capacity-recovery",
+      "title": "Shift, Capacity & Recovery"
+    },
+    {
+      "active": false,
+      "id": "breathe-evidence-learning-credentials",
+      "title": "Evidence, Synthetic Learning & Credentials"
+    },
+    {
+      "active": false,
+      "id": "breathe-equipment-technical-reliability",
+      "title": "Equipment & Technical Reliability"
+    },
+    {
+      "active": true,
+      "id": "breathe-care-orchestration-transitions",
+      "title": "CIRCLE Care Orchestration & Transitions"
+    },
+    {
+      "active": false,
+      "id": "breathe-teaching-quality-leadership-agents",
+      "title": "Teaching, Quality, Leadership & Agent Stewardship"
+    }
+  ]
+}

@@ -12,7 +12,9 @@ import copy
 import hashlib
 import json
 import os
+import stat
 import tempfile
+import unicodedata
 import zipfile
 from pathlib import Path, PurePosixPath
 
@@ -24,6 +26,11 @@ DEFAULT_ZIP = REPO / "post-setup" / "downloads" / (
 ROOT = "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
 COUNTRIES = ["United States"]
 OUTER_ZIP_ARGUMENT = f"../{DEFAULT_ZIP.name}"
+EXPECTED_MEMBER_COUNT = 131
+MAX_MEMBER_BYTES = 32 * 1024 * 1024
+MAX_EXPANDED_BYTES = 256 * 1024 * 1024
+ALLOWED_COMPRESSION = {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}
+EXECUTABLE_MEMBERS = {f"{ROOT}/tools/verify-build-kit.py"}
 BOUNDARY = (
     "Availability boundary: this build kit is available only in the United States. "
     "If the target user or intended use is outside the United States, stop before "
@@ -52,18 +59,78 @@ def replace_instruction(text: str, old: str, new: str) -> str:
     return text.replace(old, new, 1)
 
 
+def validate_infos(
+    infos: list[zipfile.ZipInfo], *, expected_count: int = EXPECTED_MEMBER_COUNT
+) -> None:
+    """Reject all unsafe archive metadata before CRC or member payload reads."""
+    if len(infos) != expected_count:
+        raise ValueError(f"WINGS ZIP member count mismatch: {len(infos)} != {expected_count}")
+
+    seen: set[str] = set()
+    normalized: set[str] = set()
+    roots: set[str] = set()
+    expanded_bytes = 0
+    for item in infos:
+        name = item.filename
+        raw_name = getattr(item, "orig_filename", name)
+        pure = PurePosixPath(name)
+        if "\x00" in raw_name or raw_name != name:
+            raise ValueError(f"WINGS ZIP raw/normalized path mismatch: {raw_name!r}")
+        if (
+            not name
+            or name.startswith("/")
+            or "\\" in name
+            or name != pure.as_posix()
+            or any(part in ("", ".", "..") or ":" in part for part in pure.parts)
+        ):
+            raise ValueError(f"Unsafe WINGS ZIP path: {name!r}")
+        if name in seen:
+            raise ValueError(f"WINGS ZIP contains duplicate entry name: {name}")
+        seen.add(name)
+        key = unicodedata.normalize("NFC", name).casefold()
+        if key in normalized:
+            raise ValueError(f"WINGS ZIP contains case/Unicode-colliding entry name: {name}")
+        normalized.add(key)
+        roots.add(name.split("/", 1)[0])
+        if item.flag_bits & 0x1:
+            raise ValueError(f"Encrypted WINGS ZIP member rejected: {name}")
+        if item.compress_type not in ALLOWED_COMPRESSION:
+            raise ValueError(f"Unsupported WINGS ZIP compression method: {name}")
+        if item.is_dir():
+            raise ValueError(f"WINGS ZIP directory entry rejected: {name}")
+        mode = (item.external_attr >> 16) & 0o177777
+        expected_mode = stat.S_IFREG | (0o755 if name in EXECUTABLE_MEMBERS else 0o644)
+        if mode != expected_mode:
+            raise ValueError(
+                f"WINGS ZIP mode mismatch: {name} expected={oct(expected_mode)} actual={oct(mode)}"
+            )
+        if item.file_size < 0 or item.compress_size < 0:
+            raise ValueError(f"WINGS ZIP member has invalid size metadata: {name}")
+        if item.file_size > MAX_MEMBER_BYTES:
+            raise ValueError(f"WINGS ZIP member exceeds byte limit: {name}")
+        expanded_bytes += item.file_size
+        if expanded_bytes > MAX_EXPANDED_BYTES:
+            raise ValueError("WINGS ZIP expanded bytes exceed limit")
+
+    if roots != {ROOT}:
+        raise ValueError(f"WINGS ZIP root is unexpected: {sorted(roots)}")
+    for name in seen:
+        parts = name.split("/")
+        for index in range(1, len(parts)):
+            if "/".join(parts[:index]) in seen:
+                raise ValueError(f"WINGS ZIP file/directory collision: {name}")
+    if not EXECUTABLE_MEMBERS.issubset(seen):
+        raise ValueError("WINGS ZIP required verifier member is missing")
+
+
 def load_entries(path: Path) -> tuple[list[zipfile.ZipInfo], dict[str, bytes], bytes]:
     with zipfile.ZipFile(path) as archive:
         infos = archive.infolist()
-        names = [item.filename for item in infos]
-        if len(names) != len(set(names)):
-            raise ValueError("WINGS ZIP contains duplicate entry names")
-        if not names or names[0].split("/", 1)[0] != ROOT:
-            raise ValueError("WINGS ZIP root is unexpected")
-        for name in names:
-            pure = PurePosixPath(name)
-            if pure.is_absolute() or ".." in pure.parts or "\\" in name:
-                raise ValueError(f"Unsafe WINGS ZIP path: {name}")
+        validate_infos(infos)
+        # CRC verification reads payloads, so it follows the complete metadata pass.
+        bad_crc = archive.testzip()
+        if bad_crc is not None:
+            raise ValueError(f"WINGS ZIP CRC failure: {bad_crc}")
         data = {item.filename: archive.read(item) for item in infos if not item.is_dir()}
         return infos, data, archive.comment
 
@@ -115,6 +182,14 @@ def rotate(path: Path) -> None:
         f"python3 tools/verify-build-kit.py --package . --zip {OUTER_ZIP_ARGUMENT}"
     )
     install_text = data[install_path].decode("utf-8")
+    install_text = replace_instruction(
+        install_text,
+        "2. Verify the checksum sidecar before extraction when available.",
+        "2. Require the trusted `CHECKSUMS.sha256` sidecar obtained through the "
+        "authenticated publisher channel and verify that it contains the exact SHA-256 "
+        f"digest for `{DEFAULT_ZIP.name}` before extraction. Stop if the sidecar is "
+        "missing, untrusted, malformed, or mismatched; do not extract the ZIP.",
+    )
     install_text = replace_instruction(
         install_text,
         f"4. Run `{bare_verifier}`.",

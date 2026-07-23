@@ -39,24 +39,63 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
-      - name: Rebuild committed BREATHE release bytes
+      - name: Install pinned Draft 2020-12 validator
+        run: python3 -m pip install --disable-pip-version-check 'jsonschema[format]==4.25.1'
+      - name: Rebuild committed BREATHE release bytes twice
         run: |
+          set -euo pipefail
           python3 scripts/build-respiratory-care-breathe.py
+          first="$(sha256sum \
+            respiratory-care/downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
+            respiratory-care/downloads/breathe-respiratory-care-complete-edition.zip \
+            respiratory-care/downloads/manifest.json \
+            respiratory-care/downloads/CHECKSUMS.sha256 | sha256sum | cut -d' ' -f1)"
+          python3 scripts/build-respiratory-care-breathe.py
+          second="$(sha256sum \
+            respiratory-care/downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
+            respiratory-care/downloads/breathe-respiratory-care-complete-edition.zip \
+            respiratory-care/downloads/manifest.json \
+            respiratory-care/downloads/CHECKSUMS.sha256 | sha256sum | cut -d' ' -f1)"
+          test "$first" = "$second"
           git diff --exit-code
+          git ls-files --error-unmatch respiratory-care/downloads/breathe-respiratory-care-complete-edition.zip
+          git ls-files --error-unmatch respiratory-care/downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip
+          git ls-files --error-unmatch respiratory-care/build-kit/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0/tools/verify-build-kit.py
+          git ls-files --error-unmatch respiratory-care/downloads/manifest.json
+          git ls-files --error-unmatch respiratory-care/downloads/CHECKSUMS.sha256
+          test -z "$(git status --porcelain --untracked-files=all)"
       - name: Run BREATHE package and isolation tests
         run: python3 tests/test_respiratory_care_breathe.py
+      - name: Run full Python regression suite
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Run shared adjacent-lane homepage regression
         run: python3 tests/test_medical_resident_rounds.py
       - name: Refuse accidental secrets or PHI examples
         run: python3 scripts/scan-public-healthcare-artifacts.py respiratory-care --label BREATHE
+      - name: Verify local HTTP route, manifest, and downloads
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/breathe-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for path in \
+            / \
+            /respiratory-care/ \
+            /respiratory-care/downloads/manifest.json \
+            /respiratory-care/downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip \
+            /respiratory-care/downloads/breathe-respiratory-care-complete-edition.zip
+          do
+            curl --retry 20 --retry-connrefused --retry-delay 1 --fail --silent --show-error \
+              --output /tmp/breathe-response "http://127.0.0.1:8765$path"
+            test -s /tmp/breathe-response
+          done
       - name: Verify page links and Python syntax
         run: |
           python3 -m py_compile scripts/build-respiratory-care-breathe.py tests/test_respiratory_care_breathe.py

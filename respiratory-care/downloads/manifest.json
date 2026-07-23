@@ -9,6 +9,7 @@
         "total": 160
       },
       "activation": "user_initiated_guided_complete_setup_with_combined_activation_card",
+      "artifact_class": "legacy_complete_edition_source_package",
       "breathe_overlay_second": true,
       "bytes": 327148,
       "device_control": false,
@@ -35,9 +36,30 @@
       "suggested_agents_total": 10,
       "templates_total": 30,
       "workflows_total": 24
+    },
+    {
+      "activation_available": true,
+      "activation_contract": "user_initiated_read_only_preflight_then_exact_implementation_activation_card_approval",
+      "artifact_class": "hermes_functional_build_kit_self_install",
+      "build_kit_version": "1.0.0",
+      "bytes": 6966563,
+      "complete_ai_os_claim": "not_operational_build_required",
+      "download": "downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+      "install_on_download": false,
+      "institutional_authorization": false,
+      "operational_data_authorized": false,
+      "population_lane": "respiratory_care",
+      "pre_install_disclosure_required": true,
+      "readiness": "not_operational_build_required",
+      "route": "/respiratory-care/",
+      "runtime_status": "not_built_until_user_hermes_runs_approved_program",
+      "sha256": "f08b6587c74964751e4fd6d2e871777ae72f3d92048747e4d99c099ab2b0f753",
+      "target_application_version": "2.0.0",
+      "total_required_execution_records": 424
     }
   ],
-  "purpose": "standalone adjacent clinical lane for respiratory care professionals; separate from Nurse AI OS and Medical Resident ROUNDS",
+  "purpose": "standalone adjacent clinical lane for respiratory care professionals; separate from Nurse AI OS and Medical Resident ROUNDS; includes verified self-install Hermes build kit",
   "release": "2026.07.16.1",
+  "release_posture": "source_package_available_build_kit_available_runtime_not_operational_until_user_approved_build",
   "schema_version": "1.0"
 }

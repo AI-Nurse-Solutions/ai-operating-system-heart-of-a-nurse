@@ -1,6 +1,6 @@
 # Nurse AI OS Post-Setup Role Packs
 
-These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 01, 02, 03, and 06 are reproducible self-install Hermes build kits. Lane 04 is a separately governed Complete Edition. Every lane requires review or read-only preflight and exact human approval before any installation mutation.
+These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 01, 02, 03, 04, and 06 are governed self-install Hermes build kits. Every lane requires review or read-only preflight and exact human approval before any installation mutation.
 
 ## Role folders
 
@@ -9,7 +9,7 @@ These are separate post-setup downloads for users who have already completed the
 | `01-Student-Nurse` | Nursing Student and Nursing Assistant | `downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `02-Staff-Nurse` | Staff Nurse and Quality Contributor | `downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `03-Nurse-Leader-and-Manager` | Nurse Leader and Manager | `downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
-| `04-Nurse-Educator` | Nurse Educator and Instructional Designer | `downloads/nurse-ai-os-post-setup-nurse-educator.zip` |
+| `04-Nurse-Educator` | Nurse Educator and Instructional Designer | `downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `05-Nurse-Connected-Ally` | Nurse-Connected Ally | `downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip` |
 | `06-Nurse-Practitioner-USA` | Nurse Practitioner (USA) | `downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 
@@ -27,7 +27,7 @@ Nothing is installed or activated. Every package declares:
 }
 ```
 
-Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. Self-install lanes 01, 02, 03, and 06 require the complete ZIP, package verification, read-only environment preflight, and the lane's exact Implementation Activation Card. Complete Edition lane 04 uses its supplied one-file Hermes program and exact combined activation card. No lane mutates the target before explicit approval.
+Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. Self-install lanes 01, 02, 03, 04, and 06 require the complete ZIP, package verification, read-only environment preflight, and the lane's exact Implementation Activation Card. No lane mutates the target before explicit approval.
 
 ## Package contents
 
@@ -78,16 +78,17 @@ The Nurse Leader and Manager download is a reproducible governed self-install He
 
 The source archive's three supplied files are preserved byte-for-byte. The builder copies the tracked source into a temporary package, generates inventories and ledgers, creates a deterministic outer ZIP, and executes the tracked verifier against both the package directory and the ZIP. The canonical 21 foundation, 80 LEAD, and 12 integration checks—113 total—begin `Not Run` in each target environment. All sixteen optional powers remain `Available Inactive`; agents remain `PERM-P0 Disabled`; connectors, sharing, schedules, external actions, new persistent memory categories, and organizational-system access remain off. No route is preassigned. Downloading does not install or activate anything, role selection verifies no managerial or organizational authority, and a private build does not authorize organizational deployment.
 
-The Nurse Educator and Instructional Designer ZIP is a separately governed Complete Edition. It includes:
+The Nurse Educator and Instructional Designer TEACH ZIP is a separately governed self-install Hermes build kit. It includes:
 
-- `00-READ-FIRST.md`
-- `ROLE-PACK.json`
-- `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Hermes-Program.md` — complete one-file guided installer
-- `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.md`
-- `Nurse-Educator-and-Instructional-Designer-Complete-AI-OS-with-TEACH-SuperPowers-Setup-Guide.docx`
-- `PACKAGE-CHECKSUMS.sha256`
+- `README-FIRST.md`
+- `GIVE-THIS-PACKAGE-TO-HERMES.md`
+- `RELEASE-MANIFEST.json`
+- `SHA256SUMS.txt`
+- `SOURCE-INVENTORY.json`
+- `tools/verify-build-kit.py`
+- TEACH implementation, schemas, controls, templates, synthetic examples, and baseline QA references needed for a future local build
 
-The TEACH program supports Nurse Educator, Instructional Designer, and Hybrid / Faculty Developer adapters. It creates, repairs, or binds the Nurse Educator foundation first, runs 33 foundation checks, adds the Trust Shield, TEACH Core, Command Studio, templates, and twenty optional SuperPowers as an inactive overlay, and runs 120 TEACH tests plus 16 integration checks—169 embedded release checks in total. All twenty optional TEACH SuperPowers remain inactive. Downloading does not install it. Adapter selection does not verify employment, faculty status, instructional-design assignment, teaching, grading, clinical, accommodation, academic-integrity, curriculum, accreditation, research, release, or institutional authority. Private-workspace approval does not authorize LMS, classroom, clinical-site, program, employer, accreditation, research, multi-user, or institutional deployment.
+The TEACH build kit supports Nurse Educator, Instructional Designer, and Hybrid / Faculty Developer adapters. It remains `not_operational_build_required` on download. A local Hermes must verify the manifest, checksums, and unchanged outer ZIP; complete read-only preflight; show the exact TEACH Implementation Activation Card; and receive explicit approval before any local build mutation. Its pinned contract preserves 33 foundation checks, 120 TEACH overlay checks, and 16 integration checks—169 canonical checks, 264 explicit target rows, and 433 required execution records. All twenty optional TEACH SuperPowers remain inactive. Downloading does not install it. Adapter selection does not verify employment, faculty status, instructional-design assignment, teaching, grading, clinical, accommodation, academic-integrity, curriculum, accreditation, research, release, or institutional authority. Private-workspace approval does not authorize LMS, classroom, clinical-site, program, employer, accreditation, research, multi-user, or institutional deployment.
 
 The Nurse Practitioner WINGS ZIP is a separately governed self-install Hermes build kit. It includes:
 

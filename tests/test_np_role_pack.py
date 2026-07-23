@@ -15,6 +15,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "post-setup" / "packages" / "06-Nurse-Practitioner-USA"
@@ -25,8 +26,8 @@ DOCX = PACKAGE / "NP-Complete-AI-OS-with-Wings-Setup-Guide.docx"
 ROLE_MANIFEST = PACKAGE / "ROLE-PACK.json"
 ZIP = DOWNLOADS / "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
 BUILD_KIT_ROOT = "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
-BUILD_KIT_BYTES = 7696949
-BUILD_KIT_SHA256 = "484f5510a0c2f30dd0ae41854e9322eec9004bbe65c8585af607b0a88fc086f1"
+BUILD_KIT_BYTES = 7697078
+BUILD_KIT_SHA256 = "48461f307d1c2639d35467f803d1fd8e5e1da16e69d57b88eb9dbf987bf652fc"
 BUILD_KIT_MEMBER_COUNT = 131
 BUILD_KIT_VERIFIER_SHA256 = "72d1b4628c9ad578e9579ce3eec86de9e4b1637b21fd3f6415115250333f6b1c"
 SOURCE_ZIP_SHA256_BEFORE_DERIVATIVE = "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501"
@@ -240,10 +241,97 @@ class NursePractitionerLaneTests(unittest.TestCase):
             self.assertEqual(candidate.stat().st_size, BUILD_KIT_BYTES)
             self.assertEqual(hashlib.sha256(candidate.read_bytes()).hexdigest(), BUILD_KIT_SHA256)
 
+    def test_rotation_utility_rejects_unsafe_metadata_before_payload_reads(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "rotate-wings-country-boundary.py"))
+        validate_infos = namespace["validate_infos"]
+        max_member = namespace["MAX_MEMBER_BYTES"]
+        max_expanded = namespace["MAX_EXPANDED_BYTES"]
+        verifier_name = f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py"
+
+        def info(
+            name: str,
+            *,
+            mode: int = 0o100644,
+            size: int = 1,
+            encrypted: bool = False,
+            compression: int = zipfile.ZIP_DEFLATED,
+        ) -> zipfile.ZipInfo:
+            item = zipfile.ZipInfo(name)
+            item.external_attr = mode << 16
+            item.file_size = size
+            item.compress_size = 1
+            item.flag_bits = 0x1 if encrypted else 0
+            item.compress_type = compression
+            return item
+
+        with self.assertRaisesRegex(ValueError, "member count mismatch"):
+            validate_infos([info(verifier_name)])
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            safe_name = f"{BUILD_KIT_ROOT}/safe.txt"
+            validate_infos([info(safe_name), info(safe_name)], expected_count=2)
+        with self.assertRaisesRegex(ValueError, "case/Unicode-colliding"):
+            validate_infos(
+                [info(f"{BUILD_KIT_ROOT}/Case.txt"), info(f"{BUILD_KIT_ROOT}/case.txt")],
+                expected_count=2,
+            )
+        with self.assertRaisesRegex(ValueError, "case/Unicode-colliding"):
+            validate_infos(
+                [info(f"{BUILD_KIT_ROOT}/caf\u00e9.txt"), info(f"{BUILD_KIT_ROOT}/cafe\u0301.txt")],
+                expected_count=2,
+            )
+        for unsafe, message in (
+            (f"{BUILD_KIT_ROOT}/a//b.txt", "Unsafe WINGS ZIP path"),
+            (f"{BUILD_KIT_ROOT}/a/./b.txt", "Unsafe WINGS ZIP path"),
+            (f"{BUILD_KIT_ROOT}/drive:C.txt", "Unsafe WINGS ZIP path"),
+            (f"{BUILD_KIT_ROOT}/../escape.txt", "Unsafe WINGS ZIP path"),
+            (f"{BUILD_KIT_ROOT}/nul\x00suffix.txt", "raw/normalized path mismatch"),
+        ):
+            with self.subTest(unsafe=unsafe), self.assertRaisesRegex(ValueError, message):
+                validate_infos([info(unsafe)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "Encrypted"):
+            validate_infos([info(verifier_name, encrypted=True)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "Unsupported.*compression"):
+            validate_infos([info(verifier_name, compression=zipfile.ZIP_BZIP2)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "mode mismatch"):
+            validate_infos([info(f"{BUILD_KIT_ROOT}/unexpected.sh", mode=0o100755)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "mode mismatch"):
+            validate_infos([info(verifier_name, mode=0o120777)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "member exceeds byte limit"):
+            validate_infos([info(verifier_name, mode=0o100755, size=max_member + 1)], expected_count=1)
+        expanded = [
+            info(f"{BUILD_KIT_ROOT}/{index}.bin", size=max_member)
+            for index in range((max_expanded // max_member) + 1)
+        ]
+        with self.assertRaisesRegex(ValueError, "expanded bytes exceed limit"):
+            validate_infos(expanded, expected_count=len(expanded))
+        with self.assertRaisesRegex(ValueError, "file/directory collision"):
+            validate_infos(
+                [info(f"{BUILD_KIT_ROOT}/node"), info(f"{BUILD_KIT_ROOT}/node/child.txt")],
+                expected_count=2,
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate = Path(tmp) / ZIP.name
+            shutil.copy2(ZIP, candidate)
+            with zipfile.ZipFile(candidate, "a") as archive:
+                archive.writestr(f"{BUILD_KIT_ROOT}/unexpected.txt", b"unsafe inventory")
+            before = candidate.read_bytes()
+            with mock.patch.object(
+                zipfile.ZipFile, "testzip", side_effect=AssertionError("CRC/payload touched")
+            ), mock.patch.object(
+                zipfile.ZipFile, "read", side_effect=AssertionError("payload touched")
+            ):
+                with self.assertRaisesRegex(ValueError, "member count mismatch"):
+                    namespace["load_entries"](candidate)
+            self.assertEqual(candidate.read_bytes(), before)
+
     def test_bundled_verifier_documentation_and_portability_contract_are_archive_native(self):
         with tempfile.TemporaryDirectory() as tmp:
             extracted = Path(tmp) / "package"
+            namespace = runpy.run_path(str(ROOT / "scripts" / "rotate-wings-country-boundary.py"))
             with zipfile.ZipFile(ZIP) as archive:
+                namespace["validate_infos"](archive.infolist())
+                self.assertIsNone(archive.testzip())
                 archive.extractall(extracted)
                 governed_command = (
                     "python3 tools/verify-build-kit.py --package . "
@@ -256,6 +344,12 @@ class NursePractitionerLaneTests(unittest.TestCase):
                         "`python3 tools/verify-build-kit.py --package .`",
                         text,
                     )
+                install = archive.read(f"{BUILD_KIT_ROOT}/INSTALL.md").decode("utf-8")
+                self.assertIn("Require the trusted `CHECKSUMS.sha256` sidecar", install)
+                self.assertIn("authenticated publisher channel", install)
+                self.assertIn("before extraction", install)
+                self.assertIn("Stop if the sidecar is missing", install)
+                self.assertNotIn("before extraction when available", install)
                 verifier_path = f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py"
                 verifier_source = archive.read(verifier_path).decode("utf-8")
                 ast.parse(verifier_source)

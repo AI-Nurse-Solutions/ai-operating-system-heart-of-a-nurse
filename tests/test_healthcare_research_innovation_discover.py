@@ -3,15 +3,18 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import re
 import runpy
 import shutil
+import stat
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 DISCOVER = ROOT / "healthcare-research-innovation-leaders"
@@ -307,6 +310,7 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
             "GIVE-THIS-PACKAGE-TO-HERMES.md",
             "README-FIRST.md",
             "Review the exact Implementation Activation Card",
+            "exact DISCOVER Implementation Activation Card",
             "APPROVE</code>, <code>REVISE</code>, or <code>CANCEL",
             "independently reviewed CI validator",
             "without executing artifact-controlled code",
@@ -315,12 +319,44 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
             self.assertIn(phrase, self.page)
         self.assertIn(f'href="downloads/{BUILD_KIT_ZIP.name}"', self.page)
         self.assertIn('href="downloads/discover-healthcare-research-innovation-leader-complete-edition.zip"', self.page)
+        self.assertIn('href="#install">Read the build-kit safety boundary</a>', self.page)
+        self.assertNotIn("exact DISCOVER Activation Card", self.page)
+        self.assertNotIn('href="packages/discover/00-READ-FIRST.md">Read before installation</a>', self.page)
         self.assertIn("https://www.youtube-nocookie.com/embed/o6fRkTt12zU", self.page)
         self.assertNotIn("https://www.youtube.com/embed/o6fRkTt12zU", self.page)
         self.assertIn('title="Healthcare Research and Innovation Lead — Nurse AI OS"', self.page)
         self.assertIn('loading="lazy"', self.page)
         self.assertIn('referrerpolicy="strict-origin-when-cross-origin"', self.page)
         self.assertIn("allowfullscreen", self.page)
+
+    def test_discover_workflow_is_pinned_symmetric_and_enforces_clean_artifacts(self):
+        workflow = (ROOT / ".github" / "workflows" / "healthcare-research-innovation-discover.yml").read_text(encoding="utf-8")
+        self.assertIn("actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5", workflow)
+        self.assertIn("actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065", workflow)
+        self.assertIn("python3 -m unittest discover -s tests -p 'test_*.py'", workflow)
+        self.assertIn("git ls-files --error-unmatch", workflow)
+        self.assertIn('git status --porcelain --untracked-files=all', workflow)
+        self.assertIn("git diff --exit-code", workflow)
+        self.assertIn(BUILD_KIT_ZIP.name, workflow)
+        self.assertIn("manifest.json", workflow)
+        self.assertIn("CHECKSUMS.sha256", workflow)
+
+        pull_block = workflow.split("  pull_request:\n", 1)[1].split("  push:\n", 1)[0]
+        push_block = workflow.split("  push:\n", 1)[1].split("\npermissions:\n", 1)[0]
+        path_pattern = re.compile(r'^      - "([^"]+)"$', re.MULTILINE)
+        pull_paths = path_pattern.findall(pull_block)
+        push_paths = path_pattern.findall(push_block)
+        self.assertEqual(pull_paths, push_paths)
+        for required in (
+            "healthcare-research-innovation-leaders/**",
+            "scripts/build-healthcare-research-innovation-discover.py",
+            "scripts/scan-public-healthcare-artifacts.py",
+            "tests/test_healthcare_research_innovation_discover.py",
+            "index.html",
+            "assets/nurse-ai.css",
+            ".github/workflows/healthcare-research-innovation-discover.yml",
+        ):
+            self.assertIn(required, pull_paths)
 
     def test_homepage_handoff_follows_breathe_and_precedes_steward_preview(self):
         homepage = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -431,6 +467,142 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
                     target.writestr(clone, data)
             with self.assertRaisesRegex(ValueError, "ZIP root mismatch"):
                 namespace["_extract_build_kit_for_verification"](tampered, temp / "bad-extract")
+
+    def test_build_kit_metadata_is_rejected_before_crc_or_payload_reads(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-healthcare-research-innovation-discover.py"))
+        with zipfile.ZipFile(BUILD_KIT_ZIP) as source:
+            baseline = [copy.copy(info) for info in source.infolist()]
+
+        class MetadataOnlyArchive:
+            def __init__(self, infos):
+                self.infos = infos
+                self.payload_accessed = False
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def infolist(self):
+                return self.infos
+
+            def testzip(self):
+                self.payload_accessed = True
+                raise AssertionError("CRC read occurred before metadata rejection")
+
+            def read(self, _info):
+                self.payload_accessed = True
+                raise AssertionError("payload read occurred before metadata rejection")
+
+        def set_name(info, name):
+            info.filename = name
+            info.orig_filename = name
+
+        def raw_nul(infos):
+            infos[0].orig_filename = infos[0].filename + "\x00suffix"
+
+        def backslash(infos):
+            set_name(infos[0], infos[0].filename.replace("/", "\\", 1))
+
+        def absolute(infos):
+            set_name(infos[0], "/" + infos[0].filename)
+
+        def drive_prefix(infos):
+            set_name(infos[0], "C:/" + infos[0].filename)
+
+        def duplicate(infos):
+            set_name(infos[1], infos[0].filename)
+
+        def unicode_collision(infos):
+            set_name(infos[0], BUILD_KIT_ROOT.rstrip("/") + "/collision-é.txt")
+            set_name(infos[1], BUILD_KIT_ROOT.rstrip("/") + "/collision-e\u0301.txt")
+
+        def symlink(infos):
+            infos[0].external_attr = (stat.S_IFLNK | 0o777) << 16
+
+        def directory_mode_on_file(infos):
+            infos[0].external_attr = (stat.S_IFDIR | 0o755) << 16
+
+        def encrypted(infos):
+            infos[0].flag_bits |= 1
+
+        def unsupported_compression(infos):
+            infos[0].compress_type = 99
+
+        def oversized_member(infos):
+            infos[0].file_size = namespace["BUILD_KIT_MAX_MEMBER_BYTES"] + 1
+
+        def expanded_limit(infos):
+            for info in infos:
+                info.file_size = 2 * 1024 * 1024
+
+        cases = {
+            "raw-nul": raw_nul,
+            "backslash": backslash,
+            "absolute": absolute,
+            "drive-prefix": drive_prefix,
+            "duplicate": duplicate,
+            "unicode-collision": unicode_collision,
+            "symlink": symlink,
+            "directory-mode-on-file": directory_mode_on_file,
+            "encrypted": encrypted,
+            "unsupported-compression": unsupported_compression,
+            "oversized-member": oversized_member,
+            "expanded-limit": expanded_limit,
+        }
+        for label, mutate in cases.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as tmp:
+                infos = [copy.copy(info) for info in baseline]
+                mutate(infos)
+                fake = MetadataOnlyArchive(infos)
+                with mock.patch.object(namespace["zipfile"], "ZipFile", return_value=fake):
+                    with self.assertRaises(ValueError):
+                        namespace["_extract_build_kit_for_verification"](
+                            BUILD_KIT_ZIP, Path(tmp) / "extract"
+                        )
+                self.assertFalse(fake.payload_accessed, label)
+
+    def test_self_consistent_bundled_verifier_tamper_is_rejected_without_execution(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-healthcare-research-innovation-discover.py"))
+        with tempfile.TemporaryDirectory() as tmp:
+            temp = Path(tmp)
+            package = namespace["_extract_build_kit_for_verification"](BUILD_KIT_ZIP, temp / "extract")
+            marker = temp / "artifact-code-ran"
+            verifier = package / "tools" / "verify-build-kit.py"
+            verifier.write_text(
+                f"from pathlib import Path\nPath({str(marker)!r}).write_text('ran')\n",
+                encoding="utf-8",
+            )
+            verifier_digest = sha256(verifier)
+
+            manifest_path = package / "RELEASE-MANIFEST.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            record = next(
+                item for item in manifest["files_excluding_manifest_and_checksums"]
+                if item["path"] == "tools/verify-build-kit.py"
+            )
+            record["bytes"] = verifier.stat().st_size
+            record["sha256"] = verifier_digest
+            manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+            ledger_path = package / "SHA256SUMS.txt"
+            ledger = {
+                relative: digest
+                for digest, relative in (
+                    line.split("  ", 1) for line in ledger_path.read_text(encoding="utf-8").splitlines()
+                )
+            }
+            ledger["tools/verify-build-kit.py"] = verifier_digest
+            ledger["RELEASE-MANIFEST.json"] = sha256(manifest_path)
+            ledger_path.write_text(
+                "\n".join(f"{digest}  {relative}" for relative, digest in sorted(ledger.items())) + "\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "bundled verifier hash mismatch"):
+                namespace["_validate_extracted_build_kit"](package)
+            self.assertFalse(marker.exists())
 
     def test_builder_is_deterministic_and_public_manifest_matches(self):
         before = sha256(ZIP)

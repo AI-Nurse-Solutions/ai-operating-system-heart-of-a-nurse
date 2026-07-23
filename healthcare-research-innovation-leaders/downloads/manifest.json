@@ -32,6 +32,22 @@
       "suggested_agents_total": 10,
       "templates_total": 30,
       "workflows_total": 24
+    },
+    {
+      "artifact_class": "hermes_functional_build_kit_self_install",
+      "bytes": 7287900,
+      "download": "downloads/DISCOVER-Healthcare-Research-Innovation-Leader-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+      "installation_status": "not_installed",
+      "institutional_authorization": false,
+      "package_id": "HRILAIOS-DISCOVER-FUNCTIONAL-BUILD-KIT-1.0.0",
+      "public_safety": "public_safe_derivative_mrn_shaped_qa_probe_replaced",
+      "readiness": "not_operational_build_required",
+      "role": "Healthcare Research & Innovation / Researcher & Innovator \u2014 DISCOVER",
+      "runtime_status": "not_built_until_user_hermes_runs_approved_program",
+      "sha256": "e028046039800232db75c3d0a09e1105b46f4acfc97071e841b3317f0afcf018",
+      "target_product": "discover-healthcare-research-innovation-leader-mission-control",
+      "target_version": "2.0.0",
+      "version": "1.0.0"
     }
   ],
   "purpose": "standalone Healthcare Research and Innovation leadership lane within Nurse AI OS; isolated from nursing, medical-resident, respiratory-care, and hospital-administration state",

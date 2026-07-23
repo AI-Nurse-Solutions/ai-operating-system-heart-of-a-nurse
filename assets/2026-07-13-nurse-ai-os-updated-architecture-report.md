@@ -9,7 +9,7 @@
 **Architecture status:** **Signed implementation candidate · active shadow governance · live post-setup distribution · no clinical or PHI authorization**  
 **Decision doctrine:** *Agents propose. Humans judge. Nurses steward.*
 
-> **Link-maintenance note — July 22, 2026:** This remains a July 13 evidence snapshot. The Student, Staff Nurse, Nurse Leader, and Nurse Educator download URLs in Section 8 and Appendix B now point to their governed successor build kits so public links do not fail. Those successor artifacts are outside the original July 13 five-ZIP verification claim and begin published but not installed, activated, operational, or institutionally authorized.
+> **Link-maintenance note — July 22, 2026:** This remains a July 13 evidence snapshot. The Student, Staff Nurse, Nurse Leader, Nurse Educator, and USA-only Nurse Practitioner download URLs in Section 8 and Appendix B now point to their governed successor build kits so public links do not fail. Those successor artifacts are outside the original July 13 five-ZIP verification claim and begin published but not installed, activated, operational, or institutionally authorized.
 
 ---
 
@@ -515,6 +515,7 @@ A `naio-soul.schema.json` v1.1 may either add `educator` or preserve the four on
 | Nurse Leader and Manager | `LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Successor link updated July 21; reproducible self-install build kit; outside the original snapshot's five-ZIP proof set; not installed, activated, operational, or institutionally authorized |
 | Nurse Educator | `TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Successor link updated July 22; self-install build kit; outside the original snapshot's five-ZIP proof set; not installed, activated, operational, or institutionally authorized |
 | Nurse-Connected Ally | `nurse-ai-os-post-setup-nurse-connected-ally.zip` | Live, checksummed, not installed |
+| Nurse Practitioner (USA only) | `WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Successor link updated July 22; USA-only self-install build kit; outside the original snapshot's five-ZIP proof set; not installed, activated, operational, or institutionally authorized |
 
 ## 8.2 Package safety contract
 
@@ -538,7 +539,7 @@ This is the correct honesty posture, but it means the current role packages are 
 
 ## 8.4 Integrity posture
 
-At the July 13 evidence snapshot, the five original ZIPs were live-verified over HTTPS. Each matched the then-live SHA-256 value and opened as a valid ZIP with eight expected files. That historical statement does not attest the later FUTURE, SHIFT, LEAD, or TEACH successor build kits; their current manifests, ledgers, and verifiers govern those releases.
+At the July 13 evidence snapshot, the five original ZIPs were live-verified over HTTPS. Each matched the then-live SHA-256 value and opened as a valid ZIP with eight expected files. That historical statement does not attest the later FUTURE, SHIFT, LEAD, TEACH, or USA-only NP WINGS successor build kits; their current manifests, ledgers, and verifiers govern those releases.
 
 Residual integrity gap:
 
@@ -948,6 +949,7 @@ This report is self-contained for public review. An earlier internal Harness wor
 - [Download the current Staff Nurse SHIFT self-install build kit](https://nurse-ai-os.org/post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
 - [Download the current Nurse Leader LEAD self-install build kit](https://nurse-ai-os.org/post-setup/downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
 - [Download the current Nurse Educator TEACH self-install build kit](https://nurse-ai-os.org/post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
+- [Download the current USA-only Nurse Practitioner WINGS self-install build kit](https://nurse-ai-os.org/post-setup/downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)
 - [Download the Nurse-Connected Ally role pack](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip)
 
 ---

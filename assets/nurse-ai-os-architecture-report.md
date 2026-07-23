@@ -21,7 +21,7 @@ Nurse AI OS has moved beyond a conceptual architecture. It now has:
 - 46 passing unit tests and 8 of 8 passing synthetic trajectory evaluations;
 - a verified immutable local release with preserved trust-anchor continuity;
 - a public Governed Harness architecture and evidence surface;
-- a six-lane English post-setup distribution comprising four governed self-install Hermes build kits (Nursing Student and Nursing Assistant/FUTURE, Staff Nurse/SHIFT, Nurse Leader/LEAD, and Nurse Educator and Instructional Designer/TEACH), one Complete Edition (USA-only Nurse Practitioner/WINGS), and one review-first Nurse-Connected Ally overlay;
+- a six-lane English post-setup distribution comprising five governed self-install Hermes build kits (Nursing Student and Nursing Assistant/FUTURE, Staff Nurse/SHIFT, Nurse Leader/LEAD, Nurse Educator and Instructional Designer/TEACH, and USA-only Nurse Practitioner/WINGS) and one review-first Nurse-Connected Ally overlay;
 - deterministic ZIP checksums and explicit `not_installed` package status.
 
 That progress is substantial, but the system must **not** yet be described as a unified enforcement architecture. Four P0 control-plane gaps prevent that claim:
@@ -46,7 +46,7 @@ Keep the current default profile in shadow mode. Do not activate canary enforcem
 
 The strongest current architectural description is:
 
-> **Nurse AI OS is a nurse-centered control plane over Hermes, designed around nurse-governance principles. SOUL establishes accountable identity and boundaries; the signed EDENA Harness evaluates runtime actions; Florence-X provides build, verification, and coordination discipline; Hermes executes tools, skills, profiles, memory, scheduling, and delegation; a local metadata-minimized ledger records governance evidence; signed releases preserve provenance; and a public post-setup layer offers six English role packages—four governed self-install Hermes build kits, one Complete Edition, and one review-first overlay—with read-only preflights and exact human activation gates. The current operating posture is observation-only shadow governance, not clinical deployment, institutional authorization, or default-profile enforcement.**
+> **Nurse AI OS is a nurse-centered control plane over Hermes, designed around nurse-governance principles. SOUL establishes accountable identity and boundaries; the signed EDENA Harness evaluates runtime actions; Florence-X provides build, verification, and coordination discipline; Hermes executes tools, skills, profiles, memory, scheduling, and delegation; a local metadata-minimized ledger records governance evidence; signed releases preserve provenance; and a public post-setup layer offers six English role packages—five governed self-install Hermes build kits and one review-first overlay—with read-only preflights and exact human activation gates. The current operating posture is observation-only shadow governance, not clinical deployment, institutional authorization, or default-profile enforcement.**
 
 ---
 
@@ -112,7 +112,7 @@ This report does not establish:
 | Shadow decisions | 198 observed allows; 147 observed blocks |
 | Payload capture flag | Zero events with `payload_captured=true` |
 | Post-setup page | `https://nurse-ai-os.org/post-setup/`, HTTP 200 |
-| Post-setup packages | Six ZIPs: four self-install build kits, one Complete Edition, and one review-first overlay; repository checksums verified; all `not_installed` on download; deployed bytes require separate post-merge HTTP verification |
+| Post-setup packages | Six ZIPs: five self-install build kits and one review-first overlay; repository checksums verified; all `not_installed` on download; deployed bytes require separate post-merge HTTP verification |
 | Post-setup manifest state | `not_installed` |
 
 The shadow ledger count is a timestamped snapshot, not a release constant. It continues to grow while the plugin observes Hermes activity.
@@ -443,13 +443,9 @@ Download one role pack
                   │       └─ proposed changes, EDENA tiers, permissions,
                   │          conflicts, rollback → apply / revise / defer / reject
                   │
-                  ├─ Lanes 01, 02, 03, 04: complete-ZIP build-kit verification + read-only environment preflight
+                  └─ Lanes 01, 02, 03, 04, and 06: complete-ZIP build-kit verification + read-only environment preflight
                   │       └─ exact Implementation Activation Card → approve /
                   │          revise / cancel
-                  │
-                  └─ Lane 06: read-only Complete Edition preflight
-                          └─ exact combined activation card → approve /
-                             edit / foundation only / keep inactive / cancel
 
 Downloading or unzipping never installs. Only the approved path may mutate state.
 ```
@@ -474,7 +470,7 @@ The live post-setup distribution has six lanes:
 5. Nurse-Connected Ally
 6. Nurse Practitioner (USA only)
 
-Each package includes a role manifest and declares `install_on_download: false`. Lane 05 uses review-first approval. Lanes 01, 02, 03, and 04 are governed self-install Hermes build kits: Hermes verifies the complete ZIP, performs read-only environment preflight, and presents one exact Implementation Activation Card before any local mutation. FUTURE declares 24 foundation, 96 FUTURE, and 16 integration checks—136 canonical compatibility checks—plus 169 control tests and 44 cross-cutting scenarios, for 349 required execution records; its three protected pathways remain separate and eighteen optional powers remain inactive. SHIFT declares 40 foundation, 120 SHIFT, and 16 integration checks with twenty optional powers inactive; LEAD declares 21 foundation, 80 LEAD, and 12 integration checks with sixteen optional powers inactive; TEACH declares 33 foundation, 120 TEACH, and 16 integration checks—169 canonical checks and 433 required execution records—with three authority adapters and twenty inactive optional powers. Those checks begin unexecuted for a new local build. Lane 06 remains a USA-only WINGS Complete Edition with 145 embedded acceptance tests.
+Each package includes a role manifest and declares `install_on_download: false`. Lane 05 uses review-first approval. Lanes 01, 02, 03, 04, and 06 are governed self-install Hermes build kits: Hermes verifies the complete ZIP, performs read-only environment preflight, and presents the lane's exact Implementation Activation Card before any local mutation. FUTURE declares 24 foundation, 96 FUTURE, and 16 integration checks—136 canonical compatibility checks—plus 169 control tests and 44 cross-cutting scenarios, for 349 required execution records; its three protected pathways remain separate and eighteen optional powers remain inactive. SHIFT declares 40 foundation, 120 SHIFT, and 16 integration checks with twenty optional powers inactive; LEAD declares 21 foundation, 80 LEAD, and 12 integration checks with sixteen optional powers inactive; TEACH declares 33 foundation, 120 TEACH, and 16 integration checks—169 canonical checks and 433 required execution records—with three authority adapters and twenty inactive optional powers; and USA-only NP WINGS declares 63 foundation, 82 Wings, and 1 complete integration check—146 canonical checks and 410 required execution records—with fifteen optional Wings inactive. Those checks begin unexecuted for a new local build.
 
 ## 7.3 Handoff gap
 
@@ -520,7 +516,7 @@ A `naio-soul.schema.json` v1.1 may either add `educator` or preserve the four on
 | Nurse Leader and Manager | `LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Reproducible self-install Hermes build kit; 113 canonical checks initially Not Run; 16 optional powers inactive; agents disabled; no route preassigned; checksummed; published but not installed, activated, operational, or institutionally authorized |
 | Nurse Educator and Instructional Designer | `TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` | Self-install Hermes build kit; 169 canonical checks; 264 target rows; 433 required execution records; 20 optional TEACH powers inactive; checksummed; published but not installed, activated, operational, or institutionally authorized |
 | Nurse-Connected Ally | `nurse-ai-os-post-setup-nurse-connected-ally.zip` | Live, checksummed, not installed |
-| Nurse Practitioner (USA only) | `nurse-ai-os-post-setup-nurse-practitioner-usa.zip` | Complete Edition; 145 tests; 15 optional Wings inactive; checksummed; not installed |
+| Nurse Practitioner (USA only) | [`WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip`](https://nurse-ai-os.org/post-setup/downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) | USA-only self-install Hermes build kit; 146 canonical checks; 410 required execution records; 15 optional Wings inactive; checksummed; not installed; not operational/build required |
 
 ## 8.2 Package safety contract
 
@@ -536,13 +532,13 @@ Every package declares:
 - Green/Yellow onboarding ceiling;
 - explicit human approval before any mutation.
 
-The remaining review-first lane uses a two-step review and explicit approval. Self-install lanes 01, 02, 03, and 04 require the complete ZIP, package verification, read-only environment preflight, and approval of one exact Implementation Activation Card before any local mutation. Complete Edition lane 06 requires its supplied one-file program, read-only preflight, and exact combined activation card. Downloading, selecting, opening, or unzipping never starts installation or activation.
+The remaining review-first lane uses a two-step review and explicit approval. Self-install lanes 01, 02, 03, 04, and 06 require the complete ZIP, package verification, read-only environment preflight, and approval of the lane's exact Implementation Activation Card before any local mutation. Downloading, selecting, opening, or unzipping never starts installation or activation.
 
 ## 8.3 Review-first SuperPowers reference limitation
 
 The SuperPowers documents supplied for lane 05 referenced a larger distribution containing `manifest.yaml`, `core/`, `workflows/`, `templates/`, and `tests/`, but those modules were not supplied. That public package therefore relabels the documents as `REFERENCE-SUPERPOWERS-*` and states that they must not be executed or used to invent missing modules.
 
-This is the correct honesty posture for that lane. Lanes 01, 02, 03, and 04 are separately supplied self-install build kits; lane 06 is a separately supplied Complete Edition. Their embedded runtime content and enumerated checks do not constitute independent clinical, quality, educational, research, accreditation, certification, compliance, operational, or organizational authorization.
+This is the correct honesty posture for that lane. Lanes 01, 02, 03, 04, and 06 are separately supplied self-install build kits. Their embedded runtime content and enumerated checks do not constitute independent clinical, quality, educational, research, accreditation, certification, compliance, operational, or organizational authorization.
 
 ## 8.4 Integrity posture
 
@@ -903,7 +899,7 @@ Nurse AI OS now has a credible technical spine:
 - a signed Hermes-native Harness;
 - a local metadata-only evidence ledger;
 - immutable releases and rollback;
-- a six-lane English post-setup distribution comprising four governed self-install build kits, one Complete Edition, and one review-first overlay.
+- a six-lane English post-setup distribution comprising five governed self-install build kits and one review-first overlay.
 
 Its next phase is not “more agents.” It is **coherence, evidence adjudication, and human governance**.
 
@@ -952,4 +948,4 @@ This report is self-contained for public review. An earlier internal Harness wor
 
 # Appendix B — Live post-setup downloads
 
-[Nursing Student and Nursing Assistant](https://nurse-ai-os.org/post-setup/downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) · [Staff Nurse and Quality Contributor](https://nurse-ai-os.org/post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) · [Nurse Leader and Manager](https://nurse-ai-os.org/post-setup/downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) · [Nurse Educator and Instructional Designer TEACH Build Kit](https://nurse-ai-os.org/post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) · [Nurse-Connected Ally](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip) · [Nurse Practitioner (USA only)](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip)
+[Nursing Student and Nursing Assistant](https://nurse-ai-os.org/post-setup/downloads/FUTURE-Nursing-Student-Nursing-Assistant-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) · [Staff Nurse and Quality Contributor](https://nurse-ai-os.org/post-setup/downloads/STAFF-Nurse-Life-Practice-SHIFT-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) · [Nurse Leader and Manager](https://nurse-ai-os.org/post-setup/downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) · [Nurse Educator and Instructional Designer TEACH Build Kit](https://nurse-ai-os.org/post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip) · [Nurse-Connected Ally](https://nurse-ai-os.org/post-setup/downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip) · [Nurse Practitioner WINGS (USA only)](https://nurse-ai-os.org/post-setup/downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip)

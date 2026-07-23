@@ -21,13 +21,16 @@ on:
       - "post-setup/index.html"
       - "post-setup/README.md"
       - "post-setup/build-kits/lead-nurse-leader/**"
+      - "post-setup/packages/06-Nurse-Practitioner-USA/**"
       - "post-setup/downloads/**"
       - "scripts/build-lead-nurse-leader-build-kit.py"
       - "scripts/build-post-setup-role-packs.py"
       - "scripts/rotate-teach-verifier-portability.py"
+      - "scripts/rotate-wings-country-boundary.py"
       - "scripts/scan-public-healthcare-artifacts.py"
       - "tests/test_educator_role_pack.py"
       - "tests/test_leader_role_pack.py"
+      - "tests/test_np_role_pack.py"
       - "privacy.html"
       - "README.md"
       - "sitemap.xml"
@@ -53,13 +56,16 @@ on:
       - "post-setup/index.html"
       - "post-setup/README.md"
       - "post-setup/build-kits/lead-nurse-leader/**"
+      - "post-setup/packages/06-Nurse-Practitioner-USA/**"
       - "post-setup/downloads/**"
       - "scripts/build-lead-nurse-leader-build-kit.py"
       - "scripts/build-post-setup-role-packs.py"
       - "scripts/rotate-teach-verifier-portability.py"
+      - "scripts/rotate-wings-country-boundary.py"
       - "scripts/scan-public-healthcare-artifacts.py"
       - "tests/test_educator_role_pack.py"
       - "tests/test_leader_role_pack.py"
+      - "tests/test_np_role_pack.py"
       - "privacy.html"
       - "README.md"
       - "sitemap.xml"
@@ -108,9 +114,12 @@ jobs:
             exit 0
           fi
           python3 - <<'PY'
+          import hashlib
           import json
           import os
+          import re
           import subprocess
+          from pathlib import Path
 
           base = os.environ["BASE_SHA"]
           common_changes = {
@@ -134,6 +143,10 @@ jobs:
               "nurse_educator_teach": {
                   "post-setup/downloads/nurse-ai-os-post-setup-nurse-educator.zip": "D",
                   "post-setup/downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
+              },
+              "nurse_practitioner_wings": {
+                  "post-setup/downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip": "D",
+                  "post-setup/downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip": "A",
               },
           }
 
@@ -259,5 +272,48 @@ jobs:
           for key, value in expected_educator.items():
               if educator.get(key) != value:
                   raise SystemExit(f"Nurse Educator TEACH manifest mismatch for {key}: {educator.get(key)!r}")
+
+          wings = next(item for item in manifest["packages"] if item["folder"] == "06-Nurse-Practitioner-USA")
+          expected_wings = {
+              "activation": "user_initiated_read_only_preflight_with_exact_wings_implementation_activation_card",
+              "build_kit_member_count": 131,
+              "build_kit_version": "1.0.0",
+              "bytes": 7697078,
+              "country_availability": ["United States"],
+              "download": "downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+              "download_type": "self_install_hermes_build_kit",
+              "legacy_source_activation_contract": "user_initiated_guided_complete_setup_with_combined_activation_card",
+              "package_version": "1.0.0",
+              "published_state": "published_not_installed_not_activated_not_operational_not_institutionally_authorized",
+              "readiness": "not_operational_build_required",
+              "sha256": "48461f307d1c2639d35467f803d1fd8e5e1da16e69d57b88eb9dbf987bf652fc",
+              "source_zip_bytes_before_derivative": 7695951,
+              "source_zip_sha256_before_derivative": "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501",
+              "target_namespace": "np_wings.*",
+              "target_product_id": "nurse-practitioner-complete-ai-os-mission-control",
+              "target_route": "/nurse-practitioners/dashboard",
+              "target_version": "2.0.0",
+          }
+          for key, value in expected_wings.items():
+              if wings.get(key) != value:
+                  raise SystemExit(f"NP WINGS manifest mismatch for {key}: {wings.get(key)!r}")
+
+          downloads = Path("post-setup/downloads")
+          ledger = {}
+          for line_number, line in enumerate((downloads / "CHECKSUMS.sha256").read_text(encoding="utf-8").splitlines(), start=1):
+              match = re.fullmatch(r"([0-9a-f]{64})  ([^/\\]+\.zip)", line)
+              if not match or match.group(2) in ledger:
+                  raise SystemExit(f"Invalid or duplicate checksum-ledger line {line_number}")
+              ledger[match.group(2)] = match.group(1)
+          tracked_archives = {path.name for path in downloads.glob("*.zip")}
+          if set(ledger) != tracked_archives:
+              raise SystemExit(
+                  "Checksum-ledger archive inventory mismatch: "
+                  + json.dumps({"missing": sorted(tracked_archives - set(ledger)), "extra": sorted(set(ledger) - tracked_archives)})
+              )
+          for filename, expected_digest in ledger.items():
+              actual_digest = hashlib.sha256((downloads / filename).read_bytes()).hexdigest()
+              if actual_digest != expected_digest:
+                  raise SystemExit(f"Checksum-ledger digest mismatch: {filename}")
           print(f"ROLE_DOWNLOAD_MIGRATION_GUARD=passed mode={mode}")
           PY

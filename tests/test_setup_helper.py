@@ -225,9 +225,33 @@ class SetupHelperTests(unittest.TestCase):
           console.log(JSON.stringify({label:lane?.label,task:safeTaskForLane('nurse_practitioner_usa')}));
         """)
         self.assertEqual(result["label"], "Nurse Practitioner (USA only)")
-        self.assertIn("USA-only", result["task"])
-        self.assertIn("read-only preflight checklist only", result["task"])
-        self.assertIn("Do not install, save, connect, or activate anything", result["task"])
+        task = result["task"]
+        for phrase in (
+            "USA-only WINGS Nurse Practitioner self-install Hermes build kit",
+            "without opening or requiring a package file",
+            "Do not install, save, connect, share, schedule, automate, activate, or mutate anything",
+            "downloading, opening, selecting, or unzipping does not install anything",
+            "WINGS build-kit ZIP",
+            "README-FIRST.md",
+            "GIVE-THIS-PACKAGE-TO-HERMES.md",
+            "RELEASE-MANIFEST.json",
+            "SHA256SUMS.txt",
+            "WINGS Implementation Activation Card",
+            "explicitly approve that exact card before any local build mutation",
+            "validates 63 foundation checks, 82 Wings checks, and 1 complete integration check",
+            "410 required execution records",
+            "agents disabled/P0",
+            "not_operational_build_required",
+            "all fifteen optional Wings off",
+        ):
+            self.assertIn(phrase, task)
+        for obsolete in (
+            "complete one-file NP program",
+            "Combined Activation Card",
+            "145 embedded acceptance tests",
+            "read-only preflight checklist only",
+        ):
+            self.assertNotIn(obsolete, task)
 
     def test_staff_nurse_quality_contributor_shift_starter_is_self_contained(self):
         result = node_eval("""

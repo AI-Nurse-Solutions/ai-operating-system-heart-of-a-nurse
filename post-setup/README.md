@@ -1,6 +1,6 @@
 # Nurse AI OS Post-Setup Role Packs
 
-These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 01, 02, 03, and 04 are governed self-install Hermes build kits. Lane 06 is a separately governed Complete Edition. Every lane requires review or read-only preflight and exact human approval before any installation mutation.
+These are separate post-setup downloads for users who have already completed their SOUL files and Hermes setup. Lane 05 is a review-first overlay. Lanes 01, 02, 03, 04, and 06 are governed self-install Hermes build kits. Every lane requires review or read-only preflight and exact human approval before any installation mutation.
 
 ## Role folders
 
@@ -11,7 +11,7 @@ These are separate post-setup downloads for users who have already completed the
 | `03-Nurse-Leader-and-Manager` | Nurse Leader and Manager | `downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `04-Nurse-Educator` | Nurse Educator and Instructional Designer | `downloads/TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 | `05-Nurse-Connected-Ally` | Nurse-Connected Ally | `downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip` |
-| `06-Nurse-Practitioner-USA` | Nurse Practitioner (USA) | `downloads/nurse-ai-os-post-setup-nurse-practitioner-usa.zip` |
+| `06-Nurse-Practitioner-USA` | Nurse Practitioner (USA) | `downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 
 ## What downloading does
 
@@ -27,7 +27,7 @@ Nothing is installed or activated. Every package declares:
 }
 ```
 
-Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. Self-install lanes 01, 02, 03, and 04 require the complete ZIP, package verification, read-only environment preflight, and one exact Implementation Activation Card. Complete Edition lane 06 uses its supplied one-file Hermes program and exact combined activation card. No lane mutates the target before explicit approval.
+Lane 05 uses the review-first prompt and requires proposed changes, risks, permissions, conflicts, and rollback before the user decides whether anything should be applied. Self-install lanes 01, 02, 03, 04, and 06 require the complete ZIP, package verification, read-only environment preflight, and the lane's exact Implementation Activation Card. No lane mutates the target before explicit approval.
 
 ## Package contents
 
@@ -90,16 +90,17 @@ The Nurse Educator and Instructional Designer TEACH ZIP is a separately governed
 
 The TEACH build kit supports Nurse Educator, Instructional Designer, and Hybrid / Faculty Developer adapters. It remains `not_operational_build_required` on download. A local Hermes must verify the manifest, checksums, and unchanged outer ZIP; complete read-only preflight; show the exact TEACH Implementation Activation Card; and receive explicit approval before any local build mutation. Its pinned contract preserves 33 foundation checks, 120 TEACH overlay checks, and 16 integration checks—169 canonical checks, 264 explicit target rows, and 433 required execution records. All twenty optional TEACH SuperPowers remain inactive. Downloading does not install it. Adapter selection does not verify employment, faculty status, instructional-design assignment, teaching, grading, clinical, accommodation, academic-integrity, curriculum, accreditation, research, release, or institutional authority. Private-workspace approval does not authorize LMS, classroom, clinical-site, program, employer, accreditation, research, multi-user, or institutional deployment.
 
-The Nurse Practitioner ZIP is a separately governed Complete Edition. It includes:
+The Nurse Practitioner WINGS ZIP is a separately governed self-install Hermes build kit. It includes:
 
-- `00-READ-FIRST.md`
-- `ROLE-PACK.json`
-- `NP-Complete-AI-OS-with-Wings-Hermes-Program.md` — complete one-file guided installer
-- `NP-Complete-AI-OS-with-Wings-Setup-Guide.md`
-- `NP-Complete-AI-OS-with-Wings-Setup-Guide.docx`
-- `PACKAGE-CHECKSUMS.sha256`
+- `README-FIRST.md`
+- `GIVE-THIS-PACKAGE-TO-HERMES.md`
+- `RELEASE-MANIFEST.json`
+- `SHA256SUMS.txt`
+- `SOURCE-INVENTORY.json`
+- `tools/verify-build-kit.py`
+- WINGS implementation, schemas, controls, workflows, templates, synthetic examples, and baseline QA references needed for a future local build
 
-The NP program is English-language and United States-only. It establishes the foundation first, adds NP Wings as an inactive overlay, and contains 63 foundation plus 82 Wings acceptance tests. Downloading does not install it. Role selection does not verify NP licensure, certification, population focus, privileges, prescriptive authority, competence, employment authority, or institutional approval.
+The WINGS build kit is English-language and United States-only. It remains `not_operational_build_required` on download. A local Hermes must verify the manifest and checksums, complete read-only preflight, show the exact WINGS Implementation Activation Card, and receive explicit approval before any local build mutation. Its pinned contract preserves 63 foundation checks, 82 Wings checks, 1 complete integration check, and 410 required execution records. All fifteen optional Wings remain inactive. Downloading does not install it. Role selection does not verify NP licensure, certification, population focus, privileges, prescriptive authority, competence, employment authority, prescribing authority, clinical authority, billing authority, or institutional approval.
 
 Role selection provides personalization only. It does not verify licensure, enrollment, employment, faculty status, instructional-design assignment, teaching or grading authority, managerial authority, accreditation authority, institutional authorization, or permission to process patient, student, employee, or personnel information.
 

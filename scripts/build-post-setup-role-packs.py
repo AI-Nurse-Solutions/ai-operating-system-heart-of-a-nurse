@@ -152,6 +152,7 @@ ROLES = [
 FIXED_ZIP_TIME = (2026, 7, 13, 0, 0, 0)
 MAX_BUILD_KIT_MEMBER_BYTES = 32 * 1024 * 1024
 MAX_BUILD_KIT_EXPANDED_BYTES = 256 * 1024 * 1024
+ALLOWED_BUILD_KIT_COMPRESSION = {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}
 
 BUILD_KIT_DOWNLOADS = {
     "staff-nurse": {
@@ -162,6 +163,11 @@ BUILD_KIT_DOWNLOADS = {
         "sha256": "e0ebaff0ad8840ac2e4670a28168a9ac1fdaf17a0c8e3ae72973c8496cb0f709",
         "member_count": 114,
         "verifier_sha256": "075b327b7bda027be02b0b2bcf58289f9a463df652019e013fa1382ba4c8923b",
+        "executable_members": [
+            "source/baseline-application/Start-DISCOVER.command",
+            "source/baseline-application/start-discover.sh",
+            "tools/verify-build-kit.py",
+        ],
         "source_zip_sha256_before_derivative": "f10fe10a1675759772ea53cc60c1b354ea0342b38efd01d6510d7ac0c986b5ae",
         "source_zip_bytes_before_derivative": 6914738,
         "target": {
@@ -245,6 +251,56 @@ BUILD_KIT_DOWNLOADS = {
     },
 }
 
+BUILD_KIT_DOWNLOADS.update({
+    "nurse-practitioner-usa": {
+        "activation": "user_initiated_read_only_preflight_with_exact_wings_implementation_activation_card",
+        "build_kit_version": "1.0.0",
+        "package_version": "1.0.0",
+        "filename": "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
+        "root": "WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0",
+        "bytes": 7697078,
+        "sha256": "48461f307d1c2639d35467f803d1fd8e5e1da16e69d57b88eb9dbf987bf652fc",
+        "member_count": 131,
+        "verifier_sha256": "72d1b4628c9ad578e9579ce3eec86de9e4b1637b21fd3f6415115250333f6b1c",
+        "source_zip_sha256_before_derivative": "7a7ec1b59d1fd31a37aa28b5cc346f78bdb4e516164a91a9c28383fc77b65501",
+        "source_zip_bytes_before_derivative": 7695951,
+        "country_availability": ["United States"],
+        "target": {
+            "country_availability": ["United States"],
+            "foundation_namespace": "np_lppef.*",
+            "home": "My NP Life, Practice & Purpose Command Center",
+            "lane": "nurse_practitioner",
+            "namespace": "np_wings.*",
+            "product": "NP WINGS — Nurse Practitioner Life, Practice & Purpose Mission Control",
+            "product_id": "nurse-practitioner-complete-ai-os-mission-control",
+            "readiness": "not_operational_build_required",
+            "route": "/nurse-practitioners/dashboard",
+            "version": "2.0.0",
+        },
+        "counts": {
+            "agents": 10,
+            "canonical_compatibility_checks": 146,
+            "canonical_complete_integration_checks": 1,
+            "canonical_foundation_checks": 63,
+            "canonical_wings_checks": 82,
+            "capability_criteria_including_capstone": 77,
+            "capability_domains": 17,
+            "control_matrix_rows": 216,
+            "core_launchers": 4,
+            "cross_cutting_full_stack_scenarios": 48,
+            "deployment_contexts": 2,
+            "mastery_levels": 4,
+            "operational_contexts": 5,
+            "protected_workspaces": 5,
+            "role_lane": 1,
+            "superpowers": 15,
+            "task_hats": 6,
+            "templates": 15,
+            "total_required_execution_records": 410,
+            "workflows": 20,
+        },
+    },
+})
 
 def sha256(path: Path) -> str:
     """Return the SHA-256 digest for a file."""
@@ -680,38 +736,56 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             raise ValueError(f"Build-kit member count mismatch: {path}")
         if len(names) != len(set(names)):
             raise ValueError(f"Duplicate build-kit members: {path}")
-        roots = {name.split("/", 1)[0] for name in names if name}
-        if roots != {config["root"]}:
-            raise ValueError(f"Build-kit must have one expected root: {path}")
         normalized = {unicodedata.normalize("NFC", name).casefold() for name in names}
         if len(normalized) != len(names):
             raise ValueError(f"Build-kit has case/Unicode-colliding members: {path}")
         expanded_bytes = 0
+        executable_members = {
+            f'{config["root"]}/{relative}'
+            for relative in config.get("executable_members", ["tools/verify-build-kit.py"])
+        }
         for info in infos:
             name = info.filename
+            raw_name = getattr(info, "orig_filename", name)
             candidate = PurePosixPath(name)
-            mode = (info.external_attr >> 16) & 0o777777
+            mode = (info.external_attr >> 16) & 0o177777
             if (
                 not name
+                or "\x00" in raw_name
+                or raw_name != name
                 or name.startswith("/")
                 or "\\" in name
-                or "\x00" in name
-                or ".." in candidate.parts
-                or any(":" in part for part in candidate.parts)
-                or name.rstrip("/") != candidate.as_posix()
+                or name != candidate.as_posix()
+                or any(part in ("", ".", "..") or ":" in part for part in candidate.parts)
             ):
                 raise ValueError(f"Unsafe build-kit member path: {name!r}")
+            if info.is_dir():
+                raise ValueError(f"Build-kit directory entry rejected: {name}")
+            if info.flag_bits & 0x1:
+                raise ValueError(f"Build-kit encrypted member rejected: {name}")
+            if info.compress_type not in ALLOWED_BUILD_KIT_COMPRESSION:
+                raise ValueError(f"Build-kit unsupported compression method: {name}")
+            if info.file_size < 0 or info.compress_size < 0:
+                raise ValueError(f"Build-kit member has invalid size metadata: {name}")
             if info.file_size > MAX_BUILD_KIT_MEMBER_BYTES:
                 raise ValueError(f"Build-kit member exceeds byte limit: {name}")
             expanded_bytes += info.file_size
             if expanded_bytes > MAX_BUILD_KIT_EXPANDED_BYTES:
                 raise ValueError(f"Build-kit expanded bytes exceed limit: {path}")
-            if (mode & 0o170000) == 0o120000:
-                raise ValueError(f"Build-kit symlink member rejected: {name}")
-            if (mode & 0o170000) not in (0, 0o100000, 0o040000):
-                raise ValueError(f"Build-kit special-file member rejected: {name}")
-            if info.flag_bits & 0x1:
-                raise ValueError(f"Build-kit encrypted member rejected: {name}")
+            expected_mode = 0o100755 if name in executable_members else 0o100644
+            if mode != expected_mode:
+                raise ValueError(
+                    f"Build-kit mode mismatch: {name} expected={oct(expected_mode)} actual={oct(mode)}"
+                )
+        roots = {name.split("/", 1)[0] for name in names}
+        if roots != {config["root"]}:
+            raise ValueError(f"Build-kit must have one expected root: {path}")
+        names_set = set(names)
+        for name in names:
+            parts = name.split("/")
+            for index in range(1, len(parts)):
+                if "/".join(parts[:index]) in names_set:
+                    raise ValueError(f"Build-kit file/directory collision: {name}")
         bad_crc = archive.testzip()
         if bad_crc:
             raise ValueError(f"Build-kit CRC failure: {bad_crc}")
@@ -722,6 +796,7 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             "GIVE-THIS-PACKAGE-TO-HERMES.md",
             "RELEASE-MANIFEST.json",
             "SHA256SUMS.txt",
+            "SOURCE-INVENTORY.json",
             "tools/verify-build-kit.py",
         }
         files = {name[len(root) + 1:] for name in names if not name.endswith("/")}
@@ -736,13 +811,28 @@ def validate_build_kit_zip(role: dict, config: dict) -> dict:
             raise ValueError(f"Build-kit package version mismatch: {path}")
         if manifest.get("target") != config["target"]:
             raise ValueError(f"Build-kit target contract mismatch: {path}")
+        if config.get("country_availability"):
+            boundary = "available only in the United States"
+            entrypoints = [
+                archive.read(f"{root}/README-FIRST.md").decode("utf-8"),
+                archive.read(f"{root}/GIVE-THIS-PACKAGE-TO-HERMES.md").decode("utf-8"),
+            ]
+            if not all(boundary in text for text in entrypoints):
+                raise ValueError(f"Build-kit country boundary missing from Hermes entrypoints: {path}")
         if manifest.get("counts") != config["counts"]:
             raise ValueError(f"Build-kit count contract mismatch: {path}")
         defaults = manifest.get("defaults", {})
         if defaults.get("agents") != "PERM-P0 Disabled" or defaults.get("powers") != "Available Inactive":
             raise ValueError(f"Build-kit safe defaults mismatch: {path}")
-        if defaults.get("connectors_schedules_sharing_external_actions_background_agents") != "Off":
+        combined_off = defaults.get("connectors_schedules_sharing_external_actions_background_agents") == "Off"
+        split_off = (
+            defaults.get("tools_connectors_schedules_sharing_background_automation") == "Off"
+            and defaults.get("external_actions") == "Off"
+        )
+        if not (combined_off or split_off):
             raise ValueError(f"Build-kit connector/action defaults must stay off: {path}")
+        if split_off and (defaults.get("workflows") != "Preview Only" or defaults.get("memory") != "session_only"):
+            raise ValueError(f"Build-kit workflow/memory defaults mismatch: {path}")
         if "source_zip_sha256_before_derivative" in config:
             derivative = manifest.get("public_safe_derivative", {})
             if derivative.get("source_zip_sha256_before_derivative") != config["source_zip_sha256_before_derivative"]:
@@ -873,9 +963,11 @@ def deterministic_zip(role: dict) -> dict:
             "lead_overlay_second",
             "shift_overlay_second",
             "teach_overlay_second",
+            "wings_overlay_second",
             "pathways",
             "role_adapters",
             "bridge_context_transfer_automatic",
+            "country_availability",
             "automatic_shared_access",
             "optional_superpowers_total",
             "optional_superpowers_active_after_install",
@@ -958,6 +1050,11 @@ def build(source_root: Path | None) -> None:
             import_prebuilt_role(source_root, role)
     future_builder = runpy.run_path(str(REPO / "scripts" / "build-future-student-assistant-build-kit.py"))
     future_config = future_builder["build"]()
+    future_config["executable_members"] = [
+        "source/baseline-application/Start-DISCOVER.command",
+        "source/baseline-application/start-discover.sh",
+        "tools/verify-build-kit.py",
+    ]
     BUILD_KIT_DOWNLOADS["student-nurse"] = future_config
     lead_builder = runpy.run_path(str(REPO / "scripts" / "build-lead-nurse-leader-build-kit.py"))
     lead_config = lead_builder["build"]()

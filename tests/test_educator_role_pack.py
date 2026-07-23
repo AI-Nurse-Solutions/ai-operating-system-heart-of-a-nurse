@@ -181,8 +181,7 @@ class EducatorBuildKitTests(unittest.TestCase):
             "not operational—build required",
             "TEACH Implementation Activation Card",
             "all twenty optional TEACH SuperPowers remain inactive",
-            "Self-install build-kit lanes 01, 02, 03, and 04",
-            "Complete Edition lane 06",
+            "Self-install build-kit lanes 01, 02, 03, 04, and 06",
             "For review-first lane 05",
         ):
             self.assertIn(phrase, page)

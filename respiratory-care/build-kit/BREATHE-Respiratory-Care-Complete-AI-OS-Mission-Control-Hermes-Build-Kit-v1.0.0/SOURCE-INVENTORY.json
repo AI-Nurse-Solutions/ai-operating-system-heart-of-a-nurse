@@ -1,0 +1,134 @@
+{
+  "breathe_source_tree": {
+    "deterministic_tree_digest": "9b72b637a333394fef563d3804fb6ce96b974a028ee6670adf03bd67cb52c3c7",
+    "files": [
+      {
+        "path": "README.md",
+        "sha256": "cef7aaac31e22bb68f969f13d283d28cea9815e843fb9c986e43da1282667a7d"
+      },
+      {
+        "path": "breathe/01-B-Begin-Safely.md",
+        "sha256": "50ffebaf7e5a20e2c0cf38a35f4e6c76402cb64589e5735a8265ea521fd1b263"
+      },
+      {
+        "path": "breathe/02-R-Reason-with-Evidence.md",
+        "sha256": "824bb6b2b6e3dd65b95c8efa8152104db9ad35405b705d05483f63260ca9af9b"
+      },
+      {
+        "path": "breathe/03-E-Equip-for-Reliability.md",
+        "sha256": "f70a5e0754b54677a64802400d67d084e011699bae192899d2f75ea6ced35c7c"
+      },
+      {
+        "path": "breathe/04-A-Align-Airway-and-Teams.md",
+        "sha256": "d985c3aedcbee48f3e5948a752e3a6c58a772cb15566c4060bf0f355c50affc6"
+      },
+      {
+        "path": "breathe/05-T-Teach-Improve-and-Advance.md",
+        "sha256": "ba74ec35f32ec6293a680a12c48d1a7fa3f498ff01bc91408c778d601168e49c"
+      },
+      {
+        "path": "breathe/06-H-Honor-Humans-and-Future.md",
+        "sha256": "bed6449a78f977a127cb7ffd5e13aac087aa40365eeeb5a74b4af6dbe3b16d8b"
+      },
+      {
+        "path": "breathe/07-E-Engineer-Ethical-Agents.md",
+        "sha256": "dcfd343b737e638991fedea5d5098a49579b9c61a2c1ab534e4420eb80dde4a9"
+      },
+      {
+        "path": "core/00-Standalone-Respiratory-Care-Lane-and-Human-Standard.md",
+        "sha256": "37acb1fa00c0b916594e28ea80d3786ffc666d83859954699461ad3bb4a11950"
+      },
+      {
+        "path": "core/01-Respiratory-Professional-Patient-Team-Device-and-Institution-Trust-Shield.md",
+        "sha256": "4f2dbc27c328e4edcf639ae420feb6e812703a2fd141c509b1ceb412c71eee24"
+      },
+      {
+        "path": "core/02-BREATHE-SCOPE-CIRCLE-ORBIT-Operating-Core.md",
+        "sha256": "6de2bd6ddc3926ba022fa991e16e8a5e5cc48bbf9da6c9bdd212926758e0e209"
+      },
+      {
+        "path": "foundation/Respiratory-Care-Life-Practice-and-Professional-Foundation.md",
+        "sha256": "d7b047d2f76dbd29c6bbc616d7919bb7edb3af994662576a4273881e6ad2a57a"
+      },
+      {
+        "path": "manifest.md",
+        "sha256": "0faedbc17d49d71ee1097bebb8e011569ed98115253f4fc26cd050ef87f6b893"
+      },
+      {
+        "path": "templates/BREATHE-Cards-and-Templates.md",
+        "sha256": "c51891e757f190cf7bdf07d92633d1373dd798ee5df70fc86a868d5d44befa81"
+      },
+      {
+        "path": "tests/BREATHE-Release-Assurance.md",
+        "sha256": "5fe51985df8345c859f5d394448b5e87419a63048515002580ba410b046d1c04"
+      },
+      {
+        "path": "workflows/BREATHE-Workflows-Launch-and-Adoption-Plan.md",
+        "sha256": "4b5bb85caba0bee2aeeb23e0f8a5a7870c3ad5b1f1c0c28fb6e16b0e92b4316f"
+      },
+      {
+        "path": "workflows/My-BREATHE-Respiratory-Care-Command-Center.md",
+        "sha256": "332f1041e1ff9a84c21686fcdc5f055c4cf35e86b7b2ffd9401057fc3648be1e"
+      },
+      {
+        "path": "workflows/Respiratory-Role-Setting-and-Situation-Recipes.md",
+        "sha256": "6aecee0f209c555719684aeea49439aff25ffbdec0c7b101ed176c4e438dc9f5"
+      }
+    ],
+    "path": "source/breathe-domain-pack"
+  },
+  "clinical_or_institutional_deployment": {
+    "device_connection_or_control_granted": false,
+    "patient_data_authorized": false,
+    "professional_authority_granted": false,
+    "provisioned_by_this_kit": false,
+    "real_patient_device_or_institutional_data_bundled": false
+  },
+  "generated_at": "2026-07-21T01:22:21.660662+00:00",
+  "inputs": [
+    {
+      "id": "functional-build-master-prompt",
+      "path": "source/original-functional-build-master-prompt.md",
+      "sha256": "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2"
+    },
+    {
+      "id": "mission-control-v2-baseline",
+      "path": "source/archives/DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0.zip",
+      "sha256": "69a4dd86659b41136ce9ceb2ceb52512ab567637ab0be29fdc6f6ab6573223c1"
+    },
+    {
+      "id": "respiratory-care-complete-program",
+      "path": "source/complete-reference/Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Hermes-Program.md",
+      "sha256": "63821c41bd20b34edd7245d2eb640d695b7a80b33e0586893a8387e444d813bb"
+    },
+    {
+      "id": "respiratory-care-complete-setup-md",
+      "path": "source/complete-reference/Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup-Guide.md",
+      "sha256": "1ff712f65a167c812b66e32cfa4d588be247617506640772da349592c2e988ff"
+    },
+    {
+      "id": "respiratory-care-complete-setup-docx",
+      "path": "source/complete-reference/Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Setup-Guide.docx",
+      "sha256": "d2bf6752d59cffb0ca772a0387326a7fb918dc846bc14a080b86fc7ea90ae8dc"
+    },
+    {
+      "id": "respiratory-care-complete-legacy-zip",
+      "path": "source/archives/Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Package-v1.0.zip",
+      "sha256": "7fc1d4b0a8dec362bcd41e5e049b1498d70fc2cbfd9d0348f5d7b240172f2edb"
+    }
+  ],
+  "personalization": {
+    "raw_soul_or_quiz_answers_bundled": false,
+    "real_discover_packet_bundled": false,
+    "real_soul_quiz_result_bundled": false,
+    "synthetic_examples_are_badge_evidence": false,
+    "synthetic_examples_are_personal_facts": false
+  },
+  "readiness": "build instructions complete; target application remains not_operational_build_required",
+  "schema": "NAIO-RT-BREATHE-BUILD-KIT-SOURCE-INVENTORY-1",
+  "source_archive_deduplication": {
+    "preserved_archive": "source/archives/Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Package-v1.0.zip",
+    "reason": "The two legacy ZIP names are byte-identical; only the descriptive versioned filename is preserved to prevent contradictory duplicate source claims.",
+    "redundant_alias_omitted": "BREATHE-Respiratory-Care-Pack.zip"
+  }
+}

@@ -1,0 +1,1300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "breathe_alignment": {
+    "core_four": [
+      "Orient Shift & Capacity",
+      "Learn & Verify",
+      "Coordinate Care & Equipment",
+      "Review, Escalate & Close"
+    ],
+    "powers": [
+      "Shift & Assignment Readiness Navigator",
+      "Workload, Staffing Evidence & Escalation Shield",
+      "Fatigue, Recovery & Safe-Transport Navigator",
+      "Mission, Family, Finances & Future Compass",
+      "Evidence, Guideline & Source-Freshness Navigator",
+      "Synthetic ABG, Acid\u2013Base & Gas-Exchange Learning Lab",
+      "Synthetic Respiratory Assessment & Pattern-Recognition Studio",
+      "Orders, Protocols & Scope Boundary Navigator",
+      "Ventilator Modes, Waveforms & Alarm Learning Studio",
+      "Oxygen, Aerosol, Humidification & Delivery-Device Learning and Comparison Studio",
+      "Equipment, Circuit, Interface & Supply Readiness Mapper",
+      "Transport, Procedure & Equipment-Failure Rehearsal",
+      "Scope-Aware Respiratory Care Orchestration Mapper",
+      "Airway, Code, Rapid Response & Escalation Rehearsal",
+      "Interdisciplinary Rounds, Consult & Closed-Loop Coordination Studio",
+      "Liberation, NIV, Tracheostomy & Transition Reliability Planner",
+      "Patient, Family & Caregiver Education Rehearsal",
+      "Preceptor, Competency & Simulation Development Studio",
+      "Quality, Safety, Infection Prevention & Implementation Lab",
+      "Feedback, Conflict, Psychological Safety & Advocacy Navigator",
+      "Credential, Specialty, Career, Research & Leadership Growth Map",
+      "AI Agent Charter, Tool, Permission & Data Registry",
+      "Multi-Agent Workflow, Device-Boundary & Human-Handoff Designer",
+      "Agent Output Audit, Incident, Kill, Rollback & Retirement Controller"
+    ],
+    "source_defined_badge_system": false
+  },
+  "contextual_human_review_policy": {
+    "applies_to_all_levels": true,
+    "red_rule": "EDENA Red is ineligible until a separate governance route permits a clean eligible artifact; an absolute stop is never waivable.",
+    "required_result": "current_scope_matched_named_human_process_review_before_award",
+    "triggers": [
+      "professional_or_portfolio_evidence",
+      "credential_or_required_education_evidence",
+      "employment_or_institutional_context",
+      "quality_scholarship_or_project_outcome_evidence",
+      "edena_yellow_or_orange",
+      "otherwise_consequential_artifact_or_claim"
+    ]
+  },
+  "counts": {
+    "capstone_criteria": 9,
+    "domain_criteria": 68,
+    "domains": 17,
+    "levels": 4,
+    "total_criteria": 77
+  },
+  "domains": [
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic AI literacy through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-01-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate AI literacy through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-01-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-01-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced AI literacy through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-01-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-01-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master AI literacy through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-01-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-01-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-01",
+      "name": "AI literacy"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Prompt design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-02-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Prompt design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-02-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-02-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Prompt design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-02-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-02-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Prompt design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-02-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-02-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-02",
+      "name": "Prompt design"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Evidence-informed research through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-03-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Evidence-informed research through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-03-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-03-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Evidence-informed research through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-03-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-03-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Evidence-informed research through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-03-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-03-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-03",
+      "name": "Evidence-informed research"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Critical thinking and reasoning through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-04-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Critical thinking and reasoning through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-04-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-04-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Critical thinking and reasoning through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-04-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-04-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Critical thinking and reasoning through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-04-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-04-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-04",
+      "name": "Critical thinking and reasoning"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Structured problem-solving through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-05-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Structured problem-solving through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-05-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-05-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Structured problem-solving through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-05-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-05-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Structured problem-solving through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-05-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-05-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-05",
+      "name": "Structured problem-solving"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Workflow design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-06-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Workflow design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-06-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-06-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Workflow design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-06-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-06-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Workflow design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-06-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-06-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-06",
+      "name": "Workflow design"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Project management through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-07-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Project management through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-07-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-07-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Project management through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-07-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-07-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Project management through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-07-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-07-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-07",
+      "name": "Project management"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Data and privacy stewardship through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-08-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Data and privacy stewardship through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-08-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-08-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Data and privacy stewardship through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-08-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-08-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Data and privacy stewardship through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-08-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-08-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-08",
+      "name": "Data and privacy stewardship"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Ethical AI practice through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-09-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Ethical AI practice through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-09-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-09-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Ethical AI practice through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-09-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-09-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Ethical AI practice through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-09-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-09-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-09",
+      "name": "Ethical AI practice"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic EDENA governance through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-10-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate EDENA governance through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-10-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-10-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced EDENA governance through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-10-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-10-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master EDENA governance through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-10-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-10-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-10",
+      "name": "EDENA governance"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Agent supervision through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-11-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Agent supervision through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-11-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-11-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Agent supervision through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-11-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-11-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Agent supervision through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-11-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-11-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-11",
+      "name": "Agent supervision"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Multi-agent orchestration through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-12-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Multi-agent orchestration through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-12-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-12-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Multi-agent orchestration through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-12-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-12-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Multi-agent orchestration through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-12-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-12-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-12",
+      "name": "Multi-agent orchestration"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Knowledge-base development through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-13-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Knowledge-base development through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-13-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-13-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Knowledge-base development through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-13-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-13-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Knowledge-base development through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-13-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-13-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-13",
+      "name": "Knowledge-base development"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Automation design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-14-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Automation design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-14-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-14-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Automation design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-14-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-14-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Automation design through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-14-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-14-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-14",
+      "name": "Automation design"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Artifact creation and human release review through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-15-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Artifact creation and human release review through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-15-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-15-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Artifact creation and human release review through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-15-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-15-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Artifact creation and human release review through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-15-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-15-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-15",
+      "name": "Artifact creation and human release review"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic Evaluation, quality and implementation learning through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-16-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate Evaluation, quality and implementation learning through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-16-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-16-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced Evaluation, quality and implementation learning through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-16-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-16-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master Evaluation, quality and implementation learning through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-16-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-16-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-16",
+      "name": "Evaluation, quality and implementation learning"
+    },
+    {
+      "criteria": [
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates basic respiratory-care professional development, SCOPE/CIRCLE/ORBIT stewardship and whole-life sustainability through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-17-L1",
+          "level": "L1",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": null,
+          "requires_human_review": false
+        },
+        {
+          "agent_permission_ceiling": "P1",
+          "description": "Demonstrates intermediate respiratory-care professional development, SCOPE/CIRCLE/ORBIT stewardship and whole-life sustainability through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-17-L2",
+          "level": "L2",
+          "minimum_distinct_real_missions": 2,
+          "prerequisite": "CAP-17-L1",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates advanced respiratory-care professional development, SCOPE/CIRCLE/ORBIT stewardship and whole-life sustainability through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-17-L3",
+          "level": "L3",
+          "minimum_distinct_real_missions": 3,
+          "prerequisite": "CAP-17-L2",
+          "requires_human_review": true
+        },
+        {
+          "agent_permission_ceiling": "P2",
+          "description": "Demonstrates ai agent orchestration master respiratory-care professional development, SCOPE/CIRCLE/ORBIT stewardship and whole-life sustainability through evaluated, nonsynthetic mission evidence with limitations and AI contribution accurately disclosed.",
+          "eligible_evidence": [
+            "evaluated_mission",
+            "reviewed_artifact",
+            "source_audit",
+            "safety_or_recovery_receipt"
+          ],
+          "id": "CAP-17-L4",
+          "level": "L4",
+          "minimum_distinct_real_missions": 1,
+          "prerequisite": "CAP-17-L3",
+          "requires_human_review": true
+        }
+      ],
+      "id": "CAP-17",
+      "name": "respiratory-care professional development, SCOPE/CIRCLE/ORBIT stewardship and whole-life sustainability"
+    }
+  ],
+  "eligibility": {
+    "allowed_evidence_types": [
+      "evaluated_mission",
+      "reviewed_artifact",
+      "source_audit",
+      "correction_record",
+      "minimized_process_reflection",
+      "assessment_record",
+      "safety_drill",
+      "supervised_workflow_run",
+      "accessibility_review",
+      "agent_run_receipt",
+      "validated_project_outcome"
+    ],
+    "excluded": [
+      "synthetic_or_starter_activity",
+      "clicks_page_views_or_time_in_app",
+      "ai_self_assessment_or_praise",
+      "patient_phi_or_reconstructable_clinical_information",
+      "live_care_or_clinical_decision_activity",
+      "fabricated_outcome_authorship_hour_credential_or_evidence",
+      "credential_secret_or_controlled_substance_identifier",
+      "restricted_employee_learner_research_participant_contract_or_institutional_information",
+      "private_wellbeing_relationship_financial_health_schedule_or_family_information_in_badge_evidence",
+      "unbound_institutional_activity",
+      "external_action_or_production_automation"
+    ],
+    "recompute_triggers": [
+      "correction",
+      "deletion",
+      "expiry",
+      "supersession",
+      "revocation",
+      "criteria_version_change",
+      "integrity_or_authority_conflict"
+    ]
+  },
+  "global_orchestration_capstone": {
+    "agent_permission_ceiling": "P2",
+    "criteria": [
+      {
+        "description": "A nurse-authored low-risk objective has outcome, process, balancing, burden and independence measures.",
+        "id": "CAPSTONE-01"
+      },
+      {
+        "description": "At least two frozen agents, or one agent plus an independent reviewer, operate only at P1\u2013P2.",
+        "id": "CAPSTONE-02"
+      },
+      {
+        "description": "Context, data, tools, time, cost, token, retry, destination, expiry and human gates are frozen before the run.",
+        "id": "CAPSTONE-03"
+      },
+      {
+        "description": "Unauthorized handoff, recursion, permission widening and background continuation are rejected.",
+        "id": "CAPSTONE-04"
+      },
+      {
+        "description": "The Respiratory Care Professional demonstrates cancellation or a safe fictional failure-and-recovery path without false completion.",
+        "id": "CAPSTONE-05"
+      },
+      {
+        "description": "Consequential claims receive independent source and named-human review with conflicts and unknowns retained.",
+        "id": "CAPSTONE-06"
+      },
+      {
+        "description": "Evaluate records benefit, burden, accessibility, independence, unintended effects and the next-cycle decision.",
+        "id": "CAPSTONE-07"
+      },
+      {
+        "description": "A complete receipt distinguishes Respiratory Care Professional work, agent work, human decisions, corrections, disclosures and exclusions.",
+        "id": "CAPSTONE-08"
+      },
+      {
+        "description": "A scope-matched human reviews process quality without asserting clinical competence, licensure, certification, privileges or authority.",
+        "id": "CAPSTONE-09"
+      }
+    ],
+    "external_actions": "unsupported",
+    "id": "CAPSTONE-AI-ORCH-01",
+    "required_for_level": "L4"
+  },
+  "legacy_identity": {
+    "complete_program": "RCAIOS-BREATHE-COMPLETE-1.0",
+    "expansion": "RCAIOS-BREATHE-1.0",
+    "foundation": "RCAIOS-LIFE-PRACTICE-1.0",
+    "namespace": "resp_breathe.*",
+    "notice": "The four-level system, CAP IDs, criteria and badge records are build-layer additions."
+  },
+  "levels": [
+    {
+      "agent_permission_ceiling": "P1",
+      "id": "L1",
+      "name": "Basic",
+      "prerequisite_level": null
+    },
+    {
+      "agent_permission_ceiling": "P1",
+      "id": "L2",
+      "name": "Intermediate",
+      "prerequisite_level": "L1"
+    },
+    {
+      "agent_permission_ceiling": "P2",
+      "id": "L3",
+      "name": "Advanced",
+      "prerequisite_level": "L2"
+    },
+    {
+      "agent_permission_ceiling": "P2",
+      "id": "L4",
+      "name": "AI Agent Orchestration Master",
+      "prerequisite_level": "L3"
+    }
+  ],
+  "noncredential_notice": "Developmental evidence only; not continuing-education credit, licensure, certification, clinical competence, scope, privilege, prescribing authority, payer enrollment, employment validation, research determination, institutional approval or authorization to practice.",
+  "schema": "NAIO-RT-BREATHE-CAPABILITY-MASTERY-CRITERIA-1",
+  "status": "normative_build_layer_contract",
+  "version": "1.0.0"
+}

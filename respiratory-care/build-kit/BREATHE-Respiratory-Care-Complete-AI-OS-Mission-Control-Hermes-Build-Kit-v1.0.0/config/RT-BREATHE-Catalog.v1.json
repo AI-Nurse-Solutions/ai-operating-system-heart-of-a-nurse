@@ -1,0 +1,575 @@
+{
+  "core_four": [
+    "Orient Shift & Capacity",
+    "Learn & Verify",
+    "Coordinate Care & Equipment",
+    "Review, Escalate & Close"
+  ],
+  "counts": {
+    "powers": 24,
+    "templates": 30,
+    "workflows": 24
+  },
+  "external_action_lifecycle": [
+    "Off",
+    "Drafted",
+    "Previewed",
+    "Human-Approved-One-Run",
+    "Staged",
+    "Human-Released",
+    "Confirmed-or-Failed",
+    "Closed"
+  ],
+  "notice": "PWR, WF and TPL IDs, display names and ordering preserve the canonical BREATHE complete program.",
+  "optional_fifth_launcher": null,
+  "power_lifecycle": [
+    "Available Inactive",
+    "Previewed",
+    "Approved Inactive",
+    "Active Bounded",
+    "Paused",
+    "Removed"
+  ],
+  "powers": [
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Shift & Assignment Readiness Navigator",
+      "external_actions": "off",
+      "family": "B",
+      "id": "PWR-01",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Workload, Staffing Evidence & Escalation Shield",
+      "external_actions": "off",
+      "family": "B",
+      "id": "PWR-02",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Fatigue, Recovery & Safe-Transport Navigator",
+      "external_actions": "off",
+      "family": "B",
+      "id": "PWR-03",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Mission, Family, Finances & Future Compass",
+      "external_actions": "off",
+      "family": "B",
+      "id": "PWR-04",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Evidence, Guideline & Source-Freshness Navigator",
+      "external_actions": "off",
+      "family": "R",
+      "id": "PWR-05",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Synthetic ABG, Acid\u2013Base & Gas-Exchange Learning Lab",
+      "external_actions": "off",
+      "family": "R",
+      "id": "PWR-06",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Synthetic Respiratory Assessment & Pattern-Recognition Studio",
+      "external_actions": "off",
+      "family": "R",
+      "id": "PWR-07",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Orders, Protocols & Scope Boundary Navigator",
+      "external_actions": "off",
+      "family": "R",
+      "id": "PWR-08",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Ventilator Modes, Waveforms & Alarm Learning Studio",
+      "external_actions": "off",
+      "family": "E",
+      "id": "PWR-09",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Oxygen, Aerosol, Humidification & Delivery-Device Learning and Comparison Studio",
+      "external_actions": "off",
+      "family": "E",
+      "id": "PWR-10",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Equipment, Circuit, Interface & Supply Readiness Mapper",
+      "external_actions": "off",
+      "family": "E",
+      "id": "PWR-11",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Transport, Procedure & Equipment-Failure Rehearsal",
+      "external_actions": "off",
+      "family": "E",
+      "id": "PWR-12",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Scope-Aware Respiratory Care Orchestration Mapper",
+      "external_actions": "off",
+      "family": "A",
+      "id": "PWR-13",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Airway, Code, Rapid Response & Escalation Rehearsal",
+      "external_actions": "off",
+      "family": "A",
+      "id": "PWR-14",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Interdisciplinary Rounds, Consult & Closed-Loop Coordination Studio",
+      "external_actions": "off",
+      "family": "A",
+      "id": "PWR-15",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Liberation, NIV, Tracheostomy & Transition Reliability Planner",
+      "external_actions": "off",
+      "family": "A",
+      "id": "PWR-16",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Patient, Family & Caregiver Education Rehearsal",
+      "external_actions": "off",
+      "family": "T",
+      "id": "PWR-17",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Preceptor, Competency & Simulation Development Studio",
+      "external_actions": "off",
+      "family": "T",
+      "id": "PWR-18",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Quality, Safety, Infection Prevention & Implementation Lab",
+      "external_actions": "off",
+      "family": "T",
+      "id": "PWR-19",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Feedback, Conflict, Psychological Safety & Advocacy Navigator",
+      "external_actions": "off",
+      "family": "H",
+      "id": "PWR-20",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Credential, Specialty, Career, Research & Leadership Growth Map",
+      "external_actions": "off",
+      "family": "H",
+      "id": "PWR-21",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "AI Agent Charter, Tool, Permission & Data Registry",
+      "external_actions": "off",
+      "family": "E",
+      "id": "PWR-22",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Multi-Agent Workflow, Device-Boundary & Human-Handoff Designer",
+      "external_actions": "off",
+      "family": "E",
+      "id": "PWR-23",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    },
+    {
+      "agent_permission": "PERM-P0 Disabled",
+      "display_name": "Agent Output Audit, Incident, Kill, Rollback & Retirement Controller",
+      "external_actions": "off",
+      "family": "E",
+      "id": "PWR-24",
+      "installation_state": "available_inactive",
+      "source_defined": true
+    }
+  ],
+  "schema": "NAIO-RT-BREATHE-CATALOG-1",
+  "templates": [
+    {
+      "display_name": "BREATHE True North & Protected-Life Promise",
+      "id": "TPL-01",
+      "source_defined": true
+    },
+    {
+      "display_name": "Professional Identity, Role, Site & Active-Hat Card",
+      "id": "TPL-02",
+      "source_defined": true
+    },
+    {
+      "display_name": "Credential, License, Competency & Expiry Radar",
+      "id": "TPL-03",
+      "source_defined": true
+    },
+    {
+      "display_name": "SCOPE Authority and Action Gate Receipt",
+      "id": "TPL-04",
+      "source_defined": true
+    },
+    {
+      "display_name": "Shift Capacity, Top Three & Plan B Card",
+      "id": "TPL-05",
+      "source_defined": true
+    },
+    {
+      "display_name": "Workload Reality, Staffing Evidence & Escalation Brief",
+      "id": "TPL-06",
+      "source_defined": true
+    },
+    {
+      "display_name": "Recovery, Health-Care Time & Safe-Transport Plan",
+      "id": "TPL-07",
+      "source_defined": true
+    },
+    {
+      "display_name": "Evidence, Guideline, Policy & Manufacturer Source Brief",
+      "id": "TPL-08",
+      "source_defined": true
+    },
+    {
+      "display_name": "Synthetic ABG, Acid\u2013Base & Gas-Exchange Learning Sheet",
+      "id": "TPL-09",
+      "source_defined": true
+    },
+    {
+      "display_name": "Synthetic Respiratory Assessment, Trend & Bias Reflection",
+      "id": "TPL-10",
+      "source_defined": true
+    },
+    {
+      "display_name": "Order, Protocol, Scope & Human-Owner Comparison Card",
+      "id": "TPL-11",
+      "source_defined": true
+    },
+    {
+      "display_name": "Synthetic Ventilator Mode, Waveform & Alarm Worksheet",
+      "id": "TPL-12",
+      "source_defined": true
+    },
+    {
+      "display_name": "Oxygen, Aerosol, Humidification & Delivery-Device Comparison",
+      "id": "TPL-13",
+      "source_defined": true
+    },
+    {
+      "display_name": "Generic Equipment, Circuit, Interface, Supply & Backup Map",
+      "id": "TPL-14",
+      "source_defined": true
+    },
+    {
+      "display_name": "Synthetic Transport, Procedure & Equipment-Failure Rehearsal",
+      "id": "TPL-15",
+      "source_defined": true
+    },
+    {
+      "display_name": "CIRCLE Respiratory Care-Orchestration Map",
+      "id": "TPL-16",
+      "source_defined": true
+    },
+    {
+      "display_name": "Rounds, Consult, Recommendation & Check-Back Brief",
+      "id": "TPL-17",
+      "source_defined": true
+    },
+    {
+      "display_name": "Synthetic Airway, Code & Rapid-Response Rehearsal",
+      "id": "TPL-18",
+      "source_defined": true
+    },
+    {
+      "display_name": "Synthetic Liberation, NIV, Tracheostomy & Transition Map",
+      "id": "TPL-19",
+      "source_defined": true
+    },
+    {
+      "display_name": "Patient, Family, Caregiver Education & Teach-Back Plan",
+      "id": "TPL-20",
+      "source_defined": true
+    },
+    {
+      "display_name": "Preceptor, Simulation, Deliberate-Practice & Feedback Plan",
+      "id": "TPL-21",
+      "source_defined": true
+    },
+    {
+      "display_name": "Quality, Safety, Infection Prevention & PDSA Charter",
+      "id": "TPL-22",
+      "source_defined": true
+    },
+    {
+      "display_name": "Safety Event or M&M Reflection & Official-System Boundary",
+      "id": "TPL-23",
+      "source_defined": true
+    },
+    {
+      "display_name": "Feedback, Conflict, Psychological Safety & Advocacy Brief",
+      "id": "TPL-24",
+      "source_defined": true
+    },
+    {
+      "display_name": "NBRC, License, CE, Specialty & Renewal Radar",
+      "id": "TPL-25",
+      "source_defined": true
+    },
+    {
+      "display_name": "Career, Education, Research, Leadership & Portfolio Map",
+      "id": "TPL-26",
+      "source_defined": true
+    },
+    {
+      "display_name": "Whole-Life Capacity, Family, Finance & Minimum-Mode Plan",
+      "id": "TPL-27",
+      "source_defined": true
+    },
+    {
+      "display_name": "ORBIT Agent Charter, Permission & Device-Boundary Envelope",
+      "id": "TPL-28",
+      "source_defined": true
+    },
+    {
+      "display_name": "Agent Preview, Test, Run, Review, Incident & Retirement Receipt",
+      "id": "TPL-29",
+      "source_defined": true
+    },
+    {
+      "display_name": "Seven-Day Launch & Ninety-Day BREATHE Development Plan",
+      "id": "TPL-30",
+      "source_defined": true
+    }
+  ],
+  "version": "1.0.0",
+  "workflows": [
+    {
+      "display_name": "Shift Orientation, Capacity, Top Three & Plan B",
+      "external_actions": "off",
+      "id": "WF-01",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Workload Reality, Delay Risk & Human Escalation",
+      "external_actions": "off",
+      "id": "WF-02",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Break, Recovery, Health-Care Time & Safe Transport",
+      "external_actions": "off",
+      "id": "WF-03",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "True North, Family, Finances & Ninety-Day Direction",
+      "external_actions": "off",
+      "id": "WF-04",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Evidence, Guideline, Policy & Manufacturer Source Brief",
+      "external_actions": "off",
+      "id": "WF-05",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Synthetic ABG, Acid\u2013Base & Gas-Exchange Deliberate Practice",
+      "external_actions": "off",
+      "id": "WF-06",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Synthetic Respiratory Assessment, Trend & Bias Rehearsal",
+      "external_actions": "off",
+      "id": "WF-07",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "SCOPE Role, Credential, Order, Protocol & Permission Check",
+      "external_actions": "off",
+      "id": "WF-08",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Synthetic Ventilator Mode, Waveform & Alarm Learning",
+      "external_actions": "off",
+      "id": "WF-09",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Oxygen, Aerosol, Humidification & Device Education Comparison",
+      "external_actions": "off",
+      "id": "WF-10",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Generic Equipment, Circuit, Interface, Supply & Backup Readiness",
+      "external_actions": "off",
+      "id": "WF-11",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Synthetic Transport, Procedure & Equipment-Failure Rehearsal",
+      "external_actions": "off",
+      "id": "WF-12",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "CIRCLE Respiratory Care-Orchestration Map",
+      "external_actions": "off",
+      "id": "WF-13",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Synthetic Airway, Code, Rapid Response & Escalation Rehearsal",
+      "external_actions": "off",
+      "id": "WF-14",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Rounds, Consult, Recommendation & Closed-Loop Preparation",
+      "external_actions": "off",
+      "id": "WF-15",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Synthetic Liberation, NIV, Tracheostomy & Transition Reliability",
+      "external_actions": "off",
+      "id": "WF-16",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Patient, Family, Caregiver Education & Teach-Back Rehearsal",
+      "external_actions": "off",
+      "id": "WF-17",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Preceptor, Competency, Simulation & Feedback Development",
+      "external_actions": "off",
+      "id": "WF-18",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Quality, Safety, Infection Prevention & PDSA Project",
+      "external_actions": "off",
+      "id": "WF-19",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Feedback, Conflict, Safety Concern & Advocacy Preparation",
+      "external_actions": "off",
+      "id": "WF-20",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Credential, Specialty, Career, Research & Leadership Growth",
+      "external_actions": "off",
+      "id": "WF-21",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "ORBIT Agent Charter, Tool, Permission & Data Registry",
+      "external_actions": "off",
+      "id": "WF-22",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Multi-Agent Device-Boundary & Human-Handoff Design",
+      "external_actions": "off",
+      "id": "WF-23",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    },
+    {
+      "display_name": "Agent Output Audit, Incident, Kill, Rollback & Retirement",
+      "external_actions": "off",
+      "id": "WF-24",
+      "installation_state": "preview_only",
+      "source": "breathe_complete_program"
+    }
+  ]
+}

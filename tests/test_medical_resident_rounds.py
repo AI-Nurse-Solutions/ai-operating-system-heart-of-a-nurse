@@ -255,7 +255,8 @@ class RoundsMedicalResidentTests(unittest.TestCase):
         self.assertIn('href="medical-residents/"', video_region)
         self.assertEqual(video_region.count("MKKx9Ie6GmY"), 1)
         self.assertIn("Adjacent clinical lane · Respiratory care professionals", video_region)
-        self.assertIn("BREATHE — Respiratory Care Complete AI OS", video_region)
+        self.assertIn("BREATHE — Respiratory Care Mission Control Build Kit", video_region)
+        self.assertIn("Download/unzip does nothing", video_region)
         self.assertIn('class="home-rt-video"', video_region)
         self.assertIn("https://www.youtube-nocookie.com/embed/MKKx9Ie6GmY", video_region)
         rt_region = video_region.split('class="home-rt-video"', 1)[1]

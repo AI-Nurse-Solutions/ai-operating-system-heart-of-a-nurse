@@ -1,0 +1,295 @@
+{
+  "$id": "https://nurse-ai-os.local/schemas/breathe-discover-packet-adapter-1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Closed, minimum, user-reviewable derived input. Raw packet answers, patient/real-case/device information and authority proof are prohibited.",
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "raw_answers"
+        ]
+      },
+      {
+        "required": [
+          "raw_discover_packet"
+        ]
+      },
+      {
+        "required": [
+          "raw_soul"
+        ]
+      },
+      {
+        "required": [
+          "soul_md"
+        ]
+      },
+      {
+        "required": [
+          "patient_data"
+        ]
+      },
+      {
+        "required": [
+          "clinical_case"
+        ]
+      },
+      {
+        "required": [
+          "device_data"
+        ]
+      }
+    ]
+  },
+  "properties": {
+    "adapter_version": {
+      "const": "1.0-draft"
+    },
+    "ai_boundaries": {
+      "additionalProperties": false,
+      "properties": {
+        "default_support": {
+          "enum": [
+            "suggest_only",
+            "prepare_only",
+            "bounded_draft"
+          ]
+        },
+        "external_actions": {
+          "const": "off"
+        },
+        "memory_default": {
+          "enum": [
+            "session_only",
+            "approved_nonsensitive_local"
+          ]
+        },
+        "never_delegate": {
+          "items": {
+            "maxLength": 240,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 20,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "default_support",
+        "memory_default",
+        "external_actions",
+        "never_delegate"
+      ],
+      "type": "object"
+    },
+    "capacity": {
+      "enum": [
+        "open",
+        "balanced",
+        "tight",
+        "recovery",
+        "unknown"
+      ]
+    },
+    "career_stage": {
+      "enum": [
+        "student_or_learner",
+        "orientee_or_new_graduate",
+        "established",
+        "educator_lead_manager_or_portfolio",
+        "transitioning_or_reentering",
+        "prefer_not_to_say",
+        "unknown"
+      ]
+    },
+    "current_season": {
+      "enum": [
+        "launch",
+        "build",
+        "sustain",
+        "recover",
+        "transition",
+        "unknown"
+      ]
+    },
+    "demo": {
+      "type": "boolean"
+    },
+    "display_name": {
+      "maxLength": 100,
+      "minLength": 1,
+      "type": "string"
+    },
+    "goals": {
+      "additionalProperties": false,
+      "properties": {
+        "long_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "medium_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "near_term": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "protected_life": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "near_term",
+        "medium_term",
+        "long_term",
+        "protected_life"
+      ],
+      "type": "object"
+    },
+    "local_title": {
+      "maxLength": 160,
+      "minLength": 1,
+      "type": "string"
+    },
+    "priorities": {
+      "items": {
+        "maxLength": 240,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "professional_status": {
+      "enum": [
+        "licensed_respiratory_therapist_or_rcp",
+        "student_orientee_or_new_graduate",
+        "assistant_technician_or_limited_role",
+        "unknown_stale_expired_or_conflicting"
+      ]
+    },
+    "schema": {
+      "const": "NAIO-RT-DISCOVER-PACKET-ADAPTER-1"
+    },
+    "task_hats": {
+      "items": {
+        "enum": [
+          "professional_practice_and_learning",
+          "acute_response_transport_and_transition",
+          "equipment_support_and_reliability",
+          "preceptor_educator_and_simulation",
+          "quality_research_and_innovation",
+          "leadership_operations_and_team_coordination",
+          "career_whole_life_and_recovery"
+        ]
+      },
+      "maxItems": 7,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "uncertainties": {
+      "items": {
+        "maxLength": 300,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 20,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "values": {
+      "items": {
+        "maxLength": 100,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 12,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "working_preferences": {
+      "additionalProperties": false,
+      "properties": {
+        "cadence": {
+          "maxLength": 160,
+          "type": "string"
+        },
+        "communication": {
+          "maxLength": 200,
+          "type": "string"
+        },
+        "decision": {
+          "maxLength": 200,
+          "type": "string"
+        },
+        "learning": {
+          "items": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "communication",
+        "decision",
+        "learning",
+        "cadence"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "adapter_version",
+    "display_name",
+    "professional_status",
+    "local_title",
+    "career_stage",
+    "current_season",
+    "task_hats",
+    "values",
+    "priorities",
+    "goals",
+    "capacity",
+    "working_preferences",
+    "ai_boundaries",
+    "uncertainties",
+    "demo"
+  ],
+  "title": "BREATHE Discover Packet Adapter",
+  "type": "object"
+}

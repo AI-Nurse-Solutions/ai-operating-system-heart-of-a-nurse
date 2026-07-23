@@ -1,0 +1,60 @@
+{
+  "id": "7f56b5e2-4b3c-4c16-91c9-3c94fb6803b1",
+  "schema": "NAIO-MISSION-1",
+  "title": "Synthetic example · Improve a monthly evidence-learning huddle",
+  "roleId": "research-innovation",
+  "edition": "personal",
+  "edena": "green",
+  "edenaReason": "Synthetic, nonclinical learning scenario using public information only; low-consequence and reversible.",
+  "artifactState": "evaluated_outcome",
+  "missionStatus": "completed",
+  "retentionMode": "session_only",
+  "summary": "Design and evaluate a 20-minute, nonclinical evidence-learning huddle that helps a volunteer team discuss one public article and choose one safe learning action.",
+  "iteration": 1,
+  "parentMissionId": null,
+  "sample": true,
+  "riskAcknowledged": false,
+  "approvalAttested": false,
+  "approvalReference": "",
+  "revision": 1,
+  "createdAt": "2026-07-20T12:00:00.000Z",
+  "updatedAt": "2026-07-20T12:00:00.000Z",
+  "stages": {
+    "assess": {
+      "notes": "Verified facts: attendance averages four people; the meeting has 20 minutes; only public articles are used.\nUser-provided information: participants want a predictable format.\nAssumptions: one article is manageable.\nUnresolved questions: preferred day and accessibility needs.",
+      "outcome": "A small volunteer learning huddle is feasible if the scope stays nonclinical and the format remains brief.",
+      "complete": true,
+      "needsReview": false,
+      "revision": 1
+    },
+    "define": {
+      "notes": "Central opportunity: make evidence discussion consistent without adding hidden preparation burden.\nContributing factors: changing schedules and unclear facilitation.\nRisk: conversation could drift into identifiable cases, which is prohibited.",
+      "outcome": "Create a repeatable, case-free learning huddle using public evidence and a visible stop rule for sensitive discussion.",
+      "complete": true,
+      "needsReview": false,
+      "revision": 1
+    },
+    "plan": {
+      "notes": "Option A: 20-minute live huddle. Option B: asynchronous summary. Option C: alternate both.\nSelected: pilot Option A twice.\nMeasures: attendance, one-question usefulness rating and facilitator preparation time.\nStop rule: stop immediately if anyone introduces identifiable information.",
+      "outcome": "Run two synthetic/public-evidence huddles with a five-part agenda, named facilitator, anonymous usefulness check and stop rule.",
+      "complete": true,
+      "needsReview": false,
+      "revision": 1
+    },
+    "implement": {
+      "notes": "Prepared a one-page agenda, public article link checklist and anonymous feedback question. A human facilitator reviewed the materials. No message was sent and no real meeting was scheduled by this app.",
+      "outcome": "User-reported outside result: two huddles were held using the reviewed agenda; Mission Control did not execute the action.",
+      "complete": true,
+      "needsReview": false,
+      "revision": 1
+    },
+    "evaluate": {
+      "notes": "Expected: at least three attendees, usefulness at least 4/5 and preparation under 15 minutes.\nObserved (synthetic demonstration): four attendees, 4.3/5 usefulness and 12 minutes preparation.\nLimitation: demonstration data are illustrative, not measured real-world evidence.\nLesson: keep one article and one action.",
+      "outcome": "Continue for one additional iteration and test rotating facilitators. This is a synthetic example, not evidence of a real outcome.",
+      "complete": true,
+      "needsReview": false,
+      "revision": 1
+    }
+  },
+  "history": []
+}

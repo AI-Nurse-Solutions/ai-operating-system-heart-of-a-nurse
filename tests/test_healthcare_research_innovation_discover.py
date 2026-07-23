@@ -531,6 +531,27 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
         def directory_mode_on_file(infos):
             infos[0].external_attr = (stat.S_IFDIR | 0o755) << 16
 
+        def directory_entry(infos):
+            set_name(infos[0], BUILD_KIT_ROOT.rstrip("/") + "/directory/")
+            infos[0].external_attr = (stat.S_IFDIR | 0o755) << 16
+
+        def missing_file_type(infos):
+            infos[0].external_attr = 0o777 << 16
+
+        def setuid_world_writable(infos):
+            infos[0].external_attr = (stat.S_IFREG | stat.S_ISUID | 0o777) << 16
+
+        def unexpected_executable(infos):
+            info = next(
+                item for item in infos
+                if item.filename not in namespace["BUILD_KIT_EXECUTABLE_MEMBERS"]
+            )
+            info.external_attr = (stat.S_IFREG | 0o755) << 16
+
+        def expected_executable_not_executable(infos):
+            info = next(item for item in infos if item.filename.endswith("/tools/verify-build-kit.py"))
+            info.external_attr = (stat.S_IFREG | 0o644) << 16
+
         def encrypted(infos):
             infos[0].flag_bits |= 1
 
@@ -555,6 +576,11 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
             "unicode-collision": unicode_collision,
             "symlink": symlink,
             "directory-mode-on-file": directory_mode_on_file,
+            "directory-entry": directory_entry,
+            "missing-file-type": missing_file_type,
+            "setuid-world-writable": setuid_world_writable,
+            "unexpected-executable": unexpected_executable,
+            "expected-executable-not-executable": expected_executable_not_executable,
             "encrypted": encrypted,
             "unsupported-compression": unsupported_compression,
             "oversized-member": oversized_member,

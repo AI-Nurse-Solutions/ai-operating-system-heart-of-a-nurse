@@ -38,6 +38,11 @@ BUILD_KIT_EXPECTED = {
 BUILD_KIT_MAX_MEMBER_BYTES = 32 * 1024 * 1024
 BUILD_KIT_MAX_EXPANDED_BYTES = 192 * 1024 * 1024
 BUILD_KIT_ALLOWED_COMPRESSION = {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}
+BUILD_KIT_EXECUTABLE_MEMBERS = {
+    f"{BUILD_KIT_ROOT}/source/baseline-application/Start-DISCOVER.command",
+    f"{BUILD_KIT_ROOT}/source/baseline-application/start-discover.sh",
+    f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py",
+}
 FIXED_ZIP_TIME = (2026, 7, 16, 0, 0, 0)
 PROGRAM_NAME = "Healthcare-Research-and-Innovation-Leader-Complete-AI-OS-with-DISCOVER-SuperPowers-Hermes-Program.md"
 SOURCE_PACK = "Healthcare-Research-and-Innovation-Leader-DISCOVER-SuperPowers-Pack-v1.0"
@@ -101,14 +106,17 @@ def _extract_build_kit_for_verification(zip_path: Path, root: Path) -> Path:
                 raise ValueError(f"DISCOVER build-kit ZIP encrypted member is forbidden: {name}")
             if info.compress_type not in BUILD_KIT_ALLOWED_COMPRESSION:
                 raise ValueError(f"DISCOVER build-kit ZIP compression method is forbidden: {name}")
+            if info.is_dir():
+                raise ValueError(f"DISCOVER build-kit ZIP directory entry is forbidden: {name}")
             mode = (info.external_attr >> 16) & 0o177777
-            mode_type = stat.S_IFMT(mode)
-            if mode_type not in {0, stat.S_IFDIR, stat.S_IFREG}:
-                raise ValueError(f"DISCOVER build-kit ZIP special file is forbidden: {name}")
-            if info.is_dir() and mode_type not in {0, stat.S_IFDIR}:
-                raise ValueError(f"DISCOVER build-kit ZIP directory mode mismatch: {name}")
-            if not info.is_dir() and mode_type not in {0, stat.S_IFREG}:
-                raise ValueError(f"DISCOVER build-kit ZIP file mode mismatch: {name}")
+            expected_mode = stat.S_IFREG | (
+                0o755 if name in BUILD_KIT_EXECUTABLE_MEMBERS else 0o644
+            )
+            if mode != expected_mode:
+                raise ValueError(
+                    f"DISCOVER build-kit ZIP mode mismatch: {name} "
+                    f"expected={oct(expected_mode)} actual={oct(mode)}"
+                )
             if info.file_size > BUILD_KIT_MAX_MEMBER_BYTES:
                 raise ValueError(f"DISCOVER build-kit ZIP member exceeds byte limit: {name}")
             expanded_bytes += info.file_size

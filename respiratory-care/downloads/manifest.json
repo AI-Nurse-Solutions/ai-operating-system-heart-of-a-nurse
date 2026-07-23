@@ -42,7 +42,7 @@
       "activation_contract": "user_initiated_read_only_preflight_then_exact_implementation_activation_card_approval",
       "artifact_class": "hermes_functional_build_kit_self_install",
       "build_kit_version": "1.0.0",
-      "bytes": 6966334,
+      "bytes": 6966473,
       "complete_ai_os_claim": "not_operational_build_required",
       "download": "downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
       "install_on_download": false,
@@ -53,7 +53,7 @@
       "readiness": "not_operational_build_required",
       "route": "/respiratory-care/",
       "runtime_status": "not_built_until_user_hermes_runs_approved_program",
-      "sha256": "8fe551cd982d8ab8d33c3bd23b8365b45f7f8e714c80b326bf54e075b21c3a7d",
+      "sha256": "896394e5a6ed63de5342281edc9e5d96cbbca86c94f632a902214d31261a0e22",
       "target_application_version": "2.0.0",
       "total_required_execution_records": 424
     }

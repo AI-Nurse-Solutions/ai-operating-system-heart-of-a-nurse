@@ -347,8 +347,8 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
                     self.assertEqual(archive.read(ZIP_PREFIX + path.relative_to(PACKAGE).as_posix()), path.read_bytes())
 
     def test_self_install_build_kit_is_pinned_and_not_operational(self):
-        self.assertEqual(sha256(BUILD_KIT), "8fe551cd982d8ab8d33c3bd23b8365b45f7f8e714c80b326bf54e075b21c3a7d")
-        self.assertEqual(BUILD_KIT.stat().st_size, 6966334)
+        self.assertEqual(sha256(BUILD_KIT), "896394e5a6ed63de5342281edc9e5d96cbbca86c94f632a902214d31261a0e22")
+        self.assertEqual(BUILD_KIT.stat().st_size, 6966473)
         with zipfile.ZipFile(BUILD_KIT) as archive:
             self.assertIsNone(archive.testzip())
             self.assertEqual(len(archive.infolist()), 151)
@@ -476,6 +476,9 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         mode_zero = regular(f"{package_root}/mode-zero.txt")
         mode_zero.external_attr = 0
         cases.append([mode_zero])
+        unexpected_executable = regular(f"{package_root}/unexpected-executable.txt")
+        unexpected_executable.external_attr = 0o100755 << 16
+        cases.append([unexpected_executable])
         cases.append([regular(f"{package_root}/../escape.txt")])
         cases.append([regular(f"{package_root}/duplicate.txt"), regular(f"{package_root}/duplicate.txt")])
         cases.append([regular(f"{package_root}/Case.txt"), regular(f"{package_root}/case.txt")])

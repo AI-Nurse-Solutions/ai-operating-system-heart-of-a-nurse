@@ -38,6 +38,11 @@ ARCHIVE_MAX_MEMBER_BYTES = 128 * 1024 * 1024
 ARCHIVE_MAX_EXPANDED_BYTES = 512 * 1024 * 1024
 ARCHIVE_MAX_COMPRESSION_RATIO = 200
 ARCHIVE_ALLOWED_COMPRESSION = {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}
+BASELINE_ARCHIVE_EXECUTABLES = {
+    "DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0/Start-DISCOVER.command",
+    "DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0/start-discover.sh",
+}
+FINAL_ARCHIVE_EXECUTABLES = {f"{PACKAGE_NAME}/tools/verify-build-kit.py"}
 
 PROMPT_SHA = "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2"
 BASELINE_ZIP_SHA = "69a4dd86659b41136ce9ceb2ceb52512ab567637ab0be29fdc6f6ab6573223c1"
@@ -890,7 +895,9 @@ def check_core_docs(c: Checks, package: Path) -> None:
     c.check(all(state in handoff for state in ["**Operational**", "**Core operational; AI setup pending**", "**Not operational**"]), "Handoff contains the three exact readiness states")
 
 
-def archive_analysis(path: Path) -> tuple[dict[str, zipfile.ZipInfo], list[str], list[str], list[str], set[str], list[str]]:
+def archive_analysis(
+    path: Path, executable_members: set[str] | frozenset[str] = frozenset()
+) -> tuple[dict[str, zipfile.ZipInfo], list[str], list[str], list[str], set[str], list[str]]:
     infos: dict[str, zipfile.ZipInfo] = {}
     errors: list[str] = []
     duplicates: list[str] = []
@@ -939,8 +946,8 @@ def archive_analysis(path: Path) -> tuple[dict[str, zipfile.ZipInfo], list[str],
                 mode = (info.external_attr >> 16) & 0o177777
                 if stat.S_ISLNK(mode):
                     symlinks.append(name)
-                expected_modes = {stat.S_IFREG | 0o644, stat.S_IFREG | 0o755}
-                if info.is_dir() or mode not in expected_modes:
+                expected_mode = stat.S_IFREG | (0o755 if name in executable_members else 0o644)
+                if info.is_dir() or mode != expected_mode:
                     errors.append(f"mode:{name}:{oct(mode)}")
                 else:
                     file_names.add(candidate)
@@ -960,11 +967,14 @@ def archive_analysis(path: Path) -> tuple[dict[str, zipfile.ZipInfo], list[str],
     return infos, errors, duplicates, collisions, roots, symlinks
 
 
-def check_archive(c: Checks, path: Path, label: str, expected_root: str | None = None) -> None:
+def check_archive(
+    c: Checks, path: Path, label: str, expected_root: str | None = None,
+    executable_members: set[str] | frozenset[str] = frozenset(),
+) -> None:
     c.check(path.is_file(), f"{label} exists")
     if not path.is_file():
         return
-    infos, errors, duplicates, collisions, roots, symlinks = archive_analysis(path)
+    infos, errors, duplicates, collisions, roots, symlinks = archive_analysis(path, executable_members)
     c.check(not errors, f"{label} paths, types, prefix structure and CRC are safe", errors[:10])
     c.check(not duplicates, f"{label} has no duplicate names", duplicates[:10])
     c.check(not collisions, f"{label} has no case or Unicode collisions", collisions[:10])
@@ -974,10 +984,13 @@ def check_archive(c: Checks, path: Path, label: str, expected_root: str | None =
         c.check(roots == {expected_root}, f"{label} root is exact", sorted(roots))
 
 
-def compare_archive_tree(c: Checks, archive_path: Path, directory: Path, archive_root: str, label: str) -> None:
+def compare_archive_tree(
+    c: Checks, archive_path: Path, directory: Path, archive_root: str, label: str,
+    executable_members: set[str] | frozenset[str] = frozenset(),
+) -> None:
     disk = tree_hashes(directory)
     archived: dict[str, str] = {}
-    _, errors, duplicates, collisions, _, symlinks = archive_analysis(archive_path)
+    _, errors, duplicates, collisions, _, symlinks = archive_analysis(archive_path, executable_members)
     if errors or duplicates or collisions or symlinks:
         c.check(False, f"{label} bytes can be compared only after metadata validation", {
             "errors": errors[:10], "duplicates": duplicates[:10],
@@ -1022,9 +1035,9 @@ def check_sources(c: Checks, package: Path) -> None:
     c.check(tree_digest(complete) == COMPLETE_TREE_DIGEST, "Complete Edition deterministic source-tree digest is exact", tree_digest(complete))
     c.check(sha256(package / "source/baseline-application/RELEASE-MANIFEST.json") == BASELINE_MANIFEST_SHA, "Baseline manifest hash is exact")
     c.check(sha256(package / "source/baseline-application/SHA256SUMS.txt") == BASELINE_CHECKSUMS_SHA, "Baseline checksum hash is exact")
-    check_archive(c, package / "source/archives/DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0.zip", "Baseline source archive", "DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0")
+    check_archive(c, package / "source/archives/DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0.zip", "Baseline source archive", "DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0", BASELINE_ARCHIVE_EXECUTABLES)
     check_archive(c, package / "source/archives/Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Package-v1.0.zip", "Complete BREATHE source archive", "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Package-v1.0")
-    compare_archive_tree(c, package / "source/archives/DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0.zip", package / "source/baseline-application", "DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0", "Baseline source archive")
+    compare_archive_tree(c, package / "source/archives/DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0.zip", package / "source/baseline-application", "DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0", "Baseline source archive", BASELINE_ARCHIVE_EXECUTABLES)
     compare_archive_tree(c, package / "source/archives/Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Package-v1.0.zip", package / "source/legacy-reference", "Respiratory-Care-Complete-AI-OS-with-BREATHE-SuperPowers-Package-v1.0", "Complete BREATHE source archive")
     c.check({f"Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/{name}": digest for name, digest in breathe.items()} == {name: digest for name, digest in complete.items() if name.startswith("Respiratory-Care-BREATHE-SuperPowers-Pack-v1.0/")}, "Standalone BREATHE tree is byte-identical to the embedded Complete Edition subtree")
 
@@ -1113,10 +1126,10 @@ def check_package_filesystem(c: Checks, package: Path) -> None:
 
 
 def check_outer_zip(c: Checks, package: Path, zip_path: Path, require_companions: bool) -> None:
-    check_archive(c, zip_path, "Final downloadable ZIP", PACKAGE_NAME)
+    check_archive(c, zip_path, "Final downloadable ZIP", PACKAGE_NAME, FINAL_ARCHIVE_EXECUTABLES)
     if not zip_path.is_file():
         return
-    compare_archive_tree(c, zip_path, package, PACKAGE_NAME, "Final downloadable ZIP")
+    compare_archive_tree(c, zip_path, package, PACKAGE_NAME, "Final downloadable ZIP", FINAL_ARCHIVE_EXECUTABLES)
     bad_modes: list[str] = []
     with zipfile.ZipFile(zip_path) as archive:
         for info in archive.infolist():

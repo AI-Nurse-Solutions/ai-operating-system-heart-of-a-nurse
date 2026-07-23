@@ -784,9 +784,9 @@
       "sha256": "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2"
     },
     {
-      "bytes": 86510,
+      "bytes": 87140,
       "path": "tools/verify-build-kit.py",
-      "sha256": "9dc166dabb30aefe8bc6f5bf9e1dc83cdf631182acd8491355af3cb49b3de041"
+      "sha256": "31d27dd2ffcb4b84e4321d8671f65924a3cec9f796eb12e00ea4c4e41ee0fa9d"
     }
   ],
   "implementation_notice": "Build-layer routes, schemas, data classes, permissions, agents and capability records grant no professional authority. This kit does not provision a clinical, device-connected or institutional deployment; authorize patient or device data; validate credentials or competency; enable clinical/device action; or permit any external action.",

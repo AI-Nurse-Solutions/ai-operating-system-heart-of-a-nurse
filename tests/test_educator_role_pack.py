@@ -274,6 +274,75 @@ class EducatorBuildKitTests(unittest.TestCase):
         switchboard = (ROOT / ".github/workflows/switchboard.yml").read_text(encoding="utf-8")
         self.assertEqual(switchboard.count('"post-setup/README.md"'), 2)
 
+    def test_rotation_utility_rejects_unsafe_archive_metadata_before_payload_reads(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "rotate-teach-verifier-portability.py"))
+        validate_infos = namespace["validate_infos"]
+        max_member = namespace["MAX_MEMBER_BYTES"]
+        max_expanded = namespace["MAX_EXPANDED_BYTES"]
+
+        def info(name: str, *, mode: int = 0o100644, size: int = 1, encrypted: bool = False):
+            item = zipfile.ZipInfo(name)
+            item.external_attr = mode << 16
+            item.file_size = size
+            item.flag_bits = 0x1 if encrypted else 0
+            return item
+
+        safe = f"{BUILD_KIT_ROOT}/safe.txt"
+        with self.assertRaisesRegex(ValueError, "member count mismatch"):
+            validate_infos([info(safe)])
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            validate_infos([info(safe), info(safe)], expected_count=2)
+        with self.assertRaisesRegex(ValueError, "case/Unicode-colliding"):
+            validate_infos(
+                [info(f"{BUILD_KIT_ROOT}/Case.txt"), info(f"{BUILD_KIT_ROOT}/case.txt")],
+                expected_count=2,
+            )
+        with self.assertRaisesRegex(ValueError, "case/Unicode-colliding"):
+            validate_infos(
+                [info(f"{BUILD_KIT_ROOT}/caf\u00e9.txt"), info(f"{BUILD_KIT_ROOT}/cafe\u0301.txt")],
+                expected_count=2,
+            )
+        for unsafe in (
+            f"{BUILD_KIT_ROOT}/a//b.txt",
+            f"{BUILD_KIT_ROOT}/a/./b.txt",
+            f"{BUILD_KIT_ROOT}/drive:C.txt",
+            f"{BUILD_KIT_ROOT}/../escape.txt",
+        ):
+            with self.subTest(unsafe=unsafe), self.assertRaisesRegex(ValueError, "Unsafe TEACH ZIP path"):
+                validate_infos([info(unsafe)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "Encrypted"):
+            validate_infos([info(safe, encrypted=True)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "symlink"):
+            validate_infos([info(safe, mode=0o120777)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "special-file"):
+            validate_infos([info(safe, mode=0o010644)], expected_count=1)
+        with self.assertRaisesRegex(ValueError, "member exceeds byte limit"):
+            validate_infos([info(safe, size=max_member + 1)], expected_count=1)
+        expanded = [
+            info(f"{BUILD_KIT_ROOT}/{index}.bin", size=max_member)
+            for index in range((max_expanded // max_member) + 1)
+        ]
+        with self.assertRaisesRegex(ValueError, "expanded bytes exceed limit"):
+            validate_infos(expanded, expected_count=len(expanded))
+
+    def test_rotation_utility_rejection_preserves_malformed_candidate_bytes(self):
+        script = ROOT / "scripts" / "rotate-teach-verifier-portability.py"
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate = Path(tmp) / ZIP.name
+            shutil.copy2(ZIP, candidate)
+            with zipfile.ZipFile(candidate, "a") as archive:
+                archive.writestr(f"{BUILD_KIT_ROOT}/unexpected.txt", b"unsafe inventory")
+            before = candidate.read_bytes()
+            result = subprocess.run(
+                [sys.executable, str(script), "--zip", str(candidate)],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("member count mismatch", result.stderr)
+            self.assertEqual(candidate.read_bytes(), before)
+
     def test_rotation_utility_is_idempotent_and_preserves_current_identity(self):
         script = ROOT / "scripts" / "rotate-teach-verifier-portability.py"
         with tempfile.TemporaryDirectory() as tmp:

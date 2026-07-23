@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import tempfile
+import unicodedata
 import zipfile
 from pathlib import Path, PurePosixPath
 
@@ -25,24 +26,84 @@ ROOT = "TEACH-Nurse-Educator-Instructional-Designer-Mission-Control-Hermes-Build
 OUTER_ZIP_ARGUMENT = f"../{DEFAULT_ZIP.name}"
 BARE_COMMAND = "python3 tools/verify-build-kit.py --package ."
 GOVERNED_COMMAND = f"{BARE_COMMAND} --zip {OUTER_ZIP_ARGUMENT}"
+EXPECTED_MEMBER_COUNT = 121
+MAX_MEMBER_BYTES = 32 * 1024 * 1024
+MAX_EXPANDED_BYTES = 256 * 1024 * 1024
+EXPECTED_ROTATED_BYTES = 6_820_684
+EXPECTED_ROTATED_SHA256 = "39d7a83a79b6137d50b6b5da639cd44d0427e4e06e30fc9d7f3b19805b4080f3"
 
 
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def validate_infos(
+    infos: list[zipfile.ZipInfo], *, expected_count: int = EXPECTED_MEMBER_COUNT
+) -> None:
+    """Reject unsafe archive metadata before any member payload is read."""
+    names = [item.filename for item in infos]
+    if len(infos) != expected_count:
+        raise ValueError(f"TEACH ZIP member count mismatch: {len(infos)} != {expected_count}")
+    if len(names) != len(set(names)):
+        raise ValueError("TEACH ZIP contains duplicate entry names")
+    if not names or {name.split("/", 1)[0] for name in names if name} != {ROOT}:
+        raise ValueError("TEACH ZIP root is unexpected")
+    normalized = {unicodedata.normalize("NFC", name).casefold() for name in names}
+    if len(normalized) != len(names):
+        raise ValueError("TEACH ZIP contains case/Unicode-colliding entry names")
+
+    expanded_bytes = 0
+    for item in infos:
+        name = item.filename
+        pure = PurePosixPath(name)
+        mode = (item.external_attr >> 16) & 0o777777
+        if (
+            not name
+            or name.startswith("/")
+            or "\\" in name
+            or "\x00" in name
+            or ".." in pure.parts
+            or any(":" in part for part in pure.parts)
+            or name.rstrip("/") != pure.as_posix()
+        ):
+            raise ValueError(f"Unsafe TEACH ZIP path: {name!r}")
+        if item.flag_bits & 0x1:
+            raise ValueError(f"Encrypted TEACH ZIP member rejected: {name}")
+        if (mode & 0o170000) == 0o120000:
+            raise ValueError(f"TEACH ZIP symlink member rejected: {name}")
+        if (mode & 0o170000) not in (0, 0o100000, 0o040000):
+            raise ValueError(f"TEACH ZIP special-file member rejected: {name}")
+        if item.file_size > MAX_MEMBER_BYTES:
+            raise ValueError(f"TEACH ZIP member exceeds byte limit: {name}")
+        expanded_bytes += item.file_size
+        if expanded_bytes > MAX_EXPANDED_BYTES:
+            raise ValueError("TEACH ZIP expanded bytes exceed limit")
+
+
+def validate_archive(path: Path, *, require_rotated_identity: bool = False) -> None:
+    """Run complete archive-as-data checks without executing bundled code."""
+    with zipfile.ZipFile(path) as archive:
+        validate_infos(archive.infolist())
+        bad_crc = archive.testzip()
+        if bad_crc is not None:
+            raise ValueError(f"TEACH ZIP CRC failure: {bad_crc}")
+    if require_rotated_identity:
+        actual_bytes = path.stat().st_size
+        actual_sha256 = sha256(path.read_bytes())
+        if (actual_bytes, actual_sha256) != (
+            EXPECTED_ROTATED_BYTES,
+            EXPECTED_ROTATED_SHA256,
+        ):
+            raise ValueError(
+                "Rotated TEACH ZIP identity mismatch: "
+                f"bytes={actual_bytes} sha256={actual_sha256}"
+            )
+
+
 def load_entries(path: Path) -> tuple[list[zipfile.ZipInfo], dict[str, bytes], bytes]:
+    validate_archive(path)
     with zipfile.ZipFile(path) as archive:
         infos = archive.infolist()
-        names = [item.filename for item in infos]
-        if len(names) != len(set(names)):
-            raise ValueError("TEACH ZIP contains duplicate entry names")
-        if not names or {name.split("/", 1)[0] for name in names} != {ROOT}:
-            raise ValueError("TEACH ZIP root is unexpected")
-        for name in names:
-            pure = PurePosixPath(name)
-            if pure.is_absolute() or ".." in pure.parts or "\\" in name or "\x00" in name:
-                raise ValueError(f"Unsafe TEACH ZIP path: {name}")
         data = {item.filename: archive.read(item) for item in infos if not item.is_dir()}
         return infos, data, archive.comment
 
@@ -192,9 +253,7 @@ def rotate(path: Path) -> None:
                 payload = b"" if original.is_dir() else data[original.filename]
                 kwargs = {"compresslevel": 9} if info.compress_type == zipfile.ZIP_DEFLATED else {}
                 output.writestr(info, payload, compress_type=info.compress_type, **kwargs)
-        with zipfile.ZipFile(temp) as check:
-            if check.testzip() is not None:
-                raise ValueError("Rotated TEACH ZIP failed CRC verification")
+        validate_archive(temp, require_rotated_identity=True)
         os.replace(temp, path)
     finally:
         temp.unlink(missing_ok=True)

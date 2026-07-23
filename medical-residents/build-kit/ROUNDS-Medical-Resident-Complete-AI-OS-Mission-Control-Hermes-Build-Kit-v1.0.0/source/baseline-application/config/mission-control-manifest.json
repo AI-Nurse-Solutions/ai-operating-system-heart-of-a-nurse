@@ -1,0 +1,124 @@
+{
+  "schema": "NAIO-MISSION-CONTROL-MANIFEST-1",
+  "product": {
+    "id": "discover-nurse-ai-os-mission-control",
+    "name": "DISCOVER · Nurse AI OS Mission Control",
+    "version": "2.0.0",
+    "edition": "Personal local package with Institutional policy preview",
+    "build_type": "static-local",
+    "hermes_integration": "manual-handoff-only"
+  },
+  "runtime": {
+    "portable_entry": "../index.html",
+    "local_server_entry": "../server.mjs",
+    "local_server_address": "http://127.0.0.1:43127/",
+    "network_required": false,
+    "external_services": [],
+    "direct_execution": false,
+    "background_agents": false,
+    "connectors_enabled": false
+  },
+  "storage": {
+    "engine": "browser-localStorage",
+    "storage_key": "discover.nurse-ai-os.mission-control.v2",
+    "encrypted_by_application": false,
+    "session_only_missions_persist": false,
+    "local_non_sensitive_missions_persist": true,
+    "maximum_backup_import_bytes": 1048576,
+    "maximum_discover_packet_import_bytes": 102400,
+    "maximum_soul_profile_import_bytes": 102400,
+    "prohibited_content": [
+      "protected health information",
+      "confidential institutional information",
+      "credentials or secrets",
+      "confidential personnel information"
+    ]
+  },
+  "schemas": {
+    "discover_packet": {
+      "id": "NAIO-DISCOVER-PACKET-ADAPTER-1",
+      "path": "discover-packet-input.schema.json",
+      "status": "draft-derived-settings-adapter"
+    },
+    "soul_profile": {
+      "id": "NAIO-SOUL-PROFILE-ADAPTER-1",
+      "path": "soul-profile-input.schema.json",
+      "status": "draft-adapter-pending-final-quiz"
+    },
+    "mission": {
+      "id": "NAIO-MISSION-1",
+      "path": "mission.schema.json"
+    },
+    "capability_evidence": {
+      "id": "NAIO-CAPABILITY-EVIDENCE-1",
+      "path": "capability-evidence.schema.json"
+    }
+  },
+  "configuration": {
+    "role_dashboards": "role-dashboards.json",
+    "edena_policy": "edena-policy.json",
+    "dependency_record": "../SBOM-or-Dependency-Record.json"
+  },
+  "examples": {
+    "deidentified_discover_packet": "../examples/deidentified-discover-packet.json",
+    "deidentified_soul_profile": "../examples/deidentified-soul-profile.json",
+    "synthetic_complete_mission": "../examples/sample-mission.json",
+    "examples_are_user_evidence": false
+  },
+  "capabilities": {
+    "multi_role_dashboards": true,
+    "five_stage_loop": [
+      "assess",
+      "define",
+      "plan",
+      "implement",
+      "evaluate"
+    ],
+    "artifact_states": [
+      "exploration",
+      "simulation",
+      "recommendation",
+      "draft_artifact",
+      "approved_plan",
+      "authorized_execution",
+      "completed_action",
+      "evaluated_outcome"
+    ],
+    "role_states": [
+      "primary",
+      "supporting",
+      "emerging",
+      "contextual"
+    ],
+    "mastery_levels": [
+      "Basic",
+      "Intermediate",
+      "Advanced",
+      "AI Agent Orchestration Master"
+    ]
+  },
+  "governance": {
+    "policy_id": "EDENA-MC-ADVISORY",
+    "policy_version": "1.0.0-draft",
+    "personal_mode": "advisory-with-explicit-transition-gates",
+    "institutional_mode": "policy-preview-only-not-managed-enforcement",
+    "human_accountability_required": true,
+    "role_selection_grants_authority": false,
+    "badge_grants_credential_or_permission": false,
+    "copy_or_download_is_send_or_execute": false
+  },
+  "security_posture": {
+    "bind_address": "127.0.0.1",
+    "content_security_policy": "self-only; no network connections",
+    "telemetry": false,
+    "analytics": false,
+    "automatic_updates": false,
+    "application_encryption": false
+  },
+  "compatibility": {
+    "browser": "Current standards-based desktop browser with JavaScript enabled",
+    "optional_local_server": "Node.js 18 or newer",
+    "hermes": "Manual copy/download handoff; no versioned API dependency"
+  },
+  "safety_statement": "This package is a governed planning and learning sandbox. It does not provide clinical judgment, institutional authorization, professional credentials, or real-world execution."
+}

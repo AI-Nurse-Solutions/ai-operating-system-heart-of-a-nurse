@@ -1,1 +1,4 @@
 hospital-clinic-administrators/preview/*.pdf binary
+
+# Preserve ledger-verified FUTURE source bytes, including Markdown hard breaks.
+post-setup/build-kits/future-student-assistant/** whitespace=-trailing-space,-blank-at-eof

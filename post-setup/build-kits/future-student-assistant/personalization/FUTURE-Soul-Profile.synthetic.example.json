@@ -1,0 +1,165 @@
+{
+  "schema": "NAIO-SOUL-PROFILE-ADAPTER-1",
+  "profile_schema_version": "1.0-draft",
+  "quiz_definition_version": "pending-future-alignment",
+  "scoring_model_version": "pending-future-alignment",
+  "completed_at": "2026-07-20T12:00:00.000Z",
+  "user_confirmed_at": null,
+  "role_constellation": [
+    {
+      "role_id": "prelicensure-support",
+      "label": "Bridge Learner",
+      "state": "primary",
+      "priority": 100,
+      "authorization_status": "unverified"
+    },
+    {
+      "role_id": "nursing-assistant-work-growth",
+      "label": "Nursing Assistant Work-Growth Context",
+      "state": "supporting",
+      "priority": 82,
+      "authorization_status": "user_asserted"
+    },
+    {
+      "role_id": "advanced-studies",
+      "label": "Future Nursing Studies",
+      "state": "emerging",
+      "priority": 75,
+      "authorization_status": "unverified"
+    },
+    {
+      "role_id": "community",
+      "label": "Community Service Learner",
+      "state": "contextual",
+      "priority": 42,
+      "authorization_status": "unverified"
+    }
+  ],
+  "core_values": [
+    "human dignity",
+    "honesty",
+    "service",
+    "growth with boundaries",
+    "asking for help early"
+  ],
+  "mission_and_purpose": {
+    "mission": "Build the knowledge, judgment and resilience to serve people well while becoming ready for the next nursing-learning opportunity.",
+    "populations": [
+      "learners",
+      "care teams",
+      "community members"
+    ],
+    "guiding_principles": [
+      "attempt before answer",
+      "verify before trust",
+      "stay inside current role and supervision",
+      "protect recovery"
+    ]
+  },
+  "learner_and_developmental_stage": [
+    "building foundational nursing knowledge",
+    "learning responsible AI use",
+    "exploring a bridge pathway"
+  ],
+  "advanced_studies": [
+    {
+      "label": "Synthetic bridge-to-nursing exploration",
+      "status": "planned",
+      "target_date": null
+    }
+  ],
+  "working_and_learning_preferences": {
+    "communication_style": "brief, kind and direct",
+    "decision_style": "compare a few realistic options and verify requirements with the responsible human",
+    "learning_preferences": [
+      "retrieval practice",
+      "fictional scenarios",
+      "teach-back",
+      "visual checklists",
+      "short sessions"
+    ]
+  },
+  "presentation_preferences": {
+    "theme_token": "direction",
+    "tone": "hopeful, practical and nonjudgmental"
+  },
+  "role_synergies": [
+    "work experience can generate general questions for private study when no patient or employer information is transferred",
+    "structured learning can strengthen future career planning"
+  ],
+  "role_tensions": [
+    "work, study and recovery compete for limited time",
+    "school and work contexts must remain separate"
+  ],
+  "wellness_limits": [
+    "protect sleep after demanding schedules",
+    "use minimum mode during high-load weeks"
+  ],
+  "ai_relationship_preferences": [
+    "study coach",
+    "question generator",
+    "source-checking partner",
+    "private planning assistant"
+  ],
+  "governance_boundaries": {
+    "may_support": [
+      "general concept explanation",
+      "retrieval practice",
+      "private schedule options",
+      "fictional rehearsal"
+    ],
+    "prepare_only": [
+      "faculty or supervisor questions",
+      "career and application drafts"
+    ],
+    "requires_confirmation": [
+      "save a preference",
+      "adopt a plan",
+      "use a draft outside the sandbox"
+    ],
+    "requires_supervision": [
+      "skills-lab preparation",
+      "role-specific clinical learning",
+      "scope or delegation questions"
+    ],
+    "requires_accountable_human_judgment": [
+      "patient care",
+      "clinical performance",
+      "academic evaluation",
+      "employment and delegation decisions"
+    ],
+    "never_delegate": [
+      "learner authorship",
+      "professional accountability",
+      "clinical judgment",
+      "scope, competency or credential determination"
+    ],
+    "memory_allowed": [
+      "non-sensitive preferences and private goals after explicit consent"
+    ],
+    "memory_denied": [
+      "PHI or patient-linked content",
+      "person-level school or employer records",
+      "live assessment content",
+      "credentials and secrets"
+    ],
+    "escalation_rules": [
+      "pause when academic rules, role boundaries, supervision, source authority or data class are uncertain",
+      "route urgent real-world safety concerns through the appropriate human and emergency process"
+    ]
+  },
+  "dashboard_recommendations": [
+    "prelicensure-support",
+    "nursing-assistant-work-growth",
+    "advanced-studies",
+    "private-life-capacity"
+  ],
+  "uncertainties": [
+    "No program enrollment, employment, local scope, delegation, competence, certification, licensure or authority has been verified.",
+    "Quiz and scoring definitions are still pending FUTURE alignment."
+  ],
+  "source_provenance": [
+    "Synthetic deidentified sample for interface and schema verification only."
+  ],
+  "demo": true
+}

@@ -1,0 +1,122 @@
+{
+  "schema": "NAIO-EDENA-MISSION-CONTROL-POLICY-1",
+  "id": "EDENA-MC-ADVISORY",
+  "version": "1.0.0-draft",
+  "status": "local-advisory-and-policy-preview",
+  "applies_to": "Outputs, artifacts, missions, evidence records and Hermes handoff previews created in this local Mission Control sandbox",
+  "tiers": {
+    "unclassified": {
+      "label": "Unclassified · Preview Only",
+      "summary": "Classify the context before any handoff. Exploration remains local and no external action is available.",
+      "acknowledgment_required_to_save": true,
+      "hermes_handoff": "blocked-until-classified",
+      "maximum_personal_artifact_state": "approved_plan",
+      "maximum_institutional_preview_artifact_state": "approved_plan"
+    },
+    "green": {
+      "label": "EDENA Green · bounded",
+      "summary": "Low-consequence, reversible sandbox work using public, synthetic or approved non-sensitive information.",
+      "acknowledgment_required_to_save": false,
+      "hermes_handoff": "manual-preview-permitted",
+      "maximum_personal_artifact_state": "evaluated_outcome",
+      "maximum_institutional_preview_artifact_state": "evaluated_outcome"
+    },
+    "yellow": {
+      "label": "EDENA Yellow · verify",
+      "summary": "Facts, scope, evidence, intended use or destination require deliberate verification before handoff.",
+      "acknowledgment_required_to_save": true,
+      "hermes_handoff": "manual-preview-after-acknowledgment",
+      "maximum_personal_artifact_state": "evaluated_outcome",
+      "maximum_institutional_preview_artifact_state": "evaluated_outcome"
+    },
+    "orange": {
+      "label": "EDENA Orange · qualified review",
+      "summary": "High-consequence, complex, sensitive or automation-related work requires structured qualified-human review.",
+      "acknowledgment_required_to_save": true,
+      "hermes_handoff": "manual-review-preview-after-acknowledgment",
+      "maximum_personal_artifact_state": "approved_plan",
+      "maximum_institutional_preview_artifact_state": "draft_artifact"
+    },
+    "red": {
+      "label": "EDENA Red · high-risk advisory",
+      "summary": "Potential for serious harm, unauthorized scope/data/action or consequential use without required authority. Sanitized exploration only.",
+      "acknowledgment_required_to_save": true,
+      "hermes_handoff": "manual-blocked-state-review-request-after-acknowledgment",
+      "maximum_personal_artifact_state": "approved_plan",
+      "maximum_institutional_preview_artifact_state": "draft_artifact"
+    }
+  },
+  "edition_modes": {
+    "personal": {
+      "label": "Personal Edition",
+      "classification_role": "advisory-warning-review-and-transition-gate",
+      "red_behavior": "Show a prominent warning, require deliberate acknowledgment, permit sanitized local exploration and a reviewed-plan record, block Authorized Execution and later states.",
+      "institutional_approval_verified": false,
+      "silent_suppression_of_exploration": false
+    },
+    "institutional_preview": {
+      "label": "Institutional policy preview",
+      "classification_role": "static-preview-of-stricter-managed-policy",
+      "orange_and_red_behavior": "Block Approved Plan and all later states; allow only a manual blocked-state review or escalation request after acknowledgment.",
+      "institutional_approval_verified": false,
+      "managed_enforcement_present": false,
+      "notice": "This static package cannot provide tamper-resistant access control, organizational identity, policy validation, audit integration, or managed authorization. A real institutional deployment must enforce those controls outside this app."
+    }
+  },
+  "artifact_state_order": [
+    "exploration",
+    "simulation",
+    "recommendation",
+    "draft_artifact",
+    "approved_plan",
+    "authorized_execution",
+    "completed_action",
+    "evaluated_outcome"
+  ],
+  "transition_rules": [
+    {
+      "id": "ordered-gates",
+      "rule": "After the first saved revision, a non-sample mission may advance by at most one artifact state per save; moving backward is permitted."
+    },
+    {
+      "id": "approved-plan",
+      "rule": "Approved Plan or a later state requires a completed Plan stage, a user-attested human review, and a non-sensitive approval reference. Mission Control does not verify that review."
+    },
+    {
+      "id": "authorized-execution",
+      "rule": "Authorized Execution or a later state requires a completed Implement stage and authority outside this app. The label records a user assertion; it does not execute or prove authorization."
+    },
+    {
+      "id": "evaluated-outcome",
+      "rule": "Evaluated Outcome requires a completed Evaluate stage."
+    },
+    {
+      "id": "completed-mission",
+      "rule": "A mission may be marked completed only after Evaluate is complete."
+    },
+    {
+      "id": "revision-propagation",
+      "rule": "When an earlier stage changes, later completed stages that were not changed in the same revision are reopened and marked for review."
+    }
+  ],
+  "hermes_handoff_controls": {
+    "integration_state": "manual_handoff",
+    "execution_permission": "none",
+    "memory_directive": "session_only_do_not_remember",
+    "allowed_operation": "analyze_compare_simulate_or_draft",
+    "external_action": "prohibited",
+    "requires_exact-preview_review": true,
+    "copy_or_download_transmits": false,
+    "trusted_hermes_address_opens_separately": true,
+    "prompt_auto_sent_to_hermes": false,
+    "required_final_line": "NO EXTERNAL ACTION TAKEN"
+  },
+  "permanent_accountability": [
+    "AI supports but does not replace professional judgment.",
+    "Hermes and Nurse AI OS do not hold a clinical license or assume professional accountability.",
+    "Every draft must be reviewed before clinical, legal, financial, employment, academic, or institutional use.",
+    "Do not enter protected health information, confidential institutional information, confidential personnel information, or secrets.",
+    "The user remains responsible for facts, evidence, recommendations, permissions, and final actions.",
+    "Real-world execution requires permissions and controls outside this sandbox."
+  ]
+}

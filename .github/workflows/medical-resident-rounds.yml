@@ -5,6 +5,7 @@ on:
     paths:
       - "medical-residents/**"
       - "scripts/build-medical-resident-rounds.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
       - "tests/test_medical_resident_rounds.py"
       - "post-setup/downloads/manifest.json"
       - "setup-helper/setup-helper-model.mjs"
@@ -16,6 +17,7 @@ on:
     paths:
       - "medical-residents/**"
       - "scripts/build-medical-resident-rounds.py"
+      - "scripts/scan-public-healthcare-artifacts.py"
       - "tests/test_medical_resident_rounds.py"
       - "post-setup/downloads/manifest.json"
       - "setup-helper/setup-helper-model.mjs"
@@ -41,32 +43,19 @@ jobs:
         run: |
           python3 scripts/build-medical-resident-rounds.py
           git diff --exit-code
+          git ls-files --error-unmatch medical-residents/downloads/medical-resident-rounds-complete-edition.zip
+          git ls-files --error-unmatch medical-residents/downloads/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip
+          git ls-files --error-unmatch medical-residents/build-kit/ROUNDS-Medical-Resident-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0/tools/verify-build-kit.py
+          git ls-files --error-unmatch medical-residents/downloads/manifest.json
+          git ls-files --error-unmatch medical-residents/downloads/CHECKSUMS.sha256
+          test -z "$(git status --porcelain --untracked-files=all)"
       - name: Run ROUNDS package and isolation tests
         run: python3 tests/test_medical_resident_rounds.py
       - name: Refuse accidental secrets or PHI examples
-        run: |
-          python3 - <<'PY'
-          import re
-          from pathlib import Path
-          paths = [p for p in Path("medical-residents").rglob("*") if p.is_file()]
-          text = "\n".join(p.read_text(errors="ignore") for p in paths)
-          patterns = {
-              "private key": r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
-              "generic api key": r"(?i)(?:api[_-]?key|token|password)\s*[:=]\s*['\"][A-Za-z0-9_\-]{16,}",
-              "patient or mrn example": r"(?i)(?:patient\s*(?:name)?|mrn\s*(?:number)?)\s*[:=]\s*[A-Za-z0-9][A-Za-z0-9_-]*",
-          }
-          phi_probe = patterns["patient or mrn example"]
-          for sample in ("Patient: John", "MRN: 123456", "MRN number=A1B2C3"):
-              if not re.search(phi_probe, sample):
-                  raise SystemExit(f"ROUNDS PHI scan probe failed: {sample}")
-          hits = [name for name, pattern in patterns.items() if re.search(pattern, text)]
-          if hits:
-              raise SystemExit("ROUNDS public-safety scan failed: " + ", ".join(hits))
-          print("ROUNDS_PUBLIC_SAFETY_SCAN=passed")
-          PY
+        run: python3 scripts/scan-public-healthcare-artifacts.py medical-residents --label ROUNDS
       - name: Verify page links and Python syntax
         run: |
-          python3 -m py_compile scripts/build-medical-resident-rounds.py tests/test_medical_resident_rounds.py
+          python3 -m py_compile scripts/build-medical-resident-rounds.py tests/test_medical_resident_rounds.py scripts/scan-public-healthcare-artifacts.py
           python3 - <<'PY'
           from html.parser import HTMLParser
           from pathlib import Path

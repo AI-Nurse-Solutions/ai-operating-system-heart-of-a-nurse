@@ -1,0 +1,901 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema": "NAIO-FUTURE-CAPABILITY-MASTERY-CRITERIA-1",
+  "version": "1.0.0",
+  "status": "normative_build_layer_contract",
+  "legacy_identity": {
+    "program": "NAIO-FUTURE-COMPLETE-1.0",
+    "foundation": "NAIO-FUTURE-CORE-1.0",
+    "expansion": "NAIO-FUTURE-SP-1.0",
+    "namespace": "future.*",
+    "notice": "The four-level catalog, CAP IDs, JSON shape, and criteria are build-layer additions, not identifiers from the legacy corpus."
+  },
+  "noncredential_notice": "Developmental evidence only; not a grade, course credit, certification, licensure, clinical competence determination, employment authorization, delegation, privilege, or permission to practice.",
+  "passport": {
+    "separate_from_badges": true,
+    "domains": [
+      "privacy_and_data_judgment",
+      "safe_prompting",
+      "source_verification",
+      "fairness_and_integrity",
+      "human_authority_and_escalation",
+      "workflow_design_and_recovery"
+    ],
+    "stages": [
+      "Explorer",
+      "Safe User",
+      "Verified Creator",
+      "Workflow Builder",
+      "Future Steward"
+    ]
+  },
+  "levels": [
+    {
+      "id": "L1",
+      "name": "Basic",
+      "minimum_distinct_real_missions": 1,
+      "human_review": "not_required_unless_domain_or_artifact_is_consequential",
+      "agent_permission_ceiling": "P1"
+    },
+    {
+      "id": "L2",
+      "name": "Intermediate",
+      "minimum_distinct_real_missions": 2,
+      "human_review": "required",
+      "agent_permission_ceiling": "P1"
+    },
+    {
+      "id": "L3",
+      "name": "Advanced",
+      "minimum_distinct_real_missions": 3,
+      "human_review": "required",
+      "agent_permission_ceiling": "P2"
+    },
+    {
+      "id": "L4",
+      "name": "AI Agent Orchestration Master",
+      "minimum_distinct_real_missions": 1,
+      "human_review": "required",
+      "agent_permission_ceiling": "P2"
+    }
+  ],
+  "eligibility": {
+    "allowed_evidence_types": [
+      "evaluated_mission",
+      "reviewed_artifact",
+      "source_audit",
+      "correction_record",
+      "learner_reflection",
+      "assessment_record",
+      "safety_drill",
+      "supervised_workflow_run",
+      "accessibility_review",
+      "agent_run_receipt",
+      "validated_project_outcome"
+    ],
+    "excluded": [
+      "synthetic_or_starter_activity",
+      "clicks_page_views_or_time_in_app",
+      "ai_self_assessment_or_praise",
+      "deleted_expired_superseded_revoked_or_conflicted_evidence",
+      "unreviewed_evidence_when_review_is_required",
+      "patient_or_identifiable_clinical_information",
+      "live_care_or_clinical_decision_activity",
+      "prohibited_assessed_work_or_fabricated_evidence",
+      "restricted_school_employer_or_secret_information",
+      "external_action_or_production_automation"
+    ],
+    "recompute_triggers": [
+      "correction",
+      "deletion",
+      "expiry",
+      "supersession",
+      "revocation",
+      "criteria_version_change",
+      "integrity_or_authority_conflict"
+    ]
+  },
+  "recommendation_aliases": {
+    "ai-literacy": "CAP-01",
+    "prompt-design": "CAP-02",
+    "evidence-research": "CAP-03",
+    "critical-thinking": "CAP-04",
+    "structured-problem-solving": "CAP-05",
+    "workflow-design": "CAP-06",
+    "project-management": "CAP-07",
+    "privacy-stewardship": "CAP-08",
+    "ethical-ai": "CAP-09",
+    "edena-governance": "CAP-10",
+    "agent-supervision": "CAP-11",
+    "multi-agent": "CAP-12",
+    "knowledge-base": "CAP-13",
+    "automation-design": "CAP-14",
+    "artifact-creation": "CAP-15",
+    "evaluation-qi": "CAP-16",
+    "role-development": "CAP-17"
+  },
+  "domains": [
+    {
+      "id": "CAP-01",
+      "name": "AI literacy",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-01-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner explains model limits, false fluency, automation bias, verification needs, and when not to use AI; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-01-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently explains model limits, false fluency, automation bias, verification needs, and when not to use AI; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-01-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that explains model limits, false fluency, automation bias, verification needs, and when not to use AI; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-01-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that explains model limits, false fluency, automation bias, verification needs, and when not to use AI; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-02",
+      "name": "SAFE prompt design",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-02-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner uses Situation, Aim, Facts, and Expectations with minimum necessary nonsensitive context; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-02-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently uses Situation, Aim, Facts, and Expectations with minimum necessary nonsensitive context; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-02-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that uses Situation, Aim, Facts, and Expectations with minimum necessary nonsensitive context; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-02-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that uses Situation, Aim, Facts, and Expectations with minimum necessary nonsensitive context; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-03",
+      "name": "Evidence-informed research",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-03-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner maps consequential claims to real sources, authority, applicability, freshness, conflicts, and uncertainty; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-03-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently maps consequential claims to real sources, authority, applicability, freshness, conflicts, and uncertainty; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-03-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that maps consequential claims to real sources, authority, applicability, freshness, conflicts, and uncertainty; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-03-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that maps consequential claims to real sources, authority, applicability, freshness, conflicts, and uncertainty; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-04",
+      "name": "Critical thinking and reasoning",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-04-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner separates verified fact, user information, explanation, inference, recommendation, unknown, and accountable human decision; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-04-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently separates verified fact, user information, explanation, inference, recommendation, unknown, and accountable human decision; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-04-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that separates verified fact, user information, explanation, inference, recommendation, unknown, and accountable human decision; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-04-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that separates verified fact, user information, explanation, inference, recommendation, unknown, and accountable human decision; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-05",
+      "name": "Structured problem-solving",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-05-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner completes a revisable Assess–Define–Plan–Implement–Evaluate loop with measures and a next-cycle decision; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-05-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently completes a revisable Assess–Define–Plan–Implement–Evaluate loop with measures and a next-cycle decision; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-05-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that completes a revisable Assess–Define–Plan–Implement–Evaluate loop with measures and a next-cycle decision; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-05-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that completes a revisable Assess–Define–Plan–Implement–Evaluate loop with measures and a next-cycle decision; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-06",
+      "name": "Workflow design",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-06-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner maps a manual-first workflow with trigger, inputs, owner, approval, output, failure, fallback, rollback, and receipt; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-06-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently maps a manual-first workflow with trigger, inputs, owner, approval, output, failure, fallback, rollback, and receipt; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-06-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that maps a manual-first workflow with trigger, inputs, owner, approval, output, failure, fallback, rollback, and receipt; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-06-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that maps a manual-first workflow with trigger, inputs, owner, approval, output, failure, fallback, rollback, and receipt; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-07",
+      "name": "Project management",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-07-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner builds humane priorities, owners and milestones with capacity, measures, sleep, meals, transport, work, caregiving, recovery, minimum mode, and re-entry; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-07-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently builds humane priorities, owners and milestones with capacity, measures, sleep, meals, transport, work, caregiving, recovery, minimum mode, and re-entry; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-07-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that builds humane priorities, owners and milestones with capacity, measures, sleep, meals, transport, work, caregiving, recovery, minimum mode, and re-entry; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-07-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that builds humane priorities, owners and milestones with capacity, measures, sleep, meals, transport, work, caregiving, recovery, minimum mode, and re-entry; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-08",
+      "name": "Data and privacy stewardship",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-08-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner applies no-PHI screening, context separation, minimization, consent, retention, export, and deletion controls; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-08-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently applies no-PHI screening, context separation, minimization, consent, retention, export, and deletion controls; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-08-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that applies no-PHI screening, context separation, minimization, consent, retention, export, and deletion controls; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-08-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that applies no-PHI screening, context separation, minimization, consent, retention, export, and deletion controls; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-09",
+      "name": "Ethical AI practice",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-09-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner checks governing rules, preserves authorship, fairness and dignity, refuses deception or fabrication, and completes an accurate AI-use disclosure; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-09-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently checks governing rules, preserves authorship, fairness and dignity, refuses deception or fabrication, and completes an accurate AI-use disclosure; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-09-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that checks governing rules, preserves authorship, fairness and dignity, refuses deception or fabrication, and completes an accurate AI-use disclosure; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-09-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that checks governing rules, preserves authorship, fairness and dignity, refuses deception or fabrication, and completes an accurate AI-use disclosure; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-10",
+      "name": "EDENA governance",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-10-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner classifies risk consistently, names the accountable human and authority limit, honors reviews, and applies hard stops; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-10-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently classifies risk consistently, names the accountable human and authority limit, honors reviews, and applies hard stops; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-10-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that classifies risk consistently, names the accountable human and authority limit, honors reviews, and applies hard stops; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-10-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that classifies risk consistently, names the accountable human and authority limit, honors reviews, and applies hard stops; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-11",
+      "name": "Agent supervision",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-11-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner selects, constrains, monitors, stops, verifies, corrects, and retires one P1–P2 bounded agent with a complete receipt; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-11-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently selects, constrains, monitors, stops, verifies, corrects, and retires one P1–P2 bounded agent with a complete receipt; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-11-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that selects, constrains, monitors, stops, verifies, corrects, and retires one P1–P2 bounded agent with a complete receipt; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-11-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that selects, constrains, monitors, stops, verifies, corrects, and retires one P1–P2 bounded agent with a complete receipt; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-12",
+      "name": "Multi-agent orchestration",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-12-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner plans bounded dependencies and handoffs among agents, independently verifies results, contains failure, and preserves human accountability; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-12-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently plans bounded dependencies and handoffs among agents, independently verifies results, contains failure, and preserves human accountability; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-12-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that plans bounded dependencies and handoffs among agents, independently verifies results, contains failure, and preserves human accountability; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-12-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that plans bounded dependencies and handoffs among agents, independently verifies results, contains failure, and preserves human accountability; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-13",
+      "name": "Knowledge-base development",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-13-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner curates versioned sources with scope, claim links, authority, conflicts, freshness, access limits, corrections, and removal; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-13-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently curates versioned sources with scope, claim links, authority, conflicts, freshness, access limits, corrections, and removal; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-13-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that curates versioned sources with scope, claim links, authority, conflicts, freshness, access limits, corrections, and removal; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-13-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that curates versioned sources with scope, claim links, authority, conflicts, freshness, access limits, corrections, and removal; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-14",
+      "name": "Automation design",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-14-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner maps and tests a low-risk synthetic or manual workflow with approvals, limits, failure, fallback, rollback, receipt, and honest automation eligibility; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-14-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently maps and tests a low-risk synthetic or manual workflow with approvals, limits, failure, fallback, rollback, receipt, and honest automation eligibility; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-14-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that maps and tests a low-risk synthetic or manual workflow with approvals, limits, failure, fallback, rollback, receipt, and honest automation eligibility; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-14-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that maps and tests a low-risk synthetic or manual workflow with approvals, limits, failure, fallback, rollback, receipt, and honest automation eligibility; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-15",
+      "name": "Artifact creation",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-15-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner creates an accessible, own-voice, source-linked draft, prototype, plan, portfolio item, or teaching artifact with transparent AI contribution; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-15-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently creates an accessible, own-voice, source-linked draft, prototype, plan, portfolio item, or teaching artifact with transparent AI contribution; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-15-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that creates an accessible, own-voice, source-linked draft, prototype, plan, portfolio item, or teaching artifact with transparent AI contribution; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-15-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that creates an accessible, own-voice, source-linked draft, prototype, plan, portfolio item, or teaching artifact with transparent AI contribution; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-16",
+      "name": "Evaluation and quality improvement",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-16-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner measures outcome, burden, accessibility, independence, unintended effects, corrections, and a continue, revise, pause, stop, escalate, or next-cycle decision; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-16-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently measures outcome, burden, accessibility, independence, unintended effects, corrections, and a continue, revise, pause, stop, escalate, or next-cycle decision; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-16-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that measures outcome, burden, accessibility, independence, unintended effects, corrections, and a continue, revise, pause, stop, escalate, or next-cycle decision; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-16-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that measures outcome, burden, accessibility, independence, unintended effects, corrections, and a continue, revise, pause, stop, escalate, or next-cycle decision; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    },
+    {
+      "id": "CAP-17",
+      "name": "Role-specific professional development",
+      "clinical_competence_domain": false,
+      "criteria": [
+        {
+          "id": "CAP-17-L1-01",
+          "required": true,
+          "description": "In one adopted, evaluated, nonsynthetic mission, the learner builds truthful, reviewed evidence of student or assistant learning, communication, career growth, leadership, and safe technology stewardship without competence or credential claims; records their own contribution, AI contribution, source/data check, uncertainty, and next independent action.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": false,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-17-L2-01",
+          "required": true,
+          "description": "Across two distinct eligible missions, the learner independently builds truthful, reviewed evidence of student or assistant learning, communication, career growth, leadership, and safe technology stewardship without competence or credential claims; resolves or transparently records one correction, conflict, limitation, or failed attempt; and receives a named-human process review.",
+          "minimum_distinct_real_missions": 2,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P1",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-17-L3-01",
+          "required": true,
+          "description": "Across three distinct eligible missions, the learner designs, evaluates, and improves a reusable governed method that builds truthful, reviewed evidence of student or assistant learning, communication, career growth, leadership, and safe technology stewardship without competence or credential claims; compares outcome, burden, accessibility, independence, and unintended effects; and documents safe reuse and stop conditions for human review.",
+          "minimum_distinct_real_missions": 3,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": false
+        },
+        {
+          "id": "CAP-17-L4-01",
+          "required": true,
+          "description": "In the approved orchestration capstone, the learner uses frozen P1–P2 agents to support a mission that builds truthful, reviewed evidence of student or assistant learning, communication, career growth, leadership, and safe technology stewardship without competence or credential claims; explains routing and limits, independently verifies outputs, demonstrates Stop or safe failure recovery, completes Evaluate, and receives a named-human process review.",
+          "minimum_distinct_real_missions": 1,
+          "requires_human_review": true,
+          "agent_permission_ceiling": "P2",
+          "requires_global_orchestration_capstone": true
+        }
+      ]
+    }
+  ],
+  "global_orchestration_capstone": {
+    "id": "CAPSTONE-AI-ORCH-01",
+    "required_for_level": "L4",
+    "agent_permission_ceiling": "P2",
+    "external_actions": "unsupported",
+    "criteria": [
+      {
+        "id": "CAPSTONE-01",
+        "description": "One adopted, evaluated, nonsynthetic, low-risk mission has a learner-authored objective and outcome, burden, and independence measures."
+      },
+      {
+        "id": "CAPSTONE-02",
+        "description": "At least two frozen agents, or one agent plus an independent reviewer, operate only at P1–P2 with visible routing rationale."
+      },
+      {
+        "id": "CAPSTONE-03",
+        "description": "Context, data, tools, time, cost, token, retry, destination, expiry, human gates, stop, kill, and fallback limits are frozen before the run."
+      },
+      {
+        "id": "CAPSTONE-04",
+        "description": "Agent outputs and handoffs remain distinct; an unauthorized handoff, recursion, permission widening, or background continuation is rejected."
+      },
+      {
+        "id": "CAPSTONE-05",
+        "description": "The learner demonstrates a real cancellation or safe synthetic failure-and-recovery path without false completion."
+      },
+      {
+        "id": "CAPSTONE-06",
+        "description": "Consequential claims and artifacts receive independent source and human review, with conflicts and unknowns retained."
+      },
+      {
+        "id": "CAPSTONE-07",
+        "description": "Evaluate records results, burden, accessibility, independence, unintended effects, and a continue, revise, pause, stop, escalate, or new-cycle decision."
+      },
+      {
+        "id": "CAPSTONE-08",
+        "description": "A complete activity and AI-use receipt states learner work, agent work, decisions, corrections, disclosures, data handling, and what the learner can now do independently."
+      },
+      {
+        "id": "CAPSTONE-09",
+        "description": "An appropriate named human reviews process quality without asserting clinical competence, institutional approval, certification, licensure, or employment authority."
+      }
+    ]
+  },
+  "counts": {
+    "domains": 17,
+    "levels": 4,
+    "domain_criteria": 68,
+    "capstone_criteria": 9,
+    "total_criteria": 77
+  }
+}

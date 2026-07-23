@@ -1,0 +1,808 @@
+{
+  "build_kit": {
+    "generated_at": "2026-07-21T05:29:48.869900+00:00",
+    "id": "NAIO-MR-ROUNDS-FUNCTIONAL-BUILD-KIT-1.0.0",
+    "name": "ROUNDS Medical Resident Mission Control \u2014 Hermes Functional Build Kit",
+    "version": "1.0.0"
+  },
+  "contract_digests": {
+    "capability_configuration": "e753a93258ec28883520b019e5f31cb955510d0a3be216ef06f4710e2c38f602",
+    "control_ids": "22995145abcfb0cdc7b68ca0bec678a3c03b84bda0103a4f2f82da9a630f008e",
+    "control_matrix_semantics": "19dc719a91c996a19e043cb89b80addb73671de675ca90bc8e09f412abb2dc43",
+    "integration_scenarios": "86603c1548a5a80d4048835f38114b667674816d5731ca494004eb284bb9a58f",
+    "source_recommendation_registry": "e88a5f2c17b3765f1fa7538a87ac3989456d26df0be553851dc353a77219012b"
+  },
+  "counts": {
+    "active_deployment_contexts": 1,
+    "agents": 10,
+    "canonical_assurance_checks": 160,
+    "capability_criteria_including_capstone": 77,
+    "capability_domains": 17,
+    "control_matrix_rows": 216,
+    "core_launchers": 4,
+    "cross_cutting_full_stack_scenarios": 48,
+    "declared_deployment_contexts": 2,
+    "declared_partitions": 9,
+    "declared_record_types": 17,
+    "institutional_declared_unavailable_partitions": 6,
+    "machine_record_contracts": 17,
+    "mastery_levels": 4,
+    "personal_available_partitions": 3,
+    "protected_record_scopes": 5,
+    "role_adapters": 5,
+    "role_lane": 1,
+    "superpowers": 24,
+    "task_hats": 11,
+    "templates": 30,
+    "total_required_execution_records": 424,
+    "workflows": 24
+  },
+  "defaults": {
+    "agents": "PERM-P0 Disabled",
+    "external_actions": "Off",
+    "memory": "session_only",
+    "optional_fifth_launcher": "Empty",
+    "perm_p5": "Prohibited",
+    "personal_perm_p4": "Unavailable",
+    "powers": "Available Inactive",
+    "workflows": "Preview Only"
+  },
+  "files_excluding_manifest_and_checksums": [
+    {
+      "bytes": 310,
+      "path": ".env.example",
+      "sha256": "e19c126b4737213d739a5722efe36da0de40bdb30d56809261ee4a7ec3c6b517"
+    },
+    {
+      "bytes": 691,
+      "path": "BUILD-STATUS.md",
+      "sha256": "aedf754a23b7e9db3fd3795c253ae633eef573f417467d7415027f58d54cb64b"
+    },
+    {
+      "bytes": 552,
+      "path": "CHANGELOG.md",
+      "sha256": "e3951bd14b1576fdec27e1f0a71c5c3ce0210ec1f9f1a656331ae3ef193a1c6e"
+    },
+    {
+      "bytes": 6199,
+      "path": "GIVE-THIS-PACKAGE-TO-HERMES.md",
+      "sha256": "85e5dd899c79e7c3bdba9af1ae3ff0fff2db8ac7fdbc0dfd8b021a764fa6dea2"
+    },
+    {
+      "bytes": 1800,
+      "path": "INPUT-PRECEDENCE.md",
+      "sha256": "ff329a0a1921e35a1eeba6740aa0627e2764f73795ecf0dc17031e1cb78d7cb4"
+    },
+    {
+      "bytes": 1570,
+      "path": "INSTALL.md",
+      "sha256": "273a6726b71c3f29d6b109e227447801753086c317dafa8fa1c65a12246b52dd"
+    },
+    {
+      "bytes": 410,
+      "path": "LICENSE-NOTICE.md",
+      "sha256": "b66f9493ee52d7af8f0680c8e20ba9f98acd72cbfda8b6d3b827f69506956a6c"
+    },
+    {
+      "bytes": 570,
+      "path": "OPERATOR_HANDOFF.md",
+      "sha256": "59faad679fccad69d09276bca71bc5d5879f1d8623a5ce31b7693a5aa82d3bb0"
+    },
+    {
+      "bytes": 581,
+      "path": "PROCESSING_MESSAGE.md",
+      "sha256": "e97fee4148d6d0af6ba0b29ef2af6948e97236c6f2d774dab24e2ea0d1367c2c"
+    },
+    {
+      "bytes": 1698,
+      "path": "README-FIRST.md",
+      "sha256": "fa92f0a9ab240f533750e32dcc6218bb1a4243a02b638566aaa09c3ac66ce4e7"
+    },
+    {
+      "bytes": 1677,
+      "path": "README.md",
+      "sha256": "6d91be1e86597c81495c896b83668799ffd0352d669df2ddacd36813ccb4953f"
+    },
+    {
+      "bytes": 5951,
+      "path": "SOURCE-INVENTORY.json",
+      "sha256": "c97ce964d18157eaf06e6291f7bdb13503725da0042ed54ed4674d4341d1e382"
+    },
+    {
+      "bytes": 1274,
+      "path": "SOURCE-NOTES.md",
+      "sha256": "0d5fb27aca37893ddf88c3c00f940be7d10f3756c9fc14b5f7df1c977647be68"
+    },
+    {
+      "bytes": 2435,
+      "path": "START_HERE.md",
+      "sha256": "8c54abb68f2a5507ddb526bb650895315ce7e5dcf2102241ba75ba9a102e6b50"
+    },
+    {
+      "bytes": 6,
+      "path": "VERSION",
+      "sha256": "59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03"
+    },
+    {
+      "bytes": 29877,
+      "path": "config/MR-Agent-Registry.v1.json",
+      "sha256": "473c9419563004505d873fa2f113e9f4b778bbcbeda0795fb85eb7b76331dcee"
+    },
+    {
+      "bytes": 183421,
+      "path": "config/MR-Capability-Mastery-Criteria.v1.json",
+      "sha256": "b600152f9b24f02ce4d080ed00602b2d4a5ddf80abb8872505047fb04b22b70a"
+    },
+    {
+      "bytes": 10168,
+      "path": "config/MR-Governance-Policy.v1.json",
+      "sha256": "1712e20de8f8b52e542b6f0013d3c76d39cfa0869975b9835fd83eeb5c9aa8a9"
+    },
+    {
+      "bytes": 47804,
+      "path": "config/MR-Professional-Schema-Registry.v1.json",
+      "sha256": "04a549f85d3318cf5ce6caea6cdce25726a237a228b7199dccbbf22dfe489cbb"
+    },
+    {
+      "bytes": 18383,
+      "path": "config/MR-ROUNDS-Catalog.v1.json",
+      "sha256": "9a69cfd8c23078a59254fcddd9eba00f4c81d325aa09cecd8b61ebc3223c8739"
+    },
+    {
+      "bytes": 9549,
+      "path": "config/MR-Source-Recommendation-Registry.v1.json",
+      "sha256": "882640b019761b857e48da35b49f247e719d35980c5412ba6c15ba48d8e2e2d8"
+    },
+    {
+      "bytes": 1212,
+      "path": "implementation/GAP_ANALYSIS.md",
+      "sha256": "ff7de89281193e8e67808eff16289a41a7868630e26a55f8dab700e9c3963e3d"
+    },
+    {
+      "bytes": 1876,
+      "path": "implementation/HERMES-FINAL-HANDOFF-REPORT-TEMPLATE.md",
+      "sha256": "5b8cc0941927e52ab968f069b01c3ebad6bc8467a569b274ba2440d0d32a0f9a"
+    },
+    {
+      "bytes": 950,
+      "path": "implementation/HERMES-HANDOFF-README.md",
+      "sha256": "e0cfa0e31342af21c708ae23f0edffc9783503eeba77330ea93da2c3924202ec"
+    },
+    {
+      "bytes": 244143,
+      "path": "implementation/MR-Acceptance-and-Test-Ledger.md",
+      "sha256": "bbd2c53f65e288a84a1de2f1c7451f60bd213e425e715aa155e1737e160bd4b9"
+    },
+    {
+      "bytes": 2025,
+      "path": "implementation/MR-Agent-Team-and-Routing.md",
+      "sha256": "f0d202002054604e665f6c4943e0a205c2e0bf2678be66c3b432988b6a62a106"
+    },
+    {
+      "bytes": 3646,
+      "path": "implementation/MR-Architecture-and-Data-Model.md",
+      "sha256": "d1dc7c99d1fde6d9133dcd96647ac5acee7f6e3b93f217b290fa6af24dc9d1d1"
+    },
+    {
+      "bytes": 1179,
+      "path": "implementation/MR-Baseline-Gap-Report.md",
+      "sha256": "43d510ddb2801a1e846a056b00a29481f3817ddc926235091f085029a0e09413"
+    },
+    {
+      "bytes": 1677,
+      "path": "implementation/MR-Capability-and-Badge-Evidence-Model.md",
+      "sha256": "731b9b9dfef06b8f4837162e7e017968e5be7e7820758ca3c35a48c23776e2bb"
+    },
+    {
+      "bytes": 282643,
+      "path": "implementation/MR-Control-Completeness-Matrix.csv",
+      "sha256": "5ddb3a17142d8331a0c89f9b1d8b4e209addb619821b9df5745702d3ceb49380"
+    },
+    {
+      "bytes": 45019,
+      "path": "implementation/MR-Functional-Build-Master-Prompt.md",
+      "sha256": "7593949e4cd28b487512c661b3d2699d16538638dd5109bc2b58a1de1d70994b"
+    },
+    {
+      "bytes": 4468,
+      "path": "implementation/MR-Governance-EDENA-and-Data-Boundaries.md",
+      "sha256": "1daae9946d9d87c7ac2effa809b817d90177e002747cf3da7f4281e553da8852"
+    },
+    {
+      "bytes": 3507,
+      "path": "implementation/MR-Guide-Page-Content.md",
+      "sha256": "e687cc7791a7a94c3e0c125093e72f52d857c6ef3a6469996149cfc14fe4793d"
+    },
+    {
+      "bytes": 1768,
+      "path": "implementation/MR-Personalization-Mapping-Crosswalk.md",
+      "sha256": "22b3cfa2c713a3b3ad1823b8a891b5ecaf0a17f779a4ea8fa949fb8ac2ff49d0"
+    },
+    {
+      "bytes": 4104,
+      "path": "implementation/MR-Product-Specification.md",
+      "sha256": "d19ba2f5f81298f485cb401ae6fab24ab6dae508a6bb91794cce7eeb55261d49"
+    },
+    {
+      "bytes": 2602,
+      "path": "implementation/MR-Security-and-Privacy-Checklist.md",
+      "sha256": "9919c5c54e7cd329b1d3b92aca19074620ff34a255d98dc2492a05c5b628ebc3"
+    },
+    {
+      "bytes": 1343,
+      "path": "implementation/MR-Starter-Workspace-Crosswalk.md",
+      "sha256": "862d62230d0e5b80b3b8aa5b42a63e6cbee56c75874435e1e7c717bbe379e42c"
+    },
+    {
+      "bytes": 1553,
+      "path": "implementation/MR-Synthetic-Sample-Mission.md",
+      "sha256": "74405608283c88248eec1fb2b1dfbc8b46b7b8e62b952aadbd4d534849479c9a"
+    },
+    {
+      "bytes": 1575,
+      "path": "implementation/MR-Technical-Implementation-Guide.md",
+      "sha256": "973d65075563d934eb0d05af4c108773842b1a60f90ac6db17497682023d7133"
+    },
+    {
+      "bytes": 1253,
+      "path": "implementation/MR-User-Installation-Guide.md",
+      "sha256": "6c83014061d0d96ee9957507ce0d756e324a1b6071b1e699e29aff63e2e7bb6b"
+    },
+    {
+      "bytes": 607,
+      "path": "personalization/README.md",
+      "sha256": "450855d542905dda18b136d8db9de81f346fab1227f4138c3d34f0a2dd478726"
+    },
+    {
+      "bytes": 1756,
+      "path": "personalization/ROUNDS-Discover-Packet.synthetic.example.json",
+      "sha256": "06816a812190a14bb878f4eb0b66242568e322ebd087f4c812c6b21f6f3f19a2"
+    },
+    {
+      "bytes": 41386,
+      "path": "personalization/ROUNDS-Mission-Profile.synthetic.example.json",
+      "sha256": "c6578fd7f386a9ceeb9bab168bf3aab0400be00ba35587f843e0b02a1ce564ba"
+    },
+    {
+      "bytes": 1548,
+      "path": "personalization/ROUNDS-Soul-Profile.synthetic.example.json",
+      "sha256": "25b8d39044daee0b56a9c476c13aba6c02249857377fcf10b3f399bb6db7101a"
+    },
+    {
+      "bytes": 7569,
+      "path": "personalization/input-schemas/discover-packet-input.schema.json",
+      "sha256": "e803e5c1d2d3e86253492fec32b4f7471ee411f62632b77a0302a7615e349fe7"
+    },
+    {
+      "bytes": 5122,
+      "path": "personalization/input-schemas/soul-profile-input.schema.json",
+      "sha256": "d7d6600f367ac5b18a8b1daede8485e2f69124506582588ca9993847c6dcfc27"
+    },
+    {
+      "bytes": 7569,
+      "path": "schemas/ROUNDS-Discover-Packet.schema.json",
+      "sha256": "e803e5c1d2d3e86253492fec32b4f7471ee411f62632b77a0302a7615e349fe7"
+    },
+    {
+      "bytes": 232140,
+      "path": "schemas/ROUNDS-Mission-Profile.schema.json",
+      "sha256": "5c1e63e99b1205bbbf84efac9de7ba1da7ddfdef51333f945bd3cb9a0369424c"
+    },
+    {
+      "bytes": 5122,
+      "path": "schemas/ROUNDS-Soul-Profile.schema.json",
+      "sha256": "d7d6600f367ac5b18a8b1daede8485e2f69124506582588ca9993847c6dcfc27"
+    },
+    {
+      "bytes": 524230,
+      "path": "source/archives/DISCOVER-Nurse-AI-OS-Mission-Control-v2.0.0.zip",
+      "sha256": "69a4dd86659b41136ce9ceb2ceb52512ab567637ab0be29fdc6f6ab6573223c1"
+    },
+    {
+      "bytes": 302348,
+      "path": "source/archives/Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Package-v1.0.zip",
+      "sha256": "29143447f94aff0034c96019ff83a29370cbb17a1448c68d191a2354a847ce26"
+    },
+    {
+      "bytes": 3594,
+      "path": "source/baseline-application/CHANGELOG.md",
+      "sha256": "8977429ac497eb8532d6bc9a71714b3b63628cb72aa12a32b22256e1dc67ad23"
+    },
+    {
+      "bytes": 1284,
+      "path": "source/baseline-application/LICENSE.md",
+      "sha256": "86c51ba0fa2dc3cbcaa728f5580d59fbb5eb1949fad0544fd23f0dfd556f80a0"
+    },
+    {
+      "bytes": 5195,
+      "path": "source/baseline-application/PRIVACY.md",
+      "sha256": "fc436bd81e47e67b621a5a0138b0ece303d3d4b999ae30838bd8ddd6d4f3a72a"
+    },
+    {
+      "bytes": 4687,
+      "path": "source/baseline-application/README-FIRST.md",
+      "sha256": "775ce58ef8614f57af74fa8885c69261258355fef6cd00a5c3648fca9e5cd23a"
+    },
+    {
+      "bytes": 10873,
+      "path": "source/baseline-application/README.md",
+      "sha256": "0ffb0256b4bc62e905ee654f3f5a43f7c5bbfa820f9e7870c083a1a2087d718d"
+    },
+    {
+      "bytes": 7416,
+      "path": "source/baseline-application/RELEASE-MANIFEST.json",
+      "sha256": "22fed55fd789c933f4e7eb50266f88f8dda47f9fba91ebbe9c2cbe4f0ab99702"
+    },
+    {
+      "bytes": 2127,
+      "path": "source/baseline-application/SBOM-or-Dependency-Record.json",
+      "sha256": "19a9cdd2649a9faec1aff9a87a1b85609b9f5789c8e6599e2306a8a13c062a04"
+    },
+    {
+      "bytes": 5468,
+      "path": "source/baseline-application/SECURITY.md",
+      "sha256": "f5b64f9c7ad30de668ee2a6dc4b314e0a0499b2c75f956a3807e2ad248367928"
+    },
+    {
+      "bytes": 3078,
+      "path": "source/baseline-application/SHA256SUMS.txt",
+      "sha256": "e178993d6185b126cc915f0d3026ddb3b07e7c5c7dd432aaf581152db8a5a40e"
+    },
+    {
+      "bytes": 791,
+      "path": "source/baseline-application/Start-DISCOVER.bat",
+      "sha256": "d9d6ccc5bb4d0d0f8eeee460e2c7ca70b2c5192a15c6f056d0e58ccfc7ab40cd"
+    },
+    {
+      "bytes": 677,
+      "path": "source/baseline-application/Start-DISCOVER.command",
+      "sha256": "507a9de94233b1ef2edf16e362514b87aded1e968608b825ced06d548c4fab0f"
+    },
+    {
+      "bytes": 2991,
+      "path": "source/baseline-application/UNINSTALL.md",
+      "sha256": "e2fa66aa6d066e46896ef8509dbfda4aff9950139240de19530648ea6f90d340"
+    },
+    {
+      "bytes": 6,
+      "path": "source/baseline-application/VERSION",
+      "sha256": "c28fcca53637bc88e124af1725df13cb98c69dedefd62fb3cdbe1cdb6b760624"
+    },
+    {
+      "bytes": 183492,
+      "path": "source/baseline-application/assets/app.js",
+      "sha256": "1274744854565ccd03a52b02d36c3e08a0b6fc12725244282236e930937dcb93"
+    },
+    {
+      "bytes": 41311,
+      "path": "source/baseline-application/assets/styles.css",
+      "sha256": "92e95874ff68c8aafec11cabc3a0e3ff25a61cbb14245bf01c7fefce6b67e8cc"
+    },
+    {
+      "bytes": 1675125,
+      "path": "source/baseline-application/base-pack/DISCOVER-Complete-AI-OS-Hermes-Installer.md",
+      "sha256": "61e900ac5c2b10ee240086ab8d24617ff9ea272bdb18b7bd181a8c60cd6102b5"
+    },
+    {
+      "bytes": 202457,
+      "path": "source/baseline-application/base-pack/DISCOVER-Complete-AI-OS-Setup-Guide.docx",
+      "sha256": "87ee88d44c0c924043349dce857210e669fc2853bbd298e4724fe0fec968dd6d"
+    },
+    {
+      "bytes": 29324,
+      "path": "source/baseline-application/base-pack/DISCOVER-Complete-AI-OS-Setup-Guide.md",
+      "sha256": "81a5cc2ea0f394102805a3e71900324b2bb202478b28568eee1d9aec0e0642fc"
+    },
+    {
+      "bytes": 2870,
+      "path": "source/baseline-application/config/capability-evidence.schema.json",
+      "sha256": "95807f8141ba9956f28d0d2381b9accb818447331b76d3cce5c969929b0917cc"
+    },
+    {
+      "bytes": 5146,
+      "path": "source/baseline-application/config/discover-packet-input.schema.json",
+      "sha256": "e9fa2f44d37de10089ce2801dec29899609c826c9a3e0d27385201d55cc3526c"
+    },
+    {
+      "bytes": 6159,
+      "path": "source/baseline-application/config/edena-policy.json",
+      "sha256": "2f7295db54c7a820610ce921d37c405f5cf1515b04427d201adb11105db2a159"
+    },
+    {
+      "bytes": 4046,
+      "path": "source/baseline-application/config/mission-control-manifest.json",
+      "sha256": "cf11fb14f12663494a7b0da16a1ab944970b39e34302fbd7cd32b51bc6764a84"
+    },
+    {
+      "bytes": 5025,
+      "path": "source/baseline-application/config/mission.schema.json",
+      "sha256": "20977278409288804afd22104123651ef9212cf0be0b51764ec2869dc26e4d36"
+    },
+    {
+      "bytes": 5950,
+      "path": "source/baseline-application/config/role-dashboards.json",
+      "sha256": "cabbcdec07fa4b41665112da89796347a4bf37ab55c5d20a4a3bc3ccac6aa27c"
+    },
+    {
+      "bytes": 7000,
+      "path": "source/baseline-application/config/soul-profile-input.schema.json",
+      "sha256": "f7c886e99dac3b2280da273c8485b9828279e67fc0975569019a3b6e2ddeb6d3"
+    },
+    {
+      "bytes": 2408,
+      "path": "source/baseline-application/examples/deidentified-discover-packet.json",
+      "sha256": "b1d93f3b06c7eb8b114a417e59be9bd99b07c2973116e38d95578fccecd0d58c"
+    },
+    {
+      "bytes": 3320,
+      "path": "source/baseline-application/examples/deidentified-soul-profile.json",
+      "sha256": "2e0d5001e60aa17b38a06f3c8ac78fb8d717068d82b4da4c8c3c003584a1d26e"
+    },
+    {
+      "bytes": 3542,
+      "path": "source/baseline-application/examples/sample-mission.json",
+      "sha256": "da2b5dd50be21b95ec23eb2e9a87c341d5723e9838c1b36ae3ae695150ecfe9a"
+    },
+    {
+      "bytes": 18978,
+      "path": "source/baseline-application/guide/DISCOVER-Mission-Control-Setup-Guide.md",
+      "sha256": "2b7e2d35c51a023f31946c8767707f4661312e1572e25095bf52ad669a626a07"
+    },
+    {
+      "bytes": 15158,
+      "path": "source/baseline-application/hermes/DISCOVER-Dashboard-Hermes-Integration-Installer.md",
+      "sha256": "bdd892f671926151f692a5d7221183199e6f39f0827cf4b2fa7efe4f677aa6ec"
+    },
+    {
+      "bytes": 6312,
+      "path": "source/baseline-application/hermes/Hermes-Capability-State.md",
+      "sha256": "aecd4802f94e0163d6aef2dc77d43a3b89d4f9ee4b67d8d2815ba83e73dc38b1"
+    },
+    {
+      "bytes": 60184,
+      "path": "source/baseline-application/index.html",
+      "sha256": "15c3fcea3b2553f4bd87fb739b8a1a4f5b14511f73fece32470fdf6526484045"
+    },
+    {
+      "bytes": 4411,
+      "path": "source/baseline-application/server.mjs",
+      "sha256": "5fffdbb33ecf2888f4e94c7f31cd352f03469680d6f96d72dcd5e3372729fc6e"
+    },
+    {
+      "bytes": 758,
+      "path": "source/baseline-application/start-discover.sh",
+      "sha256": "2e269cf2065ae5e9f2e7c9722a9766e647063e62a5fdbda2006985d6550a34b0"
+    },
+    {
+      "bytes": 7317,
+      "path": "source/baseline-qa-reference/build_discover_mission_control_v2_release.py",
+      "sha256": "d28cbf77b83b32787d63769bcfdd3ebf8f8d4466d40aa142fa2d1445ad7ff0ba"
+    },
+    {
+      "bytes": 5555,
+      "path": "source/baseline-qa-reference/discover-mission-control-v2-dom-qa.json",
+      "sha256": "8b3d01e473654bd5b127c8824dfda0be4b94e34c85f9bf42d704f8a7388fe71d"
+    },
+    {
+      "bytes": 439080,
+      "path": "source/baseline-qa-reference/screenshots/01-first-run-processing.png",
+      "sha256": "855fff295c72646a7c54ece4f39606b1f5e10e69a663e21b1aedac9dbddb6a5b"
+    },
+    {
+      "bytes": 359354,
+      "path": "source/baseline-qa-reference/screenshots/02-first-run-safety.png",
+      "sha256": "2878d78671b3a3460c4ed460164a60e9843f25fc970a89577e4595959ae4d225"
+    },
+    {
+      "bytes": 658546,
+      "path": "source/baseline-qa-reference/screenshots/03-desktop-dashboard.png",
+      "sha256": "ab4813b4f52912e1296a5962c95bf08caa34765c8f26e7fb098d7108973c99e6"
+    },
+    {
+      "bytes": 539945,
+      "path": "source/baseline-qa-reference/screenshots/04-desktop-discover-adapter.png",
+      "sha256": "171737a2d6b82c78b3b8ba7850617795fbb1132d88808a4faf574e5e0550cf15"
+    },
+    {
+      "bytes": 478099,
+      "path": "source/baseline-qa-reference/screenshots/05-desktop-soul-adapter.png",
+      "sha256": "74c370569a72d952f8b4587f378fbac651acb49f7f617843bb33d187c0d26258"
+    },
+    {
+      "bytes": 432319,
+      "path": "source/baseline-qa-reference/screenshots/06-desktop-mission-loop.png",
+      "sha256": "0e853fd355b9c54d83bc85585c7ce2d856e9421bc4838bdf5cca5e42b0ad8bbe"
+    },
+    {
+      "bytes": 455935,
+      "path": "source/baseline-qa-reference/screenshots/07-desktop-capabilities.png",
+      "sha256": "2d42ef7f0e6bf3d9c58c213df98d99371f3a952f0713eee7ce823be8e79fc678"
+    },
+    {
+      "bytes": 522826,
+      "path": "source/baseline-qa-reference/screenshots/08-desktop-guide.png",
+      "sha256": "b51525665dcbf741337e3c4fc826ed3700656bfd8e6b24879b145f5c47539ef3"
+    },
+    {
+      "bytes": 377188,
+      "path": "source/baseline-qa-reference/screenshots/09-desktop-guide-bottom.png",
+      "sha256": "98dc78f97bacf8d0ce6133a34ab1abf6c1b8347c62f25f2812ad2f23cca3a2db"
+    },
+    {
+      "bytes": 237905,
+      "path": "source/baseline-qa-reference/screenshots/10-mobile-dashboard.png",
+      "sha256": "d2a095bccced126eaabfccd84c83e3b1f361c293cd999029b072584468104c9c"
+    },
+    {
+      "bytes": 186480,
+      "path": "source/baseline-qa-reference/screenshots/11-mobile-navigation.png",
+      "sha256": "562d74f61797b5f5af9c6e50369a7279e39f1f3a3dad8f32adf1525e193c1048"
+    },
+    {
+      "bytes": 147971,
+      "path": "source/baseline-qa-reference/screenshots/12-mobile-missions.png",
+      "sha256": "97fd86bd304e8ee28e3e6abf5f57f5bf70f57b3225896c73b8b4fc7e3b6c2d88"
+    },
+    {
+      "bytes": 23033,
+      "path": "source/baseline-qa-reference/test_discover_mission_control_v2_dom.mjs",
+      "sha256": "fa732fde5dfffacc29fde51bff303685090653423a101e98b6e060085bd98b10"
+    },
+    {
+      "bytes": 40914,
+      "path": "source/baseline-qa-reference/validate_discover_mission_control_v2_release.py",
+      "sha256": "8a3c07392f9dc1361ca64f73301ed953ab1b57f60ca6ef15e814970196c26d42"
+    },
+    {
+      "bytes": 4760,
+      "path": "source/baseline-qa-reference/visual-qa-report.json",
+      "sha256": "89fec06375831a1593ea558518a51191135fca6cae523656f6f5b32804ec5661"
+    },
+    {
+      "bytes": 10662,
+      "path": "source/baseline-qa-reference/visual_qa_discover_mission_control_v2.mjs",
+      "sha256": "2195a63675b7681360a1cb16aeccddc3f9d66b7dbfa828f503c9325dc18b7ce6"
+    },
+    {
+      "bytes": 176837,
+      "path": "source/complete-reference/Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Hermes-Program.md",
+      "sha256": "63524f871de3a28842d04e936b7bce7bd2b3a76724f08222179a7a8c7365d35e"
+    },
+    {
+      "bytes": 186284,
+      "path": "source/complete-reference/Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-Guide.docx",
+      "sha256": "a0c4483ca3b51d0597db52b8c32c5dcc93e9916ae2374277b1962f1832f50d4b"
+    },
+    {
+      "bytes": 23846,
+      "path": "source/complete-reference/Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-Guide.md",
+      "sha256": "5afbd0e56253167d6fe4247aaa081b520d648a232af98e212c0f2a355d2e4ead"
+    },
+    {
+      "bytes": 176837,
+      "path": "source/legacy-reference/Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Hermes-Program.md",
+      "sha256": "63524f871de3a28842d04e936b7bce7bd2b3a76724f08222179a7a8c7365d35e"
+    },
+    {
+      "bytes": 186284,
+      "path": "source/legacy-reference/Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-Guide.docx",
+      "sha256": "a0c4483ca3b51d0597db52b8c32c5dcc93e9916ae2374277b1962f1832f50d4b"
+    },
+    {
+      "bytes": 23846,
+      "path": "source/legacy-reference/Medical-Resident-Complete-AI-OS-with-ROUNDS-SuperPowers-Setup-Guide.md",
+      "sha256": "5afbd0e56253167d6fe4247aaa081b520d648a232af98e212c0f2a355d2e4ead"
+    },
+    {
+      "bytes": 578,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/README.md",
+      "sha256": "d8b4deb264ca3e595fcec28994b4730a3a44bcaebf09fd8c0db89683fe7d5297"
+    },
+    {
+      "bytes": 3990,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/core/00-Standalone-Medical-Resident-Lane-and-Human-Standard.md",
+      "sha256": "6141c678cf15ea4a7d3c8bf78848e7a97cb66c698074f989bc26dcf71d4efbd9"
+    },
+    {
+      "bytes": 5794,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/core/01-Resident-Patient-Training-and-Institution-Trust-Shield.md",
+      "sha256": "0eb3a048b0f2ab54da36f903306f666caaed7f49e372ec87b501f128037eb0a7"
+    },
+    {
+      "bytes": 9326,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef"
+    },
+    {
+      "bytes": 18225,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/foundation/Medical-Resident-Life-Training-and-Practice-Foundation.md",
+      "sha256": "ee80baf4178aaa6300f20dec013356c314bafd67ac71d8c8e1ab8b4df2d5d021"
+    },
+    {
+      "bytes": 4466,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/manifest.md",
+      "sha256": "137431155158be3b9c426c396841782dc316fafa4895651c041a7c474f41d072"
+    },
+    {
+      "bytes": 9241,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/rounds/01-R-Ready-the-Resident-and-Protect-Life.md",
+      "sha256": "54932bee6b48dbd264d6c14bc02649367bec0fbb35ac1acb261c937b31ae948f"
+    },
+    {
+      "bytes": 9453,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/rounds/02-O-Orchestrate-Care-Teams-and-Transitions.md",
+      "sha256": "177654d46580f858d693abd1b23c4acc52dee9ae76e37b4f321e1f47e6ce3ebd"
+    },
+    {
+      "bytes": 9316,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/rounds/03-U-Understand-Evidence-Reasoning-and-Systems.md",
+      "sha256": "88114a1a252ea97f7c348ea401bfa258a284d71878b28a1bcb62d9406648ba15"
+    },
+    {
+      "bytes": 9311,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/rounds/04-N-Navigate-Supervision-Development-and-Career.md",
+      "sha256": "cde6e9e8620bc87c5a81fb81863dd61daa5609f3c1eca4022dc97681723987e9"
+    },
+    {
+      "bytes": 9527,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/rounds/05-D-Develop-Communication-Teaching-Scholarship-and-Leadership.md",
+      "sha256": "17226738d301a7ff30489f991f7e137ff80b7be3618de454124a39b9cd81d4fb"
+    },
+    {
+      "bytes": 9622,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/rounds/06-S-Steward-AI-Agents-Data-and-the-Future.md",
+      "sha256": "46352e2e47fca286b5dcf42ffaf7f04f94c7bac723ab1e063d4a5cb828dc4ec7"
+    },
+    {
+      "bytes": 16773,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/templates/ROUNDS-Cards-and-Templates.md",
+      "sha256": "76de090543e1bdb9f2e24567f2db0dae422573ab217df0d197e00483deaeb0fe"
+    },
+    {
+      "bytes": 24067,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/tests/ROUNDS-Release-Assurance.md",
+      "sha256": "3da9df6087b43712eebe0c86a26ebc160c45ba72882f5925ed90f98062dbdce0"
+    },
+    {
+      "bytes": 9489,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/workflows/My-ROUNDS-Resident-Command-Center.md",
+      "sha256": "5bf5779e4db2ffc306b8a39c8dc183ef18393a560a7f3977cd31cc7e044c065a"
+    },
+    {
+      "bytes": 9346,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/workflows/ROUNDS-Workflows-Launch-and-Adoption-Plan.md",
+      "sha256": "1e6d6bec4c46e8d182990eefad2c6a95299d149a2beb20da082b91bd8b447e14"
+    },
+    {
+      "bytes": 5235,
+      "path": "source/legacy-reference/Medical-Resident-ROUNDS-SuperPowers-Pack-v1.0/workflows/Resident-Role-Rotation-and-Situation-Recipes.md",
+      "sha256": "28caf0c65e584a985091f0f07a960bff387a90b4835a488cde1d79c6807b4264"
+    },
+    {
+      "bytes": 3385,
+      "path": "source/legacy-reference/README.md",
+      "sha256": "bf1e43b8d70772cd4e68dcdcd3e8b906ebd7a342def60ef192494bef8edbc720"
+    },
+    {
+      "bytes": 3250,
+      "path": "source/legacy-reference/SHA256SUMS.txt",
+      "sha256": "12b7b8f5f6e8498442a4a40c41fc5a993fc51c5e91b39d62636ff7cf214bad28"
+    },
+    {
+      "bytes": 33614,
+      "path": "source/original-functional-build-master-prompt.md",
+      "sha256": "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2"
+    },
+    {
+      "bytes": 578,
+      "path": "source/rounds-domain-pack/README.md",
+      "sha256": "d8b4deb264ca3e595fcec28994b4730a3a44bcaebf09fd8c0db89683fe7d5297"
+    },
+    {
+      "bytes": 3990,
+      "path": "source/rounds-domain-pack/core/00-Standalone-Medical-Resident-Lane-and-Human-Standard.md",
+      "sha256": "6141c678cf15ea4a7d3c8bf78848e7a97cb66c698074f989bc26dcf71d4efbd9"
+    },
+    {
+      "bytes": 5794,
+      "path": "source/rounds-domain-pack/core/01-Resident-Patient-Training-and-Institution-Trust-Shield.md",
+      "sha256": "0eb3a048b0f2ab54da36f903306f666caaed7f49e372ec87b501f128037eb0a7"
+    },
+    {
+      "bytes": 9326,
+      "path": "source/rounds-domain-pack/core/02-ROUNDS-ATTEND-CIRCLE-ORBIT-Operating-Core.md",
+      "sha256": "bfc4a7854988564e5719bff045cb8027335c814ff22c3db1f20df28889ad6cef"
+    },
+    {
+      "bytes": 18225,
+      "path": "source/rounds-domain-pack/foundation/Medical-Resident-Life-Training-and-Practice-Foundation.md",
+      "sha256": "ee80baf4178aaa6300f20dec013356c314bafd67ac71d8c8e1ab8b4df2d5d021"
+    },
+    {
+      "bytes": 4466,
+      "path": "source/rounds-domain-pack/manifest.md",
+      "sha256": "137431155158be3b9c426c396841782dc316fafa4895651c041a7c474f41d072"
+    },
+    {
+      "bytes": 9241,
+      "path": "source/rounds-domain-pack/rounds/01-R-Ready-the-Resident-and-Protect-Life.md",
+      "sha256": "54932bee6b48dbd264d6c14bc02649367bec0fbb35ac1acb261c937b31ae948f"
+    },
+    {
+      "bytes": 9453,
+      "path": "source/rounds-domain-pack/rounds/02-O-Orchestrate-Care-Teams-and-Transitions.md",
+      "sha256": "177654d46580f858d693abd1b23c4acc52dee9ae76e37b4f321e1f47e6ce3ebd"
+    },
+    {
+      "bytes": 9316,
+      "path": "source/rounds-domain-pack/rounds/03-U-Understand-Evidence-Reasoning-and-Systems.md",
+      "sha256": "88114a1a252ea97f7c348ea401bfa258a284d71878b28a1bcb62d9406648ba15"
+    },
+    {
+      "bytes": 9311,
+      "path": "source/rounds-domain-pack/rounds/04-N-Navigate-Supervision-Development-and-Career.md",
+      "sha256": "cde6e9e8620bc87c5a81fb81863dd61daa5609f3c1eca4022dc97681723987e9"
+    },
+    {
+      "bytes": 9527,
+      "path": "source/rounds-domain-pack/rounds/05-D-Develop-Communication-Teaching-Scholarship-and-Leadership.md",
+      "sha256": "17226738d301a7ff30489f991f7e137ff80b7be3618de454124a39b9cd81d4fb"
+    },
+    {
+      "bytes": 9622,
+      "path": "source/rounds-domain-pack/rounds/06-S-Steward-AI-Agents-Data-and-the-Future.md",
+      "sha256": "46352e2e47fca286b5dcf42ffaf7f04f94c7bac723ab1e063d4a5cb828dc4ec7"
+    },
+    {
+      "bytes": 16773,
+      "path": "source/rounds-domain-pack/templates/ROUNDS-Cards-and-Templates.md",
+      "sha256": "76de090543e1bdb9f2e24567f2db0dae422573ab217df0d197e00483deaeb0fe"
+    },
+    {
+      "bytes": 24067,
+      "path": "source/rounds-domain-pack/tests/ROUNDS-Release-Assurance.md",
+      "sha256": "3da9df6087b43712eebe0c86a26ebc160c45ba72882f5925ed90f98062dbdce0"
+    },
+    {
+      "bytes": 9489,
+      "path": "source/rounds-domain-pack/workflows/My-ROUNDS-Resident-Command-Center.md",
+      "sha256": "5bf5779e4db2ffc306b8a39c8dc183ef18393a560a7f3977cd31cc7e044c065a"
+    },
+    {
+      "bytes": 9346,
+      "path": "source/rounds-domain-pack/workflows/ROUNDS-Workflows-Launch-and-Adoption-Plan.md",
+      "sha256": "1e6d6bec4c46e8d182990eefad2c6a95299d149a2beb20da082b91bd8b447e14"
+    },
+    {
+      "bytes": 5235,
+      "path": "source/rounds-domain-pack/workflows/Resident-Role-Rotation-and-Situation-Recipes.md",
+      "sha256": "28caf0c65e584a985091f0f07a960bff387a90b4835a488cde1d79c6807b4264"
+    },
+    {
+      "bytes": 167684,
+      "path": "tools/verify-build-kit.py",
+      "sha256": "dbee4d46d525b837622138072832e94b753d23fca45af3972749a857687918f4"
+    }
+  ],
+  "implementation_notice": "Build-layer routes, schemas, data classes, permissions, agents and capability records grant no resident, professional or institutional authority. This kit does not provision a clinical or institutional deployment; authorize patient data; verify supervision, entrustment, credentials, competency, evaluation, QI or research status; enable clinical action; or permit any external action.",
+  "schema": "NAIO-MR-ROUNDS-HERMES-BUILD-KIT-1",
+  "sources": {
+    "functional-build-master-prompt": "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2",
+    "medical-resident-complete-legacy-zip": "29143447f94aff0034c96019ff83a29370cbb17a1448c68d191a2354a847ce26",
+    "medical-resident-complete-program": "63524f871de3a28842d04e936b7bce7bd2b3a76724f08222179a7a8c7365d35e",
+    "medical-resident-complete-setup-docx": "a0c4483ca3b51d0597db52b8c32c5dcc93e9916ae2374277b1962f1832f50d4b",
+    "medical-resident-complete-setup-md": "5afbd0e56253167d6fe4247aaa081b520d648a232af98e212c0f2a355d2e4ead",
+    "mission-control-v2-baseline": "69a4dd86659b41136ce9ceb2ceb52512ab567637ab0be29fdc6f6ab6573223c1"
+  },
+  "target": {
+    "foundation_namespace": "medres_rounds.*",
+    "home": "My ROUNDS",
+    "lane": "medical_resident",
+    "namespace": "medres_rounds.*",
+    "product": "ROUNDS \u2014 Medical Resident Complete AI OS Mission Control",
+    "product_id": "medical-resident-rounds-mission-control",
+    "readiness": "not_operational_build_required",
+    "route": "/medical-residents",
+    "version": "2.0.0"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.local/schemas/capability-evidence.schema.json",
+  "title": "Nurse AI OS Capability Evidence Record",
+  "description": "Sanitized development evidence used by Mission Control to calculate non-credential capability levels.",
+  "$comment": "The application also requires referenced missions and roles to exist, rejects duplicate capability/mission/type combinations, excludes synthetic missions, requires Evaluate completion for mission and outcome evidence, and applies a sensitive-content heuristic.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "schema",
+    "capabilityId",
+    "missionId",
+    "roleId",
+    "type",
+    "provenance",
+    "edena",
+    "summary",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "$ref": "#/$defs/uuid" },
+    "schema": { "const": "NAIO-CAPABILITY-EVIDENCE-1" },
+    "capabilityId": {
+      "enum": [
+        "ai-literacy",
+        "prompt-design",
+        "evidence-research",
+        "critical-thinking",
+        "structured-problem-solving",
+        "workflow-design",
+        "project-management",
+        "privacy-stewardship",
+        "ethical-ai",
+        "edena-governance",
+        "agent-supervision",
+        "multi-agent",
+        "knowledge-base",
+        "automation-design",
+        "artifact-creation",
+        "evaluation-qi",
+        "role-development"
+      ]
+    },
+    "missionId": {
+      "oneOf": [
+        { "$ref": "#/$defs/uuid" },
+        { "type": "null" }
+      ]
+    },
+    "roleId": {
+      "enum": [
+        "shared-identity",
+        "research-innovation",
+        "prelicensure-support",
+        "staff-nurse",
+        "advanced-practice",
+        "nurse-educator",
+        "medical-resident",
+        "nurse-manager",
+        "clinic-manager",
+        "hospital-administrator",
+        "wellness-manager",
+        "quality-safety",
+        "researcher",
+        "digital-ai",
+        "entrepreneur",
+        "community",
+        "advanced-studies"
+      ]
+    },
+    "type": {
+      "enum": [
+        "mission",
+        "artifact_review",
+        "assessment",
+        "reflection",
+        "outcome",
+        "human_review",
+        "safety_drill",
+        "agent_run",
+        "knowledge_transfer"
+      ]
+    },
+    "provenance": {
+      "enum": ["app_observed", "user_attested", "human_reviewed_unverified"]
+    },
+    "edena": {
+      "enum": ["green", "yellow", "orange", "red"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 600,
+      "pattern": ".*\\S.*"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    }
+  }
+}

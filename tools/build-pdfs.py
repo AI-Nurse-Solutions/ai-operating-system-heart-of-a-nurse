@@ -32,6 +32,11 @@ DOCS = {
                "The Plain-Language Safety Rules (EDENA)"),
     "architecture": ("assets/nurse-ai-os-architecture-report.md", "assets/nurse-ai-os-architecture-report.pdf",
                      "Nurse AI OS Architecture Report"),
+    "architecture-2026-07-13": (
+        "assets/2026-07-13-nurse-ai-os-updated-architecture-report.md",
+        "assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf",
+        "Nurse AI OS Architecture Report — July 13, 2026 Evidence Snapshot",
+    ),
     "media": ("assets/nurse-ai-os-media-packet.md", "assets/nurse-ai-os-media-packet.pdf",
               "Nurse AI OS™ Media Packet"),
     "media-fr": ("assets/nurse-ai-os-media-packet-fr.md", "assets/nurse-ai-os-media-packet-fr.pdf",
@@ -56,6 +61,10 @@ LANG_META = {
         "lang": "en", "dir": "ltr",
         # Keep the compact evidence appendix and generated source footer
         # together instead of creating a nearly empty trailing page.
+        "css": ".doc-footer{margin-top:.2em;padding-top:.25em;font-size:7pt;line-height:1.2;}",
+    },
+    "architecture-2026-07-13": {
+        "lang": "en", "dir": "ltr",
         "css": ".doc-footer{margin-top:.2em;padding-top:.25em;font-size:7pt;line-height:1.2;}",
     },
     "media-ar": {

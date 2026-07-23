@@ -1,0 +1,498 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.local/schemas/future-mission-profile-1.schema.json",
+  "title": "FUTURE Nursing Student and Nursing Assistant Mission Profile",
+  "description": "Closed, derived and user-reviewable personalization for FUTURE Mission Control. It does not prove enrollment, employment, scope, delegation, competence, certification, licensure, authority or permission to act.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "profile_version",
+    "product_id",
+    "lane",
+    "namespace",
+    "canonical_route",
+    "profile_id",
+    "status",
+    "created_at",
+    "updated_at",
+    "approved_at",
+    "display_name",
+    "mission_statement",
+    "core_values",
+    "current_priorities",
+    "strengths_and_growth",
+    "situation_context",
+    "goals",
+    "working_preferences",
+    "role_workspaces",
+    "authority_context",
+    "academic_integrity",
+    "ai_preferences",
+    "memory_preferences",
+    "governance_preferences",
+    "recommended_assets",
+    "presentation_preferences",
+    "accessibility_preferences",
+    "field_provenance",
+    "uncertainties",
+    "demo"
+  ],
+  "properties": {
+    "schema": { "const": "NAIO-FUTURE-MISSION-PROFILE-1" },
+    "profile_version": { "const": "1.0-draft" },
+    "product_id": { "const": "future-nursing-student-assistant-mission-control" },
+    "lane": { "const": "nursing_student_assistant" },
+    "namespace": { "const": "future.*" },
+    "canonical_route": { "const": "/nursing-students-assistants/dashboard" },
+    "profile_id": { "type": "string", "format": "uuid" },
+    "status": { "enum": ["proposed", "approved", "rejected", "retired"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "approved_at": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ]
+    },
+    "display_name": { "type": "string", "maxLength": 100 },
+    "mission_statement": { "type": "string", "maxLength": 600 },
+    "core_values": { "$ref": "#/$defs/shortStringArray" },
+    "current_priorities": { "$ref": "#/$defs/mediumStringArray" },
+    "strengths_and_growth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strengths", "growth_areas"],
+      "properties": {
+        "strengths": { "$ref": "#/$defs/mediumStringArray" },
+        "growth_areas": { "$ref": "#/$defs/mediumStringArray" }
+      }
+    },
+    "situation_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["situation_types", "urgency", "time_horizon", "capacity_mode", "notes"],
+      "properties": {
+        "situation_types": { "$ref": "#/$defs/situationArray" },
+        "urgency": { "enum": ["routine", "time_bound", "urgent_human_review", "unknown"] },
+        "time_horizon": { "type": ["string", "null"], "maxLength": 160 },
+        "capacity_mode": { "enum": ["minimum", "standard", "stretch", "reentry"] },
+        "notes": { "$ref": "#/$defs/mediumStringArray" }
+      }
+    },
+    "goals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["near_term", "medium_term", "long_term"],
+      "properties": {
+        "near_term": { "$ref": "#/$defs/mediumStringArray" },
+        "medium_term": { "$ref": "#/$defs/mediumStringArray" },
+        "long_term": { "$ref": "#/$defs/mediumStringArray" }
+      }
+    },
+    "working_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["communication_style", "decision_style", "learning_preferences", "cadence", "time_constraints"],
+      "properties": {
+        "communication_style": { "type": "string", "maxLength": 200 },
+        "decision_style": { "type": "string", "maxLength": 200 },
+        "learning_preferences": { "$ref": "#/$defs/shortStringArray" },
+        "cadence": { "type": "string", "maxLength": 160 },
+        "time_constraints": { "$ref": "#/$defs/shortStringArray" }
+      }
+    },
+    "role_workspaces": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "contains": {
+        "type": "object",
+        "required": ["relationship"],
+        "properties": { "relationship": { "const": "primary" } }
+      },
+      "minContains": 1,
+      "maxContains": 1,
+      "items": { "$ref": "#/$defs/roleWorkspace" }
+    },
+    "authority_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selected_pathway",
+        "local_role_or_program_title",
+        "learning_setting",
+        "work_setting",
+        "active_context",
+        "active_operational_context",
+        "academic_rule_status",
+        "employer_rule_status",
+        "scope_delegation_status",
+        "clinical_learning_mode",
+        "verified_at",
+        "expires_at",
+        "human_routes"
+      ],
+      "properties": {
+        "selected_pathway": { "enum": ["nursing_student", "nursing_assistant", "bridge", "unresolved"] },
+        "local_role_or_program_title": { "type": ["string", "null"], "maxLength": 160 },
+        "learning_setting": { "type": ["string", "null"], "maxLength": 200 },
+        "work_setting": { "type": ["string", "null"], "maxLength": 200 },
+        "active_context": { "$ref": "#/$defs/protectedContext" },
+        "active_operational_context": { "$ref": "#/$defs/operationalContext" },
+        "academic_rule_status": { "$ref": "#/$defs/ruleStatus" },
+        "employer_rule_status": { "$ref": "#/$defs/ruleStatus" },
+        "scope_delegation_status": { "$ref": "#/$defs/ruleStatus" },
+        "clinical_learning_mode": {
+          "enum": [
+            "general_concepts_only",
+            "fictional_simulation_only",
+            "approved_skills_lab_preparation",
+            "not_applicable"
+          ]
+        },
+        "verified_at": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+        "expires_at": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+        "human_routes": { "$ref": "#/$defs/mediumStringArray" }
+      }
+    },
+    "academic_integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attempt_before_answer", "learner_authorship_required", "rule_check_required", "disclosure_status", "prohibited_uses"],
+      "properties": {
+        "attempt_before_answer": { "const": true },
+        "learner_authorship_required": { "const": true },
+        "rule_check_required": { "const": true },
+        "disclosure_status": { "enum": ["not_applicable", "unknown", "required_not_yet_drafted", "drafted_for_human_review"] },
+        "prohibited_uses": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "live_exam_or_restricted_assessment",
+              "deceptive_completion",
+              "fabricated_source",
+              "fabricated_experience_or_hours",
+              "fabricated_competency_or_reflection",
+              "fabricated_credential_or_signature",
+              "undisclosed_ghost_authorship"
+            ]
+          }
+        }
+      }
+    },
+    "ai_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "default_support",
+        "may_support",
+        "requires_confirmation",
+        "requires_human_supervision",
+        "never_delegate",
+        "agent_state",
+        "tool_state",
+        "automation_state",
+        "external_action_state"
+      ],
+      "properties": {
+        "default_support": { "enum": ["suggest_only", "prepare_only", "bounded_draft"] },
+        "may_support": { "$ref": "#/$defs/mediumStringArray" },
+        "requires_confirmation": { "$ref": "#/$defs/mediumStringArray" },
+        "requires_human_supervision": { "$ref": "#/$defs/mediumStringArray" },
+        "never_delegate": { "$ref": "#/$defs/mediumStringArray" },
+        "agent_state": { "const": "disabled" },
+        "tool_state": { "const": "disabled" },
+        "automation_state": { "const": "manual_preview_only" },
+        "external_action_state": { "const": "off" }
+      }
+    },
+    "memory_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "allowed_categories", "denied_categories", "default_retention_days"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "allowed_categories": { "$ref": "#/$defs/shortStringArray" },
+        "denied_categories": { "$ref": "#/$defs/mediumStringArray" },
+        "default_retention_days": { "type": "integer", "minimum": 0, "maximum": 365 }
+      }
+    },
+    "governance_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["edition", "risk_tolerance", "default_edena", "default_retention", "data_boundary"],
+      "properties": {
+        "edition": { "enum": ["personal", "institutional_managed"] },
+        "risk_tolerance": { "enum": ["conservative", "balanced", "exploratory_with_review"] },
+        "default_edena": { "$ref": "#/$defs/edena" },
+        "default_retention": { "enum": ["session_only", "local_nonsensitive"] },
+        "data_boundary": {
+          "enum": [
+            "synthetic_public_owner_nonsensitive",
+            "approved_nonsensitive_learning_materials"
+          ]
+        }
+      }
+    },
+    "recommended_assets": { "$ref": "#/$defs/recommendedAssets" },
+    "presentation_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["theme_token", "tone"],
+      "properties": {
+        "theme_token": { "enum": ["direction", "learning", "integrity", "creation", "career", "future"] },
+        "tone": { "type": "string", "maxLength": 160 }
+      }
+    },
+    "accessibility_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visual_density", "reduced_motion", "high_contrast", "language"],
+      "properties": {
+        "visual_density": { "enum": ["comfortable", "compact", "spacious"] },
+        "reduced_motion": { "type": "boolean" },
+        "high_contrast": { "type": "boolean" },
+        "language": { "type": "string", "minLength": 2, "maxLength": 35 }
+      }
+    },
+    "field_provenance": {
+      "type": "array",
+      "maxItems": 250,
+      "items": { "$ref": "#/$defs/provenance" }
+    },
+    "uncertainties": { "$ref": "#/$defs/mediumStringArray" },
+    "demo": { "type": "boolean" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "approved" } }, "required": ["status"] },
+      "then": { "properties": { "approved_at": { "type": "string", "format": "date-time" } } }
+    },
+    {
+      "if": { "properties": { "status": { "enum": ["proposed", "rejected"] } }, "required": ["status"] },
+      "then": { "properties": { "approved_at": { "type": "null" } } }
+    }
+  ],
+  "$defs": {
+    "shortStringArray": {
+      "type": "array",
+      "maxItems": 30,
+      "items": { "type": "string", "minLength": 1, "maxLength": 160 }
+    },
+    "mediumStringArray": {
+      "type": "array",
+      "maxItems": 30,
+      "items": { "type": "string", "minLength": 1, "maxLength": 320 }
+    },
+    "protectedContext": { "enum": ["learning", "work_growth", "life", "community_future"] },
+    "operationalContext": {
+      "enum": [
+        "academic_learning",
+        "clinical_placement_learning",
+        "employment_growth",
+        "personal_life",
+        "public_community_future"
+      ]
+    },
+    "ruleStatus": { "enum": ["verified_current", "user_asserted_unverified", "unknown", "not_applicable"] },
+    "workspaceType": {
+      "enum": [
+        "nursing_student_academic_learning",
+        "nursing_student_skills_clinical_rehearsal",
+        "nursing_assistant_role_learning",
+        "nursing_assistant_work_growth",
+        "bridge_academic_learning",
+        "bridge_work_growth",
+        "certification_licensure_preparation",
+        "career_portfolio_opportunity",
+        "private_life_capacity",
+        "community_leadership_future",
+        "personal_technology_innovation_sandbox"
+      ]
+    },
+    "situationArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 16,
+      "items": {
+        "enum": [
+          "steady_state",
+          "new_term_or_course",
+          "upcoming_skills_lab",
+          "certification_exam_preparation",
+          "work_school_balance",
+          "bridge_transition",
+          "employment_transition",
+          "faculty_or_supervisor_conversation",
+          "graded_work_integrity_question",
+          "learning_gap",
+          "source_conflict",
+          "overload_reentry",
+          "community_project",
+          "future_technology_exploration",
+          "other_reviewed"
+        ]
+      }
+    },
+    "workflowId": { "type": "string", "pattern": "^FUT-WF-(?:0[1-9]|1[0-8])$" },
+    "sourceInventoryId": { "type": "string", "pattern": "^DSC-WF-(?:0[1-9]|1[0-9]|2[0-4])$" },
+    "powerId": { "type": "string", "pattern": "^FUT-PWR-(?:0[1-9]|1[0-8])$" },
+    "templateId": { "type": "string", "pattern": "^FUT-TPL-0[1-5]$" },
+    "agentId": { "type": "string", "pattern": "^FUT-AGT-(?:0[1-9]|10)$" },
+    "capabilityId": {
+      "enum": [
+        "ai-literacy",
+        "prompt-design",
+        "evidence-research",
+        "critical-thinking",
+        "structured-problem-solving",
+        "workflow-design",
+        "project-management",
+        "privacy-stewardship",
+        "ethical-ai",
+        "edena-governance",
+        "agent-supervision",
+        "multi-agent",
+        "knowledge-base",
+        "automation-design",
+        "artifact-creation",
+        "evaluation-qi",
+        "role-development"
+      ]
+    },
+    "recommendedAssets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activation_state",
+        "agent_permission_state",
+        "tool_state",
+        "future_workflow_ids",
+        "future_power_ids",
+        "future_template_ids",
+        "capability_ids",
+        "agent_ids",
+        "tool_ids",
+        "dashboard_modules",
+        "source_recommendation_ids"
+      ],
+      "properties": {
+        "activation_state": { "const": "recommendations_only_inactive" },
+        "agent_permission_state": { "const": "PERM-P0 Disabled" },
+        "tool_state": { "const": "disabled" },
+        "future_workflow_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 18,
+          "items": { "$ref": "#/$defs/workflowId" }
+        },
+        "future_power_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 18,
+          "items": { "$ref": "#/$defs/powerId" }
+        },
+        "future_template_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 5,
+          "items": { "$ref": "#/$defs/templateId" }
+        },
+        "capability_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 17,
+          "items": { "$ref": "#/$defs/capabilityId" }
+        },
+        "agent_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 5,
+          "items": { "$ref": "#/$defs/agentId" }
+        },
+        "tool_ids": { "type": "array", "maxItems": 0 },
+        "dashboard_modules": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 30,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,79}$" }
+        },
+        "source_recommendation_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 24,
+          "items": { "$ref": "#/$defs/sourceInventoryId" }
+        }
+      }
+    },
+    "roleWorkspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspace_type",
+        "label",
+        "pathway",
+        "protected_context",
+        "operational_context",
+        "relationship",
+        "priority",
+        "authorization_status",
+        "current_priorities",
+        "goals",
+        "situation_types",
+        "recommended_assets"
+      ],
+      "properties": {
+        "workspace_type": { "$ref": "#/$defs/workspaceType" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "pathway": { "enum": ["nursing_student", "nursing_assistant", "bridge", "personal"] },
+        "protected_context": { "$ref": "#/$defs/protectedContext" },
+        "operational_context": { "$ref": "#/$defs/operationalContext" },
+        "relationship": { "enum": ["primary", "supporting", "emerging", "contextual"] },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "authorization_status": { "enum": ["unknown", "user_asserted", "externally_verified"] },
+        "current_priorities": { "$ref": "#/$defs/mediumStringArray" },
+        "goals": { "$ref": "#/$defs/mediumStringArray" },
+        "situation_types": { "$ref": "#/$defs/situationArray" },
+        "recommended_assets": { "$ref": "#/$defs/recommendedAssets" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field",
+        "source_type",
+        "source_ref",
+        "source_field",
+        "mapping_rule_id",
+        "derivation",
+        "uncertainty",
+        "approval_status",
+        "approved_at",
+        "updated_at"
+      ],
+      "properties": {
+        "field": { "type": "string", "pattern": "^/", "maxLength": 240 },
+        "source_type": {
+          "enum": ["discover_derived", "soul_derived", "first_run_user_input", "user_edit", "resolved_conflict", "migration"]
+        },
+        "source_ref": { "type": "string", "maxLength": 240 },
+        "source_field": { "type": "string", "pattern": "^/", "maxLength": 240 },
+        "mapping_rule_id": { "type": "string", "pattern": "^MAP-[A-Z0-9-]+$", "maxLength": 80 },
+        "derivation": {
+          "enum": ["direct_copy", "enum_translation", "role_candidate", "recommendation_candidate", "user_entered", "user_edit", "conflict_resolution", "migration"]
+        },
+        "uncertainty": { "type": ["string", "null"], "maxLength": 320 },
+        "approval_status": { "enum": ["proposed", "approved", "rejected"] },
+        "approved_at": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "edena": { "enum": ["unclassified", "green", "yellow", "orange", "red"] }
+  }
+}

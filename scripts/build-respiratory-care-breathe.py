@@ -10,11 +10,15 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 import re
+import stat
 import sys
+import tempfile
+import unicodedata
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 REPO = Path(__file__).resolve().parents[1]
 ROOT = REPO / "respiratory-care"
@@ -24,11 +28,17 @@ BUILD_KIT_SOURCE = ROOT / "build-kit"
 ZIP_NAME = "breathe-respiratory-care-complete-edition.zip"
 ZIP_PREFIX = "BREATHE-Respiratory-Care-Complete-Edition"
 BUILD_KIT_NAME = "BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip"
-BUILD_KIT_SHA256 = "71f4b243b91de932d2d3f0f3477608eb115edb1cf598786c21481c889ba3f079"
-BUILD_KIT_BYTES = 6965721
+BUILD_KIT_SHA256 = "8fe551cd982d8ab8d33c3bd23b8365b45f7f8e714c80b326bf54e075b21c3a7d"
+BUILD_KIT_BYTES = 6966334
 BUILD_KIT_MEMBERS = 151
 BUILD_KIT_ROOT = "BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0"
-BUILD_KIT_VERIFIER_SHA256 = "f65d7e8cb15894ec7f858c6f2423ac6bc1b5a8cf9732c3b0c5210024b249776d"
+BUILD_KIT_VERIFIER_SHA256 = "9dc166dabb30aefe8bc6f5bf9e1dc83cdf631182acd8491355af3cb49b3de041"
+BUILD_KIT_MAX_MEMBER_BYTES = 32 * 1024 * 1024
+BUILD_KIT_MAX_EXPANDED_BYTES = 192 * 1024 * 1024
+BUILD_KIT_ALLOWED_COMPRESSION = {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}
+BUILD_KIT_EXECUTABLE_MEMBERS = {
+    f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py",
+}
 FIXED_ZIP_TIME = (2026, 7, 16, 0, 0, 0)
 SOURCE_RECORDS = {'README.md': {'bytes': 6744,
                'packaged_path': 'README.md',
@@ -441,12 +451,27 @@ def refresh_ledger() -> None:
     (PACKAGE / "PACKAGE-CHECKSUMS.sha256").write_text(content, encoding="utf-8")
 
 
-def _safe_build_kit_member(name: str) -> None:
-    if not name or name.startswith(("/", "\\")) or "\x00" in name or "\\" in name:
+def _safe_build_kit_member(name: str, root: Path | None = None) -> Path | None:
+    """Reject every noncanonical archive spelling before payload access."""
+    if not name or "\x00" in name or "\\" in name:
         raise ValueError(f"Unsafe BREATHE build-kit member path: {name!r}")
-    parts = Path(name).parts
-    if any(part in {"", ".", ".."} for part in parts):
-        raise ValueError(f"Traversal path is not allowed in BREATHE build kit: {name!r}")
+    relative = PurePosixPath(name)
+    canonical = relative.as_posix() + ("/" if name.endswith("/") else "")
+    if (
+        relative.is_absolute()
+        or ".." in relative.parts
+        or not relative.parts
+        or any(part in {"", ".", ".."} or ":" in part for part in relative.parts)
+        or name != canonical
+    ):
+        raise ValueError(f"Unsafe BREATHE build-kit member path: {name!r}")
+    if root is None:
+        return None
+    resolved_root = root.resolve()
+    target = root.joinpath(*relative.parts).resolve()
+    if not str(target).startswith(str(resolved_root) + os.sep):
+        raise ValueError(f"BREATHE build-kit member escapes verification root: {name!r}")
+    return target
 
 
 def build_kit_source_files() -> list[Path]:
@@ -461,22 +486,39 @@ def build_kit_source_files() -> list[Path]:
     return files
 
 
-def build_build_kit_zip() -> None:
+def _write_build_kit_zip(output: Path) -> None:
     files = build_kit_source_files()
-    output = DOWNLOADS / BUILD_KIT_NAME
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for path in files:
             relative = path.relative_to(BUILD_KIT_SOURCE / BUILD_KIT_ROOT).as_posix()
-            _safe_build_kit_member(f"{BUILD_KIT_ROOT}/{relative}")
-            info = zipfile.ZipInfo(f"{BUILD_KIT_ROOT}/{relative}", FIXED_ZIP_TIME)
+            member = f"{BUILD_KIT_ROOT}/{relative}"
+            _safe_build_kit_member(member)
+            info = zipfile.ZipInfo(member, FIXED_ZIP_TIME)
             info.create_system = 3
             info.compress_type = zipfile.ZIP_DEFLATED
-            mode = 0o755 if path.name == "verify-build-kit.py" else 0o644
-            info.external_attr = (0o100000 | mode) << 16
+            mode = 0o755 if member in BUILD_KIT_EXECUTABLE_MEMBERS else 0o644
+            info.external_attr = (stat.S_IFREG | mode) << 16
             archive.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
 
 
-def run_bundled_build_kit_verifier() -> None:
+def build_build_kit_zip() -> None:
+    """Build in same-filesystem staging and promote only after every gate passes."""
+    DOWNLOADS.mkdir(parents=True, exist_ok=True)
+    output = DOWNLOADS / BUILD_KIT_NAME
+    handle, candidate_name = tempfile.mkstemp(prefix=f".{BUILD_KIT_NAME}.", suffix=".candidate", dir=DOWNLOADS)
+    os.close(handle)
+    candidate = Path(candidate_name)
+    try:
+        _write_build_kit_zip(candidate)
+        validate_build_kit_zip_structure(candidate)
+        run_bundled_build_kit_verifier(candidate)
+        os.replace(candidate, output)
+    finally:
+        candidate.unlink(missing_ok=True)
+
+
+def run_bundled_build_kit_verifier(zip_path: Path | None = None) -> None:
+    """Run only the pinned tracked verifier source, never code loaded from the ZIP."""
     package = BUILD_KIT_SOURCE / BUILD_KIT_ROOT
     verifier = package / "tools" / "verify-build-kit.py"
     if not verifier.is_file():
@@ -484,7 +526,7 @@ def run_bundled_build_kit_verifier() -> None:
     if sha256(verifier) != BUILD_KIT_VERIFIER_SHA256:
         raise ValueError("BREATHE tracked bundled verifier bytes changed")
     completed = subprocess.run(
-        [sys.executable, str(verifier), "--package", str(package), "--zip", str(DOWNLOADS / BUILD_KIT_NAME)],
+        [sys.executable, str(verifier), "--package", str(package), "--zip", str(zip_path or DOWNLOADS / BUILD_KIT_NAME)],
         cwd=REPO,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -518,33 +560,69 @@ def _ledger_records(text: str, expected: set[str], label: str) -> dict[str, str]
 
 
 def validate_build_kit_zip_structure(path: Path, *, enforce_pins: bool = True) -> dict:
+    """Validate all untrusted metadata before CRC or archive payload reads."""
     if not path.is_file():
         raise ValueError(f"Missing BREATHE build kit: {path}")
     if enforce_pins and (path.stat().st_size != BUILD_KIT_BYTES or sha256(path) != BUILD_KIT_SHA256):
         raise ValueError("BREATHE build kit bytes changed")
     with zipfile.ZipFile(path) as archive:
-        if archive.testzip() is not None:
-            raise ValueError("BREATHE build kit ZIP CRC check failed")
         infos = archive.infolist()
         if enforce_pins and len(infos) != BUILD_KIT_MEMBERS:
             raise ValueError(f"BREATHE build kit member count changed: {len(infos)}")
+        if len(infos) > BUILD_KIT_MEMBERS:
+            raise ValueError(f"BREATHE build kit exceeds member limit: {len(infos)}")
+
         seen: set[str] = set()
         normalized: set[str] = set()
+        roots: set[str] = set()
+        expanded_bytes = 0
         for info in infos:
-            if info.filename in seen:
-                raise ValueError(f"Duplicate BREATHE build-kit ZIP member: {info.filename}")
-            seen.add(info.filename)
-            key = info.filename.casefold()
+            name = info.filename
+            raw_name = getattr(info, "orig_filename", name)
+            if "\x00" in raw_name or raw_name != name:
+                raise ValueError(f"BREATHE build-kit ZIP raw/normalized path mismatch: {raw_name!r}")
+            _safe_build_kit_member(name)
+            if name in seen:
+                raise ValueError(f"Duplicate BREATHE build-kit ZIP member: {name}")
+            seen.add(name)
+            key = unicodedata.normalize("NFC", name).casefold()
             if key in normalized:
-                raise ValueError(f"Case-colliding BREATHE build-kit ZIP member: {info.filename}")
+                raise ValueError(f"Case/Unicode-colliding BREATHE build-kit ZIP member: {name}")
             normalized.add(key)
-            _safe_build_kit_member(info.filename)
-            mode = info.external_attr >> 16
-            if mode & 0o170000 != 0o100000:
-                raise ValueError(f"BREATHE build kit allows only regular-file entries: {info.filename}")
-        roots = {info.filename.split("/", 1)[0] for info in infos if info.filename}
+            roots.add(name.split("/", 1)[0])
+            if info.flag_bits & 1:
+                raise ValueError(f"Encrypted BREATHE build-kit ZIP member is forbidden: {name}")
+            if info.compress_type not in BUILD_KIT_ALLOWED_COMPRESSION:
+                raise ValueError(f"BREATHE build-kit ZIP compression method is forbidden: {name}")
+            if info.is_dir():
+                raise ValueError(f"BREATHE build-kit ZIP directory entry is forbidden: {name}")
+            mode = (info.external_attr >> 16) & 0o177777
+            expected_mode = stat.S_IFREG | (0o755 if name in BUILD_KIT_EXECUTABLE_MEMBERS else 0o644)
+            if mode != expected_mode:
+                raise ValueError(
+                    f"BREATHE build-kit ZIP mode mismatch: {name} "
+                    f"expected={oct(expected_mode)} actual={oct(mode)}"
+                )
+            if info.file_size > BUILD_KIT_MAX_MEMBER_BYTES:
+                raise ValueError(f"BREATHE build-kit ZIP member exceeds byte limit: {name}")
+            expanded_bytes += info.file_size
+            if expanded_bytes > BUILD_KIT_MAX_EXPANDED_BYTES:
+                raise ValueError("BREATHE build-kit ZIP exceeds expanded-byte limit")
+
         if roots != {BUILD_KIT_ROOT}:
             raise ValueError(f"BREATHE build kit root mismatch: {sorted(roots)}")
+        for name in seen:
+            parts = name.split("/")
+            for index in range(1, len(parts)):
+                if "/".join(parts[:index]) in seen:
+                    raise ValueError(f"BREATHE build-kit ZIP file/directory collision: {name}")
+        if enforce_pins and not BUILD_KIT_EXECUTABLE_MEMBERS.issubset(seen):
+            raise ValueError("BREATHE build kit missing required executable member")
+
+        # CRC verification reads payloads, so it must follow the complete metadata pass.
+        if archive.testzip() is not None:
+            raise ValueError("BREATHE build kit ZIP CRC check failed")
+
         required = {
             f"{BUILD_KIT_ROOT}/README-FIRST.md",
             f"{BUILD_KIT_ROOT}/GIVE-THIS-PACKAGE-TO-HERMES.md",
@@ -554,14 +632,49 @@ def validate_build_kit_zip_structure(path: Path, *, enforce_pins: bool = True) -
         }
         if not required.issubset(seen):
             raise ValueError("BREATHE build kit missing required handoff, manifest, checksum, or verifier files")
+
+        root_prefix = f"{BUILD_KIT_ROOT}/"
+        actual_files = {name.removeprefix(root_prefix) for name in seen}
         manifest = json.loads(archive.read(f"{BUILD_KIT_ROOT}/RELEASE-MANIFEST.json"))
-        if hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py")).hexdigest() != BUILD_KIT_VERIFIER_SHA256:
+        inventory = manifest.get("files_excluding_manifest_and_checksums")
+        if not isinstance(inventory, list):
+            raise ValueError("BREATHE build-kit manifest inventory missing")
+        declared: dict[str, dict] = {}
+        for record in inventory:
+            if not isinstance(record, dict):
+                raise ValueError("BREATHE build-kit manifest inventory record is invalid")
+            relative = record.get("path")
+            if not isinstance(relative, str) or relative in declared:
+                raise ValueError(f"BREATHE build-kit manifest inventory path invalid: {relative!r}")
+            _safe_build_kit_member(relative)
+            if relative in {"RELEASE-MANIFEST.json", "SHA256SUMS.txt"}:
+                raise ValueError(f"BREATHE build-kit manifest inventory includes generated file: {relative}")
+            if not isinstance(record.get("bytes"), int) or record["bytes"] < 0:
+                raise ValueError(f"BREATHE build-kit manifest byte count invalid: {relative}")
+            if not isinstance(record.get("sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", record["sha256"]):
+                raise ValueError(f"BREATHE build-kit manifest digest invalid: {relative}")
+            declared[relative] = record
+        if set(declared) != actual_files - {"RELEASE-MANIFEST.json", "SHA256SUMS.txt"}:
+            raise ValueError("BREATHE build-kit manifest inventory does not match archive members")
+
+        verifier_bytes = archive.read(f"{BUILD_KIT_ROOT}/tools/verify-build-kit.py")
+        if hashlib.sha256(verifier_bytes).hexdigest() != BUILD_KIT_VERIFIER_SHA256:
             raise ValueError("BREATHE bundled verifier bytes changed")
-        expected_files = {name.removeprefix(f"{BUILD_KIT_ROOT}/") for name in seen if name != f"{BUILD_KIT_ROOT}/SHA256SUMS.txt"}
-        ledger = _ledger_records(archive.read(f"{BUILD_KIT_ROOT}/SHA256SUMS.txt").decode("utf-8"), expected_files, "build-kit")
+        expected_ledger = actual_files - {"SHA256SUMS.txt"}
+        ledger = _ledger_records(
+            archive.read(f"{BUILD_KIT_ROOT}/SHA256SUMS.txt").decode("utf-8"),
+            expected_ledger,
+            "build-kit",
+        )
         for name, digest in ledger.items():
-            if hashlib.sha256(archive.read(f"{BUILD_KIT_ROOT}/{name}")).hexdigest() != digest:
+            payload = archive.read(f"{BUILD_KIT_ROOT}/{name}")
+            actual_digest = hashlib.sha256(payload).hexdigest()
+            if actual_digest != digest:
                 raise ValueError(f"BREATHE build-kit checksum mismatch: {name}")
+            if name in declared and (
+                declared[name]["sha256"] != actual_digest or declared[name]["bytes"] != len(payload)
+            ):
+                raise ValueError(f"BREATHE build-kit manifest byte/hash mismatch: {name}")
     return manifest
 
 

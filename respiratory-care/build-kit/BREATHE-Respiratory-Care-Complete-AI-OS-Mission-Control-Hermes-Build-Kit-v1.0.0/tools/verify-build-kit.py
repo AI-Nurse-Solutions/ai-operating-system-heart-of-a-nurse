@@ -33,6 +33,11 @@ ROUTE = "/respiratory-care"
 FOUNDATION_NAMESPACE = "resp_breathe.*"
 NAMESPACE = "resp_breathe.*"
 HOME = "My BREATHE"
+ARCHIVE_MAX_MEMBERS = 4096
+ARCHIVE_MAX_MEMBER_BYTES = 128 * 1024 * 1024
+ARCHIVE_MAX_EXPANDED_BYTES = 512 * 1024 * 1024
+ARCHIVE_MAX_COMPRESSION_RATIO = 200
+ARCHIVE_ALLOWED_COMPRESSION = {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}
 
 PROMPT_SHA = "ce884cfc6345cc93a6baec0852cf44feb44d859234ef1dc2b5ac2138df18ebe2"
 BASELINE_ZIP_SHA = "69a4dd86659b41136ce9ceb2ceb52512ab567637ab0be29fdc6f6ab6573223c1"
@@ -896,8 +901,16 @@ def archive_analysis(path: Path) -> tuple[dict[str, zipfile.ZipInfo], list[str],
     file_names: set[str] = set()
     try:
         with zipfile.ZipFile(path) as archive:
-            for info in archive.infolist():
+            archive_infos = archive.infolist()
+            if len(archive_infos) > ARCHIVE_MAX_MEMBERS:
+                errors.append(f"member-limit:{len(archive_infos)}")
+            expanded_bytes = 0
+            for info in archive_infos:
                 name = info.filename
+                raw_name = getattr(info, "orig_filename", name)
+                if "\x00" in raw_name or raw_name != name:
+                    errors.append(f"raw-normalized-mismatch:{raw_name!r}")
+                    continue
                 if not safe_name(name):
                     errors.append(name)
                     continue
@@ -910,12 +923,26 @@ def archive_analysis(path: Path) -> tuple[dict[str, zipfile.ZipInfo], list[str],
                 if key in folded and folded[key] != candidate:
                     collisions.append(f"{folded[key]} <> {candidate}")
                 folded[key] = candidate
-                mode = (info.external_attr >> 16) & 0xFFFF
-                if mode and stat.S_ISLNK(mode):
+                if info.flag_bits & 1:
+                    errors.append(f"encrypted:{name}")
+                if info.compress_type not in ARCHIVE_ALLOWED_COMPRESSION:
+                    errors.append(f"compression:{name}:{info.compress_type}")
+                if info.file_size > ARCHIVE_MAX_MEMBER_BYTES:
+                    errors.append(f"member-bytes:{name}:{info.file_size}")
+                expanded_bytes += info.file_size
+                if expanded_bytes > ARCHIVE_MAX_EXPANDED_BYTES:
+                    errors.append(f"expanded-bytes:{expanded_bytes}")
+                if info.file_size and info.compress_size == 0:
+                    errors.append(f"compression-ratio:{name}:infinite")
+                elif info.compress_size and info.file_size / info.compress_size > ARCHIVE_MAX_COMPRESSION_RATIO:
+                    errors.append(f"compression-ratio:{name}:{info.file_size / info.compress_size:.2f}")
+                mode = (info.external_attr >> 16) & 0o177777
+                if stat.S_ISLNK(mode):
                     symlinks.append(name)
-                if mode and not (stat.S_ISREG(mode) or stat.S_ISDIR(mode)):
-                    errors.append(f"special:{name}")
-                if not info.is_dir():
+                expected_modes = {stat.S_IFREG | 0o644, stat.S_IFREG | 0o755}
+                if info.is_dir() or mode not in expected_modes:
+                    errors.append(f"mode:{name}:{oct(mode)}")
+                else:
                     file_names.add(candidate)
             for name in file_names:
                 parts = name.split("/")
@@ -923,9 +950,11 @@ def archive_analysis(path: Path) -> tuple[dict[str, zipfile.ZipInfo], list[str],
                     ancestor = "/".join(parts[:index])
                     if ancestor in file_names:
                         errors.append(f"file-directory-prefix:{ancestor}->{name}")
-            bad_crc = archive.testzip()
-            if bad_crc:
-                errors.append(f"crc:{bad_crc}")
+            # CRC reads payloads and therefore runs only after all metadata gates pass.
+            if not errors and not duplicates and not collisions and not symlinks:
+                bad_crc = archive.testzip()
+                if bad_crc:
+                    errors.append(f"crc:{bad_crc}")
     except Exception as error:
         errors.append(str(error))
     return infos, errors, duplicates, collisions, roots, symlinks
@@ -948,6 +977,13 @@ def check_archive(c: Checks, path: Path, label: str, expected_root: str | None =
 def compare_archive_tree(c: Checks, archive_path: Path, directory: Path, archive_root: str, label: str) -> None:
     disk = tree_hashes(directory)
     archived: dict[str, str] = {}
+    _, errors, duplicates, collisions, _, symlinks = archive_analysis(archive_path)
+    if errors or duplicates or collisions or symlinks:
+        c.check(False, f"{label} bytes can be compared only after metadata validation", {
+            "errors": errors[:10], "duplicates": duplicates[:10],
+            "collisions": collisions[:10], "symlinks": symlinks[:10],
+        })
+        return
     try:
         with zipfile.ZipFile(archive_path) as archive:
             for info in archive.infolist():

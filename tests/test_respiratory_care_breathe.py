@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import re
@@ -14,6 +15,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 BREATHE = ROOT / "respiratory-care"
@@ -345,8 +347,8 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
                     self.assertEqual(archive.read(ZIP_PREFIX + path.relative_to(PACKAGE).as_posix()), path.read_bytes())
 
     def test_self_install_build_kit_is_pinned_and_not_operational(self):
-        self.assertEqual(sha256(BUILD_KIT), "71f4b243b91de932d2d3f0f3477608eb115edb1cf598786c21481c889ba3f079")
-        self.assertEqual(BUILD_KIT.stat().st_size, 6965721)
+        self.assertEqual(sha256(BUILD_KIT), "8fe551cd982d8ab8d33c3bd23b8365b45f7f8e714c80b326bf54e075b21c3a7d")
+        self.assertEqual(BUILD_KIT.stat().st_size, 6966334)
         with zipfile.ZipFile(BUILD_KIT) as archive:
             self.assertIsNone(archive.testzip())
             self.assertEqual(len(archive.infolist()), 151)
@@ -357,6 +359,10 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             self.assertIn(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json", names)
             self.assertIn(BUILD_KIT_ROOT + "SHA256SUMS.txt", names)
             self.assertIn(BUILD_KIT_ROOT + "tools/verify-build-kit.py", names)
+            executable = BUILD_KIT_ROOT + "tools/verify-build-kit.py"
+            for info in archive.infolist():
+                expected_mode = 0o100755 if info.filename == executable else 0o100644
+                self.assertEqual(info.external_attr >> 16, expected_mode, info.filename)
             manifest = json.loads(archive.read(BUILD_KIT_ROOT + "RELEASE-MANIFEST.json"))
             handoff = archive.read(BUILD_KIT_ROOT + "GIVE-THIS-PACKAGE-TO-HERMES.md").decode("utf-8")
             read_first = archive.read(BUILD_KIT_ROOT + "README-FIRST.md").decode("utf-8")
@@ -390,12 +396,18 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
             "validate_build_kit_zip_structure",
             "run_bundled_build_kit_verifier",
             "BREATHE bundled verifier bytes changed",
-            "Case-colliding BREATHE build-kit ZIP member",
-            "BREATHE build kit allows only regular-file entries",
+            "Case/Unicode-colliding BREATHE build-kit ZIP member",
+            "BREATHE build-kit ZIP mode mismatch",
+            "CRC verification reads payloads",
+            "os.replace(candidate, output)",
             "BUILD_KIT_VERIFIER_SHA256",
         ):
             self.assertIn(phrase, builder)
         for phrase in (
+            "actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5",
+            "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+            "jsonschema[format]==4.25.1",
+            "python3 -m unittest discover -s tests -p 'test_*.py'",
             "git ls-files --error-unmatch respiratory-care/downloads/BREATHE-Respiratory-Care-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip",
             "test -z \"$(git status --porcelain --untracked-files=all)\"",
         ):
@@ -415,24 +427,209 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stdout[-4000:])
         self.assertIn("VERIFIED BREATHE RESPIRATORY CARE BUILD KIT", completed.stdout)
 
-    def test_build_kit_validator_rejects_socket_and_other_special_entries(self):
+    def test_bundled_verifier_rejects_metadata_before_crc_reads(self):
+        verifier_path = BREATHE / "build-kit" / BUILD_KIT_ROOT.strip("/") / "tools/verify-build-kit.py"
+        verifier = runpy.run_path(str(verifier_path))
+        archive_analysis = verifier["archive_analysis"]
+        package_root = BUILD_KIT_ROOT.strip("/")
+
+        def regular(name: str) -> zipfile.ZipInfo:
+            info = zipfile.ZipInfo(name)
+            info.create_system = 3
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o100644 << 16
+            info.file_size = 1
+            info.compress_size = 1
+            return info
+
+        class MetadataOnlyArchive:
+            def __init__(self, infos):
+                self.infos = infos
+                self.payload_touched = False
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def infolist(self):
+                return self.infos
+
+            def testzip(self):
+                self.payload_touched = True
+                return None
+
+        cases = []
+        raw = regular(f"{package_root}/safe.txt")
+        raw.orig_filename = f"{package_root}/safe.txt\x00hidden"
+        cases.append([raw])
+        encrypted = regular(f"{package_root}/encrypted.txt")
+        encrypted.flag_bits |= 1
+        cases.append([encrypted])
+        compression = regular(f"{package_root}/compression.txt")
+        compression.compress_type = zipfile.ZIP_BZIP2
+        cases.append([compression])
+        oversized = regular(f"{package_root}/oversized.txt")
+        oversized.file_size = verifier["ARCHIVE_MAX_MEMBER_BYTES"] + 1
+        cases.append([oversized])
+        mode_zero = regular(f"{package_root}/mode-zero.txt")
+        mode_zero.external_attr = 0
+        cases.append([mode_zero])
+        cases.append([regular(f"{package_root}/../escape.txt")])
+        cases.append([regular(f"{package_root}/duplicate.txt"), regular(f"{package_root}/duplicate.txt")])
+        cases.append([regular(f"{package_root}/Case.txt"), regular(f"{package_root}/case.txt")])
+        cases.append([regular(f"{package_root}/prefix"), regular(f"{package_root}/prefix/child.txt")])
+
+        for infos in cases:
+            fake = MetadataOnlyArchive(infos)
+            with self.subTest(names=[getattr(info, "orig_filename", info.filename) for info in infos]):
+                with mock.patch.object(zipfile, "ZipFile", return_value=fake):
+                    _, errors, duplicates, collisions, _, symlinks = archive_analysis(Path("untrusted.zip"))
+                self.assertTrue(errors or duplicates or collisions or symlinks)
+                self.assertFalse(fake.payload_touched)
+    def test_build_kit_metadata_is_rejected_before_crc_or_payload_reads(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-respiratory-care-breathe.py"))
         validator = namespace["validate_build_kit_zip_structure"]
-        special_modes = {
-            "socket": 0o140000,
-            "symlink": 0o120000,
-            "directory": 0o040000,
+        with zipfile.ZipFile(BUILD_KIT) as source:
+            baseline = [copy.copy(info) for info in source.infolist()]
+
+        class MetadataOnlyArchive:
+            def __init__(self, infos):
+                self.infos = infos
+                self.payload_accessed = False
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def infolist(self):
+                return self.infos
+
+            def testzip(self):
+                self.payload_accessed = True
+                raise AssertionError("CRC read occurred before metadata rejection")
+
+            def read(self, _name):
+                self.payload_accessed = True
+                raise AssertionError("payload read occurred before metadata rejection")
+
+        def set_name(info, name):
+            info.filename = name
+            info.orig_filename = name
+
+        def raw_nul(infos):
+            infos[0].orig_filename = infos[0].filename + "\x00suffix"
+
+        def raw_noncanonical(infos):
+            infos[0].orig_filename = infos[0].filename.replace("/", "//", 1)
+
+        def repeated_terminal_slash(infos):
+            set_name(infos[0], BUILD_KIT_ROOT.rstrip("/") + "/noncanonical//")
+
+        def backslash(infos):
+            set_name(infos[0], infos[0].filename.replace("/", "\\", 1))
+
+        def absolute(infos):
+            set_name(infos[0], "/" + infos[0].filename)
+
+        def drive_prefix(infos):
+            set_name(infos[0], "C:/" + infos[0].filename)
+
+        def duplicate(infos):
+            set_name(infos[1], infos[0].filename)
+
+        def unicode_collision(infos):
+            set_name(infos[0], BUILD_KIT_ROOT.rstrip("/") + "/collision-é.txt")
+            set_name(infos[1], BUILD_KIT_ROOT.rstrip("/") + "/collision-e\u0301.txt")
+
+        def file_directory_collision(infos):
+            set_name(infos[0], BUILD_KIT_ROOT.rstrip("/") + "/collision")
+            set_name(infos[1], BUILD_KIT_ROOT.rstrip("/") + "/collision/child")
+
+        def directory_entry(infos):
+            set_name(infos[0], BUILD_KIT_ROOT.rstrip("/") + "/directory/")
+            infos[0].external_attr = (0o040000 | 0o755) << 16
+
+        def missing_file_type(infos):
+            infos[0].external_attr = 0o644 << 16
+
+        def special_file(infos):
+            infos[0].external_attr = (0o140000 | 0o644) << 16
+
+        def privileged_world_writable(infos):
+            infos[0].external_attr = (0o100000 | 0o4000 | 0o777) << 16
+
+        def unexpected_executable(infos):
+            info = next(item for item in infos if item.filename not in namespace["BUILD_KIT_EXECUTABLE_MEMBERS"])
+            info.external_attr = (0o100000 | 0o755) << 16
+
+        def expected_executable_not_executable(infos):
+            info = next(item for item in infos if item.filename in namespace["BUILD_KIT_EXECUTABLE_MEMBERS"])
+            info.external_attr = (0o100000 | 0o644) << 16
+
+        def encrypted(infos):
+            infos[0].flag_bits |= 1
+
+        def unsupported_compression(infos):
+            infos[0].compress_type = 99
+
+        def oversized_member(infos):
+            infos[0].file_size = namespace["BUILD_KIT_MAX_MEMBER_BYTES"] + 1
+
+        def expanded_limit(infos):
+            for info in infos:
+                info.file_size = 2 * 1024 * 1024
+
+        cases = {
+            "raw-nul": raw_nul,
+            "raw-noncanonical": raw_noncanonical,
+            "repeated-terminal-slash": repeated_terminal_slash,
+            "backslash": backslash,
+            "absolute": absolute,
+            "drive-prefix": drive_prefix,
+            "duplicate": duplicate,
+            "unicode-collision": unicode_collision,
+            "file-directory-collision": file_directory_collision,
+            "directory-entry": directory_entry,
+            "missing-file-type": missing_file_type,
+            "special-file": special_file,
+            "privileged-world-writable": privileged_world_writable,
+            "unexpected-executable": unexpected_executable,
+            "expected-executable-not-executable": expected_executable_not_executable,
+            "encrypted": encrypted,
+            "unsupported-compression": unsupported_compression,
+            "oversized-member": oversized_member,
+            "expanded-limit": expanded_limit,
         }
-        for label, mode in special_modes.items():
-            with self.subTest(label=label), tempfile.TemporaryDirectory() as temp:
-                archive_path = Path(temp) / f"{label}.zip"
-                with zipfile.ZipFile(archive_path, "w") as archive:
-                    info = zipfile.ZipInfo(BUILD_KIT_ROOT + "README-FIRST.md")
-                    info.create_system = 3
-                    info.external_attr = mode << 16
-                    archive.writestr(info, b"not a regular file")
-                with self.assertRaisesRegex(ValueError, "regular-file entries"):
-                    validator(archive_path, enforce_pins=False)
+        for label, mutate in cases.items():
+            with self.subTest(label=label):
+                infos = [copy.copy(info) for info in baseline]
+                mutate(infos)
+                fake = MetadataOnlyArchive(infos)
+                with mock.patch.object(namespace["zipfile"], "ZipFile", return_value=fake):
+                    with self.assertRaises(ValueError):
+                        validator(BUILD_KIT, enforce_pins=False)
+                self.assertFalse(fake.payload_accessed, label)
+
+    def test_failed_staged_candidate_cannot_replace_governed_output(self):
+        namespace = runpy.run_path(str(ROOT / "scripts" / "build-respiratory-care-breathe.py"))
+        before = BUILD_KIT.read_bytes()
+        original = namespace["run_bundled_build_kit_verifier"]
+
+        def reject(_candidate=None):
+            raise ValueError("forced verifier rejection")
+
+        namespace["build_build_kit_zip"].__globals__["run_bundled_build_kit_verifier"] = reject
+        try:
+            with self.assertRaisesRegex(ValueError, "forced verifier rejection"):
+                namespace["build_build_kit_zip"]()
+        finally:
+            namespace["build_build_kit_zip"].__globals__["run_bundled_build_kit_verifier"] = original
+        self.assertEqual(BUILD_KIT.read_bytes(), before)
+        self.assertEqual(list(DOWNLOADS.glob(f".{BUILD_KIT.name}.*.candidate")), [])
 
     def test_builder_rejects_source_wrapper_and_ledger_tampering(self):
         namespace = runpy.run_path(str(ROOT / "scripts" / "build-respiratory-care-breathe.py"))

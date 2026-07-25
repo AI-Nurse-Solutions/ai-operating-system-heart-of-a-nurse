@@ -5,11 +5,13 @@ Usage:
     python3 tools/build-pdfs.py            # rebuilds every target in DOCS
     python3 tools/build-pdfs.py roadmap    # rebuilds one (any key in DOCS below)
 
-Requires: `pip install markdown` and a Chromium/Chrome binary (set CHROME_BIN,
-otherwise common locations are tried). Keep this script in sync with DOCS
+Requires pinned `markdown` and `pypdf` packages plus a Chromium/Chrome binary
+(set CHROME_BIN, otherwise common locations are tried). Keep this script in sync with DOCS
 below when a new markdown-sourced PDF is added, and re-run it whenever a
 source .md changes so the PDF downloads never drift from the web copy again.
 """
+import hashlib
+import html as html_lib
 import os
 import shutil
 import subprocess
@@ -50,12 +52,15 @@ DOCS = {
                  "Nurse AI OS — Пресс-кит"),
     "media-zh": ("assets/nurse-ai-os-media-packet-zh.md", "assets/nurse-ai-os-media-packet-zh.pdf",
                  "Nurse AI OS — 媒体资料包"),
-    "media-hi": ("assets/nurse-ai-os-media-packet-hi.md", "assets/nurse-ai-os-media-packet-hi.pdf",
-                 "Nurse AI OS — मीडिया किट"),
     "media-tl": ("assets/nurse-ai-os-media-packet-tl.md", "assets/nurse-ai-os-media-packet-tl.pdf",
                  "Nurse AI OS — Media brief sa Tagalog"),
     "media-vi": ("assets/nurse-ai-os-media-packet-vi.md", "assets/nurse-ai-os-media-packet-vi.pdf",
                  "Nurse AI OS — Tóm tắt truyền thông tiếng Việt"),
+}
+
+HTML_DOCS = {
+    "media-hi": ("assets/nurse-ai-os-media-packet-hi.md", "media-hi.html",
+                 "Nurse AI OS — हिंदी मीडिया संक्षेप"),
 }
 
 # Per-language rendering config for translated documents: html lang/dir, extra
@@ -74,8 +79,8 @@ LANG_META = {
     },
     "media-ar": {
         "lang": "ar", "dir": "rtl",
-        "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">',
-        "css": ("body,h1,h2,h3,h4{font-family:'Noto Naskh Arabic',serif;}"
+        "font_links": "",
+        "css": ("body,h1,h2,h3,h4{font-family:Arial,sans-serif;}"
                 "body{direction:rtl;}th,td{text-align:right;}"
                 "ul,ol{padding-right:1.4em;padding-left:0;}"
                 "blockquote{border-left:none;border-right:4px solid var(--gold);}"),
@@ -91,18 +96,14 @@ LANG_META = {
         "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">',
         "css": "body{font-family:'Noto Sans SC',sans-serif;}h1,h2,h3,h4{font-family:'Noto Serif SC',Georgia,serif;}",
     },
-    "media-hi": {
-        "lang": "hi", "dir": "ltr",
-        "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Serif+Devanagari:wght@700&display=swap" rel="stylesheet">',
-        "css": "body{font-family:'Noto Sans Devanagari',sans-serif;}h1,h2,h3,h4{font-family:'Noto Serif Devanagari',Georgia,serif;}",
-    },
+
     "media-fr": {"lang": "fr", "dir": "ltr"},
     "media-es": {"lang": "es", "dir": "ltr"},
     "media-tl": {"lang": "tl", "dir": "ltr"},
     "media-vi": {
         "lang": "vi", "dir": "ltr",
-        "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Serif:wght@700&display=swap&subset=vietnamese" rel="stylesheet">',
-        "css": "body{font-family:'Noto Sans',sans-serif;}h1,h2,h3,h4{font-family:'Noto Serif',Georgia,serif;}",
+        "font_links": "",
+        "css": "body,h1,h2,h3,h4{font-family:Arial,sans-serif;}",
     },
 }
 
@@ -151,7 +152,7 @@ def find_chrome() -> str:
     sys.exit("No Chromium/Chrome found — set CHROME_BIN to your browser binary.")
 
 
-def canonicalize_pdf(raw: Path, out: Path, title: str) -> None:
+def canonicalize_pdf(raw: Path, out: Path, title: str, source_digest: str) -> None:
     """Remove volatile Chrome metadata and atomically publish stable PDF bytes."""
     reader = PdfReader(raw)
     writer = PdfWriter()
@@ -164,6 +165,7 @@ def canonicalize_pdf(raw: Path, out: Path, title: str) -> None:
         "/Subject": "Nurse AI OS media and governance information",
         "/Creator": "Nurse AI OS PDF builder",
         "/Producer": "pypdf 6.14.2",
+        "/SourceSHA256": source_digest,
     })
     # Chrome emits timestamp-derived identifiers. The canonical publication
     # omits them so identical source/layout input produces identical bytes.
@@ -183,8 +185,12 @@ def build(key: str, chrome: str) -> None:
     src_rel, out_rel, title = DOCS[key]
     meta = LANG_META.get(key, {})
     src, out = ROOT / src_rel, ROOT / out_rel
-    body = markdown.markdown(src.read_text(encoding="utf-8"),
+    source_bytes = src.read_bytes()
+    source_digest = hashlib.sha256(source_bytes).hexdigest()
+    body = markdown.markdown(source_bytes.decode("utf-8"),
                              extensions=["tables", "fenced_code", "sane_lists", "smarty"])
+    if key == "media-ar":
+        body = body.replace("Nurse AI OS™", '<bdi dir="ltr">Nurse AI OS™</bdi>', 1)
     footer = (
         f'<div class="doc-footer">nurse-ai-os.org · No PHI · Agents propose. Humans judge. '
         f'Nurses steward. · This PDF is generated from {src_rel} — the web copy is canonical.'
@@ -206,17 +212,49 @@ def build(key: str, chrome: str) -> None:
                         "--virtual-time-budget=15000", "--no-pdf-header-footer",
                         f"--print-to-pdf={raw_pdf}", f"file://{tmp}"],
                        check=True, capture_output=True, timeout=180)
-        canonicalize_pdf(raw_pdf, out, title)
+        canonicalize_pdf(raw_pdf, out, title, source_digest)
     finally:
         os.unlink(tmp)
         raw_pdf.unlink(missing_ok=True)
     print(f"built {out_rel} ({out.stat().st_size} bytes)")
 
 
+def build_html(key: str) -> None:
+    """Build accessible web text when the PDF engine cannot preserve logical text."""
+    src_rel, out_rel, title = HTML_DOCS[key]
+    src, out = ROOT / src_rel, ROOT / out_rel
+    source_bytes = src.read_bytes()
+    source_digest = hashlib.sha256(source_bytes).hexdigest()
+    body = markdown.markdown(source_bytes.decode("utf-8"),
+                             extensions=["tables", "fenced_code", "sane_lists", "smarty"])
+    page = f'''<!DOCTYPE html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{html_lib.escape(title)}</title><meta name="description" content="Accessible Hindi Nurse AI OS media brief.">
+<meta name="source-sha256" content="{source_digest}"><link rel="stylesheet" href="assets/nurse-ai.css">
+<style>html,body{{max-width:100%;overflow-x:hidden}}.media-brief{{box-sizing:border-box;width:100%;max-width:820px;margin:0 auto;padding:3rem 1.25rem;overflow-wrap:anywhere}}.media-brief *{{box-sizing:border-box;max-width:100%}}.media-brief h1{{font-size:clamp(2rem,6vw,3.6rem);overflow-wrap:anywhere}}.media-brief blockquote{{margin:1rem 0;border-left:4px solid var(--gold-500);padding:1rem 1.2rem;background:var(--linen-50);overflow-wrap:anywhere}}.media-brief li{{margin:.55rem 0}}.source-note{{background:var(--navy-900);color:var(--white);padding:1rem 1.25rem;overflow-wrap:anywhere}}.source-note a{{color:var(--gold-300)}}@media(max-width:640px){{.nav-bar{{flex-wrap:wrap;gap:.65rem}}.nav-links{{width:100%;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:.55rem}}.media-brief{{padding:2rem 1.25rem}}.media-brief h1{{font-size:clamp(2rem,10vw,2.8rem)}}}}</style></head>
+<body><header class="site-header"><nav class="nav-bar"><a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a><div class="nav-links"><a href="media.html">Media center</a><a href="hi/about.html">संस्थापक</a><a class="nav-cta" href="soul-quiz.html">SOUL Quiz</a></div></nav></header>
+<main id="main-content" class="media-brief"><div class="source-note">यह accessible web brief canonical Markdown से बनाया गया है। <a href="assets/nurse-ai-os-media-packet-hi.md">स्रोत देखें</a> · <a href="media.html">मीडिया केंद्र</a></div>{body}</main>
+<footer class="site-footer"><div class="container"><p class="footer-motto">🕯️ दीपक लेकर चलें। लेखा सुरक्षित रखें। Agents propose. Humans judge. Nurses steward.</p></div></footer><script src="assets/site-shell.js" defer></script></body></html>'''
+    with tempfile.NamedTemporaryFile("w", suffix=".html", dir=out.parent,
+                                     delete=False, encoding="utf-8") as tf:
+        tf.write(page)
+        temporary = Path(tf.name)
+    try:
+        os.replace(temporary, out)
+    finally:
+        temporary.unlink(missing_ok=True)
+    print(f"built {out_rel} ({out.stat().st_size} bytes)")
+
+
 if __name__ == "__main__":
-    targets = sys.argv[1:] or list(DOCS)
-    chrome = find_chrome()
+    targets = sys.argv[1:] or [*DOCS, *HTML_DOCS]
+    chrome = None
     for t in targets:
-        if t not in DOCS:
-            sys.exit(f"unknown target {t!r} — choose from {', '.join(DOCS)}")
-        build(t, chrome)
+        if t in DOCS:
+            chrome = chrome or find_chrome()
+            build(t, chrome)
+        elif t in HTML_DOCS:
+            build_html(t)
+        else:
+            choices = ", ".join([*DOCS, *HTML_DOCS])
+            sys.exit(f"unknown target {t!r} — choose from {choices}")

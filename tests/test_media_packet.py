@@ -1,14 +1,16 @@
+import hashlib
 import re
 import unittest
 from pathlib import Path
 
 from pypdf import PdfReader
-from pypdf.generic import DictionaryObject
+from pypdf.generic import DictionaryObject, NameObject
 
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("es", "tl", "zh", "ar", "vi", "ru", "hi", "fr")
 KEYS = ("en",) + LOCALES
+PDF_KEYS = tuple(key for key in KEYS if key != "hi")
 SUFFIX = {"en": "", **{locale: f"-{locale}" for locale in LOCALES}}
 TITLES = {
     "en": "Nurse AI OS™ Media Kit",
@@ -32,6 +34,22 @@ POSTURES = {
     "ar": "shadow/observe-only", "vi": "shadow/observe-only",
     "ru": "shadow/observe-only", "hi": "shadow/observe-only",
     "fr": "shadow/observe-only",
+}
+DONT_SAY_MARKERS = {
+    "en": "do not say", "es": "no diga", "tl": "huwag sabihing",
+    "zh": "请勿使用", "ar": "لا تقولوا", "vi": "không nên nói",
+    "ru": "не следует говорить", "hi": "न कहें", "fr": "à ne pas dire",
+}
+OVERCLAIMS = {
+    "en": ("safe for phi", "clinically validated", "hipaa-compliant", "institutionally approved"),
+    "es": ("seguro para phi", "validado clínicamente"),
+    "tl": ("ligtas para sa phi", "clinically validated"),
+    "zh": ("对 phi 安全", "临床验证"),
+    "ar": ("آمن للـ phi", "تم التحقق سريري"),
+    "vi": ("an toàn cho phi", "được xác thực lâm sàng"),
+    "ru": ("безопасен для phi", "клинически подтвержд"),
+    "hi": ("phi के लिए सुरक्षित", "clinically validated"),
+    "fr": ("sans danger pour les phi", "validé cliniquement"),
 }
 
 
@@ -63,13 +81,41 @@ def walk_pdf_objects(value, seen=None):
             yield from walk_pdf_objects(child, seen)
 
 
+def positive_claim_text(text, marker):
+    kept = []
+    skipping = False
+    for line in text.casefold().splitlines():
+        if marker.casefold() in line:
+            skipping = True
+            continue
+        if skipping and line.lstrip().startswith("#"):
+            skipping = False
+        if not skipping:
+            kept.append(line)
+    return "\n".join(kept)
+
+
+def pdf_name_tokens(value):
+    names = set()
+    for obj in walk_pdf_objects(value):
+        if isinstance(obj, NameObject):
+            names.add(str(obj))
+        elif isinstance(obj, DictionaryObject):
+            names.update(str(name) for name in obj.keys())
+            names.update(str(child) for child in obj.values() if isinstance(child, NameObject))
+    return names
+
+
 class MediaPacketReleaseTests(unittest.TestCase):
-    def test_all_language_source_pdf_pairs_exist_and_have_current_claims(self):
+    def test_all_language_sources_and_publication_artifacts_have_current_claims(self):
         for key in KEYS:
             source = source_path(key)
-            pdf = pdf_path(key)
             self.assertTrue(source.is_file(), source)
-            self.assertTrue(pdf.is_file(), pdf)
+            if key == "hi":
+                self.assertTrue((ROOT / "media-hi.html").is_file())
+                self.assertFalse(pdf_path(key).exists(), "Hindi PDF must remain unpublished while logical text is unreliable")
+            else:
+                self.assertTrue(pdf_path(key).is_file(), pdf_path(key))
             text = source.read_text(encoding="utf-8")
             for token in ("ChatGPT", "Claude", "Hermes", "Florence-X", "$10", "$29.90", "2026"):
                 self.assertIn(token, text, f"{key}: {token}")
@@ -77,6 +123,9 @@ class MediaPacketReleaseTests(unittest.TestCase):
             self.assertGreater(len(text), 2000, key)
             if key != "en":
                 self.assertIn(DISCLOSURES[key], text, key)
+            claim_text = positive_claim_text(text, DONT_SAY_MARKERS[key])
+            for phrase in (*OVERCLAIMS["en"], *OVERCLAIMS[key]):
+                self.assertNotIn(phrase.casefold(), claim_text, f"{key}: unsupported positive claim {phrase!r}")
 
     def test_canonical_source_carries_exact_product_pricing_and_authority_boundaries(self):
         text = source_path("en").read_text(encoding="utf-8")
@@ -101,16 +150,19 @@ class MediaPacketReleaseTests(unittest.TestCase):
             self.assertNotIn(phrase.casefold(), text.casefold(), phrase)
 
     def test_pdf_metadata_text_links_pages_and_active_content(self):
-        for key in KEYS:
+        for key in PDF_KEYS:
             reader = PdfReader(pdf_path(key))
             metadata = reader.metadata
             self.assertEqual(metadata.title, TITLES[key], key)
             self.assertEqual(metadata.author, "Robert Domondon", key)
             self.assertIsNone(metadata.get("/CreationDate"), key)
             self.assertIsNone(metadata.get("/ModDate"), key)
+            expected_digest = hashlib.sha256(source_path(key).read_bytes()).hexdigest()
+            self.assertEqual(metadata.get("/SourceSHA256"), expected_digest, f"{key}: stale source/PDF pair")
             self.assertGreaterEqual(len(reader.pages), 2, key)
             self.assertLessEqual(len(reader.pages), 15, key)
             extracted = " ".join((page.extract_text() or "") for page in reader.pages)
+            self.assertNotIn("\x00", extracted, f"{key}: corrupt logical text")
             self.assertIn("Nurse AI OS", extracted, key)
             self.assertIn("ChatGPT", extracted, key)
             self.assertIn("Claude", extracted, key)
@@ -145,27 +197,49 @@ class MediaPacketReleaseTests(unittest.TestCase):
                         f"{key}: font lacks an embedded program",
                     )
             self.assertGreaterEqual(links, 7, key)
-            names = {str(name) for obj in walk_pdf_objects(reader.trailer) if isinstance(obj, DictionaryObject) for name in obj.keys()}
-            for forbidden in ("/JavaScript", "/JS", "/Launch", "/EmbeddedFiles", "/OpenAction", "/AcroForm"):
+            names = pdf_name_tokens(reader.trailer)
+            for forbidden in ("/JavaScript", "/JS", "/Launch", "/GoToR", "/SubmitForm", "/ImportData",
+                              "/EmbeddedFiles", "/OpenAction", "/AcroForm", "/RichMedia", "/Movie", "/Sound"):
                 self.assertNotIn(forbidden, names, f"{key}: {forbidden}")
+
+    def test_active_content_scanner_rejects_action_values(self):
+        launch_action = DictionaryObject({NameObject("/S"): NameObject("/Launch")})
+        javascript_action = DictionaryObject({NameObject("/S"): NameObject("/JavaScript")})
+        self.assertIn("/Launch", pdf_name_tokens(launch_action))
+        self.assertIn("/JavaScript", pdf_name_tokens(javascript_action))
+
+    def test_hindi_accessible_html_is_bound_to_its_source(self):
+        page = (ROOT / "media-hi.html").read_text(encoding="utf-8")
+        digest = hashlib.sha256(source_path("hi").read_bytes()).hexdigest()
+        self.assertIn(f'<meta name="source-sha256" content="{digest}">', page)
+        for token in ("Nurse AI OS", "ChatGPT", "Claude", "Hermes", "Florence-X", "$29.90"):
+            self.assertIn(token, page)
+        self.assertNotIn("nurse-ai-os-media-packet-hi.pdf", page)
 
     def test_media_center_advertises_exact_complete_inventory(self):
         page = (ROOT / "media.html").read_text(encoding="utf-8")
         sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
         self.assertEqual(sitemap.count("https://nurse-ai-os.org/media.html"), 1)
+        self.assertEqual(sitemap.count("https://nurse-ai-os.org/media-hi.html"), 1)
         self.assertIn("The English packet is the canonical source", page)
         self.assertIn("have not received professional native-language editorial certification", page)
         for key in KEYS:
             suffix = SUFFIX[key]
             expected_count = 2 if key == "en" else 1
-            self.assertEqual(page.count(f'assets/nurse-ai-os-media-packet{suffix}.pdf'), expected_count, key)
             self.assertEqual(page.count(f'assets/nurse-ai-os-media-packet{suffix}.md'), expected_count, key)
+            if key in PDF_KEYS:
+                self.assertEqual(page.count(f'assets/nurse-ai-os-media-packet{suffix}.pdf'), expected_count, key)
+            else:
+                self.assertNotIn(f'assets/nurse-ai-os-media-packet{suffix}.pdf', page)
+                self.assertEqual(page.count('href="media-hi.html"'), 1)
+                self.assertIn("does not preserve reliable Devanagari copy/search text", page)
         self.assertEqual(page.count('class="nav-cta" href="soul-quiz.html"'), 1)
 
     def test_every_about_page_has_one_bounded_current_media_card(self):
         expected = {"en": "assets/nurse-ai-os-media-packet.pdf", **{
             locale: f"../assets/nurse-ai-os-media-packet-{locale}.pdf" for locale in LOCALES
         }}
+        expected["hi"] = "../media-hi.html"
         for key in KEYS:
             path = ROOT / ("about.html" if key == "en" else f"{key}/about.html")
             text = path.read_text(encoding="utf-8")
@@ -173,6 +247,21 @@ class MediaPacketReleaseTests(unittest.TestCase):
             self.assertEqual(text.count(expected[key]), 1, key)
             target = 'href="media.html"' if key == "en" else 'href="../media.html"'
             self.assertEqual(text.count(target), 1, key)
+
+    def test_about_pages_bound_naio_authority(self):
+        retired = (
+            "Governance authority", "Autoridad de gobernanza", "Governance authority",
+            "治理机构", "مرجعية الحوكمة", "Cơ quan quản trị", "Центр управления",
+            "गवर्नेंस प्राधिकरण", "Autorité de gouvernance", "FAA of healthcare AI",
+            "FAA de la IA sanitaria", "FAA ng healthcare AI", "医疗 AI 航管局",
+            "FAA</bdi> للذكاء", "FAA của AI", "аналогом FAA", "हेल्थकेयर AI का FAA", "FAA de l’IA",
+        )
+        for key in KEYS:
+            path = ROOT / ("about.html" if key == "en" else f"{key}/about.html")
+            text = path.read_text(encoding="utf-8")
+            for phrase in retired:
+                self.assertNotIn(phrase, text, f"{key}: retired authority framing")
+            self.assertIn("boundary-note", text, key)
 
     def test_counter_labels_use_current_media_kit_name(self):
         retired = ("Media packets", "Paquetes de medios", "媒体包（全语言）", "الحزم الإعلامية", "Gói truyền thông", "медиапакеты", "Dossiers médias")
@@ -183,12 +272,28 @@ class MediaPacketReleaseTests(unittest.TestCase):
             for phrase in retired:
                 self.assertNotIn(phrase, text, f"{key}: {phrase}")
 
-    def test_builder_declares_every_media_target_and_canonicalization(self):
+    def test_workflow_and_dependencies_are_immutably_pinned(self):
+        workflow = (ROOT / ".github/workflows/media-packet.yml").read_text(encoding="utf-8")
+        self.assertRegex(workflow, r"actions/checkout@[0-9a-f]{40}")
+        self.assertRegex(workflow, r"actions/setup-python@[0-9a-f]{40}")
+        self.assertNotRegex(workflow, r"actions/(?:checkout|setup-python)@v\d")
+        requirements = (ROOT / "scripts/requirements-media-pdf.txt").read_text(encoding="utf-8").splitlines()
+        self.assertEqual(2, len(requirements))
+        for line in requirements:
+            self.assertRegex(line, r"^[A-Za-z]+==[0-9.]+ --hash=sha256:[0-9a-f]{64}$")
+
+    def test_removed_hindi_pdf_is_not_publicly_referenced(self):
+        for path in ROOT.rglob("*.html"):
+            self.assertNotIn("nurse-ai-os-media-packet-hi.pdf", path.read_text(encoding="utf-8"), str(path))
+
+    def test_builder_declares_every_media_target_and_stable_metadata(self):
         text = (ROOT / "tools" / "build-pdfs.py").read_text(encoding="utf-8")
         for key in ("media", "media-es", "media-tl", "media-zh", "media-ar", "media-vi", "media-ru", "media-hi", "media-fr"):
             self.assertRegex(text, rf'"{re.escape(key)}"\s*:', key)
-        for phrase in ("canonicalize_pdf", "writer._info = None", "writer._ID = None", "os.replace(canonical, out)"):
+        for phrase in ("canonicalize_pdf", "writer._info = None", "writer._ID = None", "os.replace(canonical, out)",
+                       '"/SourceSHA256": source_digest', "def build_html", "os.replace(temporary, out)"):
             self.assertIn(phrase, text)
+        self.assertNotIn('"assets/nurse-ai-os-media-packet-hi.pdf"', text)
 
 
 if __name__ == "__main__":

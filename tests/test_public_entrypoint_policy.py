@@ -375,6 +375,41 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
                     failures.append(f"{locale}/index.html: {pattern}")
         self.assertEqual([], failures)
 
+    def test_localized_safety_resources_target_real_anchor_without_guarantees(self):
+        root_start = (ROOT / "start-here.html").read_text(encoding="utf-8")
+        self.assertRegex(root_start, r'id=["\']safety["\']')
+        retired = (
+            "protect patients, licenses, and you",
+            "protegen a los pacientes, las licencias y a ti",
+            "nagpoprotekta sa mga pasyente, lisensya, at sa iyo",
+            "保护患者、执业资格和你自己的五条规则",
+            "تحمي المرضى والتراخيص وتحميكم",
+            "bảo vệ người bệnh, giấy phép hành nghề và chính bạn",
+            "защитить пациентов, профессиональную ответственность и вас",
+            "मरीजों, आपके पेशेवर लाइसेंस और आपको सुरक्षित रखते हैं",
+            "protègent les patients, votre droit d’exercice et vous-même",
+            "your AI runs governed",
+            "sus ejecuciones de IA estarán gobernadas",
+            "pamamahalaan ang iyong AI run",
+            "让 AI 在治理下运行",
+            "ليعمل الذكاء الاصطناعي ضمن الحوكمة",
+            "AI của bạn vận hành trong khuôn khổ quản trị",
+            "чтобы ИИ работал в заданных границах",
+            "आपका AI गवर्नेंस के तहत चलेगा",
+            "encadrer votre IA par la gouvernance",
+        )
+        pages = [ROOT / "resources.html"] + [ROOT / locale / "resources.html" for locale in LOCALES]
+        failures = []
+        for path in pages:
+            text = path.read_text(encoding="utf-8")
+            expected = 'href="start-here.html#safety"' if path == ROOT / "resources.html" else 'href="../start-here.html#safety"'
+            if text.count(expected) != 1:
+                failures.append(f"{path.relative_to(ROOT)}: missing exact safety destination")
+            for phrase in retired:
+                if phrase.casefold() in text.casefold():
+                    failures.append(f"{path.relative_to(ROOT)}: retired claim {phrase}")
+        self.assertEqual([], failures)
+
     def test_public_shell_internal_links_resolve(self):
         missing = []
         checked = 0

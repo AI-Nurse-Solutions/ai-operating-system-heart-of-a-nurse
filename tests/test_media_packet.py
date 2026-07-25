@@ -309,7 +309,8 @@ class MediaPacketReleaseTests(unittest.TestCase):
         renderer_text = (ROOT / "scripts/render-media-pdf.sh").read_text(encoding="utf-8")
         self.assertIn("mcr.microsoft.com/playwright@sha256:5b8f294aff9041b7191c34a4bab3ac270157a28774d4b0660e9743297b697e48",
                       renderer_text)
-        for flag in ("--network=none", "--read-only", "--security-opt no-new-privileges", "--cap-drop=ALL"):
+        for flag in ("--user", "--env HOME=/tmp", "--network=none", "--read-only",
+                     "--security-opt no-new-privileges", "--cap-drop=ALL"):
             self.assertIn(flag, renderer_text)
         self.assertIn('"playwright-core": "1.61.1"', (ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertIn("npm ci --ignore-scripts", workflow)

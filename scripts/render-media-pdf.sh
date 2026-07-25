@@ -21,6 +21,8 @@ input="$(translate_path "$1")"
 output="$(translate_path "$2")"
 
 exec docker run --rm \
+  --user "$(id -u):$(id -g)" \
+  --env HOME=/tmp \
   --network=none \
   --read-only \
   --tmpfs /tmp:rw,noexec,nosuid,size=256m \

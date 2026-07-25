@@ -2,9 +2,23 @@ import hashlib
 import re
 import unittest
 from pathlib import Path
+from typing import Any
 
-from pypdf import PdfReader
-from pypdf.generic import DictionaryObject, NameObject
+try:
+    from pypdf import PdfReader
+    from pypdf.generic import DictionaryObject, NameObject
+    PYPDF_AVAILABLE = True
+except ModuleNotFoundError:  # Other lane workflows do not install media-only dependencies.
+    class _MissingPypdf:
+        metadata: Any
+        pages: Any
+        trailer: Any
+
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("pypdf is unavailable")
+
+    PdfReader = DictionaryObject = NameObject = _MissingPypdf
+    PYPDF_AVAILABLE = False
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -107,6 +121,7 @@ def pdf_name_tokens(value):
     return names
 
 
+@unittest.skipUnless(PYPDF_AVAILABLE, "requires hash-pinned media PDF dependencies")
 class MediaPacketReleaseTests(unittest.TestCase):
     def test_all_language_sources_and_publication_artifacts_have_current_claims(self):
         for key in KEYS:

@@ -226,7 +226,14 @@ def build(key: str, chrome: str | None, renderer: str | None = None) -> None:
             command = [chrome, "--headless", "--no-sandbox", "--disable-gpu",
                        "--virtual-time-budget=15000", "--no-pdf-header-footer",
                        f"--print-to-pdf={raw_pdf}", f"file://{tmp}"]
-        subprocess.run(command, check=True, capture_output=True, timeout=300)
+        try:
+            subprocess.run(command, check=True, capture_output=True, timeout=300)
+        except subprocess.CalledProcessError as exc:
+            if exc.stdout:
+                sys.stderr.write(exc.stdout.decode("utf-8", errors="replace"))
+            if exc.stderr:
+                sys.stderr.write(exc.stderr.decode("utf-8", errors="replace"))
+            raise
         canonicalize_pdf(raw_pdf, out, title, source_digest)
     finally:
         os.unlink(tmp)

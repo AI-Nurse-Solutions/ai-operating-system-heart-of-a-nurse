@@ -18,6 +18,7 @@ import tempfile
 from pathlib import Path
 
 import markdown
+from pypdf import PdfReader, PdfWriter
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -38,7 +39,7 @@ DOCS = {
         "Nurse AI OS Architecture Report — July 13, 2026 Evidence Snapshot",
     ),
     "media": ("assets/nurse-ai-os-media-packet.md", "assets/nurse-ai-os-media-packet.pdf",
-              "Nurse AI OS™ Media Packet"),
+              "Nurse AI OS™ Media Kit"),
     "media-fr": ("assets/nurse-ai-os-media-packet-fr.md", "assets/nurse-ai-os-media-packet-fr.pdf",
                  "Nurse AI OS — Dossier de presse"),
     "media-es": ("assets/nurse-ai-os-media-packet-es.md", "assets/nurse-ai-os-media-packet-es.pdf",
@@ -51,6 +52,10 @@ DOCS = {
                  "Nurse AI OS — 媒体资料包"),
     "media-hi": ("assets/nurse-ai-os-media-packet-hi.md", "assets/nurse-ai-os-media-packet-hi.pdf",
                  "Nurse AI OS — मीडिया किट"),
+    "media-tl": ("assets/nurse-ai-os-media-packet-tl.md", "assets/nurse-ai-os-media-packet-tl.pdf",
+                 "Nurse AI OS — Media brief sa Tagalog"),
+    "media-vi": ("assets/nurse-ai-os-media-packet-vi.md", "assets/nurse-ai-os-media-packet-vi.pdf",
+                 "Nurse AI OS — Tóm tắt truyền thông tiếng Việt"),
 }
 
 # Per-language rendering config for translated documents: html lang/dir, extra
@@ -93,6 +98,12 @@ LANG_META = {
     },
     "media-fr": {"lang": "fr", "dir": "ltr"},
     "media-es": {"lang": "es", "dir": "ltr"},
+    "media-tl": {"lang": "tl", "dir": "ltr"},
+    "media-vi": {
+        "lang": "vi", "dir": "ltr",
+        "font_links": '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Serif:wght@700&display=swap&subset=vietnamese" rel="stylesheet">',
+        "css": "body{font-family:'Noto Sans',sans-serif;}h1,h2,h3,h4{font-family:'Noto Serif',Georgia,serif;}",
+    },
 }
 
 CSS = """
@@ -140,6 +151,34 @@ def find_chrome() -> str:
     sys.exit("No Chromium/Chrome found — set CHROME_BIN to your browser binary.")
 
 
+def canonicalize_pdf(raw: Path, out: Path, title: str) -> None:
+    """Remove volatile Chrome metadata and atomically publish stable PDF bytes."""
+    reader = PdfReader(raw)
+    writer = PdfWriter()
+    writer.clone_document_from_reader(reader)
+    # Replace rather than merge Chrome's volatile CreationDate/ModDate values.
+    writer._info = None
+    writer.add_metadata({
+        "/Title": title,
+        "/Author": "Robert Domondon",
+        "/Subject": "Nurse AI OS media and governance information",
+        "/Creator": "Nurse AI OS PDF builder",
+        "/Producer": "pypdf 6.14.2",
+    })
+    # Chrome emits timestamp-derived identifiers. The canonical publication
+    # omits them so identical source/layout input produces identical bytes.
+    writer._ID = None
+    with tempfile.NamedTemporaryFile(
+        "wb", suffix=".canonical.pdf", dir=out.parent, delete=False
+    ) as tf:
+        canonical = Path(tf.name)
+        writer.write(tf)
+    try:
+        os.replace(canonical, out)
+    finally:
+        canonical.unlink(missing_ok=True)
+
+
 def build(key: str, chrome: str) -> None:
     src_rel, out_rel, title = DOCS[key]
     meta = LANG_META.get(key, {})
@@ -152,19 +191,25 @@ def build(key: str, chrome: str) -> None:
         f'</div>'
     )
     html = (f'<!DOCTYPE html><html lang="{meta.get("lang", "en")}" dir="{meta.get("dir", "ltr")}">'
-            f'<head><meta charset="utf-8"><title>{title}</title>'
+            f'<head><meta charset="utf-8"><title>{title}</title><meta name="author" content="Robert Domondon">'
             f'{FONTS}{meta.get("font_links", "")}<style>{CSS}{meta.get("css", "")}</style></head><body>{body}'
             f'{footer}</body></html>')
     with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8") as tf:
         tf.write(html)
         tmp = tf.name
+    with tempfile.NamedTemporaryFile(
+        "wb", suffix=".raw.pdf", dir=out.parent, delete=False
+    ) as pf:
+        raw_pdf = Path(pf.name)
     try:
         subprocess.run([chrome, "--headless", "--no-sandbox", "--disable-gpu",
                         "--virtual-time-budget=15000", "--no-pdf-header-footer",
-                        f"--print-to-pdf={out}", f"file://{tmp}"],
+                        f"--print-to-pdf={raw_pdf}", f"file://{tmp}"],
                        check=True, capture_output=True, timeout=180)
+        canonicalize_pdf(raw_pdf, out, title)
     finally:
         os.unlink(tmp)
+        raw_pdf.unlink(missing_ok=True)
     print(f"built {out_rel} ({out.stat().st_size} bytes)")
 
 

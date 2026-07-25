@@ -1,124 +1,214 @@
-# Nurse AI OS™ — Media Packet
+# Nurse AI OS™ — Media Kit
 
-**nurse-ai-os.org** · July 2026 · Media contact: **great.ai.nurses@gmail.com**
+**Current through July 25, 2026**
 
-*Ready-to-use language for three audiences — the general public, nursing organizations, and AI architects/technology press — plus fast facts, founder bio, accuracy notes, and assets. Everything in this packet may be quoted directly.*
+**Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+
+> **In one sentence:** Nurse AI OS is a nurse-designed, browser-first kit that helps nurses use ChatGPT or Claude with practical workflows, a personal values-and-boundaries file, and explicit human-review rules—without handing over judgment.
+
+This kit provides current, quotable language for journalists, nursing organizations, educators, technology reviewers, conference producers, and collaborators. Product and governance claims are deliberately bounded. Please use the accuracy notes before publication.
 
 ---
 
-## Executive summary
+## The story in brief
 
-**Nurse AI OS™ is the commercial product brand for a governed, no-PHI AI learning and stewardship experience built for nurses by a 22-year ICU nurse.** It helps nursing students, bedside nurses, managers, educators, and nurse entrepreneurs build practical AI workflows around learning, organization, administration, and professional development without handing over judgment. Official workflows use EDENA risk tiers, human-review gates, and a strict rule against placing raw patient information in prompts, memory, telemetry, logs, or model context. The product can be used browser-first or with Hermes Agent as an external open-source runtime. Nurse AI OS is not the name of the underlying runtime, model, or general technical substrate; it is the protected identity of the nurse-centered commercial product and experience.
+Nurses are already using general-purpose AI for studying, planning, writing, organization, career development, and everyday administration. The central question is not whether they will use AI. It is whether they will use it with clear boundaries, practical judgment, and a professional voice in how the technology is governed.
+
+Nurse AI OS gives nurses a concrete starting point. Today, it is a sophisticated configuration and workflow kit for AI tools people may already have. It includes guided prompts, practical templates, local folders, role-based workflows, safety practices, and a personal **SOUL file** that records the user’s values, boundaries, and preferred way of receiving help.
+
+The default path runs in a web browser with ChatGPT or Claude. No separate application or Hermes installation is required to begin. Nurses who later want an AI agent to work with local folders, reusable skills, and explicitly approved tools may add **Hermes Agent**, a separate open-source desktop runtime from Nous Research.
+
+Nurse AI OS does not provide clinical authority, institutional approval, uniform enforcement across AI hosts, or a finished standalone operating system. Its direction is a portable, nurse-governed control layer in which policies, human gates, and evidence can travel across tools.
 
 ---
 
 ## Fast facts
 
-- **What:** the commercial brand for a governed, no-PHI AI learning and stewardship product purpose-built for nurses; available browser-first or with Hermes Agent as an external runtime.
-- **Who it serves:** six English post-setup lanes on one governance spine — five governed self-install Hermes build kits for Nursing Student and Nursing Assistant/FUTURE, Staff Nurse/SHIFT, Nurse Leader/LEAD, Nurse Educator and Instructional Designer/TEACH, and USA-only Nurse Practitioner/WINGS; and one review-first Nurse-Connected Ally overlay — plus advanced builder pathways. Downloading any lane does not install, activate, operationalize, or grant institutional authority.
-- **Cost:** free for nurses and nursing students during the founding year.
-- **The hard boundary:** no patient information in the product experience — "if it could identify a patient, leave it out." No patient-specific clinical decisions. Official distributions are workforce, administrative, and educational infrastructure, not clinical decision support.
-- **The safety model:** EDENA risk tiers (🟢 proceed / 🟡 human approves first / 🟠 deferred until governed review / 🔴 stop) — tiers measure risk, not privilege. Doctrine: *Agents propose. Humans judge. Nurses steward.*
-- **The engineering:** signed releases (pinned key fingerprint → signed manifest → per-file checksums, fail-closed), human-staged approval for AI-authored skills, refuse-at-intake memory rules, and an anti-anchoring "judgment first" pattern.
-- **The evidence discipline:** research claims distinguish verified evidence, source-reported claims, and design judgment; corrections are published when evidence changes.
-- **Founder:** Robert Domondon, RN, CCRN, CSC, CMC — 22 years in the ICU, 13 years in healthcare management, physician training (Philippines), former US Naval Hospital administrator.
-- **Ownership and licensing:** copyright and the Nurse AI OS trademark are held by Robert Domondon personally pending later written entity assignment. The trademark application is pending; no federal-registration claim is made. Original source code is Apache 2.0, documentation is CC BY 4.0, and trademark rights remain separate.
+- **What users receive today:** a browser-first guided setup, 2-minute SOUL Quiz, editable values-and-boundaries file, prompts, templates, local folder structure, role-based workflows, and safety practices.
+- **What users need to begin:** access to ChatGPT or Claude in a browser. A phone, tablet, Chromebook, Mac, or Windows computer can be used for the browser-first path.
+- **What is optional:** Hermes Agent on a recent Mac or Windows computer for advanced local-folder, reusable-skill, persistence, and approved-tool workflows.
+- **Who it serves:** nursing students, bedside nurses, nurse leaders, nurse educators, nurse practitioners, nurse entrepreneurs, and other nurses exploring responsible AI use.
+- **Core cost:** **$0, free forever** for core browser-first setup and self-customization. No credit card and no automatic upgrade.
+- **Separate optional offerings:** a tailored profile/setup package is **$10 one time**; developed-resource access is **$29.90 per year** as resources are released; advanced courses include free and paid options.
+- **Summit:** free and paid advanced courses are planned for the virtual summit on **September 15–17, 2026**. Course-specific prices must be shown before enrollment.
+- **Founding-year recognition:** community recognition and related founding-year benefits continue through **December 31, 2026**. That date does not end the free core or create future automatic billing.
+- **Privacy boundary:** users are told not to enter patient information, workplace credentials, secrets, or identifiable operational records. Material pasted or uploaded to an AI host is handled under that provider’s privacy and data settings.
+- **Authority boundary:** Nurse AI OS is not an EHR, clinical decision-support system, autonomous clinician, certification body, or source of institutional approval.
+- **Doctrine:** *Agents propose. Humans judge. Nurses steward.*
 
 ---
 
-## For the general public
+## Quotable descriptions
 
-**The 50-word description.** Nurse AI OS™ is a governed, no-PHI AI learning and stewardship product for nurses. It helps with studying, certifications, organization, careers, and non-clinical administration while keeping consequential decisions behind human review. It can start in a browser and later use Hermes Agent as an external runtime, with nurse-led governance throughout.
+### Short description
 
-**The 150-word description.** Nurses are among the most trusted professionals in the world, and many are already exploring AI for everyday help. Nurse AI OS™, built by a 22-year intensive-care nurse, gives them a governed place to learn and build practical workflows without treating AI output as judgment. Tasks are classified by risk. Consequential work waits for human review. Raw patient information does not belong in prompts, memory, telemetry, logs, or model context. The product focuses instead on the life and work around care: exam preparation, certification planning, after-shift reflection, non-clinical administrative drafts, professional portfolios, and responsible nurse entrepreneurship. Users can begin browser-first and later choose Hermes Agent as an external runtime. Nurse AI OS is the commercial product brand—not the underlying model or runtime—and it is free for nurses and nursing students during its founding year. The motto tells the story from the start: *Agents propose. Humans judge. Nurses steward.*
+Nurse AI OS™ is a browser-first, nurse-designed kit for using ChatGPT or Claude with practical workflows, personal boundaries, and human review. It helps nurses learn, organize, plan, and build without treating AI output as judgment. The core setup and self-customization are free forever; Hermes is a separate optional desktop runtime.
 
-**Three key messages.**
+### Standard description
 
-1. **Nurses are already exploring AI — this teaches governed use.** The choice is not simply AI or no AI; it is whether use has boundaries, review, and accountable stewardship.
-2. **Patient privacy is a hard participation rule.** Users must not place raw patient information in the product experience, prompts, memory, telemetry, logs, or model context.
-3. **The human stays in charge.** Every consequential action waits for the nurse's approval. The agent proposes; the nurse decides.
+Nurse AI OS™ helps nurses use the AI they may already have without handing over professional or personal judgment. The browser-first kit combines a 2-minute SOUL Quiz, an editable values-and-boundaries file, guided prompts, practical templates, local folders, role-based workflows, and safety practices. Users can start from a phone, tablet, Chromebook, Mac, or Windows computer with ChatGPT or Claude. Nothing requires Hermes to begin. Nurses who want advanced work with local folders, reusable skills, persistence, and approved tools may later add Hermes Agent as a separate desktop runtime. The project prohibits patient information in its intended workflows, keeps clinical and institutional decisions outside the tool, and distinguishes guidance from enforceable controls. Core setup and self-customization remain free forever.
 
-**Suggested angles.** The ICU nurse who spent 22 years at the bedside and built an AI product on nursing's checklist culture · What every profession can learn from how nurses are governing AI · "If it could identify a patient, leave it out": the nurse-led product with a hard no-PHI boundary.
+### Founder quote
 
-**Pull quote.** *"Nurses shouldn't just use AI — they should govern it."* — Robert Domondon, founder
+> “Nurses should not be treated as passive end users of AI. We should be among the people who set the boundaries, notice when a system fails in real workflow, and decide when technology must stop.” — **Robert Domondon, founder**
 
----
+### Three message pillars
 
-## For nursing organizations
-
-**Boilerplate paragraph (quote freely).** Nurse AI OS™ is a nurse-led commercial product for governed, no-PHI AI learning and stewardship. Its design is informed by published guidance from the American Nurses Association, NCSBN, and the American Academy of Nursing: AI should augment rather than replace nursing judgment; accountable humans remain in the loop; and capabilities require validation before institutional use. Official workflows use EDENA risk tiers and human-review gates. Raw patient information is prohibited from prompts, memory, telemetry, logs, and model context. Academic-integrity workflows emphasize disclosure, process evidence, and educator review rather than automated accusation. Nurse leaders receive practical governance templates, but neither the product nor those templates confer institutional approval, compliance status, clinical readiness, or certification. Nurse AI OS is free for nurses and nursing students during its founding year.
-
-**Talking points.**
-
-- **It translates existing guidance into practice rather than claiming institutional authority.** A guidance-to-structure mapping is published in the Architecture Report with citations and explicit claim boundaries.
-- **It builds the AI-governance workforce the guidance assumes.** Every user practices daily inside risk tiers, review gates, escalation rules, and decision ledgers — the instincts organizations need as clinical AI arrives. Surveyed nursing programs report a large AI-literacy gap; the Student module is aimed squarely at it.
-- **Academic integrity is handled the way the evidence says to.** Detection tools have documented false-positive problems; the Study OS builds integrity on disclosure templates, process logs, and educator review-and-interview workflows — never automated accusation.
-- **Nurse review is structural.** Shared artifacts are designed for nurse review against published checklists and human gates. Publication is not endorsement, certification, compliance approval, or clinical validation.
-- **What it is not (say this plainly):** not clinical decision support, not connected to the EHR, not a substitute for institutional governance, not a certification of competence, and not evidence of improved patient outcomes.
-
-**The collaboration invitation.** Nursing organizations, schools, and unions interested in pilots, workshops (a 90-minute unit-ready session ships in the kit), or governance collaboration can reach the project at great.ai.nurses@gmail.com.
+1. **Practical agency:** nurses can start with one useful browser workflow rather than waiting for a new hospital platform or mastering an agent stack.
+2. **Human primacy:** AI can draft, organize, compare, and propose; accountable people still review, decide, escalate, and own consequences.
+3. **Nurse-led stewardship:** bedside and operational knowledge should shape AI governance, not arrive only after procurement or deployment.
 
 ---
 
-## For AI architects and technology press
+## Product maturity: Today / Emerging / Direction
 
-**Boilerplate paragraph (quote freely).** Nurse AI OS™ is a commercial nurse-centered product that can use Hermes Agent as an external open-source runtime. It does not rename, absorb, or claim ownership of that runtime or of a general AI substrate. The product adds nurse-facing governance files, EDENA risk classification, human-review patterns, release verification, and no-PHI boundaries around supported workflows. Where controls are mechanically enforced, the documentation says so; where behavior still depends on model instructions or human review, that limitation is stated. Hermes Agent is not vendored in the Nurse AI OS repository. OpenClaw is referenced for interoperability and architectural research, not distributed as a parallel runtime. Original Nurse AI OS source code is Apache 2.0, documentation is CC BY 4.0, and upstream components retain their own licenses and notices.
+| State | Public description | Do not infer |
+|---|---|---|
+| **Today — practical product** | A nurse-centered configuration and workflow kit for ChatGPT or Claude: SOUL file, prompts, templates, folders, role workflows, and safety practices. | Not a new model, EHR, autonomous clinician, or finished standalone OS. |
+| **Emerging — technical layer** | Public policy artifacts, schemas, tests, release verification, evidence controls, EDENA review language, governed build kits, and Florence-X research components. | Not uniform host enforcement, clinical validation, compliance certification, or a deployed institutional control plane. |
+| **Direction — fuller OS** | A portable, enforceable, nurse-governed control layer in which policies, human gates, provenance, and evidence can travel across tools. | Not a claim that this future architecture is complete or operational today. |
 
-**Talking points.**
+---
 
-- **Gates, not vibes.** The design treats standing instructions as necessary but insufficient for redline enforcement. Mechanically enforced points (staged skill writes, command approval, signed-release refusal checks) are distinguished — explicitly and in public documentation — from model-followed patterns like the Yellow-tier self-audit footer, which is audited at the human gate; a delivery-gating output verifier is the named next hardening step. The project corrected its own documentation when a reviewer flagged the distinction. That correction habit is the story.
-- **The agent can become part of its own supply chain.** When a configured runtime proposes or writes tools, those artifacts require provenance review, scanning, and human approval before promotion.
-- **Anti-anchoring as skill structure.** For anything decision-adjacent, the human's assessment is elicited *before* AI material is shown — automation-bias mitigation encoded as interaction order, not advice.
-- **A worked example of domain-informed governance.** The contribution is a practical nurse-centered product that translates published professional expectations into everyday risk classification, review, and escalation habits without claiming regulator or institution status.
-- **Read the receipts:** the Architecture Report (HTML + PDF at nurse-ai-os.org/architecture-report.html) carries the guidance-to-structure mapping and summarized citations; the naio-os standards crosswalk serves technical reviewers.
+## Safety and governance boundaries
+
+### The no-PHI participation rule
+
+Nurse AI OS is designed as a no-PHI learning and stewardship space. Users are instructed not to enter patient names, dates of birth, medical-record numbers, images, recordings, workplace credentials, secrets, or details that could identify a patient or expose an employer system.
+
+This is a participation and design boundary—not a claim of HIPAA certification. A user’s selected AI provider may process anything the user chooses to paste or upload under that provider’s own settings and terms.
+
+### Judgment stays with people
+
+Nurse AI OS materials are for learning, drafting, organizing, reflection, and governed preparation. They are not for patient-specific diagnosis, treatment, triage, prescribing, clinical orders, or replacing qualified supervision. Employer policies, faculty rules, professional scope, and institutional approval still apply.
+
+### EDENA
+
+**EDENA** means **Ethical Design & Enablement for Nursing Augmentation**. It provides review language for equity and ethics, dignity and data, environmental and external effects, nursing relevance and nurse wellbeing, and human agency and action. Its Green/Yellow/Orange/Red tiers help people classify risk and identify human gates.
+
+The current public posture is **shadow/observe-only**. EDENA can structure review and produce inspectable policy artifacts; it does not guarantee that ChatGPT, Claude, Hermes, or another host will enforce every instruction identically.
+
+### Evidence and release integrity
+
+Selected public build kits and technical artifacts use manifests, checksums, tests, explicit activation boundaries, and human approval gates. Those controls provide software-publication evidence. They do not prove clinical effectiveness, regulatory compliance, institutional authorization, or patient outcomes.
+
+---
+
+## For nursing organizations and educators
+
+**Boilerplate:** Nurse AI OS™ is a nurse-led, browser-first kit for practical AI learning and stewardship. It helps nurses and students use general-purpose AI with explicit values, boundaries, role-based workflows, and human review. The project’s no-PHI rule excludes patient information and workplace credentials from intended use. Educational and governance materials do not confer competence, certification, accreditation, clinical readiness, or institutional approval. Schools and employers retain their own policies, supervision, assessment, privacy, and authorization responsibilities.
+
+**Suggested discussion angles:**
+
+- What nurses should ask before AI enters a workflow.
+- Why AI literacy must include escalation, refusal, and stop authority—not only prompting.
+- How educators can assess process evidence and disclosure without relying on automated accusation.
+- Why governance that does not reach real nursing workflow remains incomplete.
+- How nurse leaders can begin with low-risk administrative burden while protecting professional judgment.
+
+---
+
+## For technology and AI-governance media
+
+**Boilerplate:** Nurse AI OS™ is a nurse-centered configuration and workflow layer for existing AI hosts. The browser-first product uses ChatGPT or Claude; Hermes Agent is a separate optional open-source desktop runtime and is not vendored or renamed by Nurse AI OS. Public materials distinguish instruction-following from mechanically enforced controls, and current EDENA governance remains shadow/observe-only. Florence-X is an emerging research and build architecture—not a deployed institutional mission-control service.
+
+**Technical angles:**
+
+- **Control above capability:** models provide cognition; human authority, policy, provenance, and review determine what may happen.
+- **Guidance versus enforcement:** values files and prompts can guide behavior, while schemas, checks, human gates, and runtime controls can enforce only specific tested boundaries.
+- **Portable governance:** durable files, skills, policies, and evidence are intended to survive model and provider changes; automatic provider failover is not claimed.
+- **Agent supply-chain risk:** AI-authored tools and skills require provenance, scanning, review, and explicit promotion before trusted use.
+- **Nursing as a governance discipline:** assessment, coordination, escalation, continuity, documentation, dignity, and stop authority are transferable design patterns for accountable AI.
 
 ---
 
 ## Founder
 
-**Short bio (50 words).** Robert Domondon, RN, CCRN, CSC, CMC, is a critical-care nurse with 22 years at the ICU bedside, 13 years in healthcare management, physician training in the Philippines, and former administration of a US Naval-base hospital. He is the founder of Nurse AI OS, the NAIO Institute, and the Nurse Intelligence Network.
+### Short bio
 
-**Longer bio (120 words).** Robert Domondon's career runs the full span of healthcare: physician training and practice in the Philippines, hospital administration on a former US naval base, thirteen years in healthcare management, AI-adoption consulting — and, by deliberate choice, more than two decades as a critical-care nurse in the United States. That combination is the design brief for Nurse AI OS: built by someone who has signed the budget, written the policy, and held the hand of the patient the policy was written for. His governing doctrine — "governance by design; clarity and values before velocity" — runs through the ecosystem he founded: the NAIO Institute (governance education and standards work), the Nurse Intelligence Network (the professional community), EDENA (the ethics-and-risk layer), and Nurse AI OS itself.
+Robert Domondon, RN, CCRN, CSC, CMC, is a critical-care nurse with 22 years at the ICU bedside and 13 years in healthcare management. His background includes physician training and practice in the Philippines and hospital administration on a former U.S. naval base. He founded Nurse AI OS, the NAIO Institute, and the Nurse Intelligence Network.
 
----
+### Standard bio
 
-## The ecosystem at a glance
-
-- **Nurse AI OS™** — the commercial product brand and nurse-facing experience; never a synonym for the underlying runtime, model, or technical substrate.
-- **EDENA** — Ethical Design & Enablement for Nursing Augmentation: the risk-classification and gating layer every task runs under.
-- **NAIO Institute** — the initiative developing nurse-led AI governance education, standards work, and stewardship infrastructure; it does not confer legal, regulatory, or institutional approval.
-- **Florence-X** — the orchestration control plane for governed AI-agent workforces; humans retain final decision authority at every layer.
-- **Nurse Intelligence Network (NIN)** — the global professional community, summit, and podcast (nurseintelligence.com).
-- **Florence Media Network** — the content engine; every piece EDENA-classified and human-reviewed before release.
+Robert Domondon’s career spans clinical medicine, hospital administration, healthcare management, AI adoption, and more than two decades of critical-care nursing in the United States. He trained and practiced as a physician in the Philippines, administered a hospital on a former U.S. naval base, and later returned deliberately to bedside nursing. That combination—the physician’s clinical lens, the administrator’s systems view, and the nurse’s lived workflow—shapes his work on nurse-led AI governance. Robert founded Nurse AI OS, the NAIO Institute, and the Nurse Intelligence Network to help nurses build practical AI capability while preserving human judgment, dignity, and accountability.
 
 ---
 
-## Accuracy notes — please describe us this way
+## Ecosystem glossary
 
-Getting these right matters more to this project than coverage does.
-
-- **Do say:** "a governed, no-PHI AI learning and stewardship product for nurses" · "free for nurses and nursing students during the founding year" · "informed by published nursing guidance" · "can use Hermes Agent as an external open-source runtime" · "Nurse AI OS is the commercial product brand."
-- **Please don't say:** "HIPAA-compliant" · "clinical AI," "diagnoses," or "decision support" · "certifies nurses" · "institutionally approved" · "improves patient outcomes" · "Nurse AI OS is the runtime, model, or substrate."
-- **The one-line boundary, quotable:** *"If it could identify a patient, leave it out. Agents propose. Humans judge. Nurses steward."*
-
-## Licensing and trademark
-
-Nurse AI OS™ is a trademark of Robert Domondon. The registration application is pending; no federal-registration claim is made. Robert also personally holds copyright in original project components. A later written assignment may transfer ownership to designated successor entities, but it changes the holder—not the published license, contributor, criticism, or permitted-use terms.
-
-Original source code is Apache 2.0; documentation, playbooks, and curricula are CC BY 4.0. Contributors retain copyright, and project relicensing rights are limited to those published licenses. The contributor agreement contains no non-disparagement or critique-suppression term. Trademark governs identity—not criticism or open-source use. Full terms: [nurse-ai-os.org/licensing.html](https://nurse-ai-os.org/licensing.html) and the repository policy files.
+- **Nurse AI OS™** — the browser-first nurse workflow kit and developing nurse-governed control-layer direction.
+- **NAIO Institute** — an initiative developing nurse-led AI-governance education, methods, standards proposals, and stewardship infrastructure. It does not currently confer accreditation, licensure, certification, or institutional approval.
+- **EDENA** — Ethical Design & Enablement for Nursing Augmentation; a stewardship lens and risk-review language currently operating in shadow/observe posture.
+- **Florence-X** — an emerging research and build architecture exploring orchestration, verification, evidence, and visible human authorization.
+- **Nurse Intelligence Network (NIN)** — the professional community, summit, podcast, and collaboration network.
+- **Florence Media Network** — the public content and distribution program supporting the ecosystem.
+- **Hermes Agent** — a separate open-source desktop AI agent from Nous Research that can serve as an optional advanced runtime.
 
 ---
 
-## Assets & links
+## Accuracy guide
 
-- **Site:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Start Here:** [nurse-ai-os.org/start-here.html](https://nurse-ai-os.org/start-here.html) · **Pathways:** [nurse-ai-os.org/pathways.html](https://nurse-ai-os.org/pathways.html)
-- **Architecture Report** (for technical/executive readers): [nurse-ai-os.org/architecture-report.html](https://nurse-ai-os.org/architecture-report.html) (with PDF)
+### Preferred language
+
+- “A browser-first, nurse-designed AI workflow and stewardship kit.”
+- “Core setup and self-customization are free forever.”
+- “Hermes is a separate optional desktop runtime.”
+- “No patient information in intended workflows.”
+- “EDENA provides review language in shadow/observe posture.”
+- “Florence-X is an emerging research and build architecture.”
+- “Agents propose. Humans judge. Nurses steward.”
+
+### Please do not say
+
+- “HIPAA-compliant,” “HIPAA-certified,” or “safe for PHI.”
+- “Clinical decision support,” “autonomous nurse,” or “diagnostic AI.”
+- “A finished standalone operating system.”
+- “Automatically enforces every rule across ChatGPT, Claude, and Hermes.”
+- “Institutionally approved,” “clinically validated,” “certifies nurses,” or “improves patient outcomes.”
+- “Hermes is Nurse AI OS” or “Nurse AI OS owns the underlying model/runtime.”
+- “The free core ends after the founding year.”
+
+### Affiliation note
+
+ChatGPT is a product of OpenAI. Claude is a product of Anthropic. Hermes Agent is developed by Nous Research. References identify compatible or optional hosts and do not imply endorsement, partnership, or ownership unless separately announced by the relevant organizations.
+
+---
+
+## Suggested interview questions
+
+1. What did 22 years in intensive care teach you about how AI should be governed?
+2. Why make the first Nurse AI OS experience browser-first instead of requiring a new application?
+3. What is a SOUL file, and what can it guide without guaranteeing enforcement?
+4. Why is “no PHI” a participation rule rather than a compliance claim?
+5. What would meaningful nurse stop authority look like when AI enters a hospital workflow?
+6. How does EDENA distinguish low-risk assistance from work that requires review or refusal?
+7. What is practical today, what is emerging, and what remains a long-term direction?
+8. How can schools teach AI literacy while protecting academic integrity and student agency?
+9. What should a CNO or CNIO ask before adopting an AI workflow?
+10. Why do you believe nursing could become a custodial discipline for clinical intelligence?
+
+---
+
+## Assets and links
+
+- **Primary site and current product:** [nurse-ai-os.org](https://nurse-ai-os.org/)
+- **2-minute SOUL Quiz:** [nurse-ai-os.org/soul-quiz.html](https://nurse-ai-os.org/soul-quiz.html)
+- **Browser-first setup:** [nurse-ai-os.org/start-here.html](https://nurse-ai-os.org/start-here.html)
+- **FAQ and current pricing:** [nurse-ai-os.org/faq.html#pricing](https://nurse-ai-os.org/faq.html#pricing)
+- **Founder and ecosystem:** [nurse-ai-os.org/about.html](https://nurse-ai-os.org/about.html)
+- **Architecture Report:** [nurse-ai-os.org/architecture-report.html](https://nurse-ai-os.org/architecture-report.html)
 - **Licensing and trademark:** [nurse-ai-os.org/licensing.html](https://nurse-ai-os.org/licensing.html)
-- **Care Intelligence White Paper** (June 2026): [PDF](https://nurse-ai-os.org/assets/care-intelligence-white-paper.pdf)
-- **Articles:** "Why Nurses Need an AI Operating System, Not Just an AI" · "Governance You Can Refute: The Evidence Behind Nurse AI OS" — both at [nurse-ai-os.org/nurse-station.html](https://nurse-ai-os.org/nurse-station.html)
-- **Community:** [nurseintelligence.com](https://www.nurseintelligence.com/) · YouTube: [@NurseIntelligence](https://www.youtube.com/@NurseIntelligence) · Podcast: The Nurse Intelligence Podcast (Spotify)
-- **Founder photo:** available on request and at [nurse-ai-os.org/about.html](https://nurse-ai-os.org/about.html)
-- **Interviews, speaking, pilots, and governance inquiries:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+- **Care Intelligence White Paper:** [PDF](https://nurse-ai-os.org/assets/care-intelligence-white-paper.pdf)
+- **Nurse Intelligence Network:** [nurseintelligence.com](https://www.nurseintelligence.com/)
+- **YouTube:** [@NurseIntelligence](https://www.youtube.com/@NurseIntelligence)
+- **Founder image:** available at [nurse-ai-os.org/about.html](https://nurse-ai-os.org/about.html) or in higher resolution on request.
+- **Media, interviews, speaking, and collaboration:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+
+---
+
+## Licensing and trademark note
+
+Nurse AI OS™ is identified publicly as a trademark of Robert Domondon; the registration application is pending, and no federal-registration claim is made. Original project components use the licenses published with the repository. Trademark rights, copyright, upstream component licenses, criticism, and permitted open-source use remain distinct. Review the current terms at [nurse-ai-os.org/licensing.html](https://nurse-ai-os.org/licensing.html).
 
 ---
 

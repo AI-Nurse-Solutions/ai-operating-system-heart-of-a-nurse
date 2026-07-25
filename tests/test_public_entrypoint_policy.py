@@ -368,8 +368,16 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
             for token in ("ChatGPT", "Claude", "Hermes"):
                 if token not in text:
                     failures.append(f"{path.relative_to(ROOT)}: missing {token}")
-            if "nurse-ai-os-media-packet" in text:
-                failures.append(f"{path.relative_to(ROOT)}: stale media packet remains linked")
+            expected_packet = (
+                "assets/nurse-ai-os-media-packet.pdf"
+                if path == ROOT / "about.html"
+                else f"../assets/nurse-ai-os-media-packet-{path.parent.name}.pdf"
+            )
+            if text.count(expected_packet) != 1:
+                failures.append(f"{path.relative_to(ROOT)}: current localized media kit link count")
+            expected_center = 'href="media.html"' if path == ROOT / "about.html" else 'href="../media.html"'
+            if text.count(expected_center) != 1:
+                failures.append(f"{path.relative_to(ROOT)}: media center link count")
             relative = str(path.relative_to(ROOT))
             if maturity[relative].casefold() not in text.casefold():
                 failures.append(f"{path.relative_to(ROOT)}: missing standalone maturity boundary")

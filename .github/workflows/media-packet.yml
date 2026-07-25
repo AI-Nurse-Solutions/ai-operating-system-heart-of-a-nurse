@@ -1,0 +1,53 @@
+name: Media packet integrity
+
+on:
+  pull_request:
+    paths:
+      - "assets/nurse-ai-os-media-packet*.md"
+      - "assets/nurse-ai-os-media-packet*.pdf"
+      - "tools/build-pdfs.py"
+      - "scripts/requirements-media-pdf.txt"
+      - "media.html"
+      - "sitemap.xml"
+      - "about.html"
+      - "*/about.html"
+      - "index.html"
+      - "*/index.html"
+      - "tests/test_media_packet.py"
+      - "tests/test_public_entrypoint_policy.py"
+      - ".github/workflows/media-packet.yml"
+  push:
+    branches: [main]
+    paths:
+      - "assets/nurse-ai-os-media-packet*.md"
+      - "assets/nurse-ai-os-media-packet*.pdf"
+      - "tools/build-pdfs.py"
+      - "scripts/requirements-media-pdf.txt"
+      - "media.html"
+      - "sitemap.xml"
+      - "about.html"
+      - "*/about.html"
+      - "index.html"
+      - "*/index.html"
+      - "tests/test_media_packet.py"
+      - "tests/test_public_entrypoint_policy.py"
+      - ".github/workflows/media-packet.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: scripts/requirements-media-pdf.txt
+      - name: Install pinned PDF verifier
+        run: python -m pip install --require-hashes -r scripts/requirements-media-pdf.txt
+      - name: Verify source, PDFs, links, metadata, and policy
+        run: python -m unittest tests.test_media_packet tests.test_public_entrypoint_policy

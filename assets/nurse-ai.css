@@ -173,7 +173,10 @@ a:hover { color: var(--navy-800); }
   display: flex; justify-content: center; align-items: center; gap: .45rem;
   font-size: .94rem; line-height: 1.35; text-align: center;
 }
-.new-here-inner a { font-weight: 800; color: var(--teal-600); }
+.new-here-inner a {
+  min-height: 44px; display: inline-flex; align-items: center;
+  font-weight: 800; color: var(--teal-600);
+}
 .new-here-inner a:focus-visible {
   outline: 3px solid var(--teal-600); outline-offset: 3px; border-radius: 3px;
 }
@@ -691,33 +694,25 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 html[lang="ar"] .pricing-policy-table td:last-child { text-align: right; }
 
 @media (max-width: 700px) {
-  .pricing-policy-table,
-  .pricing-policy-table tbody,
-  .pricing-policy-table tr,
-  .pricing-policy-table td { display: block; width: 100%; }
-  .pricing-policy-table thead {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-  .pricing-policy-table tr { border-bottom: 1px solid var(--linen-100); }
-  .pricing-policy-table tr:last-child { border-bottom: none; }
+  .pricing-policy-table { table-layout: fixed; }
+  .pricing-policy-table thead { position: static; }
+  .pricing-policy-table th,
   .pricing-policy-table td,
   .pricing-policy-table td:nth-child(1),
   .pricing-policy-table td:nth-child(2) {
-    width: 100%;
-    border-bottom: 0;
-    padding: .65rem 1rem;
+    padding: .65rem .45rem;
     text-align: left;
     white-space: normal;
+    overflow-wrap: anywhere;
   }
+  .pricing-policy-table th,
+  .pricing-policy-table td { font-size: .86rem; }
+  .pricing-policy-table th:nth-child(1),
+  .pricing-policy-table td:nth-child(1) { width: 24%; }
+  .pricing-policy-table th:nth-child(2),
+  .pricing-policy-table td:nth-child(2) { width: 22%; }
   html[lang="ar"] .pricing-policy-table td { text-align: right; }
+  html[lang="ar"] .pricing-policy-table th { text-align: right; }
 }
 
 /* ---------- FAQ ---------- */

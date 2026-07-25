@@ -375,6 +375,51 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
                     failures.append(f"{locale}/index.html: {pattern}")
         self.assertEqual([], failures)
 
+    def test_external_review_findings_remain_closed(self):
+        terms = (ROOT / "terms.html").read_text(encoding="utf-8")
+        for phrase in (
+            "core browser-first setup and self-customization are free forever",
+            "$10 one time", "$29.90 per year", "no automatic enrollment",
+            "free core does not",
+        ):
+            self.assertIn(phrase.casefold(), terms.casefold())
+        self.assertNotIn("During the founding year, the core experience is free", terms)
+
+        css = (ROOT / "assets" / "nurse-ai.css").read_text(encoding="utf-8")
+        mobile_pricing = css[css.index("@media (max-width: 700px)"):css.index("/* ---------- FAQ ---------- */")]
+        self.assertIn(".pricing-policy-table thead { position: static; }", mobile_pricing)
+        self.assertNotIn("clip:", mobile_pricing)
+        self.assertNotIn("display: block", mobile_pricing)
+        orientation_rule = css[css.index(".new-here-inner a {"):css.index(".new-here-inner a:focus-visible")]
+        self.assertIn("min-height: 44px", orientation_rule)
+
+        failures = []
+        for locale in LOCALES:
+            home = (ROOT / locale / "index.html").read_text(encoding="utf-8")
+            start = (ROOT / locale / "start-here.html").read_text(encoding="utf-8")
+            faq = (ROOT / locale / "faq.html").read_text(encoding="utf-8")
+            proof = re.search(
+                r'<section[^>]+id="proof"[\s\S]*?<p class="eyebrow">(.*?)</p>\s*<h2>(.*?)</h2>',
+                home,
+            )
+            if not proof or proof.group(1).strip() == proof.group(2).strip():
+                failures.append(f"{locale}/index.html: duplicated proof eyebrow and heading")
+            if home.count('href="faq.html#pricing"') != 1 or 'href="../faq.html#pricing"' in home:
+                failures.append(f"{locale}/index.html: pricing does not target localized FAQ")
+            if start.count('<p class="cta-line"><a href="../pathways.html">') != 1:
+                failures.append(f"{locale}/start-here.html: role CTA does not target pathways")
+            if re.search(r'^\s{8}<strong>[^<]+</strong>', start, re.M):
+                failures.append(f"{locale}/start-here.html: unwrapped affirmative text remains")
+            if "30" not in faq or "2" not in faq or "20" not in faq:
+                failures.append(f"{locale}/faq.html: quiz versus optional-roadmap timing is incomplete")
+        ar_start = (ROOT / "ar" / "start-here.html").read_text(encoding="utf-8")
+        if "ابدؤوا من دون تثبيت →" in ar_start:
+            failures.append("ar/start-here.html: LTR arrow remains in RTL CTA")
+        fr_faq = (ROOT / "fr" / "faq.html").read_text(encoding="utf-8")
+        if "<strong>point de contrôle humain</strong>" not in fr_faq:
+            failures.append("fr/faq.html: glossary label does not match its question")
+        self.assertEqual([], failures)
+
     def test_localized_safety_resources_target_real_anchor_without_guarantees(self):
         root_start = (ROOT / "start-here.html").read_text(encoding="utf-8")
         self.assertRegex(root_start, r'id=["\']safety["\']')

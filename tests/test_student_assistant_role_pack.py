@@ -209,7 +209,8 @@ class StudentAssistantBuildKitTests(unittest.TestCase):
             self.assertNotIn(RETIRED_ZIP.name, text, label)
         self.assertIn("five governed self-install Hermes build kits", current_surfaces["architecture HTML"])
         self.assertIn("five governed self-install Hermes build kits", current_surfaces["architecture Markdown"])
-        self.assertIn("five governed self-install Hermes build kits", current_surfaces["media packet"])
+        self.assertIn("No separate application or Hermes installation is required to begin", current_surfaces["media packet"])
+        self.assertNotIn("five governed self-install Hermes build kits", current_surfaces["media packet"])
         for architecture_pdf in (
             ROOT / "assets" / "nurse-ai-os-architecture-report.pdf",
             ROOT / "assets" / "2026-07-13-nurse-ai-os-updated-architecture-report.pdf",

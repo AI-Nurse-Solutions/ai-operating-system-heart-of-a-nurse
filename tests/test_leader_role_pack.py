@@ -233,7 +233,8 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
             self.assertNotIn("Nurse Leader and Manager Complete Edition", text, label)
         self.assertIn("five governed self-install Hermes build kits", current_surfaces["architecture HTML"])
         self.assertIn("five governed self-install Hermes build kits", current_surfaces["architecture Markdown"])
-        self.assertIn("five governed self-install Hermes build kits", current_surfaces["media packet"])
+        self.assertIn("No separate application or Hermes installation is required to begin", current_surfaces["media packet"])
+        self.assertNotIn("five governed self-install Hermes build kits", current_surfaces["media packet"])
         self.assertIn("Lanes 01, 02, 03, 04, and 06 are governed self-install Hermes build kits", current_surfaces["repository README"])
         self.assertIn("separate post-merge gate", current_surfaces["architecture Markdown"])
         for architecture_source in (

@@ -141,6 +141,8 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
             "Door 2 only — download the Starter Kit and show Hermes where it lives",
             "Door 2 only — build your dashboard with Hermes, then bookmark it",
             "Both doors — run your first prompts",
+            "<strong>Door 2/Hermes only:</strong> tell Hermes, \"Load the skills in 15-Student-Study-OS.\"",
+            "Browser users can use the safe lecture-notes prompt above without loading a local folder.",
         ):
             self.assertIn(heading, self.start)
 

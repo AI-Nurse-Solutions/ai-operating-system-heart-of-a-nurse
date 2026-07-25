@@ -83,6 +83,7 @@ jobs:
             media-ar.html
             media-hi.html
           )
+          git ls-files --error-unmatch -- "${artifacts[@]}" >/dev/null
           python tools/build-pdfs.py "${targets[@]}"
           git diff --exit-code -- "${artifacts[@]}"
           python tools/build-pdfs.py "${targets[@]}"

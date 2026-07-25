@@ -326,6 +326,7 @@ class MediaPacketReleaseTests(unittest.TestCase):
         self.assertIn('"playwright-core": "1.61.1"', (ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertIn("npm ci --ignore-scripts", workflow)
         self.assertIn("tagged: true", (ROOT / "scripts/render-media-pdf.mjs").read_text(encoding="utf-8"))
+        self.assertEqual(workflow.count('git ls-files --error-unmatch -- "${artifacts[@]}"'), 1)
         self.assertEqual(workflow.count('python tools/build-pdfs.py "${targets[@]}"'), 2)
         for artifact in (
             "assets/nurse-ai-os-media-packet.pdf", "assets/nurse-ai-os-media-packet-es.pdf",

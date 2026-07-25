@@ -377,6 +377,8 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
 
     def test_external_review_findings_remain_closed(self):
         terms = (ROOT / "terms.html").read_text(encoding="utf-8")
+        self.assertIn("Effective date: July 25, 2026", terms)
+        self.assertNotIn("Effective date: July 14, 2026", terms)
         for phrase in (
             "core browser-first setup and self-customization are free forever",
             "$10 one time", "$29.90 per year", "no automatic enrollment",

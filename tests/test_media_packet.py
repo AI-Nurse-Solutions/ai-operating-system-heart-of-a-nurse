@@ -10,7 +10,8 @@ from pypdf.generic import DictionaryObject, NameObject
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("es", "tl", "zh", "ar", "vi", "ru", "hi", "fr")
 KEYS = ("en",) + LOCALES
-PDF_KEYS = tuple(key for key in KEYS if key != "hi")
+HTML_KEYS = ("ar", "hi")
+PDF_KEYS = tuple(key for key in KEYS if key not in HTML_KEYS)
 SUFFIX = {"en": "", **{locale: f"-{locale}" for locale in LOCALES}}
 TITLES = {
     "en": "Nurse AI OS™ Media Kit",
@@ -111,9 +112,9 @@ class MediaPacketReleaseTests(unittest.TestCase):
         for key in KEYS:
             source = source_path(key)
             self.assertTrue(source.is_file(), source)
-            if key == "hi":
-                self.assertTrue((ROOT / "media-hi.html").is_file())
-                self.assertFalse(pdf_path(key).exists(), "Hindi PDF must remain unpublished while logical text is unreliable")
+            if key in HTML_KEYS:
+                self.assertTrue((ROOT / f"media-{key}.html").is_file())
+                self.assertFalse(pdf_path(key).exists(), f"{key}: PDF must remain unpublished while logical text is unreliable")
             else:
                 self.assertTrue(pdf_path(key).is_file(), pdf_path(key))
             text = source.read_text(encoding="utf-8")
@@ -167,7 +168,13 @@ class MediaPacketReleaseTests(unittest.TestCase):
             self.assertIn("ChatGPT", extracted, key)
             self.assertIn("Claude", extracted, key)
             self.assertIn("Hermes", extracted, key)
-            self.assertGreater(len(extracted), 2500, key)
+            if key == "zh":
+                source_cjk = re.findall(r"[\u3400-\u9fff]", source_path(key).read_text(encoding="utf-8"))
+                extracted_cjk = re.findall(r"[\u3400-\u9fff]", extracted)
+                self.assertEqual(len(extracted_cjk), len(source_cjk), "zh: incomplete CJK logical text")
+                self.assertGreater(len(extracted), 2200, key)
+            else:
+                self.assertGreater(len(extracted), 2500, key)
             links = 0
             for page in reader.pages:
                 width = float(page.mediabox.width)
@@ -208,18 +215,22 @@ class MediaPacketReleaseTests(unittest.TestCase):
         self.assertIn("/Launch", pdf_name_tokens(launch_action))
         self.assertIn("/JavaScript", pdf_name_tokens(javascript_action))
 
-    def test_hindi_accessible_html_is_bound_to_its_source(self):
-        page = (ROOT / "media-hi.html").read_text(encoding="utf-8")
-        digest = hashlib.sha256(source_path("hi").read_bytes()).hexdigest()
-        self.assertIn(f'<meta name="source-sha256" content="{digest}">', page)
-        for token in ("Nurse AI OS", "ChatGPT", "Claude", "Hermes", "Florence-X", "$29.90"):
-            self.assertIn(token, page)
-        self.assertNotIn("nurse-ai-os-media-packet-hi.pdf", page)
+    def test_accessible_html_publications_are_bound_to_their_sources(self):
+        expected_root = {"ar": '<html lang="ar" dir="rtl">', "hi": '<html lang="hi" dir="ltr">'}
+        for key in HTML_KEYS:
+            page = (ROOT / f"media-{key}.html").read_text(encoding="utf-8")
+            digest = hashlib.sha256(source_path(key).read_bytes()).hexdigest()
+            self.assertIn(f'<meta name="source-sha256" content="{digest}">', page)
+            self.assertIn(expected_root[key], page)
+            for token in ("Nurse AI OS", "ChatGPT", "Claude", "Hermes", "Florence-X", "$29.90"):
+                self.assertIn(token, page)
+            self.assertNotIn(f"nurse-ai-os-media-packet-{key}.pdf", page)
 
     def test_media_center_advertises_exact_complete_inventory(self):
         page = (ROOT / "media.html").read_text(encoding="utf-8")
         sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
         self.assertEqual(sitemap.count("https://nurse-ai-os.org/media.html"), 1)
+        self.assertEqual(sitemap.count("https://nurse-ai-os.org/media-ar.html"), 1)
         self.assertEqual(sitemap.count("https://nurse-ai-os.org/media-hi.html"), 1)
         self.assertIn("The English packet is the canonical source", page)
         self.assertIn("have not received professional native-language editorial certification", page)
@@ -231,14 +242,16 @@ class MediaPacketReleaseTests(unittest.TestCase):
                 self.assertEqual(page.count(f'assets/nurse-ai-os-media-packet{suffix}.pdf'), expected_count, key)
             else:
                 self.assertNotIn(f'assets/nurse-ai-os-media-packet{suffix}.pdf', page)
-                self.assertEqual(page.count('href="media-hi.html"'), 1)
-                self.assertIn("does not preserve reliable Devanagari copy/search text", page)
+                self.assertEqual(page.count(f'href="media-{key}.html"'), 1)
+        self.assertIn("does not preserve reliable Devanagari copy/search text", page)
+        self.assertIn("لا يحافظ على نص عربي موثوق للنسخ والبحث", page)
         self.assertEqual(page.count('class="nav-cta" href="soul-quiz.html"'), 1)
 
     def test_every_about_page_has_one_bounded_current_media_card(self):
         expected = {"en": "assets/nurse-ai-os-media-packet.pdf", **{
             locale: f"../assets/nurse-ai-os-media-packet-{locale}.pdf" for locale in LOCALES
         }}
+        expected["ar"] = "../media-ar.html"
         expected["hi"] = "../media-hi.html"
         for key in KEYS:
             path = ROOT / ("about.html" if key == "en" else f"{key}/about.html")
@@ -276,15 +289,33 @@ class MediaPacketReleaseTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/media-packet.yml").read_text(encoding="utf-8")
         self.assertRegex(workflow, r"actions/checkout@[0-9a-f]{40}")
         self.assertRegex(workflow, r"actions/setup-python@[0-9a-f]{40}")
-        self.assertNotRegex(workflow, r"actions/(?:checkout|setup-python)@v\d")
+        self.assertRegex(workflow, r"actions/setup-node@[0-9a-f]{40}")
+        self.assertNotRegex(workflow, r"actions/(?:checkout|setup-python|setup-node)@v\d")
+        renderer_text = (ROOT / "scripts/render-media-pdf.sh").read_text(encoding="utf-8")
+        self.assertIn("mcr.microsoft.com/playwright@sha256:5b8f294aff9041b7191c34a4bab3ac270157a28774d4b0660e9743297b697e48",
+                      renderer_text)
+        for flag in ("--network=none", "--read-only", "--security-opt no-new-privileges", "--cap-drop=ALL"):
+            self.assertIn(flag, renderer_text)
+        self.assertIn('"playwright-core": "1.61.1"', (ROOT / "package.json").read_text(encoding="utf-8"))
+        self.assertIn("npm ci --ignore-scripts", workflow)
+        self.assertEqual(workflow.count('python tools/build-pdfs.py "${targets[@]}"'), 2)
+        for artifact in (
+            "assets/nurse-ai-os-media-packet.pdf", "assets/nurse-ai-os-media-packet-es.pdf",
+            "assets/nurse-ai-os-media-packet-tl.pdf", "assets/nurse-ai-os-media-packet-zh.pdf",
+            "assets/nurse-ai-os-media-packet-vi.pdf", "assets/nurse-ai-os-media-packet-ru.pdf",
+            "assets/nurse-ai-os-media-packet-fr.pdf", "media-ar.html", "media-hi.html",
+        ):
+            self.assertIn(artifact, workflow)
         requirements = (ROOT / "scripts/requirements-media-pdf.txt").read_text(encoding="utf-8").splitlines()
         self.assertEqual(2, len(requirements))
         for line in requirements:
             self.assertRegex(line, r"^[A-Za-z]+==[0-9.]+ --hash=sha256:[0-9a-f]{64}$")
 
-    def test_removed_hindi_pdf_is_not_publicly_referenced(self):
+    def test_removed_inaccessible_pdfs_are_not_publicly_referenced(self):
         for path in ROOT.rglob("*.html"):
-            self.assertNotIn("nurse-ai-os-media-packet-hi.pdf", path.read_text(encoding="utf-8"), str(path))
+            text = path.read_text(encoding="utf-8")
+            for key in HTML_KEYS:
+                self.assertNotIn(f"nurse-ai-os-media-packet-{key}.pdf", text, str(path))
 
     def test_builder_declares_every_media_target_and_stable_metadata(self):
         text = (ROOT / "tools" / "build-pdfs.py").read_text(encoding="utf-8")
@@ -294,6 +325,12 @@ class MediaPacketReleaseTests(unittest.TestCase):
                        '"/SourceSHA256": source_digest', "def build_html", "os.replace(temporary, out)"):
             self.assertIn(phrase, text)
         self.assertNotIn('"assets/nurse-ai-os-media-packet-hi.pdf"', text)
+        self.assertNotIn('"assets/nurse-ai-os-media-packet-ar.pdf"', text)
+        self.assertNotIn("fonts.googleapis.com", text)
+        for relative in ("assets/fonts/NotoSansSC-Media.woff2", "assets/fonts/OFL-NotoSansSC.txt"):
+            path = ROOT / relative
+            self.assertTrue(path.is_file(), relative)
+            self.assertGreater(path.stat().st_size, 4000, relative)
 
 
 if __name__ == "__main__":

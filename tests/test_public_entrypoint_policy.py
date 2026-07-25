@@ -368,12 +368,12 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
             for token in ("ChatGPT", "Claude", "Hermes"):
                 if token not in text:
                     failures.append(f"{path.relative_to(ROOT)}: missing {token}")
-            expected_packet = (
-                "assets/nurse-ai-os-media-packet.pdf"
-                if path == ROOT / "about.html"
-                else ("../media-hi.html" if path.parent.name == "hi"
-                      else f"../assets/nurse-ai-os-media-packet-{path.parent.name}.pdf")
-            )
+            if path == ROOT / "about.html":
+                expected_packet = "assets/nurse-ai-os-media-packet.pdf"
+            elif path.parent.name in {"ar", "hi"}:
+                expected_packet = f"../media-{path.parent.name}.html"
+            else:
+                expected_packet = f"../assets/nurse-ai-os-media-packet-{path.parent.name}.pdf"
             if text.count(expected_packet) != 1:
                 failures.append(f"{path.relative_to(ROOT)}: current localized media kit link count")
             expected_center = 'href="media.html"' if path == ROOT / "about.html" else 'href="../media.html"'

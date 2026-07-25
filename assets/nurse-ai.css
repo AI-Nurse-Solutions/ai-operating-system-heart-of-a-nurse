@@ -163,6 +163,24 @@ a:hover { color: var(--navy-800); }
 }
 .nav-cta:hover { background: var(--gold-300); }
 
+.new-here-bar {
+  background: var(--gold-100);
+  border-bottom: 1px solid rgba(14, 31, 51, .14);
+  color: var(--navy-900);
+}
+.new-here-inner {
+  max-width: 1160px; margin: 0 auto; padding: .48rem 1.25rem;
+  display: flex; justify-content: center; align-items: center; gap: .45rem;
+  font-size: .94rem; line-height: 1.35; text-align: center;
+}
+.new-here-inner a { font-weight: 800; color: var(--teal-600); }
+.new-here-inner a:focus-visible {
+  outline: 3px solid var(--teal-600); outline-offset: 3px; border-radius: 3px;
+}
+@media (max-width: 540px) {
+  .new-here-inner { align-items: flex-start; flex-direction: column; gap: .05rem; }
+}
+
 /* ---------- Secondary language navigation ---------- */
 .language-nav {
   direction: ltr;
@@ -660,6 +678,47 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 .offer-table th { background: var(--navy-900); color: var(--gold-300); font-family: var(--font-display); }
 .offer-table tr:last-child td { border-bottom: none; background: var(--gold-100); font-weight: 700; }
 .offer-table td:last-child { text-align: right; white-space: nowrap; }
+.pricing-policy-table { table-layout: fixed; }
+.pricing-policy-table th:nth-child(1),
+.pricing-policy-table td:nth-child(1) { width: 22%; }
+.pricing-policy-table th:nth-child(2),
+.pricing-policy-table td:nth-child(2) { width: 16%; }
+.pricing-policy-table td:last-child {
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html[lang="ar"] .pricing-policy-table td:last-child { text-align: right; }
+
+@media (max-width: 700px) {
+  .pricing-policy-table,
+  .pricing-policy-table tbody,
+  .pricing-policy-table tr,
+  .pricing-policy-table td { display: block; width: 100%; }
+  .pricing-policy-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .pricing-policy-table tr { border-bottom: 1px solid var(--linen-100); }
+  .pricing-policy-table tr:last-child { border-bottom: none; }
+  .pricing-policy-table td,
+  .pricing-policy-table td:nth-child(1),
+  .pricing-policy-table td:nth-child(2) {
+    width: 100%;
+    border-bottom: 0;
+    padding: .65rem 1rem;
+    text-align: left;
+    white-space: normal;
+  }
+  html[lang="ar"] .pricing-policy-table td { text-align: right; }
+}
 
 /* ---------- FAQ ---------- */
 details.faq {

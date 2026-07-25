@@ -16,13 +16,9 @@
   <nav class="nav-bar">
     <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS™</a>
     <div class="nav-links">
-      <a href="start-here.html">Start Here</a>
       <a href="pathways.html">Pathways</a>
       <a href="resources.html">Resources</a>
       <a href="about.html">About</a>
-      <a href="index.html#founding-year">Free Founding Year</a>
-      <a href="faq.html" class="active">FAQ</a>
-      <a href="nurse-station.html">Nurse Station</a>
       <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
     </div>
   </nav>
@@ -39,18 +35,22 @@
 <section class="section">
   <div class="container narrow">
 
-    <h2>Cost &amp; access</h2>
+    <h2 id="pricing">Cost &amp; access</h2>
     <details class="faq">
-      <summary>Is this really free? What's the catch?</summary>
-      <div class="faq-body">During the founding year, the core experience — the quizzes, workbook, starter kit, 30-Day Roadmap, and monthly Lamp Huddle — is free for nurses and nursing students. No credit card, no auto-enrollment, no trial that flips into charges. Later, guided cohorts, reviewed credentials, and institutional programs may carry a subscription. The core learning stays free for nurses. The "catch," honestly stated: we want founding nurses shaping how AI enters healthcare, and your feedback is worth more than tuition.</div>
+      <summary>What is free forever, and what costs extra?</summary>
+      <div class="faq-body"><strong>The core browser setup and self-customization are free forever:</strong> the SOUL Quiz, Starter Kit, prompts, templates, safety practices, and your ability to edit and program your own configuration. Optional paid choices are separate: a tailor-fit setup package from a no-PHI profile is $10 one time; access to additional resources we develop is $29.90 per year; and advanced courses include both free and paid options. Free and paid advanced courses will be available during the September 15–17, 2026 virtual summit, with course-specific prices shown before enrollment. No card is required for the free core and nothing auto-enrolls.</div>
+    </details>
+    <details class="faq">
+      <summary>What ends with the founding year?</summary>
+      <div class="faq-body">Founding-year recognition ends <strong>December 31, 2026</strong>. It marks the period when early nurses can help shape the system; it is not a deadline after which setup becomes paid. Your free core setup and self-directed customization continue permanently. Optional paid resources, tailored help, and paid courses remain separate choices.</div>
     </details>
     <details class="faq">
       <summary>Do I need to be technical to start?</summary>
       <div class="faq-body">No. The setup is guided one step at a time. If you'd rather not install anything yet, begin in the browser AI you already use. Hermes can use files, commands, and other tools when configured, so review every permission and command, keep approvals on, and stop when anything is unclear. Many setup mistakes are recoverable, but the system is not consequence-free.</div>
     </details>
     <details class="faq">
-      <summary>What kind of computer do I need?</summary>
-      <div class="faq-body">For the full system (steps 1–5): a Mac or Windows <strong>desktop or laptop</strong> — not a phone, tablet, or Chromebook — roughly from the last five years with 8&nbsp;GB of memory or more (the <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">official Hermes site</a> has current requirements). Your files and local Hermes state can stay on your machine. Unless you deliberately use a local model, prompts and selected context may still be processed by your configured model provider. If your computer doesn't qualify yet, use the Browser-first door.</div>
+      <summary>Can I start on my phone? What needs a computer?</summary>
+      <div class="faq-body"><strong>Yes.</strong> The SOUL Quiz and browser-first Nurse AI OS path work on a phone, tablet, Chromebook, Mac, or Windows computer with ChatGPT or Claude. A supported Mac or Windows desktop or laptop is required only if you later choose the optional Hermes local-runtime path. As a rough guide, a computer from the last five years with 8&nbsp;GB of memory or more is usually suitable; check the <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener">official Hermes documentation</a> for current requirements. Local files do not make cloud-model processing local: unless you deliberately use a local model, prompts and selected context may still be processed by your configured provider.</div>
     </details>
     <details class="faq">
       <summary>I'm exhausted after shifts. How much time does this take?</summary>
@@ -59,9 +59,9 @@
 
     <h2 style="margin-top:2.5rem;">Safety &amp; professional boundaries</h2>
     <details class="faq">
-      <summary>Will this ever ask for patient information?</summary>
-      <div class="faq-body">No — and we refuse it. No patient names, charts, screenshots, room numbers, record numbers, or stories that could identify a patient, at any level of the program. The system is designed to say no before it says yes. See the <a href="start-here.html#safety">plain-language safety rules</a>.</div>
-    </details>
+<summary>Will this ever ask for patient information?</summary>
+<div class="faq-body"><p>Patient information is not permitted in this public, personal workspace. The materials are designed to prompt refusal and redirection, but no rule can guarantee that every AI host blocks every entry. Do not enter names, charts, screenshots, room or record numbers, or identifiable stories. If PHI is entered, stop and follow your organization’s privacy-incident process.</p><p><a href="privacy.html">Privacy boundary →</a></p></div>
+</details>
     <details class="faq">
       <summary>Could using AI put my license at risk?</summary>
       <div class="faq-body">The program is built around the opposite: everything here is no-PHI, non-clinical, and advisory. AI supports your learning, organization, and admin — never assessments, clinical decisions, or patient-specific questions. Your judgment and accountability stay with you, and every workflow includes a human-review gate. When something is a gray area, the rule is simple: leave it out and ask a human.</div>
@@ -85,20 +85,20 @@
       <div class="faq-body">Your values-and-boundaries file: how you want AI to support you across personal, professional, and community life. The SOUL Quiz drafts it for you in about 2 minutes. It never contains patient details.</div>
     </details>
     <details class="faq">
-      <summary>What is Hermes, and do I need it?</summary>
-      <div class="faq-body">Hermes Agent is a separate, free, open-source runtime from Nous Research. Nurse AI OS can use Hermes for governed local files, tools, memory, and automations, but Hermes is not owned, renamed, or vendored by Nurse AI OS. You can begin with the Browser-first door and add Hermes later. If you configure Hermes with a cloud model provider, selected prompts and context may be processed by that provider even when files and Hermes state remain local.</div>
-    </details>
+<summary>What is Hermes, and do I need it?</summary>
+<div class="faq-body"><p>Hermes Agent is a separate, free, open-source runtime from Nous Research. Nurse AI OS can use it for local folders, reusable skills, memory, and tools you approve, but Hermes is optional and not required to begin. If Hermes uses a cloud model provider, selected prompts and context may be processed by that provider even when files and Hermes state remain local.</p><p><a href="start-here.html">Optional Hermes guide →</a></p></div>
+</details>
     <details class="faq">
-      <summary>Hermes has so many settings. Do I need to understand them all?</summary>
-      <div class="faq-body">No, but do not treat every default as universally safe. Start with the settings that control model providers, tools, memory, connectors, and approval gates. <a href="hermes-configuration-handbook.html">Understanding Hermes Configuration — The Handbook</a> explains each screen in nurse language. Review permissions before enabling them, keep human approvals on, and stop when a setting or command is unclear.</div>
-    </details>
+<summary>Hermes has so many settings. Do I need to understand them all?</summary>
+<div class="faq-body"><p>You do not need to understand Hermes settings to start because the browser-first path does not use Hermes. If you later choose Hermes, review the model provider, data retention, permissions, memory, and tool access for your own situation. Defaults are not a universal safety guarantee.</p><p><a href="hermes-configuration-handbook.html">Hermes configuration handbook →</a></p></div>
+</details>
     <details class="faq">
-      <summary>What if something breaks — or a file gets deleted?</summary>
-      <div class="faq-body">Take a breath: a misbehaving Hermes is an inconvenience, not an incident, and most problems resolve with a restart, an update, or a reconnection. <a href="when-things-go-wrong.html">When Things Go Wrong</a> is the page for that day — how to triage like a nurse, describe the problem in SBAR, fix it by pasting a screenshot into a chatbot (no terminal needed) or with a few terminal commands if you know how, read what <em>hermes doctor</em> is telling you, reinstall gently without losing your data, and protect your files so an accidental deletion is recoverable instead of permanent.</div>
-    </details>
+<summary>What if something breaks — or a file gets deleted?</summary>
+<div class="faq-body"><p>Stop before retrying actions and preserve the current files, messages, and logs. Problems range from routine configuration errors to access or data incidents; do not upload sensitive screenshots or logs to a chatbot. Use the troubleshooting guide, and escalate to a qualified human or your organization’s privacy/security process if data exposure, unauthorized access, or clinical or institutional impact may be involved.</p><p><a href="when-things-go-wrong.html">When Things Go Wrong →</a></p></div>
+</details>
     <details class="faq">
       <summary>What do NAIO, EDENA, and "human gate" mean?</summary>
-      <div class="faq-body"><strong>NAIO</strong> (Nurse AI Operating Intelligence) is the nurse-led stewardship layer behind the program. <strong>EDENA</strong> (Ethical Design &amp; Enablement for Nursing Augmentation) is the governance framework: AI augments the nurse's judgment, never replaces it. A <strong>human gate</strong> is a checkpoint where a person must review and approve before AI output is used, sent, or acted on. You don't need to memorize any of this — the system applies it for you.</div>
+      <div class="faq-body"><strong>NAIO</strong> (Nurse AI Operating Intelligence) is the nurse-led stewardship layer behind the program. <strong>EDENA</strong> (Ethical Design &amp; Enablement for Nursing Augmentation) is the governance framework: AI augments the nurse's judgment, never replaces it. A <strong>human gate</strong> is a checkpoint where a person must review and approve before AI output is used, sent, or acted on. You do not need to memorize the terms; the materials explain where each boundary applies, and you remain responsible for review.</div>
     </details>
     <details class="faq">
       <summary>What is the Lamp Huddle?</summary>
@@ -170,9 +170,10 @@
       <a href="licensing.html">Licensing</a>
       <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
     </div>
-    <p>© 2026 Robert Domondon · Nurse AI OS™ · Free for nurses and nursing students during the founding year.</p>
+    <p>© 2026 Robert Domondon · Nurse AI OS™ · Core setup and self-customization are free forever.</p>
   </div>
 </footer>
 
+<script src="assets/site-shell.js" defer></script>
 </body>
 </html>

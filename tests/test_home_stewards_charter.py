@@ -70,11 +70,10 @@ class HomeStewardsCharterTests(unittest.TestCase):
         required = (
             "A nurse-designed way to use the AI you already have",
             "Use ChatGPT or Claude with a nurse-built kit.",
-            "guided prompts, practical templates, a local folder system, and a personal values-and-boundaries file",
-            "Start in your browser—no new app or workplace connection required.",
+            "guided prompts, practical templates, local folders, and a personal values-and-boundaries file",
+            "Start on a phone, tablet, Chromebook, Mac, or Windows computer. Only optional Hermes requires a desktop.",
             "No patient data.",
-            "Hermes is optional later",
-            "Free for nurses and nursing students during the 2026 founding year.",
+            "Core setup and self-customization are free forever.",
         )
         for phrase in required:
             self.assertIn(phrase, hero)

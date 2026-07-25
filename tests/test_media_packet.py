@@ -269,6 +269,7 @@ class MediaPacketReleaseTests(unittest.TestCase):
         self.assertEqual(page.count('class="nav-cta" href="soul-quiz.html"'), 1)
         self.assertIn('<a class="skip-link" href="#main-content">', page)
         self.assertIn('<main id="main-content">', page)
+        self.assertIn('tabindex="0" role="region" aria-label="Current status table"', page)
         self.assertIn(".status-table{min-width:680px}", page)
         self.assertNotIn(".status-table thead{position:absolute", page)
 

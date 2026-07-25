@@ -417,6 +417,16 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
         orientation_rule = css[css.index(".new-here-inner a {"):css.index(".new-here-inner a:focus-visible")]
         self.assertIn("min-height: 44px", orientation_rule)
 
+        timing_phrases = {
+            "es": ("2 minutos", "30 días", "20 minutos"),
+            "tl": ("2 minuto", "30-day roadmap", "20 minuto"),
+            "zh": ("2 分钟", "30 天路线图", "20 分钟"),
+            "ar": ("دقيقتين", "30 يومًا", "20 دقيقة"),
+            "vi": ("2 phút", "30 ngày", "20 phút"),
+            "ru": ("2 минут", "30-дневную", "20 минут"),
+            "hi": ("2 मिनट", "30-दिन", "20 मिनट"),
+            "fr": ("2 minutes", "30 jours", "20 minutes"),
+        }
         failures = []
         for locale in LOCALES:
             home = (ROOT / locale / "index.html").read_text(encoding="utf-8")
@@ -434,8 +444,11 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
                 failures.append(f"{locale}/start-here.html: role CTA does not target pathways")
             if re.search(r'^\s{8}<strong>[^<]+</strong>', start, re.M):
                 failures.append(f"{locale}/start-here.html: unwrapped affirmative text remains")
-            if "30" not in faq or "2" not in faq or "20" not in faq:
-                failures.append(f"{locale}/faq.html: quiz versus optional-roadmap timing is incomplete")
+            missing_timing = [phrase for phrase in timing_phrases[locale] if phrase not in faq]
+            if missing_timing:
+                failures.append(
+                    f"{locale}/faq.html: missing timing phrases {missing_timing}"
+                )
         ar_start = (ROOT / "ar" / "start-here.html").read_text(encoding="utf-8")
         if "ابدؤوا من دون تثبيت →" in ar_start:
             failures.append("ar/start-here.html: LTR arrow remains in RTL CTA")

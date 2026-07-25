@@ -22,6 +22,7 @@ try {
     preferCSSPageSize: true,
     printBackground: true,
     displayHeaderFooter: false,
+    tagged: true,
   });
 } finally {
   await browser.close();

@@ -73,7 +73,7 @@ HTML_META = {
         "footer": "🕯️ احملوا المصباح. احفظوا السجل. Agents propose. Humans judge. Nurses steward.",
     },
     "media-hi": {
-        "lang": "hi", "dir": "ltr", "description": "Accessible Hindi Nurse AI OS media brief.",
+        "lang": "hi", "dir": "ltr", "description": "Nurse AI OS का सुलभ हिंदी मीडिया संक्षेप।",
         "about_href": "hi/about.html", "about_label": "संस्थापक",
         "source_label": "यह accessible web brief canonical Markdown से बनाया गया है।",
         "source_link": "स्रोत देखें", "center_label": "मीडिया केंद्र",

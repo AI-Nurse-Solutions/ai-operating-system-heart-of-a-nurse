@@ -133,7 +133,10 @@ class MediaPacketReleaseTests(unittest.TestCase):
             else:
                 self.assertTrue(pdf_path(key).is_file(), pdf_path(key))
             text = source.read_text(encoding="utf-8")
-            for token in ("ChatGPT", "Claude", "Hermes", "Florence-X", "$10", "$29.90", "2026"):
+            for token in ("ChatGPT", "Claude", "Hermes", "Florence-X", "2026"):
+                self.assertIn(token, text, f"{key}: {token}")
+            price_tokens = ("10 $US", "29,90 $US") if key == "fr" else ("$10", "$29.90")
+            for token in price_tokens:
                 self.assertIn(token, text, f"{key}: {token}")
             self.assertIn(POSTURES[key], text, key)
             self.assertGreater(len(text), 2000, key)
@@ -175,6 +178,7 @@ class MediaPacketReleaseTests(unittest.TestCase):
             self.assertIsNone(metadata.get("/ModDate"), key)
             expected_digest = hashlib.sha256(source_path(key).read_bytes()).hexdigest()
             self.assertEqual(metadata.get("/SourceSHA256"), expected_digest, f"{key}: stale source/PDF pair")
+            self.assertIn("/StructTreeRoot", reader.trailer["/Root"], f"{key}: untagged PDF")
             self.assertGreaterEqual(len(reader.pages), 2, key)
             self.assertLessEqual(len(reader.pages), 15, key)
             extracted = " ".join((page.extract_text() or "") for page in reader.pages)
@@ -237,6 +241,8 @@ class MediaPacketReleaseTests(unittest.TestCase):
             digest = hashlib.sha256(source_path(key).read_bytes()).hexdigest()
             self.assertIn(f'<meta name="source-sha256" content="{digest}">', page)
             self.assertIn(expected_root[key], page)
+            if key == "hi":
+                self.assertIn('content="Nurse AI OS का सुलभ हिंदी मीडिया संक्षेप।"', page)
             for token in ("Nurse AI OS", "ChatGPT", "Claude", "Hermes", "Florence-X", "$29.90"):
                 self.assertIn(token, page)
             self.assertNotIn(f"nurse-ai-os-media-packet-{key}.pdf", page)
@@ -261,6 +267,10 @@ class MediaPacketReleaseTests(unittest.TestCase):
         self.assertIn("does not preserve reliable Devanagari copy/search text", page)
         self.assertIn("لا يحافظ على نص عربي موثوق للنسخ والبحث", page)
         self.assertEqual(page.count('class="nav-cta" href="soul-quiz.html"'), 1)
+        self.assertIn('<a class="skip-link" href="#main-content">', page)
+        self.assertIn('<main id="main-content">', page)
+        self.assertIn(".status-table{min-width:680px}", page)
+        self.assertNotIn(".status-table thead{position:absolute", page)
 
     def test_every_about_page_has_one_bounded_current_media_card(self):
         expected = {"en": "assets/nurse-ai-os-media-packet.pdf", **{
@@ -290,6 +300,7 @@ class MediaPacketReleaseTests(unittest.TestCase):
             for phrase in retired:
                 self.assertNotIn(phrase, text, f"{key}: retired authority framing")
             self.assertIn("boundary-note", text, key)
+            self.assertEqual(text.count('class="zone orange"'), 1, key)
 
     def test_counter_labels_use_current_media_kit_name(self):
         retired = ("Media packets", "Paquetes de medios", "媒体包（全语言）", "الحزم الإعلامية", "Gói truyền thông", "медиапакеты", "Dossiers médias")
@@ -314,6 +325,7 @@ class MediaPacketReleaseTests(unittest.TestCase):
             self.assertIn(flag, renderer_text)
         self.assertIn('"playwright-core": "1.61.1"', (ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertIn("npm ci --ignore-scripts", workflow)
+        self.assertIn("tagged: true", (ROOT / "scripts/render-media-pdf.mjs").read_text(encoding="utf-8"))
         self.assertEqual(workflow.count('python tools/build-pdfs.py "${targets[@]}"'), 2)
         for artifact in (
             "assets/nurse-ai-os-media-packet.pdf", "assets/nurse-ai-os-media-packet-es.pdf",

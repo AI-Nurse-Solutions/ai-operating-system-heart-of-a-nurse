@@ -21,7 +21,7 @@ Nurse AI OS n’est ni un DSE, ni un système d’aide à la décision clinique,
 ## Faits essentiels
 
 - **Cœur du produit :** 0 $ ; la configuration de base dans le navigateur et la personnalisation autonome restent gratuites pour toujours.
-- **Options distinctes :** profil/configuration sur mesure à 10 USD ($10) une fois ; ressources développées à 29,90 USD ($29.90) par an ; cours avancés gratuits et payants.
+- **Options distinctes :** profil/configuration sur mesure à 10 $US une fois ; ressources développées à 29,90 $US par an ; cours avancés gratuits et payants.
 - **Sommet virtuel :** cours prévus du 15 au 17 septembre 2026 ; le prix de chaque cours doit être affiché avant l’inscription.
 - **Année fondatrice :** la reconnaissance et les avantages associés se poursuivent jusqu’au 31 décembre 2026. Cette date ne met pas fin au cœur gratuit et ne crée aucune facturation automatique.
 - **Vie privée :** ne pas saisir d’informations sur les patients, d’identifiants professionnels, de secrets ou de dossiers opérationnels identifiables. Tout contenu collé ou téléversé est régi par les paramètres et conditions du fournisseur d’IA choisi.

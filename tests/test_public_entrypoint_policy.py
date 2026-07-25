@@ -124,6 +124,26 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
         self.assertIn("required only if you later choose the optional Hermes", self.faq)
         self.assertIn("Browser-first onboarding · Optional Hermes setup", self.start)
 
+    def test_door_one_routes_to_executable_browser_steps_not_hermes_filesystem_steps(self):
+        setup = (ROOT / "setup.html").read_text(encoding="utf-8")
+        downloads = (ROOT / "hermes-downloads" / "index.html").read_text(encoding="utf-8")
+        for text in (self.start, setup, downloads):
+            self.assertIn("four browser-safe steps", text)
+            self.assertIn("index.html#how-it-works", text)
+        for stale in (
+            "do steps 2–5 in ChatGPT or Claude",
+            "Do steps 2–5 in the browser AI",
+            "do steps 2–5 of",
+        ):
+            self.assertNotIn(stale, self.start + setup + downloads)
+        for heading in (
+            "Door 2 only — take the SOUL Quiz, then give Hermes your SOUL file",
+            "Door 2 only — download the Starter Kit and show Hermes where it lives",
+            "Door 2 only — build your dashboard with Hermes, then bookmark it",
+            "Both doors — run your first prompts",
+        ):
+            self.assertIn(heading, self.start)
+
     def test_pricing_policy_is_specific_and_has_a_clear_after_state(self):
         for phrase in (
             "Through December 31, 2026",

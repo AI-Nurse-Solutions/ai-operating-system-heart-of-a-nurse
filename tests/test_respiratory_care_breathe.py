@@ -280,7 +280,7 @@ class BreatheRespiratoryCareTests(unittest.TestCase):
         self.assertIn('href="packages/breathe/UPSTREAM-SHA256SUMS.txt"', page)
 
     def test_homepage_promotes_rt_story_to_adjacent_lane_after_rounds(self):
-        page = (ROOT / "index.html").read_text(encoding="utf-8")
+        page = (ROOT / "explore-ecosystem.html").read_text(encoding="utf-8")
         video_region = page.split("<!-- ============ HOMEPAGE SHORT", 1)[1].split("<!-- ============ ROLE CARDS", 1)[0]
         ordered_ids = ["79xHeOuH_1k", "M-dIPB-pSp0", "8FvTTp-sZVk", "W1eOXb-l2EI", "ZE9pg_vnL8g", "InXb8EN9Hcs", "MKKx9Ie6GmY"]
         positions = [video_region.index(video_id) for video_id in ordered_ids]

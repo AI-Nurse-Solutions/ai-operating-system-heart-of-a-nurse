@@ -227,7 +227,7 @@ class RoundsMedicalResidentTests(unittest.TestCase):
         self.assertNotIn('href="packages/rounds/00-READ-FIRST.md"', page)
 
     def test_homepage_embeds_resident_short_below_all_nurse_videos(self):
-        page = (ROOT / "index.html").read_text(encoding="utf-8")
+        page = (ROOT / "explore-ecosystem.html").read_text(encoding="utf-8")
         video_region = page.split("<!-- ============ HOMEPAGE SHORT", 1)[1].split(
             "<!-- ============ ROLE CARDS", 1
         )[0]

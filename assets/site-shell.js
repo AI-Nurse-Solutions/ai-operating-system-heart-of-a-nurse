@@ -3,9 +3,9 @@
   "use strict";
 
   var script = document.currentScript;
-  var quizUrl = script && script.src
-    ? new URL("../soul-quiz.html", script.src).href
-    : "soul-quiz.html";
+  var homeUrl = script && script.src
+    ? new URL("../index.html#workbench", script.src).href
+    : "index.html#workbench";
 
   var corePages = {
     "soul-quiz.html": true,
@@ -26,15 +26,15 @@
   }
 
   var copy = {
-    en: ["New here?", "Start with the 2-minute SOUL Quiz →"],
-    es: ["¿Es tu primera vez aquí?", "Empieza con el Quiz SOUL de 2 minutos →"],
-    tl: ["Bago ka rito?", "Magsimula sa 2-minutong SOUL Quiz →"],
-    zh: ["第一次来？", "先做 2 分钟 SOUL 测验 →"],
-    ar: ["هل هذه زيارتك الأولى؟", "ابدأ باختبار SOUL لمدة دقيقتين ←"],
-    vi: ["Mới đến đây?", "Bắt đầu với Bài kiểm tra SOUL trong 2 phút →"],
-    ru: ["Впервые здесь?", "Начните с 2-минутного теста SOUL →"],
-    hi: ["पहली बार आए हैं?", "2-मिनट के SOUL Quiz से शुरू करें →"],
-    fr: ["Nouveau ici ?", "Commencez par le quiz SOUL de 2 minutes →"]
+    en: ["New here?", "Try a 5-minute nurse workflow →"],
+    es: ["¿Es tu primera vez aquí?", "Prueba un flujo de trabajo de 5 minutos →"],
+    tl: ["Bago ka rito?", "Subukan ang 5-minutong workflow para sa nars →"],
+    zh: ["第一次来？", "试用 5 分钟护理工作流程 →"],
+    ar: ["هل هذه زيارتك الأولى؟", "جرّب سير عمل تمريضي لمدة 5 دقائق ←"],
+    vi: ["Mới đến đây?", "Thử quy trình 5 phút dành cho điều dưỡng →"],
+    ru: ["Впервые здесь?", "Попробуйте 5-минутный сестринский процесс →"],
+    hi: ["पहली बार आए हैं?", "5-मिनट का नर्सिंग वर्कफ़्लो आज़माएँ →"],
+    fr: ["Première visite ?", "Essayez un parcours infirmier de 5 minutes →"]
   };
 
   function addOrientation() {
@@ -57,7 +57,7 @@
     bar.setAttribute("aria-label", words[0]);
     inner.className = "new-here-inner";
     label.textContent = words[0];
-    link.href = quizUrl;
+    link.href = homeUrl;
     link.textContent = words[1];
 
     inner.appendChild(label);

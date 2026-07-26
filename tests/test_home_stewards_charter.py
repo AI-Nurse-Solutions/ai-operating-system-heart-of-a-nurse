@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-HOME = ROOT / "index.html"
+HOME = ROOT / "explore-ecosystem.html"
 CSS = ROOT / "assets" / "nurse-ai.css"
 
 MANDATORY_HERMES_PATTERNS = tuple(
@@ -217,7 +217,7 @@ class HomeStewardsCharterTests(unittest.TestCase):
         self.assertIn(".charter-commitments { grid-template-columns: 1fr; }", self.css)
 
     def test_charter_ci_scans_real_public_files(self) -> None:
-        self.assertIn("cp index.html /tmp/home-charter-public/index.html", self.workflow)
+        self.assertIn("cp explore-ecosystem.html /tmp/home-charter-public/explore-ecosystem.html", self.workflow)
         self.assertIn("cp assets/nurse-ai.css /tmp/home-charter-public/assets/nurse-ai.css", self.workflow)
         self.assertIn("scan-public-healthcare-artifacts.py /tmp/home-charter-public", self.workflow)
 

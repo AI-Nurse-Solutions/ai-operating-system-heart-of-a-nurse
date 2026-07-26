@@ -758,6 +758,184 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
 .footer-motto { font-family: var(--font-display); color: var(--gold-300); font-size: 1.05rem; margin-bottom: .8rem; }
 .footer-links { display: flex; gap: 1.2rem; flex-wrap: wrap; margin: .8rem 0; }
 
+/* ---------- Nurse leader / educator conversion homepage ---------- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+body.leader-educator-home { background: var(--linen-50); }
+.leader-educator-home .section-alt { background: var(--linen-100); }
+
+.leader-educator-hero {
+  padding: clamp(3.5rem, 8vw, 7rem) 0 clamp(3rem, 6vw, 5rem);
+  background:
+    linear-gradient(120deg, rgba(14, 31, 51, .98), rgba(22, 48, 74, .94)),
+    var(--navy-900);
+}
+.leader-educator-hero-grid {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr);
+  gap: clamp(2.5rem, 6vw, 5rem); align-items: center;
+}
+.leader-educator-hero h1 {
+  max-width: 790px; margin: .35em 0 .42em; color: var(--white);
+  font-size: clamp(2.45rem, 5.5vw, 4.65rem); letter-spacing: -.025em;
+}
+.leader-educator-hero .kicker { color: var(--gold-300); }
+.leader-educator-hero .lede { max-width: 720px; color: #e6eef5; font-size: clamp(1.13rem, 2vw, 1.35rem); }
+.leader-educator-hero .btn-secondary { color: var(--white); border-color: rgba(255,255,255,.7); }
+.leader-educator-hero .btn-secondary:hover { color: var(--navy-900); background: var(--white); }
+
+.trust-strip {
+  display: flex; flex-wrap: wrap; gap: .55rem 1.2rem; margin: 1.6rem 0 0; padding: 1rem 0 0;
+  list-style: none; color: #dbe6ef; border-top: 1px solid rgba(255,255,255,.2); font-size: .95rem;
+}
+.trust-strip li::before { content: "✓"; margin-right: .4rem; color: var(--gold-300); font-weight: 800; }
+
+.media-placeholder {
+  display: grid; place-items: center; min-width: 0; margin: 0;
+  color: var(--navy-900); background: var(--gold-100);
+  border: 2px dashed rgba(217, 164, 65, .85); border-radius: var(--radius); overflow: hidden;
+}
+.media-placeholder-mark {
+  display: grid; place-items: center; align-self: stretch; justify-self: stretch;
+  min-height: 220px; color: rgba(14,31,51,.72); font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 4.2rem); background:
+    linear-gradient(135deg, rgba(255,255,255,.48), rgba(226,243,242,.65));
+}
+.media-placeholder figcaption {
+  display: grid; gap: .15rem; width: 100%; padding: 1rem 1.15rem;
+  background: var(--white); border-top: 1px solid rgba(14,31,51,.12); font-size: .9rem;
+}
+.media-placeholder figcaption span { color: var(--ink-600); }
+.media-placeholder-hero .media-placeholder-mark { min-height: 330px; }
+.media-placeholder-video .media-placeholder-mark { min-height: 300px; }
+.media-placeholder-portrait { max-width: 390px; }
+.media-placeholder-portrait .media-placeholder-mark { min-height: 410px; }
+
+.leader-credibility { background: var(--gold-100); border-bottom: 1px solid rgba(14,31,51,.1); }
+.leader-credibility-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2.5rem; padding-top: 1rem; padding-bottom: 1rem;
+}
+.leader-credibility p { margin: 0; font-size: .95rem; }
+
+.audience-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-top: 2rem; }
+.audience-panel {
+  padding: clamp(1.5rem, 4vw, 2.4rem); background: var(--white); border: 1px solid rgba(14,31,51,.12);
+  border-left: 6px solid var(--teal-600);
+}
+.audience-educator { border-left-color: var(--gold-500); }
+.audience-panel h3 { font-size: clamp(1.4rem, 3vw, 1.85rem); }
+.audience-panel ul { padding-left: 1.2rem; }
+.audience-panel a { display: inline-flex; min-height: 44px; align-items: center; font-weight: 800; }
+
+.workbench-heading {
+  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); gap: 2rem; align-items: end;
+}
+.workbench-safety {
+  display: grid; gap: .4rem; padding: 1rem 1.2rem; color: var(--navy-900);
+  background: var(--gold-100); border-left: 5px solid var(--gold-500); font-size: .92rem;
+}
+.workflow-workbench {
+  display: grid; grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
+  margin-top: 2rem; background: var(--white); border: 1px solid rgba(14,31,51,.16);
+  box-shadow: var(--shadow-md);
+}
+.workflow-controls { padding: clamp(1.35rem, 3vw, 2rem); background: var(--navy-900); color: #dbe6ef; }
+.workflow-controls fieldset { margin: 0 0 1.5rem; padding: 0; border: 0; }
+.workflow-controls legend { margin-bottom: .55rem; color: var(--gold-300); font-weight: 800; }
+.workflow-controls label { display: block; margin-bottom: .35rem; font-size: .88rem; }
+.workflow-controls select {
+  width: 100%; min-height: 48px; padding: .65rem .75rem; border: 2px solid transparent;
+  border-radius: 7px; color: var(--navy-900); background: var(--white); font: inherit;
+}
+.workflow-controls select:focus-visible { border-color: var(--gold-500); outline: 2px solid var(--gold-300); outline-offset: 2px; }
+.workflow-local-note { margin: 0; color: #bfcfdb; font-size: .88rem; }
+.workflow-output { min-width: 0; padding: clamp(1.35rem, 3vw, 2rem); }
+.workflow-output h3 { font-size: 1.55rem; }
+.workflow-output textarea {
+  width: 100%; resize: vertical; padding: 1rem; border: 1px solid rgba(14,31,51,.24);
+  border-radius: 8px; color: var(--ink-900); background: #fffdf8; font: 500 .96rem/1.55 var(--font-body);
+}
+.workflow-output textarea:focus-visible { outline: 3px solid var(--teal-600); outline-offset: 2px; }
+.workflow-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+.workflow-actions .btn { border: 0; cursor: pointer; }
+.workflow-actions p { flex: 1 1 240px; margin: 0; color: var(--ink-600); font-size: .9rem; }
+
+.conversion-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; padding: 0; list-style: none; }
+.conversion-steps li { display: flex; gap: .9rem; padding: 1.2rem; background: var(--white); border-top: 4px solid var(--teal-600); }
+.conversion-steps li > span {
+  display: grid; place-items: center; flex: 0 0 2.2rem; width: 2.2rem; height: 2.2rem;
+  border-radius: 50%; color: var(--white); background: var(--navy-900); font-weight: 800;
+}
+.conversion-steps h3, .conversion-steps p { margin-top: 0; }
+.conversion-steps p { margin-bottom: 0; }
+.conversion-boundary { margin-top: 1rem; }
+
+.demo-grid, .operator-grid {
+  display: grid; grid-template-columns: minmax(0, .9fr) minmax(320px, 1.1fr); gap: clamp(2rem, 5vw, 4rem); align-items: center;
+}
+.asset-brief { padding-left: 1.2rem; }
+.asset-brief li { margin-bottom: .35rem; }
+.operator-grid { grid-template-columns: minmax(260px, .65fr) minmax(0, 1.35fr); }
+
+.progression-section { background: var(--teal-100); }
+.progression-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 2rem; border: 1px solid rgba(14,31,51,.18); }
+.progression-grid article { padding: clamp(1.3rem, 3vw, 2rem); background: var(--white); border-right: 1px solid rgba(14,31,51,.15); }
+.progression-grid article:last-child { border-right: 0; }
+.progression-number { margin: 0 0 .6rem; color: var(--gold-500); font: 700 1.1rem var(--font-display); letter-spacing: .08em; }
+.progression-grid a { font-weight: 800; }
+.download-truth { margin: 1.5rem 0 0; padding: 1rem 1.2rem; background: rgba(255,255,255,.72); border-left: 5px solid var(--teal-600); }
+
+.proof-cohort-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); gap: 2.5rem; align-items: center; }
+.proof-commitments { display: grid; gap: .65rem; margin: 0; padding: 1.25rem 1.25rem 1.25rem 2.5rem; background: rgba(255,255,255,.08); }
+.proof-commitments li { color: #dbe6ef; }
+.maturity-compact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0 1.3rem; }
+.maturity-compact-grid article { padding: 1.25rem; background: var(--white); border-top: 4px solid var(--navy-700); }
+.final-conversion { text-align: center; }
+.final-conversion p { margin-right: auto; margin-left: auto; max-width: 620px; }
+
+@media (max-width: 900px) {
+  .leader-educator-hero-grid, .demo-grid, .operator-grid { grid-template-columns: 1fr; }
+  .leader-credibility-inner, .workbench-heading { grid-template-columns: 1fr; }
+  .workflow-workbench { grid-template-columns: 1fr; }
+  .conversion-steps, .progression-grid, .maturity-compact-grid { grid-template-columns: 1fr; }
+  .progression-grid article { border-right: 0; border-bottom: 1px solid rgba(14,31,51,.15); }
+  .progression-grid article:last-child { border-bottom: 0; }
+  .media-placeholder-hero .media-placeholder-mark { min-height: 250px; }
+}
+
+@media (max-width: 620px) {
+  .leader-educator-home .nav-bar {
+    display: grid; grid-template-columns: 1fr; gap: .7rem; align-items: start;
+    padding-top: .8rem; padding-bottom: .8rem;
+  }
+  .leader-educator-home .nav-links {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%; gap: .45rem .65rem; font-size: .83rem;
+  }
+  .leader-educator-home .nav-links a[href="#how-it-works"],
+  .leader-educator-home .nav-links a[href="#for-you"] { display: none; }
+  .leader-educator-home .nav-links a {
+    min-width: 0; white-space: normal; line-height: 1.2;
+  }
+  .leader-educator-home .nav-links .nav-cta {
+    display: flex; justify-content: center; align-items: center; text-align: center; width: 100%;
+  }
+  .leader-educator-home .language-nav-inner {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%;
+  }
+  .leader-educator-home .language-chip {
+    width: 100%; max-width: 100%;
+  }
+  .leader-educator-hero { padding-top: 2.25rem; }
+  .leader-educator-hero h1 { font-size: clamp(2.15rem, 11vw, 2.65rem); }
+  .audience-split, .proof-cohort-grid { grid-template-columns: 1fr; }
+  .trust-strip { display: grid; grid-template-columns: 1fr 1fr; }
+  .workflow-actions .btn { width: 100%; justify-content: center; }
+  .media-placeholder-video .media-placeholder-mark { min-height: 210px; }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }

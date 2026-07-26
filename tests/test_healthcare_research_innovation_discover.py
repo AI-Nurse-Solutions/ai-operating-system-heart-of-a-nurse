@@ -353,14 +353,14 @@ class DiscoverHealthcareResearchInnovationTests(unittest.TestCase):
             "scripts/build-healthcare-research-innovation-discover.py",
             "scripts/scan-public-healthcare-artifacts.py",
             "tests/test_healthcare_research_innovation_discover.py",
-            "index.html",
+            "explore-ecosystem.html",
             "assets/nurse-ai.css",
             ".github/workflows/healthcare-research-innovation-discover.yml",
         ):
             self.assertIn(required, pull_paths)
 
     def test_homepage_handoff_follows_breathe_and_precedes_steward_preview(self):
-        homepage = (ROOT / "index.html").read_text(encoding="utf-8")
+        homepage = (ROOT / "explore-ecosystem.html").read_text(encoding="utf-8")
         region = homepage.split("<!-- ============ HOMEPAGE SHORT", 1)[1].split("<!-- ============ ROLE CARDS", 1)[0]
         positions = [region.index(video_id) for video_id in ("InXb8EN9Hcs", "MKKx9Ie6GmY", "o6fRkTt12zU")]
         self.assertEqual(positions, sorted(positions))

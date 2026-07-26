@@ -3,6 +3,7 @@ name: Media packet integrity
 on:
   pull_request:
     paths:
+      - "**/*.html"
       - "assets/30-day-roadmap.*"
       - "assets/governance-kit.zip"
       - "assets/nurse-ai-os-starter-kit.zip"
@@ -43,6 +44,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "**/*.html"
       - "assets/30-day-roadmap.*"
       - "assets/governance-kit.zip"
       - "assets/nurse-ai-os-starter-kit.zip"

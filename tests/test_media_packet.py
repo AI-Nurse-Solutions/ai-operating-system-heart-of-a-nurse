@@ -318,7 +318,7 @@ class MediaPacketReleaseTests(unittest.TestCase):
     def test_counter_labels_use_current_media_kit_name(self):
         retired = ("Media packets", "Paquetes de medios", "媒体包（全语言）", "الحزم الإعلامية", "Gói truyền thông", "медиапакеты", "Dossiers médias")
         for key in KEYS:
-            path = ROOT / ("index.html" if key == "en" else f"{key}/index.html")
+            path = ROOT / ("explore-ecosystem.html" if key == "en" else f"{key}/index.html")
             text = path.read_text(encoding="utf-8")
             self.assertEqual(text.count('id="stat-media"'), 1, key)
             for phrase in retired:

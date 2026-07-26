@@ -157,8 +157,24 @@ jobs:
               "git", "diff", "--exit-code", base, "HEAD", "--",
               "post-setup/packages",
               "healthcare-research-innovation-leaders/packages",
-              "healthcare-research-innovation-leaders/downloads",
           ])
+
+          discover_manifest_path = "healthcare-research-innovation-leaders/downloads/manifest.json"
+          discover_download_changes = set(
+              git("diff", "--name-only", base, "HEAD", "--", "healthcare-research-innovation-leaders/downloads").splitlines()
+          )
+          unexpected_discover_changes = discover_download_changes - {discover_manifest_path}
+          if unexpected_discover_changes:
+              raise SystemExit(
+                  "Unexpected DISCOVER download changes: " + ", ".join(sorted(unexpected_discover_changes))
+              )
+          if discover_manifest_path in discover_download_changes:
+              base_discover_manifest = json.loads(git("show", f"{base}:{discover_manifest_path}"))
+              current_discover_manifest = json.loads(Path(discover_manifest_path).read_text(encoding="utf-8"))
+              base_discover_manifest.pop("hermes_mcp_profile_companions", None)
+              current_discover_manifest.pop("hermes_mcp_profile_companions", None)
+              if current_discover_manifest != base_discover_manifest:
+                  raise SystemExit("DISCOVER manifest changed beyond the governed MCP companion field")
 
           changed = set(git("diff", "--name-only", base, "HEAD", "--", "post-setup/downloads").splitlines())
           all_known = set(common_changes)
@@ -168,7 +184,21 @@ jobs:
           if unexpected:
               raise SystemExit("Unexpected post-setup/downloads changes: " + ", ".join(sorted(unexpected)))
 
-          if changed:
+          post_setup_manifest_path = "post-setup/downloads/manifest.json"
+
+          def without_post_setup_companions(manifest: dict) -> dict:
+              stripped = json.loads(json.dumps(manifest))
+              for package in stripped["packages"]:
+                  package.pop("hermes_mcp_profile_companion", None)
+              return stripped
+
+          if changed == {post_setup_manifest_path}:
+              base_manifest = json.loads(git("show", f"{base}:{post_setup_manifest_path}"))
+              current_manifest = json.loads(Path(post_setup_manifest_path).read_text(encoding="utf-8"))
+              if without_post_setup_companions(current_manifest) != without_post_setup_companions(base_manifest):
+                  raise SystemExit("Post-setup manifest changed beyond governed MCP companion fields")
+              mode = "companion-manifest-only"
+          elif changed:
               active = [name for name, paths in lane_changes.items() if changed & set(paths)]
               if len(active) != 1:
                   raise SystemExit("Expected exactly one governed role-download migration; active=" + json.dumps(active))

@@ -905,6 +905,179 @@ body.leader-educator-home { background: var(--linen-50); }
 .final-conversion { text-align: center; }
 .final-conversion p { margin-right: auto; margin-left: auto; max-width: 620px; }
 
+/* ---------- Nurse practitioner personal-edition funnel ---------- */
+.visually-hidden {
+  position: absolute !important; width: 1px !important; height: 1px !important;
+  padding: 0 !important; margin: -1px !important; overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important;
+}
+body.np-personal-funnel { background: var(--linen-50); }
+.np-personal-funnel .section-alt { background: var(--linen-100); }
+.np-hero {
+  padding: clamp(3.4rem, 8vw, 6.5rem) 0 clamp(3rem, 6vw, 5rem);
+  color: #e6eef5;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(29, 156, 153, .24), transparent 28rem),
+    linear-gradient(128deg, var(--navy-900), #16384f 72%, #174a52);
+}
+.np-hero-grid {
+  display: grid; grid-template-columns: minmax(0, 1.13fr) minmax(310px, .87fr);
+  gap: clamp(2.4rem, 6vw, 5rem); align-items: center;
+}
+.np-hero .kicker { color: var(--gold-300); }
+.np-hero h1 {
+  max-width: 810px; margin: .32em 0 .4em; color: var(--white);
+  font-size: clamp(2.5rem, 5.6vw, 4.7rem); letter-spacing: -.032em;
+}
+.np-hero .lede { max-width: 740px; color: #d7e3ec; font-size: clamp(1.1rem, 2vw, 1.34rem); }
+.np-hero-trust { margin: 1rem 0 0; color: #c9d8e4; font-size: .96rem; }
+.np-hero-trust strong { color: var(--gold-300); }
+.np-offer-card {
+  padding: clamp(1.45rem, 4vw, 2.25rem); color: var(--navy-900);
+  background: linear-gradient(145deg, #fffdf8, var(--teal-100));
+  border: 2px solid var(--gold-500); border-radius: calc(var(--radius) + 4px);
+  box-shadow: 0 22px 55px rgba(0,0,0,.24);
+}
+.np-offer-label, .np-preview-label {
+  margin: 0; color: var(--teal-600); font-size: .77rem; font-weight: 800;
+  letter-spacing: .13em; text-transform: uppercase;
+}
+.np-offer-card h2 { margin: .3rem 0 1.1rem; font-size: clamp(1.65rem, 3.7vw, 2.25rem); }
+.np-offer-card ol, .np-field-note-card ol { display: grid; gap: .65rem; margin: 0; padding: 0; list-style: none; counter-reset: np-offer; }
+.np-offer-card li, .np-field-note-card li {
+  position: relative; display: grid; gap: .05rem; min-height: 3.2rem;
+  padding: .7rem .75rem .7rem 3.1rem; background: rgba(255,255,255,.82);
+  border: 1px solid rgba(14,31,51,.12); border-radius: 9px;
+}
+.np-offer-card li::before, .np-field-note-card li::before {
+  counter-increment: np-offer; content: counter(np-offer); position: absolute;
+  left: .72rem; top: .72rem; display: grid; place-items: center; width: 1.75rem; height: 1.75rem;
+  color: var(--white); background: var(--navy-900); border-radius: 50%; font-weight: 800;
+}
+.np-offer-card li span, .np-field-note-card li span { color: var(--ink-600); font-size: .89rem; line-height: 1.42; }
+.np-offer-close { margin: 1rem 0 0; color: var(--ink-600); font-size: .9rem; }
+
+.np-credibility { background: var(--white); border-bottom: 1px solid rgba(14,31,51,.12); }
+.np-credibility-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+.np-credibility-grid p {
+  display: grid; gap: .05rem; margin: 0; padding: 1rem; text-align: center;
+  border-right: 1px solid rgba(14,31,51,.12);
+}
+.np-credibility-grid p:last-child { border-right: 0; }
+.np-credibility-grid strong { color: var(--navy-900); }
+.np-credibility-grid span { color: var(--ink-600); font-size: .84rem; }
+
+.np-builder-section { scroll-margin-top: 5.5rem; }
+.np-builder-shell {
+  display: grid; grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
+  gap: 1.4rem; margin-top: 1.6rem;
+}
+.np-config-panel, .np-practice-card-preview {
+  min-width: 0; padding: clamp(1.25rem, 3vw, 1.75rem); background: var(--white);
+  border: 1px solid rgba(14,31,51,.15); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+}
+.np-config-panel { display: grid; align-content: start; gap: .55rem; }
+.np-config-panel label { margin-top: .6rem; color: var(--navy-900); font-weight: 800; }
+.np-config-panel label:first-child { margin-top: 0; }
+.np-config-panel select {
+  width: 100%; min-height: 48px; padding: .68rem .75rem; color: var(--navy-900);
+  background: var(--linen-50); border: 1px solid rgba(14,31,51,.28); border-radius: 8px;
+  font: 600 .98rem var(--font-body);
+}
+.np-config-panel select:focus-visible, .np-practice-card-preview textarea:focus-visible {
+  outline: 3px solid var(--teal-500); outline-offset: 2px;
+}
+.np-safety-card {
+  display: grid; gap: .2rem; margin-top: 1rem; padding: 1rem;
+  background: var(--gold-100); border-left: 4px solid var(--gold-500);
+}
+.np-safety-card span { color: var(--ink-600); font-size: .88rem; line-height: 1.5; }
+.np-practice-card-preview h3 { margin: .25rem 0 .85rem; font-size: clamp(1.35rem, 3vw, 1.75rem); }
+.np-practice-card-preview textarea {
+  display: block; width: 100%; min-height: 440px; resize: vertical; padding: 1rem;
+  color: #dbe6ef; background: var(--navy-900); border: 1px solid rgba(14,31,51,.38);
+  border-radius: 10px; font: 500 .88rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.np-practice-card-preview .workflow-actions { margin-top: 1rem; }
+.np-practice-card-preview button { border: 0; cursor: pointer; font-family: var(--font-body); }
+.np-provider-boundary {
+  margin: 1rem 0 0; padding: 1rem; color: var(--navy-900);
+  background: var(--teal-100); border-left: 4px solid var(--teal-600);
+  font-size: .9rem; line-height: 1.5;
+}
+.np-provider-boundary a { color: var(--navy-800); font-weight: 700; }
+
+.np-pain-layout {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(310px, .85fr);
+  gap: clamp(1.6rem, 4vw, 3rem); align-items: center;
+}
+.np-pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-top: 1.5rem; }
+.np-pain-grid article { padding: 1rem; background: var(--white); border-left: 4px solid var(--teal-600); }
+.np-pain-grid article:last-child { grid-column: 1 / -1; }
+.np-pain-grid h3 { font-size: 1.12rem; }
+.np-pain-grid p { margin: 0; color: var(--ink-600); font-size: .93rem; }
+.np-photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; margin-top: 2rem; }
+.np-photo-card {
+  min-width: 0; margin: 0; overflow: hidden; background: var(--white);
+  border: 1px solid rgba(14,31,51,.14); border-radius: var(--radius);
+  box-shadow: 0 18px 40px rgba(14,31,51,.12);
+}
+.np-photo-card img { display: block; width: 100%; height: auto; aspect-ratio: 7 / 4; object-fit: cover; border-radius: 0; }
+.np-photo-card figcaption { margin: 0; padding: .8rem 1rem; color: var(--ink-600); font-size: .8rem; line-height: 1.45; }
+
+.np-config-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .85rem; margin-top: 2rem; }
+.np-config-grid article { padding: 1.2rem; background: var(--white); border-top: 4px solid var(--gold-500); }
+.np-config-grid span { color: var(--teal-600); font-weight: 800; letter-spacing: .08em; }
+.np-config-grid h3 { margin-top: .45rem; }
+.np-config-grid p { margin-bottom: 0; color: var(--ink-600); font-size: .93rem; }
+.np-free-grid, .np-field-note-grid {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr);
+  gap: clamp(1.5rem, 4vw, 3rem); align-items: center;
+}
+.np-formal-boundary, .np-field-note-card {
+  padding: clamp(1.3rem, 3vw, 1.8rem); background: var(--white);
+  border: 1px solid rgba(14,31,51,.15); border-radius: var(--radius);
+}
+.np-formal-boundary h3 { color: var(--navy-900); }
+.np-formal-boundary p { color: var(--ink-600); }
+.np-field-note-card { border-top: 5px solid var(--gold-500); }
+.np-field-note-card ol { margin: .8rem 0 1rem; }
+.np-field-note-card > p:last-child { margin-bottom: 0; color: var(--ink-600); font-size: .9rem; }
+.np-email-boundary, .np-source-caveat { color: var(--ink-600); font-size: .9rem; }
+.np-evidence-note a { font-weight: 700; }
+.np-advanced-path { text-align: center; }
+.np-advanced-path p { margin-right: auto; margin-left: auto; max-width: 780px; }
+.np-footer-languages { display: flex; flex-wrap: wrap; gap: .45rem .8rem; margin: 1rem 0; }
+.np-footer-languages a { color: var(--gold-300); }
+
+@media (max-width: 900px) {
+  .np-hero-grid, .np-builder-shell, .np-pain-layout, .np-free-grid, .np-field-note-grid { grid-template-columns: 1fr; }
+  .np-config-grid { grid-template-columns: repeat(2, 1fr); }
+  .np-credibility-grid { grid-template-columns: repeat(2, 1fr); }
+  .np-credibility-grid p:nth-child(2) { border-right: 0; }
+  .np-credibility-grid p:nth-child(-n+2) { border-bottom: 1px solid rgba(14,31,51,.12); }
+}
+
+@media (max-width: 620px) {
+  .np-personal-funnel .nav-bar {
+    display: grid; grid-template-columns: 1fr; gap: .7rem; align-items: start;
+    padding-top: .8rem; padding-bottom: .8rem;
+  }
+  .np-personal-funnel .nav-links { display: grid; grid-template-columns: 1fr; width: 100%; }
+  .np-personal-funnel .nav-links a:not(.nav-cta) { display: none; }
+  .np-personal-funnel .nav-links .nav-cta { display: flex; justify-content: center; text-align: center; width: 100%; }
+  .np-hero { padding-top: 1.9rem; }
+  .np-hero h1 { font-size: clamp(2.08rem, 10.5vw, 2.5rem); line-height: 1.06; }
+  .np-hero .lede { font-size: 1rem; }
+  .np-hero .btn { width: 100%; text-align: center; }
+  .np-credibility-grid, .np-config-grid, .np-photo-grid, .np-pain-grid { grid-template-columns: 1fr; }
+  .np-credibility-grid p { border-right: 0; border-bottom: 1px solid rgba(14,31,51,.12); }
+  .np-credibility-grid p:last-child { border-bottom: 0; }
+  .np-pain-grid article:last-child { grid-column: auto; }
+  .np-practice-card-preview textarea { min-height: 360px; font-size: .78rem; }
+  .np-practice-card-preview .btn { width: 100%; text-align: center; }
+}
+
 /* ---------- Student nurse conversion funnel ---------- */
 body.student-nurse-funnel { background: var(--linen-50); }
 .student-nurse-funnel .section-alt { background: var(--linen-100); }

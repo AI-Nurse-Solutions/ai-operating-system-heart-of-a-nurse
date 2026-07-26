@@ -13,6 +13,8 @@ HOME = ROOT / "index.html"
 ECOSYSTEM = ROOT / "explore-ecosystem.html"
 SCRIPT = ROOT / "assets" / "leader-educator-home.js"
 CSS = ROOT / "assets" / "nurse-ai.css"
+HERO_IMAGE = ROOT / "assets" / "nurse-leader-planning.jpg"
+FOUNDER_IMAGE = ROOT / "assets" / "robert-domondon-founder.jpg"
 
 
 class LeaderEducatorHomeTests(unittest.TestCase):
@@ -96,15 +98,32 @@ class LeaderEducatorHomeTests(unittest.TestCase):
         for phrase in ("Visitor", "User", "Steward", "Visitors try", "Users keep", "Stewards shape"):
             self.assertIn(phrase, self.home)
 
-    def test_media_slots_are_accessible_placeholders_not_fake_proof(self) -> None:
-        self.assertGreaterEqual(self.home.count('class="media-placeholder'), 3)
-        for phrase in (
-            "Hero image placeholder",
-            "45-second demonstration video placeholder",
-            "Robert Domondon portrait placeholder",
-            "Asset needed",
+    def test_supplied_images_replace_only_the_image_placeholders(self) -> None:
+        self.assertEqual(1, self.home.count('<figure class="media-placeholder '))
+        self.assertIn("45-second demonstration video placeholder", self.home)
+        self.assertIn("Asset needed: real workflow from selection through human review.", self.home)
+        self.assertNotIn("Hero image placeholder", self.home)
+        self.assertNotIn("Robert Domondon portrait placeholder", self.home)
+        for image, source, dimensions, alt in (
+            (
+                HERO_IMAGE,
+                'src="assets/nurse-leader-planning.jpg"',
+                'width="625" height="390"',
+                "A nurse leader prepares a presentation with a tablet in front of a data dashboard.",
+            ),
+            (
+                FOUNDER_IMAGE,
+                'src="assets/robert-domondon-founder.jpg"',
+                'width="720" height="900"',
+                "Robert Domondon, ICU nurse and founder of Nurse AI OS, holding a tablet.",
+            ),
         ):
-            self.assertIn(phrase, self.home)
+            self.assertTrue(image.is_file())
+            self.assertGreater(image.stat().st_size, 10_000)
+            self.assertLess(image.stat().st_size, 200_000)
+            self.assertIn(source, self.home)
+            self.assertIn(dimensions, self.home)
+            self.assertIn(f'alt="{alt}"', self.home)
         self.assertNotIn("<iframe", self.home)
         self.assertNotIn("testimonial", self.home.casefold())
         self.assertNotIn("measured nurse outcomes", self.home.casefold())

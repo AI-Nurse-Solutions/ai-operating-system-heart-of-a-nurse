@@ -813,6 +813,16 @@ body.leader-educator-home { background: var(--linen-50); }
 .media-placeholder-portrait { max-width: 390px; }
 .media-placeholder-portrait .media-placeholder-mark { min-height: 410px; }
 
+.homepage-media {
+  min-width: 0; margin: 0; overflow: hidden; background: var(--navy-800);
+  border: 1px solid rgba(255,255,255,.16); border-radius: var(--radius); box-shadow: var(--shadow-md);
+}
+.homepage-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.homepage-hero-media { aspect-ratio: 16 / 10; }
+.homepage-hero-media img { object-position: center 28%; }
+.homepage-portrait-media { width: 100%; max-width: 390px; aspect-ratio: 4 / 5; }
+.homepage-portrait-media img { object-position: center 18%; }
+
 .leader-credibility { background: var(--gold-100); border-bottom: 1px solid rgba(14,31,51,.1); }
 .leader-credibility-inner {
   display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2.5rem; padding-top: 1rem; padding-bottom: 1rem;

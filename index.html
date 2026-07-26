@@ -162,16 +162,21 @@
         <fieldset>
           <legend>2. What do you want help preparing?</legend>
           <label for="workflow-task">Choose one task</label>
-          <select id="workflow-task" name="workflow-task"></select>
+          <select id="workflow-task" name="workflow-task">
+            <option value="leader-huddle">15-minute staff huddle</option>
+            <option value="leader-meeting">decision-ready meeting brief</option>
+            <option value="leader-improvement">improvement-project update</option>
+          </select>
         </fieldset>
         <p class="workflow-local-note"><strong>Browser-local:</strong> this selector does not ask for your notes or send information anywhere.</p>
+        <noscript><p class="workflow-local-note"><strong>JavaScript is off:</strong> the default staff-huddle workflow remains available to copy; turn on JavaScript to switch roles and tasks.</p></noscript>
       </form>
 
       <div class="workflow-output" aria-labelledby="workflow-prompt-title">
         <p class="prompt-label">Your workflow</p>
         <h3 id="workflow-prompt-title">15-minute staff huddle</h3>
         <label class="sr-only" for="workflow-prompt">Generated workflow prompt</label>
-        <textarea id="workflow-prompt" rows="13" readonly></textarea>
+        <textarea id="workflow-prompt" rows="13" readonly>You are my drafting assistant for a 15-minute staff huddle. I will provide only de-identified, non-patient, non-confidential goals or themes. Ask me for: (1) the huddle goal, (2) the three messages staff must leave with, and (3) one question I need the team to answer. Then draft a timed outline with an opening, three concise talking points, one participation question, and a close. Mark assumptions clearly. Do not make clinical decisions, write patient-specific guidance, or invent policy. End with a human review checklist. No patient data. Human review is required before use.</textarea>
         <div class="workflow-actions">
           <button class="btn btn-primary" id="copy-workflow" type="button">Copy this workflow</button>
           <p id="workflow-status" aria-live="polite">Your prompt is ready. Read it before copying.</p>

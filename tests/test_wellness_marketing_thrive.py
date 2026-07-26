@@ -17,7 +17,13 @@ def ledger(path:Path)->dict[str,str]:
 class ThriveReleaseTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.role=json.loads((PKG/'ROLE-PACK.json').read_text());cls.program=PROGRAM.read_text();cls.page=(LANE/'index.html').read_text();cls.home=(ROOT/'explore-ecosystem.html').read_text();cls.admin=(ROOT/'hospital-clinic-administrators/index.html').read_text();cls.builder=(ROOT/'scripts/build-wellness-marketing-thrive.py').read_text();cls.workflow=(ROOT/'.github/workflows/wellness-marketing-thrive.yml').read_text()
+  cls.role=json.loads((PKG/'ROLE-PACK.json').read_text())
+  cls.program=PROGRAM.read_text()
+  cls.page=(LANE/'index.html').read_text()
+  cls.home=(ROOT/'explore-ecosystem.html').read_text()
+  cls.admin=(ROOT/'hospital-clinic-administrators/index.html').read_text()
+  cls.builder=(ROOT/'scripts/build-wellness-marketing-thrive.py').read_text()
+  cls.workflow=(ROOT/'.github/workflows/wellness-marketing-thrive.yml').read_text()
  def test_source_archive_and_provenance_are_pinned(self):
   self.assertEqual(self.role['source_archive'],{'bytes':536136,'members':23,'sha256':'3561455a9147df173a284e5fcf1ee5dd26b73ef31ae3ca2ffca5c1383a88ff1a','supplied_name':'THRIVE-Wellness-Marketing-Management-Pack.zip'})
   self.assertEqual(len(self.role['source_files']),23);self.assertEqual(len({r['upstream_path'] for r in self.role['source_files']}),23);self.assertEqual(len({r['packaged_path'] for r in self.role['source_files']}),23)

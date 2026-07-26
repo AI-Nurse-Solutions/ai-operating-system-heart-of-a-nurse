@@ -34,7 +34,7 @@
     vi: ["Mới đến đây?", "Thử quy trình 5 phút dành cho điều dưỡng →"],
     ru: ["Впервые здесь?", "Попробуйте 5-минутный сестринский процесс →"],
     hi: ["पहली बार आए हैं?", "5-मिनट का नर्सिंग वर्कफ़्लो आज़माएँ →"],
-    fr: ["Nouveau ici ?", "Essayez un parcours infirmier de 5 minutes →"]
+    fr: ["Première visite ?", "Essayez un parcours infirmier de 5 minutes →"]
   };
 
   function addOrientation() {

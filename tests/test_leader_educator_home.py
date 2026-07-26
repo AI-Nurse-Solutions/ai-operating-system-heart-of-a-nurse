@@ -70,6 +70,20 @@ class LeaderEducatorHomeTests(unittest.TestCase):
         self.assertIn("navigator.clipboard.writeText", self.script)
         self.assertIn("No patient data", self.script)
         self.assertIn("human review", self.script)
+        self.assertIn('taskSelect.textContent = ""', self.script)
+        self.assertIn("copyButton.focus()", self.script)
+
+    def test_workbench_retains_a_safe_no_javascript_default(self) -> None:
+        workbench = self.home.split('id="workbench"', 1)[1].split("</section>", 1)[0]
+        for token in (
+            '<option value="leader-huddle">',
+            '<option value="leader-meeting">',
+            '<option value="leader-improvement">',
+            "You are my drafting assistant for a 15-minute staff huddle.",
+            "<noscript>",
+            "the default staff-huddle workflow remains available to copy",
+        ):
+            self.assertIn(token, workbench)
 
     def test_first_value_precedes_personalization_and_download(self) -> None:
         workbench = self.home.index('id="workbench"')
@@ -98,11 +112,37 @@ class LeaderEducatorHomeTests(unittest.TestCase):
     def test_current_ecosystem_page_is_preserved_and_discoverable(self) -> None:
         self.assertTrue(ECOSYSTEM.is_file())
         self.assertIn("Explore the Nurse AI OS Ecosystem", self.ecosystem)
-        self.assertIn("The Steward’s Charter", self.ecosystem)
+        self.assertIn("The Steward\u2019s Charter", self.ecosystem)
         self.assertIn("<!-- ============ HOMEPAGE SHORT ============ -->", self.ecosystem)
         self.assertIn('href="explore-ecosystem.html"', self.home)
+        self.assertIn("https://www.youtube-nocookie.com/embed/", self.ecosystem)
+        self.assertIn('title="Nurse AI OS — watch" loading="lazy"', self.ecosystem)
         sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
         self.assertEqual(1, sitemap.count("https://nurse-ai-os.org/explore-ecosystem.html"))
+
+    def test_legacy_ecosystem_deep_links_follow_the_preserved_page(self) -> None:
+        expected_links = {
+            "setup.html": "explore-ecosystem.html#how-it-works",
+            "start-here.html": "explore-ecosystem.html#how-it-works",
+            "hermes-downloads/index.html": "../explore-ecosystem.html#how-it-works",
+            "pathways.html": "explore-ecosystem.html#founding-year",
+            "hermes-masterclass.html": "explore-ecosystem.html#founding-year",
+            "ai-mentors.html": "explore-ecosystem.html#community",
+        }
+        for relative_path, link in expected_links.items():
+            text = (ROOT / relative_path).read_text(encoding="utf-8")
+            self.assertIn(f'href="{link}"', text, relative_path)
+
+        retired = (
+            'href="index.html#how-it-works"',
+            'href="../index.html#how-it-works"',
+            'href="index.html#founding-year"',
+            'href="index.html#community"',
+        )
+        for relative_path in expected_links:
+            text = (ROOT / relative_path).read_text(encoding="utf-8")
+            for link in retired:
+                self.assertNotIn(link, text, relative_path)
 
     def test_directive_maturity_and_product_boundaries_remain_visible(self) -> None:
         for phrase in (

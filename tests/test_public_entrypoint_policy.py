@@ -130,7 +130,9 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
         downloads = (ROOT / "hermes-downloads" / "index.html").read_text(encoding="utf-8")
         for text in (self.start, setup, downloads):
             self.assertIn("four browser-safe steps", text)
-            self.assertIn("index.html#how-it-works", text)
+            self.assertIn("explore-ecosystem.html#how-it-works", text)
+            self.assertNotIn('href="index.html#how-it-works"', text)
+            self.assertNotIn('href="../index.html#how-it-works"', text)
         for stale in (
             "do steps 2–5 in ChatGPT or Claude",
             "Do steps 2–5 in the browser AI",
@@ -162,8 +164,10 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
 
     def test_homepages_do_not_use_inflated_anchor_or_placeholder_testimonials(self):
         failures = []
-        all_homepages = (ROOT / "index.html", ROOT / "explore-ecosystem.html") + tuple(
-            ROOT / locale / "index.html" for locale in LOCALES
+        all_homepages = (
+            ROOT / "index.html",
+            ROOT / "explore-ecosystem.html",
+            *(ROOT / locale / "index.html" for locale in LOCALES),
         )
         for path in all_homepages:
             text = path.read_text(encoding="utf-8")

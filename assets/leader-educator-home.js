@@ -45,7 +45,7 @@
 
   function renderTasks() {
     var keys = tasksByRole[roleSelect.value] || tasksByRole.leader;
-    taskSelect.replaceChildren();
+    taskSelect.textContent = "";
     keys.forEach(function (key) {
       var option = document.createElement("option");
       option.value = key;
@@ -67,7 +67,11 @@
   function fallbackCopy() {
     promptField.focus();
     promptField.select();
-    return document.execCommand("copy");
+    try {
+      return document.execCommand("copy");
+    } finally {
+      copyButton.focus();
+    }
   }
 
   async function copyPrompt() {

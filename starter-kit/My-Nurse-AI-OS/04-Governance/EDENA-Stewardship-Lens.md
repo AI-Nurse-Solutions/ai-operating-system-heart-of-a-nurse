@@ -1,8 +1,8 @@
 # EDENA Stewardship Lens
 
-> **EDENA = Ethical Design & Enablement for Nursing Augmentation.** The name states the mission; this Lens is how you check your work. Same five letters, two reinforcing roles.
+> **EDENA** is the project’s governance framework. The current Directive records the name without an expanded acronym. This Lens is an advisory review instrument; it does not prove mechanical enforcement.
 
-One framework, two instruments: the **EDENA tiers** (Green / Yellow / Orange / Red — how much risk a task carries and how much human control it requires; see the Tier Map template) and this **Lens** (five questions for reviewing major recommendations). Tiers classify the task; the Lens examines the recommendation.
+Keep four dimensions separate: **risk tier** (Green / Yellow / Orange / Red-P / Red-E), **data class** (D0–D4), **action posture** (Observe / Draft / Recommend / Prepare Action / Act With Approval / Constrained Autonomy), and **implementation evidence**. Green supports Observe or Draft only; Recommend begins at Yellow. The Lens below adds five advisory questions for reviewing major recommendations.
 
 Use for major recommendations.
 

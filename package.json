@@ -2,6 +2,7 @@
   "name": "nurse-ai-os-static-site-tests",
   "private": true,
   "scripts": {
+    "test": "npm run test:switchboard-schema && npm run test:switchboard-browser && python3 -m unittest discover -s tests -p 'test_*.py' -v",
     "test:switchboard-browser": "node tests/test_switchboard_browser.mjs",
     "test:switchboard-schema": "node tests/test_switchboard_schema.mjs"
   },

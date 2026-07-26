@@ -2,9 +2,9 @@
 
 > *Carry the lamp. Keep the ledger. Build the system in 30 days.*
 
-A free, step-by-step plan to build your nurse-centered AI Operating System — one calm habit at a time. Four tracks (Student / Staff Nurse / Leader / Educator) sharing one architecture.
+A free, step-by-step plan to configure a nurse-centered set of AI workflows, files, and review habits — one calm habit at a time. Four tracks (Student / Staff Nurse / Leader / Educator) share one browser-first starting point.
 
-**Core promise:** In 30 days you will have a working AI OS that supports you across all three spheres — **Personal, Professional, and Community/Entrepreneurial** — with safety, dignity, and human agency at the center. Not a chatbot you ask things: a system trained by you, that knows you.
+**Core promise:** In 30 days you can assemble a reusable, human-reviewed configuration and workflow practice across three spheres — **Personal, Professional, and Community/Entrepreneurial** — using the AI host you choose. This is not a finished standalone OS, clinical system, or mechanically enforced control plane.
 
 **Core rule:**
 > Agents propose. Humans judge. Nurses steward.
@@ -17,8 +17,8 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 
 - **Time budget:** ~20 minutes/day, or one 2-hour Sunday block per week. Skipping days is fine — the roadmap waits for you.
 - **Pick your track:** Student, Staff Nurse, Leader/Manager, or Educator. The architecture is shared; the use cases differ.
-- **Pick your door:** Almost everyone starts with **Door 1** — the browser AI you already have (ChatGPT or Claude), no installation. **Door 2** (the full governed Hermes build) is optional and can wait as long as you like. See the [setup guide](https://nurse-ai-os.org/setup.html).
-- **EDENA tier** (Green/Yellow/Orange/Red) is shown on each task. Stay in Green and Yellow this month.
+- **Pick your door:** Almost everyone starts with **Door 1** — the browser AI you already have (ChatGPT or Claude), no installation. **Door 2** is an optional desktop Hermes configuration path for advanced users; it is not a finished Nurse AI OS runtime or a grant of higher authority. See the [setup guide](https://nurse-ai-os.org/setup.html).
+- **EDENA risk tier** is shown on each task. These labels do not set data or action authority. This roadmap stays within D0/D1 and Observe/Draft; any Recommend step begins at Yellow and remains subject to human review. Orange, Red-E, D2–D4, and action modes above Recommend require separate formal gates; Red-P is prohibited.
 - **Weekly Lamp Huddle:** Join the free live community call to ask questions and share wins.
 - **Companion pages:** [Start Here](https://nurse-ai-os.org/start-here.html) · [Setup](https://nurse-ai-os.org/setup.html) · [Make It Yours](https://nurse-ai-os.org/personalize.html) · [Resource Hub](https://nurse-ai-os.org/resources.html)
 
@@ -228,4 +228,4 @@ A free, step-by-step plan to build your nurse-centered AI Operating System — o
 
 ---
 
-*© NAIO Institute. Released free for nurse stewardship. Not medical advice. Not for PHI. Not a replacement for licensed judgment.*
+*© 2026 Robert Domondon. Released free for nurse stewardship. Not medical advice. Not for PHI. Not a replacement for licensed judgment.*

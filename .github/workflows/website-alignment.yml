@@ -1,0 +1,156 @@
+name: Directive v1.1 website alignment
+
+on:
+  pull_request:
+    paths:
+      - "**/*.html"
+      - "ar/**"
+      - "es/**"
+      - "fr/**"
+      - "hi/**"
+      - "ru/**"
+      - "tl/**"
+      - "vi/**"
+      - "zh/**"
+      - "assets/30-day-roadmap.*"
+      - "assets/governance-kit.zip"
+      - "assets/nurse-ai-os-starter-kit.zip"
+      - "assets/founding-year-guide.*"
+      - "assets/hermes-cheat-sheet.*"
+      - "assets/hermes-essentials-guide.*"
+      - "assets/hermes-power-guide.*"
+      - "assets/lamp-huddle.*"
+      - "assets/make-it-yours-six-workflows.*"
+      - "assets/nurse-ai-os-workbook.*"
+      - "assets/nurse-ai-os-media-packet*.md"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/governed-harness-2-architecture.md"
+      - "assets/safety-rules-edena.*"
+      - "GOVERNANCE.md"
+      - "README.md"
+      - "governance-kit/**"
+      - "starter-kit/My-Nurse-AI-OS/**"
+      - "naio-harness-v2/README.md"
+      - "switchboard/**"
+      - "wellness-services-marketing-managers/index.html"
+      - "sitemap.xml"
+      - "LICENSE"
+      - "NOTICE"
+      - "TRADEMARKS.md"
+      - "THIRD_PARTY_NOTICES.md"
+      - "package.json"
+      - "package-lock.json"
+      - "tools/build-governance-kit.py"
+      - "tools/build-starter-kit.py"
+      - "tools/build-pdfs.py"
+      - "tests/test_directive_v1_1_alignment.py"
+      - "tests/test_public_governance_artifacts.py"
+      - "tests/test_public_entrypoint_policy.py"
+      - "tests/test_switchboard.py"
+      - "tests/test_switchboard_browser.mjs"
+      - "tests/test_switchboard_schema.mjs"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - ".github/workflows/website-alignment.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.html"
+      - "ar/**"
+      - "es/**"
+      - "fr/**"
+      - "hi/**"
+      - "ru/**"
+      - "tl/**"
+      - "vi/**"
+      - "zh/**"
+      - "assets/30-day-roadmap.*"
+      - "assets/governance-kit.zip"
+      - "assets/nurse-ai-os-starter-kit.zip"
+      - "assets/founding-year-guide.*"
+      - "assets/hermes-cheat-sheet.*"
+      - "assets/hermes-essentials-guide.*"
+      - "assets/hermes-power-guide.*"
+      - "assets/lamp-huddle.*"
+      - "assets/make-it-yours-six-workflows.*"
+      - "assets/nurse-ai-os-workbook.*"
+      - "assets/nurse-ai-os-media-packet*.md"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/governed-harness-2-architecture.md"
+      - "assets/safety-rules-edena.*"
+      - "GOVERNANCE.md"
+      - "README.md"
+      - "governance-kit/**"
+      - "starter-kit/My-Nurse-AI-OS/**"
+      - "naio-harness-v2/README.md"
+      - "switchboard/**"
+      - "wellness-services-marketing-managers/index.html"
+      - "sitemap.xml"
+      - "LICENSE"
+      - "NOTICE"
+      - "TRADEMARKS.md"
+      - "THIRD_PARTY_NOTICES.md"
+      - "package.json"
+      - "package-lock.json"
+      - "tools/build-governance-kit.py"
+      - "tools/build-starter-kit.py"
+      - "tools/build-pdfs.py"
+      - "tests/test_directive_v1_1_alignment.py"
+      - "tests/test_public_governance_artifacts.py"
+      - "tests/test_public_entrypoint_policy.py"
+      - "tests/test_switchboard.py"
+      - "tests/test_switchboard_browser.mjs"
+      - "tests/test_switchboard_schema.mjs"
+      - "scripts/scan-public-healthcare-artifacts.py"
+      - ".github/workflows/website-alignment.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install locked JavaScript dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run aggregate repository tests
+        run: npm test
+      - name: Scan current public governance surfaces
+        run: |
+          pages=(
+            directive.html offers.html index.html about.html start-here.html faq.html
+            terms.html privacy.html licensing.html governed-harness.html resources.html media.html
+            architecture-report.html article-evidence-nurse-ai-os.html switchboard/index.html
+            care-intelligence/index.html
+            wellness-services-marketing-managers/index.html
+          )
+          for page in "${pages[@]}"; do
+            python3 scripts/scan-public-healthcare-artifacts.py "$page" --label WEBSITE
+          done
+          for locale in ar es fr hi ru tl vi zh; do
+            python3 scripts/scan-public-healthcare-artifacts.py "$locale/about.html" --label LOCALE
+            python3 scripts/scan-public-healthcare-artifacts.py "assets/nurse-ai-os-media-packet-$locale.md" --label MEDIA
+          done
+          documents=(
+            assets/30-day-roadmap.md
+            assets/founding-year-guide.md assets/founding-year-guide.pdf
+            assets/hermes-cheat-sheet.md assets/lamp-huddle.md
+            assets/make-it-yours-six-workflows.md assets/make-it-yours-six-workflows.pdf
+            assets/nurse-ai-os-workbook.md assets/safety-rules-edena.md assets/governance-kit.zip
+          )
+          for document in "${documents[@]}"; do
+            python3 scripts/scan-public-healthcare-artifacts.py "$document" --label GOVERNANCE_RESOURCE
+          done
+          python3 scripts/scan-public-healthcare-artifacts.py assets/nurse-ai-os-media-packet.md --label MEDIA
+      - name: Verify clean execution and whitespace
+        run: |
+          git diff --check
+          test -z "$(git status --porcelain --untracked-files=all)"

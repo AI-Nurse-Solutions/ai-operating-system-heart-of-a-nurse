@@ -1,5 +1,7 @@
 # Nurse AI OS Switchboard Architecture Decision Record
 
+> **Pre-Directive historical implementation evidence.** This July 17 preview predates NIN–NAIO Master Directive v1.1. Its serialized `A0` field is retained only for compatibility with the tested preview contract. Current public classification is Green risk, D0/D1, Observe mode, no external action. This record is not current canonical architecture or a conformance claim.
+
 **Decision:** One Nurse Core, many context-specific Role Dashboards, additive Capability Packs, and a governed extension registry.
 
 ## Canonical distinction
@@ -10,14 +12,14 @@
 - **Context:** facility, school, clinic, committee, community, or personal boundary.
 - **Role Dashboard:** one role or assignment in one context.
 - **Capability Pack:** an additive contribution mode such as DISCOVER, FUTURE, BUILD, GOVERN, ORGANIZE, or ORCHESTRATE.
-- **Future Authority Envelope:** a task-level intersection of context, assignment, role, data, EDENA disposition, and autonomy ceiling. The browser preview does not calculate or display one.
+- **Future Authority Envelope:** a task-level intersection of context, assignment, role, data class, EDENA risk disposition, action mode, and human authorization. The browser preview does not calculate or display one.
 - **Bridge:** an explicit reviewed copy between dashboards. Navigation never transfers data.
 
 ## Monotonic authority
 
 Every additional layer may narrow authority. No capability, self-declaration, or download may restore authority denied by a more restrictive layer. Supporting-role composition is disabled in this preview until compatibility and authority-intersection rules are independently validated.
 
-The browser preview never grants authority and performs no EDENA task assessment. Its Dashboard Configuration Posture displays `EDENA: Not evaluated` and `A0 · no action`; future task-level Green/Yellow/Orange/Red and A0–A2 decisions require evidence and a separate governed runtime.
+The browser preview never grants authority and performs no EDENA task assessment. Its historical Dashboard Configuration Posture still displays `EDENA: Not evaluated` and `A0 · no action` for compatibility. Under Directive v1.1, the current public classification is Green risk, D0/D1, Observe mode, no external action. Any higher risk, data, or action classification requires evidence and a separately governed environment.
 
 ## Extensible registry
 

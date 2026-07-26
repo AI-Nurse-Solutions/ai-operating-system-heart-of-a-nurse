@@ -1,19 +1,20 @@
 # Workflow: Draft a public-facing article on nurse AI adoption
 
-<!-- EXAMPLE — the framework's canonical worked example, filled in.
-     This is what a fully governed Yellow/Red workflow looks like. -->
+<!-- EXAMPLE — a Yellow workflow that produces drafts and recommendations.
+     The human performs the publication action. -->
 
 ```
-Tier:                    Yellow (drafting) → Red (publishing step)
+Risk tier:               Yellow
+Data class:              D0
+Action ceiling:          Recommend
 Claim type:              Educational / professional
 Evidence requirement:    Source-backed with citations
 PHI status:              No PHI allowed
 Patient-specific:        No
 Human review required:   Yes
 Nurse-governed review:   Yes
-External-facing:         Yes
-Ledger entry required:   Yes
-Automation ceiling:      L2 (draft) + L3 (coordination)
+External-facing intent:  Yes (human publishes)
+Ledger draft required:   Yes
 Escalation owner:        [owner's name]
 ```
 
@@ -23,16 +24,16 @@ Produce a source-backed draft article for the owner to review, revise, and publi
 
 ## Steps
 
-| # | Step | Who | Level |
+| # | Step | Who | Action mode |
 |---|------|-----|-------|
 | 1 | Owner requests the article and provides topic, audience, and any sources | Human | — |
-| 2 | Gather and summarize owner-provided sources; flag anything unverifiable | AI | L1 |
-| 3 | Draft the article, every claim tied to a source; list open questions at top | AI | L2 |
-| 4 | Create a review checklist (claims vs. sources; tone; no identifiable people) | AI | L3 |
+| 2 | Read and summarize owner-provided sources; flag anything unverifiable | AI | Observe |
+| 3 | Draft the article, every claim tied to a source; list open questions at top | AI | Draft |
+| 4 | Recommend a review checklist (claims vs. sources; tone; no identifiable people) | AI | Recommend |
 | 5 | **Gate: owner actively reviews** — spot-checks two citations against their sources, confirms no person is identifiable, owns every claim | Human | — |
 | 6 | Owner revises and approves the final text | Human | — |
-| 7 | **Red step: owner publishes** — the AI never posts, submits, or sends | Human | — |
-| 8 | Ledger entry: tier, sources used, what was edited at the gate | AI | L4 |
+| 7 | **Human action: owner publishes** — the AI never posts, submits, or sends | Human | — |
+| 8 | Draft a ledger entry with classification, sources, and gate edits; owner reviews and appends it | AI | Draft |
 
 ## Escalation triggers for this workflow
 

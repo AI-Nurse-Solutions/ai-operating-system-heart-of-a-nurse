@@ -1,5 +1,7 @@
 # NAIO Harness 2.0
 
+> **Historical implementation evidence — created before NIN–NAIO Master Directive v1.1.** Preserved for provenance and compatibility testing. It is not the current canonical EDENA taxonomy, Directive implementation, activation, conformance, institutional authorization, PHI eligibility, or clinical-readiness evidence. Current semantics use independent risk tier, data class, and action mode dimensions; A0–A4 is legacy metadata only.
+
 A privacy-first, no-PHI governance plane for Nurse AI OS running over Hermes Agent.
 
 ## Status
@@ -10,7 +12,7 @@ Existing-trust-anchor signed implementation candidate. Not clinical decision sup
 
 Hermes is the only runtime. NAIO adds deterministic EDENA policy, capability compilation, attestation, provenance, evaluation, governed proposals, and signed release evidence.
 
-## Canonical semantics
+## Legacy pre-Directive compatibility semantics
 
 - `risk_tier`: Green, Yellow, Orange, Red — consequence and escalation.
 - `autonomy_level`: A0–A4 — how independently a bounded capability may operate.

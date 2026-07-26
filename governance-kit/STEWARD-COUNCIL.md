@@ -1,10 +1,12 @@
-# Nurse Steward Council — Charter (v1)
+# Proposed Nurse Steward Council — Charter Template (v1)
 
-*The governance kit makes one nurse's AI governable. The Steward Council makes the shared library governable. Precedent: nurse advisory councils embedded across the build-test-deploy lifecycle of healthcare AI products, and professional-body guidance (ANA) calling for nurses inside AI governance — not consulted after the fact.*
+> **Status:** proposal template only. No Nurse Steward Council is established or seated by this file. It confers no certification, approval, procurement, clinical, institutional, regulatory, or release authority. Robert Domondon remains the current individual project steward unless and until a separately documented human process is formally established.
+
+*This template sketches how a future advisory council could review a shared library. Precedent includes nurse advisory councils embedded across the build-test-deploy lifecycle of healthcare AI products and professional-body guidance calling for nurses inside AI governance — not consulted after the fact.*
 
 ## Purpose
 
-The Council is the human review body for everything the Nurse AI OS community **shares**: skills, templates, packs, and knowledge sources. It exists so that trust in the library rests on named nurses applying a published rubric — not on any single maintainer.
+If separately established, the proposed Council would serve as an advisory human-review body for skills, templates, packs, and knowledge sources shared through the Nurse AI OS community. Until then, the sections below are design requirements, not operational claims.
 
 ## Composition
 
@@ -12,22 +14,22 @@ The Council is the human review body for everything the Nurse AI OS community **
 - Aim for a mix across the four audiences (student/educator, bedside/APRN, leader, entrepreneur).
 - Membership is public. Conflicts of interest are declared on each review (e.g., reviewing one's own submission is prohibited).
 
-## What the Council does
+## Proposed functions if a Council is later established
 
-1. **Reviews submissions to the shared skill library** using the Skill & MCP Vetting Checklist as its rubric: named author, pinned version, read-before-approve, least privilege, correct EDENA frontmatter, self-audit footer present on Yellow+, no-PHI and Do-Not-Remember compliance.
-2. **Assigns trust labels** — `community-reviewed` (two approvals) or `steward-core` (unanimous) — and can quarantine any published item on a single member's safety objection, investigate second.
-3. **Owns scope-change proposals.** The Red-tier permanence rules (no patient-specific clinical decisions; no PHI; personnel decisions human-only) can only be *proposed* for change by this Council, in public, with written rationale — and adopting any such change additionally requires the project maintainer's sign-off. Neither can do it alone.
-4. **Runs the quarterly library audit** (90-day skill re-review; stale items archived) and an annual review of this charter.
-5. **Records every decision** in the shared LEDGER (date, item, verdict, rationale, votes) — append-only, like everything else here.
+1. It could **review submissions to a future shared skill library** using a published rubric: named author, pinned version, read-before-approve, least privilege, separate risk/data/action fields, evidence, no-PHI boundary, and memory limits.
+2. It could **recommend trust labels or temporary removal** under a separately authorized process. No label, vote threshold, or quarantine power described here is active now.
+3. It could **propose scope changes** in public with written rationale. A council recommendation would not itself change prohibited scope, authorize clinical use, or bind the project operator.
+4. It could **recommend periodic library review** and archive stale items under published criteria.
+5. It could **record advisory recommendations** in a public ledger with the date, item, rationale, evidence, limits, and named participants.
 
-## What the Council does not do
+## Limits that would continue to apply
 
 - It does not certify competency, endorse products, approve clinical use, or carry regulatory authority — it is an advisory stewardship body (same boundary language as the Governance Board pack).
 - It does not review nurses' private skills; personal systems are governed by each nurse's own SOUL, tiers, and gates.
 
 ## Cadence and quorum
 
-Asynchronous review by default; decisions need two members (quarantine needs one). A short monthly sync (may piggyback on the Lamp Huddle). Quorum for charter or scope matters: all sitting members.
+Proposed design only: asynchronous review by default, with any future cadence, quorum, temporary-removal rule, or voting threshold requiring separate written authorization before use.
 
 ## Succession and continuity
 

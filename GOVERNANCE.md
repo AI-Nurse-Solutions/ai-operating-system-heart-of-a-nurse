@@ -26,7 +26,7 @@ Apache License 2.0 (code) and CC BY 4.0 (documentation) govern everyone's rights
 ## 4. Brand and Certification Are Governed Separately
 
 - The Nurse AI OS name, logo, and visual identity are governed by `TRADEMARKS.md`, not by code-contribution status. Maintainership grants no trademark rights.
-- Official certification and badge issuance operate as a controlled program under trademark license. Certification authority is designated to reside with the project's nonprofit governance steward (Section 5) so that the body that certifies is not the body that sells, keeping certification credible and commercially neutral.
+- No official certification or badge program is currently launched. If one is later launched, it must operate under published eligibility, assessment, evidence, appeal, renewal, privacy, conflict, revocation, and trademark-license rules. The target model places certification authority with a future nonprofit governance steward so the body that certifies is not the body that sells; that entity and authority do not yet exist.
 
 ## 5. Succession and Entity Transfer
 

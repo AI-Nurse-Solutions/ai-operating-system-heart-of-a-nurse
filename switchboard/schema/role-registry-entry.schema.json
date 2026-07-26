@@ -19,7 +19,7 @@
     "compatibleCapabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9-]{2,80}$"}},
     "contexts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["all", "personal", "facility-a", "facility-b", "school-a", "clinic-a", "committee-a", "community-a", "association-a"]}},
     "edenaStatus": {"const": "not-evaluated"},
-    "autonomyCeiling": {"const": "A0"},
+    "autonomyCeiling": {"const": "A0", "description": "Legacy pre-Directive preview field retained for compatibility with the tested July 17 contract. It is not a current Directive v1.1 action mode or conformance claim."},
     "defaultActive": {"const": false},
     "rollback": {"type": "string", "minLength": 20},
     "review": {

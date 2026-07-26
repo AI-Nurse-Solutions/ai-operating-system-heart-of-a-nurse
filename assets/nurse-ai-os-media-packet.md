@@ -1,5 +1,19 @@
 # Nurse AI OS™ — Media Kit
 
+
+---
+
+## Directive v1.1 canonical status
+
+> **Canonical English source-control statement:** Nurse AI OS is the **governed professional environment**. The public Community experience is available now. Florence-X and EDENA capabilities become binding only where implemented and evidenced. Institutional authority, credentials, conformance, PHI eligibility, and high-consequence use require separate formal gates. Agents propose. Humans judge. Nurses steward.
+
+- **Available now:** browser-first Community experience; D0/D1 only; no PHI; human review; no external action.
+- **Capability-gated:** Florence-X orchestration, EDENA mechanical enforcement, memory, tools, connectors, and automation only where a named implementation and evidence exist.
+- **Formal-gate programs:** credentials, institutional or sovereign environments, D2–D4 eligibility, high-consequence use, and assurance require separately published authorization and program gates.
+- **Conformance:** NAIO Conformant is unavailable until the assurance program exists and the specific release passes it.
+- **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
+- **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
+
 **Current through July 25, 2026**
 
 **Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
@@ -84,7 +98,7 @@ Nurse AI OS materials are for learning, drafting, organizing, reflection, and go
 
 ### EDENA
 
-**EDENA** means **Ethical Design & Enablement for Nursing Augmentation**. It provides review language for equity and ethics, dignity and data, environmental and external effects, nursing relevance and nurse wellbeing, and human agency and action. Its Green/Yellow/Orange/Red tiers help people classify risk and identify human gates.
+**EDENA** is the governance, risk, safety, and assurance control plane. It provides review language for equity and ethics, dignity and data, environmental and external effects, nursing relevance and nurse wellbeing, and human agency and action. Its Green/Yellow/Orange/Red-P/Red-E tiers help people classify risk and identify human gates. Its official long-form expansion has not yet been recorded by the Directive owner.
 
 The current public posture is **shadow/observe-only**. EDENA can structure review and produce inspectable policy artifacts; it does not guarantee that ChatGPT, Claude, Hermes, or another host will enforce every instruction identically.
 
@@ -138,7 +152,7 @@ Robert Domondon’s career spans clinical medicine, hospital administration, hea
 
 - **Nurse AI OS™** — the browser-first nurse workflow kit and developing nurse-governed control-layer direction.
 - **NAIO Institute** — an initiative developing nurse-led AI-governance education, methods, standards proposals, and stewardship infrastructure. It does not currently confer accreditation, licensure, certification, or institutional approval.
-- **EDENA** — Ethical Design & Enablement for Nursing Augmentation; a stewardship lens and risk-review language currently operating in shadow/observe posture.
+- **EDENA** — the governance, risk, safety, and assurance control plane; a stewardship lens and risk-review language currently operating in shadow/observe posture.
 - **Florence-X** — an emerging research and build architecture exploring orchestration, verification, evidence, and visible human authorization.
 - **Nurse Intelligence Network (NIN)** — the professional community, summit, podcast, and collaboration network.
 - **Florence Media Network** — the public content and distribution program supporting the ecosystem.

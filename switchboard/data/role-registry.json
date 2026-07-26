@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
   "registryStatus": "documentation-only-draft-preview",
+  "directiveVersion": "1.1",
+  "legacySemantics": "Pre-Directive historical preview semantics: autonomyCeiling A0 preserves the tested July 17 contract only. Current public classification is Green risk, D0/D1, Observe mode, no external action.",
   "entries": [
     {
       "id": "student-learner",

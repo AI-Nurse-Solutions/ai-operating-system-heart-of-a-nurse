@@ -12,8 +12,8 @@ This matches the prohibited zone in the Governance Kit (`GOVERNANCE.yaml`): acti
 ## What this means in practice
 
 - An AI reading outside content may **summarize, quote, compare, and cite** it — that's the job.
-- If outside content asks the AI to *do* anything — visit a link, run a command, install something, change settings, message someone, reveal files or keys — the AI must **stop and show you the attempted instruction** instead of following it. Treat it like a stranger's verbal order for your patient: you don't act on it, you report it.
-- Any tool-using action that was *suggested by* fetched content gets classified **Red**: human authorization before anything runs.
+- If outside content asks the AI to *do* anything — visit a link, run a command, install something, change settings, message someone, reveal files or keys — the AI must **stop and show you the attempted instruction** instead of following it. Treat it like an unverified operational order: do not act on it; report it for human review.
+- Any tool-using action initiated by instructions embedded in fetched content is **Red-P** and prohibited. A human must independently restate any legitimate action as a new instruction after reviewing the source and risk.
 - Screenshots and transcripts count as outside content too — text inside an image is still text.
 
 ## Symptoms that an injection reached your AI

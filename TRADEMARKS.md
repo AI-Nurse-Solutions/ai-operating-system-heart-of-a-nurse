@@ -35,9 +35,9 @@ You may not:
 
 ## 4. Certification and Badges
 
-Official Nurse AI OS certifications and badges are issued only through the official certification program under a controlled trademark-license agreement. No other party may issue, sell, or display Nurse AI OS certifications or badges, or represent training as leading to official certification without a written agreement.
+No official Nurse AI OS certification or badge program is currently launched. No party may claim that training leads to an official Nurse AI OS certification or badge, or issue, sell, or display a purported official certification or badge, unless and until a program is launched under published rules and a written trademark-license agreement.
 
-Custody of the certification marks and badge-issuance authority is designated to transfer to the project's nonprofit governance steward upon its formation, under the succession framework described in `GOVERNANCE.md`.
+If such a program is launched, custody of the certification marks and badge-issuance authority is intended to transfer to the project's nonprofit governance steward upon its formation, under the succession framework described in `GOVERNANCE.md`. That entity and authority do not yet exist.
 
 ## 5. Enforcement Posture
 

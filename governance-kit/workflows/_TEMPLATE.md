@@ -1,20 +1,21 @@
 # Workflow: [name]
 
-<!-- GOVERNANCE HEADER — the AI reads this before every run. All eleven fields required.
-     Rules of the header: tier per GOVERNANCE.yaml; ceiling may be LOWER than the
-     tier default, never higher; if any field is blank, treat the workflow as Red. -->
+<!-- GOVERNANCE HEADER — the AI reads this before every run. Classify risk,
+     data, and action independently. If any field is blank or exceeds the public
+     ceiling, stop and ask the human. -->
 
 ```
-Tier:                    [Green / Yellow / Red]
+Risk tier:               [Green / Yellow]
+Data class:              [D0 / D1]
+Action ceiling:          [Observe / Draft / Recommend]
 Claim type:              [none / educational / personal / professional]
 Evidence requirement:    [none / owner-provided sources only / source-backed with citations]
 PHI status:              No PHI allowed        # this line never changes
 Patient-specific:        No                    # this line never changes
-Human review required:   [Yes / No — "No" only permitted on Green]
+Human review required:   [Yes / No — "Yes" for every Recommend step]
 Nurse-governed review:   [Yes / No]
-External-facing:         [Yes / No — "Yes" forces Tier: Red on the sending step]
-Ledger entry required:   [Yes / No — "Yes" for all Yellow/Red]
-Automation ceiling:      [L1 / L2 / L3 / L4]
+External-facing intent:  [Yes / No — the human performs every external action]
+Ledger draft required:   [Yes / No — "Yes" for all Yellow]
 Escalation owner:        [owner's name — from CHARTER.md]
 ```
 
@@ -24,16 +25,17 @@ Escalation owner:        [owner's name — from CHARTER.md]
 
 ## Steps
 
-<!-- Declare the level per STEP. A workflow can be L4 at organizing and L1 at deciding. -->
+<!-- Declare the action mode per AI step. Green allows Observe/Draft only.
+     Recommend begins at Yellow. The human performs all actions. -->
 
-| # | Step | Who | Level |
+| # | Step | Who | Action mode |
 |---|------|-----|-------|
 | 1 | [Trigger — what starts this workflow] | — | — |
-| 2 | [e.g., Gather inputs the owner provides] | AI | L1 |
-| 3 | [e.g., Draft the output] | AI | L2 |
+| 2 | [e.g., Read inputs the owner provides] | AI | Observe |
+| 3 | [e.g., Draft the output] | AI | Draft |
 | 4 | **Gate: owner reviews** — [what the owner actually checks, actively] | Human | — |
 | 5 | [e.g., Owner sends/files/uses the output] | Human | — |
-| 6 | Ledger entry | AI | L4 |
+| 6 | Draft a ledger entry for the owner to review and append | AI | Draft |
 
 ## Escalation triggers for this workflow
 

@@ -1,5 +1,19 @@
 # Nurse AI OS™ — Tóm tắt truyền thông tiếng Việt
 
+
+---
+
+## Directive v1.1 canonical status
+
+> **Canonical English source-control statement:** Nurse AI OS is the **governed professional environment**. The public Community experience is available now. Florence-X and EDENA capabilities become binding only where implemented and evidenced. Institutional authority, credentials, conformance, PHI eligibility, and high-consequence use require separate formal gates. Agents propose. Humans judge. Nurses steward.
+
+- **Available now:** browser-first Community experience; D0/D1 only; no PHI; human review; no external action.
+- **Capability-gated:** Florence-X orchestration, EDENA mechanical enforcement, memory, tools, connectors, and automation only where a named implementation and evidence exist.
+- **Formal-gate programs:** credentials, institutional or sovereign environments, D2–D4 eligibility, high-consequence use, and assurance require separately published authorization and program gates.
+- **Conformance:** NAIO Conformant is unavailable until the assurance program exists and the specific release passes it.
+- **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
+- **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
+
 **Cập nhật đến ngày 25 tháng 7 năm 2026**
 
 **Trang web:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Liên hệ truyền thông:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
@@ -31,7 +45,7 @@ Nurse AI OS không phải EHR, hệ thống hỗ trợ quyết định lâm sàn
 
 Nurse AI OS được thiết kế là không gian học tập và gìn giữ không có PHI. Đây là quy tắc tham gia và thiết kế, không phải tuyên bố chứng nhận HIPAA. Không dùng cho chẩn đoán, điều trị, phân loại cấp cứu, kê đơn, y lệnh hay thay thế giám sát đủ điều kiện.
 
-**EDENA** là **Ethical Design & Enablement for Nursing Augmentation**. EDENA cung cấp ngôn ngữ xem xét và các tầng Xanh/Vàng/Cam/Đỏ để nhận diện rủi ro và cổng kiểm soát của con người. Tư thế công khai hiện nay là **shadow/observe-only**: có thể cấu trúc việc xem xét, nhưng không bảo đảm ChatGPT, Claude, Hermes hay môi trường khác thực thi mọi quy tắc giống nhau.
+**EDENA** là lớp kiểm soát quản trị, rủi ro, an toàn và bảo đảm. EDENA cung cấp ngôn ngữ xem xét và các tầng Green/Yellow/Orange/Red-P/Red-E để nhận diện rủi ro và cổng kiểm soát của con người. Chủ sở hữu Directive chưa ghi nhận tên đầy đủ chính thức. Tư thế công khai hiện nay là **shadow/observe-only**: có thể cấu trúc việc xem xét, nhưng không bảo đảm ChatGPT, Claude, Hermes hay môi trường khác thực thi mọi quy tắc giống nhau.
 
 **Florence-X** là kiến trúc nghiên cứu và xây dựng đang phát triển về điều phối, xác minh, bằng chứng và ủy quyền con người có thể quan sát. Nó không được trình bày như một dịch vụ tổ chức đã triển khai.
 

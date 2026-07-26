@@ -17,7 +17,8 @@ B · Background:
 
 A · Assessment:
     Why I stopped: [low confidence / missing info / possible boundary /
-    conflicting instructions / seems Red or prohibited].
+    conflicting instructions / risk above Yellow / data above D1 /
+    action above Recommend / Red-P prohibited].
     My confidence in my own read of this: [high / medium / low].
 
 R · Recommendation:
@@ -33,7 +34,7 @@ Task is PARKED until you respond.
 - One escalation per message — don't bury it in other output.
 - If unanswered, do not proceed. Park it, and raise it again at the next session start (**two-challenge rule** — an unanswered escalation gets louder, it never expires silently).
 - A halt is never wrong. If the human later says "that didn't need an escalation," that's calibration for the improvement loop — not a reason to stop escalating.
-- Log every escalation and its resolution in the ledger.
+- Draft a ledger entry for every escalation and resolution; the human reviews and appends it.
 
 ---
 

@@ -18,7 +18,7 @@ Each Huddle follows a calm, repeatable rhythm:
 | 5–15 min | **One demo** — a nurse or facilitator shows one workflow they run (a Morning Huddle, a Kardex, an evidence-first brief) |
 | 15–30 min | **Open Q&A** — bring your prompts, your stuck points, your safety questions |
 | 30–40 min | **Stewardship round** — share a win, a worry, or a lesson |
-| 40–45 min | **Close** — assign one micro-action for the month and the EDENA tier check |
+| 40–45 min | **Close** — name one human-owned micro-action and record the EDENA risk, data, and action classification |
 
 ## Who it's for
 
@@ -40,7 +40,7 @@ Each Huddle follows a calm, repeatable rhythm:
 
 - **No PHI.** Ever. We share patterns, not patients.
 - **No clinical decisions.** We support nurses; we do not replace judgment.
-- **Stewardship first.** Inclusion ≠ validation. Every tool gets an EDENA tier.
+- **Stewardship first.** Inclusion ≠ validation. Review risk, data, and action independently; a tool alone does not determine any dimension.
 - **Human agency.** Agents propose. Humans judge. Nurses steward.
 - **Confidential by default.** What's said in the Huddle stays in the Huddle unless the sharer says otherwise.
 
@@ -99,4 +99,4 @@ The Lamp Huddle is a learning and stewardship space — **not** clinical guidanc
 
 ---
 
-*© NAIO Institute. Free, nurse-stewarded, community-first. Not medical advice. Not for PHI.*
+*© 2026 Robert Domondon. Free, nurse-stewarded, community-first. Not medical advice. Not for PHI.*

@@ -1,5 +1,19 @@
 # Nurse AI OS™ — 中文媒体简报
 
+
+---
+
+## Directive v1.1 canonical status
+
+> **Canonical English source-control statement:** Nurse AI OS is the **governed professional environment**. The public Community experience is available now. Florence-X and EDENA capabilities become binding only where implemented and evidenced. Institutional authority, credentials, conformance, PHI eligibility, and high-consequence use require separate formal gates. Agents propose. Humans judge. Nurses steward.
+
+- **Available now:** browser-first Community experience; D0/D1 only; no PHI; human review; no external action.
+- **Capability-gated:** Florence-X orchestration, EDENA mechanical enforcement, memory, tools, connectors, and automation only where a named implementation and evidence exist.
+- **Formal-gate programs:** credentials, institutional or sovereign environments, D2–D4 eligibility, high-consequence use, and assurance require separately published authorization and program gates.
+- **Conformance:** NAIO Conformant is unavailable until the assurance program exists and the specific release passes it.
+- **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
+- **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
+
 **更新至 2026 年 7 月 25 日**
 
 **网站：** [nurse-ai-os.org](https://nurse-ai-os.org/) · **媒体联络：** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
@@ -31,7 +45,7 @@ Nurse AI OS 不是电子病历、临床决策支持系统、自主护士，也�
 
 Nurse AI OS 被设计为不含 PHI 的学习与守护空间。这是参与和设计规则，不是 HIPAA 认证声明。不得用于诊断、治疗、分诊、处方、临床医嘱，或替代合格人员的监督。
 
-**EDENA** 代表 **Ethical Design & Enablement for Nursing Augmentation**。它提供复核语言以及绿/黄/橙/红风险等级，帮助识别风险和人类控制点。当前公开状态是 **shadow/observe-only（影子观察）**：EDENA 可以组织复核，但不能保证 ChatGPT、Claude、Hermes 或其他宿主以相同方式执行每一条规则。
+**EDENA** 是治理、风险、安全与保障控制层。它提供复核语言以及 Green/Yellow/Orange/Red-P/Red-E 风险等级，帮助识别风险和人工关口。Directive 所有者尚未正式记录其官方全称。当前公开状态是 **shadow/observe-only（影子观察）**：EDENA 可以组织复核，但不能保证 ChatGPT、Claude、Hermes 或其他宿主以相同方式执行每一条规则。
 
 **Florence-X** 是一项正在发展的研究与构建架构，探索编排、验证、证据和可见的人类授权。它并未被描述为已经部署的机构级服务。
 

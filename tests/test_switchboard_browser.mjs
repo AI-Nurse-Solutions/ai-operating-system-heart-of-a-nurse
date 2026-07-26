@@ -106,6 +106,7 @@ try {
   await page.locator('#create-dashboard').focus();
   await page.click('#create-dashboard');
   assert.equal(await page.locator('#dashboard-dialog').getAttribute('data-fallback'), 'true');
+  await page.waitForFunction(() => document.activeElement?.id === 'dashboard-context');
   const fallbackMetrics = await page.locator('#dashboard-dialog').evaluate((dialog) => {
     const style = getComputedStyle(dialog);
     const rect = dialog.getBoundingClientRect();
@@ -121,11 +122,11 @@ try {
   assert.ok(fallbackMetrics.top >= 0 && fallbackMetrics.bottom <= fallbackMetrics.viewportHeight, `fallback must be visible in viewport: ${JSON.stringify(fallbackMetrics)}`);
   await page.evaluate(() => document.querySelector('#export-state').focus());
   assert.equal(await page.evaluate(() => document.querySelector('#dashboard-dialog').contains(document.activeElement)), true, 'fallback background must be inert');
-  await page.evaluate(() => {
-    const focusable = [...document.querySelectorAll('#dashboard-dialog button:not([disabled]), #dashboard-dialog [href], #dashboard-dialog input:not([disabled]), #dashboard-dialog select:not([disabled]), #dashboard-dialog textarea:not([disabled]), #dashboard-dialog [tabindex]:not([tabindex="-1"])')];
-    focusable.at(-1).focus();
-  });
+  const fallbackControls = page.locator('#dashboard-dialog button:not([disabled]), #dashboard-dialog [href], #dashboard-dialog input:not([disabled]), #dashboard-dialog select:not([disabled]), #dashboard-dialog textarea:not([disabled]), #dashboard-dialog [tabindex]:not([tabindex="-1"])');
+  await fallbackControls.last().focus();
+  assert.equal(await fallbackControls.last().evaluate((element) => document.activeElement === element), true, 'fallback wrap test must begin on its last focusable control');
   await page.keyboard.press('Tab');
+  await page.waitForFunction(() => document.activeElement === document.querySelector('#dashboard-dialog button:not([disabled]), #dashboard-dialog [href], #dashboard-dialog input:not([disabled]), #dashboard-dialog select:not([disabled]), #dashboard-dialog textarea:not([disabled]), #dashboard-dialog [tabindex]:not([tabindex="-1"])'));
   const fallbackFocus = await page.evaluate(() => {
     const first = document.querySelector('#dashboard-dialog button:not([disabled]), #dashboard-dialog [href], #dashboard-dialog input:not([disabled]), #dashboard-dialog select:not([disabled]), #dashboard-dialog textarea:not([disabled]), #dashboard-dialog [tabindex]:not([tabindex="-1"])');
     return { wrapped: document.activeElement === first, contained: document.querySelector('#dashboard-dialog').contains(document.activeElement), tag: document.activeElement?.tagName, className: document.activeElement?.className };

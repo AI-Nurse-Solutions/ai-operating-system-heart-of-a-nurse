@@ -136,4 +136,4 @@ And hear this plainly: **your participation and your voice matter to us now — 
 ## If you feel lost
 Normal. You only need the next step, never the whole map. Skip what confuses you, and bring questions to the monthly Lamp Huddle — every nurse there started exactly where you are.
 
-*Agents propose. Humans judge. Nurses steward.* · © NAIO Institute · Not medical advice · No PHI
+*Agents propose. Humans judge. Nurses steward.* · © 2026 Robert Domondon · Not medical advice · No PHI

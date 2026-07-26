@@ -30,17 +30,17 @@ No EHR screens, no confidential policies, no identifiable staff or student data,
 
 Bring gray areas to the monthly Lamp Huddle or email great.ai.nurses@gmail.com. A question asked early beats an incident reported late.
 
-## These rules have a name: EDENA
+## How EDENA applies
 
-The five rules above are the plain-language version of **EDENA — Ethical Design & Enablement for Nursing Augmentation** — the governance framework enshrined in every layer of Nurse AI OS. AI may carry workflows; humans remain responsible for judgment. Every action you ever automate gets classified before it runs. Tiers measure **risk, not privilege**:
+EDENA is the governance framework used by Nurse AI OS. Its full expansion is not recorded in the current NIN–NAIO Master Directive v1.1, so this poster does not invent one. The current model classifies three independent dimensions before work begins:
 
-- **GREEN** — low risk, may proceed
-- **YELLOW** — conditional, you approve first
-- **RED** — stop; human authorization mandatory, always
+- **Risk:** Green, Yellow, Orange, Red-P (prohibited), or Red-E (exceptional high-risk).
+- **Data:** D0–D4. This public poster and Governance Kit support D0 and D1 only; no PHI, employer-confidential data, or patient-adjacent data.
+- **Action:** Observe, Draft, Recommend, Prepare Action, Act With Approval, or Constrained Autonomy. Unrestricted action is prohibited.
 
-*(A fourth tier, **Orange**, covers advanced integrations like APIs and automations. It is deferred — treated as Red until a governed review defines its scope — and you won't meet it in your first month.)*
+Green supports **Observe or Draft**. **Recommend begins at Yellow** and requires evidence appropriate to the claim plus a named human reviewer. Orange, Red-E, D2–D4, and every action mode above Recommend require separate formal authorization and implemented controls; this poster and the public Governance Kit do not grant either. Red-P is refused.
 
-You don't need to memorize this. The 30-Day Roadmap tags every task with its tier, and you stay in Green and Yellow for your whole first month. By the time you meet EDENA formally, it won't feel like a framework — it will feel like how you already think: assess the risk before you act, and keep a human hand on anything that matters.
+These are advisory instructions, not mechanical enforcement. Humans remain responsible for every decision and action.
 
 ## Before installing any new routine — the seven questions
 
@@ -50,4 +50,4 @@ Purpose · Data involved · PHI? (if yes: stop) · Autonomy level · Human appro
 
 *Carry the lamp. Keep the ledger.*
 
-© NAIO Institute · Not medical advice · Not for PHI · Not a replacement for licensed judgment · nurse-ai-os.org/setup.html#safety
+© 2026 Robert Domondon · Not medical advice · Not for PHI · Not a replacement for licensed judgment · nurse-ai-os.org/directive.html

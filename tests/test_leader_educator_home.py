@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import re
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +16,26 @@ SCRIPT = ROOT / "assets" / "leader-educator-home.js"
 CSS = ROOT / "assets" / "nurse-ai.css"
 HERO_IMAGE = ROOT / "assets" / "nurse-leader-planning.jpg"
 FOUNDER_IMAGE = ROOT / "assets" / "robert-domondon-founder.jpg"
+
+
+class HomepageMediaParser(HTMLParser):
+    """Collect figure class tokens and image attributes from homepage HTML."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.figure_classes: list[set[str]] = []
+        self.images: dict[str, dict[str, str | None]] = {}
+
+    def handle_starttag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        attributes = dict(attrs)
+        if tag == "figure":
+            self.figure_classes.append(set((attributes.get("class") or "").split()))
+        elif tag == "img":
+            source = attributes.get("src")
+            if source is not None:
+                self.images[source] = attributes
 
 
 class LeaderEducatorHomeTests(unittest.TestCase):
@@ -99,31 +120,53 @@ class LeaderEducatorHomeTests(unittest.TestCase):
             self.assertIn(phrase, self.home)
 
     def test_supplied_images_replace_only_the_image_placeholders(self) -> None:
-        self.assertEqual(1, self.home.count('<figure class="media-placeholder '))
+        parser = HomepageMediaParser()
+        parser.feed(self.home)
+        placeholder_figures = [
+            classes
+            for classes in parser.figure_classes
+            if "media-placeholder" in classes
+        ]
+        self.assertEqual(
+            [{"media-placeholder", "media-placeholder-video"}],
+            placeholder_figures,
+        )
         self.assertIn("45-second demonstration video placeholder", self.home)
         self.assertIn("Asset needed: real workflow from selection through human review.", self.home)
         self.assertNotIn("Hero image placeholder", self.home)
         self.assertNotIn("Robert Domondon portrait placeholder", self.home)
-        for image, source, dimensions, alt in (
+        for image, source, expected_attributes in (
             (
                 HERO_IMAGE,
-                'src="assets/nurse-leader-planning.jpg"',
-                'width="625" height="390"',
-                "A nurse leader prepares a presentation with a tablet in front of a data dashboard.",
+                "assets/nurse-leader-planning.jpg",
+                {
+                    "width": "625",
+                    "height": "390",
+                    "alt": "A nurse leader prepares a presentation with a tablet in front of a data dashboard.",
+                    "decoding": "async",
+                    "fetchpriority": "high",
+                },
             ),
             (
                 FOUNDER_IMAGE,
-                'src="assets/robert-domondon-founder.jpg"',
-                'width="720" height="900"',
-                "Robert Domondon, ICU nurse and founder of Nurse AI OS, holding a tablet.",
+                "assets/robert-domondon-founder.jpg",
+                {
+                    "width": "720",
+                    "height": "900",
+                    "alt": "Robert Domondon, ICU nurse and founder of Nurse AI OS, holding a tablet.",
+                    "loading": "lazy",
+                    "decoding": "async",
+                },
             ),
         ):
             self.assertTrue(image.is_file())
             self.assertGreater(image.stat().st_size, 10_000)
             self.assertLess(image.stat().st_size, 200_000)
-            self.assertIn(source, self.home)
-            self.assertIn(dimensions, self.home)
-            self.assertIn(f'alt="{alt}"', self.home)
+            self.assertIn(source, parser.images)
+            image_attributes = parser.images[source]
+            self.assertEqual(source, image_attributes["src"])
+            for attribute, expected in expected_attributes.items():
+                self.assertEqual(expected, image_attributes.get(attribute))
         self.assertNotIn("<iframe", self.home)
         self.assertNotIn("testimonial", self.home.casefold())
         self.assertNotIn("measured nurse outcomes", self.home.casefold())

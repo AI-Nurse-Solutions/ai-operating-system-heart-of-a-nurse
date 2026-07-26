@@ -3,21 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nurse AI OS — AI with the Heart of a Nurse</title>
-<meta name="description" content="Nurse AI OS is the governed professional environment for nursing AI work. Start with the available browser-first Community experience; higher capabilities require evidence and formal gates.">
-<link rel="alternate" hreflang="en" href="https://nurse-ai-os.org/">
-<link rel="alternate" hreflang="es" href="https://nurse-ai-os.org/es/">
-<link rel="alternate" hreflang="tl" href="https://nurse-ai-os.org/tl/">
-<link rel="alternate" hreflang="zh-Hans" href="https://nurse-ai-os.org/zh/">
-<link rel="alternate" hreflang="ar" href="https://nurse-ai-os.org/ar/">
-<link rel="alternate" hreflang="vi" href="https://nurse-ai-os.org/vi/">
-<link rel="alternate" hreflang="ru" href="https://nurse-ai-os.org/ru/">
-<link rel="alternate" hreflang="hi" href="https://nurse-ai-os.org/hi/">
-<link rel="alternate" hreflang="fr" href="https://nurse-ai-os.org/fr/">
-<link rel="alternate" hreflang="x-default" href="https://nurse-ai-os.org/">
+<title>Nurse AI OS for Nurse Leaders &amp; Educators</title>
+<meta name="description" content="Try a free five-minute, nurse-built AI workflow for leadership or education. No patient data. Human judgment stays in charge.">
+<link rel="canonical" href="https://nurse-ai-os.org/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/nurse-ai.css">
 <script type="application/ld+json">
 {
@@ -42,9 +33,7 @@
    "@id": "https://nurse-ai-os.org/#website",
    "url": "https://nurse-ai-os.org/",
    "name": "Nurse AI OS",
-   "publisher": {
-    "@id": "https://nurse-ai-os.org/#operator"
-   },
+   "publisher": {"@id": "https://nurse-ai-os.org/#operator"},
    "inLanguage": "en",
    "isAccessibleForFree": true
   }
@@ -52,25 +41,25 @@
 }
 </script>
 </head>
-<body class="clinical-sketch-page">
+<body class="leader-educator-home">
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
 <header class="site-header">
-  <nav class="nav-bar">
-    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="index.html"><span class="lamp" aria-hidden="true">🕯️</span> Nurse AI OS</a>
     <div class="nav-links">
-      <a href="pathways.html">Pathways</a>
-      <a href="resources.html">Resources</a>
-      <a href="about.html">About</a>
-      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#for-you">For leaders &amp; educators</a>
+      <a href="explore-ecosystem.html">Explore ecosystem</a>
+      <a class="nav-cta" href="#workbench">Try a workflow</a>
     </div>
   </nav>
 </header>
 
-<nav class="language-nav" aria-label="Language selector">
+<nav class="language-nav" aria-label="Explore Nurse AI OS in other languages">
   <div class="language-nav-inner">
-    <span class="language-nav-label">Languages · Idiomas · Mga Wika · 语言 · اللغات · Ngôn ngữ · Языки · भाषाएँ · Langues</span>
-    <a class="language-chip language-en is-active" href="index.html" lang="en" hreflang="en" aria-current="page">English</a>
+    <span class="language-nav-label">Explore the ecosystem in</span>
+    <a class="language-chip language-en is-active" href="explore-ecosystem.html" lang="en">English</a>
     <a class="language-chip language-es" href="es/index.html" lang="es" hreflang="es">Español</a>
     <a class="language-chip language-tl" href="tl/index.html" lang="tl" hreflang="tl">Tagalog</a>
     <a class="language-chip language-zh" href="zh/index.html" lang="zh-Hans" hreflang="zh-Hans">中文</a>
@@ -83,515 +72,236 @@
 </nav>
 
 <main id="main-content" tabindex="-1">
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="container hero-grid">
-    <div>
-      <p class="kicker">A nurse-designed way to use the AI you already have</p>
-      <h1>Use ChatGPT or Claude with a nurse-built kit.</h1>
-      <p class="lede">Nurse AI OS gives you <strong>guided prompts, practical templates, local folders, and a personal values-and-boundaries file</strong> for using ChatGPT or Claude without handing over your judgment. Start on a phone, tablet, Chromebook, Mac, or Windows computer. Only optional Hermes requires a desktop.</p>
+<section class="leader-educator-hero" aria-labelledby="home-title">
+  <div class="container leader-educator-hero-grid">
+    <div class="leader-educator-hero-copy">
+      <p class="kicker">For nurse leaders and nurse educators</p>
+      <h1 id="home-title">Get one leadership or teaching task off your plate in five minutes.</h1>
+      <p class="lede">Use a free nurse-built workflow with ChatGPT or Claude to prepare a huddle, frame a project, plan a lesson, or build a discussion guide. Start in your browser. Keep nursing judgment in charge.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="soul-quiz.html">Build my values-and-boundaries file — 2 minutes →</a>
-        <a class="btn btn-secondary" href="#what-it-is">See exactly what I get</a>
+        <a class="btn btn-primary" href="#workbench">Try a 5-minute workflow →</a>
+        <a class="btn btn-secondary" href="#demo">Watch the 45-second demonstration</a>
       </div>
-      <p class="hero-note"><strong>No patient data.</strong> Core setup and self-customization are free forever.</p>
-      <p style="margin:0 0 .4rem;">
-        <span class="badge gold">Personal life</span>
-        <span class="badge gold">Family</span>
-        <span class="badge gold">Career &amp; certifications</span>
-        <span class="badge gold">Community</span>
-        <span class="badge gold">Hobbies</span>
-        <span class="badge gold">Entrepreneurship</span>
-      </p>
-
+      <ul class="trust-strip" aria-label="Starting boundaries">
+        <li><strong>No patient data</strong></li>
+        <li>No account</li>
+        <li>No credit card</li>
+        <li><strong>You review every result</strong></li>
+      </ul>
     </div>
-    <div>
-      <img src="assets/img/hero-lamp-data.jpg" alt="A nurse holds a glowing lamp whose flame disperses into a constellation of connected data points — compassion joined to data science.">
-    </div>
+    <figure class="media-placeholder media-placeholder-hero" aria-labelledby="hero-placeholder-title">
+      <div class="media-placeholder-mark" aria-hidden="true">16:10</div>
+      <figcaption>
+        <strong id="hero-placeholder-title">Hero image placeholder</strong>
+        <span>Asset needed: a real nurse leader or educator using AI during a planning session, not at the bedside.</span>
+      </figcaption>
+    </figure>
   </div>
 </section>
 
-<!-- ============ WHAT THE PRODUCT IS ============ -->
-<section class="section section-alt" id="what-it-is" aria-labelledby="what-it-is-title">
-  <div class="container">
-    <p class="eyebrow">The plain answer</p>
-    <h2 id="what-it-is-title">The governed professional environment for nursing AI work.</h2>
-    <p class="section-intro"><strong>Nurse AI OS is the governed professional environment in which nursing applications, agents, models, knowledge, memory, tools, and workflows operate.</strong> The public doorway available today is intentionally practical: use the AI you already have with nurse-centered instructions, repeatable workflows, local files, and explicit safety boundaries.</p>
-    <div class="card-grid cols-3">
-      <div class="card">
-        <h3>Your SOUL file</h3>
-        <p>A short values-and-boundaries file that tells AI what matters to you, how you want help, and what it must never take over.</p>
-      </div>
-      <div class="card">
-        <h3>Your workflow kit</h3>
-        <p>Guided prompts, practical templates, role-based skills, and a local folder system for learning, planning, career growth, projects, and life admin.</p>
-      </div>
-      <div class="card">
-        <h3>Your safety rules</h3>
-        <p>No patient data. No clinical decisions. No connection to employer systems. AI proposes; you review, decide, and remain accountable.</p>
-      </div>
-    </div>
-    <div class="boundary">
-      <strong>You do not need Hermes to begin.</strong> Start with ChatGPT or Claude in your browser. Files in the Starter Kit stay on your device unless you choose to paste or upload them; anything you share with ChatGPT or Claude is handled under that provider's privacy and data settings. Hermes is a free, open-source desktop AI agent from Nous Research. Add it later if you want AI to work with local folders, reusable skills, and tools you explicitly approve. It adds persistence and capability; it does not add clinical or institutional authority.
-    </div>
-    <div style="margin-top:2.5rem;">
-      <p class="eyebrow">Definition is not activation</p>
-      <h3>Three public states keep the architecture honest.</h3>
-      <div class="card-grid cols-3" aria-label="Nurse AI OS product maturity">
-        <div class="card">
-          <p class="role-tag">Available now</p>
-          <h3>Public Community experience</h3>
-          <p>Browser-first SOUL files, guided prompts, templates, local folders, role workflows, and safety practices for D0/D1 personal, learning, and professional work. No PHI and no external action.</p>
-        </div>
-        <div class="card">
-          <p class="role-tag">Capability-gated</p>
-          <h3>EDENA, Florence-X, memory, tools, and connectors</h3>
-          <p>These become operational only where the specific capability is implemented, tested, evidenced, and activated. The public browser experience does not mechanically enforce every Florence-X or EDENA requirement across ChatGPT, Claude, Hermes, or other hosts.</p>
-        </div>
-        <div class="card">
-          <p class="role-tag">Formal-gate programs</p>
-          <h3>Credentials, institutions, conformance, and high-consequence use</h3>
-          <p>Institutional and Sovereign editions, PHI eligibility, credentials, the Exchange, the Observatory, and NAIO Conformant require separate governance and authorization gates. They are not activated by a download, payment, badge, directive, or marketing page.</p>
-        </div>
-      </div>
-      <div class="boundary" style="margin-top:1.2rem;"><strong>Category boundary:</strong> Nurse AI OS is not an EHR, not an autonomous clinician, not a licensing board, and not a substitute for institutional authority. <a href="directive.html">Read the public Directive v1.1 status register →</a></div>
-    </div>
-    <p style="margin-top:1.4rem;"><a class="btn btn-primary" href="soul-quiz.html">Start with the AI I already have →</a>&nbsp; <a class="step-cta" href="#how-it-works">See the no-install steps →</a></p>
+<section class="leader-credibility" aria-label="Who built this and what it is for">
+  <div class="container leader-credibility-inner">
+    <p><strong>Built by Robert Domondon</strong>, ICU nurse, CCRN, CSC, CMC, and physician trained in the Philippines.</p>
+    <p><strong>For non-clinical work:</strong> leadership preparation, education, learning, planning, and professional projects.</p>
   </div>
 </section>
 
-<!-- ============ THE STEWARD'S CHARTER ============ -->
-<section class="stewards-charter" id="stewards-charter" aria-labelledby="stewards-charter-title">
+<section class="section" id="for-you" aria-labelledby="for-you-title">
   <div class="container">
-    <div class="charter-shell">
-      <header class="charter-header">
-        <div class="charter-lamp" aria-hidden="true">🕯️</div>
-        <p class="charter-kicker">Founding doctrine · Nurse AI OS</p>
-        <h2 id="stewards-charter-title">The Steward’s Charter</h2>
-        <p class="charter-subtitle">Why Nurse AI OS Exists</p>
-      </header>
-
-      <div class="charter-opening">
-        <p>We are living through one of the great technological transformations in human history. Artificial intelligence will change how we learn, decide, communicate, and care — not someday, but within our careers.</p>
-        <div class="charter-question">
-          <p>The question is not whether AI will become part of nursing.</p>
-          <p><strong>The question is what kind of nurses we choose to become because of it.</strong></p>
-        </div>
-        <p>Nurse AI OS was built on a single conviction: <strong>technology should strengthen human judgment, never replace it.</strong></p>
-      </div>
-
-      <div class="charter-responsibility">
-        <p>Nurses have always been more than caregivers. We are advocates, educators, translators, and the final guardians of human dignity when people are most vulnerable.</p>
-        <p>No algorithm carries that responsibility. No machine holds a license. No model bears moral accountability.</p>
-        <p class="charter-we-do">We do.</p>
-        <p>That is why this platform exists.</p>
-      </div>
-
-      <div class="charter-covenant" aria-label="What Nurse AI OS protects">
-        <p><span>It is not here to tell you what to think.</span> It is here to help you learn.</p>
-        <p><span>It is not here to replace your experience.</span> It is here to extend your capability.</p>
-        <p><span>It is not here to automate your humanity.</span> It is here to protect it.</p>
-      </div>
-
-      <blockquote class="charter-doctrine">
-        <p class="charter-doctrine-label">Our doctrine is simple, and it governs everything built here:</p>
-        <p class="charter-doctrine-line">Agents propose.<br>Humans judge.<br>Nurses steward.</p>
-        <footer>Every course, every tool, every agent on this platform answers to that line.</footer>
-      </blockquote>
-
-      <div class="charter-future">
-        <p>The future of healthcare will not be written by engineers, policymakers, and technology companies alone. It will be shaped by the nurses who choose to understand these tools before others decide how they should be used.</p>
-        <p>Our mission is not simply to teach AI. It is to cultivate wisdom in its use — to empower without diminishing compassion, to innovate without surrendering ethics, to embrace progress without abandoning judgment.</p>
-        <p class="charter-build-line">Nurses should not merely adapt to the future. We should help build it.</p>
-      </div>
-
-      <section class="charter-commitment" aria-labelledby="charter-commitment-title">
-        <div class="charter-commitment-intro">
-          <p class="charter-kicker">The ledger we keep</p>
-          <h3 id="charter-commitment-title">Our Commitment</h3>
-          <p>As stewards in this community, we commit to:</p>
-        </div>
-        <ul class="charter-commitments" aria-label="The Steward’s Commitment">
-          <li>Put people before technology.</li>
-          <li>Preserve human dignity in every interaction.</li>
-          <li>Exercise clinical judgment with humility and accountability.</li>
-          <li>Use AI transparently, ethically, and safely.</li>
-          <li>Remain lifelong learners in a changing world.</li>
-          <li>Share knowledge generously and strengthen one another.</li>
-          <li>Lead with courage when others hesitate.</li>
-          <li>Leave healthcare — and the world — better than we found it.</li>
+    <p class="eyebrow">Useful before impressive</p>
+    <h2 id="for-you-title">Start with the work already waiting for you.</h2>
+    <div class="audience-split">
+      <article class="audience-panel audience-leader">
+        <p class="role-tag">Nurse leader</p>
+        <h3>Walk into the next conversation prepared.</h3>
+        <ul>
+          <li>Turn a goal into a 15-minute staff huddle.</li>
+          <li>Frame a decision-ready meeting brief.</li>
+          <li>Organize an improvement update without inventing results.</li>
         </ul>
-      </section>
-
-      <footer class="charter-closing">
-        <p>This is more than a learning platform. It is a community of stewards preparing for a future that is already arriving.</p>
-        <p class="charter-welcome">Welcome to Nurse AI OS.</p>
-        <p>The future needs nurses who understand both humanity and intelligence.</p>
-        <p class="charter-intent">We intend to become them.</p>
-        <p class="charter-signature">Where Nightingale meets neural net.</p>
-      </footer>
-
-      <aside class="charter-scope-note" aria-label="Charter scope">
-        <strong>One name, two separate purposes.</strong> This founding Charter belongs to Nurse AI OS and its nursing community. It is separate from the STEWARD governance preview for hospital and clinic administrators.
-      </aside>
-    </div>
-  </div>
-</section>
-
-<!-- ============ HOMEPAGE SHORT ============ -->
-<section class="section home-short-section" aria-labelledby="home-short-title">
-  <div class="container home-short-wrap">
-    <p class="eyebrow">A one-minute introduction</p>
-    <h2 id="home-short-title">Where Nightingale meets neural net</h2>
-    <p class="section-intro">See what Nurse AI OS is built to protect—and what it helps nurses make possible.</p>
-    <div class="home-short-frame">
-      <iframe
-        src="https://www.youtube-nocookie.com/embed/79xHeOuH_1k?rel=0&amp;modestbranding=1"
-        title="Nurse AI OS short video introduction"
-        loading="lazy"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen></iframe>
-    </div>
-    <div class="home-role-videos" aria-label="Nurse AI OS role videos">
-      <article class="home-role-video">
-        <h3>The Nursing Student</h3>
-        <div class="home-role-video-frame">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/M-dIPB-pSp0?rel=0&amp;modestbranding=1"
-            title="The Nursing Student — Nurse AI OS"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen></iframe>
-        </div>
+        <a href="#workbench" data-workflow-role="leader">Try a leader workflow →</a>
       </article>
-      <article class="home-role-video">
-        <h3>The Nurse Manager</h3>
-        <div class="home-role-video-frame">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/8FvTTp-sZVk?rel=0&amp;modestbranding=1"
-            title="The Nurse Manager — Nurse AI OS"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen></iframe>
-        </div>
-      </article>
-      <article class="home-role-video">
-        <h3>The Nurse Practitioner</h3>
-        <div class="home-role-video-frame">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/W1eOXb-l2EI?rel=0&amp;modestbranding=1"
-            title="The Nurse Practitioner — Nurse AI OS"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen></iframe>
-        </div>
-      </article>
-      <article class="home-role-video">
-        <h3>The Nurse Educator</h3>
-        <div class="home-role-video-frame">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/ZE9pg_vnL8g?rel=0&amp;modestbranding=1"
-            title="The Nurse Educator — Nurse AI OS"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen></iframe>
-        </div>
+      <article class="audience-panel audience-educator">
+        <p class="role-tag">Nurse educator</p>
+        <h3>Prepare the learning without losing the weekend.</h3>
+        <ul>
+          <li>Build a lesson-plan first draft.</li>
+          <li>Create a Socratic discussion guide.</li>
+          <li>Draft a transparent, human-owned rubric.</li>
+        </ul>
+        <a href="#workbench" data-workflow-role="educator">Try an educator workflow →</a>
       </article>
     </div>
-    <article class="home-resident-video" aria-labelledby="home-resident-video-title">
-      <p class="eyebrow">Adjacent clinical lane · Medical residents</p>
-      <h3 id="home-resident-video-title">ROUNDS — an adjacent healthcare role package</h3>
-      <p><strong>For Medical Residents: ROUNDS</strong></p>
-      <div class="home-short-frame">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/InXb8EN9Hcs?rel=0&amp;modestbranding=1"
-          title="ROUNDS — adjacent healthcare role package for medical residents"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen></iframe>
-      </div>
-      <p class="cta-line"><a href="medical-residents/">Explore the ROUNDS role package →</a></p>
-    </article>
-    <article class="home-rt-video" aria-labelledby="home-rt-video-title">
-      <p class="eyebrow">Adjacent clinical lane · Respiratory care professionals</p>
-      <h3 id="home-rt-video-title">BREATHE — Respiratory Care Mission Control Build Kit</h3>
-      <p>For respiratory therapists and other respiratory care professionals. Download/unzip does nothing; local build requires Hermes preflight and the exact Implementation Activation Card.</p>
-      <div class="home-short-frame">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/MKKx9Ie6GmY?rel=0&amp;modestbranding=1"
-          title="For Respiratory Therapists — BREATHE Respiratory Care Mission Control Build Kit"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen></iframe>
-      </div>
-      <p class="cta-line"><a href="respiratory-care/">Explore the BREATHE role package →</a></p>
-    </article>
-    <article class="home-discover-video" aria-labelledby="home-discover-video-title">
-      <p class="eyebrow">Interdisciplinary lane · Healthcare research and innovation</p>
-      <h3 id="home-discover-video-title">Healthcare Researcher &amp; Innovator</h3>
-      <p>Meet DISCOVER: a governed self-install Hermes build kit for turning uncertain questions into reviewable paths while qualified humans and official systems retain authority.</p>
-      <div class="home-short-frame">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/o6fRkTt12zU?rel=0&amp;modestbranding=1"
-          title="Healthcare Research and Innovation Lead — Nurse AI OS"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen></iframe>
-      </div>
-      <p class="cta-line"><a href="healthcare-research-innovation-leaders/">Explore the DISCOVER build kit →</a></p>
-    </article>
-    <article class="home-thrive-video" aria-labelledby="home-thrive-video-title">
-      <p class="eyebrow">Adjacent wellness-business role package · Marketing and management</p>
-      <h3 id="home-thrive-video-title">THRIVE — Wellness Marketing &amp; Management</h3>
-      <p>A governed, no-PHI preparation environment for evidence-aware wellness claims, human-centered services, responsible growth, and human-owned decisions.</p>
-      <div class="home-short-frame">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/Ndk5C78e7jQ?rel=0&amp;modestbranding=1"
-          title="THRIVE — Wellness Marketing and Management lane"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen></iframe>
-      </div>
-      <p class="cta-line"><a href="wellness-services-marketing-managers/">Explore the THRIVE role package →</a></p>
-    </article>
-    <article class="home-admin-lane" id="steward-governance-preview" aria-labelledby="home-admin-lane-title">
-      <p class="eyebrow">Verified build kit · Hospital and clinic administration</p>
-      <h3 id="home-admin-lane-title">STEWARD Mission Control Build Kit</h3>
-      <p>One administrative lane with explicit context variants. A verified Hermes build kit is available for user-controlled self-install: download/unzip does nothing, Hermes must run read-only preflight, and an exact activation card requires explicit approval before any local build. Not operational, no operational data, and not institution-approved.</p>
-      <div class="home-short-frame">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/xdlnYkMJQl4?rel=0&amp;modestbranding=1"
-          title="Hospital Administrator and Clinic Manager — Nurse AI OS"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen></iframe>
-      </div>
-      <p class="cta-line"><a href="hospital-clinic-administrators/">Download the STEWARD build kit safely →</a></p>
-    </article>
   </div>
 </section>
 
-<!-- ============ ROLE CARDS ============ -->
-<section class="section">
+<section class="section section-alt workbench-section" id="workbench" aria-labelledby="workbench-title">
   <div class="container">
-    <p class="eyebrow">The same lamp, at every stage</p>
-    <h2>Where are you in your nursing journey?</h2>
-    <p class="section-intro">Every path begins with the same first step — the SOUL Quiz. Pick the card that sounds like your week, and we'll shape the rest around you.</p>
-    <div class="card-grid cols-4">
-      <div class="card">
-        <div class="role-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4 2.5 8.5 12 13l9.5-4.5L12 4z"/><path d="M6.5 10.8v4.2c0 1.3 2.5 2.6 5.5 2.6s5.5-1.3 5.5-2.6v-4.2"/><path d="M21.5 8.5v5.5"/></svg></div>
-        <p class="role-tag">Student Nurse</p>
-        <p class="pain">"Everyone else seems to get it faster. School has swallowed my whole life."</p>
-        <h3>Learn deeply — and get your evenings back</h3>
-        <p>Turn lectures into study maps and quiz yourself Socratically — a tutor, never a crutch — so studying takes less of your life and leaves room for the rest of it.</p>
-        <p class="cta-line"><a href="pathways.html#student">Your pathway →</a></p>
+    <div class="workbench-heading">
+      <div>
+        <p class="eyebrow">Your first useful win</p>
+        <h2 id="workbench-title">Choose one task. Copy one bounded workflow.</h2>
+        <p class="section-intro">Nothing you choose here is uploaded or saved. The page builds a prompt locally in your browser. Read it, copy it, and paste it into ChatGPT or Claude.</p>
       </div>
-      <div class="card">
-        <div class="role-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 20.5S3.5 15 3.5 9.3C3.5 6.4 5.7 4.5 8 4.5c1.7 0 3.2 1 4 2.3.8-1.3 2.3-2.3 4-2.3 2.3 0 4.5 1.9 4.5 4.8 0 5.7-8.5 11.2-8.5 11.2z"/><path d="M6 12h3l1.5-3 2 5 1.5-2.5H18"/></svg></div>
-        <p class="role-tag">Staff / Bedside Nurse</p>
-        <p class="pain">"The mental load follows me home after every shift. There's nothing left for my own life."</p>
-        <h3>Come home with something left over</h3>
-        <p>Use guided prompts and templates to organize certifications, planning, reflection, and life admin — so less of it follows you into your days off.</p>
-        <p class="cta-line"><a href="pathways.html#staff">Your pathway →</a></p>
-      </div>
-      <div class="card">
-        <div class="role-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3 4.5 5.8v5.4c0 4.6 3.2 8 7.5 9.8 4.3-1.8 7.5-5.2 7.5-9.8V5.8L12 3z"/><path d="m8.7 12 2.3 2.3 4.3-4.6"/></svg></div>
-        <p class="role-tag">Nurse Leader / Manager</p>
-        <p class="pain">"Everyone wants an answer about AI — and after work I still have a family, a life, and no time to figure it out."</p>
-        <h3>Lead with a method — at work and at home</h3>
-        <p>Start with guided workflows that lighten your own load, then use the same calm, defensible method to lead AI adoption for your team: map burden, set human gates, protect your people.</p>
-        <p class="cta-line"><a href="pathways.html#leader">Your pathway →</a></p>
-      </div>
-      <div class="card">
-        <div class="role-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6.5C10.7 5.2 8.8 4.5 6.5 4.5c-1.5 0-2.9.3-4 .8v13.2c1.1-.5 2.5-.8 4-.8 2.3 0 4.2.7 5.5 2 1.3-1.3 3.2-2 5.5-2 1.5 0 2.9.3 4 .8V5.3c-1.1-.5-2.5-.8-4-.8-2.3 0-4.2.7-5.5 2z"/><path d="M12 6.5v13.2"/></svg></div>
-        <p class="role-tag">Nurse Educator</p>
-        <p class="pain">"My students already use AI, my prep eats my weekends — and nobody handed me a map for either."</p>
-        <h3>Teach the next generation — without losing your weekends</h3>
-        <p>Use AI to help with prep, drafting, and organizing while you design what only you can: mentorship, honest assignments, and ethical AI literacy for your students.</p>
-        <p class="cta-line"><a href="pathways.html#educator">Your pathway →</a></p>
+      <div class="workbench-safety">
+        <strong>Before you begin</strong>
+        <span>Use only D0/D1 material: public, synthetic, or low-sensitivity professional information. Never paste patient, student-identifying, personnel, confidential employer, or proprietary information.</span>
       </div>
     </div>
-    <div class="boundary">
-      <strong>Not sure which card is you?</strong> That's what the <a href="soul-quiz.html">2-minute SOUL Quiz</a> is for. It asks about your values and boundaries — not your tech skills — and names your first safe step.
+
+    <div class="workflow-workbench">
+      <form class="workflow-controls" onsubmit="return false;">
+        <fieldset>
+          <legend>1. Which role are you working in?</legend>
+          <label for="workflow-role">Choose your role</label>
+          <select id="workflow-role" name="workflow-role">
+            <option value="leader">Nurse leader</option>
+            <option value="educator">Nurse educator</option>
+          </select>
+        </fieldset>
+        <fieldset>
+          <legend>2. What do you want help preparing?</legend>
+          <label for="workflow-task">Choose one task</label>
+          <select id="workflow-task" name="workflow-task"></select>
+        </fieldset>
+        <p class="workflow-local-note"><strong>Browser-local:</strong> this selector does not ask for your notes or send information anywhere.</p>
+      </form>
+
+      <div class="workflow-output" aria-labelledby="workflow-prompt-title">
+        <p class="prompt-label">Your workflow</p>
+        <h3 id="workflow-prompt-title">15-minute staff huddle</h3>
+        <label class="sr-only" for="workflow-prompt">Generated workflow prompt</label>
+        <textarea id="workflow-prompt" rows="13" readonly></textarea>
+        <div class="workflow-actions">
+          <button class="btn btn-primary" id="copy-workflow" type="button">Copy this workflow</button>
+          <p id="workflow-status" aria-live="polite">Your prompt is ready. Read it before copying.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============ HOW IT WORKS / ROADMAP ============ -->
-<section class="section section-alt" id="how-it-works">
+<section class="section" id="how-it-works" aria-labelledby="how-title">
   <div class="container">
-    <p class="eyebrow">Start without installing anything</p>
-    <h2>Use what you already have. Add software only if you want more.</h2>
-    <p class="section-intro">The core setup works in ChatGPT or Claude. Four steps get you started; the fifth is an optional upgrade for nurses who want a desktop agent working with local files and approved tools.</p>
+    <p class="eyebrow">No installation required</p>
+    <h2 id="how-title">From blank page to reviewable first draft.</h2>
+    <ol class="conversion-steps">
+      <li><span>1</span><div><h3>Choose one bounded task</h3><p>Pick a leadership or education workflow. Do not enter patient or sensitive information.</p></div></li>
+      <li><span>2</span><div><h3>Paste it into the AI you already use</h3><p>ChatGPT or Claude asks for only the context needed to prepare a draft.</p></div></li>
+      <li><span>3</span><div><h3>Review, correct, and decide</h3><p>The draft is not authority. You verify facts, remove assumptions, and own the final work.</p></div></li>
+    </ol>
+    <div class="boundary conversion-boundary"><strong>Agents propose. Humans judge. Nurses steward.</strong> These workflows support preparation and drafting. They do not make clinical decisions, access employer systems, or act on your behalf.</div>
+  </div>
+</section>
 
-    <div class="steps">
-      <div class="step">
-        <h3>Take the SOUL Quiz</h3>
-        <p>Spend two minutes naming your values, boundaries, and where you want help. The quiz creates a personal SOUL file that you can read, edit, save, and keep.</p>
-        <a class="step-cta" href="soul-quiz.html">Build my SOUL file →</a>
-      </div>
-      <div class="step">
-        <h3>Open ChatGPT or Claude</h3>
-        <p>Start a personal, no-patient-data conversation and paste in your SOUL file. It gives the AI your standing context for that conversation without connecting to your employer or work systems.</p>
-        <p class="prompt-label">Paste this after your SOUL file:</p>
-        <div class="prompt-block">This is my personal values-and-boundaries file. Use it as context for this conversation. Tell me what you understood about what matters to me, how I want help, and what I will never delegate. I will correct anything you misunderstood.</div>
-      </div>
-      <div class="step">
-        <h3>Download the Starter Kit</h3>
-        <p>Save the folder system, practical templates, and role-based prompts on your own device. Use only the pieces that fit your life; nothing installs or runs when you download it.</p>
-        <a class="step-cta" href="assets/nurse-ai-os-starter-kit.zip">Download the Starter Kit (ZIP) →</a>
-      </div>
-      <div class="step">
-        <h3>Run one useful workflow</h3>
-        <p>Try a study map, weekly planning huddle, certification plan, project outline, or after-shift reflection. Review the result, correct it, and keep the parts that help.</p>
-        <p class="prompt-label">A safe first prompt:</p>
-        <div class="prompt-block">Ask me one question: “What is the one personal, learning, or career task weighing on you today?” Then suggest three specific ways you can help me plan, organize, draft, or learn. Do not use patient data or make clinical decisions. Wait for me to choose.</div>
-        <a class="step-cta" href="pathways.html">See role-based workflows →</a>
-      </div>
-      <div class="step">
-        <h3>Optional: add Hermes later</h3>
-        <p>Hermes is a free, open-source desktop AI agent from Nous Research. Unlike a browser chat, it can work with local folders, reusable skills, and tools you explicitly approve. Choose it when you want a more persistent workspace, not because Nurse AI OS requires it.</p>
-        <a class="step-cta" href="hermes-downloads/">See what Hermes adds →</a>
-      </div>
+<section class="section section-alt" id="demo" aria-labelledby="demo-title">
+  <div class="container demo-grid">
+    <div>
+      <p class="eyebrow">See the first five minutes</p>
+      <h2 id="demo-title">Show the work, not the architecture.</h2>
+      <p class="section-intro">This slot will show a nurse leader or educator choosing a workflow, pasting it into a browser AI, reviewing the draft, and correcting one assumption.</p>
+      <ul class="asset-brief">
+        <li>45 seconds or less</li>
+        <li>Screen recording with captions</li>
+        <li>No patient, student, or employer information</li>
+        <li>End on the corrected result</li>
+      </ul>
     </div>
-    <p style="margin-top:1.5rem; color:var(--ink-600);">That's the core product: your SOUL file, workflow kit, local folder system, and safety rules used with the AI you choose. The <a href="assets/30-day-roadmap.pdf">30-Day Roadmap</a>, <a href="pathways.html">role pathways</a>, Hermes, Notion, and advanced builder tracks are optional depth.</p>
+    <figure class="media-placeholder media-placeholder-video" aria-labelledby="video-placeholder-title">
+      <div class="media-placeholder-mark" aria-hidden="true">▶ 16:9</div>
+      <figcaption>
+        <strong id="video-placeholder-title">45-second demonstration video placeholder</strong>
+        <span>Asset needed: real workflow from selection through human review.</span>
+      </figcaption>
+    </figure>
   </div>
 </section>
 
-<!-- ============ FOUNDING YEAR OFFER ============ -->
-<section class="section section-navy" id="founding-year" aria-labelledby="pricing-title">
+<section class="section progression-section" id="progression" aria-labelledby="progression-title">
   <div class="container">
-    <p class="eyebrow">🕯️ Founding Year · Through December 31, 2026</p>
-    <h2 id="pricing-title">Core setup is free forever. Optional help is priced plainly.</h2>
-    <p class="section-intro">The founding year marks the period when nurses can help shape the early system; it is not a countdown to charging for setup. Joining now creates no future bill. Your core browser setup, SOUL file, Starter Kit, and self-directed customization remain free after December 31, 2026.</p>
-
-    <table class="offer-table pricing-policy-table">
-      <thead>
-        <tr><th>Offering</th><th>Price</th><th>What it means</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><strong>Core browser setup</strong> — SOUL Quiz, Starter Kit, prompts, templates, and safety practices</td><td><strong>$0 forever</strong></td><td>Use it yourself with ChatGPT or Claude. No card and no automatic upgrade.</td></tr>
-        <tr><td><strong>Self-customization and personalization</strong></td><td><strong>$0 forever</strong></td><td>You may edit and program your own files, prompts, workflows, and configuration using the system.</td></tr>
-        <tr><td><strong>Optional tailor-fit setup package</strong></td><td><strong>$10 one time</strong></td><td>Send a no-PHI personal profile and we tailor the package to it. Before installing, run the included preflight or ask your AI system to scan the package, then review the result yourself.</td></tr>
-        <tr><td><strong>Optional developed-resource library</strong></td><td><strong>$29.90/year</strong></td><td>Access to additional resources we publish beyond the free core as they are released. No auto-enrollment.</td></tr>
-        <tr><td><strong>Advanced courses</strong></td><td><strong>Free and paid options</strong></td><td>Free and paid advanced courses will be available during the September 15–17, 2026 virtual summit. Course-specific prices will be shown before enrollment.</td></tr>
-      </tbody>
-    </table>
-
-    <p style="margin-top:1.5rem;">
-      <span class="badge gold">Core setup free forever</span>
-      <span class="badge gold">No credit card to start</span>
-      <span class="badge gold">No auto-enrollment, ever</span>
-      <span class="badge gold">No patient data — we do not want it</span>
-    </p>
-    <p style="margin-top:1.2rem;"><a class="btn btn-primary" href="soul-quiz.html">Take the 2-Minute SOUL Quiz →</a>&nbsp; <a class="btn btn-secondary" href="offers.html">Read the exact offer sheets</a>&nbsp; <a class="btn btn-secondary" href="faq.html#pricing">Read the pricing FAQ</a></p>
-    <p class="hero-note" style="margin-top:1rem;">Paid options are separate choices, not requirements for using Nurse AI OS. Questions or interested in the optional tailor-fit package? <a href="mailto:great.ai.nurses@gmail.com?subject=Optional%20tailor-fit%20setup%20package">great.ai.nurses@gmail.com</a></p>
+    <p class="eyebrow">Visitors → users → stewards</p>
+    <h2 id="progression-title">Earn the next step after the first useful result.</h2>
+    <div class="progression-grid">
+      <article>
+        <p class="progression-number">01</p>
+        <h3>Visitor</h3>
+        <p><strong>Visitors try</strong> one five-minute workflow with no account or download.</p>
+        <a href="#workbench">Try the workflow →</a>
+      </article>
+      <article>
+        <p class="progression-number">02</p>
+        <h3>User</h3>
+        <p><strong>Users keep</strong> the free Starter Kit and build a values-and-boundaries file after seeing value.</p>
+        <p><a href="assets/nurse-ai-os-starter-kit.zip">Download the Starter Kit (ZIP) →</a></p>
+        <p><a href="soul-quiz.html">Build my SOUL file →</a></p>
+      </article>
+      <article>
+        <p class="progression-number">03</p>
+        <h3>Steward</h3>
+        <p><strong>Stewards shape</strong> safer adoption, contribute feedback, and learn the governance behind the workflows.</p>
+        <p><a href="directive.html">Read the public Directive →</a></p>
+        <p><a href="explore-ecosystem.html">Explore the ecosystem →</a></p>
+      </article>
+    </div>
+    <p class="download-truth"><strong>What the download is:</strong> a ZIP of prompts, templates, local folders, and safety materials. Downloading the ZIP does not install or activate anything. You do not need Hermes to begin; optional desktop setup comes later if you choose it.</p>
   </div>
 </section>
 
-<!-- ============ WHAT YOU RECEIVE ============ -->
-<section class="section">
-  <div class="container">
-    <p class="eyebrow">Everything included</p>
-    <h2>What you walk away with</h2>
-    <p class="section-intro">A practical kit you can use with ChatGPT or Claude on day one, with your judgment in charge of every step. No new app is required.</p>
-    <div class="card-grid cols-3">
-      <div class="card"><h3>Your SOUL profile</h3><p>A values-and-boundaries file that shapes how AI supports you — written by you, kept by you.</p></div>
-      <div class="card"><h3>30-Day Roadmap &amp; workbook</h3><p>Role-based daily plan, ~20 minutes a day, with a PDF workbook and starter prompts.</p></div>
-      <div class="card"><h3>Starter kit folder system</h3><p>A ready-to-use, no-patient-data folder architecture for your personal AI kit.</p></div>
-      <div class="card"><h3>Monthly Lamp Huddle &amp; newsletter</h3><p>Live community support — questions, demos, small wins, and the company of nurses building the same thing — plus a newsletter worth opening.</p></div>
-      <div class="card"><h3>Safety &amp; governance guardrails</h3><p>Human-approval gates, a no-PHI boundary checklist, and plain-language rules designed to reduce avoidable risk and preserve human review. <a href="governed-harness.html">CNO, CIO or CTO? Inspect the architecture, tests and citations →</a></p></div>
-      <div class="card"><h3>A pathway that grows with you</h3><p>Student, staff, leader, educator — plus advanced lanes for building, side-gigs, and institutional systems when you're ready.</p></div>
+<section class="section section-navy proof-cohort" aria-labelledby="proof-title">
+  <div class="container proof-cohort-grid">
+    <div>
+      <p class="eyebrow">Founding proof cohort</p>
+      <h2 id="proof-title">Help us earn the evidence.</h2>
+      <p>We are recruiting nurse leaders and educators to test one workflow, report where it fails, and help define what responsible usefulness looks like. We will publish only real, permissioned, contextual results.</p>
+      <a class="btn btn-secondary" href="mailto:great.ai.nurses@gmail.com?subject=Nurse%20AI%20OS%20proof%20cohort&body=My%20role%3A%0AThe%20workflow%20I%20want%20to%20test%3A%0AWhat%20I%20hope%20it%20helps%20with%3A%0A%0ANo%20patient%2C%20student-identifying%2C%20or%20employer-confidential%20information%20included.">Join the proof cohort →</a>
+    </div>
+    <ul class="proof-commitments">
+      <li>No invented praise</li>
+      <li>No clinical-readiness claims</li>
+      <li>No institution named without authorization</li>
+      <li>Failures documented, not hidden</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section operator-section" aria-labelledby="operator-title">
+  <div class="container operator-grid">
+    <figure class="media-placeholder media-placeholder-portrait" aria-labelledby="portrait-placeholder-title">
+      <div class="media-placeholder-mark" aria-hidden="true">4:5</div>
+      <figcaption>
+        <strong id="portrait-placeholder-title">Robert Domondon portrait placeholder</strong>
+        <span>Asset needed: warm, direct portrait in a professional nursing context.</span>
+      </figcaption>
+    </figure>
+    <div>
+      <p class="eyebrow">Built from nursing reality</p>
+      <h2 id="operator-title">An ICU nurse building for the people expected to lead the AI shift.</h2>
+      <p>Robert Domondon is an ICU nurse with more than 20 years across clinical practice, nursing leadership, medicine, and hospital administration. Nurse AI OS began with a practical conviction: nurses should not be passive end-users of systems that reshape care, education, and professional judgment.</p>
+      <p><strong>The promise is bounded:</strong> useful preparation now, deeper capability only when implementation evidence and human authorization exist.</p>
+      <a href="about.html">Meet Robert and read the mission →</a>
     </div>
   </div>
 </section>
 
-<!-- ============ COMMUNITY SIGNUP ============ -->
-<section class="section" id="community">
-  <div class="container narrow" style="text-align:center;">
-    <p class="eyebrow">You are not building alone</p>
-    <h2>Join the founding community</h2>
-    <p class="section-intro" style="margin:0 auto 1.6rem;">One signup gets you three things: the <strong>newsletter</strong>, an invitation to every <strong>monthly Lamp Huddle</strong> (live, 45 minutes, free), and <strong>founding-member status</strong> in our community home when the doors open — very soon.</p>
-    <a class="btn btn-secondary" href="https://www.nurseintelligence.com/offers/2LA92vNK" target="_blank" rel="noopener">Community details →</a>
-    <p style="margin-top:1.1rem;"><span class="badge gold">Upcoming Lamp Huddle dates are sent to the list</span></p>
-    <p style="margin-top:.8rem; color:var(--ink-600); font-size:.95rem;">Recorded if you can't make it live. No spam, no PHI, unsubscribe anytime.</p>
-    <p style="margin-top:.4rem; font-size:.95rem;"><a href="https://www.nurseintelligence.com/products/communities/v2/nurseintelligencenetwork/channel/31fafed3-249e-40d1-8b76-6bd5f3b4cd03" target="_blank" rel="noopener">Already a member? Open the community →</a></p>
-  </div>
-</section>
-
-<!-- ============ PROOF TODAY ============ -->
-<section class="section section-alt" id="proof">
+<section class="section section-alt maturity-compact" aria-labelledby="maturity-title">
   <div class="container">
-    <p class="eyebrow">Proof you can inspect</p>
-    <h2>What exists today—not borrowed praise.</h2>
-    <p class="section-intro">We do not publish placeholder testimonials or imply measured outcomes we do not yet have. Judge the current product by the working artifacts and public evidence.</p>
-    <div class="card-grid cols-3">
-      <div class="card">
-        <p class="role-tag">Working browser flow</p>
-        <h3>SOUL Quiz to portable files</h3>
-        <p>The browser-local quiz generates editable SOUL configuration files and a tier-map card that you can download and review before using.</p>
-        <a class="step-cta" href="soul-quiz.html">Inspect the quiz →</a>
-      </div>
-      <div class="card">
-        <p class="role-tag">Downloadable product</p>
-        <h3>Starter Kit and role workflows</h3>
-        <p>The public ZIP contains the folder system, prompts, templates, roadmaps, and safety materials. Downloading it does not install or activate anything.</p>
-        <a class="step-cta" href="assets/nurse-ai-os-starter-kit.zip">Inspect the Starter Kit →</a>
-      </div>
-      <div class="card">
-        <p class="role-tag">Public technical evidence</p>
-        <h3>Policies, schemas, tests, and boundaries</h3>
-        <p>The architecture report and governed-harness page expose developing control-layer work and its limits, including what is not clinically or institutionally authorized.</p>
-        <a class="step-cta" href="governed-harness.html">Inspect the evidence →</a>
-      </div>
+    <p class="eyebrow">The honest product boundary</p>
+    <h2 id="maturity-title">A governed professional environment, beginning with a practical browser experience.</h2>
+    <div class="maturity-compact-grid">
+      <article><p class="role-tag">Available now</p><h3>Community experience</h3><p>Browser-local workflow selection, prompts, templates, SOUL files, local folders, and D0/D1 safety practices. No PHI and no external action.</p></article>
+      <article><p class="role-tag">Capability-gated</p><h3>Tools and orchestration</h3><p>EDENA, Florence-X, memory, connectors, and action modes operate only where the specific capability is implemented, tested, evidenced, and activated.</p></article>
+      <article><p class="role-tag">Formal-gate programs</p><h3>High-consequence use</h3><p>Credentials, institutional use, conformance, PHI eligibility, and high-consequence workflows require separate governance and authorization.</p></article>
     </div>
-    <div class="boundary" style="margin-top:1.5rem;"><strong>Evidence boundary:</strong> Nurse AI OS does not yet claim clinical validation, institutional authorization, or measured nurse outcomes. Named testimonials and usage results will appear only when they are real, permissioned, and described with appropriate context.</div>
+    <div class="boundary"><strong>Category boundary:</strong> Nurse AI OS is not an EHR, not an autonomous clinician, not a licensing board, and not a substitute for institutional authority. <a href="directive.html">Inspect Directive v1.1 →</a></div>
   </div>
 </section>
 
-<!-- ============ VIDEO ============ -->
-<section class="section section-alt">
+<section class="section final-conversion" aria-labelledby="final-title">
   <div class="container narrow">
-    <iframe class="video-embed" src="https://www.youtube.com/embed/N_1RIxX2gbs?si=bK4hZCo1KMjI681m" title="Nurse AI OS — watch" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
-</section>
-
-<!-- ============ FINAL CTA ============ -->
-<section class="section">
-  <div class="container narrow" style="text-align:center;">
-    <h2>Be a Nightingale for your time</h2>
-    <p class="section-intro" style="margin:0 auto 1.6rem;">Florence held the lamp <em>and</em> kept the ledger. AI can carry the counting, the sorting, and the drafting — so you can carry what only a nurse can: presence, judgment, and care for the human in front of you.</p>
-    <a class="btn btn-primary" href="soul-quiz.html">Take the 2-Minute SOUL Quiz →</a>
-    <p style="margin-top:1rem; color:var(--ink-600); font-size:.95rem;">Already started? <a href="start-here.html">Return to your Nurse AI OS setup →</a></p>
-  </div>
-</section>
-
-<section class="section" style="padding:0 0 2.5rem;">
-  <div class="container">
-    <div class="boundary" style="text-align:center;">
-      <strong>Help shape Nurse AI OS.</strong> This is a founding year — what you ask for gets built.
-      <a href="mailto:great.ai.nurses@gmail.com?subject=Feature%20request&body=What%20I%20wish%20Nurse%20AI%20OS%20did%3A%0A%0AMy%20role%3A%0A%0AHow%20often%20I%27d%20use%20it%3A%20">Request a feature →</a> &nbsp;·&nbsp;
-      <a href="mailto:great.ai.nurses@gmail.com?subject=Site%20feedback&body=What%20I%20was%20trying%20to%20do%3A%0A%0AWhat%20was%20confusing%20or%20broken%3A%0A%0AWhat%20would%20have%20helped%3A%20">Give feedback →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SITE STATS (anonymous counters; see assets/counter.js) ============ -->
-<section class="section" id="site-stats" hidden style="padding:2.2rem 0;">
-  <div class="container narrow" style="text-align:center;">
-    <p style="font-family:var(--font-display);font-size:1.15rem;color:var(--navy-800);margin:0 0 .4rem;">🕯️ <span id="stat-visitor">Welcome</span></p>
-    <p style="color:var(--ink-600);font-size:.95rem;margin:0;">Downloads since July 2026 &mdash; Pre-Procedure Checklist: <strong id="stat-cheat">&ndash;</strong> &middot; Media kit (all languages): <strong id="stat-media">&ndash;</strong> &middot; Architecture Report: <strong id="stat-report">&ndash;</strong></p>
-    <p style="color:var(--ink-600);font-size:.8rem;margin:.4rem 0 0;">Anonymous counts &mdash; no cookies, no personal data. Approximate by design.</p>
+    <p class="eyebrow">Start smaller than your ambition</p>
+    <h2 id="final-title">One task. Five minutes. Your judgment stays in charge.</h2>
+    <p>Try the workflow first. Personalize and download only after it earns a place in your practice.</p>
+    <a class="btn btn-primary" href="#workbench">Try a 5-minute workflow →</a>
   </div>
 </section>
 </main>
@@ -599,25 +309,25 @@
 <footer class="site-footer">
   <div class="container">
     <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
-    <p><strong>Boundary:</strong> Nurse AI OS is for learning, personal productivity, career growth, and non-clinical support. It is not a clinical decision system. Never enter patient names, charts, screenshots, or any patient-identifying information.</p>
+    <p><strong>Boundary:</strong> Nurse AI OS supports learning, planning, drafting, professional development, and non-clinical work. Never enter patient names, charts, screenshots, student-identifying information, personnel records, or confidential employer information.</p>
     <div class="footer-links">
-      <a href="start-here.html">Start Here</a>
+      <a href="#workbench">Try a workflow</a>
+      <a href="explore-ecosystem.html">Explore ecosystem</a>
       <a href="pathways.html">Pathways</a>
       <a href="resources.html">Resources</a>
       <a href="about.html">About</a>
       <a href="faq.html">FAQ</a>
       <a href="directive.html">Governance</a>
-      <a href="offers.html">Offers</a>
+      <a href="offers.html">Offers &amp; pricing</a>
       <a href="privacy.html">Privacy</a>
       <a href="terms.html">Terms</a>
       <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
     </div>
-    <p>© 2026 Nurse AI OS · NAIO / NIN · Core setup and self-customization are free forever.</p>
+    <p>© 2026 Nurse AI OS · Operated by Robert Domondon · Core browser workflows and self-customization are free.</p>
   </div>
 </footer>
 
-<script src="assets/counter.js" defer></script>
+<script src="assets/leader-educator-home.js" defer></script>
 <script src="assets/site-shell.js" defer></script>
 </body>
-<!-- build 2026-07-04d -->
 </html>

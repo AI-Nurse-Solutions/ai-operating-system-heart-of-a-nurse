@@ -3,14 +3,14 @@ name: Homepage Steward's Charter
 on:
   pull_request:
     paths:
-      - "index.html"
+      - "explore-ecosystem.html"
       - "assets/nurse-ai.css"
       - "tests/test_home_stewards_charter.py"
       - ".github/workflows/home-stewards-charter.yml"
   push:
     branches: [main]
     paths:
-      - "index.html"
+      - "explore-ecosystem.html"
       - "assets/nurse-ai.css"
       - "tests/test_home_stewards_charter.py"
       - ".github/workflows/home-stewards-charter.yml"
@@ -34,7 +34,7 @@ jobs:
       - name: Refuse accidental secrets, PHI, or realistic individual records
         run: |
           mkdir -p /tmp/home-charter-public/assets
-          cp index.html /tmp/home-charter-public/index.html
+          cp explore-ecosystem.html /tmp/home-charter-public/explore-ecosystem.html
           cp assets/nurse-ai.css /tmp/home-charter-public/assets/nurse-ai.css
           python3 scripts/scan-public-healthcare-artifacts.py /tmp/home-charter-public --label HOME-CHARTER
       - name: Verify workflow and test syntax

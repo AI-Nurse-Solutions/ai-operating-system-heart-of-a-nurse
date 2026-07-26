@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - "**/*.html"
+      - "assets/nurse-ai.css"
+      - "assets/leader-educator-home.js"
+      - "assets/site-shell.js"
+      - "tests/test_leader_educator_home.py"
       - "ar/**"
       - "es/**"
       - "fr/**"
@@ -55,6 +59,10 @@ on:
     branches: [main]
     paths:
       - "**/*.html"
+      - "assets/nurse-ai.css"
+      - "assets/leader-educator-home.js"
+      - "assets/site-shell.js"
+      - "tests/test_leader_educator_home.py"
       - "ar/**"
       - "es/**"
       - "fr/**"
@@ -126,7 +134,7 @@ jobs:
       - name: Scan current public governance surfaces
         run: |
           pages=(
-            directive.html offers.html index.html about.html start-here.html faq.html
+            directive.html offers.html index.html explore-ecosystem.html about.html start-here.html faq.html
             terms.html privacy.html licensing.html governed-harness.html resources.html media.html
             architecture-report.html article-evidence-nurse-ai-os.html switchboard/index.html
             care-intelligence/index.html

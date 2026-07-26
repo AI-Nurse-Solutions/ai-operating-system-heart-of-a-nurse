@@ -44,6 +44,7 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.home = (ROOT / "index.html").read_text(encoding="utf-8")
+        cls.ecosystem = (ROOT / "explore-ecosystem.html").read_text(encoding="utf-8")
         cls.faq = (ROOT / "faq.html").read_text(encoding="utf-8")
         cls.start = (ROOT / "start-here.html").read_text(encoding="utf-8")
         cls.shell = (ROOT / "assets" / "site-shell.js").read_text(encoding="utf-8")
@@ -100,24 +101,24 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
         self.assertIn("localeHome", self.shell)
         self.assertIn('path === "/" || path === "/index.html"', self.shell)
         self.assertIn('className = "new-here-bar"', self.shell)
-        self.assertIn('new URL("../soul-quiz.html", script.src)', self.shell)
+        self.assertIn('new URL("../index.html#workbench", script.src)', self.shell)
 
     def test_homepage_has_one_primary_action_repeated(self):
         primary_links = re.findall(
             r'<a class="btn btn-primary" href="([^"]+)"', self.home, re.I
         )
-        self.assertGreaterEqual(len(primary_links), 3)
-        self.assertEqual({"soul-quiz.html"}, set(primary_links))
+        self.assertGreaterEqual(len(primary_links), 2)
+        self.assertEqual({"#workbench"}, set(primary_links))
         nav = primary_nav(self.home)
         self.assertEqual(1, nav.count('class="nav-cta"'))
-        self.assertIn('href="soul-quiz.html"', nav)
+        self.assertIn('href="#workbench"', nav)
 
     def test_mobile_browser_and_optional_desktop_boundaries_are_up_front(self):
-        hero = self.home.split('<section class="hero">', 1)[1].split("</section>", 1)[0]
+        hero = self.home.split('<section class="leader-educator-hero"', 1)[1].split("</section>", 1)[0]
         for phrase in (
-            "phone, tablet, Chromebook, Mac, or Windows computer",
-            "Only optional Hermes requires a desktop.",
-            "Core setup and self-customization are free forever.",
+            "Start in your browser.",
+            "No patient data",
+            "You review every result",
         ):
             self.assertIn(phrase, hero)
         self.assertIn("Can I start on my phone? What needs a computer?", self.faq)
@@ -155,13 +156,16 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
             "September 15–17, 2026 virtual summit",
             "No auto-enrollment",
         ):
-            self.assertIn(phrase, self.home)
+            self.assertIn(phrase, self.ecosystem)
         self.assertIn('id="pricing"', self.faq)
         self.assertIn("free core setup and self-directed customization continue permanently", self.faq)
 
     def test_homepages_do_not_use_inflated_anchor_or_placeholder_testimonials(self):
         failures = []
-        for path in (ROOT / "index.html",) + tuple(ROOT / locale / "index.html" for locale in LOCALES):
+        all_homepages = (ROOT / "index.html", ROOT / "explore-ecosystem.html") + tuple(
+            ROOT / locale / "index.html" for locale in LOCALES
+        )
+        for path in all_homepages:
             text = path.read_text(encoding="utf-8")
             for pattern in (
                 r"\$1,500\s*[–-]\s*\$2,999",
@@ -172,11 +176,12 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
             ):
                 if re.search(pattern, text, re.I):
                     failures.append(f"{path.relative_to(ROOT)}: {pattern}")
-            primary_links = re.findall(
-                r'<a class="btn btn-primary" href="([^"]+)"', text, re.I
-            )
-            if not primary_links or any("soul-quiz.html" not in href for href in primary_links):
-                failures.append(f"{path.relative_to(ROOT)}: competing primary CTA")
+            if path.parent.name in LOCALES or path.name == "explore-ecosystem.html":
+                primary_links = re.findall(
+                    r'<a class="btn btn-primary" href="([^"]+)"', text, re.I
+                )
+                if not primary_links or any("soul-quiz.html" not in href for href in primary_links):
+                    failures.append(f"{path.relative_to(ROOT)}: competing primary CTA")
         self.assertEqual([], failures)
 
     def test_localized_front_doors_carry_same_pricing_and_device_boundaries(self):

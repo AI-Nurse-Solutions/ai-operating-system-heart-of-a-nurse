@@ -38,7 +38,7 @@ class StewardGovernancePreviewTests(unittest.TestCase):
         cls.readme = (PREVIEW / "README.md").read_text(encoding="utf-8")
         cls.provenance = json.loads(PROVENANCE.read_text(encoding="utf-8"))
         cls.page = (STEWARD / "index.html").read_text(encoding="utf-8")
-        cls.home = (ROOT / "index.html").read_text(encoding="utf-8")
+        cls.home = (ROOT / "explore-ecosystem.html").read_text(encoding="utf-8")
         cls.css = (ROOT / "assets" / "nurse-ai.css").read_text(encoding="utf-8")
         cls.workflow = (ROOT / ".github" / "workflows" / "hospital-clinic-steward.yml").read_text(encoding="utf-8")
 
@@ -229,7 +229,7 @@ class StewardGovernancePreviewTests(unittest.TestCase):
         self.assertNotIn("steward-hospital-clinic-administrator-complete-edition", self.page)
 
     def test_homepage_handoff_is_preview_and_outside_nurse_role_grid(self):
-        page = (ROOT / "index.html").read_text(encoding="utf-8")
+        page = (ROOT / "explore-ecosystem.html").read_text(encoding="utf-8")
         admin = page.index('class="home-admin-lane"')
         self.assertLess(page.index('class="home-resident-video"'), page.index('class="home-rt-video"'))
         self.assertLess(page.index('class="home-rt-video"'), admin)

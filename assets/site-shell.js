@@ -10,6 +10,7 @@
   var corePages = {
     "student-nurse.html": true,
     "nurse-practitioner.html": true,
+    "staff-nurse.html": true,
     "soul-quiz.html": true,
     "soul-quiz-guide.html": true,
     "life-quiz.html": true,

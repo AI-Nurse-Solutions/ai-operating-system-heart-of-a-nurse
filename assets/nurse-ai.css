@@ -1078,6 +1078,172 @@ body.np-personal-funnel { background: var(--linen-50); }
   .np-practice-card-preview .btn { width: 100%; text-align: center; }
 }
 
+/* ---------- Staff nurse off-shift conversion funnel ---------- */
+body.staff-nurse-funnel { background: var(--linen-50); }
+.staff-nurse-funnel .section-alt { background: var(--linen-100); }
+.staff-hero {
+  padding: clamp(3.4rem, 8vw, 6.5rem) 0 clamp(3rem, 6vw, 5rem);
+  color: #e6eef5;
+  background:
+    radial-gradient(circle at 84% 20%, rgba(217, 164, 65, .18), transparent 27rem),
+    radial-gradient(circle at 18% 82%, rgba(29, 156, 153, .16), transparent 30rem),
+    linear-gradient(128deg, #0b1a2a, var(--navy-900) 58%, #153d47);
+}
+.staff-hero-grid {
+  display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(310px, .88fr);
+  gap: clamp(2.4rem, 6vw, 5rem); align-items: center;
+}
+.staff-hero .kicker { color: var(--gold-300); }
+.staff-hero h1 {
+  max-width: 790px; margin: .32em 0 .4em; color: var(--white);
+  font-size: clamp(2.5rem, 5.6vw, 4.7rem); letter-spacing: -.032em;
+}
+.staff-hero .lede { max-width: 730px; color: #d7e3ec; font-size: clamp(1.1rem, 2vw, 1.34rem); }
+.staff-hero-trust { margin: 1rem 0 0; color: #c9d8e4; font-size: .96rem; }
+.staff-hero-trust strong { color: var(--gold-300); }
+.staff-offer-card {
+  padding: clamp(1.45rem, 4vw, 2.25rem); color: var(--navy-900);
+  background: linear-gradient(145deg, #fffdf8, #edf7f6);
+  border: 2px solid var(--gold-500); border-radius: calc(var(--radius) + 4px);
+  box-shadow: 0 22px 55px rgba(0,0,0,.24);
+}
+.staff-offer-label, .staff-preview-label {
+  margin: 0; color: var(--teal-600); font-size: .77rem; font-weight: 800;
+  letter-spacing: .13em; text-transform: uppercase;
+}
+.staff-offer-card h2 { margin: .3rem 0 1.1rem; font-size: clamp(1.65rem, 3.7vw, 2.25rem); }
+.staff-offer-card ol { display: grid; gap: .65rem; margin: 0; padding: 0; list-style: none; counter-reset: staff-offer; }
+.staff-offer-card li {
+  position: relative; display: grid; gap: .05rem; min-height: 3.2rem;
+  padding: .7rem .75rem .7rem 3.1rem; background: rgba(255,255,255,.84);
+  border: 1px solid rgba(14,31,51,.12); border-radius: 9px;
+}
+.staff-offer-card li::before {
+  counter-increment: staff-offer; content: counter(staff-offer); position: absolute;
+  left: .72rem; top: .72rem; display: grid; place-items: center; width: 1.75rem; height: 1.75rem;
+  color: var(--white); background: var(--navy-900); border-radius: 50%; font-weight: 800;
+}
+.staff-offer-card li span { color: var(--ink-600); font-size: .89rem; line-height: 1.42; }
+.staff-offer-close { margin: 1rem 0 0; color: var(--ink-600); font-size: .9rem; }
+
+.staff-credibility { background: var(--white); border-bottom: 1px solid rgba(14,31,51,.12); }
+.staff-credibility-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+.staff-credibility-grid p {
+  display: grid; gap: .05rem; margin: 0; padding: 1rem; text-align: center;
+  border-right: 1px solid rgba(14,31,51,.12);
+}
+.staff-credibility-grid p:last-child { border-right: 0; }
+.staff-credibility-grid strong { color: var(--navy-900); }
+.staff-credibility-grid span { color: var(--ink-600); font-size: .84rem; }
+
+.staff-builder-section { scroll-margin-top: 5.5rem; }
+.staff-builder-shell {
+  display: grid; grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
+  gap: 1.4rem; margin-top: 1.6rem;
+}
+.staff-config-panel, .staff-practice-card-preview {
+  min-width: 0; padding: clamp(1.25rem, 3vw, 1.75rem); background: var(--white);
+  border: 1px solid rgba(14,31,51,.15); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+}
+.staff-config-panel { display: grid; align-content: start; gap: .55rem; }
+.staff-config-panel label { margin-top: .6rem; color: var(--navy-900); font-weight: 800; }
+.staff-config-panel label:first-child { margin-top: 0; }
+.staff-config-panel select {
+  width: 100%; min-height: 48px; padding: .68rem .75rem; color: var(--navy-900);
+  background: var(--linen-50); border: 1px solid rgba(14,31,51,.28); border-radius: 8px;
+  font: 600 .98rem var(--font-body);
+}
+.staff-config-panel select:focus-visible, .staff-practice-card-preview textarea:focus-visible {
+  outline: 3px solid var(--teal-500); outline-offset: 2px;
+}
+.staff-safety-card {
+  display: grid; gap: .2rem; margin-top: 1rem; padding: 1rem;
+  background: var(--gold-100); border-left: 4px solid var(--gold-500);
+}
+.staff-safety-card span { color: var(--ink-600); font-size: .88rem; line-height: 1.5; }
+.staff-practice-card-preview h3 { margin: .25rem 0 .85rem; font-size: clamp(1.35rem, 3vw, 1.75rem); }
+.staff-practice-card-preview textarea {
+  display: block; width: 100%; min-height: 480px; resize: vertical; padding: 1rem;
+  color: #dbe6ef; background: var(--navy-900); border: 1px solid rgba(14,31,51,.38);
+  border-radius: 10px; font: 500 .86rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.staff-practice-card-preview .workflow-actions { margin-top: 1rem; }
+.staff-practice-card-preview button { border: 0; cursor: pointer; font-family: var(--font-body); }
+.staff-provider-boundary {
+  margin: 1rem 0 0; padding: 1rem; color: var(--navy-900);
+  background: var(--teal-100); border-left: 4px solid var(--teal-600);
+  font-size: .9rem; line-height: 1.5;
+}
+.staff-provider-boundary a { color: var(--navy-800); font-weight: 700; }
+
+.staff-pain-layout {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(310px, .85fr);
+  gap: clamp(1.6rem, 4vw, 3rem); align-items: center;
+}
+.staff-pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-top: 1.5rem; }
+.staff-pain-grid article { padding: 1rem; background: var(--white); border-left: 4px solid var(--teal-600); }
+.staff-pain-grid article:last-child { grid-column: 1 / -1; }
+.staff-pain-grid h3 { font-size: 1.12rem; }
+.staff-pain-grid p { margin: 0; color: var(--ink-600); font-size: .93rem; }
+.staff-photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; margin-top: 2rem; }
+.staff-photo-card {
+  min-width: 0; margin: 0; overflow: hidden; background: var(--white);
+  border: 1px solid rgba(14,31,51,.14); border-radius: var(--radius);
+  box-shadow: 0 18px 40px rgba(14,31,51,.12);
+}
+.staff-photo-card img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; }
+.staff-photo-card figcaption { margin: 0; padding: .8rem 1rem; color: var(--ink-600); font-size: .8rem; line-height: 1.45; }
+
+.staff-focus-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .85rem; margin-top: 2rem; }
+.staff-focus-grid article { padding: 1.2rem; background: var(--white); border-top: 4px solid var(--gold-500); }
+.staff-focus-grid span { color: var(--teal-600); font-weight: 800; letter-spacing: .08em; }
+.staff-focus-grid h3 { margin-top: .45rem; }
+.staff-focus-grid p { margin-bottom: 0; color: var(--ink-600); font-size: .93rem; }
+.staff-free-grid {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr);
+  gap: clamp(1.5rem, 4vw, 3rem); align-items: center;
+}
+.staff-formal-boundary {
+  padding: clamp(1.3rem, 3vw, 1.8rem); background: var(--white);
+  border: 1px solid rgba(14,31,51,.15); border-radius: var(--radius);
+}
+.staff-formal-boundary h3 { color: var(--navy-900); }
+.staff-formal-boundary p { color: var(--ink-600); }
+.staff-source-caveat { color: var(--ink-600); font-size: .9rem; }
+.staff-evidence-note a { font-weight: 700; }
+.staff-advanced-path { text-align: center; }
+.staff-advanced-path p { margin-right: auto; margin-left: auto; max-width: 780px; }
+.staff-footer-languages { display: flex; flex-wrap: wrap; gap: .45rem .8rem; margin: 1rem 0; }
+.staff-footer-languages a { color: var(--gold-300); }
+
+@media (max-width: 900px) {
+  .staff-hero-grid, .staff-builder-shell, .staff-pain-layout, .staff-free-grid { grid-template-columns: 1fr; }
+  .staff-focus-grid { grid-template-columns: repeat(2, 1fr); }
+  .staff-credibility-grid { grid-template-columns: repeat(2, 1fr); }
+  .staff-credibility-grid p:nth-child(2) { border-right: 0; }
+  .staff-credibility-grid p:nth-child(-n+2) { border-bottom: 1px solid rgba(14,31,51,.12); }
+}
+
+@media (max-width: 620px) {
+  .staff-nurse-funnel .nav-bar {
+    display: grid; grid-template-columns: 1fr; gap: .7rem; align-items: start;
+    padding-top: .8rem; padding-bottom: .8rem;
+  }
+  .staff-nurse-funnel .nav-links { display: grid; grid-template-columns: 1fr; width: 100%; }
+  .staff-nurse-funnel .nav-links a:not(.nav-cta) { display: none; }
+  .staff-nurse-funnel .nav-links .nav-cta { display: flex; justify-content: center; text-align: center; width: 100%; }
+  .staff-hero { padding-top: 1.9rem; }
+  .staff-hero h1 { font-size: clamp(2.08rem, 10.5vw, 2.5rem); line-height: 1.06; }
+  .staff-hero .lede { font-size: 1rem; }
+  .staff-hero .btn { width: 100%; text-align: center; }
+  .staff-credibility-grid, .staff-focus-grid, .staff-photo-grid, .staff-pain-grid { grid-template-columns: 1fr; }
+  .staff-credibility-grid p { border-right: 0; border-bottom: 1px solid rgba(14,31,51,.12); }
+  .staff-credibility-grid p:last-child { border-bottom: 0; }
+  .staff-pain-grid article:last-child { grid-column: auto; }
+  .staff-practice-card-preview textarea { min-height: 390px; font-size: .76rem; }
+  .staff-practice-card-preview .btn { width: 100%; text-align: center; }
+}
+
 /* ---------- Student nurse conversion funnel ---------- */
 body.student-nurse-funnel { background: var(--linen-50); }
 .student-nurse-funnel .section-alt { background: var(--linen-100); }

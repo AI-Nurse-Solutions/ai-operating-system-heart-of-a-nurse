@@ -3,7 +3,7 @@ name: Directive v1.1 website alignment
 on:
   pull_request:
     paths:
-      - "*.html"
+      - "**/*.html"
       - "ar/**"
       - "es/**"
       - "fr/**"
@@ -54,7 +54,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "*.html"
+      - "**/*.html"
       - "ar/**"
       - "es/**"
       - "fr/**"
@@ -129,6 +129,7 @@ jobs:
             directive.html offers.html index.html about.html start-here.html faq.html
             terms.html privacy.html licensing.html governed-harness.html resources.html media.html
             architecture-report.html article-evidence-nurse-ai-os.html switchboard/index.html
+            care-intelligence/index.html
             wellness-services-marketing-managers/index.html
           )
           for page in "${pages[@]}"; do

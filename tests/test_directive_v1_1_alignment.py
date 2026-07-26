@@ -1,12 +1,16 @@
 import hashlib
+import json
 import re
 import unittest
+from html import unescape
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("es", "tl", "zh", "ar", "vi", "ru", "hi", "fr")
 ABOUT_PAGES = (ROOT / "about.html",) + tuple(ROOT / locale / "about.html" for locale in LOCALES)
+HOME_PAGES = (ROOT / "index.html",) + tuple(ROOT / locale / "index.html" for locale in LOCALES)
 MEDIA_SOURCES = (ROOT / "assets" / "nurse-ai-os-media-packet.md",) + tuple(
     ROOT / "assets" / f"nurse-ai-os-media-packet-{locale}.md" for locale in LOCALES
 )
@@ -112,6 +116,70 @@ class DirectiveV11WebsiteAlignmentTests(unittest.TestCase):
             self.assertIsNotNone(match, label)
             assert match is not None
             self.assertEqual(hashlib.sha256(artifact.read_bytes()).hexdigest(), match.group(1), label)
+
+    def test_homepage_operator_schema_has_one_person_without_nested_founder(self):
+        for path in HOME_PAGES:
+            text = path.read_text(encoding="utf-8")
+            blocks = re.findall(
+                r'<script\b(?=[^>]*\btype=["\']application/ld\+json["\'])[^>]*>\s*(.*?)\s*</script>',
+                text,
+                re.DOTALL | re.IGNORECASE,
+            )
+            self.assertTrue(blocks, path.relative_to(ROOT))
+            graph = []
+            for block in blocks:
+                payload = json.loads(block)
+                graph.extend(payload.get("@graph", [payload]))
+            operator = [node for node in graph if node.get("@id") == "https://nurse-ai-os.org/#operator"]
+            self.assertEqual(len(operator), 1, path.relative_to(ROOT))
+            self.assertEqual(operator[0].get("@type"), "Person", path.relative_to(ROOT))
+            self.assertNotIn("founder", operator[0], path.relative_to(ROOT))
+            self.assertIn("jobTitle", operator[0], path.relative_to(ROOT))
+            expected_about = "https://nurse-ai-os.org/about.html" if path == HOME_PAGES[0] else f"https://nurse-ai-os.org/{path.parent.name}/about.html"
+            self.assertEqual(operator[0].get("url"), expected_about, path.relative_to(ROOT))
+            websites = [node for node in graph if node.get("@type") == "WebSite"]
+            self.assertEqual(len(websites), 1, path.relative_to(ROOT))
+            self.assertEqual(
+                websites[0].get("publisher"),
+                {"@id": "https://nurse-ai-os.org/#operator"},
+                path.relative_to(ROOT),
+            )
+
+    def test_website_alignment_workflow_covers_all_nested_html(self):
+        workflow = (ROOT / ".github" / "workflows" / "website-alignment.yml").read_text(encoding="utf-8")
+        self.assertEqual(workflow.count('- "**/*.html"'), 2)
+        self.assertNotIn('- "*.html"', workflow)
+        scanner_pages = workflow.split("pages=(", 1)[1].split(")", 1)[0]
+        self.assertIn("care-intelligence/index.html", scanner_pages)
+
+    def test_care_intelligence_download_is_visibly_historical_and_docx_is_delinked(self):
+        page = (ROOT / "care-intelligence" / "index.html").read_text(encoding="utf-8")
+        for phrase in (
+            "Historical pre-Directive working paper",
+            "predates NIN–NAIO Master Directive v1.1",
+            "not presented as current architecture",
+            "Historical PDF",
+        ):
+            self.assertIn(phrase, page, phrase)
+        anchors = re.findall(
+            r'<a\b[^>]*\bhref=["\']([^"\']+)["\'][^>]*>(.*?)</a>',
+            page,
+            re.DOTALL | re.IGNORECASE,
+        )
+        normalized = [
+            (unquote(urlsplit(unescape(href)).path).casefold(), unescape(re.sub(r"<[^>]+>", " ", body)))
+            for href, body in anchors
+        ]
+        self.assertFalse(
+            any(href.rstrip("/").endswith("care-intelligence-white-paper.docx") for href, _ in normalized)
+        )
+        pdf_links = [
+            label for href, label in normalized
+            if href.rstrip("/").endswith("care-intelligence-white-paper.pdf")
+        ]
+        self.assertEqual(len(pdf_links), 3)
+        for label in pdf_links:
+            self.assertRegex(label.casefold(), r"historical|pre-directive")
 
     def test_quiz_and_public_onboarding_use_current_scope_not_a0(self):
         self.assertNotRegex(self.quiz_guide, r"\bA0\b")

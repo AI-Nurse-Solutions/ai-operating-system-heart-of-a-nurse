@@ -85,6 +85,13 @@ function buildHarness({ clipboard = null, execCommand }) {
 }
 
 {
+  const harness = buildHarness({ clipboard: null, execCommand: undefined });
+  await harness.click();
+  assert.match(harness.elements['np-practice-card-status'].textContent, /Automatic copy was blocked/);
+  assert.equal(harness.elements['np-practice-card'].selectCount, 2);
+}
+
+{
   const harness = buildHarness({
     clipboard: { async writeText() { throw new Error('clipboard denied'); } },
     execCommand: () => { throw new Error('fallback exploded'); }
@@ -133,4 +140,4 @@ function buildHarness({ clipboard = null, execCommand }) {
   assert.match(card, /Personal-use Draft support only/);
 }
 
-console.log('NURSE_PRACTITIONER_BROWSER_OK clipboard_paths=4 clipboard_race=1 copied_state_reset=1 configuration_switch=1');
+console.log('NURSE_PRACTITIONER_BROWSER_OK clipboard_paths=5 clipboard_race=1 copied_state_reset=1 configuration_switch=1');

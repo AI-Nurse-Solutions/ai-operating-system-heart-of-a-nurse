@@ -52,6 +52,17 @@ class NursePractitionerFunnelTests(unittest.TestCase):
         self.assertGreaterEqual(len(primary_links), 2)
         self.assertEqual({"#practice-card-builder"}, set(primary_links))
 
+    def test_social_preview_uses_absolute_reviewed_image_metadata(self) -> None:
+        image_url = (
+            "https://nurse-ai-os.org/assets/img/np-intentional-practice.jpg"
+        )
+        self.assertIn(
+            f'<meta property="og:image" content="{image_url}">', self.page
+        )
+        self.assertIn(
+            f'<meta name="twitter:image" content="{image_url}">', self.page
+        )
+
     def test_first_use_builder_precedes_pain_media_field_notes_and_advanced_setup(self) -> None:
         credibility_end = self.page.index("</section>", self.page.index("np-credibility"))
         builder = self.page.index('id="practice-card-builder"')

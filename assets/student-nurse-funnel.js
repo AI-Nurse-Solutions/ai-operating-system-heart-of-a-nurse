@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var safetyContract = "Safety contract: No patient data. No student-identifying data. Do not answer graded work or invent facts or citations. Do not make clinical decisions. Do not replace faculty, preceptors, approved sources, or school policy. This is Draft-only learning support. If the activity is graded, restricted, or permission is unclear, stop and ask faculty before using AI. Mark claims that need verification, disclose AI use when required, and require my human review. ";
+  var safetyContract = "Safety contract: No patient data. No student-identifying data. Do not include restricted course material or school-confidential information. When sources are needed, use only source names, public sources, or excerpts I am permitted to share. Do not answer graded work or invent facts or citations. Do not make clinical decisions. Do not replace faculty, preceptors, approved sources, or school policy. This is Draft-only learning support. If the activity is graded, restricted, or permission is unclear, stop and ask faculty before using AI. Mark claims that need verification, disclose AI use when required, and require my human review. ";
 
   var workflows = {
     "student-study-map": {

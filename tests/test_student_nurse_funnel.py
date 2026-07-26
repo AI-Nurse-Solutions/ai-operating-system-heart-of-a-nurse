@@ -101,6 +101,8 @@ class StudentNurseFunnelTests(unittest.TestCase):
         for phrase in (
             "No patient data",
             "No student-identifying data",
+            "Do not include restricted course material or school-confidential information",
+            "use only source names, public sources, or excerpts I am permitted to share",
             "Do not answer graded work",
             "Do not make clinical decisions",
             "Draft-only learning support",

@@ -51,6 +51,8 @@ function buildHarness({ clipboard = null, execCommand }) {
   });
   await harness.click();
   assert.ok(written.startsWith('Safety contract:'), 'clipboard receives the bounded prompt');
+  assert.match(written, /Do not include restricted course material or school-confidential information/);
+  assert.match(written, /use only source names, public sources, or excerpts I am permitted to share/);
   assert.equal(harness.elements['copy-student-workflow'].textContent, 'Copied');
   assert.match(harness.elements['student-workflow-status'].textContent, /provider privacy boundary/);
 }

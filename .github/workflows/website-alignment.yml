@@ -9,6 +9,7 @@ on:
       - "assets/student-nurse-funnel.js"
       - "assets/nurse-practitioner-funnel.js"
       - "assets/staff-nurse-funnel.js"
+      - "assets/medical-resident-funnel.js"
       - "assets/img/student-recall-study-map.jpg"
       - "assets/img/student-source-verification.jpg"
       - "assets/img/np-intentional-practice.jpg"
@@ -17,6 +18,9 @@ on:
       - "assets/img/staff-after-shift-pause.jpg"
       - "assets/img/staff-career-growth.jpg"
       - "assets/img/staff-shared-governance-prep.jpg"
+      - "assets/img/resident-rotation-learning.jpg"
+      - "assets/img/resident-journal-club.jpg"
+      - "assets/img/resident-career-prep.jpg"
       - "assets/site-shell.js"
       - "tests/test_leader_educator_home.py"
       - "tests/test_student_nurse_funnel.py"
@@ -25,6 +29,8 @@ on:
       - "tests/test_nurse_practitioner_browser.mjs"
       - "tests/test_staff_nurse_funnel.py"
       - "tests/test_staff_nurse_browser.mjs"
+      - "tests/test_medical_resident_funnel.py"
+      - "tests/test_medical_resident_browser.mjs"
       - "ar/**"
       - "es/**"
       - "fr/**"
@@ -81,6 +87,7 @@ on:
       - "assets/student-nurse-funnel.js"
       - "assets/nurse-practitioner-funnel.js"
       - "assets/staff-nurse-funnel.js"
+      - "assets/medical-resident-funnel.js"
       - "assets/img/student-recall-study-map.jpg"
       - "assets/img/student-source-verification.jpg"
       - "assets/img/np-intentional-practice.jpg"
@@ -89,6 +96,9 @@ on:
       - "assets/img/staff-after-shift-pause.jpg"
       - "assets/img/staff-career-growth.jpg"
       - "assets/img/staff-shared-governance-prep.jpg"
+      - "assets/img/resident-rotation-learning.jpg"
+      - "assets/img/resident-journal-club.jpg"
+      - "assets/img/resident-career-prep.jpg"
       - "assets/site-shell.js"
       - "tests/test_leader_educator_home.py"
       - "tests/test_student_nurse_funnel.py"
@@ -97,6 +107,8 @@ on:
       - "tests/test_nurse_practitioner_browser.mjs"
       - "tests/test_staff_nurse_funnel.py"
       - "tests/test_staff_nurse_browser.mjs"
+      - "tests/test_medical_resident_funnel.py"
+      - "tests/test_medical_resident_browser.mjs"
       - "ar/**"
       - "es/**"
       - "fr/**"
@@ -168,7 +180,7 @@ jobs:
       - name: Scan current public governance surfaces
         run: |
           pages=(
-            directive.html offers.html index.html student-nurse.html nurse-practitioner.html staff-nurse.html assets/student-nurse-funnel.js assets/nurse-practitioner-funnel.js assets/staff-nurse-funnel.js pathways.html explore-ecosystem.html about.html start-here.html faq.html
+            directive.html offers.html index.html student-nurse.html nurse-practitioner.html staff-nurse.html medical-resident.html assets/student-nurse-funnel.js assets/nurse-practitioner-funnel.js assets/staff-nurse-funnel.js assets/medical-resident-funnel.js pathways.html explore-ecosystem.html about.html start-here.html faq.html
             terms.html privacy.html licensing.html governed-harness.html resources.html media.html
             architecture-report.html article-evidence-nurse-ai-os.html switchboard/index.html
             care-intelligence/index.html

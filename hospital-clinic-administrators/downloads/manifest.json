@@ -3,7 +3,7 @@
     {
       "activation": "separate_explicit_post_card_approval",
       "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
-      "bytes": 9998,
+      "bytes": 9957,
       "download": "/hermes-role-profiles/downloads/naio-admin-pilot-ops-hermes-profile-v1.0.0.zip",
       "install_on_download": false,
       "mapping_classification": "conditional_candidate",
@@ -11,7 +11,7 @@
       "mcp_enabled_by_default": false,
       "mcp_tools_exposed_by_default": 0,
       "profile": "admin-pilot-ops",
-      "sha256": "4502ad8ed9c9a9d30ee2738d6e79f2812e1159eea28b3b1dda4234e40288ad45",
+      "sha256": "ffbe3698da33c0ea0e74df7aecdd9ae44f60d8d6c69520dcd6b8c5a1790fb490",
       "version": "1.0.0"
     }
   ],

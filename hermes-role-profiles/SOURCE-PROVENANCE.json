@@ -4,7 +4,7 @@
     "floating_dependencies_pinned",
     "mcp_disabled_and_zero_tools_by_default",
     "lazy_installs_disabled",
-    "tirith_fail_closed",
+    "tirith_fail_closed_requested_with_v019_circuit_breaker_caveat",
     "real_case_and_deidentification_workflows_removed",
     "nonexistent_commands_removed",
     "separate_profile_install_and_per_mcp_activation_cards_added"

@@ -95,6 +95,8 @@ class HermesRoleMcpProfilesTests(unittest.TestCase):
             card = (profile / "MCP-ACTIVATION-CARD.md").read_text()
             self.assertIn(f"Mapping classification: `{MAPPING_CLASSIFICATIONS[role]}`", card)
             self.assertIn("Mapping eligibility condition:", card)
+            skill = (profile / "skills/review-mcp-activation/SKILL.md").read_text()
+            self.assertNotIn("configure, update, or remove", skill)
 
     def test_all_mcp_servers_are_inactive_and_zero_tool_by_default(self) -> None:
         found_specs: set[str] = set()
@@ -187,6 +189,16 @@ class HermesRoleMcpProfilesTests(unittest.TestCase):
             entry["activation_readiness"] == "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime"
             for entry in mapping["mappings"]
         ))
+        for role in ROLES:
+            role_lock = json.loads((SOURCE / role / "MCP-SUPPLY-CHAIN-LOCK.json").read_text())
+            has_github_remote = "github" in role_lock["dependencies"]
+            self.assertEqual("remote GitHub service" in role_lock["policy"], has_github_remote)
+        provenance = json.loads((PROFILES / "SOURCE-PROVENANCE.json").read_text())
+        self.assertIn(
+            "tirith_fail_closed_requested_with_v019_circuit_breaker_caveat",
+            provenance["critical_corrections"],
+        )
+        self.assertNotIn("tirith_fail_closed", provenance["critical_corrections"])
 
     def test_deterministic_downloads_match_sources_and_ledgers(self) -> None:
         manifest = json.loads(MANIFEST.read_text())
@@ -261,6 +273,119 @@ class HermesRoleMcpProfilesTests(unittest.TestCase):
                 self.assertFalse(any(downloads.iterdir()))
             finally:
                 fifo.unlink(missing_ok=True)
+
+    def test_provenance_rejects_symlinks_and_special_files(self) -> None:
+        builder = load_builder_module("build_hermes_role_profiles_provenance_entries")
+        with tempfile.TemporaryDirectory() as directory:
+            upstream = Path(directory) / "upstream"
+            role = upstream / "study-coach"
+            role.mkdir(parents=True)
+            outside = Path(directory) / "outside.txt"
+            outside.write_text("must never be hashed")
+            link = role / "linked.txt"
+            link.symlink_to(outside)
+            with self.assertRaisesRegex(ValueError, "Provenance source symlink prohibited"):
+                builder.source_provenance(upstream)
+            link.unlink()
+            role.rmdir()
+            role.symlink_to(Path(directory) / "missing-role", target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, "Provenance role root must be a real directory"):
+                builder.source_provenance(upstream)
+            role.unlink()
+            role.mkdir()
+            fifo = role / "special.fifo"
+            os.mkfifo(fifo)
+            try:
+                with self.assertRaisesRegex(ValueError, "Provenance source special entry prohibited"):
+                    builder.source_provenance(upstream)
+            finally:
+                fifo.unlink(missing_ok=True)
+
+            nested = role / "nested"
+            nested.mkdir()
+            (nested / "file.txt").write_text("safe provenance bytes")
+            outside_directory = Path(directory) / "outside-directory"
+            outside_directory.mkdir()
+            (outside_directory / "file.txt").write_text("outside provenance bytes")
+            held = role / "held-nested"
+            original_open = builder.os.open
+            swapped = False
+
+            def swap_parent_before_final_open(path, flags, *args, **kwargs):
+                nonlocal swapped
+                if path == "file.txt" and kwargs.get("dir_fd") is not None and not swapped:
+                    nested.rename(held)
+                    nested.symlink_to(outside_directory, target_is_directory=True)
+                    swapped = True
+                return original_open(path, flags, *args, **kwargs)
+
+            try:
+                with mock.patch.object(builder.os, "open", side_effect=swap_parent_before_final_open):
+                    provenance = builder.source_provenance(upstream)
+                record = provenance["upstream_roles"]["study-coach"]["study-coach/nested/file.txt"]
+                self.assertEqual(record["sha256"], hashlib.sha256(b"safe provenance bytes").hexdigest())
+            finally:
+                if nested.is_symlink():
+                    nested.unlink()
+                if held.exists():
+                    held.rename(nested)
+
+    def test_companion_record_rejects_symlink_artifact(self) -> None:
+        module_path = ROOT / "scripts/hermes_role_profile_records.py"
+        spec = importlib.util.spec_from_file_location("hermes_role_profile_records_symlink", module_path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            root = repo / "hermes-role-profiles"
+            downloads = root / "downloads"
+            downloads.mkdir(parents=True)
+            outside = repo / "outside.zip"
+            outside.write_bytes(b"outside")
+            artifact = downloads / "profile.zip"
+            artifact.symlink_to(outside)
+            manifest = {
+                "profiles": [{
+                    "profile": "study-coach",
+                    "download": "downloads/profile.zip",
+                    "bytes": len(outside.read_bytes()),
+                    "sha256": hashlib.sha256(outside.read_bytes()).hexdigest(),
+                    "mcp_enabled_by_default": False,
+                    "mcp_tools_exposed_by_default": 0,
+                }]
+            }
+            (root / "manifest.json").write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError, "beneath its root"):
+                module.companion_record(repo, "study-coach")
+
+            artifact.unlink()
+            safe_bytes = b"safe archive bytes"
+            artifact.write_bytes(safe_bytes)
+            outside_directory = repo / "outside-downloads"
+            outside_directory.mkdir()
+            (outside_directory / "profile.zip").write_bytes(b"outside archive bytes")
+            held = root / "held-downloads"
+            original_open = module.os.open
+            swapped = False
+
+            def swap_parent_before_final_open(path, flags, *args, **kwargs):
+                nonlocal swapped
+                if path == "profile.zip" and kwargs.get("dir_fd") is not None and not swapped:
+                    downloads.rename(held)
+                    downloads.symlink_to(outside_directory, target_is_directory=True)
+                    swapped = True
+                return original_open(path, flags, *args, **kwargs)
+
+            try:
+                with mock.patch.object(module.os, "open", side_effect=swap_parent_before_final_open):
+                    self.assertEqual(module._read_regular_within(root, Path("downloads/profile.zip")), safe_bytes)
+            finally:
+                if downloads.is_symlink():
+                    downloads.unlink()
+                if held.exists():
+                    held.rename(downloads)
 
     def test_archive_validator_rejects_noncanonical_metadata_before_payload_read(self) -> None:
         builder = load_builder_module("build_hermes_role_profiles_metadata")
@@ -370,6 +495,12 @@ class HermesRoleMcpProfilesTests(unittest.TestCase):
         self.assertIn("not automatically offered for Nursing Assistant or Bridge", helper)
         self.assertIn("Only if I am actually operating as a nurse leader or manager", helper)
         self.assertIn("USA-only WINGS Nurse Practitioner", helper)
+        self.assertEqual(helper.count("verify the selected companion ZIP against hermes-role-profiles/CHECKSUMS.sha256"), 3)
+        self.assertEqual(helper.count("confirm central-manifest and archive config parity"), 3)
+        workflow = (ROOT / ".github/workflows/hermes-role-mcp-profiles.yml").read_text()
+        self.assertIn("actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020", workflow)
+        self.assertIn("npm ci --ignore-scripts --no-audit --no-fund", workflow)
+        self.assertIn("npm run test:switchboard-browser", workflow)
         publication_readme = (PROFILES / "README.md").read_text()
         self.assertIn("scanner-crash circuit breaker", publication_readme)
         self.assertIn("Tirith is defense in depth, not the activation gate", publication_readme)

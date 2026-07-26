@@ -24,6 +24,6 @@
     "classification": "conditional_candidate",
     "condition": "Hospital or clinic administration context only; not generic administration and not an automatic identity match."
   },
-  "policy": "Candidate coordinates only; not an executable transitive lock. The profile uses a guaranteed-missing blocker command. Activation remains BLOCKED until a separately reviewed runtime consumes a complete dependency lock. The remote GitHub service is not code-pinnable and requires fresh review.",
+  "policy": "Candidate coordinates only; not an executable transitive lock. The profile uses a guaranteed-missing blocker command. Activation remains BLOCKED until a separately reviewed runtime consumes a complete dependency lock.",
   "schema_version": "1.0"
 }

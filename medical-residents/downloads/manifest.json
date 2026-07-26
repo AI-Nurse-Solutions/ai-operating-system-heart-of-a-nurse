@@ -3,7 +3,7 @@
     {
       "activation": "separate_explicit_post_card_approval",
       "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
-      "bytes": 10750,
+      "bytes": 10709,
       "download": "/hermes-role-profiles/downloads/naio-clinician-resident-hermes-profile-v1.0.0.zip",
       "install_on_download": false,
       "mapping_classification": "direct_fit",
@@ -11,7 +11,7 @@
       "mcp_enabled_by_default": false,
       "mcp_tools_exposed_by_default": 0,
       "profile": "clinician-resident",
-      "sha256": "f2d6674f4ee7c7ce179b61f1f7dd84a56c4a4f8a6dd8b4582801646e8ac29f4f",
+      "sha256": "13da23f83fd1481fe19d70029d6c764e470ceabefa72def0467d7a773349e90b",
       "version": "1.0.0"
     }
   ],

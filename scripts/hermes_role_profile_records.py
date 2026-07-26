@@ -4,11 +4,38 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import stat
 from pathlib import Path
 
 
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def _read_regular_within(root: Path, relative: Path) -> bytes:
+    if relative.is_absolute() or not relative.parts or any(part in {"", ".", ".."} for part in relative.parts):
+        raise ValueError(f"Unsafe governed Hermes role profile path: {relative}")
+    if not hasattr(os, "O_NOFOLLOW") or not hasattr(os, "O_DIRECTORY"):
+        raise RuntimeError("Descriptor-relative no-follow artifact reads are unavailable")
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    file_flags = os.O_RDONLY | os.O_NOFOLLOW
+    descriptors: list[int] = []
+    try:
+        try:
+            descriptors.append(os.open(root, directory_flags))
+            for part in relative.parts[:-1]:
+                descriptors.append(os.open(part, directory_flags, dir_fd=descriptors[-1]))
+                if not stat.S_ISDIR(os.fstat(descriptors[-1]).st_mode):
+                    raise ValueError(f"Non-directory governed artifact path component: {relative}")
+            descriptors.append(os.open(relative.parts[-1], file_flags, dir_fd=descriptors[-1]))
+        except OSError as exc:
+            raise ValueError(f"Unable to open governed artifact beneath its root: {relative}") from exc
+        descriptor = descriptors[-1]
+        mode = os.fstat(descriptor).st_mode
+        if not stat.S_ISREG(mode):
+            raise ValueError(f"Governed Hermes role profile artifact is not a regular file: {relative}")
+        with os.fdopen(descriptor, "rb", closefd=False) as handle:
+            return handle.read()
+    finally:
+        for opened in reversed(descriptors):
+            os.close(opened)
 
 
 def companion_record(repo: Path, profile: str) -> dict:
@@ -24,10 +51,11 @@ def companion_record(repo: Path, profile: str) -> dict:
     relative = Path(source["download"])
     if relative.is_absolute() or ".." in relative.parts:
         raise ValueError(f"Unsafe governed Hermes role profile path for {profile}")
-    artifact = root / relative
-    if not artifact.is_file():
-        raise FileNotFoundError(artifact)
-    if artifact.stat().st_size != source["bytes"] or _sha256(artifact) != source["sha256"]:
+    try:
+        artifact_bytes = _read_regular_within(root, relative)
+    except FileNotFoundError as exc:
+        raise FileNotFoundError(root / relative) from exc
+    if len(artifact_bytes) != source["bytes"] or hashlib.sha256(artifact_bytes).hexdigest() != source["sha256"]:
         raise ValueError(f"Governed Hermes role profile bytes changed for {profile}")
     if source.get("mcp_enabled_by_default") is not False or source.get("mcp_tools_exposed_by_default") != 0:
         raise ValueError(f"Unsafe governed Hermes role profile defaults for {profile}")

@@ -451,7 +451,7 @@ metadata:
 
 ## Trigger
 
-Use when the human asks to inspect, install, enable, configure, update, or remove this role profile or one of its MCP candidates.
+Use when the human asks to inspect, install, enable, configure, or update this role profile or one of its MCP candidates.
 
 ## Procedure
 
@@ -520,11 +520,18 @@ def write_profile(slug: str, role: dict[str, Any]) -> None:
     write_text(profile / "profile.yaml", json.dumps(profile_yaml, indent=2, sort_keys=True))
     write_text(profile / "config.yaml", json.dumps(config, indent=2, sort_keys=True))
     write_text(profile / "mcp.json", json.dumps({"servers": servers}, indent=2, sort_keys=True))
+    role_policy = (
+        "Candidate coordinates only; not an executable transitive lock. "
+        "The profile uses a guaranteed-missing blocker command. Activation remains BLOCKED until a "
+        "separately reviewed runtime consumes a complete dependency lock."
+    )
+    if "github" in role["servers"]:
+        role_policy += " The remote GitHub service is not code-pinnable and requires fresh review."
     role_lock = {
         "schema_version": "1.0",
         "audited_at": "2026-07-26",
         "mapping": distribution["mapping"],
-        "policy": "Candidate coordinates only; not an executable transitive lock. The profile uses a guaranteed-missing blocker command. Activation remains BLOCKED until a separately reviewed runtime consumes a complete dependency lock. The remote GitHub service is not code-pinnable and requires fresh review.",
+        "policy": role_policy,
         "dependencies": {
             name: DEPENDENCIES[DEPENDENCY_LOCK_KEYS.get(name, name)]
             for name in role["servers"]
@@ -544,21 +551,32 @@ MAX_ARCHIVE_UNCOMPRESSED_BYTES = 10 * 1024 * 1024
 MAX_MEMBER_EXPANSION_RATIO = 100
 
 
-def read_regular_source_file(path: Path) -> bytes:
-    flags = os.O_RDONLY
-    if hasattr(os, "O_NOFOLLOW"):
-        flags |= os.O_NOFOLLOW
+def read_regular_source_file(root: Path, relative: Path) -> bytes:
+    if relative.is_absolute() or not relative.parts or any(part in {"", ".", ".."} for part in relative.parts):
+        raise ValueError(f"Unsafe relative source path: {relative}")
+    if not hasattr(os, "O_NOFOLLOW") or not hasattr(os, "O_DIRECTORY"):
+        raise RuntimeError("Descriptor-relative no-follow source reads are unavailable")
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    file_flags = os.O_RDONLY | os.O_NOFOLLOW
+    descriptors: list[int] = []
     try:
-        descriptor = os.open(path, flags)
-    except OSError as exc:
-        raise ValueError(f"Unable to open regular source file without following links: {path}") from exc
-    try:
+        try:
+            descriptors.append(os.open(root, directory_flags))
+            for part in relative.parts[:-1]:
+                descriptors.append(os.open(part, directory_flags, dir_fd=descriptors[-1]))
+                if not stat.S_ISDIR(os.fstat(descriptors[-1]).st_mode):
+                    raise ValueError(f"Non-directory source path component prohibited: {relative}")
+            descriptors.append(os.open(relative.parts[-1], file_flags, dir_fd=descriptors[-1]))
+        except OSError as exc:
+            raise ValueError(f"Unable to open regular source file beneath its root: {root / relative}") from exc
+        descriptor = descriptors[-1]
         if not stat.S_ISREG(os.fstat(descriptor).st_mode):
-            raise ValueError(f"Non-regular source entry prohibited: {path}")
+            raise ValueError(f"Non-regular source entry prohibited: {root / relative}")
         with os.fdopen(descriptor, "rb", closefd=False) as handle:
             return handle.read()
     finally:
-        os.close(descriptor)
+        for opened in reversed(descriptors):
+            os.close(opened)
 
 
 def validate_source_tree(slug: str) -> list[Path]:
@@ -585,8 +603,7 @@ def validate_archive(archive_path: Path, slug: str, expected_members: int) -> No
     expected_root = f"naio-{slug}-hermes-profile-v{VERSION}"
     expected_names = {
         f"{expected_root}/{path.relative_to(profile).as_posix()}"
-        for path in profile.rglob("*")
-        if path.is_file()
+        for path in validate_source_tree(slug)
     }
     with zipfile.ZipFile(archive_path) as archive:
         infos = archive.infolist()
@@ -648,7 +665,7 @@ def validate_archive(archive_path: Path, slug: str, expected_members: int) -> No
             raise ValueError(f"CRC failure: {archive_path}")
         for info in infos:
             relative = info.filename.split("/", 1)[1]
-            if archive.read(info) != read_regular_source_file(profile / relative):
+            if archive.read(info) != read_regular_source_file(profile, Path(relative)):
                 raise ValueError(f"ZIP/source mismatch: {info.filename}")
 
 
@@ -670,7 +687,7 @@ def build_zip(slug: str) -> dict[str, Any]:
                 info.external_attr = (stat.S_IFREG | 0o644) << 16
                 archive.writestr(
                     info,
-                    read_regular_source_file(path),
+                    read_regular_source_file(profile, path.relative_to(profile)),
                     compress_type=zipfile.ZIP_DEFLATED,
                     compresslevel=9,
                 )
@@ -768,15 +785,25 @@ def source_provenance(upstream: Path) -> dict[str, Any]:
     roles: dict[str, Any] = {}
     for slug in ROLES:
         upstream_role = upstream / slug
-        if not upstream_role.is_dir():
+        try:
+            role_mode = upstream_role.lstat().st_mode
+        except FileNotFoundError:
             continue
+        if stat.S_ISLNK(role_mode) or not stat.S_ISDIR(role_mode):
+            raise ValueError(f"Provenance role root must be a real directory: {upstream_role}")
         files = {}
         for path in sorted(upstream_role.rglob("*")):
-            if path.is_file():
+            mode = path.lstat().st_mode
+            if stat.S_ISLNK(mode):
+                raise ValueError(f"Provenance source symlink prohibited: {path}")
+            if stat.S_ISREG(mode):
+                data = read_regular_source_file(upstream_role, path.relative_to(upstream_role))
                 files[path.relative_to(upstream).as_posix()] = {
-                    "bytes": path.stat().st_size,
-                    "sha256": sha256(path),
+                    "bytes": len(data),
+                    "sha256": sha256_bytes(data),
                 }
+            elif not stat.S_ISDIR(mode):
+                raise ValueError(f"Provenance source special entry prohibited: {path}")
         roles[slug] = files
     return {
         "schema_version": "1.0",

@@ -11,7 +11,7 @@ metadata:
 
 ## Trigger
 
-Use when the human asks to inspect, install, enable, configure, update, or remove this role profile or one of its MCP candidates.
+Use when the human asks to inspect, install, enable, configure, or update this role profile or one of its MCP candidates.
 
 ## Procedure
 

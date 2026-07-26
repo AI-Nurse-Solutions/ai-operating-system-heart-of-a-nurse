@@ -12,7 +12,7 @@
 | Hermes Agent | [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) | MIT | External runtime; not vendored in this repository | No |
 | OpenClaw | [openclaw/openclaw](https://github.com/openclaw/openclaw) | MIT | Referenced for interoperability and architectural research; not vendored in this repository | No |
 
-No Hermes or OpenClaw source code is vendored in this repository as of July 14, 2026. Their notices are reproduced below for transparent attribution and to establish the notices that must travel with any future substantial incorporation. Independently developed Nurse AI OS components are licensed under Apache License 2.0 and are not listed here; see `LICENSE`.
+No Hermes or OpenClaw source code is vendored in this repository as of July 14, 2026. Their notices are reproduced below for transparent attribution and to establish the notices that must travel with any future substantial incorporation. Files covered by this repository's Apache License 2.0 grant remain under that grant and are not listed here; separately governed Nurse AI OS artifacts may carry different terms. See `LICENSE` and `licensing.html`.
 
 ## 2. Hermes
 

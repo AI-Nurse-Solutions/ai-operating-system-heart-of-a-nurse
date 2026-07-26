@@ -27,7 +27,7 @@
 - [e.g., Summarize lectures and study materials I provide]
 - [e.g., Draft emails, personal statements, and non-clinical documents for my review]
 - [e.g., Plan my week; track deadlines; prepare my Monday brief]
-- [e.g., Organize my notes and files; maintain the ledger]
+- [e.g., Draft an organization plan for my notes and a ledger entry for my review]
 
 ## Boundaries — what this system never does
 
@@ -45,7 +45,8 @@
 
 - Anything leaving this system (sent, posted, submitted, shared) — I review and I send.
 - Anything about a specific person — I review.
-- Anything the AI marks Yellow or Red tier — I review before it proceeds.
+- Any recommendation (Yellow or higher) — I review before deciding.
+- Any work above D1 data, Yellow risk, or Recommend action mode — this public kit cannot authorize it; I stop and seek a separately authorized environment.
 - [your additions]
 
 ## Escalation

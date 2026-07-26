@@ -234,6 +234,16 @@ class MediaPacketReleaseTests(unittest.TestCase):
         self.assertIn("/Launch", pdf_name_tokens(launch_action))
         self.assertIn("/JavaScript", pdf_name_tokens(javascript_action))
 
+    def test_mutable_architecture_pdf_is_bound_and_historical(self):
+        source = ROOT / "assets" / "nurse-ai-os-architecture-report.md"
+        publication = ROOT / "assets" / "nurse-ai-os-architecture-report.pdf"
+        reader = PdfReader(publication)
+        self.assertEqual(reader.metadata.title, "Nurse AI OS Pre-Directive Architecture Evidence")
+        self.assertEqual(reader.metadata.get("/SourceSHA256"), hashlib.sha256(source.read_bytes()).hexdigest())
+        extracted = " ".join((page.extract_text() or "") for page in reader.pages[:2])
+        self.assertIn("Historical implementation evidence", extracted)
+        self.assertRegex(extracted, r"not the current canonical\s*architecture")
+
     def test_accessible_html_publications_are_bound_to_their_sources(self):
         expected_root = {"ar": '<html lang="ar" dir="rtl">', "hi": '<html lang="hi" dir="ltr">'}
         for key in HTML_KEYS:
@@ -246,6 +256,8 @@ class MediaPacketReleaseTests(unittest.TestCase):
             for token in ("Nurse AI OS", "ChatGPT", "Claude", "Hermes", "Florence-X", "$29.90"):
                 self.assertIn(token, page)
             self.assertNotIn(f"nurse-ai-os-media-packet-{key}.pdf", page)
+            if key == "ar":
+                self.assertIn('<section lang="en" dir="ltr"><h2>Directive v1.1 canonical status</h2>', page)
 
     def test_media_center_advertises_exact_complete_inventory(self):
         page = (ROOT / "media.html").read_text(encoding="utf-8")
@@ -327,8 +339,10 @@ class MediaPacketReleaseTests(unittest.TestCase):
         self.assertIn('"playwright-core": "1.61.1"', (ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertIn("npm ci --ignore-scripts", workflow)
         self.assertIn("tagged: true", (ROOT / "scripts/render-media-pdf.mjs").read_text(encoding="utf-8"))
-        self.assertEqual(workflow.count('git ls-files --error-unmatch -- "${artifacts[@]}"'), 1)
-        self.assertEqual(workflow.count('python tools/build-pdfs.py "${targets[@]}"'), 2)
+        self.assertEqual(workflow.count('git ls-files --error-unmatch -- "${artifacts[@]}"'), 2)
+        self.assertEqual(workflow.count('python tools/build-pdfs.py "${targets[@]}"'), 4)
+        self.assertEqual(workflow.count("python tools/build-governance-kit.py"), 2)
+        self.assertEqual(workflow.count("python tools/build-starter-kit.py"), 2)
         for artifact in (
             "assets/nurse-ai-os-media-packet.pdf", "assets/nurse-ai-os-media-packet-es.pdf",
             "assets/nurse-ai-os-media-packet-tl.pdf", "assets/nurse-ai-os-media-packet-zh.pdf",
@@ -336,6 +350,13 @@ class MediaPacketReleaseTests(unittest.TestCase):
             "assets/nurse-ai-os-media-packet-fr.pdf", "media-ar.html", "media-hi.html",
         ):
             self.assertIn(artifact, workflow)
+        for artifact in (
+            "assets/hermes-essentials-guide.pdf", "assets/founding-year-guide.pdf",
+            "assets/make-it-yours-six-workflows.pdf", "assets/hermes-power-guide.pdf",
+            "assets/nurse-ai-os-starter-kit.zip",
+        ):
+            self.assertIn(artifact, workflow)
+        self.assertIn("targets=(essentials founding make-yours power cheat roadmap workbook safety lamp)", workflow)
         requirements = (ROOT / "scripts/requirements-media-pdf.txt").read_text(encoding="utf-8").splitlines()
         self.assertEqual(2, len(requirements))
         for line in requirements:

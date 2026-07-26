@@ -1,5 +1,7 @@
 # Nurse AI OS Switchboard Preview Audit Report
 
+> **Pre-Directive historical implementation evidence.** This report records the July 17 preview audit and preserves its then-current `A0` terminology for provenance. A0 is not a current Directive v1.1 action mode. Current public classification is Green risk, D0/D1, Observe mode, no external action; this report is not a conformance claim.
+
 **Audit date:** 2026-07-17
 
 **Baseline:** `origin/main` at `ed41b5d3bcc72ac24f86df3990f2380764e294be`

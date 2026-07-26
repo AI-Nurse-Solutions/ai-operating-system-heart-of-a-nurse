@@ -1,5 +1,19 @@
 # Nurse AI OS™ — Media brief sa Tagalog
 
+
+---
+
+## Directive v1.1 canonical status
+
+> **Canonical English source-control statement:** Nurse AI OS is the **governed professional environment**. The public Community experience is available now. Florence-X and EDENA capabilities become binding only where implemented and evidenced. Institutional authority, credentials, conformance, PHI eligibility, and high-consequence use require separate formal gates. Agents propose. Humans judge. Nurses steward.
+
+- **Available now:** browser-first Community experience; D0/D1 only; no PHI; human review; no external action.
+- **Capability-gated:** Florence-X orchestration, EDENA mechanical enforcement, memory, tools, connectors, and automation only where a named implementation and evidence exist.
+- **Formal-gate programs:** credentials, institutional or sovereign environments, D2–D4 eligibility, high-consequence use, and assurance require separately published authorization and program gates.
+- **Conformance:** NAIO Conformant is unavailable until the assurance program exists and the specific release passes it.
+- **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
+- **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
+
 **Napapanahon hanggang Hulyo 25, 2026**
 
 **Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
@@ -31,7 +45,7 @@ Ang Nurse AI OS ay hindi EHR, clinical decision-support system, autonomous nurse
 
 Dinisenyo ang Nurse AI OS bilang no-PHI learning at stewardship space. Isa itong participation at design rule—hindi HIPAA certification claim. Hindi ito para sa diagnosis, treatment, triage, prescribing, clinical orders, o pagpapalit sa qualified supervision.
 
-Ang **EDENA** ay **Ethical Design & Enablement for Nursing Augmentation**. Nagbibigay ito ng review language at Green/Yellow/Orange/Red tiers upang makilala ang risk at human gates. Ang kasalukuyang public posture ay **shadow/observe-only**: maaari nitong ayusin ang review, ngunit hindi nito ginagarantiya na pare-parehong ipapatupad ng ChatGPT, Claude, Hermes, o ibang host ang bawat rule.
+Ang **EDENA** ang governance, risk, safety, at assurance control plane. Nagbibigay ito ng review language at Green/Yellow/Orange/Red-P/Red-E tiers upang makilala ang risk at human gates. Hindi pa naitatala ng Directive owner ang opisyal na long-form expansion nito. Ang kasalukuyang public posture ay **shadow/observe-only**: maaari nitong ayusin ang review, ngunit hindi nito ginagarantiya na pare-parehong ipapatupad ng ChatGPT, Claude, Hermes, o ibang host ang bawat rule.
 
 Ang **Florence-X** ay emerging research at build architecture para sa orchestration, verification, evidence, at nakikitang human authorization. Hindi ito ipinapakita bilang deployed institutional service.
 

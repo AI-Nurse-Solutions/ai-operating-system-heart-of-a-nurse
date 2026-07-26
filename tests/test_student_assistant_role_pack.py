@@ -211,13 +211,13 @@ class StudentAssistantBuildKitTests(unittest.TestCase):
         self.assertIn("five governed self-install Hermes build kits", current_surfaces["architecture Markdown"])
         self.assertIn("No separate application or Hermes installation is required to begin", current_surfaces["media packet"])
         self.assertNotIn("five governed self-install Hermes build kits", current_surfaces["media packet"])
-        for architecture_pdf in (
-            ROOT / "assets" / "nurse-ai-os-architecture-report.pdf",
-            ROOT / "assets" / "2026-07-13-nurse-ai-os-updated-architecture-report.pdf",
-        ):
-            data = architecture_pdf.read_bytes()
-            self.assertIn(ZIP.name.encode("ascii"), data)
-            self.assertNotIn(RETIRED_ZIP.name.encode("ascii"), data)
+        # The mutable PDF uses compressed text streams and is source-hash bound in
+        # test_media_packet.py. Keep the raw-byte provenance assertion on the
+        # immutable dated evidence artifact, whose byte contract is historical.
+        dated_pdf = ROOT / "assets" / "2026-07-13-nurse-ai-os-updated-architecture-report.pdf"
+        data = dated_pdf.read_bytes()
+        self.assertIn(ZIP.name.encode("ascii"), data)
+        self.assertNotIn(RETIRED_ZIP.name.encode("ascii"), data)
 
     def test_tracked_build_kit_source_contract_and_provenance_are_exact(self):
         files = [path for path in KIT_SOURCE.rglob("*") if path.is_file()]

@@ -25,6 +25,14 @@ from pypdf import PdfReader, PdfWriter
 ROOT = Path(__file__).resolve().parent.parent
 
 DOCS = {
+    "essentials": ("assets/hermes-essentials-guide.md", "assets/hermes-essentials-guide.pdf",
+                   "Hermes Essentials Guide — Directive v1.1 Community Edition"),
+    "founding": ("assets/founding-year-guide.md", "assets/founding-year-guide.pdf",
+                 "Nurse AI OS Founding Year Guide — Directive v1.1"),
+    "make-yours": ("assets/make-it-yours-six-workflows.md", "assets/make-it-yours-six-workflows.pdf",
+                   "Make Nurse AI OS Yours — Six Public-Safe Workflows"),
+    "power": ("assets/hermes-power-guide.md", "assets/hermes-power-guide.pdf",
+              "The Hermes Power Guide — Directive v1.1 Advanced Community Edition"),
     "cheat": ("assets/hermes-cheat-sheet.md", "assets/hermes-cheat-sheet.pdf",
               "The Pre-Procedure Checklist & Hermes Cheat Sheet"),
     "roadmap": ("assets/30-day-roadmap.md", "assets/30-day-roadmap.pdf",
@@ -33,8 +41,10 @@ DOCS = {
                  "Nurse AI OS Workbook"),
     "safety": ("assets/safety-rules-edena.md", "assets/safety-rules-edena.pdf",
                "The Plain-Language Safety Rules (EDENA)"),
+    "lamp": ("assets/lamp-huddle.md", "assets/lamp-huddle.pdf",
+             "The Lamp Huddle"),
     "architecture": ("assets/nurse-ai-os-architecture-report.md", "assets/nurse-ai-os-architecture-report.pdf",
-                     "Nurse AI OS Architecture Report"),
+                     "Nurse AI OS Pre-Directive Architecture Evidence"),
     "architecture-2026-07-13": (
         "assets/2026-07-13-nurse-ai-os-updated-architecture-report.md",
         "assets/2026-07-13-nurse-ai-os-updated-architecture-report.pdf",
@@ -252,6 +262,14 @@ def build_html(key: str) -> None:
                              extensions=["tables", "fenced_code", "sane_lists", "smarty"])
     if key == "media-ar":
         body = body.replace("Nurse AI OS™", '<bdi dir="ltr">Nurse AI OS™</bdi>', 1)
+        source_heading = "<h2>Directive v1.1 canonical status</h2>"
+        if body.count(source_heading) != 1:
+            raise RuntimeError("Arabic media source-control heading missing or duplicated")
+        before_source, source_block = body.split(source_heading, 1)
+        if "</ul>" not in source_block:
+            raise RuntimeError("Arabic media source-control list missing")
+        source_block = source_block.replace("</ul>", "</ul></section>", 1)
+        body = before_source + '<section lang="en" dir="ltr">' + source_heading + source_block
     page = f'''<!DOCTYPE html>
 <html lang="{meta["lang"]}" dir="{meta["dir"]}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html_lib.escape(title)}</title><meta name="description" content="{html_lib.escape(meta["description"], quote=True)}">

@@ -1,12 +1,14 @@
-# Nurse AI OS Architecture Report
+# Nurse AI OS Pre-Directive Architecture Evidence
 
-## Current-State Architecture, Control Boundaries, and Governed Roadmap
+> **Historical implementation evidence — created before NIN–NAIO Master Directive v1.1. Preserved for provenance; not the current canonical architecture or a conformance claim.** Current doctrine and status are published at https://nurse-ai-os.org/directive.html. Terminology such as A0–A4 below records the July implementation model and is not current EDENA taxonomy.
+
+## July 2026 implementation snapshot, control boundaries, and governed roadmap
 
 **Prepared for:** Robert Domondon, Founder and Release Steward, NAIO Institute  
 **Primary readers:** AI architects, CNOs/CNIOs, nurse leaders, implementation partners  
 **Report date:** July 22, 2026, distribution revision; Harness evidence snapshot remains July 13<br>
 **Evidence snapshot:** 2026-07-13 21:54 UTC  
-**Architecture status:** **Signed implementation candidate · active shadow governance · live post-setup distribution · no clinical or PHI authorization**  
+**Architecture status:** **Pre-Directive historical implementation evidence · no clinical or PHI authorization · not current canonical architecture**
 **Decision doctrine:** *Agents propose. Humans judge. Nurses steward.*
 
 ---

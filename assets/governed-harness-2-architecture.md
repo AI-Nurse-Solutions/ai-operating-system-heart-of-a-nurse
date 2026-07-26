@@ -1,5 +1,7 @@
 # Nurse AI OS Governed Harness 2.0
 
+> **Historical implementation evidence — created before NIN–NAIO Master Directive v1.1.** Preserved for provenance; not the current canonical architecture, EDENA taxonomy, Directive implementation, activation, conformance, institutional authorization, PHI eligibility, or clinical-readiness claim. References below to A0–A4, four-color Red semantics, “operational” governance, or a Hermes control plane are legacy compatibility language superseded by Directive v1.1.
+
 ## Executive architecture and evidence statement
 
 **Published:** July 13, 2026
@@ -20,7 +22,7 @@ This prevents duplication of profiles, context, skills, memory, tools, approvals
 
 1. **Human judgment remains final.** AI may advise or draft; it does not adopt policy, make patient-specific clinical decisions, or make named-personnel decisions.
 2. **No PHI boundary.** Patient identifiers, chart material, credentials, and synthetic PHI patterns are blocked in canary tests. This is not permission to process PHI.
-3. **Nursing governance is operational.** EDENA distinguishes consequence (`risk_tier`) from independence (`autonomy_level`). Red means stop or escalate—not higher autonomy.
+3. **Historical canary controls were exercised.** This pre-Directive candidate distinguished consequence (`risk_tier`) from a legacy `autonomy_level`; that evidence does not establish current EDENA implementation, activation, or conformance.
 4. **Evidence claims are bounded.** Test and adoption evidence may be reported. Patient-outcome, safety-outcome, compliance, and institutional-readiness claims require separate evidence.
 5. **Council review remains a gate.** Founder approval is recorded; Nurse Steward Council review and institutional validation are pending and are not implied.
 
@@ -40,7 +42,7 @@ This prevents duplication of profiles, context, skills, memory, tools, approvals
 4. **Durable proposals replace suspended model state.** Approval binds the proposal, manifest hash, target, action digest, reviewer role, and time. Payloads are not persisted in the proposal.
 5. **Restart behavior depends on side effects.** Read-only idempotent work may resume within its retry ceiling. Side-effecting or non-idempotent work returns to `needs_review`; its approval is cleared.
 
-## EDENA 2.0 semantics
+## Legacy pre-Directive EDENA 2.0 compatibility semantics
 
 ```yaml
 risk_tier: green | yellow | orange | red

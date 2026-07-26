@@ -244,13 +244,13 @@ class NurseLeaderCompleteEditionTests(unittest.TestCase):
             text = architecture_source.read_text(encoding="utf-8")
             self.assertIn(ZIP.name, text)
             self.assertNotIn(OLD_ZIP.name, text)
-        for architecture_pdf in (
-            ROOT / "assets" / "nurse-ai-os-architecture-report.pdf",
-            ROOT / "assets" / "2026-07-13-nurse-ai-os-updated-architecture-report.pdf",
-        ):
-            data = architecture_pdf.read_bytes()
-            self.assertIn(ZIP.name.encode("ascii"), data)
-            self.assertNotIn(OLD_ZIP.name.encode("ascii"), data)
+        # The mutable PDF uses compressed text streams and is source-hash bound in
+        # test_media_packet.py. Keep the raw-byte provenance assertion on the
+        # immutable dated evidence artifact, whose byte contract is historical.
+        dated_pdf = ROOT / "assets" / "2026-07-13-nurse-ai-os-updated-architecture-report.pdf"
+        data = dated_pdf.read_bytes()
+        self.assertIn(ZIP.name.encode("ascii"), data)
+        self.assertNotIn(OLD_ZIP.name.encode("ascii"), data)
 
     def test_download_is_manifested_and_byte_integrity_is_verifiable(self):
         self.assertTrue(ZIP.is_file(), ZIP)

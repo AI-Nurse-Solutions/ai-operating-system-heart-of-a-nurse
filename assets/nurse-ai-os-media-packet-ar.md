@@ -1,5 +1,19 @@
 # Nurse AI OS™ — موجز إعلامي بالعربية
 
+
+---
+
+## Directive v1.1 canonical status
+
+> **Canonical English source-control statement:** Nurse AI OS is the **governed professional environment**. The public Community experience is available now. Florence-X and EDENA capabilities become binding only where implemented and evidenced. Institutional authority, credentials, conformance, PHI eligibility, and high-consequence use require separate formal gates. Agents propose. Humans judge. Nurses steward.
+
+- **Available now:** browser-first Community experience; D0/D1 only; no PHI; human review; no external action.
+- **Capability-gated:** Florence-X orchestration, EDENA mechanical enforcement, memory, tools, connectors, and automation only where a named implementation and evidence exist.
+- **Formal-gate programs:** credentials, institutional or sovereign environments, D2–D4 eligibility, high-consequence use, and assurance require separately published authorization and program gates.
+- **Conformance:** NAIO Conformant is unavailable until the assurance program exists and the specific release passes it.
+- **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
+- **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
+
 **محدّث حتى 25 يوليو 2026**
 
 **الموقع:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **للتواصل الإعلامي:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
@@ -31,7 +45,7 @@ Nurse AI OS ليس سجلًا صحيًا إلكترونيًا، ولا نظام 
 
 صُمم Nurse AI OS ليكون مساحة تعلم وأمانة من دون PHI. هذه قاعدة للمشاركة والتصميم وليست ادعاءً بشهادة HIPAA. لا يُستخدم للتشخيص أو العلاج أو الفرز أو الوصف أو الأوامر السريرية أو استبدال الإشراف المؤهل.
 
-تعني **EDENA** عبارة **Ethical Design & Enablement for Nursing Augmentation**. وهي توفر لغة للمراجعة ومستويات أخضر/أصفر/برتقالي/أحمر للتعرف على المخاطر وبوابات القرار البشري. الوضع العام الحالي هو **shadow/observe-only**: يمكنها تنظيم المراجعة، لكنها لا تضمن أن يطبق ChatGPT أو Claude أو Hermes أو أي بيئة أخرى كل قاعدة بالطريقة نفسها.
+**EDENA** هي طبقة التحكم في الحوكمة والمخاطر والسلامة والضمان. وهي توفر لغة للمراجعة ومستويات Green/Yellow/Orange/Red-P/Red-E للتعرف على المخاطر وبوابات القرار البشري. لم يسجل مالك التوجيه الصيغة الرسمية الكاملة للاسم بعد. الوضع العام الحالي هو **shadow/observe-only**: يمكنها تنظيم المراجعة، لكنها لا تضمن أن يطبق ChatGPT أو Claude أو Hermes أو أي بيئة أخرى كل قاعدة بالطريقة نفسها.
 
 **Florence-X** هي بنية ناشئة للبحث والبناء في التنسيق والتحقق والأدلة وإظهار التفويض البشري. ولا تُعرض كخدمة مؤسسية منشورة.
 

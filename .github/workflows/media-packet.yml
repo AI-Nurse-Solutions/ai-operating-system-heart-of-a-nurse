@@ -3,9 +3,26 @@ name: Media packet integrity
 on:
   pull_request:
     paths:
+      - "assets/30-day-roadmap.*"
+      - "assets/governance-kit.zip"
+      - "assets/nurse-ai-os-starter-kit.zip"
+      - "assets/founding-year-guide.*"
+      - "assets/hermes-cheat-sheet.*"
+      - "assets/hermes-essentials-guide.*"
+      - "assets/hermes-power-guide.*"
+      - "assets/lamp-huddle.*"
+      - "assets/make-it-yours-six-workflows.*"
+      - "assets/nurse-ai-os-workbook.*"
+      - "assets/safety-rules-edena.*"
+      - "governance-kit/**"
+      - "starter-kit/My-Nurse-AI-OS/**"
       - "assets/nurse-ai-os-media-packet*.md"
       - "assets/nurse-ai-os-media-packet*.pdf"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/nurse-ai-os-architecture-report.pdf"
       - "assets/fonts/**"
+      - "tools/build-governance-kit.py"
+      - "tools/build-starter-kit.py"
       - "tools/build-pdfs.py"
       - "scripts/render-media-pdf.*"
       - "scripts/requirements-media-pdf.txt"
@@ -20,14 +37,32 @@ on:
       - "index.html"
       - "*/index.html"
       - "tests/test_media_packet.py"
+      - "tests/test_public_governance_artifacts.py"
       - "tests/test_public_entrypoint_policy.py"
       - ".github/workflows/media-packet.yml"
   push:
     branches: [main]
     paths:
+      - "assets/30-day-roadmap.*"
+      - "assets/governance-kit.zip"
+      - "assets/nurse-ai-os-starter-kit.zip"
+      - "assets/founding-year-guide.*"
+      - "assets/hermes-cheat-sheet.*"
+      - "assets/hermes-essentials-guide.*"
+      - "assets/hermes-power-guide.*"
+      - "assets/lamp-huddle.*"
+      - "assets/make-it-yours-six-workflows.*"
+      - "assets/nurse-ai-os-workbook.*"
+      - "assets/safety-rules-edena.*"
+      - "governance-kit/**"
+      - "starter-kit/My-Nurse-AI-OS/**"
       - "assets/nurse-ai-os-media-packet*.md"
       - "assets/nurse-ai-os-media-packet*.pdf"
+      - "assets/nurse-ai-os-architecture-report.md"
+      - "assets/nurse-ai-os-architecture-report.pdf"
       - "assets/fonts/**"
+      - "tools/build-governance-kit.py"
+      - "tools/build-starter-kit.py"
       - "tools/build-pdfs.py"
       - "scripts/render-media-pdf.*"
       - "scripts/requirements-media-pdf.txt"
@@ -42,6 +77,7 @@ on:
       - "index.html"
       - "*/index.html"
       - "tests/test_media_packet.py"
+      - "tests/test_public_governance_artifacts.py"
       - "tests/test_public_entrypoint_policy.py"
       - ".github/workflows/media-packet.yml"
 
@@ -67,12 +103,13 @@ jobs:
         run: |
           python -m pip install --require-hashes -r scripts/requirements-media-pdf.txt
           npm ci --ignore-scripts --no-audit --no-fund
-      - name: Rebuild and compare every publication twice
+      - name: Rebuild and compare every media publication twice
         env:
           MEDIA_PDF_RENDERER: ${{ github.workspace }}/scripts/render-media-pdf.sh
         run: |
-          targets=(media media-es media-tl media-zh media-vi media-ru media-fr media-ar media-hi)
+          targets=(architecture media media-es media-tl media-zh media-vi media-ru media-fr media-ar media-hi)
           artifacts=(
+            assets/nurse-ai-os-architecture-report.pdf
             assets/nurse-ai-os-media-packet.pdf
             assets/nurse-ai-os-media-packet-es.pdf
             assets/nurse-ai-os-media-packet-tl.pdf
@@ -88,7 +125,35 @@ jobs:
           git diff --exit-code -- "${artifacts[@]}"
           python tools/build-pdfs.py "${targets[@]}"
           git diff --exit-code -- "${artifacts[@]}"
-      - name: Verify source, PDFs, links, metadata, and policy
+      - name: Rebuild and compare current Community governance resources twice
+        env:
+          MEDIA_PDF_RENDERER: ${{ github.workspace }}/scripts/render-media-pdf.sh
+        run: |
+          targets=(essentials founding make-yours power cheat roadmap workbook safety lamp)
+          artifacts=(
+            assets/hermes-essentials-guide.pdf
+            assets/founding-year-guide.pdf
+            assets/make-it-yours-six-workflows.pdf
+            assets/hermes-power-guide.pdf
+            assets/hermes-cheat-sheet.pdf
+            assets/30-day-roadmap.pdf
+            assets/nurse-ai-os-workbook.pdf
+            assets/safety-rules-edena.pdf
+            assets/lamp-huddle.pdf
+            assets/governance-kit.zip
+            assets/nurse-ai-os-starter-kit.zip
+          )
+          git ls-files --error-unmatch -- "${artifacts[@]}" >/dev/null
+          python tools/build-governance-kit.py
+          python tools/build-starter-kit.py
+          python tools/build-pdfs.py "${targets[@]}"
+          git diff --exit-code -- "${artifacts[@]}"
+          python tools/build-governance-kit.py
+          python tools/build-starter-kit.py
+          python tools/build-pdfs.py "${targets[@]}"
+          git diff --exit-code -- "${artifacts[@]}"
+      - name: Verify source, publications, links, metadata, and policy
         run: |
           python tests/test_media_packet.py
+          python tests/test_public_governance_artifacts.py
           python tests/test_public_entrypoint_policy.py

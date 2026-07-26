@@ -1,5 +1,19 @@
 # Nurse AI OS™ — Краткий медиакит на русском языке
 
+
+---
+
+## Directive v1.1 canonical status
+
+> **Canonical English source-control statement:** Nurse AI OS is the **governed professional environment**. The public Community experience is available now. Florence-X and EDENA capabilities become binding only where implemented and evidenced. Institutional authority, credentials, conformance, PHI eligibility, and high-consequence use require separate formal gates. Agents propose. Humans judge. Nurses steward.
+
+- **Available now:** browser-first Community experience; D0/D1 only; no PHI; human review; no external action.
+- **Capability-gated:** Florence-X orchestration, EDENA mechanical enforcement, memory, tools, connectors, and automation only where a named implementation and evidence exist.
+- **Formal-gate programs:** credentials, institutional or sovereign environments, D2–D4 eligibility, high-consequence use, and assurance require separately published authorization and program gates.
+- **Conformance:** NAIO Conformant is unavailable until the assurance program exists and the specific release passes it.
+- **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
+- **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
+
 **Актуально на 25 июля 2026 года**
 
 **Сайт:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Контакт для СМИ:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
@@ -31,7 +45,7 @@ Nurse AI OS не является электронной медицинской 
 
 Nurse AI OS разработан как пространство обучения и stewardship без PHI. Это правило участия и проектирования, а не заявление о сертификации HIPAA. Система не предназначена для диагностики, лечения, сортировки, назначения лекарств, клинических распоряжений или замены квалифицированного надзора.
 
-**EDENA** означает **Ethical Design & Enablement for Nursing Augmentation**. EDENA предоставляет язык проверки и уровни Зелёный/Жёлтый/Оранжевый/Красный для распознавания риска и контрольных точек человека. Текущая публичная позиция — **shadow/observe-only**: EDENA может структурировать проверку, но не гарантирует, что ChatGPT, Claude, Hermes или другая среда одинаково применят каждое правило.
+**EDENA** — контур управления, рисков, безопасности и обеспечения. EDENA предоставляет язык проверки и уровни Green/Yellow/Orange/Red-P/Red-E для распознавания риска и контрольных точек человека. Владелец Директивы ещё не зафиксировал официальную полную расшифровку названия. Текущая публичная позиция — **shadow/observe-only**: EDENA может структурировать проверку, но не гарантирует, что ChatGPT, Claude, Hermes или другая среда одинаково применят каждое правило.
 
 **Florence-X** — формирующаяся исследовательская и инженерная архитектура для оркестрации, проверки, доказательств и видимой авторизации человеком. Она не представлена как развёрнутый институциональный сервис.
 

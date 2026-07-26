@@ -85,7 +85,7 @@ class HomeStewardsCharterTests(unittest.TestCase):
         self.assertLess(product, charter)
         product_region = self.home[product:charter]
         for phrase in (
-            "A kit for the AI you already have, not a new chatbot.",
+            "Nurse AI OS is the governed professional environment",
             "Your SOUL file",
             "Your workflow kit",
             "Your safety rules",
@@ -97,20 +97,20 @@ class HomeStewardsCharterTests(unittest.TestCase):
         ):
             self.assertIn(phrase, product_region)
 
-    def test_os_name_is_bounded_by_today_emerging_and_direction(self) -> None:
+    def test_os_name_is_bounded_by_directive_public_states(self) -> None:
         product = self.home.index('id="what-it-is"')
         charter = self.home.index('id="stewards-charter"')
         product_region = self.home[product:charter]
         required = (
-            "Why call it an OS?",
-            "Today · The practical product",
-            "primarily a sophisticated configuration and workflow package for AI tools you already have",
-            "Emerging · The technical layer",
-            "real policy artifacts, schemas, tests, verification systems, evidence controls, and Florence-X orchestration components",
-            "they do not create uniform enforcement inside every host AI today",
-            "Direction · The fuller OS",
-            "a portable, enforceable, nurse-governed control layer for AI work",
-            "It is not yet a finished standalone operating system.",
+            "Definition is not activation",
+            "Available now",
+            "Public Community experience",
+            "Capability-gated",
+            "EDENA, Florence-X, memory, tools, and connectors",
+            "does not mechanically enforce every Florence-X or EDENA requirement",
+            "Formal-gate programs",
+            "NAIO Conformant require separate governance and authorization gates",
+            "not an autonomous clinician",
         )
         for phrase in required:
             self.assertIn(phrase, product_region)

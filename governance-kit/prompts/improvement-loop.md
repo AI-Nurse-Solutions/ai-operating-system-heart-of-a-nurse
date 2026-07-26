@@ -14,15 +14,15 @@ Run the improvement loop. Work through the four asset classes, one finding each:
 
 3. **Knowledge.** What did you need this month that wasn't in my files? What file or note looks stale? Name ONE thing to add, update, or archive.
 
-4. **The rules.** Check gate health: how many gate events this month — approvals, edits, rejections, escalations, halts? If everything was approved untouched for 4+ weeks, say so plainly and suggest a spot-check. Then: does any workflow deserve a ceiling promotion (4+ weeks clean, zero boundary events — my decision, logged)? Does anything need demotion?
+4. **The rules.** Check gate health: how many gate events this month — approvals, edits, rejections, escalations, halts? If everything was approved untouched for 4+ weeks, say so plainly and suggest a spot-check. Then identify any workflow that should be narrowed. This public kit's ceiling cannot be promoted through local use.
 
-Then give me the four findings as a short list, each with the exact edit to make. I'll approve, we make the edits, and you write one ledger entry:
+Then give me the four findings as a short list, each with the exact edit to make. I'll decide and apply the edits, then review and append the ledger entry you draft:
 
 ```
 ### YYYY-MM-DD · Improvement loop
 - Gate events this month: [approvals / edits / rejections / escalations / halts]
 - Changed: [the four edits, one line each]
-- Promotions/demotions: [any, with reason — or "none"]
+- Scope changes: [any narrowing, with reason — or "none"; no public-kit ceiling promotion]
 - Parked: [anything deferred to next loop]
 ```
 
@@ -30,7 +30,7 @@ Then give me the four findings as a short list, each with the exact edit to make
 
 **Rules:**
 - A fix that begins "remember to…" is not a fix. Change the file, the header, or the checklist — install the lesson where it works at 3 a.m. without anyone remembering anything.
-- Promotions are earned with evidence and decided by the human. Demotions are automatic on any boundary event — and demotion is governance working, not failing.
+- Higher-risk or higher-action authority requires a separate formal authorization; this public kit cannot grant it. Narrowing after a boundary event is governance working, not failing.
 - The loop reviewing itself is fair game: if this prompt needs a fifth question or a shorter format, that's a finding too.
 
 *A system that runs this loop compounds. A system that skips it accumulates silent risk with excellent documentation.*

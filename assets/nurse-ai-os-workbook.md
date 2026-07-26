@@ -2,17 +2,21 @@
 
 ## Starter Kit + Course Workbook
 
+> **Directive v1.1 status notice.** This educational workbook is a browser-first configuration and workflow resource, not a finished standalone OS, mechanically enforced control plane, clinical system, certification, or grant of institutional/PHI authority. Current governance uses independent risk tiers (Green/Yellow/Orange/Red-P/Red-E), data classes (D0–D4), and action modes. Green supports Observe/Draft; Recommend begins at Yellow. See https://nurse-ai-os.org/directive.html for the canonical status register.
+
+© 2026 Robert Domondon
+
 > *"She was the lady with the lamp. She was also the first to chart the truth in a way the powerful could not ignore — and the truth saved lives."*
 
 ### Carry the lamp into the AI age
 
 Florence Nightingale brought a lamp to the Crimean wards — and a notebook. She stayed present, comforted the dying, and protected human dignity at the bedside. She also gathered data, built her famous rose diagram, and proved that poor sanitation, not battle, was killing most soldiers. Compassion told her to act; **evidence told everyone else they had to.**
 
-That union — **the caring heart and the counting mind** — is the whole point of this course. Data science and AI are not here to replace the nurse who notices. They are here to extend her reach, lighten her load, and let her light fall on more people. You will build a calm, governed operating system that carries the busywork so you can carry the patient.
+That union — **the caring heart and the counting mind** — is the whole point of this course. Data science and AI are not here to replace the nurse who notices. They are here to extend her reach, lighten her load, and let her light fall on more people. You will configure a calm, human-governed workflow environment intended to reduce busywork so you can protect time for the patient.
 
-**Course promise:** Build a nurse-centered AI operating system for personal, professional, and community / entrepreneurial use — governed by human agency, evidence-awareness, systems thinking, ethical stewardship, safety, and dignity.
+**Course promise:** Configure a nurse-centered AI workflow environment for personal, professional, and community / entrepreneurial use — guided by human agency, evidence-awareness, systems thinking, ethical stewardship, safety, and dignity.
 
-**Default posture:** Your AI assistant — a browser AI through the No-Install Start, or Hermes Agent through the full governed build — becomes your nurse-centered Chief of Staff, Learning OS, strategic advisor, and stewardship partner.
+**Default posture:** A browser AI through the No-Install Start, or an optional Hermes Agent configuration for advanced users, can support Chief-of-Staff, learning, strategy, and stewardship workflows. The files provide advisory instructions; governance controls exist only where separately implemented and evidenced.
 
 **Core line:**
 
@@ -152,7 +156,7 @@ Use clear language I can paste into my AI OS setup.
 Setup has two doors (full walkthrough and safety rules: https://nurse-ai-os.org/setup.html):
 
 - **Door 1 — No-Install Start (default, recommended):** Use a browser AI you already have (ChatGPT, Claude, or similar). Load your SOUL file and the starter kit, apply the no-PHI boundary, and begin working the course today. Nothing to install.
-- **Door 2 — Full Governed Hermes Build (optional, later):** Install Hermes Agent from the official Hermes Agent site (https://hermes-agent.nousresearch.com/), then return to Nurse AI OS for the governed nursing layer. Choose this only when your Door 1 workflows are proven and you want files, skills, memory, and automations.
+- **Door 2 — Optional Advanced Hermes Configuration (later):** Install Hermes Agent from the official Hermes Agent site (https://hermes-agent.nousresearch.com/), then return to Nurse AI OS for the nurse-facing configuration and advisory governance layer. Choose this only when your Door 1 workflows are proven and you understand the permissions for files, skills, memory, and automations. This path is not institutionally authorized or PHI-eligible by default.
 
 ### Build
 
@@ -184,7 +188,7 @@ Include safety boundaries, human-agency rules, and weekly review templates.
 
 ### Hermes Agent Setup Walkthrough
 
-The rest of this week's walkthrough covers Door 2, the full governed Hermes build. If you are starting through Door 1, skim it now and return when you are ready for the full build.
+The rest of this week's walkthrough covers Door 2, the optional advanced Hermes configuration. If you are starting through Door 1, skim it now and return only when you are ready to govern additional tool permissions.
 
 Use the setup tutorial as a practical orientation, but translate it through the nurse-centered safety lens.
 
@@ -198,7 +202,7 @@ The safest beginner path is to start at the official Hermes Agent site and follo
 - If your operating system warns you, confirm the source before opening or installing anything.
 - Complete first-run onboarding and verify one normal chat works before adding Nurse AI OS workflows.
 
-Hermes Agent is the open-source agent runtime: the engine that can use tools, files, memory, skills, and automations when configured. Nurse AI OS is the governed nurse-facing layer around it: SOUL files, no-PHI boundaries, dashboards, starter folders, EDENA gates, and human-review workflows.
+Hermes Agent is the open-source agent runtime: the engine that can use tools, files, memory, skills, and automations when configured. Nurse AI OS supplies a nurse-facing configuration and workflow package around it: SOUL files, no-PHI boundaries, dashboards, starter folders, advisory EDENA review prompts, and human-review workflows. These files do not mechanically enforce controls.
 
 If you are comfortable with Terminal, use the current official Hermes docs for the recommended verification command. A typical check may be:
 
@@ -491,7 +495,7 @@ Every Sunday at 5pm, review the Personal Projects folder and create a weekly pro
 
 Cron boundary:
 
-> Schedule only low-stakes, non-PHI, review-oriented workflows at first. Anything involving messaging, external systems, financial actions, legal decisions, clinical work, or employer systems requires a higher EDENA tier and human approval.
+> Use only low-stakes, non-PHI, review-oriented drafts in the public Community experience. Messaging, external systems, financial or legal actions, clinical work, employer systems, D2–D4 data, or action modes above Recommend require separate formal authorization and implemented controls; this workbook cannot grant either.
 
 ---
 
@@ -643,7 +647,7 @@ Check safety, privacy, equity, accountability, reversibility, and stop condition
 
 ## EDENA Stewardship Lens
 
-**EDENA** stands for **Ethical Design & Enablement for Nursing Augmentation** — the name of the governance framework, and a promise: AI that is ethically designed, that enables rather than merely restricts, and that augments the nurse without ever replacing her judgment.
+**EDENA** is the governance framework used by Nurse AI OS. Its official long-form expansion has not been recorded by the current Directive owner; this workbook does not invent one.
 
 The same five letters name the **Stewardship Lens** — the rubric you apply to any major recommendation. The name says what the framework *is*; the Lens says how you *check your work*.
 
@@ -680,7 +684,9 @@ Loop Name:
 Purpose:
 Trigger:
 Goal:
-EDENA Tier:
+Risk Tier: [Green / Yellow / Orange / Red-P / Red-E]
+Data Class: [D0 / D1; stop and seek a separately authorized environment for D2–D4]
+Action Mode: [Observe / Draft / Recommend; Recommend begins at Yellow]
 Data Used:
 PHI Risk:
 Tools/Connectors:
@@ -699,7 +705,7 @@ Named Human Owner:
 
 # Practical Integrations: Notes, Notion, Google Workspace, and GitHub
 
-These integrations belong to the Door 2 (full governed Hermes build) pathway. They should be added only after your basic Hermes setup, no-PHI boundary, workspace folder, and manual workflows are working. Notion belongs here as the human-facing operations layer: useful for visibility and coordination, but never a clinical system.
+These integrations belong to the Door 2 optional advanced-configuration pathway. They should be added only after your basic Hermes setup, no-PHI boundary, workspace folder, and manual workflows are working. Notion belongs here as the human-facing operations layer: useful for visibility and coordination, but never a clinical system.
 
 Integration principle:
 
@@ -2198,7 +2204,7 @@ Check whether I am over-relying on AI in this decision. What must I verify? What
 ## 10. Loop Charter
 
 ```text
-Help me design a safe AI loop for [workflow]. Define trigger, goal, EDENA tier, data boundary, stop condition, human review point, and named owner.
+Help me design a safe AI loop for [workflow]. Define trigger, goal, EDENA risk tier, data class, action mode, stop condition, human review point, and named owner. Treat the three governance dimensions independently.
 ```
 
 ---
@@ -2225,7 +2231,7 @@ Monthly:
 
 # Completion Statement
 
-I have built a nurse-centered AI operating system for personal, professional, and community use, governed by human agency, evidence-awareness, safety boundaries, and nursing stewardship.
+I have configured a nurse-centered AI workflow package for personal, professional, and community use, guided by human agency, evidence-awareness, safety boundaries, and nursing stewardship.
 
 ---
 

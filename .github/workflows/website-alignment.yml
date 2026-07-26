@@ -6,8 +6,13 @@ on:
       - "**/*.html"
       - "assets/nurse-ai.css"
       - "assets/leader-educator-home.js"
+      - "assets/student-nurse-funnel.js"
+      - "assets/img/student-recall-study-map.jpg"
+      - "assets/img/student-source-verification.jpg"
       - "assets/site-shell.js"
       - "tests/test_leader_educator_home.py"
+      - "tests/test_student_nurse_funnel.py"
+      - "tests/test_student_nurse_browser.mjs"
       - "ar/**"
       - "es/**"
       - "fr/**"
@@ -61,8 +66,13 @@ on:
       - "**/*.html"
       - "assets/nurse-ai.css"
       - "assets/leader-educator-home.js"
+      - "assets/student-nurse-funnel.js"
+      - "assets/img/student-recall-study-map.jpg"
+      - "assets/img/student-source-verification.jpg"
       - "assets/site-shell.js"
       - "tests/test_leader_educator_home.py"
+      - "tests/test_student_nurse_funnel.py"
+      - "tests/test_student_nurse_browser.mjs"
       - "ar/**"
       - "es/**"
       - "fr/**"
@@ -134,7 +144,7 @@ jobs:
       - name: Scan current public governance surfaces
         run: |
           pages=(
-            directive.html offers.html index.html explore-ecosystem.html about.html start-here.html faq.html
+            directive.html offers.html index.html student-nurse.html assets/student-nurse-funnel.js pathways.html explore-ecosystem.html about.html start-here.html faq.html
             terms.html privacy.html licensing.html governed-harness.html resources.html media.html
             architecture-report.html article-evidence-nurse-ai-os.html switchboard/index.html
             care-intelligence/index.html

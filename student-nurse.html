@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nurse AI OS for Student Nurses — Get a Bounded Study Prompt</title>
+<meta name="description" content="Get a browser-local study-map prompt that helps student nurses organize recall, find gaps, and verify approved sources without handing over the thinking.">
+<link rel="canonical" href="https://nurse-ai-os.org/student-nurse.html">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Nurse AI OS for Student Nurses",
+  "url": "https://nurse-ai-os.org/student-nurse.html",
+  "description": "A free browser-local entry point where student nurses can select and copy bounded learning prompts while preserving academic integrity, source verification, and human judgment.",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Nurse AI OS",
+    "url": "https://nurse-ai-os.org/"
+  }
+}
+</script>
+</head>
+<body class="student-nurse-funnel">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <span class="brand" aria-label="Nurse AI OS"><span class="lamp" aria-hidden="true">🕯️</span> Nurse AI OS</span>
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#academic-integrity">Keep the work yours</a>
+      <a class="nav-cta" href="#study-workbench">Get the study-map prompt</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+<section class="student-nurse-hero" aria-labelledby="student-title">
+  <div class="container student-nurse-hero-grid">
+    <div>
+      <p class="kicker">For student nurses</p>
+      <h1 id="student-title">Turn one confusing nursing topic into a study map—without handing over the thinking.</h1>
+      <p class="lede">Choose a nurse-built learning prompt, read its boundaries, and copy it into a permitted AI service. It helps organize what you already know and reveal what still needs verification. It does not replace faculty, preceptors, approved sources, or your judgment.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#study-workbench">Get the study-map prompt →</a>
+        <a class="btn btn-secondary" href="#how-it-works">See the learning method</a>
+      </div>
+      <ul class="trust-strip" aria-label="Student learning boundaries">
+        <li><strong>No patient data</strong></li>
+        <li>Selector sends nothing</li>
+        <li><strong>Tutor, never crutch</strong></li>
+        <li>School policy controls</li>
+      </ul>
+    </div>
+    <aside class="student-proof-card" aria-label="Expected structure of the study-map prompt">
+      <p class="student-proof-label">What the prompt asks for</p>
+      <h2>Your thinking comes first.</h2>
+      <ol>
+        <li><strong>Recall</strong><span>You state what you know before AI responds.</span></li>
+        <li><strong>Connect</strong><span>AI organizes only the ideas and approved objectives you provide.</span></li>
+        <li><strong>Question</strong><span>AI surfaces gaps with teach-back questions—not an answer key.</span></li>
+        <li><strong>Verify</strong><span>You correct every claim against faculty-approved sources.</span></li>
+      </ol>
+      <p class="student-proof-close">This is the expected output structure—not evidence of improved grades or learning outcomes.</p>
+    </aside>
+  </div>
+</section>
+
+<section class="leader-credibility" aria-label="Who built this and what it supports">
+  <div class="container leader-credibility-inner">
+    <p><strong>Built by Robert Domondon</strong>, ICU nurse, CCRN, CSC, CMC, and physician trained in the Philippines.</p>
+    <p><strong>For learning support:</strong> concept organization, self-testing, planning, reflection, and source verification—not patient care, grading, or evaluation.</p>
+  </div>
+</section>
+
+<section class="section section-alt workbench-section" id="study-workbench" aria-labelledby="student-workbench-title">
+  <div class="container">
+    <div class="workbench-heading">
+      <div>
+        <p class="eyebrow">Your first useful action</p>
+        <h2 id="student-workbench-title">Choose one task. Get one bounded prompt.</h2>
+        <p class="section-intro">Your task choice and generated prompt stay in this page’s memory; this page does not receive your notes or store your selection. Read the prompt before copying it.</p>
+      </div>
+      <div class="workbench-safety">
+        <strong>Before you begin</strong>
+        <span>No patient data. No student-identifying data. No graded questions, answer keys, restricted course material, confidential school information, or clinical records. Follow your syllabus, instructor guidance, and school AI policy.</span>
+      </div>
+    </div>
+
+    <div class="workflow-workbench">
+      <form class="workflow-controls" onsubmit="return false;">
+        <fieldset>
+          <legend>What do you want help studying?</legend>
+          <label for="student-task">Choose one bounded task</label>
+          <select id="student-task" name="student-task">
+            <option value="student-study-map">lecture topic → study-map prompt</option>
+            <option value="student-socratic">Socratic self-test prompt</option>
+            <option value="student-week-plan">weekly study-plan prompt</option>
+            <option value="student-exam-review">exam-review prompt</option>
+            <option value="student-clinical-reflection">de-identified learning-reflection prompt</option>
+            <option value="student-integrity-check">faculty-question prompt for AI-use rules</option>
+          </select>
+        </fieldset>
+        <div class="student-control-reminder">
+          <strong>Recall before prompting</strong>
+          <span>Write or say what you already understand first. The AI should reveal your gaps—not hide them.</span>
+        </div>
+        <p class="workflow-local-note"><strong>Browser-local selector:</strong> changing this menu updates the prompt in your browser. It does not send the selection to Nurse AI OS or an AI provider.</p>
+        <noscript><p class="workflow-local-note"><strong>JavaScript is off:</strong> the default study-map prompt remains available to copy; turn on JavaScript to switch tasks.</p></noscript>
+      </form>
+
+      <div class="workflow-output" aria-labelledby="student-prompt-title">
+        <p class="prompt-label">Your learning prompt</p>
+        <h3 id="student-prompt-title">lecture topic → study-map prompt</h3>
+        <div class="student-prompt-safety" aria-label="Safety contract included in every prompt">
+          <strong>Built into every prompt:</strong> no patient or identifying data; no restricted course or school-confidential material; no graded-answer completion; Draft-only learning support; approved sources and school policy control; faculty review when permission is unclear.
+        </div>
+        <label class="sr-only" for="student-prompt">Generated student learning prompt</label>
+        <textarea id="student-prompt" rows="16" readonly>Safety contract: No patient data. No student-identifying data. Do not include restricted course material or school-confidential information. When sources are needed, use only source names, public sources, or excerpts I am permitted to share. Do not answer graded work or invent facts or citations. Do not make clinical decisions. Do not replace faculty, preceptors, approved sources, or school policy. This is Draft-only learning support. If the activity is graded, restricted, or permission is unclear, stop and ask faculty before using AI. Mark claims that need verification, disclose AI use when required, and require my human review. Task: Act as my nursing learning coach, not an answer generator. Ask for only a topic name, my own recall, learning objectives, and approved course sources. Then draft a study-map structure with: Core Idea, Key Connections, What I Can Already Explain, Gaps or Misconceptions to Check, Five Teach-Back Questions, and a Source-Verification Checklist. End by asking me to correct the map in my own words.</textarea>
+        <div class="workflow-actions">
+          <button class="btn btn-primary" id="copy-student-workflow" type="button">Copy this study prompt</button>
+          <p id="student-workflow-status" aria-live="polite">Your prompt is ready. Read it before copying.</p>
+        </div>
+        <div class="student-provider-boundary">
+          <strong>When you paste elsewhere:</strong> the content leaves nurse-ai-os.org. ChatGPT, Claude, or another provider’s privacy, retention, training, account, and data-use settings apply. Use only public, synthetic, or low-sensitivity personal study information appropriate for that provider—never patient information, restricted course content, or school-confidential material. <a href="privacy.html">Read the privacy boundary →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section student-other-workflows" id="other-workflows" aria-labelledby="other-workflows-title">
+  <div class="container">
+    <details class="student-task-catalog">
+      <summary id="other-workflows-title">See what the five other prompts can help you draft</summary>
+      <ul>
+        <li><strong>Socratic self-test:</strong> one reasoning question at a time, without full worked answers.</li>
+        <li><strong>Weekly study plan:</strong> organizes the priorities and time blocks you choose.</li>
+        <li><strong>Exam-review map:</strong> structures your own priorities from approved objectives—never recalled test content.</li>
+        <li><strong>Learning reflection:</strong> organizes a de-identified reflection without reconstructing a case or suggesting patient care.</li>
+        <li><strong>Faculty-question draft:</strong> names policy unknowns and prepares questions; it never decides whether AI use is allowed.</li>
+      </ul>
+    </details>
+  </div>
+</section>
+
+<section class="section" id="how-it-works" aria-labelledby="student-how-title">
+  <div class="container">
+    <div class="student-section-media-grid">
+      <div>
+        <p class="eyebrow">No installation required</p>
+        <h2 id="student-how-title">Use AI to expose your thinking—not replace it.</h2>
+        <ol class="conversion-steps">
+          <li><span>1</span><div><h3>Recall before prompting</h3><p>Start with what you can explain from memory and the approved sources you are expected to use.</p></div></li>
+          <li><span>2</span><div><h3>Use a bounded draft</h3><p>Paste the prompt only into a service your school permits. Let it organize or question—not decide, grade, or produce submit-ready work.</p></div></li>
+          <li><span>3</span><div><h3>Verify against approved sources</h3><p>Correct the output in your own words. Faculty, course materials, and current approved references outrank the AI.</p></div></li>
+        </ol>
+      </div>
+      <figure class="student-section-media">
+        <img src="assets/img/student-recall-study-map.jpg" width="1344" height="768" loading="lazy" decoding="async" alt="Illustration of a nursing student writing from memory beside an unlabeled concept map on a laptop.">
+        <figcaption>Synthetic illustration: recall first, then use AI to organize—not replace—your thinking.</figcaption>
+      </figure>
+    </div>
+    <div class="boundary conversion-boundary"><strong>You do the thinking.</strong> AI may organize, question, and draft a study aid. It does not decide what is clinically correct, complete graded work, determine competence, or interpret school policy with authority. Agents propose. Humans judge. Nurses steward.</div>
+  </div>
+</section>
+
+<section class="section section-alt" id="academic-integrity" aria-labelledby="integrity-title">
+  <div class="container">
+    <div class="student-section-media-grid student-integrity-media-grid">
+      <div>
+        <p class="eyebrow">Academic integrity before convenience</p>
+        <h2 id="integrity-title">Keep the work yours.</h2>
+        <p>Compare every AI-assisted draft with approved course sources, correct it in your own words, and ask faculty when permission is unclear.</p>
+      </div>
+      <figure class="student-section-media">
+        <img src="assets/img/student-source-verification.jpg" width="1344" height="768" loading="lazy" decoding="async" alt="Illustration of a student comparing an abstract laptop draft with open study materials and marking corrections by hand.">
+        <figcaption>Synthetic illustration: AI drafts; the student verifies, corrects, and owns the final work.</figcaption>
+      </figure>
+    </div>
+    <div class="student-integrity-grid">
+      <article><h3>Check permission first</h3><p>Follow your syllabus, instructor guidance, and school AI policy. This page and AI do not decide whether AI use is allowed. If the rules are unclear, ask before using AI on the assignment.</p></article>
+      <article><h3>Protect people and records</h3><p>No patient names, charts, screenshots, or clinical records. Do not enter classmate, faculty, preceptor, staff, or student-identifying information.</p></article>
+      <article><h3>Own every submission</h3><p>Never submit AI output as your own work. Verify sources, disclose use when required, and be able to explain every sentence and decision.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section progression-section" id="student-progression" aria-labelledby="student-progression-title">
+  <div class="container">
+    <p class="eyebrow">Visitors → learners → stewards</p>
+    <h2 id="student-progression-title">Earn the next step after the prompt proves useful.</h2>
+    <div class="progression-grid">
+      <article>
+        <p class="progression-number">01</p>
+        <h3>Visitor</h3>
+        <p><strong>Visitors try</strong> one bounded study prompt with no account or download on this page.</p>
+        <a href="#study-workbench">Get the study-map prompt →</a>
+      </article>
+      <article>
+        <p class="progression-number">02</p>
+        <h3>Learner</h3>
+        <p><strong>Learners keep</strong> the free Starter Kit and build a values-and-boundaries file only after the browser prompt proves useful.</p>
+        <p><a href="assets/nurse-ai-os-starter-kit.zip">Download the Starter Kit (ZIP) →</a></p>
+        <p><a href="soul-quiz.html">Build my SOUL file →</a></p>
+      </article>
+      <article>
+        <p class="progression-number">03</p>
+        <h3>Steward</h3>
+        <p><strong>Stewards practice</strong> source verification, academic integrity, privacy boundaries, and responsible AI use with others.</p>
+        <p><a href="directive.html">Read the public Directive →</a></p>
+        <p><a href="pathways.html#student">Explore the bounded student pathway →</a></p>
+      </article>
+    </div>
+    <p class="download-truth"><strong>What the Starter Kit is:</strong> a ZIP of prompts, templates, local folders, and safety materials. Downloading or unzipping changes nothing. It does not install software, connect to school systems, or activate a student AI environment.</p>
+  </div>
+</section>
+
+<section class="section section-navy student-advanced-setup" aria-labelledby="advanced-setup-title">
+  <div class="container narrow">
+    <p class="eyebrow">Optional—and not needed for this prompt</p>
+    <h2 id="advanced-setup-title">Want a reusable local toolkit later?</h2>
+    <p>An advanced self-install setup exists for people who deliberately want more after browser value. Reviewing or downloading it does not install, activate, authorize, or connect anything.</p>
+    <a class="btn btn-secondary" href="post-setup/">See the optional advanced setup →</a>
+  </div>
+</section>
+
+<section class="section final-conversion" aria-labelledby="student-final-title">
+  <div class="container narrow">
+    <p class="eyebrow">Start with one honest gap</p>
+    <h2 id="student-final-title">Your topic. Your sources. Your thinking.</h2>
+    <p>Begin with recall, use the prompt to find gaps, and finish by checking approved sources.</p>
+    <a class="btn btn-primary" href="#study-workbench">Get the study-map prompt →</a>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <p><strong>Boundary:</strong> This page supports learning, planning, and reflection. Never enter patient data, clinical records, student-identifying information, graded materials you are not permitted to share, or confidential school or employer information.</p>
+    <div class="footer-links">
+      <a href="#study-workbench">Get the study-map prompt</a>
+      <a href="index.html">For leaders &amp; educators</a>
+      <a href="explore-ecosystem.html">Explore ecosystem</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="directive.html">Governance</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:great.ai.nurses@gmail.com">Contact</a>
+    </div>
+    <nav class="student-footer-languages" aria-label="Explore Nurse AI OS in other languages">
+      <a href="explore-ecosystem.html" lang="en">English</a>
+      <a href="es/index.html" lang="es">Español</a>
+      <a href="tl/index.html" lang="tl">Tagalog</a>
+      <a href="zh/index.html" lang="zh-Hans">中文</a>
+      <a href="ar/index.html" lang="ar">العربية</a>
+      <a href="vi/index.html" lang="vi">Tiếng Việt</a>
+      <a href="ru/index.html" lang="ru">Русский</a>
+      <a href="hi/index.html" lang="hi">हिन्दी</a>
+      <a href="fr/index.html" lang="fr">Français</a>
+    </nav>
+    <p>© 2026 Nurse AI OS · Operated by Robert Domondon · Core browser workflows and self-customization are free.</p>
+  </div>
+</footer>
+
+<script src="assets/student-nurse-funnel.js" defer></script>
+<script src="assets/site-shell.js" defer></script>
+</body>
+</html>

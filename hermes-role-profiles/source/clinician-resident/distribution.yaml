@@ -1,0 +1,13 @@
+{
+  "author": "NAIO",
+  "description": "Governed, inactive-by-default Clinician \u2014 Medical Resident MCP companion for ROUNDS \u2014 Medical Resident.",
+  "hermes_requires": ">=0.19.0",
+  "license": "Apache-2.0",
+  "mapping": {
+    "classification": "direct_fit",
+    "condition": "Medical Resident ROUNDS context only; selection does not verify training status, supervision, competence, or authority."
+  },
+  "name": "naio-clinician-resident",
+  "schema_version": 1,
+  "version": "1.0.0"
+}

@@ -21,6 +21,12 @@ import zipfile
 from pathlib import Path
 from pathlib import PurePosixPath
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from hermes_role_profile_records import companion_record
+
 REPO = Path(__file__).resolve().parents[1]
 ROOT = REPO / "healthcare-research-innovation-leaders"
 PACKAGE = ROOT / "packages" / "discover"
@@ -611,6 +617,10 @@ def build() -> dict:
         "workflows_total": 24,
     }
     public = {
+        "hermes_mcp_profile_companions": [
+            companion_record(REPO, "curator"),
+            companion_record(REPO, "builder-operator"),
+        ],
         "installation_status": "not_installed",
         "packages": [record, build_kit_record],
         "purpose": "standalone Healthcare Research and Innovation leadership lane within Nurse AI OS; isolated from nursing, medical-resident, respiratory-care, and hospital-administration state",

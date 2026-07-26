@@ -18,6 +18,12 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from hermes_role_profile_records import companion_record
+
 REPO = Path(__file__).resolve().parents[1]
 ROOT = REPO / "hospital-clinic-administrators"
 PREVIEW = ROOT / "preview"
@@ -255,6 +261,7 @@ def build() -> dict:
         "target_application_version": "2.0.0",
     }
     manifest = {
+        "hermes_mcp_profile_companions": [companion_record(REPO, "admin-pilot-ops")],
         "packages": [preview_record, build_kit_record],
         "purpose": "STEWARD hospital and clinic administration public preview plus verified self-install Hermes build kit",
         "release_posture": "preview_available_build_kit_available_runtime_not_operational_until_user_approved_build",

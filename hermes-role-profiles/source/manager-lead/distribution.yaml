@@ -1,0 +1,13 @@
+{
+  "author": "NAIO",
+  "description": "Governed, inactive-by-default Manager / Lead MCP companion for LEAD \u2014 Nurse Leader & Manager.",
+  "hermes_requires": ">=0.19.0",
+  "license": "Apache-2.0",
+  "mapping": {
+    "classification": "direct_role_conditional",
+    "condition": "Only when the user is actually operating as a nurse leader or manager; selection does not establish authority."
+  },
+  "name": "naio-manager-lead",
+  "schema_version": 1,
+  "version": "1.0.0"
+}

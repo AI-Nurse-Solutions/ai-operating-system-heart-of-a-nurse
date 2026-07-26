@@ -1,0 +1,178 @@
+{
+  "servers": {
+    "filesystem": {
+      "args": [
+        "filesystem"
+      ],
+      "candidate": {
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem@2026.7.10",
+          "${NAIO_ROLE_WORKSPACE}"
+        ],
+        "command": "npx"
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    },
+    "google_workspace": {
+      "args": [
+        "google_workspace"
+      ],
+      "candidate": {
+        "args": [
+          "workspace-mcp==1.22.1",
+          "--tool-tier",
+          "core",
+          "--tools",
+          "docs",
+          "drive"
+        ],
+        "command": "uvx",
+        "env": {
+          "GOOGLE_OAUTH_CLIENT_ID": "${GOOGLE_OAUTH_CLIENT_ID}",
+          "GOOGLE_OAUTH_CLIENT_SECRET": "${GOOGLE_OAUTH_CLIENT_SECRET}"
+        }
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    },
+    "obsidian": {
+      "args": [
+        "obsidian"
+      ],
+      "candidate": {
+        "args": [
+          "--from",
+          "git+https://github.com/Vasallo94/obsidian-mcp-server.git@c8a4fed36da2ec03284bdd13f540b65e0af27bb1",
+          "obsidian-mcp-server"
+        ],
+        "command": "uvx",
+        "env": {
+          "OBSIDIAN_MCP_TOOL_SETS": "read,write",
+          "OBSIDIAN_VAULT_PATH": "${NAIO_VAULT_PATH}"
+        }
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    },
+    "reddit": {
+      "args": [
+        "reddit"
+      ],
+      "candidate": {
+        "args": [
+          "-y",
+          "reddit-mcp-server@1.5.1"
+        ],
+        "command": "npx",
+        "env": {
+          "REDDIT_CLIENT_ID": "${REDDIT_CLIENT_ID}",
+          "REDDIT_CLIENT_SECRET": "${REDDIT_CLIENT_SECRET}",
+          "REDDIT_PASSWORD": "${REDDIT_PASSWORD}",
+          "REDDIT_SAFE_MODE": "true",
+          "REDDIT_USERNAME": "${REDDIT_USERNAME}"
+        }
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    },
+    "x": {
+      "args": [
+        "x"
+      ],
+      "candidate": {
+        "args": [
+          "--from",
+          "git+https://github.com/rafaljanicki/x-twitter-mcp-server.git@1d22ed4fc4f725df8af90ef75a4a7bd1e3bc9882",
+          "x-twitter-mcp-server"
+        ],
+        "command": "uvx",
+        "env": {
+          "TWITTER_ACCESS_TOKEN": "${TWITTER_ACCESS_TOKEN}",
+          "TWITTER_ACCESS_TOKEN_SECRET": "${TWITTER_ACCESS_TOKEN_SECRET}",
+          "TWITTER_API_KEY": "${TWITTER_API_KEY}",
+          "TWITTER_API_SECRET": "${TWITTER_API_SECRET}",
+          "TWITTER_BEARER_TOKEN": "${TWITTER_BEARER_TOKEN}"
+        }
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    }
+  }
+}

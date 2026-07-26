@@ -1,0 +1,9 @@
+{
+  "description": "Governed, inactive-by-default Clinician \u2014 Nurse Practitioner MCP companion for WINGS \u2014 Nurse Practitioner.",
+  "mapping": {
+    "classification": "direct_country_restricted",
+    "condition": "United States NP context only; selection does not verify licensure, certification, privileges, or authority."
+  },
+  "name": "naio-clinician-np",
+  "version": "1.0.0"
+}

@@ -1,4 +1,20 @@
 {
+  "hermes_mcp_profile_companions": [
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "bytes": 10750,
+      "download": "/hermes-role-profiles/downloads/naio-clinician-resident-hermes-profile-v1.0.0.zip",
+      "install_on_download": false,
+      "mapping_classification": "direct_fit",
+      "mapping_condition": "Medical Resident ROUNDS context only; selection does not verify training status, supervision, competence, or authority.",
+      "mcp_enabled_by_default": false,
+      "mcp_tools_exposed_by_default": 0,
+      "profile": "clinician-resident",
+      "sha256": "f2d6674f4ee7c7ce179b61f1f7dd84a56c4a4f8a6dd8b4582801646e8ac29f4f",
+      "version": "1.0.0"
+    }
+  ],
   "installation_status": "not_installed",
   "packages": [
     {

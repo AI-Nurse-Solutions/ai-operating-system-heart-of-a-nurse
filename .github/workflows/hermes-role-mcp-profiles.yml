@@ -1,0 +1,92 @@
+name: Governed Hermes role MCP profiles
+
+on:
+  pull_request:
+    paths:
+      - "hermes-role-profiles/**"
+      - "scripts/build-hermes-role-profiles.py"
+      - "scripts/hermes_role_profile_records.py"
+      - "scripts/build-post-setup-role-packs.py"
+      - "scripts/build-medical-resident-rounds.py"
+      - "scripts/build-hospital-clinic-steward.py"
+      - "scripts/build-healthcare-research-innovation-discover.py"
+      - "tests/test_hermes_role_mcp_profiles.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
+      - "medical-residents/index.html"
+      - "medical-residents/downloads/manifest.json"
+      - "hospital-clinic-administrators/index.html"
+      - "hospital-clinic-administrators/downloads/manifest.json"
+      - "healthcare-research-innovation-leaders/index.html"
+      - "healthcare-research-innovation-leaders/downloads/manifest.json"
+      - "tests/test_switchboard_browser.mjs"
+      - "post-setup/index.html"
+      - "post-setup/README.md"
+      - ".github/workflows/hermes-role-mcp-profiles.yml"
+  push:
+    branches: [main]
+    paths:
+      - "hermes-role-profiles/**"
+      - "scripts/build-hermes-role-profiles.py"
+      - "scripts/hermes_role_profile_records.py"
+      - "scripts/build-post-setup-role-packs.py"
+      - "scripts/build-medical-resident-rounds.py"
+      - "scripts/build-hospital-clinic-steward.py"
+      - "scripts/build-healthcare-research-innovation-discover.py"
+      - "tests/test_hermes_role_mcp_profiles.py"
+      - "post-setup/downloads/manifest.json"
+      - "setup-helper/setup-helper-model.mjs"
+      - "medical-residents/index.html"
+      - "medical-residents/downloads/manifest.json"
+      - "hospital-clinic-administrators/index.html"
+      - "hospital-clinic-administrators/downloads/manifest.json"
+      - "healthcare-research-innovation-leaders/index.html"
+      - "healthcare-research-innovation-leaders/downloads/manifest.json"
+      - "tests/test_switchboard_browser.mjs"
+      - "post-setup/index.html"
+      - "post-setup/README.md"
+      - ".github/workflows/hermes-role-mcp-profiles.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Rebuild committed profile publications twice
+        run: |
+          set -euo pipefail
+          python3 scripts/build-hermes-role-profiles.py
+          git diff --exit-code -- hermes-role-profiles
+          python3 scripts/build-hermes-role-profiles.py
+          git diff --exit-code -- hermes-role-profiles
+      - name: Verify profile, supply-chain, archive, and handoff contracts
+        run: python3 tests/test_hermes_role_mcp_profiles.py
+      - name: Rebuild every mapped role manifest
+        run: |
+          set -euo pipefail
+          python3 scripts/build-post-setup-role-packs.py
+          python3 scripts/build-medical-resident-rounds.py
+          python3 scripts/build-hospital-clinic-steward.py
+          python3 scripts/build-healthcare-research-innovation-discover.py
+          git diff --exit-code
+      - name: Scan public profile surfaces
+        run: |
+          set -euo pipefail
+          python3 scripts/scan-public-healthcare-artifacts.py hermes-role-profiles/README.md --label HERMES_ROLE_PROFILE
+          for role in study-coach curator builder-operator manager-lead admin-pilot-ops clinician-np clinician-resident; do
+            python3 scripts/scan-public-healthcare-artifacts.py "hermes-role-profiles/source/$role/SOUL.md" --label HERMES_ROLE_PROFILE
+            python3 scripts/scan-public-healthcare-artifacts.py "hermes-role-profiles/source/$role/README.md" --label HERMES_ROLE_PROFILE
+            python3 scripts/scan-public-healthcare-artifacts.py "hermes-role-profiles/source/$role/MCP-ACTIVATION-CARD.md" --label HERMES_ROLE_PROFILE
+            git ls-files --error-unmatch "hermes-role-profiles/downloads/naio-$role-hermes-profile-v1.0.0.zip"
+          done
+      - name: Verify clean execution and whitespace
+        run: |
+          git diff --check
+          test -z "$(git status --porcelain --untracked-files=all)"

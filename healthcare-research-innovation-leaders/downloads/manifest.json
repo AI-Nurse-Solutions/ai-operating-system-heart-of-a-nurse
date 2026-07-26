@@ -1,4 +1,34 @@
 {
+  "hermes_mcp_profile_companions": [
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "bytes": 10971,
+      "download": "/hermes-role-profiles/downloads/naio-curator-hermes-profile-v1.0.0.zip",
+      "install_on_download": false,
+      "mapping_classification": "adjacent_conditional_not_exact_lane",
+      "mapping_condition": "Healthcare research or innovation source-curation context only; not generic curation and not an exact DISCOVER lane identity.",
+      "mcp_enabled_by_default": false,
+      "mcp_tools_exposed_by_default": 0,
+      "profile": "curator",
+      "sha256": "7761d31a3e10a157d70f6d8a9741e677ba9937c4387d1c02e349a924fef125c9",
+      "version": "1.0.0"
+    },
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "bytes": 10976,
+      "download": "/hermes-role-profiles/downloads/naio-builder-operator-hermes-profile-v1.0.0.zip",
+      "install_on_download": false,
+      "mapping_classification": "adjacent_conditional_not_exact_lane",
+      "mapping_condition": "Healthcare research or innovation solution-preparation context only; not a generic software-builder or code-shipping role and not an exact DISCOVER lane identity.",
+      "mcp_enabled_by_default": false,
+      "mcp_tools_exposed_by_default": 0,
+      "profile": "builder-operator",
+      "sha256": "ac077ac7119a37b4a9475169b06024221a125b811e4cff3d4a77f3f74e37ec44",
+      "version": "1.0.0"
+    }
+  ],
   "installation_status": "not_installed",
   "packages": [
     {

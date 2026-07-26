@@ -1,0 +1,13 @@
+{
+  "author": "NAIO",
+  "description": "Governed, inactive-by-default Administrator / Pilot Operations MCP companion for STEWARD \u2014 Hospital & Clinic Administrator.",
+  "hermes_requires": ">=0.19.0",
+  "license": "Apache-2.0",
+  "mapping": {
+    "classification": "conditional_candidate",
+    "condition": "Hospital or clinic administration context only; not generic administration and not an automatic identity match."
+  },
+  "name": "naio-admin-pilot-ops",
+  "schema_version": 1,
+  "version": "1.0.0"
+}

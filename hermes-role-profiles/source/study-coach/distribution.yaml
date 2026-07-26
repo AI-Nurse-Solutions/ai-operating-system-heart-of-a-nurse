@@ -1,0 +1,13 @@
+{
+  "author": "NAIO",
+  "description": "Governed, inactive-by-default Study Coach MCP companion for FUTURE \u2014 Nursing Student & Nursing Assistant.",
+  "hermes_requires": ">=0.19.0",
+  "license": "Apache-2.0",
+  "mapping": {
+    "classification": "direct_pathway_only",
+    "condition": "Nursing Student pathway only; not automatically Nursing Assistant or Bridge."
+  },
+  "name": "naio-study-coach",
+  "schema_version": 1,
+  "version": "1.0.0"
+}

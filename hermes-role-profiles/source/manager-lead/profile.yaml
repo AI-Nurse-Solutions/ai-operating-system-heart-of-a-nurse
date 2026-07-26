@@ -1,0 +1,9 @@
+{
+  "description": "Governed, inactive-by-default Manager / Lead MCP companion for LEAD \u2014 Nurse Leader & Manager.",
+  "mapping": {
+    "classification": "direct_role_conditional",
+    "condition": "Only when the user is actually operating as a nurse leader or manager; selection does not establish authority."
+  },
+  "name": "naio-manager-lead",
+  "version": "1.0.0"
+}

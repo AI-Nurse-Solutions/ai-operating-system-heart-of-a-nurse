@@ -1,0 +1,64 @@
+{
+  "audited_at": "2026-07-26",
+  "dependencies": {
+    "filesystem": {
+      "license": "SEE-LICENSE-IN-UPSTREAM-PACKAGE",
+      "package": "@modelcontextprotocol/server-filesystem@2026.7.10",
+      "pinning_status": "exact_npm_version",
+      "registry_integrity": "sha512-Mmjg4anFBD5OzbPnGJOA0jPPN8645ERhQk38HQLpSenx1ox9bfdPkmAzUnNjeQtqQGFLtKe13J20RtLBmUKMZA==",
+      "repository": "https://github.com/modelcontextprotocol/servers",
+      "source": "https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem",
+      "version": "2026.7.10"
+    },
+    "github_remote": {
+      "governance": "Disabled by default; remote service identity can change independently of this artifact; activation requires fresh endpoint, terms, authentication, retention, and tool-surface review.",
+      "license": "MIT",
+      "observed_release": "v1.7.0",
+      "pinning_status": "remote_service_not_code_pinnable",
+      "remote_url": "https://api.githubcopilot.com/mcp/",
+      "source": "https://github.com/github/github-mcp-server"
+    },
+    "google_workspace": {
+      "license": "MIT",
+      "package": "workspace-mcp==1.22.1",
+      "pinning_status": "exact_pypi_version",
+      "repository": "https://github.com/taylorwilsdon/google_workspace_mcp",
+      "source": "https://pypi.org/project/workspace-mcp/",
+      "version": "1.22.1",
+      "wheel_sha256": "e999c63730760eeea1586055c423c7d74ebcef7d1db2a922ba242bc406c9b78b"
+    },
+    "obsidian": {
+      "commit": "c8a4fed36da2ec03284bdd13f540b65e0af27bb1",
+      "license": "MIT",
+      "pinning_status": "exact_git_commit",
+      "source": "https://github.com/Vasallo94/obsidian-mcp-server"
+    },
+    "pubmed": {
+      "license": "Apache-2.0",
+      "package": "@cyanheads/pubmed-mcp-server@2.10.1",
+      "pinning_status": "exact_npm_version",
+      "registry_integrity": "sha512-NJzr67w+nL7ZVBk05dPzXpIUe5Gxz7EOqeLUiIWLaMiAxmOpEPSoMsqCu6YT2az0Uh7mWqG/+OmTBZ7n0mz1Vw==",
+      "repository": "https://github.com/cyanheads/pubmed-mcp-server",
+      "runtime_requires": "Node.js >=24.0.0",
+      "source": "https://www.npmjs.com/package/@cyanheads/pubmed-mcp-server",
+      "version": "2.10.1"
+    },
+    "reddit": {
+      "license": "MIT",
+      "package": "reddit-mcp-server@1.5.1",
+      "pinning_status": "exact_npm_version",
+      "registry_integrity": "sha512-kPiDTP6H6H1/nsdIWrbxEIxUhLPlHusWa9FrE3ucWtE/aG1RGb0VgzThE0u7t9rOjuN3FM4tYMKJax2NLVlgkQ==",
+      "repository": "https://github.com/jordanburke/reddit-mcp-server",
+      "source": "https://www.npmjs.com/package/reddit-mcp-server",
+      "version": "1.5.1"
+    },
+    "x": {
+      "commit": "1d22ed4fc4f725df8af90ef75a4a7bd1e3bc9882",
+      "license": "MIT",
+      "pinning_status": "exact_git_commit",
+      "source": "https://github.com/rafaljanicki/x-twitter-mcp-server"
+    }
+  },
+  "policy": "No upstream code is vendored. Coordinates are non-executable candidate evidence, not a transitive lock. Every MCP uses a guaranteed-missing blocker command, is disabled, uses a nonmatching deny-sentinel tool allowlist, and has resources, prompts, sampling, and elicitation off. Activation is BLOCKED until a reviewed runtime consumes a complete dependency lock.",
+  "schema_version": "1.0"
+}

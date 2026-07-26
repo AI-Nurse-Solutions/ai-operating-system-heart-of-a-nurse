@@ -1,0 +1,9 @@
+{
+  "description": "Governed, inactive-by-default Administrator / Pilot Operations MCP companion for STEWARD \u2014 Hospital & Clinic Administrator.",
+  "mapping": {
+    "classification": "conditional_candidate",
+    "condition": "Hospital or clinic administration context only; not generic administration and not an automatic identity match."
+  },
+  "name": "naio-admin-pilot-ops",
+  "version": "1.0.0"
+}

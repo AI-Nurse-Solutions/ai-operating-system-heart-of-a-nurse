@@ -1,0 +1,200 @@
+{
+  "audit_date": "2026-07-26",
+  "critical_corrections": [
+    "floating_dependencies_pinned",
+    "mcp_disabled_and_zero_tools_by_default",
+    "lazy_installs_disabled",
+    "tirith_fail_closed",
+    "real_case_and_deidentification_workflows_removed",
+    "nonexistent_commands_removed",
+    "separate_profile_install_and_per_mcp_activation_cards_added"
+  ],
+  "schema_version": "1.0",
+  "source_available_in_ci": false,
+  "source_locator": "THE_NEW_DIRECTIVE/Research/Nurse AI OS Packets",
+  "treatment": "untrusted_research_input_governed_derivative_not_byte_copy",
+  "upstream_roles": {
+    "admin-pilot-ops": {
+      "admin-pilot-ops/.env.example": {
+        "bytes": 667,
+        "sha256": "39d6dda1a5c0789fe87cbc8cdd12d6fb983b57ca69d41f5eb3aecafad029b31a"
+      },
+      "admin-pilot-ops/README.md": {
+        "bytes": 4566,
+        "sha256": "f7cb32eba89be85ecca111102c62149101450d14d19264e6a7eb627595c7ed26"
+      },
+      "admin-pilot-ops/SOUL.md": {
+        "bytes": 2162,
+        "sha256": "48cc3e3c82588a8960518d0e17026301f266b452a116290146365dd7e491b8f6"
+      },
+      "admin-pilot-ops/config.yaml": {
+        "bytes": 2595,
+        "sha256": "aafc53b8173687df9555f3c0af546a43951045dd7c98477f2983c354b830c945"
+      },
+      "admin-pilot-ops/profile.yaml": {
+        "bytes": 173,
+        "sha256": "6db03dcc8aa344143ca7cfff7db1e8bc52935519d88e3462bedffde71669f10a"
+      },
+      "admin-pilot-ops/skills/route-intake/SKILL.md": {
+        "bytes": 2261,
+        "sha256": "766ad8864397c55932e6b56a0a7209450cc81228015e20f3842d23ee59b9f4ad"
+      }
+    },
+    "builder-operator": {
+      "builder-operator/.env.example": {
+        "bytes": 863,
+        "sha256": "cda43060145c3b75c68fb9c95e1160b6c8298ca404d542a42c117502eb2a62f9"
+      },
+      "builder-operator/README.md": {
+        "bytes": 4930,
+        "sha256": "dff04a959831294b0b66c9cc709cbc5bcfd46b1885609ab68987c60b90693d17"
+      },
+      "builder-operator/SOUL.md": {
+        "bytes": 2023,
+        "sha256": "46cd837e85a7c6061ba2a6d88c2ea5ab25662018b4d2324dc41cc7d91698197b"
+      },
+      "builder-operator/config.yaml": {
+        "bytes": 2942,
+        "sha256": "d0b9a8a19275fe4e0f57f4bfcd965b0fb5304890c3b29c71c4908ede33d2fbe9"
+      },
+      "builder-operator/profile.yaml": {
+        "bytes": 165,
+        "sha256": "ebceb0e8b4bd89818c112d7e4becf87b447949037385c8195d7e4c0944335478"
+      },
+      "builder-operator/skills/ship-to-repo/SKILL.md": {
+        "bytes": 2467,
+        "sha256": "2e5a6a5a98e2a016dab11c630df3d8f3c27f6bf6c4fd37356ac2d83b92680c83"
+      }
+    },
+    "clinician-np": {
+      "clinician-np/.env.example": {
+        "bytes": 887,
+        "sha256": "4bf8294b144b780660057e22c7aee8ebd6e8fcd79b23269b61b9bb7649532e16"
+      },
+      "clinician-np/README.md": {
+        "bytes": 5295,
+        "sha256": "d49df1bc7c2a177d48c8a4fd924069f64d204e7e3ef8c5bfd79a049dc0e8db45"
+      },
+      "clinician-np/SOUL.md": {
+        "bytes": 2729,
+        "sha256": "aeb2e4316cd497b733f86a4996fd777ba534ca86230f6a4232cb58752823eed2"
+      },
+      "clinician-np/config.yaml": {
+        "bytes": 3531,
+        "sha256": "1bd1cf3f1dece34792906b0b9cfa4049c11303763aee41959fcfce392476c4d1"
+      },
+      "clinician-np/profile.yaml": {
+        "bytes": 283,
+        "sha256": "9d2f4de4d3b23dc2bc51a2c9417e309b9b50d58d34e79874d07ae9bffb07be7a"
+      },
+      "clinician-np/skills/log-clinical-case/SKILL.md": {
+        "bytes": 2139,
+        "sha256": "5901c28740c3a840af44b74e95e66b43cad37a69eea7993a72b207b9d1f393e3"
+      }
+    },
+    "clinician-resident": {
+      "clinician-resident/.env.example": {
+        "bytes": 907,
+        "sha256": "81762d077fb754df28e549c988d34a3b38396113fcbc4ee914ea4234fef34958"
+      },
+      "clinician-resident/README.md": {
+        "bytes": 5616,
+        "sha256": "ef097a18f796279e74635b534059b328ea41cbaef195011b681b2117574955c1"
+      },
+      "clinician-resident/SOUL.md": {
+        "bytes": 3044,
+        "sha256": "ce0a30af7c941d2ff978d40df4e63d1916b698901e9a74dcfa65119341c9fa25"
+      },
+      "clinician-resident/config.yaml": {
+        "bytes": 3612,
+        "sha256": "7cb6f11887f9a4bacd716a36b0c50158986ca9290726be597fe668aaaa7bf6cb"
+      },
+      "clinician-resident/profile.yaml": {
+        "bytes": 307,
+        "sha256": "b38a7bdcfc780eaeacd7e51e8b97737d50f63cac313b5a38eea45b3d09f28675"
+      },
+      "clinician-resident/skills/log-clinical-case/SKILL.md": {
+        "bytes": 2283,
+        "sha256": "7de469c23f45b41d055f56cf8d7890afbca68304e980f635108e56993c7ebc39"
+      }
+    },
+    "curator": {
+      "curator/.env.example": {
+        "bytes": 1140,
+        "sha256": "f571da28e5b8db7950cff147b4e5f30b2d7c6801dbe4031e0c47ae007dbdb414"
+      },
+      "curator/README.md": {
+        "bytes": 5082,
+        "sha256": "361a102f9094e2fbd58821b92a929ab243dd470292b0df663d121199e8431c5e"
+      },
+      "curator/SOUL.md": {
+        "bytes": 2266,
+        "sha256": "0d09ac0d103cdabdcc8be873561fefbcc4ef7240bc1c82fe9e2ca6b8279696aa"
+      },
+      "curator/config.yaml": {
+        "bytes": 3709,
+        "sha256": "98479efa14473d17c63cb8679a5aef90f513b2aeed5d8f6772303f3a245dcea3"
+      },
+      "curator/profile.yaml": {
+        "bytes": 176,
+        "sha256": "9eeacfcfe5c524f0d5e6544ff41c4bd206e708e52865c84208163c6184e89768"
+      },
+      "curator/skills/save-to-vault/SKILL.md": {
+        "bytes": 2443,
+        "sha256": "71934d9e95e5fd2651d0c73b1658bb2890f172441f3b3db3c4ba07ea3597ccc2"
+      }
+    },
+    "manager-lead": {
+      "manager-lead/.env.example": {
+        "bytes": 648,
+        "sha256": "f90109d5820da83e8139c6daad9051562eb157cd90bffb7ff936ef117791b67f"
+      },
+      "manager-lead/README.md": {
+        "bytes": 4385,
+        "sha256": "a6da06ae8618a0f0b4536756625fe1fbe28036c6501fc99e9c0675aa5cb37648"
+      },
+      "manager-lead/SOUL.md": {
+        "bytes": 1636,
+        "sha256": "0ba950f27da28c1a135ff64a7d0b8bbc7925bf2d19a271ee5197f8dd0ff22aa8"
+      },
+      "manager-lead/config.yaml": {
+        "bytes": 2354,
+        "sha256": "bb77aad5860f1f6758adb06c2f2597f37d4072194149af2afcec27a937a837c8"
+      },
+      "manager-lead/profile.yaml": {
+        "bytes": 167,
+        "sha256": "1e5f1ec75aebc09395bae3d140baa67a5cbd413af7089720e82a765a65291a68"
+      },
+      "manager-lead/skills/weekly-brief/SKILL.md": {
+        "bytes": 2069,
+        "sha256": "9fb105e58e3744279835fff19ffd9f41c037470fd38d9b1c822a1602a0000cc2"
+      }
+    },
+    "study-coach": {
+      "study-coach/.env.example": {
+        "bytes": 805,
+        "sha256": "688dff8b3c0ffe371e62f6c520d06f1cc38981ccf34a6fb932a22aea10051b99"
+      },
+      "study-coach/README.md": {
+        "bytes": 5760,
+        "sha256": "5696d710b83f67b2214106d6082f6f8aa7c097f213ab3b51f288880dc1fda0a1"
+      },
+      "study-coach/SOUL.md": {
+        "bytes": 1922,
+        "sha256": "50672f61280f99b7c3e7b99ae3c061d233b4d9318e04b1e56d0bb3c15c2175e0"
+      },
+      "study-coach/config.yaml": {
+        "bytes": 3064,
+        "sha256": "5805017392ac163fc2b5c2ddcaeee13ce4fbbdf47a45e974e0ced470798a43d6"
+      },
+      "study-coach/profile.yaml": {
+        "bytes": 186,
+        "sha256": "ab2d30d05900d6461c6715c8ffdfaf755ac08cedf65f7ff360a38c5f414f1566"
+      },
+      "study-coach/skills/save-to-vault/SKILL.md": {
+        "bytes": 2392,
+        "sha256": "4c8e5b7375495b2aba7e3febca2b85fd27c3f4b17c38fe099eee33008767bbe0"
+      }
+    }
+  }
+}

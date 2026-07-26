@@ -293,9 +293,13 @@ try {
     assert.equal(postSetupResponse?.status(), 200, `post-setup route must return HTTP 200 at ${viewport.width}px`);
     const leadCard = postSetupPage.locator('article').filter({ hasText: 'Nurse Leader Complete AI OS with LEAD SuperPowers' });
     assert.equal(await leadCard.count(), 1, 'exactly one Nurse Leader LEAD card must render');
-    const leadLink = leadCard.locator('a[download]');
+    const leadLink = leadCard.getByRole('link', { name: 'Download LEAD Build Kit →', exact: true });
     assert.equal(await leadLink.getAttribute('href'), 'downloads/LEAD-Nurse-Leader-Manager-Mission-Control-Hermes-Build-Kit-v1.0.0.zip');
     assert.equal((await leadLink.textContent())?.trim(), 'Download LEAD Build Kit →');
+    const leadProfileLink = leadCard.getByRole('link', { name: 'Download inactive Manager / Lead profile →', exact: true });
+    assert.equal(await leadProfileLink.getAttribute('href'), '../hermes-role-profiles/downloads/naio-manager-lead-hermes-profile-v1.0.0.zip');
+    assert.match(await leadCard.textContent(), /MCP connectors remain disabled with zero tools/);
+    assert.match(await leadCard.textContent(), /separate activation card/);
     const journey = postSetupPage.getByRole('heading', { name: 'What happens after a self-install build-kit download?' });
     assert.equal(await journey.count(), 1, 'post-download journey must render once');
     const responsive = await postSetupPage.evaluate(() => {

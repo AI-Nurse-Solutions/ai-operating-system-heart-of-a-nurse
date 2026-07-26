@@ -298,7 +298,7 @@ class DirectiveV11WebsiteAlignmentTests(unittest.TestCase):
         self.assertIn("artifact-specific", self.faq.casefold())
         self.assertNotIn("proprietary and all rights reserved", self.faq.casefold())
         self.assertNotIn("proprietary and all rights reserved", self.licensing.casefold())
-        self.assertIn("Effective date: July 25, 2026", self.privacy)
+        self.assertIn("Effective date: July 26, 2026", self.privacy)
         self.assertIn("Change record:", self.privacy)
 
     def test_current_offer_sheets_publish_required_boundaries(self):

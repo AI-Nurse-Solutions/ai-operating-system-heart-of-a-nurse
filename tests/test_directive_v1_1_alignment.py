@@ -1,3 +1,4 @@
+import hashlib
 import re
 import unittest
 from pathlib import Path
@@ -98,6 +99,19 @@ class DirectiveV11WebsiteAlignmentTests(unittest.TestCase):
         self.assertNotIn("Latest Architecture Report", head_and_hero)
         self.assertNotIn("Latest verified architecture", head_and_hero)
         self.assertNotIn("Download the latest PDF", self.architecture)
+
+    def test_architecture_report_displays_current_publication_digests(self):
+        for label, artifact in (
+            ("PDF", ROOT / "assets" / "nurse-ai-os-architecture-report.pdf"),
+            ("Markdown", ROOT / "assets" / "nurse-ai-os-architecture-report.md"),
+        ):
+            match = re.search(
+                rf"{label} SHA-256:\s*<code class=\"digest\">([0-9a-f]{{64}})</code>",
+                self.architecture,
+            )
+            self.assertIsNotNone(match, label)
+            assert match is not None
+            self.assertEqual(hashlib.sha256(artifact.read_bytes()).hexdigest(), match.group(1), label)
 
     def test_quiz_and_public_onboarding_use_current_scope_not_a0(self):
         self.assertNotRegex(self.quiz_guide, r"\bA0\b")

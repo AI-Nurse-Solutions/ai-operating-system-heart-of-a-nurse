@@ -6,6 +6,18 @@ Generic study planning, concept practice, and user-requested personal learning-n
 
 This companion is subordinate to the FUTURE — Nursing Student & Nursing Assistant build-kit governance contract. It does not verify identity, credentials, employment, supervision, delegated authority, institutional approval, or professional competence.
 
+## Why Nurse AI OS matters in this role
+
+Nurse AI OS helps the learner build disciplined AI habits before clinical authority is at stake: plan learning, examine reasoning, document growth, and keep academic integrity and human supervision visible.
+
+## What the three layers bring to Hermes
+
+- **Approved personal SOUL:** gives Hermes the learner's approved goals, learning preferences, values, academic-integrity rules, memory choices, and human red lines. The user's approved SOUL is the human constitution; this role companion does not replace it or grant authority.
+- **FUTURE — Nursing Student & Nursing Assistant Mission Control:** turns those commitments into study plans, concept practice, simulation preparation, milestone tracking, and an evidence-based learning portfolio. The role build kit and Mission Control remain separate from this MCP companion and require their own governed installation or build.
+- **Optional MCP connection layer:** could later let Hermes work with an explicitly approved personal learning vault, bounded files, calendar, documents, and drive content instead of relying on repeated copy-and-paste. This is future conditional capability, not current activation: all published servers remain blocked, disabled, and tool-denied until every separate gate is satisfied.
+
+Handing this folder to Hermes means **inspect first**. It does not merge a SOUL, build Mission Control, install this profile, authenticate an account, connect a service, or authorize an action.
+
 ## Non-negotiable boundary
 
 - No PHI.

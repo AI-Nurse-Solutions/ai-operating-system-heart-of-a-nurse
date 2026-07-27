@@ -51,7 +51,7 @@
       "hermes_mcp_profile_companion": {
         "activation": "separate_explicit_post_card_approval",
         "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
-        "bytes": 10151,
+        "bytes": 11377,
         "download": "/hermes-role-profiles/downloads/naio-study-coach-hermes-profile-v1.0.0.zip",
         "install_on_download": false,
         "mapping_classification": "direct_pathway_only",
@@ -59,7 +59,7 @@
         "mcp_enabled_by_default": false,
         "mcp_tools_exposed_by_default": 0,
         "profile": "study-coach",
-        "sha256": "fe38ad85d75c54c8fa68186d50b5e0c1addbe8ca4e7703a33fffd872d9315589",
+        "sha256": "efa2a05e608bd980c5b866a1dce791be4dce6e0b89cb1b867f973aa9985d1c98",
         "version": "1.0.0"
       },
       "install_on_download": false,
@@ -191,7 +191,7 @@
       "hermes_mcp_profile_companion": {
         "activation": "separate_explicit_post_card_approval",
         "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
-        "bytes": 10279,
+        "bytes": 11612,
         "download": "/hermes-role-profiles/downloads/naio-manager-lead-hermes-profile-v1.0.0.zip",
         "install_on_download": false,
         "mapping_classification": "direct_role_conditional",
@@ -199,7 +199,7 @@
         "mcp_enabled_by_default": false,
         "mcp_tools_exposed_by_default": 0,
         "profile": "manager-lead",
-        "sha256": "f45f1e77096f3fd0c4b588f6b06f66ed3c80e7617b9cbfad69d453096d089895",
+        "sha256": "0f2ef84cb3665117cb1f85576f7339784933bb9a2faf03e7a6b9d03812cd5be9",
         "version": "1.0.0"
       },
       "install_on_download": false,
@@ -350,7 +350,7 @@
       "hermes_mcp_profile_companion": {
         "activation": "separate_explicit_post_card_approval",
         "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
-        "bytes": 10602,
+        "bytes": 11902,
         "download": "/hermes-role-profiles/downloads/naio-clinician-np-hermes-profile-v1.0.0.zip",
         "install_on_download": false,
         "mapping_classification": "direct_country_restricted",
@@ -358,7 +358,7 @@
         "mcp_enabled_by_default": false,
         "mcp_tools_exposed_by_default": 0,
         "profile": "clinician-np",
-        "sha256": "e20a544ac813def17fde38e5d127a872183902ce2affc265eac77dca2abe1c96",
+        "sha256": "c16e6b45c72ad5fde511a3b012a2b216aaee7b6f99540450fe435b3879de76c5",
         "version": "1.0.0"
       },
       "install_on_download": false,

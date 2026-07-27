@@ -505,6 +505,34 @@ class HermesRoleMcpProfilesTests(unittest.TestCase):
         self.assertIn("scanner-crash circuit breaker", publication_readme)
         self.assertIn("Tirith is defense in depth, not the activation gate", publication_readme)
 
+    def test_every_profile_explains_soul_mission_control_and_conditional_mcp_value(self) -> None:
+        central = (PROFILES / "README.md").read_text()
+        for phrase in (
+            "SOUL tells Hermes who it serves",
+            "Mission Control turns intention into governed work",
+            "MCP defines what Hermes may eventually reach",
+            "starts read-only inspection only",
+        ):
+            self.assertIn(phrase, central)
+        for profile in ROLES:
+            readme = (PROFILES / "source" / profile / "README.md").read_text()
+            soul = (PROFILES / "source" / profile / "SOUL.md").read_text()
+            for phrase in (
+                "Why this matters",
+                "SOUL — who Hermes serves",
+                "Mission Control — how intention becomes work",
+                "MCP — what Hermes may eventually reach",
+                "Giving Hermes this ZIP starts only read-only inspection",
+            ):
+                self.assertIn(phrase, readme, f"{profile}: {phrase}")
+            for phrase in (
+                "Why Nurse AI OS matters in this role",
+                "What the three layers bring to Hermes",
+                "Handing this folder to Hermes means **inspect first**",
+                "all published servers remain blocked, disabled, and tool-denied",
+            ):
+                self.assertIn(phrase, soul, f"{profile}: {phrase}")
+
 
 if __name__ == "__main__":
     unittest.main()

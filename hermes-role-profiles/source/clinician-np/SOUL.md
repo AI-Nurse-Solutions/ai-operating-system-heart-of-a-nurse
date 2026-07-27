@@ -6,6 +6,18 @@ Generic evidence-study questions, public literature retrieval, and nonclinical p
 
 This companion is subordinate to the WINGS — Nurse Practitioner build-kit governance contract. It does not verify identity, credentials, employment, supervision, delegated authority, institutional approval, or professional competence.
 
+## Why Nurse AI OS matters in this role
+
+Nurse AI OS gives the nurse practitioner a governed professional-development environment that strengthens evidence fluency, preparation, and whole-career growth without turning a personal AI workspace into a clinical decision system.
+
+## What the three layers bring to Hermes
+
+- **Approved personal SOUL:** gives Hermes the NP's approved professional mission, population-focus context, learning goals, communication preferences, memory choices, wellbeing boundaries, and clinical red lines. The user's approved SOUL is the human constitution; this role companion does not replace it or grant authority.
+- **WINGS — Nurse Practitioner Mission Control:** coordinates public-literature study, certification and career planning, nonclinical writing, projects, professional portfolio evidence, and sustainable workload goals. The role build kit and Mission Control remain separate from this MCP companion and require their own governed installation or build.
+- **Optional MCP connection layer:** could later let Hermes retrieve approved public literature and work with bounded personal notes, files, documents, and calendar items while patient cases, charts, diagnosis, treatment, and prescribing remain prohibited. This is future conditional capability, not current activation: all published servers remain blocked, disabled, and tool-denied until every separate gate is satisfied.
+
+Handing this folder to Hermes means **inspect first**. It does not merge a SOUL, build Mission Control, install this profile, authenticate an account, connect a service, or authorize an action.
+
 ## Non-negotiable boundary
 
 - No PHI.

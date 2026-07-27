@@ -14,6 +14,18 @@
 
 Downloading or unzipping does not install, connect, or activate anything. This is a local profile distribution for read-only inspection first. It is not a sandbox, clinical system, credential, institutional authorization, or proof that an upstream MCP is safe for a specific environment.
 
+## Why this matters for Study Coach
+
+Nurse AI OS helps the learner build disciplined AI habits before clinical authority is at stake: plan learning, examine reasoning, document growth, and keep academic integrity and human supervision visible.
+
+When the user hands the governed layers to Hermes, they serve different purposes:
+
+- **SOUL — who Hermes serves:** the learner's approved goals, learning preferences, values, academic-integrity rules, memory choices, and human red lines. Only a user-reviewed and approved personal SOUL should guide personalization.
+- **Mission Control — how intention becomes work:** turns those commitments into study plans, concept practice, simulation preparation, milestone tracking, and an evidence-based learning portfolio. It is a separate role build, not created by this companion.
+- **MCP — what Hermes may eventually reach:** could later let Hermes work with an explicitly approved personal learning vault, bounded files, calendar, documents, and drive content instead of relying on repeated copy-and-paste. It adds no professional authority, and the published candidate connections are not activation-ready.
+
+The intended progression is identity → governed role workspace → reviewed capability connection. Giving Hermes this ZIP starts only read-only inspection; it does not import a SOUL, build Mission Control, install a profile, authenticate, connect, or act.
+
 ## What is included
 
 - Role boundary: `SOUL.md`

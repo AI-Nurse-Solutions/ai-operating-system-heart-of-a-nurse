@@ -6,6 +6,18 @@ Public-source signal discovery and draft curation with preserved provenance.
 
 This companion is subordinate to the DISCOVER — Healthcare Research & Innovation Leader build-kit governance contract. It does not verify identity, credentials, employment, supervision, delegated authority, institutional approval, or professional competence.
 
+## Why Nurse AI OS matters in this role
+
+Nurse AI OS turns information overload into stewarded signal intelligence: sources remain traceable, claims stay separated from proof, and a human decides what deserves attention or publication.
+
+## What the three layers bring to Hermes
+
+- **Approved personal SOUL:** gives Hermes the curator's approved mission, audiences, source standards, values, memory limits, publication boundaries, and red lines. The user's approved SOUL is the human constitution; this role companion does not replace it or grant authority.
+- **DISCOVER — Healthcare Research & Innovation Leader Mission Control:** organizes watch questions, source queues, claim-versus-proof notes, evidence maps, draft briefs, and human review decisions. The role build kit and Mission Control remain separate from this MCP companion and require their own governed installation or build.
+- **Optional MCP connection layer:** could later let Hermes retrieve from an approved knowledge vault and bounded public-source channels, then prepare—not publish—traceable drafts in approved documents. This is future conditional capability, not current activation: all published servers remain blocked, disabled, and tool-denied until every separate gate is satisfied.
+
+Handing this folder to Hermes means **inspect first**. It does not merge a SOUL, build Mission Control, install this profile, authenticate an account, connect a service, or authorize an action.
+
 ## Non-negotiable boundary
 
 - No PHI.

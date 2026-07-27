@@ -14,6 +14,18 @@
 
 Downloading or unzipping does not install, connect, or activate anything. This is a local profile distribution for read-only inspection first. It is not a sandbox, clinical system, credential, institutional authorization, or proof that an upstream MCP is safe for a specific environment.
 
+## Why this matters for Clinician — Nurse Practitioner
+
+Nurse AI OS gives the nurse practitioner a governed professional-development environment that strengthens evidence fluency, preparation, and whole-career growth without turning a personal AI workspace into a clinical decision system.
+
+When the user hands the governed layers to Hermes, they serve different purposes:
+
+- **SOUL — who Hermes serves:** the NP's approved professional mission, population-focus context, learning goals, communication preferences, memory choices, wellbeing boundaries, and clinical red lines. Only a user-reviewed and approved personal SOUL should guide personalization.
+- **Mission Control — how intention becomes work:** coordinates public-literature study, certification and career planning, nonclinical writing, projects, professional portfolio evidence, and sustainable workload goals. It is a separate role build, not created by this companion.
+- **MCP — what Hermes may eventually reach:** could later let Hermes retrieve approved public literature and work with bounded personal notes, files, documents, and calendar items while patient cases, charts, diagnosis, treatment, and prescribing remain prohibited. It adds no professional authority, and the published candidate connections are not activation-ready.
+
+The intended progression is identity → governed role workspace → reviewed capability connection. Giving Hermes this ZIP starts only read-only inspection; it does not import a SOUL, build Mission Control, install a profile, authenticate, connect, or act.
+
 ## What is included
 
 - Role boundary: `SOUL.md`

@@ -14,6 +14,18 @@
 
 Downloading or unzipping does not install, connect, or activate anything. This is a local profile distribution for read-only inspection first. It is not a sandbox, clinical system, credential, institutional authorization, or proof that an upstream MCP is safe for a specific environment.
 
+## Why this matters for Manager / Lead
+
+Nurse AI OS gives nurse leaders a governed thinking and follow-through environment where operational pressure can be converted into clearer priorities, safer questions, accountable plans, and visible decisions without creating a shadow HR or clinical system.
+
+When the user hands the governed layers to Hermes, they serve different purposes:
+
+- **SOUL — who Hermes serves:** the leader's approved leadership commitments, communication style, workload boundaries, memory choices, stewardship priorities, and decisions that must remain human. Only a user-reviewed and approved personal SOUL should guide personalization.
+- **Mission Control — how intention becomes work:** organizes daily briefs, meeting preparation, action tracking, policy learning, project charters, education plans, and synthetic or aggregate improvement work. It is a separate role build, not created by this companion.
+- **MCP — what Hermes may eventually reach:** could later let Hermes retrieve from approved leadership files and documents, prepare calendar or spreadsheet drafts, and stage coordination artifacts for review without accessing workforce records or taking organizational action. It adds no professional authority, and the published candidate connections are not activation-ready.
+
+The intended progression is identity → governed role workspace → reviewed capability connection. Giving Hermes this ZIP starts only read-only inspection; it does not import a SOUL, build Mission Control, install a profile, authenticate, connect, or act.
+
 ## What is included
 
 - Role boundary: `SOUL.md`

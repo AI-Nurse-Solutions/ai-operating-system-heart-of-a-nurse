@@ -3,7 +3,7 @@
     {
       "activation": "separate_explicit_post_card_approval",
       "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
-      "bytes": 10928,
+      "bytes": 12099,
       "download": "/hermes-role-profiles/downloads/naio-curator-hermes-profile-v1.0.0.zip",
       "install_on_download": false,
       "mapping_classification": "adjacent_conditional_not_exact_lane",
@@ -11,13 +11,13 @@
       "mcp_enabled_by_default": false,
       "mcp_tools_exposed_by_default": 0,
       "profile": "curator",
-      "sha256": "2f9ca1bde6002deb2e70c3e50fb17970461b9804c1306b71a67a720c891948d2",
+      "sha256": "c94cb2346c013e258a3cc0a4e94570ac55a7752e66d2bf50ae6d26f5848832b7",
       "version": "1.0.0"
     },
     {
       "activation": "separate_explicit_post_card_approval",
       "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
-      "bytes": 10973,
+      "bytes": 12158,
       "download": "/hermes-role-profiles/downloads/naio-builder-operator-hermes-profile-v1.0.0.zip",
       "install_on_download": false,
       "mapping_classification": "adjacent_conditional_not_exact_lane",
@@ -25,7 +25,7 @@
       "mcp_enabled_by_default": false,
       "mcp_tools_exposed_by_default": 0,
       "profile": "builder-operator",
-      "sha256": "96e2016dcd88babbebd06bfdf99b1c27d633682dcaa54156ce180498bef9d5a1",
+      "sha256": "09047bb2cb64a79a89799503688933f649fe1d0bf9e16654b38360b50afc6a52",
       "version": "1.0.0"
     }
   ],

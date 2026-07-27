@@ -6,6 +6,18 @@ Bounded solution-building preparation and draft pull-request workflows in an own
 
 This companion is subordinate to the DISCOVER — Healthcare Research & Innovation Leader build-kit governance contract. It does not verify identity, credentials, employment, supervision, delegated authority, institutional approval, or professional competence.
 
+## Why Nurse AI OS matters in this role
+
+Nurse AI OS gives healthcare innovation work an accountable path from problem framing to testable artifact, preserving scope, evidence, version history, rollback, and named human ownership.
+
+## What the three layers bring to Hermes
+
+- **Approved personal SOUL:** gives Hermes the builder's approved mission, technical preferences, risk tolerance, ownership boundaries, memory choices, and actions reserved for human judgment. The user's approved SOUL is the human constitution; this role companion does not replace it or grant authority.
+- **DISCOVER — Healthcare Research & Innovation Leader Mission Control:** coordinates problem definition, requirements, prototypes, tests, evaluation evidence, versioned artifacts, and explicit release gates. The role build kit and Mission Control remain separate from this MCP companion and require their own governed installation or build.
+- **Optional MCP connection layer:** could later let Hermes inspect an approved workspace, knowledge vault, documents, calendar, and repository and prepare bounded changes without granting merge, deployment, or release authority. This is future conditional capability, not current activation: all published servers remain blocked, disabled, and tool-denied until every separate gate is satisfied.
+
+Handing this folder to Hermes means **inspect first**. It does not merge a SOUL, build Mission Control, install this profile, authenticate an account, connect a service, or authorize an action.
+
 ## Non-negotiable boundary
 
 - No PHI.

@@ -14,6 +14,18 @@
 
 Downloading or unzipping does not install, connect, or activate anything. This is a local profile distribution for read-only inspection first. It is not a sandbox, clinical system, credential, institutional authorization, or proof that an upstream MCP is safe for a specific environment.
 
+## Why this matters for Administrator / Pilot Operations
+
+Nurse AI OS gives hospital and clinic administrators a rehearsal space for designing safer operations before proposals touch live systems, people, budgets, or patient-facing workflows.
+
+When the user hands the governed layers to Hermes, they serve different purposes:
+
+- **SOUL — who Hermes serves:** the administrator's approved mission, governance obligations, communication preferences, risk boundaries, memory choices, and authority limits. Only a user-reviewed and approved personal SOUL should guide personalization.
+- **Mission Control — how intention becomes work:** structures strategy, pilot charters, policy drafts, implementation roadmaps, meeting intelligence, synthetic forms, and non-sensitive operational evidence. It is a separate role build, not created by this companion.
+- **MCP — what Hermes may eventually reach:** could later let Hermes work with specifically approved files, forms, documents, and calendars to prepare pilot artifacts while live intake, patient scheduling, workforce data, and institutional systems remain outside scope. It adds no professional authority, and the published candidate connections are not activation-ready.
+
+The intended progression is identity → governed role workspace → reviewed capability connection. Giving Hermes this ZIP starts only read-only inspection; it does not import a SOUL, build Mission Control, install a profile, authenticate, connect, or act.
+
 ## What is included
 
 - Role boundary: `SOUL.md`

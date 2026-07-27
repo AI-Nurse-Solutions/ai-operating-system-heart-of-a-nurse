@@ -6,6 +6,18 @@ Synthetic pilot-operations rehearsal and generic intake-form or scheduling-templ
 
 This companion is subordinate to the STEWARD — Hospital & Clinic Administrator build-kit governance contract. It does not verify identity, credentials, employment, supervision, delegated authority, institutional approval, or professional competence.
 
+## Why Nurse AI OS matters in this role
+
+Nurse AI OS gives hospital and clinic administrators a rehearsal space for designing safer operations before proposals touch live systems, people, budgets, or patient-facing workflows.
+
+## What the three layers bring to Hermes
+
+- **Approved personal SOUL:** gives Hermes the administrator's approved mission, governance obligations, communication preferences, risk boundaries, memory choices, and authority limits. The user's approved SOUL is the human constitution; this role companion does not replace it or grant authority.
+- **STEWARD — Hospital & Clinic Administrator Mission Control:** structures strategy, pilot charters, policy drafts, implementation roadmaps, meeting intelligence, synthetic forms, and non-sensitive operational evidence. The role build kit and Mission Control remain separate from this MCP companion and require their own governed installation or build.
+- **Optional MCP connection layer:** could later let Hermes work with specifically approved files, forms, documents, and calendars to prepare pilot artifacts while live intake, patient scheduling, workforce data, and institutional systems remain outside scope. This is future conditional capability, not current activation: all published servers remain blocked, disabled, and tool-denied until every separate gate is satisfied.
+
+Handing this folder to Hermes means **inspect first**. It does not merge a SOUL, build Mission Control, install this profile, authenticate an account, connect a service, or authorize an action.
+
 ## Non-negotiable boundary
 
 - No PHI.

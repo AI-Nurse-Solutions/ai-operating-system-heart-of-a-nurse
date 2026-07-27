@@ -95,6 +95,10 @@ HTML_META = {
 # network-isolated: all fonts come from the digest-pinned renderer image or the
 # repository's licensed Chinese subset.
 LANG_META = {
+    "media": {
+        "lang": "en", "dir": "ltr",
+        "css": "thead{display:table-header-group;}tr{break-inside:avoid;page-break-inside:avoid;}",
+    },
     "architecture": {
         "lang": "en", "dir": "ltr",
         # Keep the compact evidence appendix and generated source footer

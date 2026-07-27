@@ -14,6 +14,18 @@
 
 Downloading or unzipping does not install, connect, or activate anything. This is a local profile distribution for read-only inspection first. It is not a sandbox, clinical system, credential, institutional authorization, or proof that an upstream MCP is safe for a specific environment.
 
+## Why this matters for Curator
+
+Nurse AI OS turns information overload into stewarded signal intelligence: sources remain traceable, claims stay separated from proof, and a human decides what deserves attention or publication.
+
+When the user hands the governed layers to Hermes, they serve different purposes:
+
+- **SOUL — who Hermes serves:** the curator's approved mission, audiences, source standards, values, memory limits, publication boundaries, and red lines. Only a user-reviewed and approved personal SOUL should guide personalization.
+- **Mission Control — how intention becomes work:** organizes watch questions, source queues, claim-versus-proof notes, evidence maps, draft briefs, and human review decisions. It is a separate role build, not created by this companion.
+- **MCP — what Hermes may eventually reach:** could later let Hermes retrieve from an approved knowledge vault and bounded public-source channels, then prepare—not publish—traceable drafts in approved documents. It adds no professional authority, and the published candidate connections are not activation-ready.
+
+The intended progression is identity → governed role workspace → reviewed capability connection. Giving Hermes this ZIP starts only read-only inspection; it does not import a SOUL, build Mission Control, install a profile, authenticate, connect, or act.
+
 ## What is included
 
 - Role boundary: `SOUL.md`

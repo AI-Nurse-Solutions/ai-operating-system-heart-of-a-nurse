@@ -43,6 +43,10 @@ ROLES: dict[str, dict[str, Any]] = {
         "workspace_tools": ["calendar", "docs", "drive"],
         "purpose": "Generic study planning, concept practice, and user-requested personal learning-note drafts.",
         "boundary": "No clinical placement stories, restricted course material, protected exam content, or claims of competence.",
+        "significance": "Nurse AI OS helps the learner build disciplined AI habits before clinical authority is at stake: plan learning, examine reasoning, document growth, and keep academic integrity and human supervision visible.",
+        "soul_value": "the learner's approved goals, learning preferences, values, academic-integrity rules, memory choices, and human red lines",
+        "mission_control_value": "turns those commitments into study plans, concept practice, simulation preparation, milestone tracking, and an evidence-based learning portfolio",
+        "mcp_value": "could later let Hermes work with an explicitly approved personal learning vault, bounded files, calendar, documents, and drive content instead of relying on repeated copy-and-paste",
     },
     "curator": {
         "label": "Curator",
@@ -54,6 +58,10 @@ ROLES: dict[str, dict[str, Any]] = {
         "workspace_tools": ["docs", "drive"],
         "purpose": "Public-source signal discovery and draft curation with preserved provenance.",
         "boundary": "No public posting, direct messages, voting, validation claims, private communities, or person-level source material.",
+        "significance": "Nurse AI OS turns information overload into stewarded signal intelligence: sources remain traceable, claims stay separated from proof, and a human decides what deserves attention or publication.",
+        "soul_value": "the curator's approved mission, audiences, source standards, values, memory limits, publication boundaries, and red lines",
+        "mission_control_value": "organizes watch questions, source queues, claim-versus-proof notes, evidence maps, draft briefs, and human review decisions",
+        "mcp_value": "could later let Hermes retrieve from an approved knowledge vault and bounded public-source channels, then prepare—not publish—traceable drafts in approved documents",
     },
     "builder-operator": {
         "label": "Builder / Operator",
@@ -65,6 +73,10 @@ ROLES: dict[str, dict[str, Any]] = {
         "workspace_tools": ["calendar", "docs", "drive"],
         "purpose": "Bounded solution-building preparation and draft pull-request workflows in an owner-selected workspace.",
         "boundary": "No protected-branch push, merge, deployment, workflow administration, secret access, or external release without a fresh human gate.",
+        "significance": "Nurse AI OS gives healthcare innovation work an accountable path from problem framing to testable artifact, preserving scope, evidence, version history, rollback, and named human ownership.",
+        "soul_value": "the builder's approved mission, technical preferences, risk tolerance, ownership boundaries, memory choices, and actions reserved for human judgment",
+        "mission_control_value": "coordinates problem definition, requirements, prototypes, tests, evaluation evidence, versioned artifacts, and explicit release gates",
+        "mcp_value": "could later let Hermes inspect an approved workspace, knowledge vault, documents, calendar, and repository and prepare bounded changes without granting merge, deployment, or release authority",
     },
     "manager-lead": {
         "label": "Manager / Lead",
@@ -76,6 +88,10 @@ ROLES: dict[str, dict[str, Any]] = {
         "workspace_tools": ["calendar", "docs", "drive", "sheets"],
         "purpose": "Synthetic leadership preparation, owner-authored planning notes, and draft coordination artifacts.",
         "boundary": "No patient, workforce, personnel, performance, evaluation, scheduling, staffing, or employer-confidential records.",
+        "significance": "Nurse AI OS gives nurse leaders a governed thinking and follow-through environment where operational pressure can be converted into clearer priorities, safer questions, accountable plans, and visible decisions without creating a shadow HR or clinical system.",
+        "soul_value": "the leader's approved leadership commitments, communication style, workload boundaries, memory choices, stewardship priorities, and decisions that must remain human",
+        "mission_control_value": "organizes daily briefs, meeting preparation, action tracking, policy learning, project charters, education plans, and synthetic or aggregate improvement work",
+        "mcp_value": "could later let Hermes retrieve from approved leadership files and documents, prepare calendar or spreadsheet drafts, and stage coordination artifacts for review without accessing workforce records or taking organizational action",
     },
     "admin-pilot-ops": {
         "label": "Administrator / Pilot Operations",
@@ -87,6 +103,10 @@ ROLES: dict[str, dict[str, Any]] = {
         "workspace_tools": ["calendar", "forms"],
         "purpose": "Synthetic pilot-operations rehearsal and generic intake-form or scheduling-template preparation.",
         "boundary": "No live intake responses, patient scheduling, clinical operations, workforce data, institutional records, or claims of delegated authority.",
+        "significance": "Nurse AI OS gives hospital and clinic administrators a rehearsal space for designing safer operations before proposals touch live systems, people, budgets, or patient-facing workflows.",
+        "soul_value": "the administrator's approved mission, governance obligations, communication preferences, risk boundaries, memory choices, and authority limits",
+        "mission_control_value": "structures strategy, pilot charters, policy drafts, implementation roadmaps, meeting intelligence, synthetic forms, and non-sensitive operational evidence",
+        "mcp_value": "could later let Hermes work with specifically approved files, forms, documents, and calendars to prepare pilot artifacts while live intake, patient scheduling, workforce data, and institutional systems remain outside scope",
     },
     "clinician-np": {
         "label": "Clinician — Nurse Practitioner",
@@ -98,6 +118,10 @@ ROLES: dict[str, dict[str, Any]] = {
         "workspace_tools": ["calendar", "docs", "drive"],
         "purpose": "Generic evidence-study questions, public literature retrieval, and nonclinical professional-learning notes.",
         "boundary": "No patient-specific reasoning, diagnosis, triage, treatment, chart content, clinical documentation, real-case reflection, or practice authority.",
+        "significance": "Nurse AI OS gives the nurse practitioner a governed professional-development environment that strengthens evidence fluency, preparation, and whole-career growth without turning a personal AI workspace into a clinical decision system.",
+        "soul_value": "the NP's approved professional mission, population-focus context, learning goals, communication preferences, memory choices, wellbeing boundaries, and clinical red lines",
+        "mission_control_value": "coordinates public-literature study, certification and career planning, nonclinical writing, projects, professional portfolio evidence, and sustainable workload goals",
+        "mcp_value": "could later let Hermes retrieve approved public literature and work with bounded personal notes, files, documents, and calendar items while patient cases, charts, diagnosis, treatment, and prescribing remain prohibited",
     },
     "clinician-resident": {
         "label": "Clinician — Medical Resident",
@@ -109,6 +133,10 @@ ROLES: dict[str, dict[str, Any]] = {
         "workspace_tools": ["calendar", "docs", "drive"],
         "purpose": "Generic board study, public literature retrieval, and nonclinical professional-learning notes under supervision boundaries.",
         "boundary": "No patient-specific reasoning, diagnosis, triage, treatment, chart or sign-out content, real-case reflection, supervision replacement, evaluation, or entrustment claims.",
+        "significance": "Nurse AI OS gives the medical resident a governed learning and professional-formation environment for managing cognitive load, evidence study, research preparation, and longitudinal growth while preserving supervision and clinical authority boundaries.",
+        "soul_value": "the resident's approved learning goals, specialty direction, communication preferences, wellbeing limits, memory choices, supervision boundaries, and clinical red lines",
+        "mission_control_value": "organizes board preparation, journal review, research and quality-improvement planning, administrative tasks, milestones, and a reviewed professional portfolio",
+        "mcp_value": "could later let Hermes retrieve approved public literature and work with bounded personal notes, files, documents, and calendar items while patient cases, sign-out, charts, evaluation, entrustment, and clinical decisions remain prohibited",
     },
 }
 
@@ -307,6 +335,18 @@ def render_soul(slug: str, role: dict[str, Any]) -> str:
 
 This companion is subordinate to the {role['product']} build-kit governance contract. It does not verify identity, credentials, employment, supervision, delegated authority, institutional approval, or professional competence.
 
+## Why Nurse AI OS matters in this role
+
+{role['significance']}
+
+## What the three layers bring to Hermes
+
+- **Approved personal SOUL:** gives Hermes {role['soul_value']}. The user's approved SOUL is the human constitution; this role companion does not replace it or grant authority.
+- **{role['product']} Mission Control:** {role['mission_control_value']}. The role build kit and Mission Control remain separate from this MCP companion and require their own governed installation or build.
+- **Optional MCP connection layer:** {role['mcp_value']}. This is future conditional capability, not current activation: all published servers remain blocked, disabled, and tool-denied until every separate gate is satisfied.
+
+Handing this folder to Hermes means **inspect first**. It does not merge a SOUL, build Mission Control, install this profile, authenticate an account, connect a service, or authorize an action.
+
 ## Non-negotiable boundary
 
 - No PHI.
@@ -349,6 +389,18 @@ def render_readme(slug: str, role: dict[str, Any]) -> str:
 **Hermes compatibility:** `{HERMES_REQUIRES}`
 
 Downloading or unzipping does not install, connect, or activate anything. This is a local profile distribution for read-only inspection first. It is not a sandbox, clinical system, credential, institutional authorization, or proof that an upstream MCP is safe for a specific environment.
+
+## Why this matters for {role['label']}
+
+{role['significance']}
+
+When the user hands the governed layers to Hermes, they serve different purposes:
+
+- **SOUL — who Hermes serves:** {role['soul_value']}. Only a user-reviewed and approved personal SOUL should guide personalization.
+- **Mission Control — how intention becomes work:** {role['mission_control_value']}. It is a separate role build, not created by this companion.
+- **MCP — what Hermes may eventually reach:** {role['mcp_value']}. It adds no professional authority, and the published candidate connections are not activation-ready.
+
+The intended progression is identity → governed role workspace → reviewed capability connection. Giving Hermes this ZIP starts only read-only inspection; it does not import a SOUL, build Mission Control, install a profile, authenticate, connect, or act.
 
 ## What is included
 
@@ -762,6 +814,26 @@ def write_publication_metadata(records: list[dict[str, Any]]) -> None:
 Seven role-mapped Hermes profile distributions derived from the supplied Nurse AI OS packet research. The original packets were treated as untrusted inputs and were not published unchanged.
 
 Downloading or unzipping does not install, connect, or activate anything. Every MCP is disabled and exposes zero tools by default. Profile installation requires an exact pre-installation card and explicit approval. Each MCP activation then requires its own separate exact card and fresh approval.
+
+## One architecture, three different jobs
+
+- **SOUL tells Hermes who it serves:** the user's approved purpose, roles, preferences, memory choices, boundaries, and human red lines. It personalizes assistance but never proves authority.
+- **Mission Control turns intention into governed work:** role-specific priorities, projects, learning, evidence, approvals, and progress. It comes from the separate role build kit; these MCP companions do not build it.
+- **MCP defines what Hermes may eventually reach:** approved tools and information under least privilege. In this release every candidate remains blocked, disabled, and tool-denied.
+
+Giving a companion ZIP to Hermes starts read-only inspection only. It does not import a SOUL, build Mission Control, install a profile, authenticate, connect, remember, schedule, or act.
+
+## Why each role companion matters
+
+| Profile | Nurse AI OS significance | Conditional connection value |
+|---|---|---|
+| Study Coach | Builds disciplined study, reflection, and academic-integrity habits before clinical authority is at stake. | Approved personal learning notes, files, calendar, and documents for reviewed study preparation. |
+| Curator | Converts information overload into traceable, claim-versus-proof signal intelligence. | Approved knowledge vault and bounded public-source retrieval for drafts that Hermes does not publish. |
+| Builder / Operator | Carries healthcare innovation from problem framing to testable, versioned artifacts with human release gates. | Approved workspace, documents, and repository inspection for bounded change preparation—not merge or deployment. |
+| Manager / Lead | Converts leadership pressure into clearer priorities, accountable plans, and visible follow-through without creating a shadow HR system. | Approved files, documents, calendar, and spreadsheet drafts without workforce records or organizational action. |
+| Administrator / Pilot Operations | Provides a rehearsal space for safer pilots before proposals touch live people or systems. | Approved files, forms, documents, and calendar preparation while live intake and institutional systems stay out of scope. |
+| Clinician — Nurse Practitioner | Strengthens evidence fluency and professional growth without becoming a clinical decision system. | Approved public literature and bounded personal work materials; no patient cases, diagnosis, treatment, or prescribing. |
+| Clinician — Medical Resident | Supports evidence study, research preparation, and longitudinal formation while preserving supervision. | Approved public literature and bounded personal work materials; no charts, sign-out, evaluation, entrustment, or clinical decisions. |
 
 ## Publication corrections
 

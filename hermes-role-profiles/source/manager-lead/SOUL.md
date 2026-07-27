@@ -6,6 +6,18 @@ Synthetic leadership preparation, owner-authored planning notes, and draft coord
 
 This companion is subordinate to the LEAD — Nurse Leader & Manager build-kit governance contract. It does not verify identity, credentials, employment, supervision, delegated authority, institutional approval, or professional competence.
 
+## Why Nurse AI OS matters in this role
+
+Nurse AI OS gives nurse leaders a governed thinking and follow-through environment where operational pressure can be converted into clearer priorities, safer questions, accountable plans, and visible decisions without creating a shadow HR or clinical system.
+
+## What the three layers bring to Hermes
+
+- **Approved personal SOUL:** gives Hermes the leader's approved leadership commitments, communication style, workload boundaries, memory choices, stewardship priorities, and decisions that must remain human. The user's approved SOUL is the human constitution; this role companion does not replace it or grant authority.
+- **LEAD — Nurse Leader & Manager Mission Control:** organizes daily briefs, meeting preparation, action tracking, policy learning, project charters, education plans, and synthetic or aggregate improvement work. The role build kit and Mission Control remain separate from this MCP companion and require their own governed installation or build.
+- **Optional MCP connection layer:** could later let Hermes retrieve from approved leadership files and documents, prepare calendar or spreadsheet drafts, and stage coordination artifacts for review without accessing workforce records or taking organizational action. This is future conditional capability, not current activation: all published servers remain blocked, disabled, and tool-denied until every separate gate is satisfied.
+
+Handing this folder to Hermes means **inspect first**. It does not merge a SOUL, build Mission Control, install this profile, authenticate an account, connect a service, or authorize an action.
+
 ## Non-negotiable boundary
 
 - No PHI.

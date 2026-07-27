@@ -3,6 +3,7 @@ name: Directive v1.1 website alignment
 on:
   pull_request:
     paths:
+      - "naio-os/**"
       - "**/*.html"
       - "assets/nurse-ai.css"
       - "assets/leader-educator-home.js"
@@ -82,6 +83,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "naio-os/**"
       - "**/*.html"
       - "assets/nurse-ai.css"
       - "assets/leader-educator-home.js"

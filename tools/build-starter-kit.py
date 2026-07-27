@@ -45,20 +45,31 @@ def source_files(source: Path | None = None) -> list[Path]:
 def read_source(path: Path, source: Path | None = None) -> bytes:
     source = SOURCE if source is None else source
     relative = path.relative_to(source)
-    cursor = source
-    for part in relative.parts:
-        cursor = cursor / part
-        if stat.S_ISLNK(cursor.lstat().st_mode):
-            raise RuntimeError(f"starter-kit source symlink refused: {relative.as_posix()}")
-    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
-    descriptor = os.open(path, flags)
+    if not relative.parts or any(part in {"", ".", ".."} for part in relative.parts):
+        raise RuntimeError(f"unsafe starter-kit source path: {relative.as_posix()}")
+    if not hasattr(os, "O_NOFOLLOW") or not hasattr(os, "O_DIRECTORY"):
+        raise RuntimeError("descriptor-relative no-follow starter-kit reads are unavailable")
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    file_flags = os.O_RDONLY | os.O_NOFOLLOW
+    descriptors: list[int] = []
     try:
+        try:
+            descriptors.append(os.open(source, directory_flags))
+            for part in relative.parts[:-1]:
+                descriptors.append(os.open(part, directory_flags, dir_fd=descriptors[-1]))
+                if not stat.S_ISDIR(os.fstat(descriptors[-1]).st_mode):
+                    raise RuntimeError(f"starter-kit source path component is not a directory: {relative.as_posix()}")
+            descriptors.append(os.open(relative.parts[-1], file_flags, dir_fd=descriptors[-1]))
+        except OSError as exc:
+            raise RuntimeError(f"unable to open starter-kit source beneath its root: {relative.as_posix()}") from exc
+        descriptor = descriptors[-1]
         if not stat.S_ISREG(os.fstat(descriptor).st_mode):
             raise RuntimeError(f"starter-kit source is not a regular file: {relative.as_posix()}")
         with os.fdopen(descriptor, "rb", closefd=False) as handle:
             return handle.read()
     finally:
-        os.close(descriptor)
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
 
 
 def build_tree(source: Path, output: Path, prefix: str) -> int:

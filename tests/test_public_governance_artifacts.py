@@ -8,6 +8,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 PYPDF_AVAILABLE = importlib.util.find_spec("pypdf") is not None
 
@@ -141,6 +142,36 @@ class PublicGovernanceArtifactsTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "symlink"):
                 build(output)
 
+    def test_starter_source_read_resists_parent_swap(self) -> None:
+        namespace = runpy.run_path(str(ROOT / "tools" / "build-starter-kit.py"))
+        with tempfile.TemporaryDirectory() as temporary:
+            temporary_root = Path(temporary)
+            source = temporary_root / "My-Nurse-AI-OS"
+            reviewed_parent = source / "reviewed"
+            reviewed_parent.mkdir(parents=True)
+            artifact = reviewed_parent / "artifact.md"
+            artifact.write_bytes(b"SAFE_REVIEWED_BYTES")
+            outside_parent = temporary_root / "outside"
+            outside_parent.mkdir()
+            (outside_parent / artifact.name).write_bytes(b"UNREVIEWED_OUTSIDE_BYTES")
+            displaced_parent = source / "reviewed-before-swap"
+            original_open = namespace["os"].open
+            swapped = False
+
+            def swap_parent_before_file_open(path, flags, *args, **kwargs):
+                nonlocal swapped
+                if not swapped and Path(path).name == artifact.name:
+                    reviewed_parent.rename(displaced_parent)
+                    reviewed_parent.symlink_to(outside_parent, target_is_directory=True)
+                    swapped = True
+                return original_open(path, flags, *args, **kwargs)
+
+            with mock.patch.object(namespace["os"], "open", side_effect=swap_parent_before_file_open):
+                payload = namespace["read_source"](artifact, source)
+
+            self.assertTrue(swapped)
+            self.assertEqual(payload, b"SAFE_REVIEWED_BYTES")
+
     def test_side_gig_zip_exactly_matches_reviewed_sources(self) -> None:
         expected = {
             f"Nurse-AI-Side-Gig-Starter-Kit/{path.relative_to(SIDE_GIG_SOURCE).as_posix()}": path.read_bytes()
@@ -190,6 +221,7 @@ class PublicGovernanceArtifactsTest(unittest.TestCase):
             '"tools/build-governance-kit.py"',
             '"tools/build-starter-kit.py"',
             '"starter-kit/My-Nurse-AI-OS/**"',
+            '"naio-os/**"',
             '"tests/test_public_governance_artifacts.py"',
             '"GOVERNANCE.md"',
             '"README.md"',
@@ -202,6 +234,7 @@ class PublicGovernanceArtifactsTest(unittest.TestCase):
             '"README.md"',
             '"assets/governed-harness-2-architecture.md"',
             '"naio-harness-v2/README.md"',
+            '"naio-os/**"',
         ):
             self.assertEqual(website.count(required), 2, required)
         self.assertIn("python tools/build-governance-kit.py", media)

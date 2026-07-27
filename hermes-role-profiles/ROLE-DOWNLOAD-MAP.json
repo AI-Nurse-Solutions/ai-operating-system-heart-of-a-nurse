@@ -1,0 +1,82 @@
+{
+  "mappings": [
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "lane": "future",
+      "mapping_classification": "direct_pathway_only",
+      "mapping_condition": "Nursing Student pathway only; not automatically Nursing Assistant or Bridge.",
+      "product": "FUTURE \u2014 Nursing Student & Nursing Assistant",
+      "profile": "study-coach",
+      "relationship": "optional_mcp_profile_companion_subordinate_to_build_kit_governance",
+      "role": "Study Coach"
+    },
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "lane": "discover",
+      "mapping_classification": "adjacent_conditional_not_exact_lane",
+      "mapping_condition": "Healthcare research or innovation source-curation context only; not generic curation and not an exact DISCOVER lane identity.",
+      "product": "DISCOVER \u2014 Healthcare Research & Innovation Leader",
+      "profile": "curator",
+      "relationship": "optional_mcp_profile_companion_subordinate_to_build_kit_governance",
+      "role": "Curator"
+    },
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "lane": "discover",
+      "mapping_classification": "adjacent_conditional_not_exact_lane",
+      "mapping_condition": "Healthcare research or innovation solution-preparation context only; not a generic software-builder or code-shipping role and not an exact DISCOVER lane identity.",
+      "product": "DISCOVER \u2014 Healthcare Research & Innovation Leader",
+      "profile": "builder-operator",
+      "relationship": "optional_mcp_profile_companion_subordinate_to_build_kit_governance",
+      "role": "Builder / Operator"
+    },
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "lane": "lead",
+      "mapping_classification": "direct_role_conditional",
+      "mapping_condition": "Only when the user is actually operating as a nurse leader or manager; selection does not establish authority.",
+      "product": "LEAD \u2014 Nurse Leader & Manager",
+      "profile": "manager-lead",
+      "relationship": "optional_mcp_profile_companion_subordinate_to_build_kit_governance",
+      "role": "Manager / Lead"
+    },
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "lane": "steward",
+      "mapping_classification": "conditional_candidate",
+      "mapping_condition": "Hospital or clinic administration context only; not generic administration and not an automatic identity match.",
+      "product": "STEWARD \u2014 Hospital & Clinic Administrator",
+      "profile": "admin-pilot-ops",
+      "relationship": "optional_mcp_profile_companion_subordinate_to_build_kit_governance",
+      "role": "Administrator / Pilot Operations"
+    },
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "lane": "wings",
+      "mapping_classification": "direct_country_restricted",
+      "mapping_condition": "United States NP context only; selection does not verify licensure, certification, privileges, or authority.",
+      "product": "WINGS \u2014 Nurse Practitioner",
+      "profile": "clinician-np",
+      "relationship": "optional_mcp_profile_companion_subordinate_to_build_kit_governance",
+      "role": "Clinician \u2014 Nurse Practitioner"
+    },
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "lane": "rounds",
+      "mapping_classification": "direct_fit",
+      "mapping_condition": "Medical Resident ROUNDS context only; selection does not verify training status, supervision, competence, or authority.",
+      "product": "ROUNDS \u2014 Medical Resident",
+      "profile": "clinician-resident",
+      "relationship": "optional_mcp_profile_companion_subordinate_to_build_kit_governance",
+      "role": "Clinician \u2014 Medical Resident"
+    }
+  ],
+  "schema_version": "1.0"
+}

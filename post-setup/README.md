@@ -13,6 +13,8 @@ These are separate post-setup downloads for users who have already completed the
 | `05-Nurse-Connected-Ally` | Nurse-Connected Ally | `downloads/nurse-ai-os-post-setup-nurse-connected-ally.zip` |
 | `06-Nurse-Practitioner-USA` | Nurse Practitioner (USA) | `downloads/WINGS-Nurse-Practitioner-Complete-AI-OS-Mission-Control-Hermes-Build-Kit-v1.0.0.zip` |
 
+Optional, separately governed MCP profile companions are published at `../hermes-role-profiles/downloads/` for FUTURE (`study-coach`), LEAD (`manager-lead`), and WINGS (`clinician-np`). They are not part of the immutable build-kit ZIPs. Downloading or unzipping changes nothing; every MCP remains disabled with zero tools, profile installation requires its own exact card, and each connector requires a second separate activation card and fresh approval.
+
 ## What downloading does
 
 Nothing is installed or activated. Every package declares:

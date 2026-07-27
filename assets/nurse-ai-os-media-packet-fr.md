@@ -16,7 +16,7 @@
 
 **À jour au 25 juillet 2026**
 
-**Site :** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Contact presse :** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**Site :** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Contact presse :** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **En une phrase :** Nurse AI OS est un kit conçu par un infirmier et pensé d’abord pour le navigateur, qui aide les infirmières et infirmiers à utiliser ChatGPT ou Claude avec des flux pratiques, un fichier personnel de valeurs et de limites, et des règles explicites de contrôle humain, sans céder leur jugement.
 

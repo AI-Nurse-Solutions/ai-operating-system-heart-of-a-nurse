@@ -1,0 +1,35 @@
+{
+  "audited_at": "2026-07-26",
+  "dependencies": {
+    "filesystem": {
+      "license": "SEE-LICENSE-IN-UPSTREAM-PACKAGE",
+      "package": "@modelcontextprotocol/server-filesystem@2026.7.10",
+      "pinning_status": "exact_npm_version",
+      "registry_integrity": "sha512-Mmjg4anFBD5OzbPnGJOA0jPPN8645ERhQk38HQLpSenx1ox9bfdPkmAzUnNjeQtqQGFLtKe13J20RtLBmUKMZA==",
+      "repository": "https://github.com/modelcontextprotocol/servers",
+      "source": "https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem",
+      "version": "2026.7.10"
+    },
+    "google_workspace": {
+      "license": "MIT",
+      "package": "workspace-mcp==1.22.1",
+      "pinning_status": "exact_pypi_version",
+      "repository": "https://github.com/taylorwilsdon/google_workspace_mcp",
+      "source": "https://pypi.org/project/workspace-mcp/",
+      "version": "1.22.1",
+      "wheel_sha256": "e999c63730760eeea1586055c423c7d74ebcef7d1db2a922ba242bc406c9b78b"
+    },
+    "obsidian": {
+      "commit": "c8a4fed36da2ec03284bdd13f540b65e0af27bb1",
+      "license": "MIT",
+      "pinning_status": "exact_git_commit",
+      "source": "https://github.com/Vasallo94/obsidian-mcp-server"
+    }
+  },
+  "mapping": {
+    "classification": "direct_role_conditional",
+    "condition": "Only when the user is actually operating as a nurse leader or manager; selection does not establish authority."
+  },
+  "policy": "Candidate coordinates only; not an executable transitive lock. The profile uses a guaranteed-missing blocker command. Activation remains BLOCKED until a separately reviewed runtime consumes a complete dependency lock.",
+  "schema_version": "1.0"
+}

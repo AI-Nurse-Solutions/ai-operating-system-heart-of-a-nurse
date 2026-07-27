@@ -95,14 +95,14 @@ document.getElementById("intake-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const s = document.getElementById("status");
   s.style.display = "block"; s.style.color = "var(--ink-600)"; s.textContent = "Sending…";
-  if (INTAKE_ENDPOINT.startsWith("REPLACE")) { s.style.color = "#a33a3a"; s.textContent = "This form isn't live yet — email great.ai.nurses@gmail.com to join."; return; }
+  if (INTAKE_ENDPOINT.startsWith("REPLACE")) { s.style.color = "#a33a3a"; s.textContent = "This form isn't live yet — email robert@nurse-ai-os.org to join."; return; }
   const data = Object.fromEntries(new FormData(e.target).entries());
   try {
     const r = await fetch(INTAKE_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
     const j = await r.json();
     if (j.ok) { s.style.color = "#2c6e31"; s.textContent = "Welcome. Watch your inbox over the next day or two. 🕯️"; e.target.reset(); }
-    else { s.style.color = "#a33a3a"; s.textContent = j.error || "Something went wrong — email great.ai.nurses@gmail.com."; }
-  } catch { s.style.color = "#a33a3a"; s.textContent = "Network hiccup — email great.ai.nurses@gmail.com and we'll add you by hand."; }
+    else { s.style.color = "#a33a3a"; s.textContent = j.error || "Something went wrong — email robert@nurse-ai-os.org."; }
+  } catch { s.style.color = "#a33a3a"; s.textContent = "Network hiccup — email robert@nurse-ai-os.org and we'll add you by hand."; }
 });
 </script>
 

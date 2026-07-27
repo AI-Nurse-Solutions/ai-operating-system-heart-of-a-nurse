@@ -3,6 +3,7 @@ name: Directive v1.1 website alignment
 on:
   pull_request:
     paths:
+      - "naio-os/**"
       - "**/*.html"
       - "assets/nurse-ai.css"
       - "assets/leader-educator-home.js"
@@ -42,6 +43,7 @@ on:
       - "assets/30-day-roadmap.*"
       - "assets/governance-kit.zip"
       - "assets/nurse-ai-os-starter-kit.zip"
+      - "assets/nurse-ai-side-gig-starter-kit.zip"
       - "assets/founding-year-guide.*"
       - "assets/hermes-cheat-sheet.*"
       - "assets/hermes-essentials-guide.*"
@@ -81,6 +83,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "naio-os/**"
       - "**/*.html"
       - "assets/nurse-ai.css"
       - "assets/leader-educator-home.js"
@@ -120,6 +123,7 @@ on:
       - "assets/30-day-roadmap.*"
       - "assets/governance-kit.zip"
       - "assets/nurse-ai-os-starter-kit.zip"
+      - "assets/nurse-ai-side-gig-starter-kit.zip"
       - "assets/founding-year-guide.*"
       - "assets/hermes-cheat-sheet.*"
       - "assets/hermes-essentials-guide.*"

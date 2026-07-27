@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.1-phase23",
+  "latest_version": "2.0.2-phase23",
   "minimum_supported_version": "2.0.0-phase6",
   "trusted_key_ids": [
     "naio-os-release-key-2026-06"
@@ -145,6 +145,13 @@
       "key_id": "naio-os-release-key-2026-06",
       "phase": 23,
       "summary": "Patch release for SOUL Quiz v2 role-constellation schema, fail-closed import validation, and explicit validator dependency gating without expanding authority or autonomy."
+    },
+    {
+      "version": "2.0.2-phase23",
+      "date": "2026-07-27",
+      "key_id": "naio-os-release-key-2026-06",
+      "phase": 23,
+      "summary": "Patch release replacing the retired public contact address with robert@nurse-ai-os.org without expanding authority, autonomy, data access, or clinical scope."
     }
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward."

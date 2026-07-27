@@ -16,7 +16,7 @@
 
 **25 जुलाई 2026 तक अद्यतन**
 
-**वेबसाइट:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **मीडिया संपर्क:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**वेबसाइट:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **मीडिया संपर्क:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **एक वाक्य में:** Nurse AI OS एक nurse-designed, browser-first kit है जो nurses को ChatGPT या Claude का उपयोग practical workflows, personal values-and-boundaries file और स्पष्ट human review के साथ करने में मदद करता है—बिना अपना निर्णय AI को सौंपे।
 

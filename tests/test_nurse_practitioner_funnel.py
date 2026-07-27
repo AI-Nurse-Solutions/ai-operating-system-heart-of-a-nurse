@@ -201,7 +201,7 @@ class NursePractitionerFunnelTests(unittest.TestCase):
             "Thought leadership begins with an inspectable practice record—not a claim of expertise",
         ):
             self.assertIn(phrase, notes)
-        self.assertIn("mailto:great.ai.nurses@gmail.com", notes)
+        self.assertIn("mailto:robert@nurse-ai-os.org", notes)
         self.assertIn("credential%2C%20secret%2C%20or%20restricted%20information", notes)
         privacy = (ROOT / "privacy.html").read_text(encoding="utf-8")
         self.assertIn("If you send an optional field note", privacy)

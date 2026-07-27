@@ -16,7 +16,7 @@
 
 **更新至 2026 年 7 月 25 日**
 
-**网站：** [nurse-ai-os.org](https://nurse-ai-os.org/) · **媒体联络：** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**网站：** [nurse-ai-os.org](https://nurse-ai-os.org/) · **媒体联络：** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **一句话介绍：** Nurse AI OS 是一套由护士设计、以浏览器为先的工具包，帮助护士使用 ChatGPT 或 Claude 完成实用工作流，同时使用个人价值与边界文件及明确的人类复核规则，而不把判断权交给 AI。
 

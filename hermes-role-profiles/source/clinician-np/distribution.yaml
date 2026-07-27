@@ -1,0 +1,13 @@
+{
+  "author": "NAIO",
+  "description": "Governed, inactive-by-default Clinician \u2014 Nurse Practitioner MCP companion for WINGS \u2014 Nurse Practitioner.",
+  "hermes_requires": ">=0.19.0",
+  "license": "Apache-2.0",
+  "mapping": {
+    "classification": "direct_country_restricted",
+    "condition": "United States NP context only; selection does not verify licensure, certification, privileges, or authority."
+  },
+  "name": "naio-clinician-np",
+  "schema_version": 1,
+  "version": "1.0.0"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "NAIO",
+  "description": "Governed, inactive-by-default Curator MCP companion for DISCOVER \u2014 Healthcare Research & Innovation Leader.",
+  "hermes_requires": ">=0.19.0",
+  "license": "Apache-2.0",
+  "mapping": {
+    "classification": "adjacent_conditional_not_exact_lane",
+    "condition": "Healthcare research or innovation source-curation context only; not generic curation and not an exact DISCOVER lane identity."
+  },
+  "name": "naio-curator",
+  "schema_version": 1,
+  "version": "1.0.0"
+}

@@ -16,6 +16,12 @@ import sys
 import zipfile
 from pathlib import Path
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from hermes_role_profile_records import companion_record
+
 REPO = Path(__file__).resolve().parents[1]
 ROOT = REPO / "medical-residents"
 PACKAGE = ROOT / "packages" / "rounds"
@@ -407,6 +413,7 @@ def build() -> dict:
         "total_required_execution_records": build_kit_manifest["counts"]["total_required_execution_records"],
     }
     public = {
+        "hermes_mcp_profile_companions": [companion_record(REPO, "clinician-resident")],
         "installation_status": "not_installed",
         "packages": [source_record, build_kit_record],
         "purpose": "standalone adjacent clinical lane for medical residents; separate from Nurse AI OS post-setup lanes",

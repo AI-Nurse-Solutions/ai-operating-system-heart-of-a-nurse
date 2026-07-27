@@ -14,9 +14,9 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**Current through July 25, 2026**
+**Current through July 26, 2026**
 
-**Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **In one sentence:** Nurse AI OS is a nurse-designed, browser-first kit that helps nurses use ChatGPT or Claude with practical workflows, a personal values-and-boundaries file, and explicit human-review rules—without handing over judgment.
 
@@ -33,6 +33,55 @@ Nurse AI OS gives nurses a concrete starting point. Today, it is a sophisticated
 The default path runs in a web browser with ChatGPT or Claude. No separate application or Hermes installation is required to begin. Nurses who later want an AI agent to work with local folders, reusable skills, and explicitly approved tools may add **Hermes Agent**, a separate open-source desktop runtime from Nous Research.
 
 Nurse AI OS does not provide clinical authority, institutional approval, uniform enforcement across AI hosts, or a finished standalone operating system. Its direction is a portable, nurse-governed control layer in which policies, human gates, and evidence can travel across tools.
+
+---
+
+## Why Nurse AI OS matters across healthcare roles
+
+The strategic value of Nurse AI OS is not that it gives every healthcare professional more AI tools. It is that it helps people learn how to direct, question, supervise, and improve AI-assisted work before they encounter higher-consequence institutional systems. Personal Edition is designed as a no-PHI workforce-development environment: a flight simulator for intelligent healthcare work, not an EHR-connected clinical platform or autonomous decision engine.
+
+Its purpose is to build five forms of human capital: stronger reasoning and synthesis; reusable workflows; demonstrated professional development; better preparation and coordination; and the stewardship capacity to recognize risk, preserve dignity, question AI, and stop when human authority is required.
+
+### SOUL, Mission Control, and MCP do three different jobs
+
+- **SOUL tells the system who it serves.** A user-reviewed SOUL records purpose, role constellation, working and learning preferences, approved memory choices, governance boundaries, and decisions the AI must not make. It is a human constitution for assistance—not a psychological dossier, credential, scope determination, or authority grant.
+- **Mission Control turns intention into governed work.** A shared core and separate role dashboards organize priorities, projects, learning, reusable workflows, approval queues, evidence, and progress. Missions follow an Assess → Define → Plan → Implement → Evaluate discipline. Progress is based on reviewed evidence, not clicks or AI-use volume.
+- **MCP defines what Hermes may eventually reach and do.** A connection must specify the role that may use it, allowed information and actions, prohibited data classes, approval points, logging, failure behavior, revocation, and reversibility. Read, Draft, and Act are distinct permission levels. A connector never grants professional or institutional authority.
+
+The intended progression is **personal identity → governed role workspace → reviewed capability connection**. These layers are complementary, not interchangeable.
+
+### What the architecture can bring to each role
+
+| Role lane | Why Nurse AI OS matters | What SOUL and Mission Control organize | What optional, separately approved connections could add |
+|---|---|---|---|
+| Prelicensure student or nursing assistant | Builds disciplined learning and AI habits before clinical authority is at stake. | Learning preferences, academic-integrity boundaries, study maps, simulation preparation, skills tracking, reflection, and portfolio evidence. | Approved personal notes, files, calendar, learning platform, tasks, and references; no restricted course content or authority by pathway selection. |
+| Bedside or advanced-practice nurse | Creates a governed space for professional growth and workflow reflection without becoming a clinical system. | Certification planning, policy learning, professional portfolio, shift-life organization, and synthetic or non-sensitive workflow analysis. | Approved personal calendar, email, files, documents, tasks, and public references; no patient cases, charts, diagnosis, treatment, or institutional action. |
+| Medical resident or physician | Supports evidence study, research preparation, administrative organization, and longitudinal formation while preserving supervision. | Board preparation, journal review, research and quality-improvement planning, milestones, wellbeing limits, and portfolio evidence. | Approved public literature, citation tools, personal files, documents, tasks, and calendar; no charts, sign-out, patient-specific reasoning, evaluation, or entrustment. |
+| Nurse educator or preceptor | Helps educators design learning while keeping faculty judgment, learner dignity, and academic authority human. | Curriculum drafts, lessons, simulations, rubrics, learner pathways, educational media, assessment drafts, and course evaluation. | Approved learning platform, documents, slides, forms, calendar, and design tools; no student records, autonomous grading, hidden ranking, or accreditation claims. |
+| Advanced Studies overlay | Keeps specialization, certification, graduate work, and lifelong learning connected to one coherent professional identity. | Reading synthesis, thesis or capstone milestones, certification plans, learning evidence, and development priorities across roles. | Approved research databases, citation manager, calendar, files, learning platform, and writing tools; no credential or eligibility claims. |
+| Charge nurse or nurse manager | Converts leadership pressure into clearer priorities, accountable plans, and visible follow-through without creating a shadow HR system. | Daily briefs, meeting preparation, action tracking, policy learning, project charters, education plans, and synthetic or aggregate improvement work. | Approved files, documents, calendar, spreadsheets, forms, and project tools; no workforce surveillance, personnel decisions, staffing action, or organizational authority. |
+| Hospital administrator or clinic manager | Provides a rehearsal space for safer strategy and pilot design before proposals touch live people or systems. | Strategic plans, pilot charters, policy drafts, implementation roadmaps, meeting intelligence, and non-sensitive operational evidence. | Approved files, forms, documents, calendar, spreadsheets, and project tools; no live intake, patient scheduling, workforce data, or institutional-system access. |
+| Quality, safety, governance, research, or innovation leader | Makes evidence, uncertainty, risk, provenance, and decision ownership visible throughout improvement work. | Evidence maps, PDSA drafts, risk registers, policy comparisons, protocol preparation, traceability, evaluation plans, and claim-versus-proof review. | Approved public research sources, documents, spreadsheets, forms, project systems, repositories, and analytics; no QI/research determination, participant data, or official reporting authority. |
+| Wellness and personal-life manager | Protects sustainable workload, relationships, learning, and recovery as part of professional capability. | Personal goals, routines, family logistics, reflection, digital wellbeing, and learning-life balance. | Personal calendar, notes, tasks, files, and optional wellness tools chosen by the user; no medical monitoring or employer visibility by default. |
+| Entrepreneur, consultant, creator, or founder | Turns ideas into governed offers and reusable operations while preserving consent, claims, and release authority. | Market research, service design, content plans, proposals, customer workflows, product roadmaps, and business evidence. | Approved email, calendar, documents, project and design tools, website systems, repositories, or CRM; no automatic outreach, publishing, contracting, or financial authority. |
+| Builder or AI orchestrator | Gives healthcare innovation an accountable path from problem definition to testable artifact and supervised agent workflow. | Requirements, agent specifications, prototypes, tests, evaluation evidence, version history, stop rules, rollback, and release gates. | Approved repositories, development environments, documentation, project systems, and test tools; no secret access, hidden delegation, merge, deployment, or production release without fresh authorization. |
+
+One person may use several coordinated role dashboards beneath one approved SOUL—for example, bedside nurse, graduate student, educator, wellness manager, and emerging founder. The dashboards keep contexts distinct; they do not create fragmented identities or transfer authority between roles.
+
+### What happens when a user gives these layers to Hermes
+
+Hermes Agent is a separate optional runtime. Giving Hermes a SOUL export, Mission Control build kit, or MCP companion is a request for inspection—not permission to install or connect.
+
+1. Hermes verifies the exact files, checksums, source inventory, compatibility, target location, existing work, and rollback plan in read-only preflight.
+2. The user previews and approves the minimum derived SOUL information. Raw reflective answers are not retained by default, and the user chooses what may or may not be remembered.
+3. Hermes proposes how the approved SOUL would guide a role-specific Mission Control while keeping credentials, scope, employment, enrollment, and institutional permission unverified.
+4. For a self-install build kit, Hermes displays the exact Implementation Activation Card and stops. Without approval of that exact card, it makes no installation mutation.
+5. If approved, Hermes builds only the written local scope, preserves compatible work, keeps agents and external capabilities inactive by default, and produces visible evidence and rollback information.
+6. Any MCP companion is reviewed separately. The current published role companions are blocked, disabled, and expose zero tools; their candidate dependency records are not complete transitive locks or activation-ready runtimes.
+7. Each future connection requires a new card covering exact tools, data, paths, credentials, provider terms, destinations, logging, retention, revocation, failure behavior, reversibility, and expiry.
+8. Read permission does not imply Draft permission; Draft does not imply Act. Every consequential external action remains subject to a destination preview and explicit approval by an authorized human.
+
+Downloading, opening, unzipping, selecting a role, or handing files to Hermes does not import a SOUL, build Mission Control, install a profile, authenticate an account, activate a connector, create persistent memory, schedule work, send, publish, or act. Current role packages vary in maturity and availability; this architecture describes the governed Personal Edition direction, not a claim that every role dashboard or connection is complete today.
 
 ---
 
@@ -216,7 +265,7 @@ ChatGPT is a product of OpenAI. Claude is a product of Anthropic. Hermes Agent i
 - **Nurse Intelligence Network:** [nurseintelligence.com](https://www.nurseintelligence.com/)
 - **YouTube:** [@NurseIntelligence](https://www.youtube.com/@NurseIntelligence)
 - **Founder image:** available at [nurse-ai-os.org/about.html](https://nurse-ai-os.org/about.html) or in higher resolution on request.
-- **Media, interviews, speaking, and collaboration:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+- **Media, interviews, speaking, and collaboration:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 ---
 

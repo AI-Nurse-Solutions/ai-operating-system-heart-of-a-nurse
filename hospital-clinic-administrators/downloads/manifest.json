@@ -1,4 +1,20 @@
 {
+  "hermes_mcp_profile_companions": [
+    {
+      "activation": "separate_explicit_post_card_approval",
+      "activation_readiness": "blocked_pending_complete_transitive_lock_and_lock_consuming_runtime",
+      "bytes": 11229,
+      "download": "/hermes-role-profiles/downloads/naio-admin-pilot-ops-hermes-profile-v1.0.0.zip",
+      "install_on_download": false,
+      "mapping_classification": "conditional_candidate",
+      "mapping_condition": "Hospital or clinic administration context only; not generic administration and not an automatic identity match.",
+      "mcp_enabled_by_default": false,
+      "mcp_tools_exposed_by_default": 0,
+      "profile": "admin-pilot-ops",
+      "sha256": "d9ca9c73a495ff357a47484fdc513b70f2d56f2fa3f39f4737eecd039bd41bd2",
+      "version": "1.0.0"
+    }
+  ],
   "packages": [
     {
       "activation_available": false,

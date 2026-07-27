@@ -16,7 +16,7 @@
 
 **Актуально на 25 июля 2026 года**
 
-**Сайт:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Контакт для СМИ:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**Сайт:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Контакт для СМИ:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **Одним предложением:** Nurse AI OS — это разработанный медсестрой браузерный набор, который помогает медсёстрам использовать ChatGPT или Claude с практическими процессами, личным файлом ценностей и границ и явной проверкой человеком, не передавая ИИ право суждения.
 

@@ -1,5 +1,6 @@
 import hashlib
 import re
+import subprocess
 import unittest
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,8 @@ except ModuleNotFoundError:  # Other lane workflows do not install media-only de
 
 
 ROOT = Path(__file__).resolve().parents[1]
+PUBLIC_CONTACT = "robert@nurse-ai-os.org"
+LEGACY_PUBLIC_CONTACT = "great.ai.nurses" + "@gmail.com"
 LOCALES = ("es", "tl", "zh", "ar", "vi", "ru", "hi", "fr")
 KEYS = ("en",) + LOCALES
 HTML_KEYS = ("ar", "hi")
@@ -133,6 +136,8 @@ class MediaPacketReleaseTests(unittest.TestCase):
             else:
                 self.assertTrue(pdf_path(key).is_file(), pdf_path(key))
             text = source.read_text(encoding="utf-8")
+            self.assertIn(PUBLIC_CONTACT, text, f"{key}: current public contact")
+            self.assertNotIn(LEGACY_PUBLIC_CONTACT, text, f"{key}: retired public contact")
             for token in ("ChatGPT", "Claude", "Hermes", "Florence-X", "2026"):
                 self.assertIn(token, text, f"{key}: {token}")
             price_tokens = ("10 $US", "29,90 $US") if key == "fr" else ("$10", "$29.90")
@@ -168,6 +173,50 @@ class MediaPacketReleaseTests(unittest.TestCase):
         for phrase in retired:
             self.assertNotIn(phrase.casefold(), text.casefold(), phrase)
 
+    def test_all_tracked_text_uses_the_canonical_public_contact(self):
+        tracked = subprocess.check_output(("git", "ls-files", "-z"), cwd=ROOT).split(b"\0")
+        current = PUBLIC_CONTACT.encode("ascii")
+        legacy = LEGACY_PUBLIC_CONTACT.encode("ascii")
+        current_occurrences = 0
+        for raw_path in tracked:
+            if not raw_path:
+                continue
+            path = ROOT / raw_path.decode()
+            data = path.read_bytes()
+            if b"\0" in data[:8192]:
+                continue
+            self.assertNotIn(legacy, data, str(path.relative_to(ROOT)))
+            current_occurrences += data.count(current)
+        self.assertGreater(current_occurrences, 0)
+
+    def test_canonical_source_explains_role_personalization_and_hermes_handoff(self):
+        text = source_path("en").read_text(encoding="utf-8")
+        required = (
+            "Why Nurse AI OS matters across healthcare roles",
+            "SOUL tells the system who it serves",
+            "Mission Control turns intention into governed work",
+            "MCP defines what Hermes may eventually reach and do",
+            "personal identity → governed role workspace → reviewed capability connection",
+            "Prelicensure student or nursing assistant",
+            "Bedside or advanced-practice nurse",
+            "Medical resident or physician",
+            "Nurse educator or preceptor",
+            "Advanced Studies overlay",
+            "Charge nurse or nurse manager",
+            "Hospital administrator or clinic manager",
+            "Quality, safety, governance, research, or innovation leader",
+            "Wellness and personal-life manager",
+            "Entrepreneur, consultant, creator, or founder",
+            "Builder or AI orchestrator",
+            "Giving Hermes a SOUL export, Mission Control build kit, or MCP companion is a request for inspection—not permission to install or connect",
+            "blocked, disabled, and expose zero tools",
+            "Read permission does not imply Draft permission; Draft does not imply Act",
+            "not a claim that every role dashboard or connection is complete today",
+        )
+        for phrase in required:
+            self.assertIn(phrase.casefold(), text.casefold(), phrase)
+        self.assertNotIn("handing files to Hermes activates", text.casefold())
+
     def test_pdf_metadata_text_links_pages_and_active_content(self):
         for key in PDF_KEYS:
             reader = PdfReader(pdf_path(key))
@@ -183,6 +232,8 @@ class MediaPacketReleaseTests(unittest.TestCase):
             self.assertLessEqual(len(reader.pages), 15, key)
             extracted = " ".join((page.extract_text() or "") for page in reader.pages)
             self.assertNotIn("\x00", extracted, f"{key}: corrupt logical text")
+            self.assertIn(PUBLIC_CONTACT, extracted, f"{key}: current public contact")
+            self.assertNotIn(LEGACY_PUBLIC_CONTACT, extracted, f"{key}: retired public contact")
             self.assertIn("Nurse AI OS", extracted, key)
             self.assertIn("ChatGPT", extracted, key)
             self.assertIn("Claude", extracted, key)
@@ -227,6 +278,35 @@ class MediaPacketReleaseTests(unittest.TestCase):
             for forbidden in ("/JavaScript", "/JS", "/Launch", "/GoToR", "/SubmitForm", "/ImportData",
                               "/EmbeddedFiles", "/OpenAction", "/AcroForm", "/RichMedia", "/Movie", "/Sound"):
                 self.assertNotIn(forbidden, names, f"{key}: {forbidden}")
+
+    def test_canonical_role_matrix_keeps_each_role_row_on_one_page(self):
+        reader = PdfReader(pdf_path("en"))
+        pages = [
+            re.sub(
+                r"-\s+",
+                "-",
+                " ".join((page.extract_text() or "").replace("ﬁ", "fi").split()),
+            ).casefold()
+            for page in reader.pages
+        ]
+        row_boundaries = {
+            "prelicensure student or nursing assistant": "authority by pathway selection",
+            "bedside or advanced-practice nurse": "institutional action",
+            "medical resident or physician": "evaluation, or entrustment",
+            "nurse educator or preceptor": "accreditation claims",
+            "advanced studies overlay": "credential or eligibility claims",
+            "charge nurse or nurse manager": "organizational authority",
+            "hospital administrator or clinic manager": "institutional-system access",
+            "quality, safety, governance, research, or innovation leader": "participant data",
+            "wellness and personal-life manager": "employer visibility by default",
+            "entrepreneur, consultant, creator, or founder": "contracting",
+            "builder or ai orchestrator": "production release without fresh authorization",
+        }
+        for role, boundary in row_boundaries.items():
+            self.assertTrue(
+                any(role in page and boundary in page for page in pages),
+                f"role row split across pages or missing: {role}",
+            )
 
     def test_active_content_scanner_rejects_action_values(self):
         launch_action = DictionaryObject({NameObject("/S"): NameObject("/Launch")})

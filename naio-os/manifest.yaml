@@ -1,6 +1,6 @@
-version: 2.0.1-phase23
+version: 2.0.2-phase23
 bundle_id: naio-os
-created: '2026-07-20'
+created: '2026-07-27'
 doctrine: Agents propose. Humans judge. Nurses steward.
 policies:
   edena: edena-policy@2.0.0
@@ -67,7 +67,7 @@ contents:
   sha256: 41502978031d7fe162e276c94e7b2b83a7ea077ae6e1252a92719dccaf24fab1
 - path: scripts/render-profile.py
   role: render-profile
-  sha256: 394b3d7de116758f50b404e73b4821de2ab72c67061c2916d1fdeac57f65fc2c
+  sha256: 0ca80c313406c37f5f2a4b10af621975ae08689bc636c6a9f0ffa4a5517198f8
 - path: scripts/self-test.py
   role: self-test
   sha256: d41cad5b3b466ffa6ec34eacf562842eaa7ea40f5bc42fb21606fe412c1f1444
@@ -97,7 +97,7 @@ contents:
   sha256: 80b6bc757b5c1846410dbf8348947d728becdfac2c3ca8a27e3eeb79d92828d0
 - path: release-history.json
   role: release-history
-  sha256: 91d6d0967e0786eb2f12c20d701147408c53932a1e9b8d60b91c8e76c62a97cf
+  sha256: 0069b153f2e5677eb36a2739fee2cd362878ffe51f7542fe6960b24ae49014ef
 - path: scripts/check-update.py
   role: update-advisory
   sha256: 7745aab586317474cd68cb1f9d80816fd5e64975ee26a2689f46ebb691c09f7b

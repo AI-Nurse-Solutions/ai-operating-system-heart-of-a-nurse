@@ -1,0 +1,134 @@
+{
+  "servers": {
+    "filesystem": {
+      "args": [
+        "filesystem"
+      ],
+      "candidate": {
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem@2026.7.10",
+          "${NAIO_ROLE_WORKSPACE}"
+        ],
+        "command": "npx"
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    },
+    "github": {
+      "args": [
+        "github"
+      ],
+      "candidate": {
+        "headers": {
+          "Authorization": "Bearer ${GITHUB_TOKEN}"
+        },
+        "url": "https://api.githubcopilot.com/mcp/"
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    },
+    "google_workspace": {
+      "args": [
+        "google_workspace"
+      ],
+      "candidate": {
+        "args": [
+          "workspace-mcp==1.22.1",
+          "--tool-tier",
+          "core",
+          "--tools",
+          "calendar",
+          "docs",
+          "drive"
+        ],
+        "command": "uvx",
+        "env": {
+          "GOOGLE_OAUTH_CLIENT_ID": "${GOOGLE_OAUTH_CLIENT_ID}",
+          "GOOGLE_OAUTH_CLIENT_SECRET": "${GOOGLE_OAUTH_CLIENT_SECRET}"
+        }
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    },
+    "obsidian": {
+      "args": [
+        "obsidian"
+      ],
+      "candidate": {
+        "args": [
+          "--from",
+          "git+https://github.com/Vasallo94/obsidian-mcp-server.git@c8a4fed36da2ec03284bdd13f540b65e0af27bb1",
+          "obsidian-mcp-server"
+        ],
+        "command": "uvx",
+        "env": {
+          "OBSIDIAN_MCP_TOOL_SETS": "read,write",
+          "OBSIDIAN_VAULT_PATH": "${NAIO_VAULT_PATH}"
+        }
+      },
+      "command": "__NAIO_MCP_ACTIVATION_BLOCKED__",
+      "connect_timeout": 30,
+      "elicitation": {
+        "enabled": false
+      },
+      "enabled": false,
+      "sampling": {
+        "enabled": false
+      },
+      "timeout": 60,
+      "tools": {
+        "include": [
+          "__NAIO_NO_MCP_TOOLS_APPROVED__"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    }
+  }
+}

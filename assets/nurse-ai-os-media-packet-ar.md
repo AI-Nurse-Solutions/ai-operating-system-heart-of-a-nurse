@@ -16,7 +16,7 @@
 
 **محدّث حتى 25 يوليو 2026**
 
-**الموقع:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **للتواصل الإعلامي:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**الموقع:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **للتواصل الإعلامي:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **في جملة واحدة:** Nurse AI OS هو حزمة صممها ممرض وتبدأ من المتصفح، تساعد طاقم التمريض على استخدام ChatGPT أو Claude عبر مسارات عمل عملية وملف شخصي للقيم والحدود وقواعد واضحة للمراجعة البشرية، من دون تسليم الحكم للذكاء الاصطناعي.
 

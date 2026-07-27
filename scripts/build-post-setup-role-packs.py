@@ -19,10 +19,22 @@ import unicodedata
 import zipfile
 from pathlib import Path, PurePosixPath
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from hermes_role_profile_records import companion_record
+
 REPO = Path(__file__).resolve().parents[1]
 POST_SETUP = REPO / "post-setup"
 PACKAGES = POST_SETUP / "packages"
 DOWNLOADS = POST_SETUP / "downloads"
+
+HERMES_ROLE_PROFILE_COMPANIONS = {
+    "student-nurse": "study-coach",
+    "nurse-leader-and-manager": "manager-lead",
+    "nurse-practitioner-usa": "clinician-np",
+}
 
 ROLES = [
     {
@@ -956,6 +968,10 @@ def deterministic_zip(role: dict) -> dict:
         if "package_version" in config:
             record["legacy_source_package_version"] = role_manifest["package_version"]
         record.update(validate_build_kit_zip(role, config))
+        if role["slug"] in HERMES_ROLE_PROFILE_COMPANIONS:
+            record["hermes_mcp_profile_companion"] = companion_record(
+                REPO, HERMES_ROLE_PROFILE_COMPANIONS[role["slug"]]
+            )
         for key in (
             "acceptance_tests",
             "foundation_first",

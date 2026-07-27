@@ -1,0 +1,9 @@
+{
+  "description": "Governed, inactive-by-default Study Coach MCP companion for FUTURE \u2014 Nursing Student & Nursing Assistant.",
+  "mapping": {
+    "classification": "direct_pathway_only",
+    "condition": "Nursing Student pathway only; not automatically Nursing Assistant or Bridge."
+  },
+  "name": "naio-study-coach",
+  "version": "1.0.0"
+}

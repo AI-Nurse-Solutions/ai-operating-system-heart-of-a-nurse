@@ -7,6 +7,7 @@ on:
       - "assets/30-day-roadmap.*"
       - "assets/governance-kit.zip"
       - "assets/nurse-ai-os-starter-kit.zip"
+      - "assets/nurse-ai-side-gig-starter-kit.zip"
       - "assets/founding-year-guide.*"
       - "assets/hermes-cheat-sheet.*"
       - "assets/hermes-essentials-guide.*"
@@ -48,6 +49,7 @@ on:
       - "assets/30-day-roadmap.*"
       - "assets/governance-kit.zip"
       - "assets/nurse-ai-os-starter-kit.zip"
+      - "assets/nurse-ai-side-gig-starter-kit.zip"
       - "assets/founding-year-guide.*"
       - "assets/hermes-cheat-sheet.*"
       - "assets/hermes-essentials-guide.*"
@@ -144,6 +146,7 @@ jobs:
             assets/lamp-huddle.pdf
             assets/governance-kit.zip
             assets/nurse-ai-os-starter-kit.zip
+            assets/nurse-ai-side-gig-starter-kit.zip
           )
           git ls-files --error-unmatch -- "${artifacts[@]}" >/dev/null
           python tools/build-governance-kit.py

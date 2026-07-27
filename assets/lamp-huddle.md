@@ -64,7 +64,7 @@ Each Huddle follows a calm, repeatable rhythm:
 ## How to join
 
 1. Visit [Start Here](https://nurse-ai-os.org/start-here.html), take the SOUL Quiz, and download the free starter kit.
-2. Email **[great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com?subject=Join%20the%20Nurse%20AI%20OS%20community)** with your name and role — you'll be added to the newsletter and the Huddle invite list. A human adds every name personally.
+2. Email **[robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org?subject=Join%20the%20Nurse%20AI%20OS%20community)** with your name and role — you'll be added to the newsletter and the Huddle invite list. A human adds every name personally.
 3. You'll receive the calendar invite, video link, and prep prompt before each call.
 
 ## First Huddle agenda

@@ -15,7 +15,7 @@ Skills (SKILL.md), templates, prompt packs, and workflow files that are: **no-PH
 
 ## How to submit
 
-Email the file to **great.ai.nurses@gmail.com** with subject `MARKETPLACE SUBMISSION: <name>`, or open a pull request against the site repository. Include: what it does in two sentences, which audience, tier, and your Boundary-Counsel verdict.
+Email the file to **robert@nurse-ai-os.org** with subject `MARKETPLACE SUBMISSION: <name>`, or open a pull request against the site repository. Include: what it does in two sentences, which audience, tier, and your Boundary-Counsel verdict.
 
 ## What happens next — current status
 

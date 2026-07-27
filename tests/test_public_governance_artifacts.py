@@ -17,6 +17,8 @@ GOVERNANCE_SOURCE = ROOT / "governance-kit"
 GOVERNANCE_ZIP = ROOT / "assets" / "governance-kit.zip"
 STARTER_SOURCE = ROOT / "starter-kit" / "My-Nurse-AI-OS"
 STARTER_ZIP = ROOT / "assets" / "nurse-ai-os-starter-kit.zip"
+SIDE_GIG_SOURCE = STARTER_SOURCE / "03-Community-Entrepreneurship" / "Nurse-AI-Side-Gig-Starter-Kit"
+SIDE_GIG_ZIP = ROOT / "assets" / "nurse-ai-side-gig-starter-kit.zip"
 PUBLIC_DOCUMENT_SOURCES = (
     ROOT / "assets" / "30-day-roadmap.md",
     ROOT / "assets" / "founding-year-guide.md",
@@ -139,6 +141,21 @@ class PublicGovernanceArtifactsTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "symlink"):
                 build(output)
 
+    def test_side_gig_zip_exactly_matches_reviewed_sources(self) -> None:
+        expected = {
+            f"Nurse-AI-Side-Gig-Starter-Kit/{path.relative_to(SIDE_GIG_SOURCE).as_posix()}": path.read_bytes()
+            for path in SIDE_GIG_SOURCE.rglob("*")
+            if path.is_file()
+        }
+        with zipfile.ZipFile(SIDE_GIG_ZIP) as archive:
+            members = archive.infolist()
+            self.assertEqual([info.filename for info in members], sorted(expected))
+            for info in members:
+                self.assertEqual(info.date_time, (2026, 7, 25, 0, 0, 0))
+                self.assertEqual((info.external_attr >> 16) & 0o170000, 0o100000)
+                self.assertEqual((info.external_attr >> 16) & 0o777, 0o644)
+                self.assertEqual(archive.read(info), expected[info.filename])
+
     def test_current_navigation_does_not_present_signed_legacy_snapshot_as_current(self) -> None:
         active_pages = RESOURCE_PAGES + (ROOT / "pathways.html", ROOT / "hermes-masterclass.html")
         for path in active_pages:
@@ -168,6 +185,7 @@ class PublicGovernanceArtifactsTest(unittest.TestCase):
             '"governance-kit/**"',
             '"assets/governance-kit.zip"',
             '"assets/nurse-ai-os-starter-kit.zip"',
+            '"assets/nurse-ai-side-gig-starter-kit.zip"',
             '"assets/safety-rules-edena.*"',
             '"tools/build-governance-kit.py"',
             '"tools/build-starter-kit.py"',

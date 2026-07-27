@@ -563,6 +563,7 @@ class SoulQuizConstellationTests(unittest.TestCase):
         ):
             rank = runpy.run_path(str(script))["version_rank"]
             self.assertGreater(rank("2.0.1-phase23"), rank("2.0.0-phase23"), script)
+            self.assertGreater(rank("2.0.2-phase23"), rank("2.0.1-phase23"), script)
             self.assertGreater(rank("2.0.0-phase24"), rank("2.99.99-phase23"), script)
             self.assertEqual(rank("invalid"), (0, 0, 0, 0), script)
 

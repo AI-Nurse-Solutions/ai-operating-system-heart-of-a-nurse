@@ -28,7 +28,7 @@ No EHR screens, no confidential policies, no identifiable staff or student data,
 
 ### 5 · When in doubt, ask a human.
 
-Bring gray areas to the monthly Lamp Huddle or email great.ai.nurses@gmail.com. A question asked early beats an incident reported late.
+Bring gray areas to the monthly Lamp Huddle or email robert@nurse-ai-os.org. A question asked early beats an incident reported late.
 
 ## How EDENA applies
 

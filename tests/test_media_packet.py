@@ -1,5 +1,6 @@
 import hashlib
 import re
+import subprocess
 import unittest
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,8 @@ except ModuleNotFoundError:  # Other lane workflows do not install media-only de
 
 
 ROOT = Path(__file__).resolve().parents[1]
+PUBLIC_CONTACT = "robert@nurse-ai-os.org"
+LEGACY_PUBLIC_CONTACT = "great.ai.nurses" + "@gmail.com"
 LOCALES = ("es", "tl", "zh", "ar", "vi", "ru", "hi", "fr")
 KEYS = ("en",) + LOCALES
 HTML_KEYS = ("ar", "hi")
@@ -133,6 +136,8 @@ class MediaPacketReleaseTests(unittest.TestCase):
             else:
                 self.assertTrue(pdf_path(key).is_file(), pdf_path(key))
             text = source.read_text(encoding="utf-8")
+            self.assertIn(PUBLIC_CONTACT, text, f"{key}: current public contact")
+            self.assertNotIn(LEGACY_PUBLIC_CONTACT, text, f"{key}: retired public contact")
             for token in ("ChatGPT", "Claude", "Hermes", "Florence-X", "2026"):
                 self.assertIn(token, text, f"{key}: {token}")
             price_tokens = ("10 $US", "29,90 $US") if key == "fr" else ("$10", "$29.90")
@@ -167,6 +172,22 @@ class MediaPacketReleaseTests(unittest.TestCase):
         )
         for phrase in retired:
             self.assertNotIn(phrase.casefold(), text.casefold(), phrase)
+
+    def test_all_tracked_text_uses_the_canonical_public_contact(self):
+        tracked = subprocess.check_output(("git", "ls-files", "-z"), cwd=ROOT).split(b"\0")
+        current = PUBLIC_CONTACT.encode("ascii")
+        legacy = LEGACY_PUBLIC_CONTACT.encode("ascii")
+        current_occurrences = 0
+        for raw_path in tracked:
+            if not raw_path:
+                continue
+            path = ROOT / raw_path.decode()
+            data = path.read_bytes()
+            if b"\0" in data[:8192]:
+                continue
+            self.assertNotIn(legacy, data, str(path.relative_to(ROOT)))
+            current_occurrences += data.count(current)
+        self.assertGreater(current_occurrences, 0)
 
     def test_canonical_source_explains_role_personalization_and_hermes_handoff(self):
         text = source_path("en").read_text(encoding="utf-8")
@@ -211,6 +232,8 @@ class MediaPacketReleaseTests(unittest.TestCase):
             self.assertLessEqual(len(reader.pages), 15, key)
             extracted = " ".join((page.extract_text() or "") for page in reader.pages)
             self.assertNotIn("\x00", extracted, f"{key}: corrupt logical text")
+            self.assertIn(PUBLIC_CONTACT, extracted, f"{key}: current public contact")
+            self.assertNotIn(LEGACY_PUBLIC_CONTACT, extracted, f"{key}: retired public contact")
             self.assertIn("Nurse AI OS", extracted, key)
             self.assertIn("ChatGPT", extracted, key)
             self.assertIn("Claude", extracted, key)

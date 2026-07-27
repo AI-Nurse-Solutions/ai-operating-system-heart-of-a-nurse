@@ -16,7 +16,7 @@
 
 **Cập nhật đến ngày 25 tháng 7 năm 2026**
 
-**Trang web:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Liên hệ truyền thông:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**Trang web:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Liên hệ truyền thông:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **Trong một câu:** Nurse AI OS là bộ công cụ ưu tiên trình duyệt do điều dưỡng thiết kế, giúp điều dưỡng sử dụng ChatGPT hoặc Claude với quy trình thực tế, hồ sơ giá trị và ranh giới cá nhân, cùng các bước xem xét của con người—mà không giao phó quyền phán đoán.
 

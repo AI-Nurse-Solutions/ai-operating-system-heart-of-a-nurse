@@ -4314,7 +4314,7 @@ A 6-week guided, no-PHI build for nurses who want to steward AI without handing 
 
 ## Mailto fallback
 
-Use `great.ai.nurses@gmail.com` until a real form is live.
+Use `robert@nurse-ai-os.org` until a real form is live.
 
 Subject: Nurse AI OS Founding Steward Cohort Application
 

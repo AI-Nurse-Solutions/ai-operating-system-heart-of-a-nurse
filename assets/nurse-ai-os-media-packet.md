@@ -16,7 +16,7 @@
 
 **Current through July 26, 2026**
 
-**Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **In one sentence:** Nurse AI OS is a nurse-designed, browser-first kit that helps nurses use ChatGPT or Claude with practical workflows, a personal values-and-boundaries file, and explicit human-review rules—without handing over judgment.
 
@@ -265,7 +265,7 @@ ChatGPT is a product of OpenAI. Claude is a product of Anthropic. Hermes Agent i
 - **Nurse Intelligence Network:** [nurseintelligence.com](https://www.nurseintelligence.com/)
 - **YouTube:** [@NurseIntelligence](https://www.youtube.com/@NurseIntelligence)
 - **Founder image:** available at [nurse-ai-os.org/about.html](https://nurse-ai-os.org/about.html) or in higher resolution on request.
-- **Media, interviews, speaking, and collaboration:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+- **Media, interviews, speaking, and collaboration:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 ---
 

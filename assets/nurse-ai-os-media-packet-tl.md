@@ -16,7 +16,7 @@
 
 **Napapanahon hanggang Hulyo 25, 2026**
 
-**Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [great.ai.nurses@gmail.com](mailto:great.ai.nurses@gmail.com)
+**Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
 > **Sa isang pangungusap:** Ang Nurse AI OS ay isang browser-first kit na dinisenyo ng nurse upang tulungan ang mga nurse na gumamit ng ChatGPT o Claude sa praktikal na workflows, personal na file ng values at boundaries, at malinaw na human review—nang hindi isinusuko ang sariling paghatol.
 

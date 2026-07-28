@@ -93,6 +93,18 @@ Every decision is traced to a tenant-separated, hash-chained JSONL audit
 stream with redaction applied *before* tracing — spans carry entity
 types, reason codes, and counts, never raw content.
 
+### Multi-role identity (Mission Control §9)
+
+`identity.py` implements one identity with several role lenses: shared
+stores (inbox, calendar, portfolio, projects, competencies) are held
+once and filtered per lens, never copied; projects tag to one or
+several roles; competencies appear once with role-specific
+applications; layouts are remembered per role; cross-role suggestions
+are optional and always explained. Permissions flow from the active
+role plus the current workspace through `actor_for()` into the EDENA
+policy engine — a title grants nothing outside an authenticated
+context.
+
 ## Layer responsibilities
 
 | Layer | Question it answers |

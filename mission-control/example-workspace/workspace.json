@@ -1,0 +1,11 @@
+{
+  "contents": {
+    "deliverable": "deliverables/sample-project-charter.md",
+    "evidence": "evidence/evidence-library.json",
+    "first_run": "first-run/pathway.json",
+    "project": "project/sample-improvement-project.json"
+  },
+  "label": "SYNTHETIC EXAMPLE \u2014 every person, organization, and detail is fictional teaching material. Not a real patient, colleague, or institution.",
+  "reset_note": "This example workspace can be reset or removed at any time; it exists only to show what working content looks like.",
+  "synthetic": true
+}

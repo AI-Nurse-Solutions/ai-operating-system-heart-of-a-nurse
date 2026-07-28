@@ -34,12 +34,32 @@ Safe-by-default invariants are enforced by
 - installation never implies employer, school, regulatory, IRB,
   privacy, or security approval.
 
+`example-workspace/` holds the **synthetic example workspace** every
+packet ships with (specification section 14): a completed sample ADPIE
+project (a genuine workflow checkpoint), an evidence library using the
+five evidence labels, a sample deliverable that went through the full
+draft-review lifecycle, and the first-run pathway mapping each
+onboarding choice (section 13, step 5) to a Deliverable Studio template
+so one call produces a real, editable artifact — the
+ten-minute-first-artifact acceptance criterion. Every record is labeled
+synthetic, all content passes the privacy screen, and the workspace can
+be reset or removed.
+
+The Deliverable Studio itself lives in
+`naio_integrations/deliverables.py` with templates in
+`naio-integrations/config/deliverable-templates.json`. Every scaffold is
+born a draft with a mandatory banner; only a named human review with an
+explicit disposition and date changes that, and approved renders carry
+the attestation. No output is presented as final merely because it was
+generated (specification section 3.6).
+
 ## Regenerating
 
 ```bash
 python3 scripts/build-mission-control-manifests.py
+python3 scripts/build-mission-control-example-workspace.py
 ```
 
-The build is deterministic — CI rebuilds twice and fails on any diff —
-so manifest changes are always deliberate, reviewed catalog changes in
-`naio-integrations/config/mission-control-packets.json`, never drift.
+Both builds are deterministic — CI rebuilds twice and fails on any diff —
+so artifact changes are always deliberate, reviewed catalog changes in
+`naio-integrations/config/`, never drift.

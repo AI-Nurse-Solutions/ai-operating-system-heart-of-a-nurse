@@ -1,0 +1,222 @@
+{
+  "schema_version": "1.0.0",
+  "note": "Deliverable Studio scaffolds (Mission Control spec section 3.6) plus the first-run artifact templates (section 13, step 5). No output may be presented as final or approved merely because it was generated.",
+  "templates": {
+    "project-charter": {
+      "title": "Project Charter",
+      "group": "spec_3_6",
+      "description": "One-page authorization for a project: why, what, who, and how success is measured.",
+      "sections": [
+        {"heading": "Problem and background", "guidance": "Describe the current state, who is affected, and the evidence that a problem exists."},
+        {"heading": "Aim", "guidance": "State the SMART aim: how much of what improvement, for whom, by when."},
+        {"heading": "Scope and boundaries", "guidance": "Name what is in scope, what is out, and the settings involved."},
+        {"heading": "Team, sponsor, and stakeholders", "guidance": "List the owner, sponsor, collaborators, and who must be consulted."},
+        {"heading": "Measures", "guidance": "Define structure, process, outcome, and balancing measures with baselines."},
+        {"heading": "Approvals and governance", "guidance": "Record required approvals, data authority, and review checkpoints."}
+      ]
+    },
+    "aim-statement-driver-diagram": {
+      "title": "Aim Statement and Driver Diagram Inputs",
+      "group": "spec_3_6",
+      "description": "A precise aim plus the primary and secondary drivers that could move it.",
+      "sections": [
+        {"heading": "Aim statement", "guidance": "How much of what, for whom, by when. Avoid vague verbs."},
+        {"heading": "Primary drivers", "guidance": "The big system factors that directly influence the aim."},
+        {"heading": "Secondary drivers", "guidance": "The specific processes or conditions under each primary driver."},
+        {"heading": "Change ideas", "guidance": "Concrete, testable changes mapped to drivers."}
+      ]
+    },
+    "evidence-summary": {
+      "title": "Literature or Evidence Summary",
+      "group": "spec_3_6",
+      "description": "A sourced synthesis that separates evidence from opinion.",
+      "sections": [
+        {"heading": "Question", "guidance": "The structured question this summary answers (PICO/PICOT where suitable)."},
+        {"heading": "Sources reviewed", "guidance": "Each source with author, year, type, and evidence level. Label verified source, local policy, user-provided context, AI synthesis, or assumption."},
+        {"heading": "Findings", "guidance": "What the evidence shows, including conflicting results."},
+        {"heading": "Limitations and currency", "guidance": "Gaps, quality concerns, and publication or review dates."},
+        {"heading": "Implications for local practice", "guidance": "What this could mean here; local policy takes precedence over general findings."}
+      ]
+    },
+    "policy-procedure-draft": {
+      "title": "Policy or Procedure Draft",
+      "group": "spec_3_6",
+      "description": "A draft for institutional review — never effective until approved through governance.",
+      "sections": [
+        {"heading": "Purpose and scope", "guidance": "Why the policy exists and who it applies to."},
+        {"heading": "Definitions", "guidance": "Terms a new reader needs."},
+        {"heading": "Policy statements or procedure steps", "guidance": "Numbered, testable statements or steps with roles."},
+        {"heading": "Evidence and references", "guidance": "Sources with dates; note where evidence is thin."},
+        {"heading": "Review and approval path", "guidance": "Committees, owners, effective and review dates — to be completed by the institution."}
+      ]
+    },
+    "education-plan": {
+      "title": "Education Plan / Lesson Plan",
+      "group": "spec_3_6",
+      "description": "A teaching plan with objectives, methods, and evaluation.",
+      "sections": [
+        {"heading": "Needs assessment", "guidance": "The gap this education addresses and how it was identified."},
+        {"heading": "Audience and prerequisites", "guidance": "Who this is for and what they already know."},
+        {"heading": "Learning objectives", "guidance": "Observable objectives using a suitable taxonomy."},
+        {"heading": "Methods and materials", "guidance": "Formats, activities, accessibility considerations, and time."},
+        {"heading": "Evaluation", "guidance": "How learning and transfer to practice will be measured."}
+      ]
+    },
+    "competency-checklist": {
+      "title": "Competency Checklist",
+      "group": "spec_3_6",
+      "description": "Observable criteria for a skill or judgment domain. Verification requires a qualified human observer.",
+      "sections": [
+        {"heading": "Competency and domain", "guidance": "Name the competency and whether it covers knowledge, skill, judgment, or behavior."},
+        {"heading": "Performance criteria", "guidance": "Observable, yes/no criteria in the order performed."},
+        {"heading": "Evidence requirements", "guidance": "What must be demonstrated, how often, and in what setting."},
+        {"heading": "Verification", "guidance": "Observer qualifications and signoff — cannot be completed by AI."}
+      ]
+    },
+    "case-study": {
+      "title": "Case Study (Synthetic)",
+      "group": "spec_3_6",
+      "description": "A teaching case built only from synthetic or fully de-identified material.",
+      "sections": [
+        {"heading": "Learning objectives", "guidance": "What the reader should be able to do afterward."},
+        {"heading": "Scenario", "guidance": "Synthetic scenario only — no real identifiers, dates, or facility details."},
+        {"heading": "Progression and decision points", "guidance": "How the situation evolves and where judgment is required."},
+        {"heading": "Discussion questions", "guidance": "Questions that surface reasoning, not recall alone."},
+        {"heading": "Debrief notes", "guidance": "Key teaching points and common misconceptions."}
+      ]
+    },
+    "meeting-pack": {
+      "title": "Meeting Brief, Agenda, Minutes, and Action List",
+      "group": "spec_3_6",
+      "description": "One pack covering preparation, the meeting itself, and follow-through.",
+      "sections": [
+        {"heading": "Meeting brief", "guidance": "Purpose, desired outcome, and background readers need."},
+        {"heading": "Agenda", "guidance": "Timed items with owners and intended outcomes (decide, discuss, inform)."},
+        {"heading": "Minutes", "guidance": "Decisions made, dissent noted, and unresolved questions."},
+        {"heading": "Action list", "guidance": "Actions with owner, due date, and follow-up checkpoint."}
+      ]
+    },
+    "executive-brief": {
+      "title": "Executive Brief",
+      "group": "spec_3_6",
+      "description": "One page for a decision-maker: situation, options, recommendation, and ask.",
+      "sections": [
+        {"heading": "Situation", "guidance": "What is happening and why it matters now, in plain language."},
+        {"heading": "Evidence and assumptions", "guidance": "What is known, what is assumed, and confidence in each."},
+        {"heading": "Options and tradeoffs", "guidance": "Two to four options with cost, risk, and reversibility."},
+        {"heading": "Recommendation and ask", "guidance": "The recommended option and the specific decision requested."}
+      ]
+    },
+    "presentation-poster-outline": {
+      "title": "Presentation or Poster Outline",
+      "group": "spec_3_6",
+      "description": "A structured outline ready to build into slides or a poster.",
+      "sections": [
+        {"heading": "Title and authors", "guidance": "Working title and contributor roles."},
+        {"heading": "Key message", "guidance": "The single sentence the audience should remember."},
+        {"heading": "Outline", "guidance": "Section-by-section flow with one idea per slide or panel."},
+        {"heading": "Visuals and data", "guidance": "Figures or tables needed, with sources and permissions."}
+      ]
+    },
+    "abstract-manuscript-scaffold": {
+      "title": "Abstract or Manuscript Scaffold",
+      "group": "spec_3_6",
+      "description": "IMRaD scaffolding with disclosure and authorship prompts.",
+      "sections": [
+        {"heading": "Background and question", "guidance": "Why this work was needed and the exact question."},
+        {"heading": "Methods", "guidance": "Design, setting, participants or data, and analysis approach."},
+        {"heading": "Results", "guidance": "Findings with denominators and uncertainty — no results may be fabricated."},
+        {"heading": "Discussion and limitations", "guidance": "Interpretation, limitations, and generalizability."},
+        {"heading": "Disclosures", "guidance": "Funding, conflicts, ethics/IRB status, and AI-assistance disclosure."}
+      ]
+    },
+    "communication-plan": {
+      "title": "Communication Plan",
+      "group": "spec_3_6",
+      "description": "Who needs to hear what, from whom, through which channel, and when.",
+      "sections": [
+        {"heading": "Objectives", "guidance": "What the communication must achieve."},
+        {"heading": "Audiences", "guidance": "Each audience, what they care about, and anticipated concerns."},
+        {"heading": "Messages and channels", "guidance": "Key messages per audience with channel and sender."},
+        {"heading": "Timeline and feedback", "guidance": "Sequence, cadence, and how feedback returns."}
+      ]
+    },
+    "message-draft": {
+      "title": "Email, Memo, Announcement, or Huddle Script",
+      "group": "spec_3_6",
+      "description": "A short communication draft. Sending is always a human action.",
+      "sections": [
+        {"heading": "Audience and purpose", "guidance": "Who receives this and the single action or awareness it seeks."},
+        {"heading": "Draft text", "guidance": "The message itself, in the audience's language."},
+        {"heading": "Sender checklist", "guidance": "Accuracy, tone, timing, and approvals confirmed before the human sends."}
+      ]
+    },
+    "dashboard-summary": {
+      "title": "Dashboard Summary",
+      "group": "spec_3_6",
+      "description": "A narrative summary of measures with definitions and freshness.",
+      "sections": [
+        {"heading": "Measures included", "guidance": "Each measure with definition, source, denominator, and freshness."},
+        {"heading": "What changed", "guidance": "Movements that matter, with known operational context."},
+        {"heading": "Limitations", "guidance": "Data quality caveats and what the numbers cannot say."},
+        {"heading": "Suggested attention", "guidance": "Where a human should look next — suggestions, not conclusions."}
+      ]
+    },
+    "personal-development-plan": {
+      "title": "Personal Development / Learning Plan",
+      "group": "spec_3_6",
+      "description": "A private plan for growth: goals, activities, evidence, and review dates.",
+      "sections": [
+        {"heading": "Goals", "guidance": "Up to three goals with why each matters now."},
+        {"heading": "Learning activities", "guidance": "Courses, practice, mentorship, and stretch work mapped to goals."},
+        {"heading": "Evidence of progress", "guidance": "What will show movement — artifacts, feedback, verified competencies."},
+        {"heading": "Review cadence", "guidance": "When you will review and adjust this plan."}
+      ]
+    },
+    "structured-question": {
+      "title": "Structured Question",
+      "group": "first_run",
+      "description": "Convert confusion or curiosity into a respectful, answerable question.",
+      "sections": [
+        {"heading": "What I observed or was taught", "guidance": "The trigger for the question, without identifiers."},
+        {"heading": "What I understand so far", "guidance": "Your current understanding and its source."},
+        {"heading": "The question", "guidance": "One precise question the right person can answer."},
+        {"heading": "Who to ask and when", "guidance": "Faculty, preceptor, educator, pharmacy, or manager — and the right moment."}
+      ]
+    },
+    "project-one-pager": {
+      "title": "Project One-Pager",
+      "group": "first_run",
+      "description": "The minimum viable project definition to test interest and sponsorship.",
+      "sections": [
+        {"heading": "Problem", "guidance": "The problem in two sentences, with who feels it."},
+        {"heading": "Idea", "guidance": "The change you want to try."},
+        {"heading": "First measure", "guidance": "One number that would show movement."},
+        {"heading": "Support needed", "guidance": "Sponsor, time, data, or permission required to start."}
+      ]
+    },
+    "evidence-question": {
+      "title": "Evidence Question (PICO/PICOT)",
+      "group": "first_run",
+      "description": "A searchable clinical or operational evidence question.",
+      "sections": [
+        {"heading": "Population", "guidance": "Who the question is about."},
+        {"heading": "Intervention or issue", "guidance": "The exposure, change, or practice in question."},
+        {"heading": "Comparison", "guidance": "The alternative, including current practice."},
+        {"heading": "Outcome and timeframe", "guidance": "What result matters and over what period."},
+        {"heading": "Search plan", "guidance": "Where you will look and how you will label what you find."}
+      ]
+    },
+    "research-question": {
+      "title": "Research Question (FINER)",
+      "group": "first_run",
+      "description": "A research question checked for feasibility, interest, novelty, ethics, and relevance.",
+      "sections": [
+        {"heading": "Draft question", "guidance": "The question in one sentence."},
+        {"heading": "FINER check", "guidance": "Feasible, Interesting, Novel, Ethical, Relevant — one honest line each."},
+        {"heading": "Research versus QI", "guidance": "Initial determination and why; IRB/ethics consultation is the authority."},
+        {"heading": "Next governance step", "guidance": "The first approval or consultation required before any data work."}
+      ]
+    }
+  }
+}

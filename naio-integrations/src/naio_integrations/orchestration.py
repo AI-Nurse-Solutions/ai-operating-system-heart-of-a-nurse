@@ -44,9 +44,10 @@ def _utcnow() -> str:
 class AdpieWorkflow(OrchestrationInterface):
     """Durable, resumable ADPIE state machine with a hard human gate."""
 
-    def __init__(self, checkpoint_dir: Path):
+    def __init__(self, checkpoint_dir: Path, now=None):
         self.checkpoint_dir = checkpoint_dir
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+        self._now = now or _utcnow
 
     def start(self, workflow_id: str, context: dict[str, Any]) -> dict[str, Any]:
         if self._path(workflow_id).exists():
@@ -59,7 +60,7 @@ class AdpieWorkflow(OrchestrationInterface):
             "stage_outputs": {},
             "authorization": None,
             "history": [
-                {"at": _utcnow(), "event": "started", "stage": "assess"},
+                {"at": self._now(), "event": "started", "stage": "assess"},
             ],
         }
         self._save(state)
@@ -83,7 +84,7 @@ class AdpieWorkflow(OrchestrationInterface):
         if next_stage == "complete":
             state["status"] = "complete"
         state["history"].append(
-            {"at": _utcnow(), "event": "advanced", "from": stage, "stage": next_stage}
+            {"at": self._now(), "event": "advanced", "from": stage, "stage": next_stage}
         )
         self._save(state)
         return state
@@ -97,7 +98,7 @@ class AdpieWorkflow(OrchestrationInterface):
         state["authorization"] = {
             "approver": approver,
             "approved": approved,
-            "at": _utcnow(),
+            "at": self._now(),
         }
         if approved:
             state["stage"] = "implement"
@@ -108,7 +109,7 @@ class AdpieWorkflow(OrchestrationInterface):
             state["status"] = "running"
             event = "returned_to_planning"
         state["history"].append(
-            {"at": _utcnow(), "event": event, "approver": approver, "stage": state["stage"]}
+            {"at": self._now(), "event": event, "approver": approver, "stage": state["stage"]}
         )
         self._save(state)
         return state
@@ -121,7 +122,7 @@ class AdpieWorkflow(OrchestrationInterface):
         state["stage"] = "assess"
         state["status"] = "running"
         state["authorization"] = None
-        state["history"].append({"at": _utcnow(), "event": "reassess", "stage": "assess"})
+        state["history"].append({"at": self._now(), "event": "reassess", "stage": "assess"})
         self._save(state)
         return state
 

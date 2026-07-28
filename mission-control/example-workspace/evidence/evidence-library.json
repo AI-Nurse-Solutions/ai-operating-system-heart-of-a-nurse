@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "doc_type": "research",
+      "effective_date": "2025-11-01",
+      "evidence_label": "verified_source",
+      "expires_date": null,
+      "jurisdiction": "US",
+      "note": "Illustrates how a verified source is captured with dates.",
+      "source_id": "example-verified-1",
+      "title": "Fictional systematic review of huddle structure"
+    },
+    {
+      "doc_type": "policy",
+      "effective_date": "2026-01-01",
+      "evidence_label": "local_policy",
+      "expires_date": "2027-01-01",
+      "jurisdiction": "US",
+      "note": "Local policy takes precedence over general findings.",
+      "source_id": "example-policy-1",
+      "title": "Fictional unit huddle standard"
+    },
+    {
+      "doc_type": "research",
+      "effective_date": "2026-07-01",
+      "evidence_label": "ai_synthesis",
+      "expires_date": null,
+      "jurisdiction": "US",
+      "note": "AI synthesis is labeled and never outranks its sources.",
+      "source_id": "example-synthesis-1",
+      "title": "Assistant-drafted summary of the two sources above"
+    },
+    {
+      "doc_type": "local_practice",
+      "effective_date": "2026-07-01",
+      "evidence_label": "assumption_requiring_confirmation",
+      "expires_date": null,
+      "jurisdiction": "US",
+      "note": "Assumptions are labeled until a human confirms them.",
+      "source_id": "example-assumption-1",
+      "title": "Assumed staffing pattern on the fictional unit"
+    }
+  ],
+  "label": "SYNTHETIC EXAMPLE \u2014 every person, organization, and detail is fictional teaching material. Not a real patient, colleague, or institution.",
+  "synthetic": true
+}

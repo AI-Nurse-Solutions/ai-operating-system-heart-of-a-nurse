@@ -13,6 +13,7 @@ HOME = ROOT / "index.html"
 RESOURCES = ROOT / "resources.html"
 SITEMAP = ROOT / "sitemap.xml"
 CSS = ROOT / "assets" / "nurse-ai.css"
+WORKFLOW = ROOT / ".github" / "workflows" / "website-alignment.yml"
 
 
 class LmStudioBionicGuideTests(unittest.TestCase):
@@ -23,6 +24,7 @@ class LmStudioBionicGuideTests(unittest.TestCase):
         cls.resources = RESOURCES.read_text(encoding="utf-8")
         cls.sitemap = SITEMAP.read_text(encoding="utf-8")
         cls.css = CSS.read_text(encoding="utf-8")
+        cls.workflow = WORKFLOW.read_text(encoding="utf-8")
 
     def test_guide_is_a_separate_canonical_public_page(self) -> None:
         self.assertTrue(GUIDE.is_file())
@@ -69,6 +71,12 @@ class LmStudioBionicGuideTests(unittest.TestCase):
                 self.sitemap,
                 rf"<loc>{re.escape(route)}</loc><lastmod>2026-07-27</lastmod>",
             )
+
+    def test_public_safety_workflow_scans_the_nested_guide_route(self) -> None:
+        scanner_pages = self.workflow.split("pages=(", 1)[1].split(")", 1)[0]
+        guide_path = "guides/nurse-ai-os-lm-studio-bionic/index.html"
+        self.assertEqual(1, scanner_pages.count(guide_path))
+        self.assertEqual(2, self.workflow.count('- "**/*.html"'))
 
     def test_three_paths_are_distinct_and_cloud_is_not_called_on_premises(self) -> None:
         for phrase in (

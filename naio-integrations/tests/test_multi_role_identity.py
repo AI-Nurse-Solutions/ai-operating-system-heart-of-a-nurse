@@ -198,6 +198,46 @@ class MultiRoleIdentityTests(unittest.TestCase):
         references = {s["reference"] for s in suggestions}
         self.assertIn("falls-qi", references)
 
+    def test_concurrent_instances_never_lose_updates(self):
+        import threading
+
+        self.identity.activate_role("staff-nurse")
+        other = MultiRoleIdentity("rn-avery", self.state)
+        errors: list[Exception] = []
+
+        def spam(instance: MultiRoleIdentity, prefix: str) -> None:
+            try:
+                for i in range(10):
+                    instance.add_inbox_item(f"{prefix}-{i}")
+            except Exception as exc:  # pragma: no cover - failure diagnostics
+                errors.append(exc)
+
+        threads = [
+            threading.Thread(target=spam, args=(self.identity, "a")),
+            threading.Thread(target=spam, args=(other, "b")),
+        ]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        self.assertEqual(errors, [])
+        resumed = MultiRoleIdentity("rn-avery", self.state)
+        inbox = resumed.view("staff-nurse")["inbox"]
+        self.assertEqual(len(inbox), 20)
+        self.assertEqual(len(set(inbox)), 20)
+
+    def test_stale_instance_mutations_preserve_other_writers_changes(self):
+        self.identity.activate_role("staff-nurse")
+        other = MultiRoleIdentity("rn-avery", self.state)
+        other.add_calendar_entry("2026-08-02 skills fair")
+        # This instance's snapshot predates the other writer's change;
+        # its mutation must reload under the lock rather than clobber.
+        self.identity.add_inbox_item("note to self")
+        resumed = MultiRoleIdentity("rn-avery", self.state)
+        view = resumed.view("staff-nurse")
+        self.assertIn("2026-08-02 skills fair", view["calendar"])
+        self.assertIn("note to self", view["inbox"])
+
     def test_state_is_durable_across_restarts(self):
         self.activate_icu_nurse_preceptor_qi_lead()
         self.identity.switch_role("leader")

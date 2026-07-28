@@ -14,21 +14,33 @@ structural:
   preserves shared content and per-role layouts.
 * Permissions depend on the current workspace, data class, institution,
   and task — never merely on professional title. ``actor_for`` builds
-  the EDENA policy actor from the *active role and workspace*, so a
-  leader hat grants nothing outside an authenticated context.
+  the EDENA policy actor from the *active role and workspace*, and an
+  authenticated organization must BE the current workspace: an org
+  login carried into a personal or foreign workspace grants nothing.
 * Cross-role suggestions are optional and always explain why they are
   relevant.
 
-State is durable JSON with atomic writes, so a role switch survives any
-interruption. Roles are validated against the Mission Control packet
-catalog — the same configuration that defines the role packets.
+Persistence is transactional: every mutation acquires an exclusive file
+lock, reloads the latest state from disk, applies and validates the
+change, and writes atomically through a per-writer temporary file — so
+concurrent instances on the same state file serialize instead of losing
+updates. Reads serve the instance's snapshot; mutations always apply to
+the freshest state. Roles are validated against the Mission Control
+packet catalog — the same configuration that defines the role packets.
 """
 
 from __future__ import annotations
 
 import json
+import os
+import secrets
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - non-POSIX fallback
+    fcntl = None
 
 from .contract import Actor
 from .packets import PacketCatalog
@@ -38,6 +50,22 @@ STATE_VERSION = "1.0.0"
 
 class IdentityError(ValueError):
     pass
+
+
+def _fresh_state(identity_id: str) -> dict[str, Any]:
+    return {
+        "state_version": STATE_VERSION,
+        "identity_id": identity_id,
+        "roles": [],
+        "active_role": None,
+        "layouts": {},
+        "projects": {},
+        "competencies": {},
+        "inbox": [],
+        "calendar": [],
+        "portfolio": [],
+        "cross_role_suggestions_enabled": False,
+    }
 
 
 class MultiRoleIdentity:
@@ -51,29 +79,15 @@ class MultiRoleIdentity:
     ):
         if not identity_id.strip():
             raise IdentityError("an identity requires a non-empty id")
+        self.identity_id = identity_id
         self.catalog = catalog or PacketCatalog()
         self.state_path = state_path
+        self._lock_path = state_path.with_name(state_path.name + ".lock")
         if state_path.exists():
-            self.state = json.loads(state_path.read_text(encoding="utf-8"))
-            if self.state.get("identity_id") != identity_id:
-                raise IdentityError(
-                    "state file belongs to a different identity; refusing to load"
-                )
+            self.state = self._load()
         else:
-            self.state = {
-                "state_version": STATE_VERSION,
-                "identity_id": identity_id,
-                "roles": [],
-                "active_role": None,
-                "layouts": {},
-                "projects": {},
-                "competencies": {},
-                "inbox": [],
-                "calendar": [],
-                "portfolio": [],
-                "cross_role_suggestions_enabled": False,
-            }
-            self._save()
+            self.state = _fresh_state(identity_id)
+            self._mutate(lambda state: None)
 
     # ------------------------------------------------------------------
     # Roles
@@ -88,31 +102,38 @@ class MultiRoleIdentity:
     def activate_role(self, role: str) -> None:
         if role not in self.catalog.roles():
             raise IdentityError(f"unknown role: {role}")
-        if role in self.state["roles"]:
-            return
-        self.state["roles"].append(role)
-        if self.state["active_role"] is None:
-            self.state["active_role"] = role
-        self._save()
+
+        def apply(state: dict[str, Any]) -> None:
+            if role in state["roles"]:
+                return
+            state["roles"].append(role)
+            if state["active_role"] is None:
+                state["active_role"] = role
+
+        self._mutate(apply)
 
     def deactivate_role(self, role: str) -> None:
-        if role not in self.state["roles"]:
-            raise IdentityError(f"role is not activated: {role}")
-        if len(self.state["roles"]) == 1:
-            raise IdentityError("an identity must keep at least one active role")
-        self.state["roles"].remove(role)
-        if self.state["active_role"] == role:
-            self.state["active_role"] = self.state["roles"][0]
-        self._save()
+        def apply(state: dict[str, Any]) -> None:
+            if role not in state["roles"]:
+                raise IdentityError(f"role is not activated: {role}")
+            if len(state["roles"]) == 1:
+                raise IdentityError("an identity must keep at least one active role")
+            state["roles"].remove(role)
+            if state["active_role"] == role:
+                state["active_role"] = state["roles"][0]
+
+        self._mutate(apply)
 
     def switch_role(self, role: str) -> str:
-        if role not in self.state["roles"]:
-            raise IdentityError(
-                f"cannot switch to a role that is not activated: {role}"
-            )
-        self.state["active_role"] = role
-        self._save()
-        return role
+        def apply(state: dict[str, Any]) -> str:
+            if role not in state["roles"]:
+                raise IdentityError(
+                    f"cannot switch to a role that is not activated: {role}"
+                )
+            state["active_role"] = role
+            return role
+
+        return self._mutate(apply)
 
     # ------------------------------------------------------------------
     # Layouts — remembered per role; defaults come from the packet catalog.
@@ -127,52 +148,59 @@ class MultiRoleIdentity:
         return {"home_cards": manifest["role_modules"], "remembered": False}
 
     def remember_layout(self, role: str, layout: dict[str, Any]) -> None:
-        if role not in self.state["roles"]:
-            raise IdentityError(f"role is not activated: {role}")
-        self.state["layouts"][role] = {**layout, "remembered": True}
-        self._save()
+        def apply(state: dict[str, Any]) -> None:
+            if role not in state["roles"]:
+                raise IdentityError(f"role is not activated: {role}")
+            state["layouts"][role] = {**layout, "remembered": True}
+
+        self._mutate(apply)
 
     # ------------------------------------------------------------------
     # Shared stores — held once, filtered by lens, never copied.
 
     def add_project(self, project_id: str, title: str, roles: tuple[str, ...]) -> None:
-        if not roles:
-            raise IdentityError("a project must be tagged to at least one role")
-        for role in roles:
-            if role not in self.state["roles"]:
-                raise IdentityError(f"cannot tag project to inactive role: {role}")
-        self.state["projects"][project_id] = {
-            "title": title,
-            "roles": sorted(set(roles)),
-        }
-        self._save()
+        def apply(state: dict[str, Any]) -> None:
+            if not roles:
+                raise IdentityError("a project must be tagged to at least one role")
+            for role in roles:
+                if role not in state["roles"]:
+                    raise IdentityError(
+                        f"cannot tag project to inactive role: {role}"
+                    )
+            state["projects"][project_id] = {
+                "title": title,
+                "roles": sorted(set(roles)),
+            }
+
+        self._mutate(apply)
 
     def add_competency(self, competency_id: str, name: str) -> None:
-        self.state["competencies"][competency_id] = {"name": name, "applications": {}}
-        self._save()
+        def apply(state: dict[str, Any]) -> None:
+            state["competencies"][competency_id] = {"name": name, "applications": {}}
+
+        self._mutate(apply)
 
     def set_competency_application(
         self, competency_id: str, role: str, application: str
     ) -> None:
-        competency = self.state["competencies"].get(competency_id)
-        if competency is None:
-            raise IdentityError(f"unknown competency: {competency_id}")
-        if role not in self.state["roles"]:
-            raise IdentityError(f"role is not activated: {role}")
-        competency["applications"][role] = application
-        self._save()
+        def apply(state: dict[str, Any]) -> None:
+            competency = state["competencies"].get(competency_id)
+            if competency is None:
+                raise IdentityError(f"unknown competency: {competency_id}")
+            if role not in state["roles"]:
+                raise IdentityError(f"role is not activated: {role}")
+            competency["applications"][role] = application
+
+        self._mutate(apply)
 
     def add_inbox_item(self, item: str) -> None:
-        self.state["inbox"].append(item)
-        self._save()
+        self._mutate(lambda state: state["inbox"].append(item))
 
     def add_calendar_entry(self, entry: str) -> None:
-        self.state["calendar"].append(entry)
-        self._save()
+        self._mutate(lambda state: state["calendar"].append(entry))
 
     def add_portfolio_item(self, item: str) -> None:
-        self.state["portfolio"].append(item)
-        self._save()
+        self._mutate(lambda state: state["portfolio"].append(item))
 
     # ------------------------------------------------------------------
     # Lenses
@@ -234,8 +262,10 @@ class MultiRoleIdentity:
     # Cross-role suggestions — optional, always explained.
 
     def enable_cross_role_suggestions(self, enabled: bool) -> None:
-        self.state["cross_role_suggestions_enabled"] = bool(enabled)
-        self._save()
+        def apply(state: dict[str, Any]) -> None:
+            state["cross_role_suggestions_enabled"] = bool(enabled)
+
+        self._mutate(apply)
 
     def suggestions(self) -> tuple[dict[str, str], ...]:
         if not self.state["cross_role_suggestions_enabled"]:
@@ -261,11 +291,35 @@ class MultiRoleIdentity:
         return tuple(results)
 
     # ------------------------------------------------------------------
+    # Transactional persistence: lock -> reload -> mutate -> atomic write.
 
-    def _save(self) -> None:
+    def _load(self) -> dict[str, Any]:
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        if state.get("identity_id") != self.identity_id:
+            raise IdentityError(
+                "state file belongs to a different identity; refusing to load"
+            )
+        return state
+
+    def _mutate(self, apply: Callable[[dict[str, Any]], Any]) -> Any:
         self.state_path.parent.mkdir(parents=True, exist_ok=True)
-        tmp = self.state_path.with_suffix(".tmp")
-        tmp.write_text(
-            json.dumps(self.state, indent=2, sort_keys=True), encoding="utf-8"
-        )
-        tmp.replace(self.state_path)
+        with self._lock_path.open("a+", encoding="utf-8") as lock:
+            if fcntl is not None:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            try:
+                if self.state_path.exists():
+                    self.state = self._load()
+                result = apply(self.state)
+                tmp = self.state_path.with_name(
+                    f".{self.state_path.name}.{os.getpid()}"
+                    f".{secrets.token_hex(4)}.tmp"
+                )
+                tmp.write_text(
+                    json.dumps(self.state, indent=2, sort_keys=True),
+                    encoding="utf-8",
+                )
+                tmp.replace(self.state_path)
+                return result
+            finally:
+                if fcntl is not None:
+                    fcntl.flock(lock.fileno(), fcntl.LOCK_UN)

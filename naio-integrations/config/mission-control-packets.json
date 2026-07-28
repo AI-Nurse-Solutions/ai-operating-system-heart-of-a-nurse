@@ -4,8 +4,17 @@
   "migration_version": "1",
   "directive": "NIN-NAIO Master Directive v1.1",
   "install_note": "Installation does not imply employer, school, regulatory, IRB, privacy, or security approval.",
-  "supported_exports": ["markdown", "pdf", "docx", "csv", "presentation"],
-  "prohibited_data_classes": ["D3", "D4"],
+  "supported_exports": [
+    "markdown",
+    "pdf",
+    "docx",
+    "csv",
+    "presentation"
+  ],
+  "prohibited_data_classes": [
+    "D3",
+    "D4"
+  ],
   "prohibited_data_note": "No PHI, patient identifiers, regulated data (D3), or restricted critical data (D4) in the personal edition. Approved institutional environments are a separate, gated deployment.",
   "required_dependencies": [
     "naio-integrations>=1.0.0",
@@ -65,6 +74,12 @@
         "simulation-scenario-coach",
         "reflection-learning-coach",
         "governance-safety-checker"
+      ],
+      "starter_templates": [
+        "structured-question",
+        "personal-development-plan",
+        "case-study",
+        "evidence-question"
       ]
     },
     "staff-nurse": {
@@ -83,6 +98,12 @@
         "writing-presentation-assistant",
         "reflection-learning-coach",
         "governance-safety-checker"
+      ],
+      "starter_templates": [
+        "project-one-pager",
+        "evidence-question",
+        "project-charter",
+        "personal-development-plan"
       ]
     },
     "leader": {
@@ -118,6 +139,12 @@
         "critical-thinking-coach",
         "writing-presentation-assistant",
         "governance-safety-checker"
+      ],
+      "starter_templates": [
+        "education-plan",
+        "competency-checklist",
+        "meeting-pack",
+        "case-study"
       ]
     },
     "licensed-clinician": {

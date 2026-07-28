@@ -2,9 +2,10 @@
   "name": "nurse-ai-os-static-site-tests",
   "private": true,
   "scripts": {
-    "test": "npm run test:switchboard-schema && npm run test:switchboard-browser && npm run test:student-nurse-browser && npm run test:nurse-practitioner-browser && npm run test:staff-nurse-browser && npm run test:medical-resident-browser && python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "test": "npm run test:switchboard-schema && npm run test:switchboard-browser && npm run test:leader-home-browser && npm run test:student-nurse-browser && npm run test:nurse-practitioner-browser && npm run test:staff-nurse-browser && npm run test:medical-resident-browser && python3 -m unittest discover -s tests -p 'test_*.py' -v",
     "test:switchboard-browser": "node tests/test_switchboard_browser.mjs",
     "test:switchboard-schema": "node tests/test_switchboard_schema.mjs",
+    "test:leader-home-browser": "node tests/test_leader_home_browser.mjs",
     "test:student-nurse-browser": "node tests/test_student_nurse_browser.mjs",
     "test:nurse-practitioner-browser": "node tests/test_nurse_practitioner_browser.mjs",
     "test:staff-nurse-browser": "node tests/test_staff_nurse_browser.mjs",

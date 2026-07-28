@@ -25,15 +25,37 @@ class LockContentionClassificationTests(unittest.TestCase):
 
 
 class LockRoundTripTests(unittest.TestCase):
-    def test_acquire_and_release_round_trip(self):
+    def test_acquire_holds_and_release_actually_unlocks(self):
         import tempfile
         from pathlib import Path
 
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "lockfile"
-            with path.open("a+", encoding="utf-8") as handle:
-                locking.acquire(handle)
-                locking.release(handle)
+            with path.open("a+", encoding="utf-8") as first, path.open(
+                "a+", encoding="utf-8"
+            ) as second:
+                locking.acquire(first)
+                if locking.fcntl is not None:
+                    # Non-blocking probe: while the first handle holds the
+                    # lock, a second handle must be refused — proving
+                    # acquire() is not a no-op.
+                    with self.assertRaises(OSError):
+                        locking.fcntl.flock(
+                            second.fileno(),
+                            locking.fcntl.LOCK_EX | locking.fcntl.LOCK_NB,
+                        )
+                locking.release(first)
+                if locking.fcntl is not None:
+                    # After release the same non-blocking probe must succeed
+                    # immediately — proving release() actually unlocked.
+                    locking.fcntl.flock(
+                        second.fileno(),
+                        locking.fcntl.LOCK_EX | locking.fcntl.LOCK_NB,
+                    )
+                    locking.fcntl.flock(second.fileno(), locking.fcntl.LOCK_UN)
+                else:  # pragma: no cover - Windows path
+                    locking.acquire(second)
+                    locking.release(second)
 
 
 if __name__ == "__main__":

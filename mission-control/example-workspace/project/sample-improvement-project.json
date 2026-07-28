@@ -1,0 +1,84 @@
+{
+  "authorization": {
+    "approved": true,
+    "approver": "Example Charge Nurse (fictional)",
+    "at": "2026-07-01T09:00:00+00:00"
+  },
+  "context": {
+    "label": "SYNTHETIC EXAMPLE \u2014 every person, organization, and detail is fictional teaching material. Not a real patient, colleague, or institution.",
+    "project": "Reduce end-of-shift huddle overruns on a fictional unit",
+    "synthetic": true
+  },
+  "history": [
+    {
+      "at": "2026-07-01T09:00:00+00:00",
+      "event": "started",
+      "stage": "assess"
+    },
+    {
+      "at": "2026-07-01T09:00:00+00:00",
+      "event": "advanced",
+      "from": "assess",
+      "stage": "diagnose"
+    },
+    {
+      "at": "2026-07-01T09:00:00+00:00",
+      "event": "advanced",
+      "from": "diagnose",
+      "stage": "plan"
+    },
+    {
+      "at": "2026-07-01T09:00:00+00:00",
+      "event": "advanced",
+      "from": "plan",
+      "stage": "human_authorization"
+    },
+    {
+      "approver": "Example Charge Nurse (fictional)",
+      "at": "2026-07-01T09:00:00+00:00",
+      "event": "authorized",
+      "stage": "implement"
+    },
+    {
+      "at": "2026-07-01T09:00:00+00:00",
+      "event": "advanced",
+      "from": "implement",
+      "stage": "evaluate"
+    },
+    {
+      "at": "2026-07-01T09:00:00+00:00",
+      "event": "advanced",
+      "from": "evaluate",
+      "stage": "learn"
+    },
+    {
+      "at": "2026-07-01T09:00:00+00:00",
+      "event": "advanced",
+      "from": "learn",
+      "stage": "complete"
+    }
+  ],
+  "stage": "complete",
+  "stage_outputs": {
+    "assess": {
+      "findings": "Fictional baseline: huddles ran long on 6 of 10 observed days."
+    },
+    "diagnose": {
+      "problem": "Huddle agenda has no owner and no timekeeper (synthetic scenario)."
+    },
+    "evaluate": {
+      "outcome": "Fictional result: overruns fell from 6 of 10 days to 2 of 10."
+    },
+    "implement": {
+      "implemented": "Timed agenda piloted (synthetic)."
+    },
+    "learn": {
+      "lesson": "Keep the timekeeper; revisit agenda quarterly."
+    },
+    "plan": {
+      "plan": "Pilot a one-page timed agenda with a rotating timekeeper for two weeks."
+    }
+  },
+  "status": "complete",
+  "workflow_id": "sample-improvement-project"
+}

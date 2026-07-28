@@ -1,0 +1,36 @@
+{
+  "choices": {
+    "evidence-question": {
+      "produces": "Evidence Question (PICO/PICOT)",
+      "template_id": "evidence-question"
+    },
+    "executive-brief": {
+      "produces": "Executive Brief",
+      "template_id": "executive-brief"
+    },
+    "learning-plan": {
+      "produces": "Personal Development / Learning Plan",
+      "template_id": "personal-development-plan"
+    },
+    "lesson-plan": {
+      "produces": "Education Plan / Lesson Plan",
+      "template_id": "education-plan"
+    },
+    "project-one-pager": {
+      "produces": "Project One-Pager",
+      "template_id": "project-one-pager"
+    },
+    "research-question": {
+      "produces": "Research Question (FINER)",
+      "template_id": "research-question"
+    },
+    "structured-question": {
+      "produces": "Structured Question",
+      "template_id": "structured-question"
+    }
+  },
+  "goal": "Within ten minutes of onboarding, the user completes one real artifact (Mission Control spec, section 13, step 5).",
+  "how": "Call ExampleWorkspace.first_run(choice, answers) \u2014 one call returns an editable draft with the mandatory draft banner.",
+  "label": "SYNTHETIC EXAMPLE \u2014 every person, organization, and detail is fictional teaching material. Not a real patient, colleague, or institution.",
+  "synthetic": true
+}

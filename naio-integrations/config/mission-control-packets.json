@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0.0",
+  "packet_version": "1.0.0",
+  "migration_version": "1",
+  "directive": "NIN-NAIO Master Directive v1.1",
+  "install_note": "Installation does not imply employer, school, regulatory, IRB, privacy, or security approval.",
+  "supported_exports": ["markdown", "pdf", "docx", "csv", "presentation"],
+  "prohibited_data_classes": ["D3", "D4"],
+  "prohibited_data_note": "No PHI, patient identifiers, regulated data (D3), or restricted critical data (D4) in the personal edition. Approved institutional environments are a separate, gated deployment.",
+  "required_dependencies": [
+    "naio-integrations>=1.0.0",
+    "edena-gateway-policy>=1.0.0"
+  ],
+  "optional_dependencies": [
+    "open-policy-agent (behind the policy-decision interface)",
+    "microsoft-presidio (behind the privacy-transformation interface)",
+    "guardrails-ai (behind the validation interface)",
+    "langfuse (behind the observability interface)",
+    "mem0 (behind the memory interface)",
+    "ragflow (behind the knowledge-retrieval interface)",
+    "langgraph (behind the orchestration interface)"
+  ],
+  "shared_modules": [
+    "mission-control-core",
+    "role-profile-configuration",
+    "edena-guardrails",
+    "data-boundary-notice",
+    "setup-wizard",
+    "user-guide",
+    "troubleshooting-guide",
+    "example-workspace-synthetic",
+    "starter-agents-tools-disabled",
+    "core-templates",
+    "sample-project-and-artifact",
+    "backup-export-instructions",
+    "update-version-manifest",
+    "license-ownership-attribution"
+  ],
+  "agents": {
+    "guide-navigator": "Orient the user, explain the workspace, and suggest the next safe action.",
+    "evidence-scout": "Find, capture, and label evidence sources with provenance and dates.",
+    "critical-thinking-coach": "Coach cue recognition, hypothesis generation, and priority setting.",
+    "project-manager": "Organize tasks, milestones, owners, risks, and approval gates.",
+    "writing-presentation-assistant": "Draft documents and presentations for human review.",
+    "data-analyst": "Summarize measures, trends, and limitations of available data.",
+    "simulation-scenario-coach": "Run synthetic scenario practice with debrief support.",
+    "governance-safety-checker": "Check tier, data class, zone, and approval requirements before work proceeds.",
+    "meeting-decision-assistant": "Prepare agendas, capture decisions, and track follow-ups.",
+    "reflection-learning-coach": "Support private reflection and learning plans; never reports to oversight views."
+  },
+  "packets": {
+    "pre-licensure-student": {
+      "display_name": "Pre-Licensure Nurse Student",
+      "role_modules": [
+        "theory-to-practice-bridge",
+        "clinical-reasoning-cases",
+        "clinical-day-planner",
+        "skills-competency-passport",
+        "five-minute-debrief",
+        "nclex-and-study-templates"
+      ],
+      "default_agents": [
+        "guide-navigator",
+        "critical-thinking-coach",
+        "simulation-scenario-coach",
+        "reflection-learning-coach",
+        "governance-safety-checker"
+      ]
+    },
+    "staff-nurse": {
+      "display_name": "Staff Nurse",
+      "role_modules": [
+        "workflow-friction-log",
+        "evidence-question-queue",
+        "quality-project-launchpad",
+        "certification-clinical-ladder-plan",
+        "professional-portfolio"
+      ],
+      "default_agents": [
+        "guide-navigator",
+        "evidence-scout",
+        "project-manager",
+        "writing-presentation-assistant",
+        "reflection-learning-coach",
+        "governance-safety-checker"
+      ]
+    },
+    "leader": {
+      "display_name": "Manager, Leader, or Executive",
+      "role_modules": [
+        "strategy-and-portfolio-map",
+        "decision-room",
+        "operational-metric-dictionary",
+        "ai-governance-register",
+        "executive-communication-templates"
+      ],
+      "default_agents": [
+        "guide-navigator",
+        "meeting-decision-assistant",
+        "data-analyst",
+        "project-manager",
+        "writing-presentation-assistant",
+        "governance-safety-checker"
+      ]
+    },
+    "educator": {
+      "display_name": "Educator, Preceptor, or Mentor",
+      "role_modules": [
+        "curriculum-builder",
+        "simulation-studio",
+        "competency-and-observation-tools",
+        "feedback-coach",
+        "deidentified-cohort-dashboard"
+      ],
+      "default_agents": [
+        "guide-navigator",
+        "simulation-scenario-coach",
+        "critical-thinking-coach",
+        "writing-presentation-assistant",
+        "governance-safety-checker"
+      ]
+    },
+    "licensed-clinician": {
+      "display_name": "Licensed Clinician (NP or MD)",
+      "role_modules": [
+        "evidence-to-practice-workspace",
+        "guideline-comparison",
+        "clinical-innovation-toolkit",
+        "research-protocol-workspace",
+        "research-governance-gates"
+      ],
+      "default_agents": [
+        "guide-navigator",
+        "evidence-scout",
+        "data-analyst",
+        "writing-presentation-assistant",
+        "governance-safety-checker"
+      ]
+    }
+  }
+}

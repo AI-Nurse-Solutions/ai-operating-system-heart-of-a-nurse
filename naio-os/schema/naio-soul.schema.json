@@ -264,6 +264,154 @@
         "institutional_authority_granted": { "type": "boolean", "const": false }
       }
     },
+    "workspace_routing": {
+      "type": "object",
+      "description": "Optional five-door quick-start routing. It organizes a workspace but grants no competence, credential, assignment, permission, or authority.",
+      "required": ["version", "primary_lane", "secondary_lanes", "role_context", "current_mission", "project_state", "active_overlays", "first_artifact", "deep_profile_status"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "const": "1.0.0" },
+        "primary_lane": { "type": "string", "enum": ["prelicensure-student", "staff-nurse", "leader", "educator", "licensed-clinician"] },
+        "secondary_lanes": {
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["prelicensure-student", "staff-nurse", "leader", "educator", "licensed-clinician"] }
+        },
+        "role_context": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,79}$" },
+        "current_mission": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,79}$" },
+        "project_state": { "type": "string", "enum": ["no-project", "idea", "exploring-project", "active-project", "paused-blocked", "quality-improvement", "evidence-review", "research-planning", "active-approved-research", "determination-needed"] },
+        "active_overlays": {
+          "type": "array",
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["quality-improvement", "research-evidence", "advanced-studies", "education-mentorship", "leadership-governance"] }
+        },
+        "first_artifact": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,79}$" },
+        "deep_profile_status": { "type": "string", "enum": ["not-started", "in-progress", "complete"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "primary_lane": { "const": "prelicensure-student" } } },
+          "then": { "properties": {
+            "role_context": { "enum": ["student-only", "student-and-assistant"] },
+            "current_mission": { "enum": ["understand-concept", "prepare-clinical-simulation", "practice-clinical-reasoning", "organize-coursework", "prepare-nclex-transition", "build-learning-portfolio"] },
+            "project_state": { "const": "no-project" },
+            "first_artifact": { "enum": ["learning-plan", "structured-learning-question", "clinical-preparation-plan", "reasoning-practice-plan", "study-plan", "portfolio-outline"] }
+          } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "staff-nurse" } } },
+          "then": { "properties": {
+            "role_context": { "enum": ["staff-practice", "newly-licensed-practice"] },
+            "current_mission": { "enum": ["improve-daily-work", "resolve-evidence-policy-question", "build-competence-certification", "capture-workflow-opportunity", "start-quality-project", "develop-career-portfolio", "reflect-private"] },
+            "project_state": { "enum": ["no-project", "idea", "exploring-project", "active-project", "paused-blocked"] },
+            "first_artifact": { "enum": ["structured-question", "professional-development-plan", "improvement-opportunity", "quality-project-one-pager", "career-plan", "reflection-prompt"] }
+          } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "leader" } } },
+          "then": { "properties": {
+            "role_context": { "enum": ["charge-team-lead", "nurse-manager", "operational-leader", "executive-leader", "ai-quality-governance-leader"] },
+            "current_mission": { "enum": ["prepare-decision", "coordinate-priorities", "prepare-meeting", "review-signals", "manage-quality-change", "govern-ai-use-case", "prepare-executive-communication"] },
+            "project_state": { "enum": ["no-project", "idea", "exploring-project", "active-project", "paused-blocked"] },
+            "first_artifact": { "enum": ["decision-brief", "priority-map", "meeting-brief", "governance-check", "executive-brief"] }
+          } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "educator" } } },
+          "then": { "properties": {
+            "role_context": { "enum": ["clinical-preceptor", "mentor-coach", "unit-educator", "faculty-instructor", "simulation-facilitator"] },
+            "current_mission": { "enum": ["create-learning-plan", "prepare-teaching-session", "design-simulation-case", "develop-competency-tool", "prepare-feedback", "review-education-evidence", "review-cohort-patterns"] },
+            "project_state": { "const": "no-project" },
+            "first_artifact": { "enum": ["learning-plan", "lesson-plan", "simulation-outline", "competency-outline", "feedback-plan"] }
+          } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "licensed-clinician" } } },
+          "then": { "properties": {
+            "role_context": { "enum": ["nurse-practitioner", "physician", "other-advanced-clinician"] },
+            "current_mission": { "enum": ["resolve-evidence-question", "compare-guidelines", "prepare-case-conference", "draft-protocol-pathway", "improve-workflow", "start-quality-project", "conduct-research", "build-professional-portfolio"] },
+            "project_state": { "enum": ["no-project", "idea", "quality-improvement", "evidence-review", "research-planning", "active-approved-research", "determination-needed"] },
+            "first_artifact": { "enum": ["evidence-question", "guideline-comparison", "quality-project-one-pager", "research-question", "professional-workflow-brief"] }
+          } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "prelicensure-student" } } },
+          "then": { "properties": { "secondary_lanes": { "not": { "contains": { "const": "prelicensure-student" } } } } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "staff-nurse" } } },
+          "then": { "properties": { "secondary_lanes": { "not": { "contains": { "const": "staff-nurse" } } } } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "leader" } } },
+          "then": { "properties": { "secondary_lanes": { "not": { "contains": { "const": "leader" } } } } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "educator" } } },
+          "then": { "properties": { "secondary_lanes": { "not": { "contains": { "const": "educator" } } } } }
+        },
+        {
+          "if": { "properties": { "primary_lane": { "const": "licensed-clinician" } } },
+          "then": { "properties": { "secondary_lanes": { "not": { "contains": { "const": "licensed-clinician" } } } } }
+        },
+        {
+          "if": { "properties": { "project_state": { "enum": ["quality-improvement", "determination-needed"] } } },
+          "then": { "properties": { "active_overlays": { "contains": { "const": "quality-improvement" } } } }
+        },
+        {
+          "if": { "properties": { "project_state": { "enum": ["evidence-review", "research-planning", "active-approved-research", "determination-needed"] } } },
+          "then": { "properties": { "active_overlays": { "contains": { "const": "research-evidence" } } } }
+        },
+        {
+          "if": { "properties": { "current_mission": { "enum": ["start-quality-project", "manage-quality-change"] } } },
+          "then": { "properties": { "active_overlays": { "contains": { "const": "quality-improvement" } } } }
+        },
+        {
+          "if": { "properties": { "current_mission": { "enum": ["resolve-evidence-policy-question", "review-education-evidence", "resolve-evidence-question", "compare-guidelines", "draft-protocol-pathway", "conduct-research"] } } },
+          "then": { "properties": { "active_overlays": { "contains": { "const": "research-evidence" } } } }
+        },
+        {
+          "if": { "properties": { "current_mission": { "enum": ["prepare-nclex-transition", "build-competence-certification"] } } },
+          "then": { "properties": { "active_overlays": { "contains": { "const": "advanced-studies" } } } }
+        },
+        {
+          "if": { "properties": { "current_mission": { "enum": ["create-learning-plan", "prepare-teaching-session", "design-simulation-case", "develop-competency-tool", "prepare-feedback", "review-education-evidence", "review-cohort-patterns"] } } },
+          "then": { "properties": { "active_overlays": { "contains": { "const": "education-mentorship" } } } }
+        },
+        {
+          "if": { "properties": { "current_mission": { "enum": ["prepare-decision", "coordinate-priorities", "prepare-meeting", "review-signals", "manage-quality-change", "govern-ai-use-case", "prepare-executive-communication"] } } },
+          "then": { "properties": { "active_overlays": { "contains": { "const": "leadership-governance" } } } }
+        },
+        {
+          "if": { "properties": {
+            "current_mission": { "not": { "enum": ["start-quality-project", "manage-quality-change"] } },
+            "project_state": { "not": { "enum": ["quality-improvement", "determination-needed"] } }
+          } },
+          "then": { "properties": { "active_overlays": { "not": { "contains": { "const": "quality-improvement" } } } } }
+        },
+        {
+          "if": { "properties": {
+            "current_mission": { "not": { "enum": ["resolve-evidence-policy-question", "review-education-evidence", "resolve-evidence-question", "compare-guidelines", "draft-protocol-pathway", "conduct-research"] } },
+            "project_state": { "not": { "enum": ["evidence-review", "research-planning", "active-approved-research", "determination-needed"] } }
+          } },
+          "then": { "properties": { "active_overlays": { "not": { "contains": { "const": "research-evidence" } } } } }
+        },
+        {
+          "if": { "properties": { "current_mission": { "not": { "enum": ["prepare-nclex-transition", "build-competence-certification"] } } } },
+          "then": { "properties": { "active_overlays": { "not": { "contains": { "const": "advanced-studies" } } } } }
+        },
+        {
+          "if": { "properties": { "current_mission": { "not": { "enum": ["create-learning-plan", "prepare-teaching-session", "design-simulation-case", "develop-competency-tool", "prepare-feedback", "review-education-evidence", "review-cohort-patterns"] } } } },
+          "then": { "properties": { "active_overlays": { "not": { "contains": { "const": "education-mentorship" } } } } }
+        },
+        {
+          "if": { "properties": { "current_mission": { "not": { "enum": ["prepare-decision", "coordinate-priorities", "prepare-meeting", "review-signals", "manage-quality-change", "govern-ai-use-case", "prepare-executive-communication"] } } } },
+          "then": { "properties": { "active_overlays": { "not": { "contains": { "const": "leadership-governance" } } } } }
+        }
+      ]
+    },
     "doctrine": {
       "type": "object",
       "required": ["edena", "florence_x", "core_line"],
@@ -299,7 +447,8 @@
             { "required": ["ai_operating_preferences"] },
             { "required": ["mission_controls"] },
             { "required": ["recommended_agents"] },
-            { "required": ["authority"] }
+            { "required": ["authority"] },
+            { "required": ["workspace_routing"] }
           ]
         },
         "properties": {

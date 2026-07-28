@@ -15,10 +15,24 @@ Five rules govern the design:
 1. **One Core SOUL, many coordinated views.** Stable values, mission, approved memory, goals, preferences, and governance boundaries belong to one shared foundation. Mission Controls are context-specific views of that foundation—not separate personalities.
 2. **Roles are congruent unless evidence shows tension.** A bedside nurse may also be a preceptor, quality contributor, graduate student, entrepreneur, family caregiver, and wellness advocate. The model identifies synergy and overload instead of forcing a choice.
 3. **Declaration is not verification.** Role selection, confidence, interest, experience narratives, and aspirations do not verify employment, assignment, competence, credentials, licensure, privileges, or authority.
-4. **Concise core, conditional depth.** Everyone completes a short core. Only modules linked to selected roles appear. Deep dives may be completed now or later, except required safety distinctions in the Student/Assistant lane.
+4. **Five doors, then conditional depth.** Everyone begins with one primary workspace, a current mission, project posture when relevant, up to two optional secondary hats, and one first artifact. The complete 14-domain constellation and linked modules remain available through “Deepen my SOUL.”
 5. **Capability-first, safety-bounded.** AI recommendations should expand learning, agency, creativity, and coordination while preserving academic integrity, authorized scope, supervision, privacy, and accountable human judgment.
 
 The browser does not submit responses to a server. Draft state is held in `sessionStorage` for resilience during the open tab and can be cleared at any time. Durable continuity comes from locally downloaded SOUL artifacts, not silent cloud collection.
+
+### Five-door quick start
+
+The first-run interface exposes exactly five complementary workspace doors:
+
+1. Pre-licensure nurse student.
+2. Staff nurse, with or without a quality project.
+3. Manager, leader, or executive.
+4. Educator, preceptor, or mentor.
+5. Licensed clinician—nurse practitioner, physician, or another licensed advanced clinician—with or without quality or research work.
+
+The door answers **which professional lens should organize the workspace now**. A separate mission answers **what the person is trying to accomplish**, and project state answers **whether formal project, QI, evidence, or research work is active**. Quality, research, Advanced Studies, education, and governance are overlays—not additional mandatory identities. One person may add up to two quick-start secondary hats and may later map the entire constellation without creating another account or disconnected SOUL.
+
+The quick-start result produces `Focused-Mission-Control.md`, a deterministic no-PHI starter containing the chosen workspace, mission, project posture, role boundary, first-artifact scaffold, smallest safe action, required human review, and outcome signal. It does not claim the artifact is final, approved, validated, graded, clinically ready, institutionally authorized, or activated.
 
 ## 2. Role, identity, and developmental framework
 
@@ -65,7 +79,17 @@ A respondent may add a generic local role title. Custom titles are local drafts,
 
 ## 4. Core quiz
 
-The core is seven compact stages. Each question contributes directly to an output.
+The default quick start contains five progressive stages. Each contributes directly to a focused output without requiring a complete professional inventory.
+
+| Quick-start stage | Questions | Purpose and downstream use |
+|---|---|---|
+| 1. Stewardship gate | No PHI; human judgment; academic integrity; no credential inference | Hard gate for governance and AI behavior |
+| 2. Primary workspace | Choose one of five role doors | Focused navigation; projected primary role; no authority inference |
+| 3. Current mission and context | Role-specific context, current objective, project or research posture only when relevant | Project-optional branch; role-aware vocabulary; overlay activation |
+| 4. Optional hats and first artifact | Up to two secondary doors; one bounded first output | Supporting-role projection and deterministic artifact starter |
+| 5. Focused result | Review, local downloads, Start Here, or Deepen my SOUL | `workspace_routing`, `Focused-Mission-Control.md`, and optional handoff to depth |
+
+“Deepen my SOUL” then opens the seven-stage complete constellation flow below. Existing quick-start primary and secondary roles carry forward.
 
 | Stage | Questions | Purpose and downstream use |
 |---|---|---|

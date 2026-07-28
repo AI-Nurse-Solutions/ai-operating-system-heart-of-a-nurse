@@ -1,5 +1,7 @@
 import {
   STORAGE_KEY,
+  QUICK_START_LANES,
+  QUICK_START_PROJECT_OPTIONS,
   ROLE_DOMAINS,
   ROLE_TAXONOMY,
   ROLE_STATUSES,
@@ -10,6 +12,8 @@ import {
   DELEGATION_ACTIVITIES,
   GOVERNANCE_LEVELS,
   createInitialState,
+  applyQuickStartRouting,
+  quickStartLaneById,
   normalizeState,
   addCustomRole,
   removeCustomRole,
@@ -32,9 +36,14 @@ const resetButton = document.getElementById('reset-quiz');
 let state = restoreState();
 let stepKey = 'safety';
 
-const CORE_STEP_KEYS = ['safety', 'roles', 'role-details', 'core', 'decisions-ai'];
+const QUICK_STEP_KEYS = ['safety', 'quick-lane', 'quick-mission', 'quick-hats', 'quick-review'];
+const DEEP_STEP_KEYS = ['safety', 'roles', 'role-details', 'core', 'decisions-ai'];
 const STEP_TITLES = Object.freeze({
   safety: 'Stewardship gate',
+  'quick-lane': 'Primary workspace',
+  'quick-mission': 'Current mission',
+  'quick-hats': 'Optional hats and first artifact',
+  'quick-review': 'Focused Mission Control',
   roles: 'Your complete role constellation',
   'role-details': 'How each role functions now',
   core: 'Shared Core SOUL and development',
@@ -180,6 +189,86 @@ function safetyView() {
     </fieldset>
     <details class="why"><summary>Why these gates come first</summary><p>They establish privacy, academic integrity, scope, and human accountability before personalization. The system must know its limits before it learns your preferences.</p></details>`;
   return formShell('Begin with stewardship', 'Broad strokes now; go deeper later. More complete answers will help Nurse AI OS serve you better, but trust and detail can grow over time.', body, { back: false });
+}
+
+const PROJECT_LABELS = Object.freeze(Object.fromEntries(Object.values(QUICK_START_PROJECT_OPTIONS).flat().map((option) => [option.id, option.label])));
+const OVERLAY_LABELS = Object.freeze({
+  'quality-improvement': 'Quality improvement overlay active',
+  'research-evidence': 'Research and evidence overlay active',
+  'advanced-studies': 'Advanced Studies overlay active',
+  'education-mentorship': 'Education and mentorship overlay active',
+  'leadership-governance': 'Leadership and governance overlay active'
+});
+
+function quickRadioCards(name, options, selected, className = 'quick-choice-grid') {
+  return `<div class="${className}">${options.map((option) => `<label class="quick-choice-card"><input type="radio" name="${attr(name)}" value="${attr(option.id)}"${selected === option.id ? ' checked' : ''} required><span><strong>${escapeHtml(option.label)}</strong>${option.promise ? `<small>${escapeHtml(option.promise)}</small>` : ''}</span></label>`).join('')}</div>`;
+}
+
+function quickLaneView() {
+  const body = `<div class="boundary-panel"><strong>Five doors, one professional identity.</strong> Choose what should organize your workspace now. You can add secondary hats next and explore the full 14-domain constellation later.</div>
+    <fieldset><legend>Primary workspace <span class="required">choose one</span></legend>
+      <div class="quick-lane-grid">${QUICK_START_LANES.map((lane) => `<label class="quick-lane-card"><input type="radio" name="primary-lane" value="${attr(lane.id)}"${state.quickStart.primaryLane === lane.id ? ' checked' : ''} required><span><strong>${escapeHtml(lane.label)}</strong><small>${escapeHtml(lane.promise)}</small></span></label>`).join('')}</div>
+    </fieldset>
+    <details class="why"><summary>Where did the complete role constellation go?</summary><p>It remains available under “Deepen my SOUL.” This first choice opens a focused workspace; it does not erase other roles or verify professional authority.</p></details>`;
+  return formShell('Choose your primary workspace', 'Start with the role lens that should serve you first. This is a navigation choice—not a credential, competence finding, assignment, or limit on your identity.', body, { kicker: 'Focused quick start' });
+}
+
+function quickMissionView() {
+  const lane = quickStartLaneById(state.quickStart.primaryLane);
+  if (!lane) return quickLaneView();
+  const projects = QUICK_START_PROJECT_OPTIONS[lane.id];
+  const projectChoices = projects.length > 1
+    ? `<fieldset><legend>${lane.id === 'licensed-clinician' ? 'Project or research status' : 'Project or initiative status'}</legend>${quickRadioCards('project-state', projects, state.quickStart.projectState)}</fieldset>`
+    : `<input type="hidden" name="project-state" value="no-project">`;
+  const body = `<div class="boundary-panel role-boundary"><strong>${escapeHtml(lane.label)} boundary:</strong> ${escapeHtml(lane.boundary)}</div>
+    <fieldset><legend>Your current role context <span class="required">choose one</span></legend>${quickRadioCards('role-context', lane.contexts, state.quickStart.roleContext)}</fieldset>
+    <fieldset><legend>What are you trying to accomplish now? <span class="required">choose one</span></legend>${quickRadioCards('current-mission', lane.missions, state.quickStart.currentMission)}</fieldset>
+    ${projectChoices}
+    ${lane.id === 'licensed-clinician' ? '<p class="governance-note"><strong>Governance:</strong> “Unsure” routes to human determination. The quiz does not classify QI versus research or create IRB, privacy, security, data-use, or institutional approval.</p>' : ''}`;
+  return formShell('Choose your current mission', 'Show only what is relevant now. A project is optional; daily practice, learning, teaching, and professional work remain useful without one.', body, { kicker: lane.label });
+}
+
+function quickHatsView() {
+  const lane = quickStartLaneById(state.quickStart.primaryLane);
+  if (!lane) return quickLaneView();
+  const otherLanes = QUICK_START_LANES.filter((item) => item.id !== lane.id);
+  const selected = new Set(state.quickStart.secondaryLanes || []);
+  const hats = `<div class="quick-hat-grid">${otherLanes.map((item) => `<label class="quick-hat-card"><input type="checkbox" name="secondary-lane" value="${attr(item.id)}"${selected.has(item.id) ? ' checked' : ''}><span><strong>${escapeHtml(item.label)}</strong><small>Optional supporting hat · self-reported · no authority granted</small></span></label>`).join('')}</div>`;
+  const body = `<div class="boundary-panel"><strong>One identity; optional additional hats.</strong> Choose up to two for quick setup, or skip them. You can map every supporting, emerging, and contextual role later.</div>
+    <fieldset><legend>Secondary hats <span class="muted">optional · maximum two</span></legend>${hats}</fieldset>
+    <fieldset><legend>What should this workspace help you create first? <span class="required">choose one</span></legend>${quickRadioCards('first-artifact', lane.artifacts, state.quickStart.firstArtifact)}</fieldset>
+    <p class="governance-note">The first artifact is an editable starter—not a final, approved, graded, clinical, personnel, research, or institutional decision.</p>`;
+  return formShell('Add optional hats and choose a first artifact', 'The dashboard will open with one bounded useful output. More detailed preferences, role evidence, and AI behavior can be added later.', body, { kicker: lane.label, nextLabel: 'Build my focused workspace' });
+}
+
+function quickResultsView() {
+  const lane = quickStartLaneById(state.quickStart.primaryLane);
+  const context = lane?.contexts.find((item) => item.id === state.quickStart.roleContext);
+  const mission = lane?.missions.find((item) => item.id === state.quickStart.currentMission);
+  const artifact = lane?.artifacts.find((item) => item.id === state.quickStart.firstArtifact);
+  const secondaryLabels = state.quickStart.secondaryLanes.map((id) => quickStartLaneById(id)?.label).filter(Boolean);
+  const overlays = state.quickStart.activeOverlays.map((id) => OVERLAY_LABELS[id]).filter(Boolean);
+  const researchGovernance = state.quickStart.activeOverlays.includes('research-evidence') || ['research-planning', 'active-approved-research', 'determination-needed'].includes(state.quickStart.projectState)
+    ? '<li>Research status does not create IRB, privacy, security, data-use, or institutional approval.</li>' : '';
+  const qualityGovernance = state.quickStart.activeOverlays.includes('quality-improvement')
+    ? '<li>Quality work requires a named sponsor, local approval pathway, and authorized data source before institutional use.</li>' : '';
+  const body = `<div class="quick-results" id="results-heading" tabindex="-1">
+    <div class="completion-banner"><span>✓</span><div><strong>Your focused workspace is configured.</strong><p>Nothing was installed, activated, connected, remembered outside this tab, sent, scheduled, published, or institutionally approved.</p></div></div>
+    <section class="result-section"><h2>Your focused Mission Control is ready</h2><dl class="quick-summary">
+      <dt>Primary workspace</dt><dd>${escapeHtml(lane?.label || '')}</dd>
+      <dt>Current context</dt><dd>${escapeHtml(context?.label || '')}</dd>
+      <dt>Current mission</dt><dd>${escapeHtml(mission?.label || '')}</dd>
+      <dt>Project status</dt><dd>${escapeHtml(PROJECT_LABELS[state.quickStart.projectState] || state.quickStart.projectState)}</dd>
+      <dt>Secondary hats</dt><dd>${escapeHtml(secondaryLabels.join(', ') || 'None selected')}</dd>
+      <dt>First artifact</dt><dd>${escapeHtml(artifact?.label || '')}</dd>
+    </dl></section>
+    <section class="result-section"><h2>Active overlays</h2>${overlays.length ? `<ul>${overlays.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p>No advanced overlay is active. Your workspace remains focused on the selected daily mission.</p>'}</section>
+    <section class="result-section first-artifact"><h2>First safe action</h2><p>Open a no-PHI draft for <strong>${escapeHtml(artifact?.label || 'your first artifact')}</strong>. State the broad goal or question, what is already known, what remains unknown, and who must review the result.</p><p>This starter is editable and unapproved. Evidence, local policy, supervision, sponsorship, and accountable human judgment remain controlling.</p></section>
+    <section class="result-section governance-summary"><h2>Governance posture</h2><ul><li>${escapeHtml(lane?.boundary || '')}</li>${qualityGovernance}${researchGovernance}<li>Role choices are self-reported and verify no credential, competence, assignment, privilege, or authority.</li><li>No PHI, patient identifiers, protected learner or workforce records, credentials, or secrets.</li></ul></section>
+    <section class="download-panel"><h2>Keep or deepen this profile</h2><p>The v2 export preserves this focused routing and the underlying role constellation. Review every file before importing or sharing.</p><div class="download-actions"><button class="btn btn-primary" type="button" data-download="config">Export OS Config</button><button class="btn btn-secondary" type="button" data-download="bundle">Download focused SOUL bundle</button><button class="btn btn-secondary" type="button" data-action="deepen">Deepen my SOUL</button></div></section>
+    <div class="quiz-actions"><button class="btn btn-secondary" type="button" data-nav="back">← Review answers</button><button class="btn btn-quiet" type="button" data-action="restart">Start a new profile</button><a class="btn btn-primary" href="start-here.html">Continue to Start Here →</a></div>
+  </div>`;
+  return body;
 }
 
 function rolesView() {
@@ -336,7 +425,8 @@ function resultsView() {
 }
 
 function currentSteps() {
-  return [...CORE_STEP_KEYS, ...recommendedModuleIds(state).map((id) => `module:${id}`), 'review'];
+  if (state.quickStart?.mode !== 'deep') return [...QUICK_STEP_KEYS];
+  return [...DEEP_STEP_KEYS, ...recommendedModuleIds(state).map((id) => `module:${id}`), 'review'];
 }
 
 function updateProgress() {
@@ -350,15 +440,27 @@ function updateProgress() {
 
 function render() {
   if (stepKey === 'safety') app.innerHTML = safetyView();
+  else if (stepKey === 'quick-lane') app.innerHTML = quickLaneView();
+  else if (stepKey === 'quick-mission') app.innerHTML = quickMissionView();
+  else if (stepKey === 'quick-hats') app.innerHTML = quickHatsView();
+  else if (stepKey === 'quick-review') app.innerHTML = quickResultsView();
   else if (stepKey === 'roles') app.innerHTML = rolesView();
   else if (stepKey === 'role-details') app.innerHTML = roleDetailsView();
   else if (stepKey === 'core') app.innerHTML = coreView();
   else if (stepKey === 'decisions-ai') app.innerHTML = decisionsAiView();
   else if (stepKey.startsWith('module:')) app.innerHTML = moduleView(stepKey.slice(7));
-  else app.innerHTML = resultsView();
+  else {
+    if (state.quickStart) state.quickStart.deepProfileStatus = 'complete';
+    app.innerHTML = resultsView();
+  }
   updateProgress();
   bindView();
-  requestAnimationFrame(() => app.querySelector('h2,[tabindex="-1"]')?.focus({ preventScroll: true }));
+  requestAnimationFrame(() => {
+    const heading = app.querySelector('h2');
+    if (!heading) return;
+    heading.setAttribute('tabindex', '-1');
+    heading.focus({ preventScroll: true });
+  });
 }
 
 function valuesFromForm(form, name) {
@@ -368,6 +470,34 @@ function valuesFromForm(form, name) {
 function collectSafety(form) {
   state.name = form.elements.name.value.trim();
   for (const key of ['noPhi', 'noClinicalAuthority', 'noAcademicDishonesty', 'noCredentialInference']) state.safety[key] = form.elements[`safety-${key}`].checked;
+}
+
+function collectQuickLane(form) {
+  const primaryLane = form.elements['primary-lane'].value;
+  if (primaryLane !== state.quickStart.primaryLane) {
+    state.quickStart = {
+      ...state.quickStart,
+      primaryLane,
+      secondaryLanes: [],
+      roleContext: '',
+      currentMission: '',
+      projectState: 'no-project',
+      activeOverlays: [],
+      firstArtifact: '',
+      deepProfileStatus: 'not-started'
+    };
+  }
+}
+
+function collectQuickMission(form) {
+  state.quickStart.roleContext = form.elements['role-context'].value;
+  state.quickStart.currentMission = form.elements['current-mission'].value;
+  state.quickStart.projectState = form.elements['project-state']?.value || 'no-project';
+}
+
+function collectQuickHats(form) {
+  state.quickStart.secondaryLanes = valuesFromForm(form, 'secondary-lane');
+  state.quickStart.firstArtifact = form.elements['first-artifact'].value;
 }
 
 function collectRoles(form) {
@@ -458,6 +588,9 @@ function collectCurrent() {
   const form = document.getElementById('quiz-form');
   if (!form) return;
   if (stepKey === 'safety') collectSafety(form);
+  else if (stepKey === 'quick-lane') collectQuickLane(form);
+  else if (stepKey === 'quick-mission') collectQuickMission(form);
+  else if (stepKey === 'quick-hats') collectQuickHats(form);
   else if (stepKey === 'roles') collectRoles(form);
   else if (stepKey === 'role-details') collectRoleDetails(form);
   else if (stepKey === 'core') collectCore(form);
@@ -479,6 +612,17 @@ function validateCurrent(form) {
   if (stepKey === 'safety') {
     if (!state.name) return showError('Enter the name Nurse AI OS should use.'), false;
     if (!Object.values(state.safety).every(Boolean)) return showError('Confirm all four stewardship boundaries before continuing.'), false;
+  }
+  if (stepKey === 'quick-lane' && !quickStartLaneById(state.quickStart.primaryLane)) return showError('Choose one primary workspace.'), false;
+  if (stepKey === 'quick-mission') {
+    const lane = quickStartLaneById(state.quickStart.primaryLane);
+    if (!lane?.contexts.some((item) => item.id === state.quickStart.roleContext)) return showError('Choose your current role context.'), false;
+    if (!lane.missions.some((item) => item.id === state.quickStart.currentMission)) return showError('Choose what you are trying to accomplish now.'), false;
+  }
+  if (stepKey === 'quick-hats') {
+    if (state.quickStart.secondaryLanes.length > 2) return showError('Choose no more than two secondary hats.'), false;
+    try { applyQuickStartRouting(state); }
+    catch (error) { return showError(error.message), false; }
   }
   if (stepKey === 'roles' && state.roleSelections.length < 1) return showError('Select at least one role.'), false;
   if (stepKey === 'role-details') {
@@ -550,6 +694,13 @@ function bindView() {
     saveState();
     nextStep();
   });
+  const secondaryHats = [...app.querySelectorAll('input[name="secondary-lane"]')];
+  secondaryHats.forEach((input) => input.addEventListener('change', () => {
+    const checked = secondaryHats.filter((item) => item.checked);
+    if (checked.length <= 2) return;
+    input.checked = false;
+    announce('Choose no more than two secondary hats during quick setup. You can add the complete constellation later.');
+  }));
   app.querySelectorAll('[data-nav="back"]').forEach((button) => button.addEventListener('click', () => { collectCurrent(); saveState(); previousStep(); }));
   app.querySelector('[data-action="save"]')?.addEventListener('click', () => { collectCurrent(); saveState(); });
   app.querySelector('[data-action="add-custom-role"]')?.addEventListener('click', () => {
@@ -603,6 +754,13 @@ function bindView() {
     else if (!input.checked && primaryMode?.value === input.value) primaryMode.value = relationshipModes.find((mode) => mode.checked)?.value || '';
   }));
   app.querySelectorAll('[data-download]').forEach((button) => button.addEventListener('click', () => handleDownload(button.dataset.download)));
+  app.querySelector('[data-action="deepen"]')?.addEventListener('click', () => {
+    state.quickStart.mode = 'deep';
+    state.quickStart.deepProfileStatus = 'in-progress';
+    stepKey = 'roles';
+    saveState('Focused routing preserved. The complete role constellation is now available.');
+    render();
+  });
   app.querySelector('[data-action="restart"]')?.addEventListener('click', resetQuiz);
   const docs = document.getElementById('document-downloads');
   if (docs) docs.innerHTML = buildSoulDocuments(state).map((item) => `<button class="text-button" type="button" data-download="${attr(item.name)}">${escapeHtml(item.name)}</button>`).join('');

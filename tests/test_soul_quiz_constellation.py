@@ -564,6 +564,7 @@ class SoulQuizConstellationTests(unittest.TestCase):
             rank = runpy.run_path(str(script))["version_rank"]
             self.assertGreater(rank("2.0.1-phase23"), rank("2.0.0-phase23"), script)
             self.assertGreater(rank("2.0.2-phase23"), rank("2.0.1-phase23"), script)
+            self.assertGreater(rank("2.0.3-phase23"), rank("2.0.2-phase23"), script)
             self.assertGreater(rank("2.0.0-phase24"), rank("2.99.99-phase23"), script)
             self.assertEqual(rank("invalid"), (0, 0, 0, 0), script)
 
@@ -576,6 +577,27 @@ class SoulQuizConstellationTests(unittest.TestCase):
         self.assertIn("jsonschema[format-nongpl]==4.25.1", requirements)
         self.assertIn("PyYAML==6.0.3", requirements)
         self.assertIn("path: requirements-import-soul.txt", manifest)
+
+    def test_unsigned_preparation_never_claims_a_valid_signature(self) -> None:
+        source_root = ROOT / "naio-os"
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate = Path(tmp)
+            (candidate / "scripts").mkdir()
+            (candidate / "config").mkdir()
+            for relative in ("release.json", "release-history.json", "manifest.yaml", "manifest.sha256"):
+                (candidate / relative).write_bytes((source_root / relative).read_bytes())
+            (candidate / "scripts/verify-release.py").write_bytes(RELEASE_VERIFIER.read_bytes())
+            (candidate / "config/naio-os-release-public.pem").write_bytes((source_root / "config/naio-os-release-public.pem").read_bytes())
+            (candidate / "manifest.sig").write_bytes(b"not-a-valid-signature")
+            completed = subprocess.run(
+                [sys.executable, "-I", str(candidate / "scripts/verify-release.py"), "--allow-unsigned", "--quiet"],
+                capture_output=True,
+                text=True,
+            )
+        output = completed.stdout + completed.stderr
+        self.assertEqual(completed.returncode, 0, output)
+        self.assertIn("UNSIGNED PREPARATION PASSED", output)
+        self.assertNotIn("signature are valid", output)
 
     def test_signed_bundle_manifest_checksums_and_signature_are_current(self) -> None:
         try:

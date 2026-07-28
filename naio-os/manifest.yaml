@@ -1,6 +1,6 @@
-version: 2.0.2-phase23
+version: 2.0.3-phase23
 bundle_id: naio-os
-created: '2026-07-27'
+created: '2026-07-28'
 doctrine: Agents propose. Humans judge. Nurses steward.
 policies:
   edena: edena-policy@2.0.0
@@ -49,7 +49,7 @@ contents:
   sha256: 21391abd36d361c6a49c0f54031ac7aa93afe1f8a735cc853f8641ed303a372d
 - path: schema/naio-soul.schema.json
   role: schema-soul
-  sha256: 67931e3b50cc99189ee8b26f26dedb0da46cf328b0e5629a1c22723a94d756ff
+  sha256: 5b14f0c3bd20744898c89e4a457e0c261a1e3684dbc2e620b16da3df3866992c
 - path: schema/naio-projects.schema.json
   role: schema-projects
   sha256: 022f12f1fec33c8e4c7381ac58fb0c314b4d6234afe8e068e705704e15705fe0
@@ -58,7 +58,7 @@ contents:
   sha256: 85e5d69de9f87eb7c7b9d081c6c2c60dcb106edf7355fa7d91e8eaa0ff356f94
 - path: scripts/import-soul.py
   role: import-soul
-  sha256: 973a221ab2fda002e6c3ebf41b3e4a1565b2f2d36fd224c91c5bb6f2f3f420bc
+  sha256: ee261535e308801bdc1f9d839c9ea3d5829d0921907b9e7b848e47b30c704359
 - path: requirements-import-soul.txt
   role: importer-and-release-validator-dependencies
   sha256: 680320fabb8ce26c0b57ffa72ef8703d35b8fdad5ea95bdaa3b2237855915552
@@ -94,10 +94,10 @@ contents:
   sha256: 9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f
 - path: scripts/verify-release.py
   role: release-verifier
-  sha256: 80b6bc757b5c1846410dbf8348947d728becdfac2c3ca8a27e3eeb79d92828d0
+  sha256: f19d300dc1d0b9b6e21b5b17de16ff7a1c6b30a6e7d1251327f1284e9c023706
 - path: release-history.json
   role: release-history
-  sha256: 0069b153f2e5677eb36a2739fee2cd362878ffe51f7542fe6960b24ae49014ef
+  sha256: acf2ff89ce134b721d5ecd2edafb2b0bb15eaee0552ad50d03ae25b6abbeb8a7
 - path: scripts/check-update.py
   role: update-advisory
   sha256: 7745aab586317474cd68cb1f9d80816fd5e64975ee26a2689f46ebb691c09f7b

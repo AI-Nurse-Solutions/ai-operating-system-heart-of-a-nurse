@@ -10,6 +10,7 @@ Refuses (exit code 2) if:
   - boundaries.no_phi_confirmed is not True
   - boundaries.no_clinical_decisions_confirmed is not True
   - Any tier_ceilings value is not green|yellow (onboarding clamp)
+  - Quick-start workspace routing contradicts its projected role constellation
   - PHI indicators detected (heuristic screen)
 
 Exit 0 = valid + safe; exit 2 = refused; exit 1 = internal error.
@@ -46,6 +47,35 @@ DELEGATION_FLOORS = {
     "institutional-change": "accountable-human-judgment",
     "academic-learning-support": "prepare-only",
     "credential-or-competence-claim": "never-delegate",
+}
+QUICK_PRIMARY_ROLE_BY_CONTEXT = {
+    "student-only": "prelicensure-nursing-student",
+    "student-and-assistant": "prelicensure-nursing-student",
+    "staff-practice": "bedside-nurse",
+    "newly-licensed-practice": "newly-licensed-clinician",
+    "charge-team-lead": "charge-nurse-team-lead",
+    "nurse-manager": "nurse-manager",
+    "operational-leader": "operations-program-manager",
+    "executive-leader": "hospital-administrator",
+    "ai-quality-governance-leader": "healthcare-leader",
+    "clinical-preceptor": "clinical-preceptor",
+    "mentor-coach": "nurse-educator",
+    "unit-educator": "nurse-educator",
+    "faculty-instructor": "faculty-instructor",
+    "simulation-facilitator": "simulation-facilitator",
+    "nurse-practitioner": "nurse-practitioner",
+    "physician": "physician",
+    "other-advanced-clinician": "advanced-practice-clinician",
+}
+QUICK_SUPPORTING_ROLE_BY_CONTEXT = {
+    "student-and-assistant": "nursing-assistant-pct",
+}
+QUICK_DEFAULT_ROLE_BY_LANE = {
+    "prelicensure-student": "prelicensure-nursing-student",
+    "staff-nurse": "bedside-nurse",
+    "leader": "healthcare-leader",
+    "educator": "nurse-educator",
+    "licensed-clinician": "advanced-practice-clinician",
 }
 
 
@@ -173,6 +203,25 @@ def main():
                     refuse(f"v2 role status must match its constellation bucket: {role.get('role_id')}")
                 if bucket in {"primary", "supporting"} and role.get("authorization") == "not-current":
                     refuse(f"current primary/supporting role cannot use not-current authorization: {role.get('role_id')}")
+        routing = soul_data.get("workspace_routing")
+        if routing and routing.get("primary_lane") in routing.get("secondary_lanes", []):
+            refuse("v2 workspace routing primary lane cannot also be a secondary lane")
+        if routing and routing.get("deep_profile_status") == "not-started":
+            expected_primary = QUICK_PRIMARY_ROLE_BY_CONTEXT.get(routing.get("role_context"))
+            actual_primary = [role.get("role_id") for role in constellation.get("primary", [])]
+            if actual_primary != [expected_primary]:
+                refuse("v2 quick-start workspace routing contradicts its projected primary role")
+            expected_supporting = {
+                QUICK_DEFAULT_ROLE_BY_LANE[lane]
+                for lane in routing.get("secondary_lanes", [])
+            }
+            context_supporting = QUICK_SUPPORTING_ROLE_BY_CONTEXT.get(routing.get("role_context"))
+            if context_supporting:
+                expected_supporting.add(context_supporting)
+            expected_supporting.discard(expected_primary)
+            actual_supporting = {role.get("role_id") for role in constellation.get("supporting", [])}
+            if actual_supporting != expected_supporting:
+                refuse("v2 quick-start workspace routing contradicts its projected supporting roles")
         custom_roles = constellation.get("custom_roles", [])
         custom_ids = [item.get("role_id") for item in custom_roles]
         if len(custom_ids) != len(set(custom_ids)):

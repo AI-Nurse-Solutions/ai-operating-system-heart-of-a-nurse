@@ -170,7 +170,10 @@ def main() -> int:
         print("\n❌ RELEASE VERIFICATION FAILED — do not trust manifest/checksums.")
         return 2
 
-    print("\n✅ RELEASE VERIFICATION PASSED — manifest digest and signature are valid.")
+    if args.allow_unsigned and not sig_ok:
+        print("\n⚠️  UNSIGNED PREPARATION PASSED — manifest digest and release metadata are consistent; signature is not accepted.")
+    else:
+        print("\n✅ RELEASE VERIFICATION PASSED — manifest digest and signature are valid.")
     return 0
 
 

@@ -79,6 +79,187 @@ export const ROLE_TAXONOMY = Object.freeze([
   role('family-caregiver', 'Family Caregiver', 'wellness-sustainability', 'wellness-sustainability', ['wellness-sustainability', 'work-school-wellness'], 'other')
 ]);
 
+function quickLane(id, label, promise, boundary, defaultRoleId, contexts, missions, artifacts) {
+  return Object.freeze({
+    id, label, promise, boundary, defaultRoleId,
+    contexts: Object.freeze(contexts.map((item) => Object.freeze(item))),
+    missions: Object.freeze(missions.map((item) => Object.freeze(item))),
+    artifacts: Object.freeze(artifacts.map((item) => Object.freeze(item)))
+  });
+}
+
+export const QUICK_START_PROJECT_STATES = Object.freeze([
+  'no-project', 'idea', 'exploring-project', 'active-project', 'paused-blocked',
+  'quality-improvement', 'evidence-review', 'research-planning',
+  'active-approved-research', 'determination-needed'
+]);
+
+export const QUICK_START_PROJECT_OPTIONS = Object.freeze({
+  'prelicensure-student': Object.freeze([{ id: 'no-project', label: 'No current project' }]),
+  'staff-nurse': Object.freeze([{ id: 'no-project', label: 'No current project — support my daily practice' }, { id: 'idea', label: 'I have an idea' }, { id: 'exploring-project', label: 'I am exploring a possible project' }, { id: 'active-project', label: 'I have an active project' }, { id: 'paused-blocked', label: 'My project is paused or blocked' }]),
+  leader: Object.freeze([{ id: 'no-project', label: 'No current initiative' }, { id: 'idea', label: 'I have an early initiative idea' }, { id: 'exploring-project', label: 'I am shaping an initiative' }, { id: 'active-project', label: 'I have active work' }, { id: 'paused-blocked', label: 'The work is paused or blocked' }]),
+  educator: Object.freeze([{ id: 'no-project', label: 'No current formal project' }]),
+  'licensed-clinician': Object.freeze([{ id: 'no-project', label: 'No current project' }, { id: 'idea', label: 'Early idea' }, { id: 'quality-improvement', label: 'Quality-improvement work' }, { id: 'evidence-review', label: 'Evidence review' }, { id: 'research-planning', label: 'Research planning' }, { id: 'active-approved-research', label: 'Active research with required approvals reported' }, { id: 'determination-needed', label: 'Unsure whether this is QI or research' }])
+});
+
+export const QUICK_START_OVERLAYS = Object.freeze([
+  'quality-improvement', 'research-evidence', 'advanced-studies',
+  'education-mentorship', 'leadership-governance'
+]);
+
+const PROJECT_STATE_OVERLAYS = Object.freeze({
+  'quality-improvement': Object.freeze(['quality-improvement']),
+  'evidence-review': Object.freeze(['research-evidence']),
+  'research-planning': Object.freeze(['research-evidence']),
+  'active-approved-research': Object.freeze(['research-evidence']),
+  'determination-needed': Object.freeze(['quality-improvement', 'research-evidence'])
+});
+
+function deriveQuickStartOverlays(mission, projectState) {
+  return [...new Set([
+    ...(mission?.overlays || []),
+    ...(PROJECT_STATE_OVERLAYS[projectState] || [])
+  ].filter((id) => QUICK_START_OVERLAYS.includes(id)))];
+}
+
+export const QUICK_START_LANES = Object.freeze([
+  quickLane('prelicensure-student', 'Pre-licensure nurse student', 'Learn, reason, prepare, and build competence under supervision.', 'Learning and simulation support only. Faculty, preceptors, and institutional requirements remain controlling.', 'prelicensure-nursing-student', [
+    { id: 'student-only', label: 'Nursing student', roleId: 'prelicensure-nursing-student' },
+    { id: 'student-and-assistant', label: 'Nursing student who also works as a CNA, PCT, or healthcare assistant', roleId: 'prelicensure-nursing-student', supportingRoleId: 'nursing-assistant-pct' }
+  ], [
+    { id: 'understand-concept', label: 'Understand a concept', overlays: [] },
+    { id: 'prepare-clinical-simulation', label: 'Prepare for clinical or simulation', overlays: [] },
+    { id: 'practice-clinical-reasoning', label: 'Practice clinical reasoning', overlays: [] },
+    { id: 'organize-coursework', label: 'Organize coursework and assignments', overlays: [] },
+    { id: 'prepare-nclex-transition', label: 'Prepare for NCLEX or transition to practice', overlays: ['advanced-studies'] },
+    { id: 'build-learning-portfolio', label: 'Build a learning or competency portfolio', overlays: [] }
+  ], [
+    { id: 'learning-plan', label: 'Learning plan' },
+    { id: 'structured-learning-question', label: 'Structured learning question' },
+    { id: 'clinical-preparation-plan', label: 'Clinical or simulation preparation plan' },
+    { id: 'reasoning-practice-plan', label: 'Clinical reasoning practice plan' },
+    { id: 'study-plan', label: 'Study or NCLEX preparation plan' },
+    { id: 'portfolio-outline', label: 'Learning portfolio outline' }
+  ]),
+  quickLane('staff-nurse', 'Staff nurse', 'Improve daily work, grow professionally, and optionally develop an improvement project.', 'No patient-specific advice, charting, or clinical delegation. Quality work requires local sponsorship and data authority.', 'bedside-nurse', [
+    { id: 'staff-practice', label: 'Staff or bedside nursing practice', roleId: 'bedside-nurse' },
+    { id: 'newly-licensed-practice', label: 'Newly licensed nursing practice', roleId: 'newly-licensed-clinician' }
+  ], [
+    { id: 'improve-daily-work', label: 'Improve or organize daily professional work', overlays: [] },
+    { id: 'resolve-evidence-policy-question', label: 'Resolve an evidence or policy question', overlays: ['research-evidence'] },
+    { id: 'build-competence-certification', label: 'Build competence or certification readiness', overlays: ['advanced-studies'] },
+    { id: 'capture-workflow-opportunity', label: 'Capture a workflow problem or improvement idea', overlays: [] },
+    { id: 'start-quality-project', label: 'Start or continue a quality project', overlays: ['quality-improvement'] },
+    { id: 'develop-career-portfolio', label: 'Develop a career or professional portfolio', overlays: [] },
+    { id: 'reflect-private', label: 'Reflect privately on workload or professional growth', overlays: [] }
+  ], [
+    { id: 'structured-question', label: 'Structured professional question' },
+    { id: 'professional-development-plan', label: 'Professional development plan' },
+    { id: 'improvement-opportunity', label: 'Workflow improvement opportunity' },
+    { id: 'quality-project-one-pager', label: 'Quality project one-pager' },
+    { id: 'career-plan', label: 'Career or capability plan' },
+    { id: 'reflection-prompt', label: 'Private reflection prompt' }
+  ]),
+  quickLane('leader', 'Manager, leader, or executive', 'Coordinate priorities, decisions, teams, projects, and responsible AI governance.', 'No hidden workforce scoring, autonomous staffing, discipline, or consequential institutional action.', 'healthcare-leader', [
+    { id: 'charge-team-lead', label: 'Charge, team, or committee lead', roleId: 'charge-nurse-team-lead' },
+    { id: 'nurse-manager', label: 'Unit or department manager', roleId: 'nurse-manager' },
+    { id: 'operational-leader', label: 'Program or operational leader', roleId: 'operations-program-manager' },
+    { id: 'executive-leader', label: 'Executive or system leader', roleId: 'hospital-administrator' },
+    { id: 'ai-quality-governance-leader', label: 'AI, quality, safety, or governance leader', roleId: 'healthcare-leader' }
+  ], [
+    { id: 'prepare-decision', label: 'Make or prepare a decision', overlays: ['leadership-governance'] },
+    { id: 'coordinate-priorities', label: 'Coordinate priorities and initiatives', overlays: ['leadership-governance'] },
+    { id: 'prepare-meeting', label: 'Prepare for a meeting', overlays: ['leadership-governance'] },
+    { id: 'review-signals', label: 'Review operational or workforce signals', overlays: ['leadership-governance'] },
+    { id: 'manage-quality-change', label: 'Manage a quality or change portfolio', overlays: ['leadership-governance', 'quality-improvement'] },
+    { id: 'govern-ai-use-case', label: 'Govern an AI use case', overlays: ['leadership-governance'] },
+    { id: 'prepare-executive-communication', label: 'Prepare an executive communication', overlays: ['leadership-governance'] }
+  ], [
+    { id: 'decision-brief', label: 'Decision brief' },
+    { id: 'priority-map', label: 'Priority or initiative map' },
+    { id: 'meeting-brief', label: 'Meeting brief' },
+    { id: 'governance-check', label: 'AI governance checkpoint' },
+    { id: 'executive-brief', label: 'Executive brief' }
+  ]),
+  quickLane('educator', 'Educator, preceptor, or mentor', 'Teach, precept, mentor, design learning, and support demonstrated competence.', 'AI cannot independently determine competence, pass/fail, progression, or official evaluation.', 'nurse-educator', [
+    { id: 'clinical-preceptor', label: 'Clinical preceptor', roleId: 'clinical-preceptor' },
+    { id: 'mentor-coach', label: 'Mentor or coach', roleId: 'nurse-educator' },
+    { id: 'unit-educator', label: 'Unit or professional-development educator', roleId: 'nurse-educator' },
+    { id: 'faculty-instructor', label: 'Faculty or clinical instructor', roleId: 'faculty-instructor' },
+    { id: 'simulation-facilitator', label: 'Simulation facilitator', roleId: 'simulation-facilitator' }
+  ], [
+    { id: 'create-learning-plan', label: 'Create a learning plan', overlays: ['education-mentorship'] },
+    { id: 'prepare-teaching-session', label: 'Prepare a teaching session', overlays: ['education-mentorship'] },
+    { id: 'design-simulation-case', label: 'Design a simulation or case', overlays: ['education-mentorship'] },
+    { id: 'develop-competency-tool', label: 'Develop a competency tool', overlays: ['education-mentorship'] },
+    { id: 'prepare-feedback', label: 'Prepare feedback or coaching', overlays: ['education-mentorship'] },
+    { id: 'review-education-evidence', label: 'Review educational evidence', overlays: ['education-mentorship', 'research-evidence'] },
+    { id: 'review-cohort-patterns', label: 'Examine de-identified cohort patterns', overlays: ['education-mentorship'] }
+  ], [
+    { id: 'learning-plan', label: 'Learning plan' },
+    { id: 'lesson-plan', label: 'Lesson or teaching plan' },
+    { id: 'simulation-outline', label: 'Simulation or case outline' },
+    { id: 'competency-outline', label: 'Competency tool outline' },
+    { id: 'feedback-plan', label: 'Feedback or coaching plan' }
+  ]),
+  quickLane('licensed-clinician', 'Licensed clinician — NP or physician', 'Review evidence, improve professional workflows, and optionally conduct quality or research work.', 'No independent diagnosis, prescribing, orders, patient communication, or use of unapproved patient data.', 'advanced-practice-clinician', [
+    { id: 'nurse-practitioner', label: 'Nurse practitioner', roleId: 'nurse-practitioner' },
+    { id: 'physician', label: 'Physician', roleId: 'physician' },
+    { id: 'other-advanced-clinician', label: 'Other licensed advanced clinician', roleId: 'advanced-practice-clinician' }
+  ], [
+    { id: 'resolve-evidence-question', label: 'Resolve an evidence question', overlays: ['research-evidence'] },
+    { id: 'compare-guidelines', label: 'Compare guidelines', overlays: ['research-evidence'] },
+    { id: 'prepare-case-conference', label: 'Prepare for a meeting or case conference', overlays: [] },
+    { id: 'draft-protocol-pathway', label: 'Draft a professional protocol or pathway', overlays: ['research-evidence'] },
+    { id: 'improve-workflow', label: 'Improve a workflow', overlays: [] },
+    { id: 'start-quality-project', label: 'Start or manage a quality project', overlays: ['quality-improvement'] },
+    { id: 'conduct-research', label: 'Conduct research or scholarship', overlays: ['research-evidence'] },
+    { id: 'build-professional-portfolio', label: 'Build a professional or credential portfolio', overlays: [] }
+  ], [
+    { id: 'evidence-question', label: 'Evidence question' },
+    { id: 'guideline-comparison', label: 'Guideline comparison plan' },
+    { id: 'quality-project-one-pager', label: 'Quality project one-pager' },
+    { id: 'research-question', label: 'Research question scaffold' },
+    { id: 'professional-workflow-brief', label: 'Professional workflow brief' }
+  ])
+]);
+
+const QUICK_ARTIFACT_STARTERS = Object.freeze({
+  'learning-plan': Object.freeze(['Name one learning outcome.', 'Describe the current starting point without protected learner data.', 'Choose one practice activity and one accountable human reviewer.']),
+  'structured-learning-question': Object.freeze(['Write one bounded learning question.', 'Separate known course guidance from uncertainty.', 'Name the faculty, preceptor, or approved source that will resolve it.']),
+  'clinical-preparation-plan': Object.freeze(['Name the broad clinical or simulation objective without patient details.', 'List preparation resources and supervision requirements.', 'Define one stop condition and one debrief question.']),
+  'reasoning-practice-plan': Object.freeze(['Choose a synthetic or faculty-approved scenario.', 'State which reasoning step will be practiced.', 'Record the human feedback method; do not use AI as a competence judge.']),
+  'study-plan': Object.freeze(['Name the topic and assessment target.', 'Choose a bounded study block and retrieval method.', 'Define one progress signal that is not a credential or competence claim.']),
+  'portfolio-outline': Object.freeze(['List permitted learning artifacts.', 'Label self-reflection separately from verified evidence.', 'Name who, if anyone, may review each item.']),
+  'structured-question': Object.freeze(['Write the broad professional question without PHI.', 'Separate evidence, local policy, professional judgment, assumptions, and AI suggestions.', 'Name the accountable person who will interpret the answer.']),
+  'professional-development-plan': Object.freeze(['Name one capability to develop.', 'Describe current evidence as self-reported or formally verified.', 'Choose one learning action and one human feedback checkpoint.']),
+  'improvement-opportunity': Object.freeze(['Describe the workflow problem without patient, learner, or workforce identifiers.', 'State who experiences the problem and what is currently known.', 'Choose one reversible observation or discovery step.']),
+  'quality-project-one-pager': Object.freeze(['Draft the broad problem, aim, and sponsor question.', 'Mark QI-versus-research status as human-determined.', 'List only authorized, non-identifying measures and required approvals.']),
+  'career-plan': Object.freeze(['Name the desired direction without implying eligibility.', 'Separate aspirations from verified credentials and experience.', 'Choose one realistic next conversation or learning step.']),
+  'reflection-prompt': Object.freeze(['Keep reflection content in a private local file.', 'Do not place private reflection in faculty, manager, organizational, cohort, or aggregate reporting.', 'Record only a chosen next self-care, learning, or human-support action.']),
+  'decision-brief': Object.freeze(['State the decision owner and decision deadline.', 'Separate verified signals, policy, assumptions, and options.', 'Identify affected people, risks, reversibility, and the required accountable judgment.']),
+  'priority-map': Object.freeze(['List no more than three priorities.', 'Name the owner, dependency, and next review point for each.', 'Do not infer workforce performance or assign people automatically.']),
+  'meeting-brief': Object.freeze(['State the meeting purpose and decision needed.', 'List verified context, open questions, and stakeholders.', 'Draft options only; the accountable leader decides.']),
+  'governance-check': Object.freeze(['Name the AI use case and accountable owner.', 'Classify data, action, reversibility, and human-review needs.', 'Record missing legal, privacy, security, clinical, or institutional determinations as unresolved.']),
+  'executive-brief': Object.freeze(['Lead with the decision or question.', 'Separate known signals from assumptions and recommendations.', 'State material risks, human owners, and the smallest reversible next step.']),
+  'lesson-plan': Object.freeze(['Name the learner outcome and audience.', 'Choose one teaching activity and one formative check.', 'Keep evaluation and progression decisions with authorized educators.']),
+  'simulation-outline': Object.freeze(['Define the synthetic scenario and learning objectives.', 'List roles, cues, stop conditions, and debrief prompts.', 'Use no real patient, learner, or institutional data.']),
+  'competency-outline': Object.freeze(['Name the capability and observable behaviors.', 'Separate practice evidence from formal verification.', 'Identify the authorized evaluator; AI cannot determine competence or pass/fail.']),
+  'feedback-plan': Object.freeze(['Describe the observed behavior without protected learner details.', 'Draft specific, respectful, actionable feedback.', 'Keep official evaluation and progression decisions with the authorized human.']),
+  'evidence-question': Object.freeze(['Write one answerable no-PHI evidence question.', 'List approved public or local sources to review.', 'Separate evidence findings from professional judgment and local policy.']),
+  'guideline-comparison': Object.freeze(['Name the guidelines and scope of comparison.', 'Compare date, population, recommendation, evidence strength, and jurisdiction.', 'Do not convert the comparison into patient-specific advice.']),
+  'research-question': Object.freeze(['Draft the broad research or scholarship question.', 'Record QI-versus-research and IRB status as human-determined.', 'Use no participant data until every required approval and data authority exists.']),
+  'professional-workflow-brief': Object.freeze(['Describe the professional workflow and friction.', 'Separate evidence, policy, judgment, and assumptions.', 'Propose one reversible preparation step with no record, patient-contact, or external action.'])
+});
+
+export function quickArtifactStarterPrompts(artifactId) {
+  return [...(QUICK_ARTIFACT_STARTERS[artifactId] || [])];
+}
+
+export function quickStartLaneById(id) {
+  return QUICK_START_LANES.find((lane) => lane.id === id) || null;
+}
+
 export const DEVELOPMENTAL_STAGES = Object.freeze([
   { id: 'prelicensure-student', label: 'Prelicensure nursing student' },
   { id: 'nursing-assistant-pct', label: 'Nursing assistant / patient care technician' },
@@ -370,11 +551,26 @@ function defaultDelegation() {
   return Object.fromEntries(DELEGATION_ACTIVITIES.map((item) => [item.id, item.defaultLevel]));
 }
 
+function defaultQuickStart(mode = 'quick') {
+  return {
+    mode,
+    primaryLane: '',
+    secondaryLanes: [],
+    roleContext: '',
+    currentMission: '',
+    projectState: 'no-project',
+    activeOverlays: [],
+    firstArtifact: '',
+    deepProfileStatus: mode === 'deep' ? 'in-progress' : 'not-started'
+  };
+}
+
 export function createInitialState(now = null) {
   const timestamp = now ? new Date(now).toISOString() : new Date().toISOString();
   return {
     schemaVersion: SCHEMA_VERSION,
     name: '',
+    quickStart: defaultQuickStart(),
     selectedRoleIds: [],
     roleSelections: [],
     customRoles: [],
@@ -399,6 +595,45 @@ export function createInitialState(now = null) {
     moduleAnswers: {},
     updatedAt: timestamp
   };
+}
+
+function quickSelection(roleId, status) {
+  return {
+    roleId,
+    status,
+    attention: 3,
+    responsibility: 3,
+    identity: 3,
+    confidence: 3,
+    authorization: 'self-declared',
+    competenceEvidence: 'not-assessed',
+    credentialStatus: 'not-claimed'
+  };
+}
+
+export function applyQuickStartRouting(state) {
+  const quick = state?.quickStart;
+  const lane = quickStartLaneById(quick?.primaryLane);
+  if (!lane) throw new Error('Choose one of the five primary workspaces.');
+  const context = lane.contexts.find((item) => item.id === quick.roleContext);
+  if (!context) throw new Error('Choose a role context for the selected workspace.');
+  const mission = lane.missions.find((item) => item.id === quick.currentMission);
+  if (!mission) throw new Error('Choose a current mission from the selected workspace.');
+  if (!(QUICK_START_PROJECT_OPTIONS[lane.id] || []).some((item) => item.id === quick.projectState)) throw new Error('Choose a project or research status offered for the selected workspace.');
+  if (!lane.artifacts.some((item) => item.id === quick.firstArtifact)) throw new Error('Choose a first useful artifact from the selected workspace.');
+  if (!Array.isArray(quick.secondaryLanes) || quick.secondaryLanes.length > 2 || new Set(quick.secondaryLanes).size !== quick.secondaryLanes.length) throw new Error('Choose no more than two unique secondary hats.');
+  if (quick.secondaryLanes.includes(lane.id) || quick.secondaryLanes.some((id) => !quickStartLaneById(id))) throw new Error('Secondary hats must be valid and different from the primary workspace.');
+
+  const roleIds = [context.roleId];
+  if (context.supportingRoleId) roleIds.push(context.supportingRoleId);
+  for (const laneId of quick.secondaryLanes) roleIds.push(quickStartLaneById(laneId).defaultRoleId);
+  const uniqueRoleIds = [...new Set(roleIds)];
+  state.roleSelections = uniqueRoleIds.map((roleId, index) => quickSelection(roleId, index === 0 ? 'primary' : 'supporting'));
+  state.selectedRoleIds = [...uniqueRoleIds];
+  quick.mode = 'quick';
+  quick.activeOverlays = deriveQuickStartOverlays(mission, quick.projectState);
+  quick.deepProfileStatus = quick.deepProfileStatus === 'complete' ? 'complete' : 'not-started';
+  return state;
 }
 
 const TITLE_PATTERN = /^[A-Za-z0-9][A-Za-z0-9 &/()'’\-]{1,59}$/;
@@ -504,6 +739,15 @@ export function recommendedModuleIds(state) {
   for (const selection of state.roleSelections || []) {
     const roleItem = lookupRole(state, selection.roleId);
     if (roleItem?.moduleId) modules.add(roleItem.moduleId);
+  }
+  const overlayModules = {
+    'quality-improvement': 'quality-research',
+    'research-evidence': 'quality-research',
+    'education-mentorship': 'education-mentorship',
+    'leadership-governance': 'leadership-management'
+  };
+  for (const overlay of state.quickStart?.activeOverlays || []) {
+    if (overlayModules[overlay]) modules.add(overlayModules[overlay]);
   }
   if (state.advancedStudies?.active) modules.add('advanced-studies');
   return [...modules];
@@ -627,6 +871,19 @@ export function buildOsConfig(state, generatedAt = null) {
   const spheres = [...new Set(Array.isArray(state.spheres) ? state.spheres.filter((item) => allowedSpheres.has(item)) : [])];
   if (!spheres.length) spheres.push('professional');
   const tierCeilings = Object.fromEntries(spheres.map((sphere) => [sphere, ['personal', 'sidegig', 'interest'].includes(sphere) ? 'green' : 'yellow']));
+  const quickLane = quickStartLaneById(state.quickStart?.primaryLane);
+  const quickMission = quickLane?.missions.find((item) => item.id === state.quickStart?.currentMission);
+  const workspaceRouting = quickLane ? {
+    version: '1.0.0',
+    primary_lane: quickLane.id,
+    secondary_lanes: [...state.quickStart.secondaryLanes],
+    role_context: state.quickStart.roleContext,
+    current_mission: state.quickStart.currentMission,
+    project_state: state.quickStart.projectState,
+    active_overlays: deriveQuickStartOverlays(quickMission, state.quickStart.projectState),
+    first_artifact: state.quickStart.firstArtifact,
+    deep_profile_status: state.quickStart.deepProfileStatus
+  } : null;
   return {
     schema_version: '2.0.0',
     generated_at: timestamp,
@@ -713,6 +970,7 @@ export function buildOsConfig(state, generatedAt = null) {
       professional_authority_granted: false,
       institutional_authority_granted: false
     },
+    ...(workspaceRouting ? { workspace_routing: workspaceRouting } : {}),
     doctrine: {
       edena: 'edena-policy@2.0.0',
       florence_x: 'florence-x@2.0.0',
@@ -887,6 +1145,68 @@ ${Object.entries(moduleContexts).length ? Object.entries(moduleContexts).map(([m
 ## Human judgment
 Jurisdiction, law, policy, assignment, delegation, supervision, privileges, credentialing, program rules, and accountable institutional owners remain controlling.
 `;
+  const quickLane = quickStartLaneById(state.quickStart?.primaryLane);
+  const quickContext = quickLane?.contexts.find((item) => item.id === state.quickStart?.roleContext);
+  const quickMission = quickLane?.missions.find((item) => item.id === state.quickStart?.currentMission);
+  const quickArtifact = quickLane?.artifacts.find((item) => item.id === state.quickStart?.firstArtifact);
+  const effectiveQuickOverlays = deriveQuickStartOverlays(quickMission, state.quickStart?.projectState);
+  const projectLabel = QUICK_START_PROJECT_OPTIONS[quickLane?.id]?.find((item) => item.id === state.quickStart?.projectState)?.label;
+  const secondaryLaneLabels = (state.quickStart?.secondaryLanes || []).map((id) => quickStartLaneById(id)?.label).filter(Boolean);
+  const overlayLabels = {
+    'quality-improvement': 'Quality improvement',
+    'research-evidence': 'Research and evidence',
+    'advanced-studies': 'Advanced Studies',
+    'education-mentorship': 'Education and mentorship',
+    'leadership-governance': 'Leadership and governance'
+  };
+  const focusedMission = quickLane ? `# Focused Mission Control — ${state.name || '(name not supplied)'}
+
+> A browser-local, no-PHI starter created from the five-door quick start. It is an editable draft—not a decision, approval, credential, competence finding, installation, activation, or authority grant.
+
+## Active workspace
+- **Primary workspace:** ${quickLane.label}
+- **Current context:** ${quickContext?.label || '_(not specified)_'}
+- **Current mission:** ${quickMission?.label || '_(not specified)_'}
+- **Project or initiative status:** ${projectLabel || '_(not specified)_'}
+- **Secondary hats:** ${secondaryLaneLabels.join(', ') || 'None selected'}
+- **Active overlays:** ${effectiveQuickOverlays.map((id) => overlayLabels[id] || id).join(', ') || 'None'}
+- **First artifact:** ${quickArtifact?.label || '_(not specified)_'}
+
+## First artifact starter
+### Role-relevant prompts
+${mdList(quickArtifactStarterPrompts(state.quickStart?.firstArtifact))}
+
+### Broad goal or question
+_(Describe the broad no-PHI goal, question, learning need, or workflow issue.)_
+
+### What is already known
+_(Separate verified evidence, local policy, professional judgment, assumptions, and AI-generated suggestions.)_
+
+### What remains unknown
+_(Name uncertainty rather than allowing AI to fill it with invented facts.)_
+
+### Smallest safe next action
+_(Choose one reversible preparation step.)_
+
+### Required human review
+_(Name the faculty member, preceptor, accountable professional, sponsor, leader, governance body, IRB, or other owner when applicable.)_
+
+### Outcome or learning signal
+_(State how the person will know whether this first step was useful, safe, and worth continuing.)_
+
+## Role boundary
+${quickLane.boundary}
+
+## Governance boundaries
+- No PHI, patient identifiers, protected learner or workforce records, credentials, authentication material, or secrets.
+- Installation or download does not create employer, school, privacy, security, regulatory, research, IRB, credentialing, or institutional approval.
+- No diagnosis, prescribing, orders, patient contact, record modification, grading, workforce action, or other consequential action without the required human review, authorization, and approved integration.
+- Role choices are self-reported and verify no credential, competence, assignment, privilege, employment, or authority.
+- External actions, connectors, tools, memory, and MCP remain inactive unless separately governed and approved.
+
+## Stewardship line
+> Agents propose. Humans judge. Nurses steward.
+` : null;
   const documents = [
     { name: 'Core-SOUL.md', path: '01-SOUL/Core-SOUL.md', content: core },
     { name: 'Role-Constellation.md', path: '01-SOUL/Role-Constellation.md', content: constellation },
@@ -894,6 +1214,7 @@ Jurisdiction, law, policy, assignment, delegation, supervision, privileges, cred
     { name: 'Mission-Control-Recommendations.md', path: '02-Mission-Control/Mission-Control-Recommendations.md', content: missionControls },
     { name: 'AI-Governance-Profile.md', path: '04-Governance/AI-Governance-Profile.md', content: governance }
   ];
+  if (focusedMission) documents.splice(3, 0, { name: 'Focused-Mission-Control.md', path: '02-Mission-Control/Focused-Mission-Control.md', content: focusedMission });
   if (state.advancedStudies?.active) {
     documents.push({
       name: 'Advanced-Studies-SOUL.md', path: '01-SOUL/Advanced-Studies-SOUL.md',
@@ -1031,8 +1352,43 @@ export function normalizeState(candidate) {
         moduleAnswers[moduleId][questionId] = value;
       }
     }
+    let quickStart = defaultQuickStart(roleSelections.length ? 'deep' : 'quick');
+    if (candidate.quickStart !== undefined) {
+      if (!plain(candidate.quickStart)) return null;
+      const lane = quickStartLaneById(candidate.quickStart.primaryLane);
+      const secondaryLanes = strings(candidate.quickStart.secondaryLanes, 2, 40);
+      const activeOverlays = strings(candidate.quickStart.activeOverlays, QUICK_START_OVERLAYS.length, 80);
+      if (!['quick', 'deep'].includes(candidate.quickStart.mode) || !secondaryLanes || !activeOverlays) return null;
+      if (new Set(secondaryLanes).size !== secondaryLanes.length || secondaryLanes.some((id) => !quickStartLaneById(id))) return null;
+      if (new Set(activeOverlays).size !== activeOverlays.length || activeOverlays.some((id) => !QUICK_START_OVERLAYS.includes(id))) return null;
+      if (!['not-started', 'in-progress', 'complete'].includes(candidate.quickStart.deepProfileStatus)) return null;
+      let normalizedOverlays = [];
+      if (lane) {
+        if (secondaryLanes.includes(lane.id)
+          || !lane.contexts.some((item) => item.id === candidate.quickStart.roleContext)
+          || !lane.missions.some((item) => item.id === candidate.quickStart.currentMission)
+          || !lane.artifacts.some((item) => item.id === candidate.quickStart.firstArtifact)
+          || !(QUICK_START_PROJECT_OPTIONS[lane.id] || []).some((item) => item.id === candidate.quickStart.projectState)) return null;
+        normalizedOverlays = deriveQuickStartOverlays(
+          lane.missions.find((item) => item.id === candidate.quickStart.currentMission),
+          candidate.quickStart.projectState
+        );
+      } else if ([candidate.quickStart.primaryLane, candidate.quickStart.roleContext, candidate.quickStart.currentMission, candidate.quickStart.firstArtifact].some(Boolean)
+        || secondaryLanes.length || activeOverlays.length || candidate.quickStart.projectState !== 'no-project') return null;
+      quickStart = {
+        mode: candidate.quickStart.mode,
+        primaryLane: candidate.quickStart.primaryLane,
+        secondaryLanes,
+        roleContext: candidate.quickStart.roleContext,
+        currentMission: candidate.quickStart.currentMission,
+        projectState: candidate.quickStart.projectState,
+        activeOverlays: normalizedOverlays,
+        firstArtifact: candidate.quickStart.firstArtifact,
+        deepProfileStatus: candidate.quickStart.deepProfileStatus
+      };
+    }
     return {
-      ...base, name: candidate.name, selectedRoleIds: [...selectedIds], roleSelections, customRoles, spheres: [...new Set(spheres)], developmentalStages: [...new Set(developmentalStages)],
+      ...base, name: candidate.name, quickStart, selectedRoleIds: [...selectedIds], roleSelections, customRoles, spheres: [...new Set(spheres)], developmentalStages: [...new Set(developmentalStages)],
       advancedStudies: { active: candidate.advancedStudies.active, pathways },
       core: { ...coreArrays, ...coreTexts, voice }, pressures: { selected: pressureSelected, load: candidate.pressures.load, wellnessLimit: candidate.pressures.wellnessLimit }, decisionStyle,
       ai: { relationshipModes, primaryMode: candidate.ai.primaryMode, delegation: Object.fromEntries(DELEGATION_ACTIVITIES.map((activity) => [activity.id, applyGovernanceFloor(activity.id, candidate.ai.delegation[activity.id])])), memoryAllowed, memoryForbidden, escalationTriggers },

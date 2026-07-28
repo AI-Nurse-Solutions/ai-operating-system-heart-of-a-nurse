@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
   "channel": "stable",
-  "latest_version": "2.0.2-phase23",
+  "latest_version": "2.0.3-phase23",
   "minimum_installer_phase": 23,
-  "published_at": "2026-07-27T00:00:00Z",
+  "published_at": "2026-07-28T00:00:00Z",
   "base_url": "https://nurse-ai-os.org/naio-os",
   "manifest": {
     "path": "manifest.yaml",
-    "sha256": "c1f24a072a07a03f6ac6b093aeafb462c658cff930fa86de0f150a17455b5643",
+    "sha256": "36784aeab1828b79d0ecab2444dcc65e88c09232b48bfa13380632d4c01ea87e",
     "signature": "manifest.sig",
     "signature_algorithm": "RSA-SHA256",
     "public_key": "config/naio-os-release-public.pem",
@@ -155,5 +155,5 @@
     "no procurement or clinical deployment approval"
   ],
   "doctrine": "Agents propose. Humans judge. Nurses steward.",
-  "summary": "Public-contact patch replacing the retired address with robert@nurse-ai-os.org for the Phase 23 bundle, without PHI, clinical decisions, credential inference, or autonomous activation."
+  "summary": "Five-door SOUL Quiz workspace-routing schema and fail-closed import-validation patch for compatible browser exports. The browser generator and UI remain outside this signed Phase 23 bundle; this release adds no PHI, clinical decisions, credential inference, external actions, or autonomous activation."
 }

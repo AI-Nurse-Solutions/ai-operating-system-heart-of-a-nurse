@@ -116,6 +116,40 @@ class GatewayTracerTests(unittest.TestCase):
         files = list(Path(self.tmp.name).glob("traces-*.jsonl"))
         self.assertEqual(len(files), 2)
 
+    def test_concurrent_readers_never_see_partial_records(self):
+        import threading
+
+        trace_id = self.tracer.start_trace(make_request())
+        errors: list[Exception] = []
+        done = threading.Event()
+
+        def write() -> None:
+            try:
+                for i in range(15):
+                    self.tracer.record_span(trace_id, f"span-{i}", {"i": i})
+            except Exception as exc:  # pragma: no cover - failure diagnostics
+                errors.append(exc)
+            finally:
+                done.set()
+
+        def read_repeatedly() -> None:
+            try:
+                while not done.is_set():
+                    records = self.tracer.read("personal:rn-1")
+                    self.assertTrue(all("record_hash" in r for r in records))
+                    self.tracer.verify("personal:rn-1")
+            except Exception as exc:  # pragma: no cover - failure diagnostics
+                errors.append(exc)
+
+        writer = threading.Thread(target=write)
+        reader = threading.Thread(target=read_repeatedly)
+        reader.start()
+        writer.start()
+        writer.join()
+        reader.join()
+        self.assertEqual(errors, [])
+        self.assertEqual(self.tracer.verify("personal:rn-1")["count"], 16)
+
     def test_concurrent_appends_keep_the_chain_intact(self):
         import threading
 

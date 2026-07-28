@@ -10,6 +10,7 @@ failure.
 
 from __future__ import annotations
 
+import errno
 import time
 from typing import IO
 
@@ -28,6 +29,15 @@ class LockUnavailableError(RuntimeError):
     pass
 
 
+def is_lock_contention(exc: OSError) -> bool:
+    """Only a locking violation (EACCES) means "held by someone else, retry".
+
+    Permanent failures — bad descriptor, invalid argument — must propagate
+    immediately instead of spinning forever.
+    """
+    return exc.errno == errno.EACCES
+
+
 def acquire(handle: IO) -> None:
     """Block until an exclusive lock is held on the open file handle."""
     if fcntl is not None:
@@ -39,7 +49,9 @@ def acquire(handle: IO) -> None:
                 handle.seek(0)
                 msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
                 return
-            except OSError:
+            except OSError as exc:
+                if not is_lock_contention(exc):
+                    raise
                 time.sleep(0.05)
     raise LockUnavailableError(
         "no exclusive file-locking mechanism is available on this platform;"

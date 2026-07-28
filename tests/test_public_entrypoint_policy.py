@@ -108,10 +108,11 @@ class PublicEntrypointPolicyTests(unittest.TestCase):
             r'<a class="btn btn-primary" href="([^"]+)"', self.home, re.I
         )
         self.assertGreaterEqual(len(primary_links), 2)
-        self.assertEqual({"#workbench"}, set(primary_links))
+        self.assertEqual({"soul-quiz.html"}, set(primary_links))
         nav = primary_nav(self.home)
         self.assertEqual(1, nav.count('class="nav-cta"'))
-        self.assertIn('href="#workbench"', nav)
+        self.assertIn('class="nav-cta" href="soul-quiz.html"', nav)
+        self.assertIn('href="https://hermes-agent.nousresearch.com/"', nav)
 
     def test_mobile_browser_and_optional_desktop_boundaries_are_up_front(self):
         hero = self.home.split('<section class="leader-educator-hero"', 1)[1].split("</section>", 1)[0]

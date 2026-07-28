@@ -829,6 +829,31 @@ body.leader-educator-home { background: var(--linen-50); }
 }
 .leader-credibility p { margin: 0; font-size: .95rem; }
 
+.leader-walkthrough-section { background: var(--white); }
+.leader-walkthrough-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1rem;
+  margin-top: 2rem;
+}
+.leader-walkthrough-card {
+  display: flex; flex-direction: column; align-items: flex-start;
+  min-width: 0; padding: clamp(1.35rem, 3vw, 2rem);
+  background: var(--linen-50); border: 1px solid rgba(14,31,51,.14);
+  border-top: 5px solid var(--teal-600); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.leader-walkthrough-card:nth-child(2) { border-top-color: var(--gold-500); }
+.leader-walkthrough-card:nth-child(3) { border-top-color: var(--navy-700); }
+.leader-walkthrough-card p { color: var(--ink-600); }
+.leader-walkthrough-card .btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; margin-top: auto; white-space: normal; text-align: center;
+}
+.leader-walkthrough-number {
+  margin: 0 0 .5rem; color: var(--teal-600) !important;
+  font-size: .82rem; font-weight: 800; letter-spacing: .12em;
+}
+.leader-walkthrough-boundary { margin-top: 1.25rem; }
+
 .audience-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-top: 2rem; }
 .audience-panel {
   padding: clamp(1.5rem, 4vw, 2.4rem); background: var(--white); border: 1px solid rgba(14,31,51,.12);
@@ -871,6 +896,11 @@ body.leader-educator-home { background: var(--linen-50); }
 .workflow-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
 .workflow-actions .btn { border: 0; cursor: pointer; }
 .workflow-actions p { flex: 1 1 240px; margin: 0; color: var(--ink-600); font-size: .9rem; }
+.workflow-provider-boundary {
+  margin: 1rem 0 0; padding: 1rem; color: var(--navy-900);
+  background: var(--teal-100); border-left: 4px solid var(--teal-600);
+  font-size: .92rem; line-height: 1.55;
+}
 
 .conversion-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; padding: 0; list-style: none; }
 .conversion-steps li { display: flex; gap: .9rem; padding: 1.2rem; background: var(--white); border-top: 4px solid var(--teal-600); }
@@ -1505,7 +1535,7 @@ body.student-nurse-funnel { background: var(--linen-50); }
   .leader-educator-hero-grid, .student-nurse-hero-grid, .demo-grid, .operator-grid { grid-template-columns: 1fr; }
   .leader-credibility-inner, .workbench-heading { grid-template-columns: 1fr; }
   .workflow-workbench { grid-template-columns: 1fr; }
-  .conversion-steps, .progression-grid, .maturity-compact-grid { grid-template-columns: 1fr; }
+  .leader-walkthrough-grid, .conversion-steps, .progression-grid, .maturity-compact-grid { grid-template-columns: 1fr; }
   .student-section-media-grid { grid-template-columns: 1fr; }
   .student-integrity-grid { grid-template-columns: 1fr; }
   .progression-grid article { border-right: 0; border-bottom: 1px solid rgba(14,31,51,.15); }
@@ -1531,6 +1561,9 @@ body.student-nurse-funnel { background: var(--linen-50); }
   .leader-educator-home .nav-links a,
   .student-nurse-funnel .nav-links a {
     min-width: 0; white-space: normal; line-height: 1.2;
+  }
+  .leader-educator-home .nav-links a {
+    display: flex; align-items: center; min-height: 44px;
   }
   .leader-educator-home .nav-links .nav-cta,
   .student-nurse-funnel .nav-links .nav-cta {

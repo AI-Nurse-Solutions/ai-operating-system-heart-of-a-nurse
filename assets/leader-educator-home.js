@@ -89,7 +89,7 @@
 
     if (copied) {
       copyButton.textContent = "Copied";
-      status.textContent = "Copied. Paste it into ChatGPT or Claude, then review every result before use.";
+      status.textContent = "Copied. Paste it into ChatGPT, Claude, or an intentionally installed and configured Hermes session. Then review every result before use.";
     } else {
       status.textContent = "Copy was blocked by your browser. Select the prompt and copy it manually.";
     }

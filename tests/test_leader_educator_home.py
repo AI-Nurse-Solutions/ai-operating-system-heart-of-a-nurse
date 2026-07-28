@@ -50,24 +50,55 @@ class LeaderEducatorHomeTests(unittest.TestCase):
         hero = self.home.split('class="leader-educator-hero"', 1)[1].split("</section>", 1)[0]
         for phrase in (
             "For nurse leaders and nurse educators",
-            "Get one leadership or teaching task off your plate in five minutes.",
-            "Try a 5-minute workflow",
+            "Start your team's nurse-led AI walkthrough here.",
+            "Take the SOUL Quiz",
+            "Open Hermes",
             "No patient data",
             "You review every result",
         ):
             self.assertIn(phrase, hero)
-        self.assertNotIn("Take the SOUL Quiz", hero)
-        self.assertNotIn("Hermes", hero)
 
-    def test_primary_action_is_the_workbench_and_is_repeated(self) -> None:
+    def test_primary_action_is_the_soul_quiz_and_hermes_is_direct(self) -> None:
         primary_links = re.findall(
             r'<a class="btn btn-primary" href="([^"]+)"', self.home, re.I
         )
         self.assertGreaterEqual(len(primary_links), 2)
-        self.assertEqual({"#workbench"}, set(primary_links))
+        self.assertEqual({"soul-quiz.html"}, set(primary_links))
         nav = self.home.split('<div class="nav-links">', 1)[1].split("</div>", 1)[0]
         self.assertEqual(1, nav.count('class="nav-cta"'))
-        self.assertIn('href="#workbench"', nav)
+        self.assertIn('class="nav-cta" href="soul-quiz.html"', nav)
+        self.assertIn('href="https://hermes-agent.nousresearch.com/"', nav)
+        self.assertIn('target="_blank" rel="noopener"', nav)
+
+    def test_leader_walkthrough_keeps_the_solution_on_the_front_page(self) -> None:
+        walkthrough_start = self.home.index('id="leader-walkthrough"')
+        workbench_start = self.home.index('id="workbench"')
+        self.assertLess(walkthrough_start, workbench_start)
+        walkthrough = self.home[walkthrough_start:workbench_start]
+        for phrase in (
+            "Walk your team through it from one page.",
+            "Each person completes their own SOUL Quiz",
+            "Open Hermes from the official source",
+            "Run one bounded workflow together",
+            "No patient, personnel, student-identifying, or confidential employer information",
+        ):
+            self.assertIn(phrase, walkthrough)
+        self.assertIn('href="soul-quiz.html"', walkthrough)
+        self.assertIn('href="https://hermes-agent.nousresearch.com/"', walkthrough)
+        self.assertIn('href="#workbench"', walkthrough)
+        self.assertIn("install and configure Hermes intentionally", walkthrough)
+
+    def test_optional_hermes_and_external_provider_handoff_are_explicit(self) -> None:
+        workbench = self.home.split('id="workbench"', 1)[1].split("</section>", 1)[0]
+        for phrase in (
+            "an intentionally installed and configured Hermes session",
+            "the content leaves nurse-ai-os.org",
+            "any model provider configured in Hermes",
+            "privacy, retention, training, account, and data-use settings",
+            'href="privacy.html"',
+        ):
+            self.assertIn(phrase, workbench)
+        self.assertIn("intentionally installed and configured Hermes session", self.script)
 
     def test_workbench_is_real_browser_local_functionality(self) -> None:
         for token in (
@@ -108,13 +139,15 @@ class LeaderEducatorHomeTests(unittest.TestCase):
         ):
             self.assertIn(token, workbench)
 
-    def test_first_value_precedes_personalization_and_download(self) -> None:
+    def test_solution_path_precedes_workbench_and_download(self) -> None:
+        walkthrough = self.home.index('id="leader-walkthrough"')
         workbench = self.home.index('id="workbench"')
         progression = self.home.index('id="progression"')
         soul = self.home.index('href="soul-quiz.html"')
         starter = self.home.index('href="assets/nurse-ai-os-starter-kit.zip"')
+        self.assertLess(soul, walkthrough)
+        self.assertLess(walkthrough, workbench)
         self.assertLess(workbench, progression)
-        self.assertLess(workbench, soul)
         self.assertLess(workbench, starter)
         for phrase in ("Visitor", "User", "Steward", "Visitors try", "Users keep", "Stewards shape"):
             self.assertIn(phrase, self.home)
@@ -246,6 +279,7 @@ class LeaderEducatorHomeTests(unittest.TestCase):
         for selector in (
             ".leader-educator-hero",
             ".workflow-workbench",
+            ".workflow-provider-boundary",
             ".media-placeholder",
             ".progression-grid",
         ):

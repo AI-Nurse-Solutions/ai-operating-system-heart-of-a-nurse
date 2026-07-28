@@ -112,6 +112,20 @@ class PacketBundleBuilderTests(unittest.TestCase):
                             path,
                         )
 
+    def test_rebuild_removes_templates_that_left_the_catalog(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle = Path(tmp) / "staff-nurse"
+            builder = PacketBundleBuilder()
+            builder.build("staff-nurse", bundle)
+            stale = bundle / "templates" / "retired-template.md"
+            stale.write_text("renamed out of the catalog", encoding="utf-8")
+            stale_dir = bundle / "templates" / "old"
+            stale_dir.mkdir()
+            (stale_dir / "nested.md").write_text("stale", encoding="utf-8")
+            builder.build("staff-nurse", bundle)
+            self.assertFalse(stale.exists())
+            self.assertFalse(stale_dir.exists())
+
     def test_unknown_role_fails_closed(self):
         from naio_integrations.packets import PacketIntegrityError
 
@@ -136,6 +150,23 @@ class CommittedBundleTests(unittest.TestCase):
                         path.read_text(encoding="utf-8"),
                         committed,
                     )
+
+    def test_committed_bundles_carry_no_files_beyond_the_fresh_build(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fresh = Path(tmp) / "packets"
+            PacketBundleBuilder().build_phase2(fresh)
+            for role in PHASE_2_ROLES:
+                fresh_files = {
+                    path.relative_to(fresh).as_posix()
+                    for path in (fresh / role).rglob("*")
+                    if path.is_file()
+                }
+                committed_files = {
+                    path.relative_to(COMMITTED_ROOT).as_posix()
+                    for path in (COMMITTED_ROOT / role).rglob("*")
+                    if path.is_file()
+                }
+                self.assertEqual(committed_files, fresh_files, role)
 
     def test_committed_checksums_cover_the_whole_packets_tree(self):
         checksum_file = COMMITTED_ROOT / "CHECKSUMS.sha256"

@@ -22,6 +22,7 @@ CI.
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -65,7 +66,19 @@ class PacketBundleBuilder:
 
         templates_dir = target_dir / "templates"
         templates_dir.mkdir(parents=True, exist_ok=True)
-        for template_id in packet_config.get("starter_templates", ()):
+        template_ids = tuple(packet_config.get("starter_templates", ()))
+        # The catalog is the source of truth: a template renamed out of
+        # starter_templates must not linger on disk, where the checksum
+        # file would legitimize it as shipped content.
+        expected = {f"{template_id}.md" for template_id in template_ids}
+        for stale in sorted(templates_dir.iterdir()):
+            if stale.name in expected:
+                continue
+            if stale.is_dir():
+                shutil.rmtree(stale)
+            else:
+                stale.unlink()
+        for template_id in template_ids:
             scaffold = self.studio.scaffold(template_id)
             template_path = templates_dir / f"{template_id}.md"
             template_path.write_text(scaffold.body_markdown, encoding="utf-8")

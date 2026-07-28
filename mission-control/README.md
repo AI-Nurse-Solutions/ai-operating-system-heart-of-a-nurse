@@ -53,14 +53,13 @@ explicit disposition and date changes that, and approved renders carry
 the attestation. No output is presented as final merely because it was
 generated (specification section 3.6).
 
-Four packets (`pre-licensure-student/`, `staff-nurse/`, `educator/`
-from Phase 2, and `leader/` unlocked by Phase 3) are **installable
-bundles**, not just manifests: each ships a role README with the
-section 19 recognitions, a `DATA-BOUNDARY.md` notice to read before
-first use, and working starter templates rendered by the Deliverable
-Studio — every one an editable draft with the mandatory banner. No
-empty demo. The licensed-clinician packet remains manifest-only until
-Phase 4.
+All five packets are **installable bundles**, not just manifests
+(`pre-licensure-student/`, `staff-nurse/`, `educator/` from Phase 2;
+`leader/` unlocked by Phase 3; `licensed-clinician/` completing Phase
+4): each ships a role README with the section 19 recognitions, a
+`DATA-BOUNDARY.md` notice to read before first use, and working
+starter templates rendered by the Deliverable Studio — every one an
+editable draft with the mandatory banner. No empty demo.
 
 `healthcare-sandbox/` holds the **Phase 3 healthcare sandbox**:
 synthetic, FHIR-shaped case bundles generated from the reviewed case

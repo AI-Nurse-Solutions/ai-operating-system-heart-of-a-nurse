@@ -46,6 +46,17 @@
       "reason_code": "EDENA-STUDENT-MODE"
     }
   },
+  "research_rules": {
+    "execution_intents": [
+      "collect_research_data",
+      "recruit_participants",
+      "submit_irb_application",
+      "share_research_dataset"
+    ],
+    "required_zone": "restricted",
+    "requires_institutional_authentication": true,
+    "requires_recorded_approval": true
+  },
   "prohibited": {
     "risk_tiers": ["red-p"],
     "action_modes": ["unrestricted_autonomy"]
@@ -66,6 +77,9 @@
     "EDENA-INVALID-ZONE": "The requested target data zone is not a recognized data zone.",
     "EDENA-SIDE-EFFECT-GATE": "External side effects require meaningful human approval.",
     "EDENA-WITHIN-SCOPE": "Request is within the compiled EDENA scope.",
-    "EDENA-PRIVACY-REDLINE": "Identifying content is not accepted at this tier."
+    "EDENA-PRIVACY-REDLINE": "Identifying content is not accepted at this tier.",
+    "EDENA-RESEARCH-ZONE": "Research execution runs only in the restricted data zone.",
+    "EDENA-RESEARCH-UNAFFILIATED": "Research execution requires an authenticated organizational context matching the current workspace.",
+    "EDENA-RESEARCH-APPROVAL": "Research execution requires a recorded governance approval (IRB or equivalent) before it proceeds."
   }
 }

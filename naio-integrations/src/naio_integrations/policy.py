@@ -96,6 +96,28 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
             if ceiling and mode.rank > ActionMode(ceiling).rank:
                 return self._deny(role_rules["reason_code"])
 
+        # Research governance gates (Phase 4): executing research —
+        # collecting data, recruiting, submitting to an IRB, sharing a
+        # dataset — is gated by activity class, independent of action
+        # mode. Drafting a protocol or question is ordinary draft work.
+        research_rules = self.policy.get("research_rules", {})
+        research_gated = request.intent in research_rules.get("execution_intents", ())
+        if research_gated:
+            if request.data_zone.value != research_rules["required_zone"]:
+                return self._deny("EDENA-RESEARCH-ZONE")
+            if research_rules.get("requires_institutional_authentication") and (
+                not actor.authenticated_org
+                or actor.authenticated_org != actor.tenant
+            ):
+                return self._deny("EDENA-RESEARCH-UNAFFILIATED")
+            if research_rules.get("requires_recorded_approval") and not actor.approvals:
+                return PolicyDecision(
+                    decision=Decision.REQUIRE_APPROVAL,
+                    reason_codes=("EDENA-RESEARCH-APPROVAL",),
+                    obligations=("record_research_governance_approval",),
+                    policy_version=self.version,
+                )
+
         data_ceiling = self.policy["tier_data_ceilings"].get(tier.value)
         if data_ceiling is None or data.rank > DataClass(data_ceiling).rank:
             return self._deny("EDENA-DATA-CLASS-CEILING")
@@ -108,6 +130,8 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
         reasons: list[str] = []
         if target_zone and target_zone != request.data_zone.value:
             obligations.append("log_zone_migration")
+        if research_gated:
+            obligations.append("research_governance_audit")
 
         if tier in (RiskTier.ORANGE, RiskTier.RED_E):
             requirements = self.policy[

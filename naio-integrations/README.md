@@ -139,6 +139,20 @@ feed the existing contract surfaces: `as_knowledge_sources()` for
 governed retrieval and `start_case_workflow()` for the orchestration
 runtime.
 
+### Research governance gates (Mission Control §17, Phase 4)
+
+The licensed-clinician packet ships a `research-governance-gates`
+module backed by real policy: research *execution* — collecting data,
+recruiting participants, submitting to an IRB, sharing a dataset — is
+gated by activity class in `config/edena-gateway-policy.json`,
+independent of action mode. Execution intents run only in the
+restricted data zone, require an authenticated organizational context
+matching the current workspace, and require a recorded governance
+approval (IRB or equivalent); every allowed execution carries a
+research-governance audit obligation. Drafting a protocol or research
+question remains ordinary draft work through the Knowledge and
+Evidence Center.
+
 ## Layer responsibilities
 
 | Layer | Question it answers |

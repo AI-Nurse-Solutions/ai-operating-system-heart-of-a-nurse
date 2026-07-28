@@ -69,6 +69,14 @@ class LeaderEducatorHomeTests(unittest.TestCase):
         self.assertIn('class="nav-cta" href="soul-quiz.html"', nav)
         self.assertIn('href="https://hermes-agent.nousresearch.com/"', nav)
         self.assertIn('target="_blank" rel="noopener"', nav)
+        for destination in (
+            "explore-ecosystem.html",
+            "resources.html",
+            "about.html",
+        ):
+            self.assertIn(f'href="{destination}"', nav)
+        self.assertNotIn('href="#leader-walkthrough"', nav)
+        self.assertNotIn('href="#workbench"', nav)
 
     def test_leader_walkthrough_keeps_the_solution_on_the_front_page(self) -> None:
         walkthrough_start = self.home.index('id="leader-walkthrough"')

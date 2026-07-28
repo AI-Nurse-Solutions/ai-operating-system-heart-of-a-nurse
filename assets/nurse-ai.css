@@ -749,6 +749,89 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
 .level.beginner { background: var(--teal-100); color: var(--teal-600); }
 .level.advanced { background: var(--gold-100); color: #8a6420; }
 
+/* ---------- Local / on-premises AI options guide ---------- */
+body.local-ai-guide { background: var(--linen-50); }
+.local-ai-guide .section-alt { background: var(--linen-100); }
+.local-ai-guide .nav-links a {
+  min-width: 44px; min-height: 44px; display: inline-flex; align-items: center;
+}
+.guide-hero .lede { max-width: 720px; }
+.guide-intro p { color: var(--ink-600); }
+.guide-boundary-critical {
+  margin-top: 0; background: #fff1ed; border-left-color: var(--rose-600);
+}
+.guide-path-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem; margin: 2rem 0;
+}
+.guide-path-card {
+  min-width: 0; padding: 1.5rem; background: var(--white);
+  border-radius: var(--radius); border-top: 4px solid var(--teal-500);
+  box-shadow: var(--shadow-sm);
+}
+.guide-path-cloud { border-top-color: var(--gold-500); }
+.guide-path-label {
+  margin: 0 0 .35rem; color: var(--teal-600); font-size: .78rem;
+  font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+}
+.guide-path-card p,
+.guide-path-card li { color: var(--ink-600); }
+.guide-path-card ul { margin-bottom: 0; padding-left: 1.2rem; }
+.guide-table-wrap {
+  max-width: 100%; overflow-x: auto; margin: 1.6rem 0;
+  border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  background: var(--white); -webkit-overflow-scrolling: touch;
+}
+.guide-table-wrap:focus-visible {
+  outline: 3px solid var(--teal-600); outline-offset: 3px;
+}
+.guide-table { width: 100%; min-width: 720px; border-collapse: collapse; }
+.guide-table caption {
+  padding: .9rem 1rem; color: var(--ink-600); font-weight: 700; text-align: left;
+}
+.guide-table th,
+.guide-table td {
+  padding: .9rem 1rem; border-top: 1px solid rgba(14,31,51,.12);
+  text-align: left; vertical-align: top;
+}
+.guide-table thead th { background: var(--navy-900); color: var(--white); }
+.guide-table tbody th { color: var(--navy-900); }
+.guide-pattern-grid .card { min-width: 0; }
+.guide-authority-note,
+.guide-stop-list {
+  padding: 1.2rem 1.4rem; border-radius: var(--radius); background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.guide-authority-note { border-left: 5px solid var(--gold-500); }
+.guide-stop-list { margin: 0; padding-left: 2.8rem; border-left: 5px solid var(--rose-600); }
+.guide-stop-list li + li { margin-top: .65rem; }
+.guide-code {
+  overflow-x: auto; padding: 1rem 1.2rem; border-radius: 10px;
+  background: var(--navy-900); color: var(--gold-300); font-size: 1rem;
+}
+.guide-checklist {
+  display: grid; gap: .65rem; margin: 1.4rem 0; padding: 0; list-style: none;
+}
+.guide-checklist li {
+  padding: .8rem 1rem; border-radius: 10px; background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.guide-checklist label { display: flex; align-items: flex-start; gap: .7rem; }
+.guide-checklist input { width: 1.1rem; height: 1.1rem; margin-top: .3rem; flex: none; }
+.guide-final-ctas .btn-quiet { display: inline-flex; align-items: center; }
+.guide-source-list {
+  display: grid; gap: .55rem; margin: 1.2rem 0 0; padding-left: 1.25rem;
+}
+.guide-source-list a { overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .guide-path-grid,
+  .guide-pattern-grid { grid-template-columns: 1fr; }
+  .guide-table { min-width: 640px; }
+  .guide-path-card { padding: 1.25rem; }
+  .guide-final-ctas .btn { width: 100%; justify-content: center; text-align: center; }
+}
+
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--navy-900); color: #a9bccb; padding: 2.6rem 0 2rem;
@@ -766,6 +849,9 @@ details.faq .faq-body { padding: 0 1.3rem 1.2rem; color: var(--ink-600); }
 
 body.leader-educator-home { background: var(--linen-50); }
 .leader-educator-home .section-alt { background: var(--linen-100); }
+.leader-educator-home .nav-links a {
+  display: flex; align-items: center; min-width: 44px; min-height: 44px;
+}
 
 .leader-educator-hero {
   padding: clamp(3.5rem, 8vw, 7rem) 0 clamp(3rem, 6vw, 5rem);
@@ -1558,12 +1644,9 @@ body.student-nurse-funnel { background: var(--linen-50); }
   .leader-educator-home .nav-links a[href="#for-you"],
   .student-nurse-funnel .nav-links a[href="#how-it-works"],
   .student-nurse-funnel .nav-links a[href="#academic-integrity"] { display: none; }
-  .leader-educator-home .nav-links a,
+  .leader-educator-home .nav-links a { white-space: normal; line-height: 1.2; }
   .student-nurse-funnel .nav-links a {
     min-width: 0; white-space: normal; line-height: 1.2;
-  }
-  .leader-educator-home .nav-links a {
-    display: flex; align-items: center; min-height: 44px;
   }
   .leader-educator-home .nav-links .nav-cta,
   .student-nurse-funnel .nav-links .nav-cta {

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run Nurse AI OS Privately with LM Studio Bionic</title>
+<meta name="description" content="Compare local, privately linked, and hosted open-model options for a small Nurse AI OS pilot using LM Studio Bionic, with explicit healthcare governance boundaries.">
+<link rel="canonical" href="https://nurse-ai-os.org/guides/nurse-ai-os-lm-studio-bionic/">
+<link rel="icon" href="../../assets/img/favicon-lamp.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/nurse-ai.css">
+</head>
+<body class="local-ai-guide">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="../../index.html"><span class="lamp" aria-hidden="true">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="../../explore-ecosystem.html">Explore ecosystem</a>
+      <a href="../../resources.html" class="active">Resources</a>
+      <a href="../../about.html">About</a>
+      <a class="nav-cta" href="../../soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+<section class="hero guide-hero">
+  <div class="container narrow">
+    <p class="kicker">Private and small-scale infrastructure options</p>
+    <h1>Run Nurse AI OS Privately with LM Studio Bionic</h1>
+    <p class="lede">Compare three open-model paths: inference on one computer, inference on another device you control through LM Link, or deliberate use of LM Studio Secure Cloud for cleared non-sensitive work.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#model-paths">Compare the three paths ↓</a>
+      <a class="btn btn-secondary" href="https://lmstudio.ai/docs/bionic" target="_blank" rel="noopener">Open official Bionic docs ↗</a>
+    </div>
+    <p class="hero-note"><strong>Planning guide—not an installer.</strong> Start with one low-risk workflow and synthetic or public material.</p>
+  </div>
+</section>
+
+<section class="section guide-intro" aria-labelledby="guide-intro-title">
+  <div class="container narrow">
+    <div class="boundary guide-boundary-critical">
+      <strong>This page does not install, connect, activate, or authorize anything.</strong> Nurse AI OS is not automatically connected to Bionic, LM Studio, or LM Link. This guide documents options that a person or organization may evaluate separately.
+    </div>
+    <h2 id="guide-intro-title">Local control is useful. It is not automatic compliance.</h2>
+    <p>Running a model on equipment you control can reduce unnecessary data movement and support offline work. It does not by itself make a system HIPAA-compliant, clinically validated, secure, or appropriate for patient-care decisions.</p>
+    <p><strong>Bionic is a separate application from the standard LM Studio app.</strong> Bionic provides Work Projects and Code Projects for multi-step work. Standard LM Studio remains the lower-level option for model loading, runtime, local-server, and API configuration. Use only the component your approved pilot actually needs.</p>
+    <p><strong>Institutional deployment requires separate approval</strong> after security, legal, privacy, procurement, and governance review. Until that approval exists, use public, synthetic, or formally approved de-identified material only. <strong>No PHI.</strong></p>
+  </div>
+</section>
+
+<section class="section section-alt" id="model-paths" aria-labelledby="model-paths-title">
+  <div class="container">
+    <p class="eyebrow">Decide the boundary first</p>
+    <h2 id="model-paths-title">Choose the model path before the model</h2>
+    <p class="section-intro">“Local,” “remote,” and “cloud” describe different processing boundaries. Do not blend them into one privacy claim.</p>
+
+    <div class="guide-path-grid">
+      <article class="guide-path-card guide-path-local">
+        <p class="guide-path-label">Smallest practical boundary</p>
+        <h3>Local on this computer</h3>
+        <p>The model runs on the computer where Bionic is being used. After the model and runtime are downloaded, core LM Studio functions can operate offline.</p>
+        <ul>
+          <li>Best for individual exploration and routine bounded tasks.</li>
+          <li>Must fit available memory and compute.</li>
+          <li>Local processing still needs device security, access control, backup, and validation.</li>
+        </ul>
+      </article>
+      <article class="guide-path-card guide-path-link">
+        <p class="guide-path-label">Private linked compute</p>
+        <h3>Remote through LM Link</h3>
+        <p>A client device uses a model running on another linked device. LM Studio says the remote device performs inference while the Bionic conversation remains on the client device.</p>
+        <ul>
+          <li><strong>LM Link is in preview.</strong></li>
+          <li>LM Studio describes end-to-end encrypted device connections built with Tailscale.</li>
+          <li>The serving device must be available and sharing the model.</li>
+        </ul>
+      </article>
+      <article class="guide-path-card guide-path-cloud">
+        <p class="guide-path-label">Hosted escalation</p>
+        <h3>LM Studio Secure Cloud</h3>
+        <p>LM Studio hosts the model and describes requests as transiently processed under Zero Data Retention. It also says Bionic user data is not used for training.</p>
+        <ul>
+          <li>Requires internet access, an account, billing, and credits.</li>
+          <li><strong>Secure Cloud is hosted processing, not on-premises processing.</strong></li>
+          <li>ZDR is a retention commitment—not permission to send PHI.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="guide-table-wrap" tabindex="0" aria-label="Model path comparison table; scroll horizontally on narrow screens">
+      <table class="guide-table">
+        <caption>Model execution paths described in LM Studio's documentation</caption>
+        <thead>
+          <tr>
+            <th scope="col">Path</th>
+            <th scope="col">Where inference happens</th>
+            <th scope="col">Practical fit</th>
+            <th scope="col">Primary governance question</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Local</th>
+            <td>On the Bionic computer</td>
+            <td>Offline-capable, frequent, bounded work</td>
+            <td>Is the device, model, folder scope, and output review controlled?</td>
+          </tr>
+          <tr>
+            <th scope="row">LM Link</th>
+            <td>On another linked device you control</td>
+            <td>Shared workstation or small inference node</td>
+            <td>Who administers the linked devices, approved models, accounts, availability, and preview risk?</td>
+          </tr>
+          <tr>
+            <th scope="row">Secure Cloud</th>
+            <td>LM Studio-hosted infrastructure</td>
+            <td>Cleared non-sensitive tasks that exceed local capacity</td>
+            <td>Is hosted processing permitted, contracted, visible to the user, and technically blocked for regulated data?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="patterns-title">
+  <div class="container">
+    <p class="eyebrow">Start small enough to observe</p>
+    <h2 id="patterns-title">Three small-scale patterns</h2>
+    <div class="card-grid cols-3 guide-pattern-grid">
+      <article class="card">
+        <p class="role-tag">Pattern 1</p>
+        <h3>Private workstation</h3>
+        <p><strong>Best for:</strong> an individual educator, informaticist, researcher, instructional designer, or developer.</p>
+        <p>Use one capable computer, one approved model, and separate Bionic Work or Code Projects for durable areas of responsibility. Keep the first use case synthetic or public-safe.</p>
+      </article>
+      <article class="card gold">
+        <p class="role-tag">Pattern 2</p>
+        <h3>Shared on-premises inference node</h3>
+        <p><strong>Best for:</strong> a small education team, simulation center, innovation group, or department evaluating shared compute.</p>
+        <p>Place LM Studio or its headless service on a controlled workstation or server, then evaluate LM Link for authorized devices. Name the model administrator, data owner, and downtime plan.</p>
+      </article>
+      <article class="card">
+        <p class="role-tag">Pattern 3</p>
+        <h3>Local-first with controlled cloud escalation</h3>
+        <p><strong>Best for:</strong> a team that wants local defaults but occasionally needs more capacity.</p>
+        <p>Permit hosted use only when the local model is insufficient, the task is non-sensitive or formally cleared, the user sees the boundary change, and organizational policy permits it.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="use-cases-title">
+  <div class="container">
+    <p class="eyebrow">Useful, bounded, reviewable</p>
+    <h2 id="use-cases-title">Use cases that fit a bounded pilot</h2>
+    <div class="guide-table-wrap" tabindex="0" aria-label="Bounded pilot use cases; scroll horizontally on narrow screens">
+      <table class="guide-table">
+        <caption>Potential pilot uses; inclusion does not constitute clinical or institutional approval</caption>
+        <thead>
+          <tr>
+            <th scope="col">Use case</th>
+            <th scope="col">Candidate path</th>
+            <th scope="col">Required guardrail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Nursing education drafts</th><td>Local or LM Link</td><td>Faculty verifies accuracy, level, bias, citations, and alignment before use.</td></tr>
+          <tr><th scope="row">Simulation scenario design</th><td>Local or LM Link</td><td>Use fictional data; a clinical expert validates realism and safety.</td></tr>
+          <tr><th scope="row">Public policy navigation</th><td>Local or LM Link</td><td>Show source passages, document owner, and version date; do not produce silent answers.</td></tr>
+          <tr><th scope="row">De-identified quality-improvement exploration</th><td>Local or LM Link</td><td>Use an approved de-identification process and independently verify calculations and claims.</td></tr>
+          <tr><th scope="row">Shift education and huddle preparation</th><td>Local</td><td>Nurse leader approves content before distribution.</td></tr>
+          <tr><th scope="row">Nurse AI OS development</th><td>Bionic Code Project</td><td>Use development data; never place production secrets, credentials, or regulated records in prompts.</td></tr>
+          <tr><th scope="row">Public-literature synthesis</th><td>Local, LM Link, or approved cloud</td><td>Verify every citation and conclusion against the original publication.</td></tr>
+          <tr><th scope="row">Complex non-sensitive reasoning</th><td>Approved cloud escalation</td><td>Confirm the input is non-sensitive and the hosted boundary is permitted before submission.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="guide-authority-note"><strong>Authority boundary:</strong> This guide does not determine competence, grading, hiring, discipline, credentialing, or clinical authority. Every consequential output requires accountable human review and due process.</p>
+  </div>
+</section>
+
+<section class="section guide-avoid" aria-labelledby="avoid-title">
+  <div class="container narrow">
+    <p class="eyebrow">Stop conditions</p>
+    <h2 id="avoid-title">Do not use this path for</h2>
+    <ul class="guide-stop-list">
+      <li><strong>Patient-care autonomy:</strong> no autonomous diagnosis, triage, treatment, or charting.</li>
+      <li><strong>Unreviewed clinical text:</strong> models can fabricate, omit context, or sound confident while wrong.</li>
+      <li><strong>Default cloud handling of identifiable data:</strong> ZDR does not remove transmission, contracting, risk-analysis, or BAA obligations.</li>
+      <li><strong>Employment or academic decisions:</strong> model output must not be the sole basis for hiring, discipline, grading, credentialing, or progression.</li>
+      <li><strong>Broad file access:</strong> do not point an exploratory agent at shared drives, EHR exports, personnel files, student records, or uncontrolled folders.</li>
+      <li><strong>Unsupported policy answers:</strong> require a source, version, owner, and relevant passage.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="prepare-title">
+  <div class="container narrow">
+    <p class="eyebrow">A governed trial, not a weekend production launch</p>
+    <h2 id="prepare-title">Prepare the environment</h2>
+    <div class="steps guide-steps">
+      <article class="step">
+        <h3>Name one use case and one accountable owner</h3>
+        <p>Define the task, users, prohibited uses, data class, success criteria, failure criteria, and who can stop the pilot.</p>
+      </article>
+      <article class="step">
+        <h3>Choose the processing boundary</h3>
+        <p>Decide whether the task must remain on one device, may use an approved linked device, or can use hosted processing. Make the selected boundary visible to users.</p>
+      </article>
+      <article class="step">
+        <h3>Harden the device or inference node</h3>
+        <p>Use a dedicated account where appropriate, full-disk encryption, automatic security updates, screen locking, endpoint protection, least-privilege folder access, and named administration.</p>
+      </article>
+      <article class="step">
+        <h3>Install from the official source</h3>
+        <p>Download Bionic or LM Studio only from LM Studio's official site. Select a model variant that fits the device, record the model and version, and run synthetic acceptance tests before connecting approved documents.</p>
+      </article>
+      <article class="step">
+        <h3>Add linked compute only when needed</h3>
+        <p>If multiple devices need the same compute, follow the official LM Link setup. Test account access, device discovery, disconnection behavior, model availability, capacity, and removal before operational use.</p>
+      </article>
+      <article class="step">
+        <h3>Define review, logging, updates, and retirement</h3>
+        <p>Record approved models, owners, project folders, evaluation results, incident response, backup rules, change approval, and how a model or device is removed.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="configure-title">
+  <div class="container narrow">
+    <p class="eyebrow">Optional application integration</p>
+    <h2 id="configure-title">Connect only after the pilot boundary is approved</h2>
+    <p>Bionic Work Projects can support research, education, document, and operational work. Code Projects can support local repositories, tests, documentation, scripts, and integrations. Those are LM Studio capabilities; they are not evidence that Nurse AI OS has already connected to them.</p>
+    <p>For a separately reviewed application integration, LM Studio documents a local API pattern at:</p>
+    <pre class="guide-code"><code>http://localhost:1234</code></pre>
+    <p>With LM Link enabled, LM Studio says a client may continue calling the local endpoint while inference is handled by the preferred linked device. Treat that endpoint as an internal service—not as a production security boundary. Restrict exposure, authenticate where appropriate, constrain model and folder access, and test failure behavior.</p>
+    <div class="boundary">
+      <strong>Healthcare cloud boundary:</strong> HHS states that a cloud provider that creates, receives, maintains, or transmits ePHI for a covered entity or business associate is itself a business associate—even if it cannot view encrypted data. A HIPAA-compliant business associate agreement and the covered entity's own risk analysis and safeguards are required. This page does not assert that LM Studio Secure Cloud is approved for ePHI.
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="checklist-title">
+  <div class="container narrow">
+    <p class="eyebrow">Pre-pilot time-out</p>
+    <h2 id="checklist-title">Pilot launch checklist</h2>
+    <p>These are review prompts, not automatic controls. A checked box records a human decision; it does not create compliance.</p>
+    <ul class="guide-checklist">
+      <li><label><input type="checkbox" disabled> The use case and accountable owner are documented.</label></li>
+      <li><label><input type="checkbox" disabled> The data classification and prohibited data are approved.</label></li>
+      <li><label><input type="checkbox" disabled> The processing boundary is visible: local, linked remote, or hosted cloud.</label></li>
+      <li><label><input type="checkbox" disabled> The model, version, quantization, device, and administrator are recorded.</label></li>
+      <li><label><input type="checkbox" disabled> Synthetic or formally approved de-identified test data has been used.</label></li>
+      <li><label><input type="checkbox" disabled> Representative acceptance tests and failure cases have been reviewed.</label></li>
+      <li><label><input type="checkbox" disabled> Cloud use with regulated or confidential data is blocked unless separately approved.</label></li>
+      <li><label><input type="checkbox" disabled> Policy and evidence workflows show original sources and version dates.</label></li>
+      <li><label><input type="checkbox" disabled> Human review is required before clinical, academic, employment, or institutional impact.</label></li>
+      <li><label><input type="checkbox" disabled> Access, updates, incidents, backups, model changes, and retirement have named owners.</label></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section guide-start" aria-labelledby="start-title">
+  <div class="container narrow">
+    <p class="eyebrow">Smallest safe next step</p>
+    <h2 id="start-title">Start with one low-risk workflow</h2>
+    <p>Begin with one capable workstation, one approved open model, one project, and one useful workflow using synthetic or public material—for example, a lesson-plan draft, simulated scenario, public-literature synthesis, or approved policy-navigation test.</p>
+    <p>Measure answer quality, citation accuracy, review burden, latency, failure modes, user trust, and the number of corrections required. Add LM Link only when more than one authorized device needs the compute. Add hosted cloud only after an explicit escalation policy exists.</p>
+    <div class="hero-ctas guide-final-ctas">
+      <a class="btn btn-primary" href="mailto:robert@nurse-ai-os.org?subject=Plan%20a%20private%20Nurse%20AI%20OS%20pilot&amp;body=Role%20or%20team%3A%0AFirst%20low-risk%20use%20case%3A%0AIntended%20boundary%20(local%20%2F%20LM%20Link%20%2F%20hosted)%3A%0AData%20classification%3A%0A">Plan a private pilot →</a>
+      <a class="btn btn-quiet" href="../../resources.html">Return to Resources</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="sources-title">
+  <div class="container narrow">
+    <p class="eyebrow">Verify before implementation</p>
+    <h2 id="sources-title">Primary sources</h2>
+    <p>LM Studio product capabilities and commitments may change. Treat its current documentation as authoritative for Bionic and LM Link behavior; treat your organization's policies and applicable law as authoritative for deployment permission.</p>
+    <ul class="guide-source-list">
+      <li><a href="https://lmstudio.ai/docs/bionic" target="_blank" rel="noopener">LM Studio — Welcome to Bionic ↗</a></li>
+      <li><a href="https://lmstudio.ai/docs/bionic/models" target="_blank" rel="noopener">LM Studio — Choose a cloud, local, or remote model ↗</a></li>
+      <li><a href="https://lmstudio.ai/docs/bionic/models/download-local-models" target="_blank" rel="noopener">LM Studio — Download local models ↗</a></li>
+      <li><a href="https://lmstudio.ai/link" target="_blank" rel="noopener">LM Studio — LM Link overview and preview status ↗</a></li>
+      <li><a href="https://lmstudio.ai/docs/lmlink/basics/faq" target="_blank" rel="noopener">LM Studio — LM Link FAQ ↗</a></li>
+      <li><a href="https://lmstudio.ai/docs/developer/core/lmlink" target="_blank" rel="noopener">LM Studio — Using LM Link through the API ↗</a></li>
+      <li><a href="https://lmstudio.ai/docs/app/offline" target="_blank" rel="noopener">LM Studio — Offline operation ↗</a></li>
+      <li><a href="https://lmstudio.ai/blog/introducing-lm-studio-bionic" target="_blank" rel="noopener">LM Studio — Bionic announcement and ZDR statement ↗</a></li>
+      <li><a href="https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html" target="_blank" rel="noopener">HHS — HIPAA and cloud-computing guidance ↗</a></li>
+      <li><a href="https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html" target="_blank" rel="noopener">HHS — HIPAA de-identification guidance ↗</a></li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <p><strong>Boundary:</strong> Educational and pilot-planning guidance only. No PHI, no clinical authority, and no institutional authorization.</p>
+    <div class="footer-links">
+      <a href="../../index.html">Home</a>
+      <a href="../../explore-ecosystem.html">Explore ecosystem</a>
+      <a href="../../resources.html">Resources</a>
+      <a href="../../about.html">About</a>
+      <a href="../../privacy.html">Privacy</a>
+      <a href="../../terms.html">Terms</a>
+      <a href="mailto:robert@nurse-ai-os.org">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Core browser workflows and self-customization are free.</p>
+  </div>
+</footer>
+<script src="../../assets/site-shell.js" defer></script>
+</body>
+</html>

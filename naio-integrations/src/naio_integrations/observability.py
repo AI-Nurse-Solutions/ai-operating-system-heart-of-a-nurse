@@ -23,11 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-try:
-    import fcntl
-except ImportError:  # pragma: no cover - non-POSIX fallback
-    fcntl = None
-
+from . import locking
 from .contract import GatewayRequest, ObservabilityInterface
 
 GENESIS_HASH = "0" * 64
@@ -136,8 +132,7 @@ class GatewayTracer(ObservabilityInterface):
         path = self._path(tenant)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a+", encoding="utf-8") as handle:
-            if fcntl is not None:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+            locking.acquire(handle)
             try:
                 handle.seek(0)
                 lines = [line for line in handle.read().splitlines() if line.strip()]
@@ -156,5 +151,4 @@ class GatewayTracer(ObservabilityInterface):
                 handle.flush()
                 os.fsync(handle.fileno())
             finally:
-                if fcntl is not None:
-                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+                locking.release(handle)

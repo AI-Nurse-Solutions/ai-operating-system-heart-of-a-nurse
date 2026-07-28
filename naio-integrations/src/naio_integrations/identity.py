@@ -21,12 +21,16 @@ structural:
   relevant.
 
 Persistence is transactional: every mutation acquires an exclusive file
-lock, reloads the latest state from disk, applies and validates the
-change, and writes atomically through a per-writer temporary file — so
-concurrent instances on the same state file serialize instead of losing
-updates. Reads serve the instance's snapshot; mutations always apply to
-the freshest state. Roles are validated against the Mission Control
-packet catalog — the same configuration that defines the role packets.
+lock (cross-platform, stdlib-only — see ``locking``), reloads the
+latest state from disk, applies and validates the change, and writes
+atomically through a per-writer temporary file — so concurrent
+instances on the same state file serialize instead of losing updates.
+Reads serve the instance's snapshot; mutations always apply to the
+freshest state. Free-text quick capture (inbox, calendar, portfolio)
+passes through the privacy screen before it is persisted, so
+identifiers never land in plaintext identity state. Roles are validated
+against the Mission Control packet catalog — the same configuration
+that defines the role packets.
 """
 
 from __future__ import annotations
@@ -37,13 +41,10 @@ import secrets
 from pathlib import Path
 from typing import Any, Callable
 
-try:
-    import fcntl
-except ImportError:  # pragma: no cover - non-POSIX fallback
-    fcntl = None
-
+from . import locking
 from .contract import Actor
 from .packets import PacketCatalog
+from .privacy import PrivacyScreen
 
 STATE_VERSION = "1.0.0"
 
@@ -76,11 +77,13 @@ class MultiRoleIdentity:
         identity_id: str,
         state_path: Path,
         catalog: PacketCatalog | None = None,
+        privacy: PrivacyScreen | None = None,
     ):
         if not identity_id.strip():
             raise IdentityError("an identity requires a non-empty id")
         self.identity_id = identity_id
         self.catalog = catalog or PacketCatalog()
+        self.privacy = privacy or PrivacyScreen()
         self.state_path = state_path
         self._lock_path = state_path.with_name(state_path.name + ".lock")
         if state_path.exists():
@@ -194,13 +197,20 @@ class MultiRoleIdentity:
         self._mutate(apply)
 
     def add_inbox_item(self, item: str) -> None:
-        self._mutate(lambda state: state["inbox"].append(item))
+        screened = self._screen(item)
+        self._mutate(lambda state: state["inbox"].append(screened))
 
     def add_calendar_entry(self, entry: str) -> None:
-        self._mutate(lambda state: state["calendar"].append(entry))
+        screened = self._screen(entry)
+        self._mutate(lambda state: state["calendar"].append(screened))
 
     def add_portfolio_item(self, item: str) -> None:
-        self._mutate(lambda state: state["portfolio"].append(item))
+        screened = self._screen(item)
+        self._mutate(lambda state: state["portfolio"].append(screened))
+
+    def _screen(self, text: str) -> str:
+        """Quick capture crosses a storage boundary — screen it first."""
+        return self.privacy.transform(str(text)).transformed_text
 
     # ------------------------------------------------------------------
     # Lenses
@@ -271,9 +281,13 @@ class MultiRoleIdentity:
         if not self.state["cross_role_suggestions_enabled"]:
             return ()
         active = self.state["active_role"]
+        activated = set(self.state["roles"])
         results = []
         for project_id, project in sorted(self.state["projects"].items()):
-            other_roles = [r for r in project["roles"] if r != active]
+            # Stale tags from since-deactivated roles never surface.
+            other_roles = [
+                r for r in project["roles"] if r != active and r in activated
+            ]
             if active not in project["roles"] and other_roles:
                 results.append(
                     {
@@ -304,8 +318,7 @@ class MultiRoleIdentity:
     def _mutate(self, apply: Callable[[dict[str, Any]], Any]) -> Any:
         self.state_path.parent.mkdir(parents=True, exist_ok=True)
         with self._lock_path.open("a+", encoding="utf-8") as lock:
-            if fcntl is not None:
-                fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            locking.acquire(lock)
             try:
                 if self.state_path.exists():
                     self.state = self._load()
@@ -321,5 +334,4 @@ class MultiRoleIdentity:
                 tmp.replace(self.state_path)
                 return result
             finally:
-                if fcntl is not None:
-                    fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+                locking.release(lock)

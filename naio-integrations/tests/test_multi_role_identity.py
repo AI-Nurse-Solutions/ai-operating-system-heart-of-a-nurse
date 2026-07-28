@@ -186,6 +186,32 @@ class MultiRoleIdentityTests(unittest.TestCase):
                 "personal:rn-avery", authenticated_org="org:mercy"
             )
 
+    def test_suggestions_never_reference_deactivated_roles(self):
+        self.identity.activate_role("staff-nurse")
+        self.identity.activate_role("educator")
+        self.identity.activate_role("leader")
+        self.identity.add_project(
+            "board-report", "Quarterly board report", roles=("leader",)
+        )
+        self.identity.deactivate_role("leader")
+        self.identity.switch_role("educator")
+        self.identity.enable_cross_role_suggestions(True)
+        for suggestion in self.identity.suggestions():
+            self.assertNotIn("leader", suggestion["suggestion"], suggestion)
+            self.assertNotEqual(suggestion["reference"], "board-report")
+
+    def test_quick_capture_is_privacy_screened_before_persistence(self):
+        self.identity.activate_role("staff-nurse")
+        self.identity.add_inbox_item("Follow up on MRN: A123456 before handoff")
+        self.identity.add_calendar_entry("Call 555-867-5309 about the committee")
+        view = self.identity.view("staff-nurse")
+        self.assertNotIn("A123456", " ".join(view["inbox"]))
+        self.assertIn("<MRN>", view["inbox"][0])
+        self.assertNotIn("555-867-5309", " ".join(view["calendar"]))
+        on_disk = self.state.read_text(encoding="utf-8")
+        self.assertNotIn("A123456", on_disk)
+        self.assertNotIn("555-867-5309", on_disk)
+
     def test_cross_role_suggestions_are_off_by_default_and_explained_when_on(self):
         self.activate_icu_nurse_preceptor_qi_lead()
         self.identity.switch_role("educator")

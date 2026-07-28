@@ -47,7 +47,12 @@ class SoulQuizFiveDoorTests(unittest.TestCase):
           }));
         """)
         self.assertEqual(result["name"], "Jordan")
-        self.assertTrue(all(result["safety"].values()))
+        self.assertEqual(result["safety"], {
+            "noPhi": True,
+            "noClinicalAuthority": True,
+            "noAcademicDishonesty": True,
+            "noCredentialInference": True,
+        })
         self.assertEqual(result["quickStart"]["primaryLane"], "staff-nurse")
         self.assertEqual(result["quickStart"]["roleContext"], "")
         self.assertEqual(result["quickStart"]["currentMission"], "")
@@ -154,7 +159,14 @@ class SoulQuizFiveDoorTests(unittest.TestCase):
             const state=createInitialState('2026-07-28T00:00:00.000Z');
             Object.assign(state.quickStart,{primaryLane:'staff-nurse',roleContext:'staff-practice',currentMission:'improve-daily-work',projectState:'no-project',secondaryLanes,firstArtifact:'structured-question'});
             try { applyQuickStartRouting(state); return {ok:true,roles:state.roleSelections}; }
-            catch (error) { return {ok:false,message:error.message}; }
+            catch (error) {
+              const expected=new Set([
+                'Choose no more than two unique secondary hats.',
+                'Secondary hats must be valid and different from the primary workspace.'
+              ]);
+              if (!(error instanceof Error) || !expected.has(error.message)) throw error;
+              return {ok:false,message:error.message};
+            }
           };
           console.log(JSON.stringify({none:attempt([]),two:attempt(['educator','leader']),three:attempt(['educator','leader','licensed-clinician']),duplicate:attempt(['educator','educator']),primaryAgain:attempt(['staff-nurse'])}));
         """)
@@ -175,7 +187,11 @@ class SoulQuizFiveDoorTests(unittest.TestCase):
             firstArtifact:'learning-plan'
           });
           let refused=false;
-          try { applyQuickStartRouting(state); } catch { refused=true; }
+          try { applyQuickStartRouting(state); }
+          catch (error) {
+            if (!(error instanceof Error) || error.message !== 'Choose a project or research status offered for the selected workspace.') throw error;
+            refused=true;
+          }
           console.log(JSON.stringify({refused}));
         """)
         self.assertTrue(result["refused"])

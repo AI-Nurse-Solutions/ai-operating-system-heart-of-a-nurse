@@ -203,7 +203,7 @@ class KnowledgeSource:
 
     source_id: str
     title: str
-    doc_type: str  # "policy" | "research" | "local_practice"
+    doc_type: str  # "policy" | "research" | "local_practice" | "synthetic_case"
     effective_date: str
     expires_date: str | None
     jurisdiction: str

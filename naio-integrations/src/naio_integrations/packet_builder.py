@@ -1,9 +1,10 @@
 """Installable role-packet bundles (Mission Control spec section 14).
 
-Phase 2 of the release sequence: the first role packets — pre-licensure
-student, staff nurse, and educator/preceptor/mentor. A bundle turns a
-packet directory from a manifest into something independently useful
-immediately after installation:
+Phases 2 and 3 of the release sequence: the Phase 2 packets —
+pre-licensure student, staff nurse, and educator/preceptor/mentor — and
+the leader packet, unlocked by Phase 3 alongside the healthcare
+sandbox. A bundle turns a packet directory from a manifest into
+something independently useful immediately after installation:
 
 * ``manifest.json``      — the verified, checksummed packet manifest
 * ``README.md``          — the section 19 recognitions: who this is for,
@@ -30,6 +31,16 @@ from .deliverables import DeliverableStudio
 from .packets import PacketCatalog, render_manifest, verify_manifest
 
 PHASE_2_ROLES = ("pre-licensure-student", "staff-nurse", "educator")
+PHASE_3_ROLES = ("leader",)
+INSTALLABLE_ROLES = PHASE_2_ROLES + PHASE_3_ROLES
+
+_ACRONYMS = {"ai": "AI", "adpie": "ADPIE"}
+
+
+def _module_label(module: str) -> str:
+    words = [_ACRONYMS.get(word, word) for word in module.split("-")]
+    label = " ".join(words)
+    return label[0].upper() + label[1:]
 
 
 class PacketBundleBuilder:
@@ -85,11 +96,16 @@ class PacketBundleBuilder:
             written.append(template_path)
         return written
 
-    def build_phase2(self, packets_root: Path) -> list[Path]:
+    def build_roles(
+        self, packets_root: Path, roles: tuple[str, ...] = INSTALLABLE_ROLES
+    ) -> list[Path]:
         written: list[Path] = []
-        for role in PHASE_2_ROLES:
+        for role in roles:
             written.extend(self.build(role, packets_root / role))
         return written
+
+    def build_phase2(self, packets_root: Path) -> list[Path]:
+        return self.build_roles(packets_root, PHASE_2_ROLES)
 
     # ------------------------------------------------------------------
 
@@ -122,7 +138,7 @@ class PacketBundleBuilder:
             "## What it helps you accomplish",
             "",
         ]
-        lines += [f"- {module.replace('-', ' ').capitalize()}" for module in role_modules]
+        lines += [f"- {_module_label(module)}" for module in role_modules]
         lines += [
             "",
             "## What it will never do on its own",

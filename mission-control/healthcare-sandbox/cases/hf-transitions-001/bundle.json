@@ -1,0 +1,244 @@
+{
+  "entry": [
+    {
+      "resource": {
+        "birthDate": "1954-03-07",
+        "gender": "female",
+        "id": "hf-transitions-001-person",
+        "identifier": [
+          {
+            "system": "urn:naio:sandbox-id",
+            "value": "SYN-HF-0001"
+          }
+        ],
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "name": [
+          {
+            "family": "Kestrel842",
+            "given": [
+              "Amara701"
+            ]
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "resource": {
+        "class": {
+          "code": "IMP"
+        },
+        "id": "hf-transitions-001-encounter",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "period": {
+          "end": "2026-06-06",
+          "start": "2026-06-02"
+        },
+        "resourceType": "Encounter",
+        "status": "finished",
+        "subject": {
+          "reference": "Patient/hf-transitions-001-person"
+        },
+        "type": [
+          {
+            "text": "Inpatient stay for heart failure exacerbation, resolved"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "clinicalStatus": {
+          "text": "active"
+        },
+        "code": {
+          "text": "Heart failure with reduced ejection fraction (synthetic scenario)"
+        },
+        "id": "hf-transitions-001-condition-1",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "onsetDateTime": "2024-11-18",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "Patient/hf-transitions-001-person"
+        },
+        "verificationStatus": {
+          "text": "confirmed"
+        }
+      }
+    },
+    {
+      "resource": {
+        "clinicalStatus": {
+          "text": "active"
+        },
+        "code": {
+          "text": "Essential hypertension (synthetic scenario)"
+        },
+        "id": "hf-transitions-001-condition-2",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "onsetDateTime": "2019-05-02",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "Patient/hf-transitions-001-person"
+        },
+        "verificationStatus": {
+          "text": "confirmed"
+        }
+      }
+    },
+    {
+      "resource": {
+        "dosageInstruction": [
+          {
+            "text": "Continue at the dose set in the synthetic discharge plan; teach daily weight monitoring."
+          }
+        ],
+        "id": "hf-transitions-001-medication-1",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "text": "Loop diuretic, oral (synthetic scenario)"
+        },
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "subject": {
+          "reference": "Patient/hf-transitions-001-person"
+        }
+      }
+    },
+    {
+      "resource": {
+        "dosageInstruction": [
+          {
+            "text": "Continue as tolerated per the synthetic scenario; review with the follow-up clinician."
+          }
+        ],
+        "id": "hf-transitions-001-medication-2",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "text": "Beta blocker, oral (synthetic scenario)"
+        },
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "subject": {
+          "reference": "Patient/hf-transitions-001-person"
+        }
+      }
+    },
+    {
+      "resource": {
+        "code": {
+          "text": "Body weight"
+        },
+        "effectiveDateTime": "2026-06-06",
+        "id": "hf-transitions-001-observation-1",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/hf-transitions-001-person"
+        },
+        "valueQuantity": {
+          "unit": "kg",
+          "value": 82.4
+        }
+      }
+    },
+    {
+      "resource": {
+        "code": {
+          "text": "Heart rate"
+        },
+        "effectiveDateTime": "2026-06-06",
+        "id": "hf-transitions-001-observation-2",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/hf-transitions-001-person"
+        },
+        "valueQuantity": {
+          "unit": "beats/min",
+          "value": 78
+        }
+      }
+    }
+  ],
+  "id": "hf-transitions-001-bundle",
+  "meta": {
+    "security": [
+      {
+        "code": "SYNTHETIC",
+        "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+        "system": "urn:naio:healthcare-sandbox"
+      }
+    ]
+  },
+  "resourceType": "Bundle",
+  "type": "collection"
+}

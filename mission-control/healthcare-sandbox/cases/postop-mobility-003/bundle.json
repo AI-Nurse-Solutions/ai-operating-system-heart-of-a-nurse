@@ -1,0 +1,216 @@
+{
+  "entry": [
+    {
+      "resource": {
+        "birthDate": "1948-12-01",
+        "gender": "female",
+        "id": "postop-mobility-003-person",
+        "identifier": [
+          {
+            "system": "urn:naio:sandbox-id",
+            "value": "SYN-OR-0003"
+          }
+        ],
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "name": [
+          {
+            "family": "Farrow516",
+            "given": [
+              "Ilse902"
+            ]
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "resource": {
+        "class": {
+          "code": "IMP"
+        },
+        "id": "postop-mobility-003-encounter",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "period": {
+          "end": "2026-06-24",
+          "start": "2026-06-20"
+        },
+        "resourceType": "Encounter",
+        "status": "finished",
+        "subject": {
+          "reference": "Patient/postop-mobility-003-person"
+        },
+        "type": [
+          {
+            "text": "Inpatient stay after elective hip replacement, in recovery"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "clinicalStatus": {
+          "text": "active"
+        },
+        "code": {
+          "text": "Status after elective hip replacement (synthetic scenario)"
+        },
+        "id": "postop-mobility-003-condition-1",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "onsetDateTime": "2026-06-20",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "Patient/postop-mobility-003-person"
+        },
+        "verificationStatus": {
+          "text": "confirmed"
+        }
+      }
+    },
+    {
+      "resource": {
+        "clinicalStatus": {
+          "text": "active"
+        },
+        "code": {
+          "text": "Osteoarthritis of the hip (synthetic scenario)"
+        },
+        "id": "postop-mobility-003-condition-2",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "onsetDateTime": "2021-02-10",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "Patient/postop-mobility-003-person"
+        },
+        "verificationStatus": {
+          "text": "confirmed"
+        }
+      }
+    },
+    {
+      "resource": {
+        "dosageInstruction": [
+          {
+            "text": "Scheduled dosing per the synthetic plan; reassess pain before and after mobility work."
+          }
+        ],
+        "id": "postop-mobility-003-medication-1",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "text": "Scheduled non-opioid analgesic (synthetic scenario)"
+        },
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "subject": {
+          "reference": "Patient/postop-mobility-003-person"
+        }
+      }
+    },
+    {
+      "resource": {
+        "code": {
+          "text": "Pain score at rest"
+        },
+        "effectiveDateTime": "2026-06-22",
+        "id": "postop-mobility-003-observation-1",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/postop-mobility-003-person"
+        },
+        "valueQuantity": {
+          "unit": "score",
+          "value": 3
+        }
+      }
+    },
+    {
+      "resource": {
+        "code": {
+          "text": "Morse fall scale total"
+        },
+        "effectiveDateTime": "2026-06-22",
+        "id": "postop-mobility-003-observation-2",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/postop-mobility-003-person"
+        },
+        "valueQuantity": {
+          "unit": "score",
+          "value": 55
+        }
+      }
+    }
+  ],
+  "id": "postop-mobility-003-bundle",
+  "meta": {
+    "security": [
+      {
+        "code": "SYNTHETIC",
+        "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+        "system": "urn:naio:healthcare-sandbox"
+      }
+    ]
+  },
+  "resourceType": "Bundle",
+  "type": "collection"
+}

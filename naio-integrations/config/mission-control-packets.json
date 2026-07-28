@@ -122,6 +122,12 @@
         "project-manager",
         "writing-presentation-assistant",
         "governance-safety-checker"
+      ],
+      "starter_templates": [
+        "executive-brief",
+        "meeting-pack",
+        "communication-plan",
+        "dashboard-summary"
       ]
     },
     "educator": {

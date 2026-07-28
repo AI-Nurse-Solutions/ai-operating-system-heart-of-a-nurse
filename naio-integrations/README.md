@@ -120,6 +120,25 @@ date direction, jurisdiction, and document-type changes. Tracing a
 claim replays its sources' full governance metadata, including the
 local-policy precedence indicator.
 
+### Healthcare sandbox (Mission Control §17, Phase 3)
+
+`sandbox.py` is a safe place to practice on patient-shaped data with no
+patients in it. The reviewed case catalog expands into FHIR-shaped
+bundles (the synthetichealth/synthea pattern: generated records whose
+numeric-suffix names are unmistakably synthetic) served through a
+tenant-scoped read/search surface (the hapifhir/hapi-fhir pattern),
+without vendoring either project. The synthetic label is
+caller-controlled, so admission never trusts it alone: a strict
+schema admits only the five generated resource types with only their
+generated fields (free-form demographics have nowhere to live),
+Patients must carry the numeric-suffix generation markers and the
+sandbox identifier system, every string must still pass the privacy
+screen, and governance does not relax because data is synthetic — role
+gates and the ADPIE human-authorization gate apply unchanged. Cases
+feed the existing contract surfaces: `as_knowledge_sources()` for
+governed retrieval and `start_case_workflow()` for the orchestration
+runtime.
+
 ## Layer responsibilities
 
 | Layer | Question it answers |

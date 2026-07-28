@@ -1,0 +1,188 @@
+{
+  "entry": [
+    {
+      "resource": {
+        "birthDate": "1981-09-22",
+        "gender": "male",
+        "id": "dm2-education-002-person",
+        "identifier": [
+          {
+            "system": "urn:naio:sandbox-id",
+            "value": "SYN-DM-0002"
+          }
+        ],
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "name": [
+          {
+            "family": "Marlowe228",
+            "given": [
+              "Devon315"
+            ]
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "resource": {
+        "class": {
+          "code": "AMB"
+        },
+        "id": "dm2-education-002-encounter",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "period": {
+          "end": "2026-06-14",
+          "start": "2026-06-14"
+        },
+        "resourceType": "Encounter",
+        "status": "finished",
+        "subject": {
+          "reference": "Patient/dm2-education-002-person"
+        },
+        "type": [
+          {
+            "text": "Ambulatory education visit, completed"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "clinicalStatus": {
+          "text": "active"
+        },
+        "code": {
+          "text": "Type 2 diabetes mellitus, newly identified (synthetic scenario)"
+        },
+        "id": "dm2-education-002-condition-1",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "onsetDateTime": "2026-05-30",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "Patient/dm2-education-002-person"
+        },
+        "verificationStatus": {
+          "text": "confirmed"
+        }
+      }
+    },
+    {
+      "resource": {
+        "dosageInstruction": [
+          {
+            "text": "Take with the morning meal as set in the synthetic plan; review side effects at follow-up."
+          }
+        ],
+        "id": "dm2-education-002-medication-1",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "text": "Oral glucose-lowering agent (synthetic scenario)"
+        },
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "subject": {
+          "reference": "Patient/dm2-education-002-person"
+        }
+      }
+    },
+    {
+      "resource": {
+        "code": {
+          "text": "Hemoglobin A1c"
+        },
+        "effectiveDateTime": "2026-05-30",
+        "id": "dm2-education-002-observation-1",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/dm2-education-002-person"
+        },
+        "valueQuantity": {
+          "unit": "%",
+          "value": 8.1
+        }
+      }
+    },
+    {
+      "resource": {
+        "code": {
+          "text": "Body mass index"
+        },
+        "effectiveDateTime": "2026-06-14",
+        "id": "dm2-education-002-observation-2",
+        "meta": {
+          "security": [
+            {
+              "code": "SYNTHETIC",
+              "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+              "system": "urn:naio:healthcare-sandbox"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/dm2-education-002-person"
+        },
+        "valueQuantity": {
+          "unit": "kg/m2",
+          "value": 31.2
+        }
+      }
+    }
+  ],
+  "id": "dm2-education-002-bundle",
+  "meta": {
+    "security": [
+      {
+        "code": "SYNTHETIC",
+        "display": "SYNTHETIC RECORD \u2014 generated for practice and demonstration. No real person exists behind this data, and it is not clinical evidence. Numeric-suffix names mark every generated record.",
+        "system": "urn:naio:healthcare-sandbox"
+      }
+    ]
+  },
+  "resourceType": "Bundle",
+  "type": "collection"
+}

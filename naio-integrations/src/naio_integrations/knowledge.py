@@ -63,6 +63,12 @@ class GovernedKnowledge(KnowledgeRetrievalInterface):
                     f"JURISDICTION: {source.source_id} applies to "
                     f"{source.jurisdiction}, not {self.home_jurisdiction}."
                 )
+            if source.doc_type == "synthetic_case":
+                passage_warnings.append(
+                    f"SYNTHETIC: {source.source_id} is fictional teaching "
+                    "material from the healthcare sandbox — not evidence "
+                    "for practice."
+                )
             warnings.extend(passage_warnings)
             passages.append(
                 {
@@ -87,7 +93,8 @@ class GovernedKnowledge(KnowledgeRetrievalInterface):
                     "answer without grounding."
                 ),
             )
-        order = {"policy": 0, "local_practice": 1, "research": 2}
+        # Synthetic sandbox cases always rank after real evidence types.
+        order = {"policy": 0, "local_practice": 1, "research": 2, "synthetic_case": 3}
         passages.sort(
             key=lambda passage: (
                 order.get(passage["doc_type"], 3),

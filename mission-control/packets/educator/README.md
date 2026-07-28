@@ -4,7 +4,7 @@ Packet `nurse-ai-os-mission-control-educator` v1.0.0 · NIN-NAIO Master Directiv
 
 ## Who this workspace is for
 
-A educator, preceptor, or mentor using Nurse AI OS as a governed professional environment. One identity can hold this role alongside others — roles are lenses, never separate accounts.
+An educator, preceptor, or mentor using Nurse AI OS as a governed professional environment. One identity can hold this role alongside others — roles are lenses, never separate accounts.
 
 ## What it helps you accomplish
 

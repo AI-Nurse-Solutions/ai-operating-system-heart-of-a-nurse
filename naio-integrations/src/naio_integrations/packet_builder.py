@@ -105,6 +105,8 @@ class PacketBundleBuilder:
         agents = [agent["agent_id"] for agent in manifest["default_agents"]]
         templates = packet_config.get("starter_templates", ())
         governance = manifest["governance"]
+        subject = display.lower()
+        article = "An" if subject[:1] in "aeiou" else "A"
         lines = [
             f"# {display} — Mission Control Packet",
             "",
@@ -113,7 +115,7 @@ class PacketBundleBuilder:
             "",
             "## Who this workspace is for",
             "",
-            f"A {display.lower()} using Nurse AI OS as a governed professional"
+            f"{article} {subject} using Nurse AI OS as a governed professional"
             " environment. One identity can hold this role alongside others —"
             " roles are lenses, never separate accounts.",
             "",

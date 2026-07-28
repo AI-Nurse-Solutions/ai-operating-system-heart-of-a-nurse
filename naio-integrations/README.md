@@ -147,8 +147,10 @@ recruiting participants, submitting to an IRB, sharing a dataset — is
 gated by activity class in `config/edena-gateway-policy.json`,
 independent of action mode. Execution intents run only in the
 restricted data zone, require an authenticated organizational context
-matching the current workspace, and require a recorded governance
-approval (IRB or equivalent); every allowed execution carries a
+matching the current workspace, and require a governance approval
+(IRB or equivalent) that is named on the request and recorded for the
+actor — an unrelated approval satisfies nothing, and a fabricated
+reference is denied outright; every allowed execution carries a
 research-governance audit obligation. Drafting a protocol or research
 question remains ordinary draft work through the Knowledge and
 Evidence Center.

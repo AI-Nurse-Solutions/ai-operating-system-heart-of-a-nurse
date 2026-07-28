@@ -385,6 +385,37 @@ class ResearchGovernanceGateTests(unittest.TestCase):
             "record_research_governance_approval", decision.obligations
         )
 
+    def test_unrelated_approval_is_not_research_governance(self):
+        # Holding some approval is not the same as naming a research
+        # governance approval on the request.
+        holder = Actor(
+            actor_id="np-1",
+            role="licensed-clinician",
+            tenant="org:st-vincent",
+            authenticated_org="org:st-vincent",
+            approvals=("appr-77",),
+        )
+        decision = self.engine.decide(self._research_request(actor=holder))
+        self.assertIs(decision.decision, Decision.REQUIRE_APPROVAL)
+        self.assertIn("EDENA-RESEARCH-APPROVAL", decision.reason_codes)
+
+    def test_fabricated_research_approval_reference_is_denied(self):
+        holder = Actor(
+            actor_id="np-1",
+            role="licensed-clinician",
+            tenant="org:st-vincent",
+            authenticated_org="org:st-vincent",
+            approvals=("appr-77",),
+        )
+        decision = self.engine.decide(
+            self._research_request(
+                actor=holder,
+                metadata={"research_approval_id": "irb-invented"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", decision.reason_codes)
+
     def test_research_execution_with_governance_in_place_is_allowed(self):
         approved = Actor(
             actor_id="np-1",
@@ -393,7 +424,12 @@ class ResearchGovernanceGateTests(unittest.TestCase):
             authenticated_org="org:st-vincent",
             approvals=("irb-2026-014",),
         )
-        decision = self.engine.decide(self._research_request(actor=approved))
+        decision = self.engine.decide(
+            self._research_request(
+                actor=approved,
+                metadata={"research_approval_id": "irb-2026-014"},
+            )
+        )
         self.assertIs(decision.decision, Decision.ALLOW)
         self.assertIn("research_governance_audit", decision.obligations)
 

@@ -110,13 +110,24 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
                 or actor.authenticated_org != actor.tenant
             ):
                 return self._deny("EDENA-RESEARCH-UNAFFILIATED")
-            if research_rules.get("requires_recorded_approval") and not actor.approvals:
-                return PolicyDecision(
-                    decision=Decision.REQUIRE_APPROVAL,
-                    reason_codes=("EDENA-RESEARCH-APPROVAL",),
-                    obligations=("record_research_governance_approval",),
-                    policy_version=self.version,
+            if research_rules.get("requires_recorded_approval"):
+                # The approval must be named on the request AND recorded
+                # for the actor — an unrelated approval the actor happens
+                # to hold is not research governance, and a fabricated
+                # reference fails closed, matching the side-effect gate.
+                key = research_rules.get(
+                    "approval_metadata_key", "research_approval_id"
                 )
+                approval_ref = request.metadata.get(key)
+                if not approval_ref:
+                    return PolicyDecision(
+                        decision=Decision.REQUIRE_APPROVAL,
+                        reason_codes=("EDENA-RESEARCH-APPROVAL",),
+                        obligations=("record_research_governance_approval",),
+                        policy_version=self.version,
+                    )
+                if approval_ref not in actor.approvals:
+                    return self._deny("EDENA-APPROVAL-UNRECOGNIZED")
 
         data_ceiling = self.policy["tier_data_ceilings"].get(tier.value)
         if data_ceiling is None or data.rank > DataClass(data_ceiling).rank:

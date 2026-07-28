@@ -55,7 +55,8 @@
     ],
     "required_zone": "restricted",
     "requires_institutional_authentication": true,
-    "requires_recorded_approval": true
+    "requires_recorded_approval": true,
+    "approval_metadata_key": "research_approval_id"
   },
   "prohibited": {
     "risk_tiers": ["red-p"],

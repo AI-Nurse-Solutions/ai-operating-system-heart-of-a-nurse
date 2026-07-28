@@ -196,6 +196,7 @@ class ClaimLedger:
 
     def confirm_assumption(
         self,
+        tenant: str,
         claim_id: str,
         source_ids: tuple[str, ...],
         confirmed_by: str,
@@ -203,7 +204,9 @@ class ClaimLedger:
         new_label: str = "verified_source",
     ) -> Claim:
         claim = self._claims.get(claim_id)
-        if claim is None:
+        if claim is None or claim.tenant != tenant:
+            # A foreign tenant's claim id reads as unknown — existence is
+            # not disclosed across the boundary.
             raise EvidenceError(f"unknown claim: {claim_id}")
         if claim.status != "awaiting_confirmation":
             raise EvidenceError("only an awaiting assumption can be confirmed")
@@ -238,10 +241,10 @@ class ClaimLedger:
             if claim.tenant == tenant and claim.status == "awaiting_confirmation"
         )
 
-    def trace(self, claim_id: str) -> dict:
+    def trace(self, tenant: str, claim_id: str) -> dict:
         """A claim plus the full governance metadata of every cited source."""
         claim = self._claims.get(claim_id)
-        if claim is None:
+        if claim is None or claim.tenant != tenant:
             raise EvidenceError(f"unknown claim: {claim_id}")
         sources = []
         for source_id in claim.source_ids:

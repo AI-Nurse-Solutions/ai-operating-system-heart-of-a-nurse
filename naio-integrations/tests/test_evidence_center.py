@@ -161,7 +161,7 @@ class ClaimLedgerTests(unittest.TestCase):
             "ai_synthesis",
             source_ids=("research-falls-2025", "policy-falls-2026"),
         )
-        trace = self.ledger.trace(claim.claim_id)
+        trace = self.ledger.trace("org:mercy", claim.claim_id)
         self.assertEqual(trace["label"], "ai_synthesis")
         self.assertEqual(len(trace["sources"]), 2)
         by_id = {s["source_id"]: s for s in trace["sources"]}
@@ -183,13 +183,16 @@ class ClaimLedgerTests(unittest.TestCase):
         )
         with self.assertRaises(EvidenceError):
             self.ledger.confirm_assumption(
+                "org:mercy",
                 assumption.claim_id, ("policy-falls-2026",), "  ", "2026-07-28"
             )
         with self.assertRaises(EvidenceError):
             self.ledger.confirm_assumption(
+                "org:mercy",
                 assumption.claim_id, (), "Educator Kim", "2026-07-28"
             )
         confirmed = self.ledger.confirm_assumption(
+            "org:mercy",
             assumption.claim_id,
             ("policy-falls-2026",),
             "Educator Kim",
@@ -209,7 +212,7 @@ class ClaimLedgerTests(unittest.TestCase):
         )
         with self.assertRaises(EvidenceError):
             self.ledger.confirm_assumption(
-                supported.claim_id, ("policy-falls-2026",), "Kim", "2026-07-28"
+                "org:mercy", supported.claim_id, ("policy-falls-2026",), "Kim", "2026-07-28"
             )
 
     def test_assumption_citations_are_validated_at_record_time(self):
@@ -226,7 +229,7 @@ class ClaimLedgerTests(unittest.TestCase):
             "assumption_requiring_confirmation",
             source_ids=("research-falls-2025",),
         )
-        trace = self.ledger.trace(tentative.claim_id)
+        trace = self.ledger.trace("org:mercy", tentative.claim_id)
         self.assertEqual(trace["status"], "awaiting_confirmation")
         self.assertEqual(len(trace["sources"]), 1)
 
@@ -237,6 +240,7 @@ class ClaimLedgerTests(unittest.TestCase):
             "assumption_requiring_confirmation",
         )
         self.ledger.confirm_assumption(
+            "org:mercy",
             assumption.claim_id,
             ("policy-falls-2026",),
             "Educator Kim",
@@ -275,12 +279,41 @@ class ClaimLedgerTests(unittest.TestCase):
         )
         with self.assertRaises(EvidenceError):
             self.ledger.confirm_assumption(
+                "org:mercy",
                 assumption.claim_id,
                 ("research-falls-2025",),
                 "Educator Kim",
                 "2026-07-28",
                 new_label="local_policy",
             )
+
+    def test_trace_and_confirm_are_tenant_scoped(self):
+        claim = self.ledger.record_claim(
+            "org:mercy",
+            "Hourly rounding reduces falls.",
+            "verified_source",
+            source_ids=("policy-falls-2026",),
+        )
+        assumption = self.ledger.record_claim(
+            "org:mercy",
+            "Compliance dips on weekends.",
+            "assumption_requiring_confirmation",
+        )
+        # A foreign tenant holding a leaked claim id learns nothing and
+        # changes nothing — the claim reads as unknown across the boundary.
+        with self.assertRaises(EvidenceError):
+            self.ledger.trace("personal:rn-1", claim.claim_id)
+        with self.assertRaises(EvidenceError):
+            self.ledger.confirm_assumption(
+                "personal:rn-1",
+                assumption.claim_id,
+                ("policy-falls-2026",),
+                "Impostor",
+                "2026-07-28",
+            )
+        self.assertEqual(
+            self.ledger.unconfirmed_assumptions("org:mercy"), (assumption,)
+        )
 
     def test_claim_text_is_privacy_screened(self):
         claim = self.ledger.record_claim(

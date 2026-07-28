@@ -41,7 +41,7 @@ const browser = await chromium.launch({ channel: 'chrome', headless: true });
 
 try {
   for (const width of [320, 390, 768, 1024, 1280]) {
-    const page = await browser.newPage({ viewport: { width, height: 844 } });
+    const page = await browser.newPage({ viewport: { width, height: 900 } });
     const errors = [];
     page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
     page.on('pageerror', (error) => errors.push(error.message));
@@ -49,9 +49,9 @@ try {
       if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`);
     });
 
-    const response = await page.goto(`http://127.0.0.1:${port}/`);
-    assert.equal(response?.status(), 200, `homepage must return HTTP 200 at ${width}px`);
-    await page.locator('.leader-walkthrough-grid').waitFor();
+    const response = await page.goto(`http://127.0.0.1:${port}/guides/nurse-ai-os-lm-studio-bionic/`);
+    assert.equal(response?.status(), 200, `guide must return HTTP 200 at ${width}px`);
+    await page.locator('.guide-path-grid').waitFor();
 
     const geometry = await page.evaluate(() => {
       const visibleRects = (selector) => [...document.querySelectorAll(selector)]
@@ -60,46 +60,62 @@ try {
           return style.display !== 'none' && style.visibility !== 'hidden';
         })
         .map((element) => element.getBoundingClientRect());
-      const cardButtons = visibleRects('.leader-walkthrough-card .btn');
-      const navLinks = visibleRects('.leader-educator-home .nav-links a');
+      const navLinks = visibleRects('.local-ai-guide .nav-links a');
+      const heroButtons = visibleRects('.guide-hero .btn');
+      const tableWrappers = [...document.querySelectorAll('.guide-table-wrap')];
       return {
-        cardButtonHeights: cardButtons.map((rect) => rect.height),
+        heroButtonHeights: heroButtons.map((rect) => rect.height),
         navLinkHeights: navLinks.map((rect) => rect.height),
         navLinkWidths: navLinks.map((rect) => rect.width),
         pageOverflow: document.documentElement.scrollWidth > window.innerWidth,
-        targetsWithinViewport: [...cardButtons, ...navLinks].every(
+        targetsWithinViewport: [...navLinks, ...heroButtons].every(
           (rect) => rect.left >= -0.5 && rect.right <= window.innerWidth + 0.5
-        )
+        ),
+        tableWrappers: tableWrappers.map((element) => ({
+          scrollable: element.scrollWidth > element.clientWidth,
+          tabindex: element.getAttribute('tabindex')
+        }))
       };
     });
 
-    assert.equal(geometry.pageOverflow, false, `homepage must not overflow at ${width}px`);
-    assert.equal(geometry.targetsWithinViewport, true, `targets must remain in bounds at ${width}px`);
-    assert.ok(geometry.cardButtonHeights.length >= 3, 'all walkthrough actions must be measurable');
-    assert.ok(geometry.navLinkHeights.length >= 3, 'visible mobile navigation links must be measurable');
+    assert.equal(geometry.pageOverflow, false, `guide must not overflow at ${width}px`);
+    assert.equal(geometry.targetsWithinViewport, true, `guide targets must remain in bounds at ${width}px`);
+    assert.ok(geometry.navLinkHeights.length >= 4, 'all guide navigation links must be measurable');
+    assert.ok(geometry.heroButtonHeights.length >= 2, 'both guide hero actions must be measurable');
     assert.equal(
       geometry.navLinkWidths.length,
       geometry.navLinkHeights.length,
-      'every visible navigation link must have two-dimensional measurements'
-    );
-    assert.ok(
-      geometry.cardButtonHeights.every((height) => height >= 44),
-      `walkthrough actions must be at least 44px high at ${width}px: ${geometry.cardButtonHeights}`
+      'every visible guide navigation link must have two-dimensional measurements'
     );
     assert.ok(
       geometry.navLinkHeights.every((height) => height >= 44),
-      `homepage navigation links must be at least 44px high at ${width}px: ${geometry.navLinkHeights}`
+      `guide navigation links must be at least 44px high at ${width}px: ${geometry.navLinkHeights}`
     );
     assert.ok(
       geometry.navLinkWidths.every((targetWidth) => targetWidth >= 44),
-      `homepage navigation links must be at least 44px wide at ${width}px: ${geometry.navLinkWidths}`
+      `guide navigation links must be at least 44px wide at ${width}px: ${geometry.navLinkWidths}`
     );
-    await assert.doesNotReject(() => page.getByText('When you paste elsewhere:').waitFor());
-    assert.equal(errors.length, 0, `browser console/network errors at ${width}px: ${errors.join(' | ')}`);
+    assert.ok(
+      geometry.heroButtonHeights.every((height) => height >= 44),
+      `guide hero actions must be at least 44px high at ${width}px: ${geometry.heroButtonHeights}`
+    );
+    assert.ok(geometry.tableWrappers.length >= 2, 'comparison tables must have overflow wrappers');
+    assert.ok(
+      geometry.tableWrappers.every(({ tabindex }) => tabindex === '0'),
+      'scrollable table wrappers must be keyboard focusable'
+    );
+    if (width <= 390) {
+      assert.ok(
+        geometry.tableWrappers.every(({ scrollable }) => scrollable),
+        `wide tables must scroll inside their wrappers at ${width}px`
+      );
+    }
+    await assert.doesNotReject(() => page.getByRole('heading', { name: 'Pilot launch checklist' }).waitFor());
+    assert.equal(errors.length, 0, `guide console/network errors at ${width}px: ${errors.join(' | ')}`);
     await page.close();
   }
 
-  console.log('LEADER_HOME_BROWSER_OK viewports=320,390,768,1024,1280 touch_targets>=44 overflow=0');
+  console.log('LM_STUDIO_BIONIC_GUIDE_BROWSER_OK viewports=320,390,768,1024,1280 touch_targets>=44 overflow=0');
 } finally {
   await browser.close();
   await new Promise((resolveClose) => server.close(resolveClose));

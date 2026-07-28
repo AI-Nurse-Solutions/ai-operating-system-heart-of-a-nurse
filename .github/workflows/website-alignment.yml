@@ -188,6 +188,7 @@ jobs:
             terms.html privacy.html licensing.html governed-harness.html resources.html media.html
             architecture-report.html article-evidence-nurse-ai-os.html switchboard/index.html
             care-intelligence/index.html
+            guides/nurse-ai-os-lm-studio-bionic/index.html
             wellness-services-marketing-managers/index.html
           )
           for page in "${pages[@]}"; do

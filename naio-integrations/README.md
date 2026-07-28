@@ -105,6 +105,21 @@ role plus the current workspace through `actor_for()` into the EDENA
 policy engine — a title grants nothing outside an authenticated
 context.
 
+### Knowledge and Evidence Center (Mission Control §3.4)
+
+`evidence.py` deepens governed retrieval into an evidence workflow:
+structured PICO/PICOT question building (privacy-screened, with search
+terms that feed `GovernedKnowledge.retrieve` directly);
+claim-to-source traceability where every claim carries one of the five
+evidence labels and source-backed labels require citations that exist
+in the same tenant's index — no citation, no claim; assumptions are
+stored awaiting confirmation, stay out of the bibliography, and only a
+named human with real citations can confirm them; and a deterministic
+"what changed" comparison between guideline versions with warnings for
+date direction, jurisdiction, and document-type changes. Tracing a
+claim replays its sources' full governance metadata, including the
+local-policy precedence indicator.
+
 ## Layer responsibilities
 
 | Layer | Question it answers |

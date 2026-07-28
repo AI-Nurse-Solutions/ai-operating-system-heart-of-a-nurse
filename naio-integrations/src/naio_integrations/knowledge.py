@@ -33,6 +33,13 @@ class GovernedKnowledge(KnowledgeRetrievalInterface):
             count += 1
         return count
 
+    def source(self, tenant: str, source_id: str) -> KnowledgeSource | None:
+        """Look up one indexed source without crossing tenant boundaries."""
+        for source in self._sources.get(tenant, []):
+            if source.source_id == source_id:
+                return source
+        return None
+
     def retrieve(self, tenant: str, query: str, today: str) -> KnowledgeAnswer:
         terms = {
             term for term in query.lower().split() if term and term not in STOPWORDS

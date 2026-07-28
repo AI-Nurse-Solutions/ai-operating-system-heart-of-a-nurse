@@ -217,6 +217,11 @@ class MultiRoleIdentity:
     ) -> Actor:
         if self.state["active_role"] is None:
             raise IdentityError("no active role; activate one before acting")
+        if authenticated_org and authenticated_org != workspace_tenant:
+            raise IdentityError(
+                "authenticated organization must match the current workspace;"
+                " an org login grants nothing in a personal or foreign workspace"
+            )
         return Actor(
             actor_id=self.state["identity_id"],
             role=self.state["active_role"],

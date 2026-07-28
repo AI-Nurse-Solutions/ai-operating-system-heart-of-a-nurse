@@ -148,16 +148,27 @@ class MultiRoleIdentityTests(unittest.TestCase):
         )
         self.assertIs(allowed.decision, Decision.ALLOW)
 
-    def test_active_role_flows_into_the_policy_actor(self):
+    def test_student_lens_carries_the_student_policy_gates(self):
         engine = EdenaPolicyEngine()
         self.identity.activate_role("pre-licensure-student")
         actor = self.identity.actor_for("personal:rn-avery")
         self.assertEqual(actor.role, "pre-licensure-student")
-        # Student-mode rules key off the role id 'student' in the policy;
-        # the packet role maps to the same gate via intent rules at Green.
-        decision = engine.decide(
+        blocked = engine.decide(
             GatewayRequest(
                 request_id="req-3",
+                actor=actor,
+                intent="patient_specific_recommendation",
+                content="What should I do for the patient in my clinical today?",
+                risk_tier=RiskTier.GREEN,
+                data_class=DataClass.D0,
+                action_mode=ActionMode.DRAFT,
+            )
+        )
+        self.assertIs(blocked.decision, Decision.DENY)
+        self.assertIn("EDENA-STUDENT-MODE", blocked.reason_codes)
+        studying = engine.decide(
+            GatewayRequest(
+                request_id="req-4",
                 actor=actor,
                 intent="summarize_policy",
                 content="Explain the falls policy in study terms.",
@@ -166,7 +177,14 @@ class MultiRoleIdentityTests(unittest.TestCase):
                 action_mode=ActionMode.DRAFT,
             )
         )
-        self.assertIs(decision.decision, Decision.ALLOW)
+        self.assertIs(studying.decision, Decision.ALLOW)
+
+    def test_org_login_cannot_be_carried_into_a_mismatched_workspace(self):
+        self.identity.activate_role("leader")
+        with self.assertRaises(IdentityError):
+            self.identity.actor_for(
+                "personal:rn-avery", authenticated_org="org:mercy"
+            )
 
     def test_cross_role_suggestions_are_off_by_default_and_explained_when_on(self):
         self.activate_icu_nurse_preceptor_qi_lead()

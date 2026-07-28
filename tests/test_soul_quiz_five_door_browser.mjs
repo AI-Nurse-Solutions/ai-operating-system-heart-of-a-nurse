@@ -128,6 +128,39 @@ try {
   await keyboardPage.waitForFunction(() => document.activeElement?.tagName === 'H2');
   await keyboardPage.close();
 
+  const draftPage = await browser.newPage({ viewport: { width: 390, height: 1000 } });
+  await draftPage.goto(`http://127.0.0.1:${port}/soul-quiz.html`);
+  await completeSafety(draftPage, 'Saved Draft');
+  await draftPage.locator('input[name="primary-lane"][value="staff-nurse"]').check();
+  await draftPage.getByRole('button', { name: 'Continue →' }).click();
+  await draftPage.getByRole('heading', { name: 'Choose your current mission' }).waitFor();
+  await draftPage.reload();
+  assert.equal(await draftPage.locator('#person-name').inputValue(), 'Saved Draft', 'partial quick-start reload preserves the saved name');
+  assert.equal(await draftPage.locator('input[name^="safety-"]:checked').count(), 4, 'partial quick-start reload preserves safety confirmations');
+  await draftPage.getByRole('button', { name: 'Continue →' }).click();
+  await draftPage.getByRole('heading', { name: 'Choose your primary workspace' }).waitFor();
+  assert.equal(await draftPage.locator('input[name="primary-lane"][value="staff-nurse"]').isChecked(), true, 'partial quick-start reload preserves the primary workspace');
+  await draftPage.close();
+
+  for (const projectCase of [
+    { lane: 'staff-nurse', context: 'staff-practice', mission: 'improve-daily-work', project: 'idea', artifact: 'structured-question', label: /I have an idea/i },
+    { lane: 'leader', context: 'nurse-manager', mission: 'prepare-decision', project: 'no-project', artifact: 'decision-brief', label: /No current initiative/i }
+  ]) {
+    const labelPage = await browser.newPage({ viewport: { width: 390, height: 1000 } });
+    await labelPage.goto(`http://127.0.0.1:${port}/soul-quiz.html`);
+    await completeSafety(labelPage, `Label ${projectCase.lane}`);
+    await labelPage.locator(`input[name="primary-lane"][value="${projectCase.lane}"]`).check();
+    await labelPage.getByRole('button', { name: 'Continue →' }).click();
+    await labelPage.locator(`input[name="role-context"][value="${projectCase.context}"]`).check();
+    await labelPage.locator(`input[name="current-mission"][value="${projectCase.mission}"]`).check();
+    await labelPage.locator(`input[name="project-state"][value="${projectCase.project}"]`).check();
+    await labelPage.getByRole('button', { name: 'Continue →' }).click();
+    await labelPage.locator(`input[name="first-artifact"][value="${projectCase.artifact}"]`).check();
+    await labelPage.getByRole('button', { name: 'Build my focused workspace →' }).click();
+    assert.match(await labelPage.locator('.quick-summary').textContent(), projectCase.label, `${projectCase.lane} uses its own project label`);
+    await labelPage.close();
+  }
+
   for (const roleCase of [
     {
       lane: 'prelicensure-student', context: 'student-only', mission: 'understand-concept', artifact: 'learning-plan',

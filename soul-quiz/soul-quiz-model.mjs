@@ -1365,9 +1365,9 @@ export function normalizeState(candidate) {
       let normalizedOverlays = [];
       if (lane) {
         if (secondaryLanes.includes(lane.id)
-          || !lane.contexts.some((item) => item.id === candidate.quickStart.roleContext)
-          || !lane.missions.some((item) => item.id === candidate.quickStart.currentMission)
-          || !lane.artifacts.some((item) => item.id === candidate.quickStart.firstArtifact)
+          || (candidate.quickStart.roleContext && !lane.contexts.some((item) => item.id === candidate.quickStart.roleContext))
+          || (candidate.quickStart.currentMission && !lane.missions.some((item) => item.id === candidate.quickStart.currentMission))
+          || (candidate.quickStart.firstArtifact && !lane.artifacts.some((item) => item.id === candidate.quickStart.firstArtifact))
           || !(QUICK_START_PROJECT_OPTIONS[lane.id] || []).some((item) => item.id === candidate.quickStart.projectState)) return null;
         normalizedOverlays = deriveQuickStartOverlays(
           lane.missions.find((item) => item.id === candidate.quickStart.currentMission),

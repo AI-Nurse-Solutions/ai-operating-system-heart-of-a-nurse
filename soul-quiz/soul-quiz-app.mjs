@@ -191,7 +191,6 @@ function safetyView() {
   return formShell('Begin with stewardship', 'Broad strokes now; go deeper later. More complete answers will help Nurse AI OS serve you better, but trust and detail can grow over time.', body, { back: false });
 }
 
-const PROJECT_LABELS = Object.freeze(Object.fromEntries(Object.values(QUICK_START_PROJECT_OPTIONS).flat().map((option) => [option.id, option.label])));
 const OVERLAY_LABELS = Object.freeze({
   'quality-improvement': 'Quality improvement overlay active',
   'research-evidence': 'Research and evidence overlay active',
@@ -199,6 +198,10 @@ const OVERLAY_LABELS = Object.freeze({
   'education-mentorship': 'Education and mentorship overlay active',
   'leadership-governance': 'Leadership and governance overlay active'
 });
+
+function projectLabel(laneId, projectState) {
+  return QUICK_START_PROJECT_OPTIONS[laneId]?.find((option) => option.id === projectState)?.label || projectState;
+}
 
 function quickRadioCards(name, options, selected, className = 'quick-choice-grid') {
   return `<div class="${className}">${options.map((option) => `<label class="quick-choice-card"><input type="radio" name="${attr(name)}" value="${attr(option.id)}"${selected === option.id ? ' checked' : ''} required><span><strong>${escapeHtml(option.label)}</strong>${option.promise ? `<small>${escapeHtml(option.promise)}</small>` : ''}</span></label>`).join('')}</div>`;
@@ -258,7 +261,7 @@ function quickResultsView() {
       <dt>Primary workspace</dt><dd>${escapeHtml(lane?.label || '')}</dd>
       <dt>Current context</dt><dd>${escapeHtml(context?.label || '')}</dd>
       <dt>Current mission</dt><dd>${escapeHtml(mission?.label || '')}</dd>
-      <dt>Project status</dt><dd>${escapeHtml(PROJECT_LABELS[state.quickStart.projectState] || state.quickStart.projectState)}</dd>
+      <dt>Project status</dt><dd>${escapeHtml(projectLabel(lane?.id, state.quickStart.projectState))}</dd>
       <dt>Secondary hats</dt><dd>${escapeHtml(secondaryLabels.join(', ') || 'None selected')}</dd>
       <dt>First artifact</dt><dd>${escapeHtml(artifact?.label || '')}</dd>
     </dl></section>

@@ -30,6 +30,31 @@ def node_eval(source: str) -> Any:
 
 
 class SoulQuizFiveDoorTests(unittest.TestCase):
+    def test_partial_quick_start_draft_normalizes_without_losing_identity(self) -> None:
+        result = node_eval("""
+          import {createInitialState,normalizeState} from './soul-quiz/soul-quiz-model.mjs';
+          const state=createInitialState('2026-07-28T00:00:00.000Z');
+          state.name='Jordan';
+          state.safety={noPhi:true,noClinicalAuthority:true,noAcademicDishonesty:true,noCredentialInference:true};
+          state.quickStart.primaryLane='staff-nurse';
+          const restored=normalizeState(JSON.parse(JSON.stringify(state)));
+          console.log(JSON.stringify(restored && {
+            name:restored.name,
+            safety:restored.safety,
+            quickStart:restored.quickStart
+          }));
+        """)
+        self.assertEqual(result["name"], "Jordan")
+        self.assertTrue(all(result["safety"].values()))
+        self.assertEqual(result["quickStart"]["primaryLane"], "staff-nurse")
+        self.assertEqual(result["quickStart"]["roleContext"], "")
+        self.assertEqual(result["quickStart"]["currentMission"], "")
+        self.assertEqual(result["quickStart"]["firstArtifact"], "")
+
+    def test_ci_installs_pinned_soul_import_dependencies(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "website-alignment.yml").read_text(encoding="utf-8")
+        self.assertIn("python -m pip install --disable-pip-version-check -r naio-os/requirements-import-soul.txt", workflow)
+
     def test_exactly_five_primary_lanes_hide_the_full_taxonomy(self) -> None:
         result = node_eval("""
           import {QUICK_START_LANES,ROLE_TAXONOMY} from './soul-quiz/soul-quiz-model.mjs';

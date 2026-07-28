@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -13,6 +14,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 MODEL = ROOT / "soul-quiz" / "soul-quiz-model.mjs"
 SCHEMA = ROOT / "naio-os" / "schema" / "naio-soul.schema.json"
+IMPORTER = ROOT / "naio-os" / "scripts" / "import-soul.py"
 
 
 def node_eval(source: str) -> Any:
@@ -54,6 +56,12 @@ class SoulQuizFiveDoorTests(unittest.TestCase):
     def test_ci_installs_pinned_soul_import_dependencies(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "website-alignment.yml").read_text(encoding="utf-8")
         self.assertIn("python -m pip install --disable-pip-version-check -r naio-os/requirements-import-soul.txt", workflow)
+
+    def test_guide_metadata_and_cta_lead_with_the_five_door_quick_start(self) -> None:
+        guide = (ROOT / "soul-quiz-guide.html").read_text(encoding="utf-8")
+        self.assertIn("<title>Five-Door SOUL Quiz Quick-Start Guide", guide)
+        self.assertIn("five focused nursing and clinician workspaces", guide)
+        self.assertIn("Start my five-door quick setup →", guide)
 
     def test_exactly_five_primary_lanes_hide_the_full_taxonomy(self) -> None:
         result = node_eval("""
@@ -336,7 +344,7 @@ class SoulQuizFiveDoorTests(unittest.TestCase):
             duplicate_path = Path(tmp) / "duplicate.json"
             valid_config = json.loads(json.dumps(config))
             valid_path.write_text(json.dumps(config), encoding="utf-8")
-            valid = subprocess.run(["python3", str(ROOT / "naio-os/scripts/import-soul.py"), str(valid_path)], cwd=ROOT, capture_output=True, text=True)
+            valid = subprocess.run([sys.executable, "-I", str(IMPORTER), str(valid_path)], cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(valid.returncode, 0, valid.stdout + valid.stderr)
             config["workspace_routing"].update({
                 "primary_lane": "educator",
@@ -347,10 +355,10 @@ class SoulQuizFiveDoorTests(unittest.TestCase):
                 "first_artifact": "feedback-plan",
             })
             invalid_path.write_text(json.dumps(config), encoding="utf-8")
-            invalid = subprocess.run(["python3", str(ROOT / "naio-os/scripts/import-soul.py"), str(invalid_path)], cwd=ROOT, capture_output=True, text=True)
+            invalid = subprocess.run([sys.executable, "-I", str(IMPORTER), str(invalid_path)], cwd=ROOT, capture_output=True, text=True)
             valid_config["workspace_routing"]["secondary_lanes"] = ["staff-nurse"]
             duplicate_path.write_text(json.dumps(valid_config), encoding="utf-8")
-            duplicate = subprocess.run(["python3", str(ROOT / "naio-os/scripts/import-soul.py"), str(duplicate_path)], cwd=ROOT, capture_output=True, text=True)
+            duplicate = subprocess.run([sys.executable, "-I", str(IMPORTER), str(duplicate_path)], cwd=ROOT, capture_output=True, text=True)
         self.assertEqual(invalid.returncode, 2, invalid.stdout + invalid.stderr)
         self.assertIn("workspace routing", (invalid.stdout + invalid.stderr).lower())
         self.assertEqual(duplicate.returncode, 2, duplicate.stdout + duplicate.stderr)

@@ -14,7 +14,7 @@ from naio_integrations.contract import (
     RiskTier,
 )
 from naio_integrations.knowledge import GovernedKnowledge
-from naio_integrations.orchestration import AdpieWorkflow
+from naio_integrations.orchestration import AdpieWorkflow, WorkflowError
 from naio_integrations.policy import EdenaPolicyEngine
 from naio_integrations.sandbox import (
     SANDBOX_BANNER,
@@ -115,15 +115,133 @@ class AdmissionBoundaryTests(unittest.TestCase):
 
     def test_real_looking_identifiers_are_refused_even_when_labeled(self):
         smuggled = {
-            "resourceType": "Patient",
+            "resourceType": "Condition",
             "id": "smuggled",
             "meta": _synthetic_meta(),
-            "note": "SSN 123-45-6789 copied from a real chart",
+            "code": {"text": "Noted SSN 123-45-6789 copied from a real chart"},
         }
         with self.assertRaises(SandboxIntegrityError) as ctx:
             self.sandbox.admit(TENANT, smuggled)
         self.assertIn("privacy screen", str(ctx.exception))
-        self.assertIsNone(self.sandbox.read(TENANT, "Patient", "smuggled"))
+        self.assertIsNone(self.sandbox.read(TENANT, "Condition", "smuggled"))
+
+    def test_ordinary_demographics_are_refused_despite_the_label(self):
+        # A caller-controlled label plus a real person's demographics —
+        # the generation markers must refuse the ordinary name outright.
+        relabeled = {
+            "resourceType": "Patient",
+            "id": "relabeled-real-record",
+            "meta": _synthetic_meta(),
+            "name": [{"family": "Smith", "given": ["Jane"]}],
+            "gender": "female",
+            "birthDate": "1980-01-01",
+        }
+        with self.assertRaises(SandboxIntegrityError) as ctx:
+            self.sandbox.admit(TENANT, relabeled)
+        self.assertIn("numeric-suffix", str(ctx.exception))
+        self.assertIsNone(
+            self.sandbox.read(TENANT, "Patient", "relabeled-real-record")
+        )
+
+    def test_fields_outside_the_admission_schema_are_refused(self):
+        with_address = {
+            "resourceType": "Patient",
+            "id": "with-address",
+            "meta": _synthetic_meta(),
+            "name": [{"family": "Kestrel842", "given": ["Amara701"]}],
+            "address": [{"line": ["12 Real Street"], "city": "Springfield"}],
+        }
+        with self.assertRaises(SandboxIntegrityError) as ctx:
+            self.sandbox.admit(TENANT, with_address)
+        self.assertIn("admission schema", str(ctx.exception))
+
+    def test_nested_extra_keys_are_refused(self):
+        with_name_text = {
+            "resourceType": "Patient",
+            "id": "with-name-text",
+            "meta": _synthetic_meta(),
+            "name": [{"family": "Kestrel842", "text": "Jane Smith"}],
+        }
+        with self.assertRaises(SandboxIntegrityError):
+            self.sandbox.admit(TENANT, with_name_text)
+
+    def test_real_world_identifier_systems_are_refused(self):
+        foreign_identifier = {
+            "resourceType": "Patient",
+            "id": "foreign-identifier",
+            "meta": _synthetic_meta(),
+            "name": [{"family": "Kestrel842", "given": ["Amara701"]}],
+            "identifier": [
+                {"system": "urn:oid:2.16.840.1.113883", "value": "SYN-REAL"}
+            ],
+        }
+        with self.assertRaises(SandboxIntegrityError) as ctx:
+            self.sandbox.admit(TENANT, foreign_identifier)
+        self.assertIn("identifier system", str(ctx.exception))
+
+    def test_resource_types_outside_the_schema_are_refused(self):
+        document = {
+            "resourceType": "DocumentReference",
+            "id": "scanned-chart",
+            "meta": _synthetic_meta(),
+        }
+        with self.assertRaises(SandboxIntegrityError) as ctx:
+            self.sandbox.admit(TENANT, document)
+        self.assertIn("admission schema", str(ctx.exception))
+
+    def test_extra_meta_fields_are_refused(self):
+        meta = _synthetic_meta()
+        meta["source"] = "https://real-hospital.example/fhir"
+        with self.assertRaises(SandboxIntegrityError):
+            self.sandbox.admit(
+                TENANT,
+                {"resourceType": "Patient", "id": "meta-extra", "meta": meta},
+            )
+
+    def test_catalog_with_real_looking_identifiers_is_refused_at_construction(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bad_catalog = Path(tmp) / "cases.json"
+            bad_catalog.write_text(
+                json.dumps(
+                    {
+                        "effective_date": "2026-07-01",
+                        "jurisdiction": "US",
+                        "cases": {
+                            "bad-case": {
+                                "learning_focus": "Review chart, SSN 123-45-6789"
+                            }
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaises(SandboxIntegrityError) as ctx:
+                SyntheticPatientSandbox(catalog_path=bad_catalog)
+            self.assertIn("case catalog", str(ctx.exception))
+
+    def test_load_case_is_atomic_when_a_later_resource_fails(self):
+        class DoctoredSandbox(SyntheticPatientSandbox):
+            def build_case(self, case_id):
+                bundle = super().build_case(case_id)
+                bundle["entry"].append(
+                    {
+                        "resource": {
+                            "resourceType": "Condition",
+                            "id": "poison",
+                            "meta": _synthetic_meta(),
+                            "code": {"text": "Noted SSN 123-45-6789"},
+                        }
+                    }
+                )
+                return bundle
+
+        sandbox = DoctoredSandbox()
+        with self.assertRaises(SandboxIntegrityError):
+            sandbox.load_case(TENANT, "hf-transitions-001")
+        self.assertIsNone(
+            sandbox.read(TENANT, "Patient", "hf-transitions-001-person"),
+            "a refusal partway through must leave the tenant unchanged",
+        )
 
     def test_resource_without_type_or_id_is_refused(self):
         with self.assertRaises(SandboxIntegrityError):
@@ -192,6 +310,10 @@ class ContractSurfaceTests(unittest.TestCase):
         self.assertFalse(answer.refused)
         self.assertTrue(answer.passages[0]["title"].startswith("[SYNTHETIC]"))
         self.assertEqual(answer.passages[0]["doc_type"], "synthetic_case")
+        self.assertTrue(
+            any("SYNTHETIC" in warning for warning in answer.warnings),
+            answer.warnings,
+        )
 
     def test_sandbox_sources_stay_tenant_scoped_in_retrieval(self):
         knowledge = GovernedKnowledge()
@@ -222,7 +344,7 @@ class ContractSurfaceTests(unittest.TestCase):
                 workflow.advance("sandbox-run-2", note="synthetic step")
             state = workflow.state("sandbox-run-2")
             self.assertEqual(state["stage"], "human_authorization")
-            with self.assertRaises(Exception):
+            with self.assertRaises(WorkflowError):
                 workflow.advance("sandbox-run-2", note="cannot skip the gate")
 
 

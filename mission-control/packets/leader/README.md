@@ -11,7 +11,7 @@ A manager, leader, or executive using Nurse AI OS as a governed professional env
 - Strategy and portfolio map
 - Decision room
 - Operational metric dictionary
-- Ai governance register
+- AI governance register
 - Executive communication templates
 
 ## What it will never do on its own

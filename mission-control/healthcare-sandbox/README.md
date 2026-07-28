@@ -21,19 +21,30 @@ Contract):
 
 ## Boundary invariants
 
+The synthetic label is caller-controlled, so a label alone proves
+nothing. Admission layers four independent checks, and refusing any
+one of them refuses the resource:
+
 - Every resource carries the sandbox synthetic security label
   (`urn:naio:healthcare-sandbox` / `SYNTHETIC`); unlabeled content is
   refused at admission.
-- Every string in every resource must pass the privacy screen before
-  admission, so real-looking identifiers cannot be smuggled in under a
-  synthetic label. Detection reduces risk — it **never proves** content
-  is de-identified, which is why screening still runs on data that is
-  synthetic by construction.
-- Reads and searches are tenant-scoped; another tenant's request reads
-  as "unknown resource".
-- Sandbox content is D0 (synthetic) by construction, and governance
-  does not relax because data is synthetic: role gates and the ADPIE
-  human-authorization gate apply unchanged.
+- Every resource must fit the strict admission schema: only the five
+  generated resource types, only their generated fields, scalar values
+  only. There is deliberately nowhere to put an address, phone number,
+  note, photo, or free-form demographics.
+- Every Patient must carry the generation markers: numeric-suffix
+  names (the Synthea convention) and the sandbox identifier system
+  only. An ordinary real name or a real-world identifier system is
+  refused outright, even under a synthetic label.
+- Every string must additionally pass the privacy screen, catching
+  identifier formats the schema cannot exclude. Detection reduces
+  risk — it **never proves** content is de-identified, which is why
+  every layer still runs on data that is synthetic by construction.
+
+Reads and searches are tenant-scoped; another tenant's request reads
+as "unknown resource". Sandbox content is D0 (synthetic) by
+construction, and governance does not relax because data is synthetic:
+role gates and the ADPIE human-authorization gate apply unchanged.
 
 ## Contents
 

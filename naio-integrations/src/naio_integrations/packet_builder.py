@@ -34,6 +34,14 @@ PHASE_2_ROLES = ("pre-licensure-student", "staff-nurse", "educator")
 PHASE_3_ROLES = ("leader",)
 INSTALLABLE_ROLES = PHASE_2_ROLES + PHASE_3_ROLES
 
+_ACRONYMS = {"ai": "AI", "adpie": "ADPIE"}
+
+
+def _module_label(module: str) -> str:
+    words = [_ACRONYMS.get(word, word) for word in module.split("-")]
+    label = " ".join(words)
+    return label[0].upper() + label[1:]
+
 
 class PacketBundleBuilder:
     """Assembles installable packet bundles from the reviewed catalog."""
@@ -130,7 +138,7 @@ class PacketBundleBuilder:
             "## What it helps you accomplish",
             "",
         ]
-        lines += [f"- {module.replace('-', ' ').capitalize()}" for module in role_modules]
+        lines += [f"- {_module_label(module)}" for module in role_modules]
         lines += [
             "",
             "## What it will never do on its own",

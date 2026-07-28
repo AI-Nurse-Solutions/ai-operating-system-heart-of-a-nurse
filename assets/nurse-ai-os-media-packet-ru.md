@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**Актуально на 25 июля 2026 года**
+**Актуально на 28 июля 2026 года**
 
 **Сайт:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Контакт для СМИ:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -48,6 +48,8 @@ Nurse AI OS разработан как пространство обучени�
 **EDENA** — контур управления, рисков, безопасности и обеспечения. EDENA предоставляет язык проверки и уровни Green/Yellow/Orange/Red-P/Red-E для распознавания риска и контрольных точек человека. Владелец Директивы ещё не зафиксировал официальную полную расшифровку названия. Текущая публичная позиция — **shadow/observe-only**: EDENA может структурировать проверку, но не гарантирует, что ChatGPT, Claude, Hermes или другая среда одинаково применят каждое правило.
 
 **Florence-X** — формирующаяся исследовательская и инженерная архитектура для оркестрации, проверки, доказательств и видимой авторизации человеком. Она не представлена как развёрнутый институциональный сервис.
+
+**Новое (июль 2026 года):** в публичном репозитории появилась протестированная эталонная реализация **контракта интеграции Nurse AI OS**: шесть стабильных интерфейсов, прототип шлюза политик EDENA (запрет по умолчанию, закрытие при сбое), пять устанавливаемых ролевых пакетов Mission Control и полностью синтетическая учебная песочница здравоохранения. Это свидетельство программной публикации о направлении проекта; оно не означает единообразного исполнения правил на каждой платформе и не является институциональным одобрением, а публичная позиция EDENA остаётся shadow/observe-only.
 
 ## Описание для цитирования
 

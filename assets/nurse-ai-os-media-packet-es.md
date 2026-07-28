@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**Actualizado al 25 de julio de 2026**
+**Actualizado al 28 de julio de 2026**
 
 **Sitio:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Contacto de prensa:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -48,6 +48,8 @@ Nurse AI OS está diseñado como un espacio de aprendizaje y custodia sin PHI. E
 **EDENA** es el plano de control de gobernanza, riesgo, seguridad y aseguramiento. Ofrece lenguaje de revisión y niveles Verde/Amarillo/Naranja/Red-P/Red-E para reconocer riesgo y puntos de control humano. Su nombre desarrollado oficial aún no ha sido registrado por el propietario de la Directiva. La postura pública actual es de **sombra/observación**: puede estructurar la revisión, pero no garantiza que ChatGPT, Claude, Hermes u otro entorno apliquen cada regla de la misma manera.
 
 **Florence-X** es una arquitectura emergente de investigación y construcción sobre orquestación, verificación, evidencia y autorización humana visible. No se presenta como un servicio institucional desplegado.
+
+**Novedad (julio de 2026):** el repositorio público ya incluye una implementación de referencia probada del **Contrato de Integración de Nurse AI OS**: seis interfaces estables, un prototipo del portal de políticas EDENA que niega por defecto y falla en cerrado, cinco paquetes de rol instalables de Mission Control y un sandbox sanitario totalmente sintético. Es evidencia de publicación de software sobre la dirección del proyecto; no implica aplicación uniforme en todos los entornos ni otorga aprobación institucional, y la postura pública de EDENA sigue siendo de sombra/observación.
 
 ## Descripción para citar
 

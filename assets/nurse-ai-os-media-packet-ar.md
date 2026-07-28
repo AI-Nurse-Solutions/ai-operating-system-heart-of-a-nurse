@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**محدّث حتى 25 يوليو 2026**
+**محدّث حتى 28 يوليو 2026**
 
 **الموقع:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **للتواصل الإعلامي:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -48,6 +48,8 @@ Nurse AI OS ليس سجلًا صحيًا إلكترونيًا، ولا نظام 
 **EDENA** هي طبقة التحكم في الحوكمة والمخاطر والسلامة والضمان. وهي توفر لغة للمراجعة ومستويات Green/Yellow/Orange/Red-P/Red-E للتعرف على المخاطر وبوابات القرار البشري. لم يسجل مالك التوجيه الصيغة الرسمية الكاملة للاسم بعد. الوضع العام الحالي هو **shadow/observe-only**: يمكنها تنظيم المراجعة، لكنها لا تضمن أن يطبق ChatGPT أو Claude أو Hermes أو أي بيئة أخرى كل قاعدة بالطريقة نفسها.
 
 **Florence-X** هي بنية ناشئة للبحث والبناء في التنسيق والتحقق والأدلة وإظهار التفويض البشري. ولا تُعرض كخدمة مؤسسية منشورة.
+
+**جديد (يوليو 2026):** يتضمّن المستودع العام الآن تنفيذًا مرجعيًا مُختبَرًا لعقد تكامل Nurse AI OS: ست واجهات مستقرة، ونموذجًا أوليًا لبوابة سياسات EDENA يرفض افتراضيًا ويُغلق عند الخطأ، وخمس حزم أدوار قابلة للتثبيت في Mission Control، وبيئة تدريب صحية اصطناعية بالكامل. هذه أدلة نشر برمجي على اتجاه المشروع؛ وهي لا تعني تطبيقًا موحّدًا في كل بيئة ولا موافقة مؤسسية، ويبقى الوضع العلني لـ EDENA هو shadow/observe-only.
 
 ## وصف قابل للاقتباس
 

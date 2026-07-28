@@ -53,12 +53,25 @@ explicit disposition and date changes that, and approved renders carry
 the attestation. No output is presented as final merely because it was
 generated (specification section 3.6).
 
+The three Phase 2 packets (`pre-licensure-student/`, `staff-nurse/`,
+`educator/`) are **installable bundles**, not just manifests: each ships
+a role README with the section 19 recognitions, a `DATA-BOUNDARY.md`
+notice to read before first use, and working starter templates rendered
+by the Deliverable Studio — every one an editable draft with the
+mandatory banner. No empty demo. The leader and licensed-clinician
+packets remain manifest-only until Phases 3 and 4.
+
 ## Regenerating
 
 ```bash
 python3 scripts/build-mission-control-manifests.py
+python3 scripts/build-mission-control-packet-bundles.py
 python3 scripts/build-mission-control-example-workspace.py
 ```
+
+The bundle script runs after the manifests script and owns
+`packets/CHECKSUMS.sha256`, which covers every committed file in the
+packets tree.
 
 Both builds are deterministic — CI rebuilds twice and fails on any diff —
 so artifact changes are always deliberate, reviewed catalog changes in

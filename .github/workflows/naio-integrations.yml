@@ -7,6 +7,7 @@ on:
       - "mission-control/**"
       - "tests/test_naio_integrations.py"
       - "scripts/build-mission-control-manifests.py"
+      - "scripts/build-mission-control-packet-bundles.py"
       - "scripts/build-mission-control-example-workspace.py"
       - "scripts/scan-public-healthcare-artifacts.py"
       - ".github/workflows/naio-integrations.yml"
@@ -17,6 +18,7 @@ on:
       - "mission-control/**"
       - "tests/test_naio_integrations.py"
       - "scripts/build-mission-control-manifests.py"
+      - "scripts/build-mission-control-packet-bundles.py"
       - "scripts/build-mission-control-example-workspace.py"
       - "scripts/scan-public-healthcare-artifacts.py"
       - ".github/workflows/naio-integrations.yml"
@@ -36,14 +38,16 @@ jobs:
         with:
           python-version: "3.11"
       - name: Verify Python syntax
-        run: python3 -m py_compile naio-integrations/src/naio_integrations/*.py naio-integrations/tests/*.py tests/test_naio_integrations.py scripts/build-mission-control-manifests.py scripts/build-mission-control-example-workspace.py
+        run: python3 -m py_compile naio-integrations/src/naio_integrations/*.py naio-integrations/tests/*.py tests/test_naio_integrations.py scripts/build-mission-control-manifests.py scripts/build-mission-control-packet-bundles.py scripts/build-mission-control-example-workspace.py
       - name: Rebuild committed Mission Control artifacts twice
         run: |
           set -euo pipefail
           python3 scripts/build-mission-control-manifests.py
+          python3 scripts/build-mission-control-packet-bundles.py
           python3 scripts/build-mission-control-example-workspace.py
           first="$(find mission-control -type f | sort | xargs sha256sum | sha256sum | cut -d' ' -f1)"
           python3 scripts/build-mission-control-manifests.py
+          python3 scripts/build-mission-control-packet-bundles.py
           python3 scripts/build-mission-control-example-workspace.py
           second="$(find mission-control -type f | sort | xargs sha256sum | sha256sum | cut -d' ' -f1)"
           test "$first" = "$second"

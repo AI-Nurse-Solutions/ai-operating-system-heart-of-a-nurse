@@ -128,13 +128,19 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
                     obligations=("meaningful_human_approval",),
                     policy_version=self.version,
                 )
-            if mode_rule.get("requires_approval_id") and not request.metadata.get("approval_id"):
-                return PolicyDecision(
-                    decision=Decision.REQUIRE_APPROVAL,
-                    reason_codes=("EDENA-SIDE-EFFECT-GATE",),
-                    obligations=("record_approval_id",),
-                    policy_version=self.version,
-                )
+            if mode_rule.get("requires_approval_id"):
+                approval_id = request.metadata.get("approval_id")
+                if not approval_id:
+                    return PolicyDecision(
+                        decision=Decision.REQUIRE_APPROVAL,
+                        reason_codes=("EDENA-SIDE-EFFECT-GATE",),
+                        obligations=("record_approval_id",),
+                        policy_version=self.version,
+                    )
+                if approval_id not in actor.approvals:
+                    # A fabricated or unrecorded approval is worse than a
+                    # missing one: fail closed instead of re-prompting.
+                    return self._deny("EDENA-APPROVAL-UNRECOGNIZED")
             obligations.append("log_side_effect")
 
         reasons.append("EDENA-WITHIN-SCOPE")

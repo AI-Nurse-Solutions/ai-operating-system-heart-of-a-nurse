@@ -16,11 +16,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import secrets
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - non-POSIX fallback
+    fcntl = None
 
 from .contract import GatewayRequest, ObservabilityInterface
 
@@ -105,18 +111,36 @@ class GatewayTracer(ObservabilityInterface):
         return {"ok": True, "count": count, "terminal_hash": previous}
 
     def _path(self, tenant: str) -> Path:
+        # Injective mapping: the readable prefix is convenience, the digest
+        # guarantees distinct tenants never share an audit stream even when
+        # sanitization collapses their names.
         safe = _TENANT_SAFE.sub("_", tenant)
-        return self.root / f"traces-{safe}.jsonl"
+        digest = hashlib.sha256(tenant.encode("utf-8")).hexdigest()[:12]
+        return self.root / f"traces-{safe}-{digest}.jsonl"
 
     def _append(self, tenant: str, event: dict[str, Any]) -> None:
         path = self._path(tenant)
         path.parent.mkdir(parents=True, exist_ok=True)
-        records = self.read(tenant)
-        previous = records[-1]["record_hash"] if records else GENESIS_HASH
-        record = dict(event)
-        record["timestamp"] = _utcnow()
-        record["tenant"] = tenant
-        record["previous_hash"] = previous
-        record["record_hash"] = _hash_record(record)
-        with path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n")
+        with path.open("a+", encoding="utf-8") as handle:
+            if fcntl is not None:
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+            try:
+                handle.seek(0)
+                lines = [line for line in handle.read().splitlines() if line.strip()]
+                previous = (
+                    json.loads(lines[-1])["record_hash"] if lines else GENESIS_HASH
+                )
+                record = dict(event)
+                record["timestamp"] = _utcnow()
+                record["tenant"] = tenant
+                record["previous_hash"] = previous
+                record["record_hash"] = _hash_record(record)
+                handle.seek(0, os.SEEK_END)
+                handle.write(
+                    json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n"
+                )
+                handle.flush()
+                os.fsync(handle.fileno())
+            finally:
+                if fcntl is not None:
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)

@@ -143,6 +143,26 @@ class PolicyEngineTests(unittest.TestCase):
         self.assertIs(decision.decision, Decision.ALLOW)
         self.assertIn("log_side_effect", decision.obligations)
 
+    def test_fabricated_approval_id_is_denied_not_reprompted(self):
+        actor = Actor(
+            actor_id="rn-2",
+            role="nurse",
+            tenant="org:mercy",
+            authenticated_org="org:mercy",
+            approvals=("appr-77",),
+        )
+        decision = self.engine.decide(
+            make_request(
+                actor=actor,
+                risk_tier=RiskTier.ORANGE,
+                action_mode=ActionMode.ACT_WITH_APPROVAL,
+                intent="send_update_email",
+                metadata={"approval_id": "appr-FORGED"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", decision.reason_codes)
+
     def test_prepare_action_always_routes_to_approval(self):
         actor = Actor(
             actor_id="rn-2",

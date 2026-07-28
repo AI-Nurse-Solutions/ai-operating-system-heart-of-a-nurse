@@ -91,6 +91,45 @@ class GatewayTracerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.tracer.end_trace("missing", "allow")
 
+    def test_sanitization_collisions_still_get_distinct_streams(self):
+        colliding_a = self.tracer.start_trace(make_request("org:a/b"))
+        colliding_b = self.tracer.start_trace(make_request("org:a?b"))
+        self.tracer.end_trace(colliding_a, "allow")
+        self.tracer.end_trace(colliding_b, "deny")
+        records_a = self.tracer.read("org:a/b")
+        records_b = self.tracer.read("org:a?b")
+        self.assertTrue(all(r["tenant"] == "org:a/b" for r in records_a))
+        self.assertTrue(all(r["tenant"] == "org:a?b" for r in records_b))
+        self.assertEqual(len(records_a), 2)
+        self.assertEqual(len(records_b), 2)
+        files = list(Path(self.tmp.name).glob("traces-*.jsonl"))
+        self.assertEqual(len(files), 2)
+
+    def test_concurrent_appends_keep_the_chain_intact(self):
+        import threading
+
+        trace_id = self.tracer.start_trace(make_request())
+        errors: list[Exception] = []
+
+        def spam(worker: int) -> None:
+            try:
+                for i in range(5):
+                    self.tracer.record_span(
+                        trace_id, f"span-{worker}-{i}", {"worker": worker, "i": i}
+                    )
+            except Exception as exc:  # pragma: no cover - failure diagnostics
+                errors.append(exc)
+
+        threads = [threading.Thread(target=spam, args=(w,)) for w in range(4)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        self.assertEqual(errors, [])
+        verification = self.tracer.verify("personal:rn-1")
+        self.assertTrue(verification["ok"])
+        self.assertEqual(verification["count"], 21)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -52,6 +52,7 @@
     "EDENA-ACTION-MODE-CEILING": "This risk tier does not grant this action mode.",
     "EDENA-ORG-CONTEXT-REQUIRED": "Orange work requires an authenticated organizational context.",
     "EDENA-APPROVAL-REQUIRED": "A recorded human approval is required before this action.",
+    "EDENA-APPROVAL-UNRECOGNIZED": "The supplied approval id does not match any approval recorded for this actor.",
     "EDENA-INSTITUTIONAL-CONTROLS": "Red-E execution requires defined institutional controls.",
     "EDENA-STUDENT-MODE": "Student mode cannot generate patient-specific recommendations.",
     "EDENA-PRIVATE-REFLECTION": "Private reflections never appear in manager, faculty, cohort, or executive views.",

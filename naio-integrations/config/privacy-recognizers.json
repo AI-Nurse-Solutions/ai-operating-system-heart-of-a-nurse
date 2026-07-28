@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "note": "Healthcare recognizers for the privacy front door. Detection reduces risk; it never proves content is de-identified or HIPAA-compliant.",
+  "recognizers": [
+    {
+      "name": "medical_record_number",
+      "entity_type": "MRN",
+      "pattern": "\\bMRN\\s*[:#-]?\\s*[A-Z0-9]{4,}\\b",
+      "score": 0.9
+    },
+    {
+      "name": "us_ssn",
+      "entity_type": "US_SSN",
+      "pattern": "\\b(?:SSN|social security)\\s*[:#-]?\\s*\\d{3}-?\\d{2}-?\\d{4}\\b|\\b\\d{3}-\\d{2}-\\d{4}\\b",
+      "score": 0.85
+    },
+    {
+      "name": "date_of_birth",
+      "entity_type": "DOB",
+      "pattern": "\\b(?:DOB|date of birth|born)\\s*[:#-]?\\s*\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}\\b",
+      "score": 0.9
+    },
+    {
+      "name": "room_and_bed",
+      "entity_type": "ROOM_BED",
+      "pattern": "\\b(?:room|rm)\\.?\\s*#?\\d{1,4}\\s*(?:,?\\s*bed\\s*#?\\w{1,3})\\b",
+      "score": 0.8
+    },
+    {
+      "name": "encounter_date",
+      "entity_type": "ENCOUNTER_DATE",
+      "pattern": "\\b(?:admitted|discharged|seen|transferred)\\s+(?:on\\s+)?\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}\\b",
+      "score": 0.75
+    },
+    {
+      "name": "provider_or_employee_id",
+      "entity_type": "PROVIDER_ID",
+      "pattern": "\\b(?:employee|provider|badge|npi)\\s*(?:id|number|no\\.?)?\\s*[:#-]?\\s*\\d{4,}\\b",
+      "score": 0.8
+    },
+    {
+      "name": "phone_number",
+      "entity_type": "PHONE_NUMBER",
+      "pattern": "\\b(?:\\+?1[ .-]?)?\\(?\\d{3}\\)?[ .-]?\\d{3}[ .-]?\\d{4}\\b",
+      "score": 0.6
+    },
+    {
+      "name": "email_address",
+      "entity_type": "EMAIL_ADDRESS",
+      "pattern": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
+      "score": 0.8
+    },
+    {
+      "name": "credential_secret",
+      "entity_type": "CREDENTIAL",
+      "pattern": "-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\\b(?:sk|gh[opusr])_[A-Za-z0-9_-]{20,}\\b",
+      "score": 0.95
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "edena-gateway-policy",
+  "directive": "NIN-NAIO Master Directive v1.1",
+  "doctrine": "Agents propose. Humans judge. Nurses steward.",
+  "tier_data_ceilings": {
+    "green": "D0",
+    "yellow": "D2",
+    "orange": "D2",
+    "red-e": "D2"
+  },
+  "tier_action_ceilings": {
+    "green": "draft",
+    "yellow": "recommend",
+    "orange": "act_with_approval",
+    "red-e": "constrained_autonomy"
+  },
+  "orange_requirements": {
+    "authenticated_org": true,
+    "recorded_approval": true
+  },
+  "red_e_requirements": {
+    "authenticated_org": true,
+    "recorded_approval": true,
+    "institutional_controls": ["kill_switch", "audit_stream", "named_accountable_human"]
+  },
+  "side_effect_rules": {
+    "act_with_approval": {"requires_approval_id": true},
+    "prepare_action": {"decision": "require_approval"},
+    "constrained_autonomy": {"tiers": ["red-e"]}
+  },
+  "role_rules": {
+    "student": {
+      "denied_intents": ["patient_specific_recommendation"],
+      "max_action_mode": "draft",
+      "reason_code": "EDENA-STUDENT-MODE"
+    }
+  },
+  "prohibited": {
+    "risk_tiers": ["red-p"],
+    "action_modes": ["unrestricted_autonomy"]
+  },
+  "reason_codes": {
+    "EDENA-PROHIBITED-TIER": "Red-P work is prohibited at every action mode.",
+    "EDENA-UNRESTRICTED-AUTONOMY": "Unrestricted autonomy is prohibited by the Directive.",
+    "EDENA-TENANT-BOUNDARY": "Personal and institutional data cannot cross tenant boundaries.",
+    "EDENA-DATA-CLASS-CEILING": "This risk tier cannot accept data of this class.",
+    "EDENA-ACTION-MODE-CEILING": "This risk tier does not grant this action mode.",
+    "EDENA-ORG-CONTEXT-REQUIRED": "Orange work requires an authenticated organizational context.",
+    "EDENA-APPROVAL-REQUIRED": "A recorded human approval is required before this action.",
+    "EDENA-INSTITUTIONAL-CONTROLS": "Red-E execution requires defined institutional controls.",
+    "EDENA-STUDENT-MODE": "Student mode cannot generate patient-specific recommendations.",
+    "EDENA-SIDE-EFFECT-GATE": "External side effects require meaningful human approval.",
+    "EDENA-WITHIN-SCOPE": "Request is within the compiled EDENA scope.",
+    "EDENA-PRIVACY-REDLINE": "Identifying content is not accepted at this tier."
+  }
+}

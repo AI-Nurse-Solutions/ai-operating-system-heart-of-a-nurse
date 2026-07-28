@@ -152,19 +152,23 @@ class ClaimLedger:
             raise EvidenceError(f"unknown evidence label: {label}")
         if not str(text).strip():
             raise EvidenceError("a claim requires text")
+        # Every supplied citation must exist in this tenant's index —
+        # including tentative citations on assumptions — so trace() can
+        # always replay what a claim cites.
+        if source_ids:
+            self._require_sources(tenant, source_ids)
         if label in SOURCE_BACKED_LABELS:
             if not source_ids:
                 raise EvidenceError(
                     f"a {label} claim requires at least one citation:"
                     " no citation, no claim"
                 )
-            self._require_sources(tenant, source_ids)
+            if label == "local_policy":
+                self._require_policy_source(tenant, source_ids)
             status = "supported"
         elif label == "assumption_requiring_confirmation":
             status = "awaiting_confirmation"
         else:  # user_provided_context — provenance is the user themself
-            if source_ids:
-                self._require_sources(tenant, source_ids)
             status = "supported"
         screened = self.privacy.transform(str(text)).transformed_text
         seed = json.dumps(
@@ -173,8 +177,14 @@ class ClaimLedger:
             sort_keys=True,
             separators=(",", ":"),
         ).encode("utf-8")
+        claim_id = "clm-" + hashlib.sha256(seed).hexdigest()[:16]
+        existing = self._claims.get(claim_id)
+        if existing is not None:
+            # Recording is idempotent: a duplicate never downgrades an
+            # already-confirmed claim back to awaiting confirmation.
+            return existing
         claim = Claim(
-            claim_id="clm-" + hashlib.sha256(seed).hexdigest()[:16],
+            claim_id=claim_id,
             tenant=tenant,
             text=screened,
             label=label,
@@ -208,6 +218,8 @@ class ClaimLedger:
         if not source_ids:
             raise EvidenceError("confirmation requires at least one citation")
         self._require_sources(claim.tenant, source_ids)
+        if new_label == "local_policy":
+            self._require_policy_source(claim.tenant, source_ids)
         confirmed = replace(
             claim,
             label=new_label,
@@ -284,6 +296,19 @@ class ClaimLedger:
                 raise EvidenceError(
                     f"citation does not exist in this tenant's index: {source_id}"
                 )
+
+    def _require_policy_source(
+        self, tenant: str, source_ids: tuple[str, ...]
+    ) -> None:
+        """A local-policy claim must actually cite a policy document."""
+        for source_id in source_ids:
+            source = self.knowledge.source(tenant, source_id)
+            if source is not None and source.doc_type == "policy":
+                return
+        raise EvidenceError(
+            "a local_policy claim must cite at least one source whose"
+            " document type is policy"
+        )
 
 
 def _statements(text: str) -> list[str]:

@@ -212,6 +212,76 @@ class ClaimLedgerTests(unittest.TestCase):
                 supported.claim_id, ("policy-falls-2026",), "Kim", "2026-07-28"
             )
 
+    def test_assumption_citations_are_validated_at_record_time(self):
+        with self.assertRaises(EvidenceError):
+            self.ledger.record_claim(
+                "org:mercy",
+                "Compliance may be lower at night.",
+                "assumption_requiring_confirmation",
+                source_ids=("ghost-source",),
+            )
+        tentative = self.ledger.record_claim(
+            "org:mercy",
+            "Compliance may be lower at night.",
+            "assumption_requiring_confirmation",
+            source_ids=("research-falls-2025",),
+        )
+        trace = self.ledger.trace(tentative.claim_id)
+        self.assertEqual(trace["status"], "awaiting_confirmation")
+        self.assertEqual(len(trace["sources"]), 1)
+
+    def test_duplicate_recording_never_downgrades_a_confirmed_claim(self):
+        assumption = self.ledger.record_claim(
+            "org:mercy",
+            "Night-shift rounding compliance is lower.",
+            "assumption_requiring_confirmation",
+        )
+        self.ledger.confirm_assumption(
+            assumption.claim_id,
+            ("policy-falls-2026",),
+            "Educator Kim",
+            "2026-07-28",
+        )
+        duplicate = self.ledger.record_claim(
+            "org:mercy",
+            "Night-shift rounding compliance is lower.",
+            "assumption_requiring_confirmation",
+        )
+        self.assertEqual(duplicate.claim_id, assumption.claim_id)
+        self.assertEqual(duplicate.status, "supported")
+        self.assertEqual(duplicate.confirmed_by, "Educator Kim")
+        self.assertEqual(self.ledger.unconfirmed_assumptions("org:mercy"), ())
+        self.assertEqual(len(self.ledger.bibliography("org:mercy")), 1)
+
+    def test_local_policy_claims_must_cite_a_policy_document(self):
+        with self.assertRaises(EvidenceError):
+            self.ledger.record_claim(
+                "org:mercy",
+                "Policy requires hourly rounding.",
+                "local_policy",
+                source_ids=("research-falls-2025",),
+            )
+        mixed = self.ledger.record_claim(
+            "org:mercy",
+            "Policy requires hourly rounding.",
+            "local_policy",
+            source_ids=("research-falls-2025", "policy-falls-2026"),
+        )
+        self.assertEqual(mixed.status, "supported")
+        assumption = self.ledger.record_claim(
+            "org:mercy",
+            "Rounds are also documented in the huddle notes.",
+            "assumption_requiring_confirmation",
+        )
+        with self.assertRaises(EvidenceError):
+            self.ledger.confirm_assumption(
+                assumption.claim_id,
+                ("research-falls-2025",),
+                "Educator Kim",
+                "2026-07-28",
+                new_label="local_policy",
+            )
+
     def test_claim_text_is_privacy_screened(self):
         claim = self.ledger.record_claim(
             "org:mercy",

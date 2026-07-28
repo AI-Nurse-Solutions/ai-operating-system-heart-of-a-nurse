@@ -4,14 +4,18 @@ on:
   pull_request:
     paths:
       - "naio-integrations/**"
+      - "mission-control/**"
       - "tests/test_naio_integrations.py"
+      - "scripts/build-mission-control-manifests.py"
       - "scripts/scan-public-healthcare-artifacts.py"
       - ".github/workflows/naio-integrations.yml"
   push:
     branches: [main]
     paths:
       - "naio-integrations/**"
+      - "mission-control/**"
       - "tests/test_naio_integrations.py"
+      - "scripts/build-mission-control-manifests.py"
       - "scripts/scan-public-healthcare-artifacts.py"
       - ".github/workflows/naio-integrations.yml"
 
@@ -30,7 +34,17 @@ jobs:
         with:
           python-version: "3.11"
       - name: Verify Python syntax
-        run: python3 -m py_compile naio-integrations/src/naio_integrations/*.py naio-integrations/tests/*.py tests/test_naio_integrations.py
+        run: python3 -m py_compile naio-integrations/src/naio_integrations/*.py naio-integrations/tests/*.py tests/test_naio_integrations.py scripts/build-mission-control-manifests.py
+      - name: Rebuild committed Mission Control manifests twice
+        run: |
+          set -euo pipefail
+          python3 scripts/build-mission-control-manifests.py
+          first="$(find mission-control/packets -type f | sort | xargs sha256sum | sha256sum | cut -d' ' -f1)"
+          python3 scripts/build-mission-control-manifests.py
+          second="$(find mission-control/packets -type f | sort | xargs sha256sum | sha256sum | cut -d' ' -f1)"
+          test "$first" = "$second"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all mission-control)"
       - name: Run Integration Contract suite
         run: python3 -m unittest discover -s naio-integrations/tests -p 'test_*.py' -v
       - name: Run repo-level integration regression
@@ -40,3 +54,4 @@ jobs:
           python3 scripts/scan-public-healthcare-artifacts.py naio-integrations/src --label INTEGRATIONS
           python3 scripts/scan-public-healthcare-artifacts.py naio-integrations/config --label INTEGRATIONS
           python3 scripts/scan-public-healthcare-artifacts.py naio-integrations/README.md --label INTEGRATIONS
+          python3 scripts/scan-public-healthcare-artifacts.py mission-control --label MISSION-CONTROL

@@ -1,0 +1,113 @@
+{
+  "default_agents": [
+    {
+      "actions_may_execute": [],
+      "agent_id": "guide-navigator",
+      "edena_tier": "green",
+      "purpose": "Orient the user, explain the workspace, and suggest the next safe action.",
+      "required_review": "every_output",
+      "tools_enabled": false
+    },
+    {
+      "actions_may_execute": [],
+      "agent_id": "meeting-decision-assistant",
+      "edena_tier": "green",
+      "purpose": "Prepare agendas, capture decisions, and track follow-ups.",
+      "required_review": "every_output",
+      "tools_enabled": false
+    },
+    {
+      "actions_may_execute": [],
+      "agent_id": "data-analyst",
+      "edena_tier": "green",
+      "purpose": "Summarize measures, trends, and limitations of available data.",
+      "required_review": "every_output",
+      "tools_enabled": false
+    },
+    {
+      "actions_may_execute": [],
+      "agent_id": "project-manager",
+      "edena_tier": "green",
+      "purpose": "Organize tasks, milestones, owners, risks, and approval gates.",
+      "required_review": "every_output",
+      "tools_enabled": false
+    },
+    {
+      "actions_may_execute": [],
+      "agent_id": "writing-presentation-assistant",
+      "edena_tier": "green",
+      "purpose": "Draft documents and presentations for human review.",
+      "required_review": "every_output",
+      "tools_enabled": false
+    },
+    {
+      "actions_may_execute": [],
+      "agent_id": "governance-safety-checker",
+      "edena_tier": "green",
+      "purpose": "Check tier, data class, zone, and approval requirements before work proceeds.",
+      "required_review": "every_output",
+      "tools_enabled": false
+    }
+  ],
+  "default_permissions": [],
+  "display_name": "Manager, Leader, or Executive",
+  "governance": {
+    "default_data_zone": "private",
+    "default_risk_tier": "green",
+    "directive": "NIN-NAIO Master Directive v1.1",
+    "install_note": "Installation does not imply employer, school, regulatory, IRB, privacy, or security approval."
+  },
+  "integrations_enabled_by_default": false,
+  "integrity_checksum": "sha256:4ad6b201a719025f350d5051c0066a222239ecaad5bc994c53a527dfda2c5754",
+  "manifest_schema": "1.0.0",
+  "migration_version": "1",
+  "optional_dependencies": [
+    "open-policy-agent (behind the policy-decision interface)",
+    "microsoft-presidio (behind the privacy-transformation interface)",
+    "guardrails-ai (behind the validation interface)",
+    "langfuse (behind the observability interface)",
+    "mem0 (behind the memory interface)",
+    "ragflow (behind the knowledge-retrieval interface)",
+    "langgraph (behind the orchestration interface)"
+  ],
+  "packet_name": "nurse-ai-os-mission-control-leader",
+  "packet_version": "1.0.0",
+  "prohibited_data_classes": [
+    "D3",
+    "D4"
+  ],
+  "prohibited_data_note": "No PHI, patient identifiers, regulated data (D3), or restricted critical data (D4) in the personal edition. Approved institutional environments are a separate, gated deployment.",
+  "required_dependencies": [
+    "naio-integrations>=1.0.0",
+    "edena-gateway-policy>=1.0.0"
+  ],
+  "role": "leader",
+  "role_modules": [
+    "mission-control-core",
+    "role-profile-configuration",
+    "edena-guardrails",
+    "data-boundary-notice",
+    "setup-wizard",
+    "user-guide",
+    "troubleshooting-guide",
+    "example-workspace-synthetic",
+    "starter-agents-tools-disabled",
+    "core-templates",
+    "sample-project-and-artifact",
+    "backup-export-instructions",
+    "update-version-manifest",
+    "license-ownership-attribution",
+    "strategy-and-portfolio-map",
+    "decision-room",
+    "operational-metric-dictionary",
+    "ai-governance-register",
+    "executive-communication-templates"
+  ],
+  "supported_exports": [
+    "markdown",
+    "pdf",
+    "docx",
+    "csv",
+    "presentation"
+  ]
+}

@@ -85,7 +85,10 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
                 policy_version=self.version,
             )
 
-        role_rules = self.policy["role_rules"].get(actor.role)
+        # Packet role ids resolve to their policy archetype before rule
+        # lookup, so "pre-licensure-student" carries the student gates.
+        policy_role = self.policy["role_aliases"].get(actor.role, actor.role)
+        role_rules = self.policy["role_rules"].get(policy_role)
         if role_rules:
             if request.intent in role_rules.get("denied_intents", ()):
                 return self._deny(role_rules["reason_code"])
@@ -110,7 +113,13 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
             requirements = self.policy[
                 "orange_requirements" if tier is RiskTier.ORANGE else "red_e_requirements"
             ]
-            if requirements.get("authenticated_org") and not actor.authenticated_org:
+            if requirements.get("authenticated_org") and (
+                not actor.authenticated_org
+                or actor.authenticated_org != actor.tenant
+            ):
+                # The organizational context must BE the current workspace —
+                # an org login carried into a personal or foreign workspace
+                # grants nothing.
                 return self._deny("EDENA-ORG-CONTEXT-REQUIRED")
             if requirements.get("recorded_approval") and not actor.approvals:
                 return self._deny("EDENA-APPROVAL-REQUIRED")

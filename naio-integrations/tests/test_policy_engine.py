@@ -284,6 +284,41 @@ class PolicyEngineTests(unittest.TestCase):
         decision = self.engine.decide(make_request(actor=student))
         self.assertIs(decision.decision, Decision.ALLOW)
 
+    def test_packet_role_aliases_carry_the_student_gates(self):
+        packet_student = Actor(
+            actor_id="sn-2", role="pre-licensure-student", tenant="personal:sn-2"
+        )
+        denied_intent = self.engine.decide(
+            make_request(actor=packet_student, intent="patient_specific_recommendation")
+        )
+        self.assertIs(denied_intent.decision, Decision.DENY)
+        self.assertIn("EDENA-STUDENT-MODE", denied_intent.reason_codes)
+        over_ceiling = self.engine.decide(
+            make_request(
+                actor=packet_student,
+                risk_tier=RiskTier.YELLOW,
+                action_mode=ActionMode.RECOMMEND,
+            )
+        )
+        self.assertIs(over_ceiling.decision, Decision.DENY)
+        self.assertIn("EDENA-STUDENT-MODE", over_ceiling.reason_codes)
+
+    def test_org_credential_grants_nothing_outside_its_own_workspace(self):
+        wandering = Actor(
+            actor_id="rn-3",
+            role="nurse",
+            tenant="personal:rn-3",
+            authenticated_org="org:mercy",
+            approvals=("appr-88",),
+        )
+        decision = self.engine.decide(
+            make_request(
+                actor=wandering, risk_tier=RiskTier.ORANGE, data_class=DataClass.D2
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-ORG-CONTEXT-REQUIRED", decision.reason_codes)
+
     def test_memory_cannot_cross_tenant_boundaries(self):
         decision = self.engine.decide(
             make_request(target_tenant="org:other-hospital")

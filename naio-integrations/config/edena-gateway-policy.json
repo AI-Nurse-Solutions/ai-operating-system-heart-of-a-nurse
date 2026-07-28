@@ -34,6 +34,11 @@
     "allowed_target_zones": ["private", "shared_professional", "educational_record", "institutional", "restricted"],
     "migration_requires_approval": true
   },
+  "role_aliases": {
+    "pre-licensure-student": "student",
+    "student-nurse": "student",
+    "nursing-student": "student"
+  },
   "role_rules": {
     "student": {
       "denied_intents": ["patient_specific_recommendation"],

@@ -23,11 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-try:
-    import fcntl
-except ImportError:  # pragma: no cover - non-POSIX fallback
-    fcntl = None
-
+from . import locking
 from .contract import GatewayRequest, ObservabilityInterface
 
 GENESIS_HASH = "0" * 64
@@ -106,11 +102,18 @@ class GatewayTracer(ObservabilityInterface):
         path = self._path(tenant)
         if not path.exists():
             return []
-        return [
-            json.loads(line)
-            for line in path.read_text(encoding="utf-8").splitlines()
-            if line.strip()
-        ]
+        # Readers take the same lock as writers so a concurrent append can
+        # never expose a partially written record or a torn hash chain.
+        with path.open("a+", encoding="utf-8") as handle:
+            locking.acquire(handle)
+            try:
+                handle.seek(0)
+                lines = [
+                    line for line in handle.read().splitlines() if line.strip()
+                ]
+            finally:
+                locking.release(handle)
+        return [json.loads(line) for line in lines]
 
     def verify(self, tenant: str) -> dict[str, Any]:
         previous = GENESIS_HASH
@@ -136,8 +139,7 @@ class GatewayTracer(ObservabilityInterface):
         path = self._path(tenant)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a+", encoding="utf-8") as handle:
-            if fcntl is not None:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+            locking.acquire(handle)
             try:
                 handle.seek(0)
                 lines = [line for line in handle.read().splitlines() if line.strip()]
@@ -156,5 +158,4 @@ class GatewayTracer(ObservabilityInterface):
                 handle.flush()
                 os.fsync(handle.fileno())
             finally:
-                if fcntl is not None:
-                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+                locking.release(handle)

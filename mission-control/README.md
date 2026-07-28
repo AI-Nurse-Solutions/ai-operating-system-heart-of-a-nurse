@@ -53,13 +53,22 @@ explicit disposition and date changes that, and approved renders carry
 the attestation. No output is presented as final merely because it was
 generated (specification section 3.6).
 
-The three Phase 2 packets (`pre-licensure-student/`, `staff-nurse/`,
-`educator/`) are **installable bundles**, not just manifests: each ships
-a role README with the section 19 recognitions, a `DATA-BOUNDARY.md`
-notice to read before first use, and working starter templates rendered
-by the Deliverable Studio — every one an editable draft with the
-mandatory banner. No empty demo. The leader and licensed-clinician
-packets remain manifest-only until Phases 3 and 4.
+Four packets (`pre-licensure-student/`, `staff-nurse/`, `educator/`
+from Phase 2, and `leader/` unlocked by Phase 3) are **installable
+bundles**, not just manifests: each ships a role README with the
+section 19 recognitions, a `DATA-BOUNDARY.md` notice to read before
+first use, and working starter templates rendered by the Deliverable
+Studio — every one an editable draft with the mandatory banner. No
+empty demo. The licensed-clinician packet remains manifest-only until
+Phase 4.
+
+`healthcare-sandbox/` holds the **Phase 3 healthcare sandbox**:
+synthetic, FHIR-shaped case bundles generated from the reviewed case
+catalog (synthetichealth/synthea and hapifhir/hapi-fhir patterns, no
+vendored code). Every record is labeled synthetic, carries a
+numeric-suffix name, and passes the privacy screen; the sandbox module
+refuses unlabeled or identifier-bearing content at admission. See
+`healthcare-sandbox/README.md` for the boundary invariants.
 
 ## Regenerating
 
@@ -67,6 +76,7 @@ packets remain manifest-only until Phases 3 and 4.
 python3 scripts/build-mission-control-manifests.py
 python3 scripts/build-mission-control-packet-bundles.py
 python3 scripts/build-mission-control-example-workspace.py
+python3 scripts/build-mission-control-healthcare-sandbox.py
 ```
 
 The bundle script runs after the manifests script and owns

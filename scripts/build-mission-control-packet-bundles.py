@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the committed Phase 2 role-packet bundles.
+"""Build the committed installable role-packet bundles (Phases 2 and 3).
 
 Runs after build-mission-control-manifests.py and owns
 mission-control/packets/CHECKSUMS.sha256, which covers every committed
@@ -26,7 +26,7 @@ PACKETS_ROOT = ROOT / "mission-control" / "packets"
 
 def main() -> int:
     builder = PacketBundleBuilder()
-    for path in builder.build_phase2(PACKETS_ROOT):
+    for path in builder.build_roles(PACKETS_ROOT):
         print(f"built {path.relative_to(ROOT)}")
     checksum_file = PACKETS_ROOT / "CHECKSUMS.sha256"
     lines = []

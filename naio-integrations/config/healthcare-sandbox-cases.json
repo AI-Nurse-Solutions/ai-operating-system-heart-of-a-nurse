@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "note": "Healthcare sandbox case catalog (Mission Control spec section 17, Phase 3). Every case is entirely synthetic teaching material in the synthetichealth/synthea naming convention (numeric-suffix names mark records as generated). The sandbox module expands each case into a FHIR-shaped bundle; nothing here describes a real person.",
+  "effective_date": "2026-07-01",
+  "jurisdiction": "US",
+  "cases": {
+    "hf-transitions-001": {
+      "title": "Transitional care after a heart failure admission",
+      "learning_focus": "Discharge education, medication reconciliation, and early follow-up for a synthetic adult returning home after a heart failure exacerbation.",
+      "person": {
+        "given": "Amara701",
+        "family": "Kestrel842",
+        "gender": "female",
+        "birth_date": "1954-03-07",
+        "sandbox_id": "SYN-HF-0001"
+      },
+      "encounter": {
+        "class_code": "IMP",
+        "description": "Inpatient stay for heart failure exacerbation, resolved",
+        "period_start": "2026-06-02",
+        "period_end": "2026-06-06"
+      },
+      "conditions": [
+        {
+          "text": "Heart failure with reduced ejection fraction (synthetic scenario)",
+          "onset": "2024-11-18"
+        },
+        {
+          "text": "Essential hypertension (synthetic scenario)",
+          "onset": "2019-05-02"
+        }
+      ],
+      "medications": [
+        {
+          "text": "Loop diuretic, oral (synthetic scenario)",
+          "instruction": "Continue at the dose set in the synthetic discharge plan; teach daily weight monitoring."
+        },
+        {
+          "text": "Beta blocker, oral (synthetic scenario)",
+          "instruction": "Continue as tolerated per the synthetic scenario; review with the follow-up clinician."
+        }
+      ],
+      "observations": [
+        {
+          "text": "Body weight",
+          "value": 82.4,
+          "unit": "kg",
+          "effective": "2026-06-06"
+        },
+        {
+          "text": "Heart rate",
+          "value": 78,
+          "unit": "beats/min",
+          "effective": "2026-06-06"
+        }
+      ]
+    },
+    "dm2-education-002": {
+      "title": "New type 2 diabetes education visit",
+      "learning_focus": "First teaching session for a synthetic adult newly living with type 2 diabetes: glucose monitoring, nutrition basics, and when to call for help.",
+      "person": {
+        "given": "Devon315",
+        "family": "Marlowe228",
+        "gender": "male",
+        "birth_date": "1981-09-22",
+        "sandbox_id": "SYN-DM-0002"
+      },
+      "encounter": {
+        "class_code": "AMB",
+        "description": "Ambulatory education visit, completed",
+        "period_start": "2026-06-14",
+        "period_end": "2026-06-14"
+      },
+      "conditions": [
+        {
+          "text": "Type 2 diabetes mellitus, newly identified (synthetic scenario)",
+          "onset": "2026-05-30"
+        }
+      ],
+      "medications": [
+        {
+          "text": "Oral glucose-lowering agent (synthetic scenario)",
+          "instruction": "Take with the morning meal as set in the synthetic plan; review side effects at follow-up."
+        }
+      ],
+      "observations": [
+        {
+          "text": "Hemoglobin A1c",
+          "value": 8.1,
+          "unit": "%",
+          "effective": "2026-05-30"
+        },
+        {
+          "text": "Body mass index",
+          "value": 31.2,
+          "unit": "kg/m2",
+          "effective": "2026-06-14"
+        }
+      ]
+    },
+    "postop-mobility-003": {
+      "title": "Post-operative mobility and fall prevention",
+      "learning_focus": "Simulation-ready scenario for a synthetic older adult after hip replacement: early mobilization, fall risk assessment, and pain reassessment.",
+      "person": {
+        "given": "Ilse902",
+        "family": "Farrow516",
+        "gender": "female",
+        "birth_date": "1948-12-01",
+        "sandbox_id": "SYN-OR-0003"
+      },
+      "encounter": {
+        "class_code": "IMP",
+        "description": "Inpatient stay after elective hip replacement, in recovery",
+        "period_start": "2026-06-20",
+        "period_end": "2026-06-24"
+      },
+      "conditions": [
+        {
+          "text": "Status after elective hip replacement (synthetic scenario)",
+          "onset": "2026-06-20"
+        },
+        {
+          "text": "Osteoarthritis of the hip (synthetic scenario)",
+          "onset": "2021-02-10"
+        }
+      ],
+      "medications": [
+        {
+          "text": "Scheduled non-opioid analgesic (synthetic scenario)",
+          "instruction": "Scheduled dosing per the synthetic plan; reassess pain before and after mobility work."
+        }
+      ],
+      "observations": [
+        {
+          "text": "Pain score at rest",
+          "value": 3,
+          "unit": "score",
+          "effective": "2026-06-22"
+        },
+        {
+          "text": "Morse fall scale total",
+          "value": 55,
+          "unit": "score",
+          "effective": "2026-06-22"
+        }
+      ]
+    }
+  }
+}

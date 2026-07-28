@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**Napapanahon hanggang Hulyo 25, 2026**
+**Napapanahon hanggang Hulyo 28, 2026**
 
 **Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -48,6 +48,8 @@ Dinisenyo ang Nurse AI OS bilang no-PHI learning at stewardship space. Isa itong
 Ang **EDENA** ang governance, risk, safety, at assurance control plane. Nagbibigay ito ng review language at Green/Yellow/Orange/Red-P/Red-E tiers upang makilala ang risk at human gates. Hindi pa naitatala ng Directive owner ang opisyal na long-form expansion nito. Ang kasalukuyang public posture ay **shadow/observe-only**: maaari nitong ayusin ang review, ngunit hindi nito ginagarantiya na pare-parehong ipapatupad ng ChatGPT, Claude, Hermes, o ibang host ang bawat rule.
 
 Ang **Florence-X** ay emerging research at build architecture para sa orchestration, verification, evidence, at nakikitang human authorization. Hindi ito ipinapakita bilang deployed institutional service.
+
+**Bago (Hulyo 2026):** kasama na sa pampublikong repositoryo ang isang nasubok na reference implementation ng **Nurse AI OS Integration Contract**: anim na matatag na interface, isang EDENA policy-gateway prototype na deny-by-default at fail-closed, limang role packet ng Mission Control na maaaring i-install, at isang ganap na synthetic na healthcare sandbox. Ebidensiya ito ng paglalathala ng software para sa direksiyon ng proyekto; hindi ito nangangahulugan ng pare-parehong pagpapatupad sa bawat host o institusyonal na pag-apruba, at nananatiling shadow/observe-only ang pampublikong postura ng EDENA.
 
 ## Maaaring sipiing paglalarawan
 

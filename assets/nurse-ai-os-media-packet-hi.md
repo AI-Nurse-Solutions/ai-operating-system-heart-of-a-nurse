@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**25 जुलाई 2026 तक अद्यतन**
+**28 जुलाई 2026 तक अद्यतन**
 
 **वेबसाइट:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **मीडिया संपर्क:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -48,6 +48,8 @@ Nurse AI OS को no-PHI learning और stewardship space के रूप म
 **EDENA** governance, risk, safety और assurance control plane है। यह risk और human gates पहचानने के लिए Green/Yellow/Orange/Red-P/Red-E tiers और review language देता है। Directive owner ने इसका आधिकारिक long-form expansion अभी दर्ज नहीं किया है। वर्तमान public posture **shadow/observe-only** है: यह review को structure कर सकता है, लेकिन यह guarantee नहीं करता कि ChatGPT, Claude, Hermes या कोई अन्य host हर rule को एक ही तरह enforce करेगा।
 
 **Florence-X** orchestration, verification, evidence और visible human authorization के लिए emerging research and build architecture है। इसे deployed institutional service के रूप में प्रस्तुत नहीं किया जाता।
+
+**नया (जुलाई 2026):** सार्वजनिक रिपॉज़िटरी में अब **Nurse AI OS Integration Contract** का परीक्षण किया हुआ संदर्भ कार्यान्वयन शामिल है: छह स्थिर इंटरफ़ेस, डिफ़ॉल्ट रूप से अस्वीकार करने वाला और विफलता पर बंद होने वाला EDENA नीति-गेटवे प्रोटोटाइप, Mission Control के पाँच इंस्टॉल करने योग्य रोल पैकेट, और पूरी तरह सिंथेटिक हेल्थकेयर सैंडबॉक्स। यह परियोजना की दिशा का सॉफ़्टवेयर-प्रकाशन प्रमाण है; इसका अर्थ हर होस्ट में एक समान प्रवर्तन या संस्थागत स्वीकृति नहीं है, और EDENA की सार्वजनिक स्थिति shadow/observe-only बनी हुई है।
 
 ## उद्धरण योग्य वर्णन
 

@@ -192,6 +192,20 @@ class EdenaPolicyGatewayTests(unittest.TestCase):
         verification = self.gateway.tracer.verify("personal:rn-1")
         self.assertTrue(verification["ok"])
 
+    def test_crashing_executor_fails_closed_with_a_complete_audit_trail(self):
+        def exploding_executor(_request):
+            raise RuntimeError("model backend fell over")
+
+        result = self.gateway.submit(make_request(), executor=exploding_executor)
+        self.assertIs(result.decision, Decision.DENY)
+        self.assertIn("EDENA-EXECUTOR-ERROR", result.reason_codes)
+        self.assertEqual(result.stage, "execute")
+        self.assertIsNone(result.output)
+        records = self.gateway.tracer.read("personal:rn-1")
+        self.assertEqual(records[-1]["kind"], "trace_end")
+        self.assertTrue(self.gateway.tracer.verify("personal:rn-1")["ok"])
+        self.assertNotIn("fell over", self.trace_text("personal:rn-1"))
+
     def test_every_decision_leaves_a_verifiable_audit_trail(self):
         self.gateway.submit(make_request())
         self.gateway.submit(make_request(content="MRN: B55555 review"))

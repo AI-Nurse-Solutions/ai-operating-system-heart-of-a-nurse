@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**Cập nhật đến ngày 25 tháng 7 năm 2026**
+**Cập nhật đến ngày 28 tháng 7 năm 2026**
 
 **Trang web:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Liên hệ truyền thông:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -48,6 +48,8 @@ Nurse AI OS được thiết kế là không gian học tập và gìn giữ kh�
 **EDENA** là lớp kiểm soát quản trị, rủi ro, an toàn và bảo đảm. EDENA cung cấp ngôn ngữ xem xét và các tầng Green/Yellow/Orange/Red-P/Red-E để nhận diện rủi ro và cổng kiểm soát của con người. Chủ sở hữu Directive chưa ghi nhận tên đầy đủ chính thức. Tư thế công khai hiện nay là **shadow/observe-only**: có thể cấu trúc việc xem xét, nhưng không bảo đảm ChatGPT, Claude, Hermes hay môi trường khác thực thi mọi quy tắc giống nhau.
 
 **Florence-X** là kiến trúc nghiên cứu và xây dựng đang phát triển về điều phối, xác minh, bằng chứng và ủy quyền con người có thể quan sát. Nó không được trình bày như một dịch vụ tổ chức đã triển khai.
+
+**Mới (tháng 7 năm 2026):** kho mã nguồn công khai nay đã có một bản hiện thực tham chiếu được kiểm thử của **Hợp đồng Tích hợp Nurse AI OS**: sáu giao diện ổn định, nguyên mẫu cổng chính sách EDENA từ chối mặc định và đóng an toàn khi lỗi, năm gói vai trò Mission Control có thể cài đặt, và một sandbox y tế hoàn toàn tổng hợp. Đây là bằng chứng công bố phần mềm cho định hướng của dự án; nó không đồng nghĩa với việc thực thi thống nhất trên mọi nền tảng hay sự phê duyệt của tổ chức, và tư thế công khai của EDENA vẫn là shadow/observe-only.
 
 ## Mô tả có thể trích dẫn
 

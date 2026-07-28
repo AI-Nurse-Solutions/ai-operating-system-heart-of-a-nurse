@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**À jour au 25 juillet 2026**
+**À jour au 28 juillet 2026**
 
 **Site :** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Contact presse :** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -48,6 +48,8 @@ Nurse AI OS est conçu comme un espace d’apprentissage et de stewardship sans 
 **EDENA** est le plan de contrôle de gouvernance, de risque, de sécurité et d’assurance. EDENA fournit un langage de revue et les niveaux Green/Yellow/Orange/Red-P/Red-E pour reconnaître les risques et les points de contrôle humains. Le propriétaire de la Directive n’a pas encore consigné son développement officiel. La posture publique actuelle est **shadow/observe-only** : elle peut structurer l’examen, mais ne garantit pas que ChatGPT, Claude, Hermes ou un autre environnement appliquent chaque règle de manière identique.
 
 **Florence-X** est une architecture émergente de recherche et de construction autour de l’orchestration, de la vérification, de la preuve et de l’autorisation humaine visible. Elle n’est pas présentée comme un service institutionnel déployé.
+
+**Nouveau (juillet 2026) :** le dépôt public contient désormais une implémentation de référence testée du **contrat d'intégration Nurse AI OS** : six interfaces stables, un prototype de passerelle de politiques EDENA qui refuse par défaut et se ferme en cas d'erreur, cinq paquets de rôle installables de Mission Control et un bac à sable de santé entièrement synthétique. Il s'agit de preuves de publication logicielle sur la direction du projet ; elles n'impliquent ni application uniforme dans chaque environnement ni approbation institutionnelle, et la posture publique d'EDENA reste shadow/observe-only.
 
 ## Description à citer
 

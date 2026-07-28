@@ -81,6 +81,7 @@
     "EDENA-PRIVACY-REDLINE": "Identifying content is not accepted at this tier.",
     "EDENA-RESEARCH-ZONE": "Research execution runs only in the restricted data zone.",
     "EDENA-RESEARCH-UNAFFILIATED": "Research execution requires an authenticated organizational context matching the current workspace.",
-    "EDENA-RESEARCH-APPROVAL": "Research execution requires a recorded governance approval (IRB or equivalent) before it proceeds."
+    "EDENA-RESEARCH-APPROVAL": "Research execution requires a recorded governance approval (IRB or equivalent) before it proceeds.",
+    "EDENA-EXECUTOR-ERROR": "The executor failed while producing output; the request fails closed with a completed audit trail."
   }
 }

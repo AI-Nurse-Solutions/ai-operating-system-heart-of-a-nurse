@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**Current through July 26, 2026**
+**Current through July 28, 2026**
 
 **Website:** [nurse-ai-os.org](https://nurse-ai-os.org/) · **Media contact:** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -128,8 +128,14 @@ Nurse AI OS™ helps nurses use the AI they may already have without handing ove
 | State | Public description | Do not infer |
 |---|---|---|
 | **Today — practical product** | A nurse-centered configuration and workflow kit for ChatGPT or Claude: SOUL file, prompts, templates, folders, role workflows, and safety practices. | Not a new model, EHR, autonomous clinician, or finished standalone OS. |
-| **Emerging — technical layer** | Public policy artifacts, schemas, tests, release verification, evidence controls, EDENA review language, governed build kits, and Florence-X research components. | Not uniform host enforcement, clinical validation, compliance certification, or a deployed institutional control plane. |
+| **Emerging — technical layer** | Public policy artifacts, schemas, tests, release verification, evidence controls, EDENA review language, governed build kits, Florence-X research components, and a tested Integration Contract reference implementation with Mission Control role packets and a synthetic healthcare sandbox. | Not uniform host enforcement, clinical validation, compliance certification, or a deployed institutional control plane. |
 | **Direction — fuller OS** | A portable, enforceable, nurse-governed control layer in which policies, human gates, provenance, and evidence can travel across tools. | Not a claim that this future architecture is complete or operational today. |
+
+### New in the public repository: the Integration Contract (July 2026)
+
+In July 2026 the emerging technical layer gained a working, tested reference implementation, published as open code in the project repository. The **Nurse AI OS Integration Contract** defines six stable interfaces — orchestration, policy decision, privacy transformation, memory, knowledge retrieval, and observability — so external AI engines plug in behind nurse-governed boundaries instead of becoming vendored dependencies. Behind those interfaces sit a deny-by-default, fail-closed EDENA policy-gateway prototype; an ADPIE workflow runtime with a hard human-authorization gate; an evidence ledger in which source-backed claims require citations that exist ("no citation, no claim"); five installable Mission Control role packets — pre-licensure student, staff nurse, educator, leader, and licensed clinician — that ship with empty default permissions, integrations off, and propose-only starter agents behind a data-boundary notice; a fully synthetic healthcare sandbox whose layered admission boundary refuses real-looking records; and research governance gates that require a named, recorded IRB-or-equivalent approval before research execution. The committed Integration Contract and Mission Control artifacts are deterministic and are rebuilt and verified in continuous integration.
+
+These artifacts are software-publication evidence for the control-layer direction. They are reference implementations: they do not create uniform host enforcement, compliance certification, institutional authorization, or a deployed institutional control plane, and EDENA's cross-host posture remains shadow/observe-only.
 
 ---
 

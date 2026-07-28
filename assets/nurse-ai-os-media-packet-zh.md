@@ -14,7 +14,7 @@
 - **Architecture evidence:** pre-Directive reports are historical implementation evidence, not current canonical architecture or conformance claims.
 - **Licensing:** licensing is artifact-specific. Existing Apache and CC BY grants in this repository remain valid and are not silently narrowed or revoked. Check terms attached to separately maintained artifacts; the public open-core boundary remains pending.
 
-**更新至 2026 年 7 月 25 日**
+**更新至 2026 年 7 月 28 日**
 
 **网站：** [nurse-ai-os.org](https://nurse-ai-os.org/) · **媒体联络：** [robert@nurse-ai-os.org](mailto:robert@nurse-ai-os.org)
 
@@ -48,6 +48,8 @@ Nurse AI OS 被设计为不含 PHI 的学习与守护空间。这是参与和设
 **EDENA** 是治理、风险、安全与保障控制层。它提供复核语言以及 Green/Yellow/Orange/Red-P/Red-E 风险等级，帮助识别风险和人工关口。Directive 所有者尚未正式记录其官方全称。当前公开状态是 **shadow/observe-only（影子观察）**：EDENA 可以组织复核，但不能保证 ChatGPT、Claude、Hermes 或其他宿主以相同方式执行每一条规则。
 
 **Florence-X** 是一项正在发展的研究与构建架构，探索编排、验证、证据和可见的人类授权。它并未被描述为已经部署的机构级服务。
+
+**2026 年 7 月新进展：** 公开代码仓库现已包含经过测试的 **Nurse AI OS 集成契约**参考实现：六个稳定接口、默认拒绝且失败即关闭的 EDENA 策略网关原型、五个可安装的 Mission Control 角色包，以及完全合成的医疗沙盒。这些是关于项目方向的软件发布证据；不代表在各个宿主中的统一强制执行，也不构成机构批准；EDENA 的公开姿态仍为 shadow/observe-only。
 
 ## 可引用描述
 

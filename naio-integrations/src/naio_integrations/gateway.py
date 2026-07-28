@@ -15,6 +15,7 @@ human-controlled, and how the entire decision can be audited.
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
@@ -30,6 +31,8 @@ from .observability import GatewayTracer
 from .policy import EdenaPolicyEngine
 from .privacy import PrivacyScreen
 from .validation import TrafficValidator
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -152,7 +155,23 @@ class EdenaPolicyGateway:
         output: str | None = None
         issues: tuple[ValidationIssue, ...] = ()
         if executor is not None:
-            raw_output = executor(screened_request)
+            try:
+                raw_output = executor(screened_request)
+            except Exception:  # noqa: BLE001 — any executor crash fails closed
+                # A crashing executor must not escape the gateway: the
+                # request fails closed and the audit trail still records
+                # a completed, verifiable outcome. Application log only —
+                # the audit ledger stays metadata-only.
+                logger.exception("executor failed; failing closed")
+                return self._finish(
+                    trace_id,
+                    request,
+                    Decision.DENY,
+                    ("EDENA-EXECUTOR-ERROR",),
+                    stage="execute",
+                    screened=privacy_result.transformed_text,
+                    entity_types=entity_types,
+                )
             output_check = self.validator.validate_output(screened_request, raw_output)
             self.tracer.record_span(
                 trace_id,

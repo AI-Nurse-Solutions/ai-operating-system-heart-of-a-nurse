@@ -82,6 +82,16 @@ class ActionMode(str, Enum):
         return self.rank >= ActionMode.PREPARE_ACTION.rank
 
 
+class DataZone(str, Enum):
+    """Mission Control data zones. Private content never silently migrates."""
+
+    PRIVATE = "private"  # reflections, confidence, personal goals, draft notes
+    SHARED_PROFESSIONAL = "shared_professional"  # project tasks, meeting actions
+    EDUCATIONAL_RECORD = "educational_record"  # verified assessments, competency
+    INSTITUTIONAL = "institutional"  # approved aggregate measures, policies
+    RESTRICTED = "restricted"  # research data, sensitive workforce/clinical data
+
+
 class Decision(str, Enum):
     """Policy decision outcomes. Fail-closed: unknown always maps to DENY."""
 
@@ -113,6 +123,7 @@ class GatewayRequest:
     data_class: DataClass
     action_mode: ActionMode
     target_tenant: str | None = None  # tenant whose data/tools are touched
+    data_zone: DataZone = DataZone.PRIVATE  # ambiguity narrows: most protected
     metadata: dict[str, Any] = field(default_factory=dict)
 
 

@@ -70,6 +70,25 @@ data class, and action mode):
 - Unrestricted autonomy is prohibited. Ambiguity narrows capability and
   fails closed.
 
+### Data zones (Mission Control alignment)
+
+Requests carry a data zone from the Mission Control specification —
+`private`, `shared_professional`, `educational_record`, `institutional`,
+`restricted` (default: `private`; ambiguity narrows). Two rules are
+enforced at the policy decision point:
+
+- Private reflections never appear in manager, faculty, cohort, or
+  executive views (`EDENA-PRIVATE-REFLECTION`).
+- Content never silently migrates between zones: a cross-zone move
+  requires an explicit, recorded approval (`EDENA-ZONE-MIGRATION`), and
+  approved moves are logged.
+
+Note on tier naming: the Mission Control specification uses the public
+four-tier shorthand (Green/Yellow/Orange/Red). This package follows
+Directive v1.1: spec-Red maps to Red-P (prohibited; blocked with a
+minimal safety record), and exceptional controlled high-risk work is
+Red-E behind institutional controls.
+
 Every decision is traced to a tenant-separated, hash-chained JSONL audit
 stream with redaction applied *before* tracing — spans carry entity
 types, reason codes, and counts, never raw content.

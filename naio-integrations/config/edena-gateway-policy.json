@@ -29,6 +29,10 @@
     "prepare_action": {"decision": "require_approval"},
     "constrained_autonomy": {"tiers": ["red-e"]}
   },
+  "zone_rules": {
+    "private_zone_denied_audiences": ["manager", "faculty", "cohort", "executive", "organization"],
+    "migration_requires_approval": true
+  },
   "role_rules": {
     "student": {
       "denied_intents": ["patient_specific_recommendation"],
@@ -50,6 +54,8 @@
     "EDENA-APPROVAL-REQUIRED": "A recorded human approval is required before this action.",
     "EDENA-INSTITUTIONAL-CONTROLS": "Red-E execution requires defined institutional controls.",
     "EDENA-STUDENT-MODE": "Student mode cannot generate patient-specific recommendations.",
+    "EDENA-PRIVATE-REFLECTION": "Private reflections never appear in manager, faculty, cohort, or executive views.",
+    "EDENA-ZONE-MIGRATION": "Moving content between data zones requires an explicit, recorded approval.",
     "EDENA-SIDE-EFFECT-GATE": "External side effects require meaningful human approval.",
     "EDENA-WITHIN-SCOPE": "Request is within the compiled EDENA scope.",
     "EDENA-PRIVACY-REDLINE": "Identifying content is not accepted at this tier."

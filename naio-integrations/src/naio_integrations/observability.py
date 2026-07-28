@@ -61,6 +61,7 @@ class GatewayTracer(ObservabilityInterface):
                 "risk_tier": request.risk_tier.value,
                 "data_class": request.data_class.value,
                 "action_mode": request.action_mode.value,
+                "data_zone": request.data_zone.value,
                 "content_length": len(request.content),
             },
         )

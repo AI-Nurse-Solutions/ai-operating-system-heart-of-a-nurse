@@ -123,6 +123,7 @@ class EdenaPolicyGateway:
             data_class=request.data_class,
             action_mode=request.action_mode,
             target_tenant=request.target_tenant,
+            data_zone=request.data_zone,
             metadata=request.metadata,
         )
 

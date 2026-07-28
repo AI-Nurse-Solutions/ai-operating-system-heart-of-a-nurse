@@ -52,6 +52,11 @@ class IntegrationPackageSuiteTests(unittest.TestCase):
         self.assertIn("unrestricted_autonomy", policy["prohibited"]["action_modes"])
         self.assertEqual(policy["tier_data_ceilings"]["green"], "D0")
         self.assertIn("student", policy["role_rules"])
+        self.assertTrue(policy["zone_rules"]["migration_requires_approval"])
+        for audience in ("manager", "faculty", "cohort", "executive"):
+            self.assertIn(
+                audience, policy["zone_rules"]["private_zone_denied_audiences"]
+            )
 
     def test_recognizer_config_covers_healthcare_identifiers(self):
         config = json.loads(

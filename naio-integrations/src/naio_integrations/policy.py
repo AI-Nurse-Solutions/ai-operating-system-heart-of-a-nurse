@@ -18,6 +18,7 @@ from typing import Any
 from .contract import (
     ActionMode,
     DataClass,
+    DataZone,
     Decision,
     GatewayRequest,
     PolicyDecision,
@@ -57,6 +58,26 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
         if request.target_tenant and request.target_tenant != actor.tenant:
             return self._deny("EDENA-TENANT-BOUNDARY")
 
+        zone_rules = self.policy["zone_rules"]
+        audience = str(request.metadata.get("audience", "")).lower()
+        if request.data_zone is DataZone.PRIVATE and audience in zone_rules[
+            "private_zone_denied_audiences"
+        ]:
+            return self._deny("EDENA-PRIVATE-REFLECTION")
+        target_zone = request.metadata.get("target_zone")
+        if (
+            target_zone
+            and target_zone != request.data_zone.value
+            and zone_rules["migration_requires_approval"]
+            and not request.metadata.get("zone_migration_approval")
+        ):
+            return PolicyDecision(
+                decision=Decision.REQUIRE_APPROVAL,
+                reason_codes=("EDENA-ZONE-MIGRATION",),
+                obligations=("record_zone_migration_approval",),
+                policy_version=self.version,
+            )
+
         role_rules = self.policy["role_rules"].get(actor.role)
         if role_rules:
             if request.intent in role_rules.get("denied_intents", ()):
@@ -75,6 +96,8 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
 
         obligations: list[str] = []
         reasons: list[str] = []
+        if target_zone and target_zone != request.data_zone.value:
+            obligations.append("log_zone_migration")
 
         if tier in (RiskTier.ORANGE, RiskTier.RED_E):
             requirements = self.policy[

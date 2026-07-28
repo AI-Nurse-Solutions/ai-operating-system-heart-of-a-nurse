@@ -337,5 +337,119 @@ class PolicyEngineTests(unittest.TestCase):
         self.assertIn("EDENA-EVALUATOR-ERROR", decision.reason_codes)
 
 
+class ResearchGovernanceGateTests(unittest.TestCase):
+    """Phase 4: research execution is gated by activity class, not mode."""
+
+    def setUp(self):
+        self.engine = EdenaPolicyEngine()
+        self.affiliated = Actor(
+            actor_id="np-1",
+            role="licensed-clinician",
+            tenant="org:st-vincent",
+            authenticated_org="org:st-vincent",
+        )
+
+    def _research_request(self, **overrides):
+        from naio_integrations.contract import DataZone
+
+        defaults = dict(
+            actor=self.affiliated,
+            intent="collect_research_data",
+            data_zone=DataZone.RESTRICTED,
+        )
+        defaults.update(overrides)
+        return make_request(**defaults)
+
+    def test_research_execution_outside_restricted_zone_is_denied(self):
+        from naio_integrations.contract import DataZone
+
+        decision = self.engine.decide(
+            self._research_request(data_zone=DataZone.PRIVATE)
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-RESEARCH-ZONE", decision.reason_codes)
+
+    def test_research_execution_without_org_context_is_denied(self):
+        unaffiliated = Actor(
+            actor_id="np-1", role="licensed-clinician", tenant="personal:np-1"
+        )
+        decision = self.engine.decide(self._research_request(actor=unaffiliated))
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-RESEARCH-UNAFFILIATED", decision.reason_codes)
+
+    def test_research_execution_without_recorded_approval_requires_it(self):
+        decision = self.engine.decide(self._research_request())
+        self.assertIs(decision.decision, Decision.REQUIRE_APPROVAL)
+        self.assertIn("EDENA-RESEARCH-APPROVAL", decision.reason_codes)
+        self.assertIn(
+            "record_research_governance_approval", decision.obligations
+        )
+
+    def test_unrelated_approval_is_not_research_governance(self):
+        # Holding some approval is not the same as naming a research
+        # governance approval on the request.
+        holder = Actor(
+            actor_id="np-1",
+            role="licensed-clinician",
+            tenant="org:st-vincent",
+            authenticated_org="org:st-vincent",
+            approvals=("appr-77",),
+        )
+        decision = self.engine.decide(self._research_request(actor=holder))
+        self.assertIs(decision.decision, Decision.REQUIRE_APPROVAL)
+        self.assertIn("EDENA-RESEARCH-APPROVAL", decision.reason_codes)
+
+    def test_fabricated_research_approval_reference_is_denied(self):
+        holder = Actor(
+            actor_id="np-1",
+            role="licensed-clinician",
+            tenant="org:st-vincent",
+            authenticated_org="org:st-vincent",
+            approvals=("appr-77",),
+        )
+        decision = self.engine.decide(
+            self._research_request(
+                actor=holder,
+                metadata={"research_approval_id": "irb-invented"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", decision.reason_codes)
+
+    def test_research_execution_with_governance_in_place_is_allowed(self):
+        approved = Actor(
+            actor_id="np-1",
+            role="licensed-clinician",
+            tenant="org:st-vincent",
+            authenticated_org="org:st-vincent",
+            approvals=("irb-2026-014",),
+        )
+        decision = self.engine.decide(
+            self._research_request(
+                actor=approved,
+                metadata={"research_approval_id": "irb-2026-014"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.ALLOW)
+        self.assertIn("research_governance_audit", decision.obligations)
+
+    def test_protocol_drafting_stays_ordinary_draft_work(self):
+        decision = self.engine.decide(
+            make_request(intent="research_protocol_draft")
+        )
+        self.assertIs(decision.decision, Decision.ALLOW)
+        self.assertNotIn("research_governance_audit", decision.obligations)
+
+    def test_every_execution_intent_is_gated(self):
+        for intent in (
+            "collect_research_data",
+            "recruit_participants",
+            "submit_irb_application",
+            "share_research_dataset",
+        ):
+            decision = self.engine.decide(make_request(intent=intent))
+            self.assertIsNot(decision.decision, Decision.ALLOW, intent)
+
+
 if __name__ == "__main__":
     unittest.main()

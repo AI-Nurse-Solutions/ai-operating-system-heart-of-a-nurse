@@ -1,10 +1,11 @@
 """Installable role-packet bundles (Mission Control spec section 14).
 
-Phases 2 and 3 of the release sequence: the Phase 2 packets —
-pre-licensure student, staff nurse, and educator/preceptor/mentor — and
-the leader packet, unlocked by Phase 3 alongside the healthcare
-sandbox. A bundle turns a packet directory from a manifest into
-something independently useful immediately after installation:
+Phases 2 through 4 of the release sequence: the Phase 2 packets —
+pre-licensure student, staff nurse, and educator/preceptor/mentor —
+the leader packet unlocked by Phase 3 alongside the healthcare
+sandbox, and the licensed-clinician packet completing Phase 4. A
+bundle turns a packet directory from a manifest into something
+independently useful immediately after installation:
 
 * ``manifest.json``      — the verified, checksummed packet manifest
 * ``README.md``          — the section 19 recognitions: who this is for,
@@ -32,7 +33,8 @@ from .packets import PacketCatalog, render_manifest, verify_manifest
 
 PHASE_2_ROLES = ("pre-licensure-student", "staff-nurse", "educator")
 PHASE_3_ROLES = ("leader",)
-INSTALLABLE_ROLES = PHASE_2_ROLES + PHASE_3_ROLES
+PHASE_4_ROLES = ("licensed-clinician",)
+INSTALLABLE_ROLES = PHASE_2_ROLES + PHASE_3_ROLES + PHASE_4_ROLES
 
 _ACRONYMS = {"ai": "AI", "adpie": "ADPIE"}
 
@@ -41,6 +43,18 @@ def _module_label(module: str) -> str:
     words = [_ACRONYMS.get(word, word) for word in module.split("-")]
     label = " ".join(words)
     return label[0].upper() + label[1:]
+
+
+def _subject_phrase(display: str) -> str:
+    """Lowercase a display name for mid-sentence use, keeping acronyms.
+
+    "Licensed Clinician (NP or MD)" -> "licensed clinician (NP or MD)".
+    """
+    words = []
+    for word in display.split(" "):
+        core = word.strip("(),")
+        words.append(word if len(core) >= 2 and core.isupper() else word.lower())
+    return " ".join(words)
 
 
 class PacketBundleBuilder:
@@ -121,7 +135,7 @@ class PacketBundleBuilder:
         agents = [agent["agent_id"] for agent in manifest["default_agents"]]
         templates = packet_config.get("starter_templates", ())
         governance = manifest["governance"]
-        subject = display.lower()
+        subject = _subject_phrase(display)
         article = "An" if subject[:1] in "aeiou" else "A"
         lines = [
             f"# {display} — Mission Control Packet",

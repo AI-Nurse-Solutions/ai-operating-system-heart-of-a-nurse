@@ -11,6 +11,7 @@ from naio_integrations.packet_builder import (
     INSTALLABLE_ROLES,
     PHASE_2_ROLES,
     PHASE_3_ROLES,
+    PHASE_4_ROLES,
     PacketBundleBuilder,
 )
 from naio_integrations.packets import PacketCatalog, verify_manifest
@@ -48,7 +49,20 @@ class PacketBundleBuilderTests(unittest.TestCase):
 
     def test_phase3_unlocks_the_leader_packet(self):
         self.assertEqual(PHASE_3_ROLES, ("leader",))
-        self.assertEqual(set(INSTALLABLE_ROLES), set(PHASE_2_ROLES) | {"leader"})
+
+    def test_phase4_completes_the_packet_lineup(self):
+        self.assertEqual(PHASE_4_ROLES, ("licensed-clinician",))
+        self.assertEqual(
+            set(INSTALLABLE_ROLES),
+            set(PHASE_2_ROLES) | set(PHASE_3_ROLES) | set(PHASE_4_ROLES),
+        )
+        self.assertEqual(set(INSTALLABLE_ROLES), set(PacketCatalog().roles()))
+
+    def test_clinician_readme_keeps_the_credential_acronyms(self):
+        readme = (self.root / "licensed-clinician" / "README.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("A licensed clinician (NP or MD) using Nurse AI OS", readme)
 
     def test_every_bundle_has_manifest_readme_boundary_and_templates(self):
         for role in INSTALLABLE_ROLES:
@@ -193,14 +207,14 @@ class CommittedBundleTests(unittest.TestCase):
             actual = hashlib.sha256((COMMITTED_ROOT / name).read_bytes()).hexdigest()
             self.assertEqual(digest, actual, name)
 
-    def test_phase4_packet_remains_manifest_only(self):
-        for role in ("licensed-clinician",):
+    def test_no_committed_packet_remains_manifest_only(self):
+        for role in INSTALLABLE_ROLES:
             files = sorted(
                 path.name
                 for path in (COMMITTED_ROOT / role).rglob("*")
                 if path.is_file()
             )
-            self.assertEqual(files, ["manifest.json"], role)
+            self.assertGreater(len(files), 1, role)
 
 
 if __name__ == "__main__":

@@ -168,6 +168,12 @@
         "data-analyst",
         "writing-presentation-assistant",
         "governance-safety-checker"
+      ],
+      "starter_templates": [
+        "evidence-question",
+        "research-question",
+        "evidence-summary",
+        "abstract-manuscript-scaffold"
       ]
     }
   }

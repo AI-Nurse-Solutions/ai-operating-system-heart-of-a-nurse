@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the committed installable role-packet bundles (Phases 2 and 3).
+"""Build the committed installable role-packet bundles (Phases 2 through 4).
 
 Runs after build-mission-control-manifests.py and owns
 mission-control/packets/CHECKSUMS.sha256, which covers every committed

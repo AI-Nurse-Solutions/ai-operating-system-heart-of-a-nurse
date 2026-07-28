@@ -93,8 +93,11 @@ class AdpieWorkflow(OrchestrationInterface):
         state = self.state(workflow_id)
         if state["stage"] != "human_authorization":
             raise WorkflowError("workflow is not at the human-authorization gate")
+        approver = approver.strip()
         if not approver:
             raise WorkflowError("authorization requires a named accountable human")
+        if not isinstance(approved, bool):
+            raise WorkflowError("authorization approval must be an explicit boolean")
         state["authorization"] = {
             "approver": approver,
             "approved": approved,

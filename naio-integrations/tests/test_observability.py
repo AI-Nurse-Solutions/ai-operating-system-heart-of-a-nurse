@@ -58,6 +58,17 @@ class GatewayTracerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.tracer.record_span(trace_id, "leaky", {"content": "MRN: A123456"})
 
+    def test_span_payload_screening_is_recursive_and_case_insensitive(self):
+        trace_id = self.tracer.start_trace(make_request())
+        for payload in (
+            {"Content": "raw"},
+            {"detail": {"RAW": "raw"}},
+            {"items": [{"text": "raw"}]},
+            {"deep": [{"inner": {"Payload": "raw"}}]},
+        ):
+            with self.assertRaises(ValueError, msg=payload):
+                self.tracer.record_span(trace_id, "leaky", payload)
+
     def test_tenants_are_separated_into_distinct_streams(self):
         personal = self.tracer.start_trace(make_request("personal:rn-1"))
         org = self.tracer.start_trace(make_request("org:mercy"))

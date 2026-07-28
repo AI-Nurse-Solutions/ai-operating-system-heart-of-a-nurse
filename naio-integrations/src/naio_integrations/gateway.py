@@ -179,6 +179,20 @@ class EdenaPolicyGateway:
                     "finding_count": len(output_privacy.findings),
                 },
             )
+            if output_privacy.findings and request.risk_tier is RiskTier.GREEN:
+                # The Green redline is symmetric: identifying content in a
+                # model's output is denied outright, not quietly redacted.
+                return self._finish(
+                    trace_id,
+                    request,
+                    Decision.DENY,
+                    ("EDENA-PRIVACY-REDLINE",),
+                    stage="privacy_screen_output",
+                    screened=privacy_result.transformed_text,
+                    entity_types=tuple(
+                        sorted({f.entity_type for f in output_privacy.findings})
+                    ),
+                )
             output = output_privacy.transformed_text
             issues = output_check.issues
 

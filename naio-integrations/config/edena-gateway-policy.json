@@ -31,6 +31,7 @@
   },
   "zone_rules": {
     "private_zone_denied_audiences": ["manager", "faculty", "cohort", "executive", "organization"],
+    "allowed_target_zones": ["private", "shared_professional", "educational_record", "institutional", "restricted"],
     "migration_requires_approval": true
   },
   "role_rules": {
@@ -57,6 +58,7 @@
     "EDENA-STUDENT-MODE": "Student mode cannot generate patient-specific recommendations.",
     "EDENA-PRIVATE-REFLECTION": "Private reflections never appear in manager, faculty, cohort, or executive views.",
     "EDENA-ZONE-MIGRATION": "Moving content between data zones requires an explicit, recorded approval.",
+    "EDENA-INVALID-ZONE": "The requested target data zone is not a recognized data zone.",
     "EDENA-SIDE-EFFECT-GATE": "External side effects require meaningful human approval.",
     "EDENA-WITHIN-SCOPE": "Request is within the compiled EDENA scope.",
     "EDENA-PRIVACY-REDLINE": "Identifying content is not accepted at this tier."

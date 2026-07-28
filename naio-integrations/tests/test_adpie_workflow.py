@@ -44,6 +44,18 @@ class AdpieWorkflowTests(unittest.TestCase):
             self.runtime.advance("unit-improvement-1")
         with self.assertRaises(WorkflowError):
             self.runtime.authorize("unit-improvement-1", approver="", approved=True)
+        with self.assertRaises(WorkflowError):
+            self.runtime.authorize("unit-improvement-1", approver="   ", approved=True)
+
+    def test_authorization_approval_must_be_an_explicit_boolean(self):
+        self.start()
+        for _ in range(3):
+            self.runtime.advance("unit-improvement-1")
+        for truthy_nonbool in ("false", 1, "yes"):
+            with self.assertRaises(WorkflowError):
+                self.runtime.authorize(
+                    "unit-improvement-1", approver="charge-nurse-lee", approved=truthy_nonbool
+                )
 
     def test_declined_authorization_returns_to_planning(self):
         self.start()

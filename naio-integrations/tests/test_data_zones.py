@@ -112,6 +112,19 @@ class ZoneMigrationTests(unittest.TestCase):
         self.assertIs(decision.decision, Decision.ALLOW)
         self.assertNotIn("log_zone_migration", decision.obligations)
 
+    def test_unknown_target_zones_are_denied_not_approved(self):
+        for bogus in ("external", "public-internet", "Institutional"):
+            decision = self.engine.decide(
+                make_request(
+                    metadata={
+                        "target_zone": bogus,
+                        "zone_migration_approval": "appr-12",
+                    }
+                )
+            )
+            self.assertIs(decision.decision, Decision.DENY, bogus)
+            self.assertIn("EDENA-INVALID-ZONE", decision.reason_codes, bogus)
+
 
 class GatewayZoneTests(unittest.TestCase):
     def setUp(self):

@@ -67,7 +67,10 @@ class PrivacyScreen(PrivacyTransformationInterface):
         cursor = 0
         for finding in findings:
             if finding.start < cursor:
-                continue  # overlapping finding already covered
+                # Overlapping finding: never emit its tail — extend the
+                # redacted region instead of leaking text past the cursor.
+                cursor = max(cursor, finding.end)
+                continue
             pieces.append(text[cursor:finding.start])
             pieces.append(f"<{finding.entity_type}>")
             cursor = finding.end

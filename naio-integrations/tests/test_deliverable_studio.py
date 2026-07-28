@@ -92,6 +92,17 @@ class NeverFinalRuleTests(unittest.TestCase):
         self.assertIn("Approved by A. Leader on 2026-07-28", rendered)
         self.assertIn("generation alone never makes content final", rendered)
 
+    def test_review_records_are_immutable_once_written(self):
+        import dataclasses
+
+        draft = self.studio.scaffold("executive-brief")
+        rejected = self.studio.record_review(
+            draft, reviewer="A. Leader", disposition="rejected", reviewed_on="2026-07-28"
+        )
+        with self.assertRaises(dataclasses.FrozenInstanceError):
+            rejected.review.disposition = "approved"
+        self.assertFalse(rejected.approved)
+
     def test_non_approved_review_still_reads_as_not_usable(self):
         draft = self.studio.scaffold("executive-brief")
         rejected = self.studio.record_review(

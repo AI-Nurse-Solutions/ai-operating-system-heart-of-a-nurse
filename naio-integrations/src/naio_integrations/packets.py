@@ -19,6 +19,16 @@ verification, so a hand-edited manifest that weakens them fails closed:
 
 Manifests are deterministic: identical catalog in, byte-identical
 manifest out. No timestamps, no randomness.
+
+Trust model: the integrity checksum detects corruption and accidental
+drift; it is not an authenticity proof, since anyone who edits a
+manifest can recompute it. Authenticity comes from git provenance plus
+the CI determinism gate (manifests are rebuilt from the reviewed
+catalog and any diff fails), and the safe-by-default invariants below
+are verified independently of the checksum, so even a re-checksummed
+manifest cannot smuggle unsafe defaults past ``verify_manifest``.
+Detached release signing (the naio-os release-key pattern) is the
+institutional-distribution path and deliberately out of scope here.
 """
 
 from __future__ import annotations
@@ -121,6 +131,7 @@ class PacketCatalog:
                 "directive": self.catalog["directive"],
                 "default_risk_tier": RiskTier.GREEN.value,
                 "default_data_zone": DataZone.PRIVATE.value,
+                "institutional_approval_granted": False,
                 "install_note": self.catalog["install_note"],
             },
         }
@@ -176,7 +187,11 @@ def verify_manifest(manifest: dict[str, Any]) -> None:
         raise PacketIntegrityError("packets must default to the Green tier")
     if governance.get("default_data_zone") != DataZone.PRIVATE.value:
         raise PacketIntegrityError("packets must default to the private data zone")
-    if "approval" not in governance.get("install_note", "").casefold():
+    if governance.get("institutional_approval_granted") is not False:
         raise PacketIntegrityError(
-            "the install note must state that installation is not approval"
+            "packets must declare institutional_approval_granted: false"
+        )
+    if not governance.get("install_note", "").strip():
+        raise PacketIntegrityError(
+            "the install note explaining that installation is not approval is required"
         )

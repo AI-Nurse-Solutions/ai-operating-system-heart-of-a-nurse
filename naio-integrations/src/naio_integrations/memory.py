@@ -16,6 +16,7 @@ Two protections the upstream engines do not impose by themselves:
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import date, datetime, timezone
 
 from .contract import MemoryInterface, MemoryRecord
@@ -48,15 +49,9 @@ class GovernedMemory(MemoryInterface):
             raise MemoryGovernanceError("memory without provenance is not storable")
         stored = record
         if self.privacy.analyze(record.content):
-            stored = MemoryRecord(
-                memory_id=record.memory_id,
-                tenant=record.tenant,
-                role_scope=record.role_scope,
+            stored = replace(
+                record,
                 content=self.privacy.transform(record.content).transformed_text,
-                provenance=record.provenance,
-                created_at=record.created_at,
-                expires_at=record.expires_at,
-                project_scope=record.project_scope,
                 quarantined=True,
             )
         self._store.setdefault(stored.tenant, {})[stored.memory_id] = stored
@@ -83,32 +78,16 @@ class GovernedMemory(MemoryInterface):
         existing = self._store.get(tenant, {}).get(memory_id)
         if existing is None:
             raise MemoryGovernanceError("cannot correct a memory that does not exist")
-        corrected = MemoryRecord(
-            memory_id=existing.memory_id,
-            tenant=existing.tenant,
-            role_scope=existing.role_scope,
-            content=content,
-            provenance=provenance,
-            created_at=existing.created_at,
-            expires_at=existing.expires_at,
-            project_scope=existing.project_scope,
-            quarantined=existing.quarantined,
-        )
+        corrected = replace(existing, content=content, provenance=provenance)
         return self.remember(corrected, consent="remember")
 
     def quarantine(self, tenant: str, memory_id: str, reason: str) -> bool:
         existing = self._store.get(tenant, {}).get(memory_id)
         if existing is None or not reason:
             return False
-        self._store[tenant][memory_id] = MemoryRecord(
-            memory_id=existing.memory_id,
-            tenant=existing.tenant,
-            role_scope=existing.role_scope,
-            content=existing.content,
+        self._store[tenant][memory_id] = replace(
+            existing,
             provenance=f"{existing.provenance} | quarantined: {reason}",
-            created_at=existing.created_at,
-            expires_at=existing.expires_at,
-            project_scope=existing.project_scope,
             quarantined=True,
         )
         return True

@@ -36,6 +36,20 @@ _TENANT_SAFE = re.compile(r"[^A-Za-z0-9._-]")
 FORBIDDEN_SPAN_KEYS = {"content", "text", "payload", "raw", "value"}
 
 
+def _find_forbidden_keys(value: Any) -> set[str]:
+    """Case-insensitive, recursive sweep for raw-content keys in a payload."""
+    leaked: set[str] = set()
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if str(key).casefold() in FORBIDDEN_SPAN_KEYS:
+                leaked.add(str(key))
+            leaked |= _find_forbidden_keys(item)
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            leaked |= _find_forbidden_keys(item)
+    return leaked
+
+
 def _utcnow() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -77,7 +91,7 @@ class GatewayTracer(ObservabilityInterface):
         tenant = self._trace_tenants.get(trace_id)
         if tenant is None:
             raise ValueError("unknown trace id")
-        leaked = FORBIDDEN_SPAN_KEYS & set(payload)
+        leaked = _find_forbidden_keys(payload)
         if leaked:
             raise ValueError(f"span payload may not carry raw content keys: {sorted(leaked)}")
         self._append(tenant, {"kind": "span", "trace_id": trace_id, "name": name, **payload})

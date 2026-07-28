@@ -45,7 +45,7 @@ them.
 `gateway.py` composes the Phase 1 layers between every user, agent,
 model, memory store, and external tool:
 
-```
+```text
 Request -> Identity and role -> Privacy screen -> EDENA policy ->
 Allow / deny / require approval -> Execute -> Validate output -> Audit
 ```

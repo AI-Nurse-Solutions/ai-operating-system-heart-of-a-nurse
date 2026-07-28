@@ -12,6 +12,7 @@ cannot evaluate produces DENY, never ALLOW. Ambiguity narrows capability.
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +29,8 @@ from .contract import (
 
 DEFAULT_POLICY_PATH = Path(__file__).resolve().parents[2] / "config" / "edena-gateway-policy.json"
 
+logger = logging.getLogger(__name__)
+
 
 class EdenaPolicyEngine(PolicyDecisionInterface):
     """Deterministic EDENA policy decision point."""
@@ -41,6 +44,8 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
         try:
             return self._decide(request)
         except Exception:
+            # Application log only — the audit ledger stays metadata-only.
+            logger.exception("EDENA policy evaluation failed; failing closed")
             return self._deny("EDENA-EVALUATOR-ERROR")
 
     def _decide(self, request: GatewayRequest) -> PolicyDecision:
@@ -65,6 +70,8 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
         ]:
             return self._deny("EDENA-PRIVATE-REFLECTION")
         target_zone = request.metadata.get("target_zone")
+        if target_zone and target_zone not in zone_rules["allowed_target_zones"]:
+            return self._deny("EDENA-INVALID-ZONE")
         if (
             target_zone
             and target_zone != request.data_zone.value

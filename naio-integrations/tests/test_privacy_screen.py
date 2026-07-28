@@ -1,5 +1,8 @@
 import dataclasses
+import json
+import tempfile
 import unittest
+from pathlib import Path
 
 import _bootstrap  # noqa: F401
 
@@ -60,7 +63,27 @@ class PrivacyScreenTests(unittest.TestCase):
         text = "SSN: 123-45-6789"
         result = self.screen.transform(text)
         self.assertNotIn("123-45-6789", result.transformed_text)
-        self.assertLessEqual(result.transformed_text.count("US_SSN"), 2)
+        self.assertEqual(result.transformed_text.count("US_SSN"), 1)
+
+    def test_overlap_extending_past_prior_finding_never_leaks_its_tail(self):
+        config = {
+            "schema_version": "1.0.0",
+            "recognizers": [
+                {"name": "head", "entity_type": "HEAD", "pattern": "ABC-123", "score": 0.9},
+                {"name": "tail", "entity_type": "TAIL", "pattern": "123-XYZ", "score": 0.9},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "recognizers.json"
+            path.write_text(json.dumps(config), encoding="utf-8")
+            screen = PrivacyScreen(path)
+            result = screen.transform("id ABC-123-XYZ end")
+        # The second finding starts inside the first's span but extends past
+        # it; its tail must never be emitted unredacted.
+        self.assertNotIn("XYZ", result.transformed_text)
+        self.assertNotIn("123", result.transformed_text)
+        self.assertIn("<HEAD>", result.transformed_text)
+        self.assertIn("end", result.transformed_text)
 
     def test_multiple_identifiers_all_redacted(self):
         text = (

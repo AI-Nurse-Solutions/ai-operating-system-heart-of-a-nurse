@@ -149,12 +149,28 @@ class EdenaPolicyGatewayTests(unittest.TestCase):
 
     def test_model_output_is_privacy_screened_before_display(self):
         result = self.gateway.submit(
-            make_request(),
+            make_request(
+                actor=ORG_NURSE,
+                risk_tier=RiskTier.YELLOW,
+                data_class=DataClass.D2,
+                action_mode=ActionMode.RECOMMEND,
+            ),
             executor=lambda req: "Contact the educator at educator@example.org for slides.",
         )
         self.assertTrue(result.allowed)
         self.assertNotIn("educator@example.org", result.output)
         self.assertIn("<EMAIL_ADDRESS>", result.output)
+
+    def test_green_output_identifiers_are_denied_not_redacted(self):
+        result = self.gateway.submit(
+            make_request(),
+            executor=lambda req: "Contact the educator at educator@example.org for slides.",
+        )
+        self.assertIs(result.decision, Decision.DENY)
+        self.assertIn("EDENA-PRIVACY-REDLINE", result.reason_codes)
+        self.assertEqual(result.stage, "privacy_screen_output")
+        self.assertIsNone(result.output)
+        self.assertIn("EMAIL_ADDRESS", result.privacy_entity_types)
 
     def test_tenant_boundaries_hold_at_the_gateway(self):
         result = self.gateway.submit(

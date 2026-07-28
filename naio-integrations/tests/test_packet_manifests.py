@@ -166,6 +166,16 @@ class ManifestVerificationTests(unittest.TestCase):
         with self.assertRaises(PacketIntegrityError):
             verify_manifest(self.reseal(stripped))
 
+    def test_institutional_approval_must_be_structurally_false(self):
+        granted = copy.deepcopy(self.manifest)
+        granted["governance"]["institutional_approval_granted"] = True
+        with self.assertRaises(PacketIntegrityError):
+            verify_manifest(self.reseal(granted))
+        missing = copy.deepcopy(self.manifest)
+        del missing["governance"]["institutional_approval_granted"]
+        with self.assertRaises(PacketIntegrityError):
+            verify_manifest(self.reseal(missing))
+
     def test_governance_defaults_are_green_and_private(self):
         escalated = copy.deepcopy(self.manifest)
         escalated["governance"]["default_risk_tier"] = "orange"

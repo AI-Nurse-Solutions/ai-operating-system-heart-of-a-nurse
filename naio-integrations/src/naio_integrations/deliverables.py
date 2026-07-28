@@ -52,6 +52,16 @@ class DeliverableError(ValueError):
 
 
 @dataclass(frozen=True)
+class ReviewRecord:
+    """Immutable review attestation — a disposition cannot be edited in place."""
+
+    reviewer: str
+    disposition: str
+    reviewed_on: str
+    notes: str = ""
+
+
+@dataclass(frozen=True)
 class Deliverable:
     deliverable_id: str
     template_id: str
@@ -60,14 +70,14 @@ class Deliverable:
     status: str  # "draft" | "reviewed"
     provenance: tuple[str, ...]
     synthetic: bool = False
-    review: dict[str, str] | None = None
+    review: ReviewRecord | None = None
 
     @property
     def approved(self) -> bool:
         return (
             self.status == "reviewed"
             and self.review is not None
-            and self.review.get("disposition") == "approved"
+            and self.review.disposition == "approved"
         )
 
 
@@ -182,29 +192,28 @@ class DeliverableStudio:
         return replace(
             deliverable,
             status="reviewed",
-            review={
-                "reviewer": reviewer,
-                "disposition": disposition,
-                "reviewed_on": reviewed_on,
-                "notes": notes,
-            },
+            review=ReviewRecord(
+                reviewer=reviewer,
+                disposition=disposition,
+                reviewed_on=reviewed_on,
+                notes=notes,
+            ),
         )
 
     def render(self, deliverable: Deliverable) -> str:
         """The only rendering path — the status banner cannot be omitted."""
-        if deliverable.approved:
-            review = deliverable.review or {}
+        review = deliverable.review
+        if deliverable.approved and review is not None:
             attestation = (
-                f"> **Reviewed draft.** Approved by {review.get('reviewer')} on"
-                f" {review.get('reviewed_on')}. Approval was a human decision;"
+                f"> **Reviewed draft.** Approved by {review.reviewer} on"
+                f" {review.reviewed_on}. Approval was a human decision;"
                 " generation alone never makes content final."
             )
             return deliverable.body_markdown.replace(DRAFT_BANNER, attestation, 1)
-        if deliverable.status == "reviewed":
-            review = deliverable.review or {}
+        if deliverable.status == "reviewed" and review is not None:
             verdict = (
-                f"> **Reviewed draft — {review.get('disposition')}.** Reviewed by"
-                f" {review.get('reviewer')} on {review.get('reviewed_on')}."
+                f"> **Reviewed draft — {review.disposition}.** Reviewed by"
+                f" {review.reviewer} on {review.reviewed_on}."
                 " This content is not approved for use."
             )
             return deliverable.body_markdown.replace(DRAFT_BANNER, verdict, 1)

@@ -7,8 +7,12 @@ through the full draft-review lifecycle, and the first-run pathway that
 turns one of the section 13 choices into a real, editable artifact in a
 single call — the ten-minute-first-artifact acceptance criterion.
 
-Everything is synthetic and says so: every JSON record carries
-``"synthetic": true`` and every document carries the synthetic banner.
+Everything *committed in the example workspace* is synthetic and says
+so: every JSON record carries ``"synthetic": true`` and every example
+document carries the synthetic banner. The one deliberate exception is
+``first_run()``: its product is the user's own real first draft (spec
+section 13 calls it "one real artifact"), so it carries the draft
+banner, not the synthetic banner.
 Content is written to pass the privacy screen — an example workspace
 that trips its own identifier detection would be teaching the wrong
 lesson. The workspace can be reset or removed (spec section 16).

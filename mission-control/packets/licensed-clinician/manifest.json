@@ -47,10 +47,11 @@
     "default_data_zone": "private",
     "default_risk_tier": "green",
     "directive": "NIN-NAIO Master Directive v1.1",
-    "install_note": "Installation does not imply employer, school, regulatory, IRB, privacy, or security approval."
+    "install_note": "Installation does not imply employer, school, regulatory, IRB, privacy, or security approval.",
+    "institutional_approval_granted": false
   },
   "integrations_enabled_by_default": false,
-  "integrity_checksum": "sha256:2fcebb7597565448a2ba082a6a0f18ac848a529e098f208a42217315c3db7fcc",
+  "integrity_checksum": "sha256:f805005bdf18ef4af17d6365f3124b998f06c44d5a6fed6b87ee9a13863989be",
   "manifest_schema": "1.0.0",
   "migration_version": "1",
   "optional_dependencies": [

@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""Contracts for the proposed NIN Knowledge Commons doctrine and playbook."""
+
+from __future__ import annotations
+
+import re
+import unittest
+from pathlib import Path
+from urllib.parse import unquote
+
+ROOT = Path(__file__).resolve().parents[1]
+COMMONS = ROOT / "knowledge-commons"
+INDEX = COMMONS / "README.md"
+DOCTRINE = COMMONS / "DOCTRINE.md"
+PLAYBOOK = COMMONS / "PLAYBOOK.md"
+
+
+class KnowledgeCommonsDocsTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.index = INDEX.read_text(encoding="utf-8")
+        cls.doctrine = DOCTRINE.read_text(encoding="utf-8")
+        cls.playbook = PLAYBOOK.read_text(encoding="utf-8")
+
+    def test_documents_are_discoverable_and_honest_about_status(self) -> None:
+        root_readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("NIN Knowledge Commons doctrine and playbook", root_readme)
+        self.assertIn("[`knowledge-commons/`](knowledge-commons/)", root_readme)
+        self.assertIn("Status: proposed architecture and operating doctrine", self.index)
+        self.assertIn("does not establish an operating service", self.index)
+        self.assertIn('status: "Proposed architecture doctrine"', self.doctrine)
+        self.assertIn('status: "Proposed operating playbook"', self.playbook)
+        self.assertIn("capabilities remain inactive until built and verified", self.playbook)
+
+    def test_relative_markdown_links_resolve(self) -> None:
+        for source in (INDEX, DOCTRINE, PLAYBOOK):
+            text = source.read_text(encoding="utf-8")
+            for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text):
+                if target.startswith(("http://", "https://", "mailto:", "#")):
+                    continue
+                relative_target = unquote(target.split("#", 1)[0])
+                resolved = (source.parent / relative_target).resolve()
+                self.assertTrue(
+                    resolved.exists(),
+                    f"{source.relative_to(ROOT)} has a broken link to {target}",
+                )
+
+    def test_doctrine_preserves_source_authority_and_scoped_authority(self) -> None:
+        for required in (
+            "Content packages are the source of truth",
+            "Search, vector, and graph indexes are disposable derivatives",
+            "Contributors propose. Reviewers verify. Institutions authorize. Nurses steward.",
+            "Inclusion means available for governed use—not endorsement",
+            "No creator may be the sole approver of their own pack",
+            "Creator ownership is the default",
+            "Repository documentation licensing does not automatically license future Knowledge Packs",
+        ):
+            self.assertIn(required, self.doctrine)
+
+    def test_doctrine_preserves_edena_and_no_phi_boundaries(self) -> None:
+        for required in (
+            "Green, Yellow, Orange, Red-P (prohibited), and Red-E",
+            "D0 public, formally deidentified, or synthetic",
+            "D3 PHI or other sensitive regulated material",
+            "D4 credentials, secrets, signing material",
+            "Observe, Draft, Recommend, Prepare Action, Act With Approval, and Constrained Autonomy",
+            "Unrestricted autonomy is prohibited",
+            "D3 or D4 material",
+            "A future Orange lane requires",
+            "Red-P remains prohibited",
+        ):
+            self.assertIn(required, self.doctrine)
+
+    def test_hybrid_retrieval_is_authorization_first_and_rebuildable(self) -> None:
+        for required in (
+            "graph-ready hybrid RAG",
+            "Indexes are derivatives and must be rebuildable from authorized source packages",
+            "Unauthorized content must never become a semantic-ranking candidate",
+            "Retrieved content is data, never instructions",
+            "remove the pack's chunks, vectors, and graph edges from active retrieval",
+        ):
+            self.assertIn(required, self.doctrine)
+        for required in (
+            "The authorization filter must run before similarity search",
+            "optional local vector index",
+            "registry graph",
+            "optional curated concept graph",
+            "controlled claim-evidence graph",
+            "The target for unauthorized retrieval is zero",
+        ):
+            self.assertIn(required, self.playbook)
+
+    def test_playbook_preserves_manual_review_lifecycle_and_deferrals(self) -> None:
+        for required in (
+            "No step automatically grants the next state",
+            "A passed scan means only that automated checks did not find a listed defect. It is not approval",
+            "No review or approval may silently follow changing bytes",
+            "Downloading, opening, or unzipping a pack does nothing by itself",
+            "Public Orange submissions remain held or refused",
+            "The proposed 85/15 split is not final policy",
+            "Explicit MVP deferrals",
+            "native marketplace or platform-held funds",
+            "PHI or D3/D4 processing",
+            "Designed, documented, implemented, tested, committed, merged, deployed, and live-verified are distinct states",
+        ):
+            self.assertIn(required, self.playbook)
+
+
+if __name__ == "__main__":
+    unittest.main()

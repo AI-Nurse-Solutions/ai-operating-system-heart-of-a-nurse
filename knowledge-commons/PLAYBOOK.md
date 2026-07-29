@@ -229,6 +229,10 @@ Collect:
 
 Do not collect PHI, patient stories, learner records, employment records, or confidential policies.
 
+Store the private contact and any eligibility evidence in a separate private intake record. Do not copy private contact data into pack manifests, catalogs, lexical/vector/graph indexes, public review records, or analytics. Publish only the display name, attribution, and contact route the contributor explicitly approved for public use.
+
+The intake notice must state purpose, access roles, protection method, retention period, correction route, and deletion or de-identification procedure. Access is limited to named intake or governance stewards with a task need. Delete private contact data when the declared purpose and retention period end unless a documented legal, safety, payment, dispute, or audit obligation requires a proportionate hold.
+
 ### 7.2 Intake scan
 
 Mechanical checks must fail closed for:
@@ -433,9 +437,11 @@ Embedding records must identify model, exact revision, dimensions, chunker versi
 ### 11.5 Query pipeline
 
 ```text
-EDENA and authorization prefilter
+identity, entitlement, data-scope, and lifecycle prefilter
         ↓
 intent classification
+        ↓
+EDENA risk, action-mode, and permitted-use filter
         ↓
 parallel lexical + vector + graph retrieval
         ↓
@@ -448,7 +454,7 @@ Hermes answer with citations and limitations
 post-answer provenance and boundary check
 ```
 
-The authorization filter must run before similarity search.
+Identity, entitlement, data-scope, lifecycle, EDENA, action-mode, and permitted-use filters must all run before similarity search or graph expansion. Intent classification must occur before the query-level EDENA and permitted-use filter; content eligibility alone never authorizes a prohibited request.
 
 ### 11.6 Retrieval receipt
 
@@ -494,7 +500,7 @@ On quarantine, retirement, withdrawal, recall, entitlement loss, or approved del
 10. Run retrieval and citation tests.
 11. Provide disable, uninstall, and rollback controls.
 
-Downloading, opening, or unzipping a pack does nothing by itself. A general request to use the Commons does not bypass the exact activation card for a local mutation.
+A download, opening action, or extraction does not install, authorize, or activate a pack. Treat extracted content as untrusted, and open active content only in an approved sandbox. A general request to use the Commons does not bypass the exact activation card for a local mutation.
 
 ## 13. Correction, supersession, retirement, and recall
 

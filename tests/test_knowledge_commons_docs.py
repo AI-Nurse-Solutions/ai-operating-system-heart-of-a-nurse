@@ -39,7 +39,15 @@ class KnowledgeCommonsDocsTests(unittest.TestCase):
                 if target.startswith(("http://", "https://", "mailto:", "#")):
                     continue
                 relative_target = unquote(target.split("#", 1)[0])
+                self.assertFalse(
+                    Path(relative_target).is_absolute(),
+                    f"{source.relative_to(ROOT)} has a non-relative link to {target}",
+                )
                 resolved = (source.parent / relative_target).resolve()
+                self.assertTrue(
+                    resolved.is_relative_to(ROOT.resolve()),
+                    f"{source.relative_to(ROOT)} links outside the repository: {target}",
+                )
                 self.assertTrue(
                     resolved.exists(),
                     f"{source.relative_to(ROOT)} has a broken link to {target}",
@@ -54,6 +62,8 @@ class KnowledgeCommonsDocsTests(unittest.TestCase):
             "No creator may be the sole approver of their own pack",
             "Creator ownership is the default",
             "Repository documentation licensing does not automatically license future Knowledge Packs",
+            "A private contributor address, phone number, identity-verification record",
+            "must not enter the pack manifest, catalog, retrieval indexes, graph, public review record, or analytics",
         ):
             self.assertIn(required, self.doctrine)
 
@@ -81,7 +91,8 @@ class KnowledgeCommonsDocsTests(unittest.TestCase):
         ):
             self.assertIn(required, self.doctrine)
         for required in (
-            "The authorization filter must run before similarity search",
+            "must all run before similarity search or graph expansion",
+            "Intent classification must occur before the query-level EDENA and permitted-use filter",
             "optional local vector index",
             "registry graph",
             "optional curated concept graph",
@@ -95,7 +106,8 @@ class KnowledgeCommonsDocsTests(unittest.TestCase):
             "No step automatically grants the next state",
             "A passed scan means only that automated checks did not find a listed defect. It is not approval",
             "No review or approval may silently follow changing bytes",
-            "Downloading, opening, or unzipping a pack does nothing by itself",
+            "does not install, authorize, or activate a pack",
+            "open active content only in an approved sandbox",
             "Public Orange submissions remain held or refused",
             "The proposed 85/15 split is not final policy",
             "Explicit MVP deferrals",

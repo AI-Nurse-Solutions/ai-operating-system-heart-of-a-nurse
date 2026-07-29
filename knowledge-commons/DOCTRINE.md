@@ -126,6 +126,10 @@ Every pack must declare, at minimum:
 - translation, derivation, and supersession links;
 - review due, retirement, quarantine, and recall state.
 
+A published pack may contain only the creator's approved public display name, attribution, and an explicitly public contact route, preferably a role-based address or governed contact form. A private contributor address, phone number, identity-verification record, eligibility record, payment detail, or other intake contact must remain in a separate private record; it must not enter the pack manifest, catalog, retrieval indexes, graph, public review record, or analytics.
+
+Private intake records require a stated purpose, named access roles, least-privilege protection, a retention period, and a deletion or de-identification procedure. Contributors must be told which attribution and contact fields will be public, may correct those fields, and may withdraw an optional public contact route without erasing proportionate provenance that must lawfully or defensibly remain.
+
 A pack's metadata may describe authority; it cannot create authority by assertion. Review and authorization records must be separable from creator-authored content.
 
 ## 8. Authority doctrine

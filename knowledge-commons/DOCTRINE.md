@@ -106,7 +106,7 @@ Namespace control does not confer authority over another namespace.
 
 ## 7. Knowledge Pack doctrine
 
-A **Knowledge Pack** is the authoritative exchange unit. It must be portable, versioned, inspectable, attributable, licensable, reviewable, and retireable.
+A **Knowledge Pack** is the authoritative exchange unit. It must be portable, versioned, inspectable, attributable, licensable, reviewable, and retirable.
 
 Every pack must declare, at minimum:
 
@@ -156,7 +156,7 @@ Risk tier, data class, action mode, and implementation evidence remain separate.
 
 ### 9.0 Canonical classifications
 
-The Commons uses the current EDENA v1.1 vocabularies:
+The Commons uses the current vocabularies of the NIN–NAIO Master Directive v1.1:
 
 - **Risk tiers:** Green, Yellow, Orange, Red-P (prohibited), and Red-E (exceptional high-risk under separately governed conditions only).
 - **Data classes:** D0 public, formally deidentified, or synthetic; D1 private personal professional material without regulated clinical content; D2 confidential organizational material; D3 PHI or other sensitive regulated material; and D4 credentials, secrets, signing material, or equivalent control-plane assets.
@@ -275,6 +275,8 @@ Repository documentation licensing does not automatically license future Knowled
 ## 13. Retrieval doctrine: RAG and graph
 
 The retrieval architecture is **graph-ready hybrid RAG**.
+
+Several of these retrieval principles — grounding-or-refusal, preserved citations and warnings, tenant isolation, and last-place ranking of synthetic content — have a tested reference implementation in this repository's `naio-integrations/` Integration Contract. That evidence supports the direction and activates nothing.
 
 ### 13.1 Source hierarchy
 

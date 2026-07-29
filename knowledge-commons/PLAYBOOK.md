@@ -22,7 +22,7 @@ Contributor proposal
         ↓
 Automated intake checks
         ↓
-Human rights/provenance review
+Human review of rights and provenance
         ↓
 EDENA classification
         ↓
@@ -58,7 +58,7 @@ No step automatically grants the next state.
 
 ### Separation rule
 
-Where independent review is claimed, the author cannot be the only approver. Yellow publication requires both subject/educational judgment and governance/safety judgment, even if one qualified reviewer can document both functions without pretending to be independent from themselves.
+Where independent review is claimed, the author cannot be the only approver. Yellow publication requires both subject/educational judgment and governance/safety judgment. A single qualified reviewer may document both functions, but the record must say so plainly — one person must never be presented as two independent reviewers.
 
 ## 4. Repository and hosting layout
 

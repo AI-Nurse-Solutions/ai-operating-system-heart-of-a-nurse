@@ -45,6 +45,10 @@ As of this version:
 - no Knowledge Pack schema, registry, ingestion service, RAG index, graph database, school tenant, creator payment system, or native marketplace is made operational by these documents;
 - MCP, connectors, external actions, PHI processing, clinical decision support, competency scoring, and institutional integrations remain outside this documentation change.
 
+## Related implementation evidence
+
+Several retrieval principles in this doctrine already have a tested reference implementation in this repository's [Integration Contract](../naio-integrations/): governed retrieval that refuses to answer without an indexed source and preserves per-passage provenance and warnings; an evidence ledger in which source-backed claims require citations that exist ("no citation, no claim"); tenant-scoped stores whose foreign reads fail closed; and synthetic teaching content that always retrieves with an explicit warning, ranked after policy, local practice, and research. That code is reference implementation evidence for the direction — it is not the Commons, a catalog, or a hosted retrieval service.
+
 ## Authority and precedence
 
 These documents are subordinate to applicable law, professional duties, institutional policy, the current NIN–NAIO Master Directive, repository governance, EDENA requirements, and artifact-specific licenses. Where a conflict exists, the more protective applicable authority controls.

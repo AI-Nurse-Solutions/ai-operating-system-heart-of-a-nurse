@@ -101,6 +101,22 @@ class KnowledgeCommonsDocsTests(unittest.TestCase):
         ):
             self.assertIn(required, self.playbook)
 
+    def test_reference_implementation_evidence_stays_bounded(self) -> None:
+        self.assertIn("reference implementation evidence", self.index)
+        self.assertIn(
+            "it is not the Commons, a catalog, or a hosted retrieval service",
+            self.index,
+        )
+        self.assertIn(
+            "That evidence supports the direction and activates nothing.",
+            self.doctrine,
+        )
+        self.assertIn("NIN–NAIO Master Directive v1.1", self.doctrine)
+        self.assertIn(
+            "one person must never be presented as two independent reviewers",
+            self.playbook,
+        )
+
     def test_playbook_preserves_manual_review_lifecycle_and_deferrals(self) -> None:
         for required in (
             "No step automatically grants the next state",

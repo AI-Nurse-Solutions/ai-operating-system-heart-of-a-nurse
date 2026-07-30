@@ -97,6 +97,25 @@ class NurseFormationDocsTests(unittest.TestCase):
         ):
             self.assertIn(required, self.flat_doctrine)
 
+    def test_doctrine_preserves_the_formation_quartet(self) -> None:
+        for required in (
+            "The formation quartet",
+            "growth mirror",
+            "tacit know-how, practical wisdom, and the transfer of values",
+            "AI may help a community coordinate; it must not simulate one",
+            "Module completions and test scores annotate the record; they are not the record",
+            "a better tutor does not replace the mentor",
+        ):
+            self.assertIn(required, self.flat_doctrine)
+        for required in (
+            "Run the quartet, not a tool",
+            "it never attends as a silent evaluator",
+            "Scores and module completions annotate portfolio entries; they never substitute for them",
+        ):
+            self.assertIn(required, self.flat_playbook)
+        self.assertIn("The formation quartet", self.index)
+        self.assertIn("a portfolio of actual outputs, not scores alone", self.index)
+
     def test_doctrine_preserves_edena_and_privacy_boundaries(self) -> None:
         for required in (
             "Green, Yellow, Orange, Red-P (prohibited), and Red-E",

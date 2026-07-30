@@ -149,6 +149,37 @@ debrief is where judgment is formed and where formation is judged.
 Error must be free somewhere: the practice field exists so that the
 cost of a wrong decision is a lesson, never a patient.
 
+### 4.5 The formation quartet
+
+No single support forms a nurse. Formation runs on four supports
+together, and the doctrine treats them as complementary and
+non-substitutable:
+
+1. **The AI tutor** personalizes practice, adapts pacing, and keeps
+   the **growth mirror** — a longitudinal picture of the learner's
+   own judgment development that belongs to the learner. The mirror
+   lives in the learner's private zone and is shared with a mentor by
+   the learner's choice; it is never covert evaluation (§10).
+2. **The human mentor** carries what cannot be written down: tacit
+   know-how, practical wisdom, and the transfer of values. Judgment
+   and identity are apprenticed from humans; no tutor replaces the
+   mentor, and mentorship time is a formation outcome the AI exists
+   to protect and enlarge (§11).
+3. **The community** of peers and near-peers integrates learning:
+   belonging, normalization of struggle, collaboration, and the
+   professional identity that forms in company. AI may help a
+   community coordinate; it must not simulate one.
+4. **The proof of work.** The record of formation is work actually
+   produced — deliverables, projects, case write-ups on synthetic
+   data — held in the learner's portfolio with provenance and
+   AI-assistance disclosure. Module completions and test scores
+   annotate the record; they are not the record (§8).
+
+A program missing one support does not compensate by strengthening
+another: a better tutor does not replace the mentor, an active
+community does not replace the mentor's accountability, and a rich
+portfolio still requires human judgment of the work.
+
 ## 5. The five formation rules
 
 ### Rule 1 — First commitment
@@ -205,6 +236,7 @@ disagreement with the machine is forming the wrong nurse.
 | **Learner** | Direct their own learning, commit a first read, challenge outputs, keep private reflections private, disclose AI assistance, appeal AI-influenced decisions | Present AI work as their own thinking where disclosure is required, or access patient-specific recommendation behavior in student mode |
 | **Educator** | Use AI to draft scenarios, items, rubrics, and feedback for their own review; judge and sign every summative decision; run debriefs; see disclosed learner work products | Delegate a summative decision to AI, view private learner reflections, or deploy an undisclosed AI in the learner's loop |
 | **Preceptor / mentor** | Use AI to organize observations and prepare coaching conversations within their scope | Convert AI summaries into evaluation records without their own observation and judgment |
+| **Community / peers** | Encourage, normalize struggle, review within competence, collaborate on shared work | Evaluate for progression, substitute for mentor accountability, or pressure disclosure of private reflections |
 | **Program / institution** | Adopt tools behind governance gates, set local policy, authorize bounded pilots, own accountability for deployed AI | Claim competence, readiness, or licensure outcomes from AI use without an evaluation design; run covert monitoring; let procurement outrun governance |
 | **AI (agents)** | Frame, probe, drill, draft, simulate, summarize what the learner may see, and propose pathways | Grade alone, determine progression, certify competence, lead a consequential debrief alone, monitor covertly, or claim teaching authority |
 | **NIN / NAIO** | Steward the doctrine, literacy standards, review labels, and community formation pathways | Confer educational authority, accreditation, or competency status by publication |
@@ -252,6 +284,11 @@ exposure in every adoption sequence.
   — over product policing. AI-detection tools are unreliable and
   biased against some writer populations; **no AI-detector output may
   be the sole basis for a misconduct finding.**
+- **The portfolio is proof of work.** Formation evidence is actual
+  output — deliverables, projects, synthetic-case write-ups — carried
+  in the learner's portfolio with provenance and AI-assistance
+  disclosure per artifact. Scores and completions annotate the
+  portfolio; they do not substitute for it.
 - Academic integrity processes owe learners the same due process this
   doctrine demands for patients: evidence, explanation, appeal, and a
   human decision-maker.
@@ -387,6 +424,7 @@ the direction and activates nothing.
 | §10 — Learner data | Data zones + tenants | Private reflections never reach faculty, manager, or cohort views (`EDENA-PRIVATE-REFLECTION`); no silent zone migration (`EDENA-ZONE-MIGRATION`); tenant isolation fails closed |
 | §12 — Traceability | Observability | Every decision traced to a tenant-separated, hash-chained, metadata-only audit stream |
 | §6 — Scoped roles | Role packets | Pre-licensure-student and educator packets ship explicit DATA-BOUNDARY records and templates |
+| §4.5 — Proof of work | Multi-role identity + Deliverable Studio | The portfolio is a shared store held once and filtered per role lens; Deliverable Studio scaffolds produce never-final outputs a human finishes, owns, and can carry as portfolio evidence |
 
 ### 14.2 Planned enforcement (design intentions, not yet implemented)
 
@@ -406,7 +444,11 @@ tested, and verified:
   governance review and returns disposition to the reporter;
 - **AI-assistance disclosure record:** a per-artifact disclosure
   ledger for coursework, bound to the artifact rather than the
-  honor system.
+  honor system;
+- **The growth mirror:** a learner-owned longitudinal view of
+  judgment development (probe engagement, ledger reading, challenge
+  quality) living in the private zone and shared only by the
+  learner's choice.
 
 ## 15. Success doctrine
 
@@ -422,6 +464,10 @@ Measures must consider:
 
 - growth in clinical judgment on NCJMM-aligned assessment over time;
 - the quality of learner challenges, overrides, and bias sightings;
+- depth of the proof-of-work portfolio — outputs actually produced,
+  used, and carried forward;
+- mentorship time protected or enlarged by AI adoption, and the
+  health of community participation;
 - educator hours redirected from clerical work to formative contact;
 - equity of outcomes across learner subgroups;
 - disclosure and integrity health;

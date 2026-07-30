@@ -175,11 +175,24 @@ Reading a refusal correctly is applied AI literacy.
   boundary it is holding and why that boundary exists for someone at
   your stage.
 
-## 7. Preceptor and practicing-nurse playbook
+## 7. Preceptor, mentor, and practicing-nurse playbook
 
+- **Run the quartet, not a tool.** Any mentorship, residency, or
+  development program pairs the AI tutor with a named human mentor,
+  an active community circle, and a proof-of-work portfolio from day
+  one; a missing support is a program gap to close, not a feature to
+  defer.
 - Transition-to-practice programs use the same rules: commit before
   compare, synthetic practice fields, human evaluative authority over
   every progression decision.
+- **Community circles:** peer groups meet to review work-in-progress
+  on synthetic material, normalize struggle, and surface bias
+  sightings together. AI may schedule circles and summarize what
+  participants choose to share; it never attends as a silent
+  evaluator.
+- **The growth mirror stays the learner's.** Mentors see the mirror
+  when the learner shares it; a mentoring conversation about the
+  mirror is coaching, never an evaluation record.
 - Run **override review huddles**: cases where a nurse overrode,
   corrected, or distrusted an AI are reviewed as learning material.
   Overrides and near misses are learning signals, not user failure.
@@ -207,6 +220,14 @@ Integrity procedure: begin with a process conversation, not an
 accusation; collect process evidence; no AI-detector output may be the
 sole basis for a misconduct finding; prefer educational response where
 the failure is formative; preserve appeal.
+
+Proof-of-work portfolio procedure: every learning arc produces at
+least one actual output — a deliverable, project artifact, or
+synthetic-case write-up — entered in the learner's portfolio with
+date, context, and AI-assistance disclosure. Scores and module
+completions annotate portfolio entries; they never substitute for
+them. The learner owns the portfolio and chooses what mentors and
+programs see beyond what policy requires.
 
 ## 9. Bias-sighting procedure
 
@@ -276,6 +297,10 @@ Measure:
 - clinical judgment growth on NCJMM-aligned assessments over time;
 - quality and disposition of learner challenges, overrides, and bias
   sightings;
+- depth and use of the proof-of-work portfolio — outputs produced,
+  carried forward, and shown;
+- mentorship time protected or enlarged, and community-circle
+  participation;
 - educator hours redirected from clerical work to formative contact;
 - equity of outcomes across learner subgroups;
 - disclosure health and integrity-process fairness;

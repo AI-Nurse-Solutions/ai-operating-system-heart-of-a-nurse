@@ -23,6 +23,22 @@ apply whether the learner is nineteen or fifty-nine: adults own their
 learning, commitment precedes comparison, and evaluative authority
 stays human.
 
+## The formation quartet
+
+Formation runs on four supports together — none substitutes for
+another:
+
+```text
+AI tutor      → personalization, deliberate practice, the growth mirror
+Human mentor  → tacit know-how, practical wisdom, transfer of values
+Community     → belonging, integration, collaboration
+Proof of work → a portfolio of actual outputs, not scores alone
+```
+
+The ecosystem's ASCEND program page already frames the same quartet —
+AI mentor, human mentorship, community, and credential evidence; this
+doctrine gives it constitutional form in [§4.5](DOCTRINE.md#45-the-formation-quartet).
+
 > **Agents coach. Learners commit. Educators judge. Institutions credential. Nurses steward.**
 
 > **The struggle is the curriculum. AI may scaffold the struggle; it must never perform it.**

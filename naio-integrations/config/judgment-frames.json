@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0.0",
+  "doctrine": "Agents propose. Humans judge. Nurses steward.",
+  "purpose": "Judgment support is a runtime feature, not advice: answers arrive framed, probed, and carrying a visible reasoning ledger so the accountable human can actually judge them. The layer strengthens judgment; it never replaces it.",
+  "notice": "Structured for your judgment: assumptions, alternatives, and change conditions are listed for you to weigh — this is a feature, not a disclaimer. Agents propose. Humans judge. Nurses steward.",
+  "frames": {
+    "clinical_judgment": {
+      "label": "Clinical judgment — notice, interpret, respond, reflect",
+      "intents": [
+        "sandbox_case_review",
+        "case_review",
+        "case_study",
+        "reflection",
+        "clinical_learning"
+      ],
+      "probes": [
+        "Before the answer: what did you notice first in this situation, and what does it make you expect next?",
+        "Which cue here matters most, and which cue might you be over-weighting?",
+        "What would you do first — and what observation would tell you it was the wrong first move?",
+        "Looking back on a similar situation, what did you learn that applies here?"
+      ]
+    },
+    "systems": {
+      "label": "Systems lens — upstream, downstream, feedback",
+      "intents": [
+        "process_improvement",
+        "quality_improvement",
+        "workflow_analysis",
+        "incident_review",
+        "staffing_analysis"
+      ],
+      "probes": [
+        "Who is upstream of this problem, and who inherits whatever you change?",
+        "What loop keeps this problem alive — and what currently benefits from the loop?",
+        "If this fix works perfectly, what second-order effect appears in three months?",
+        "Which part of this is a person problem, and which part is the system producing exactly what it was designed to produce?"
+      ]
+    },
+    "design": {
+      "label": "Design studio — audience, options, prototype",
+      "intents": [
+        "draft_deliverable",
+        "education_plan",
+        "project_planning",
+        "presentation",
+        "communication_plan"
+      ],
+      "probes": [
+        "Who will actually use this, and what have they said in their own words?",
+        "What are two genuinely different ways to do this — not variations of one idea?",
+        "What is the smallest version you could put in front of a real person this week?",
+        "What would make the intended audience quietly ignore this?"
+      ]
+    },
+    "evidence": {
+      "label": "Evidence appraisal — claim, source, limitation",
+      "intents": [
+        "evidence_question",
+        "literature_review",
+        "guideline_comparison",
+        "summarize_policy",
+        "research_protocol_draft"
+      ],
+      "probes": [
+        "What claim are you actually testing, and what would count as evidence against it?",
+        "Which of your sources is strongest, and what is its most important limitation?",
+        "Where do policy, research, and local practice disagree here?",
+        "Which assumption in this question has never been confirmed?"
+      ]
+    },
+    "general": {
+      "label": "General judgment — assumptions, alternatives, change conditions",
+      "intents": [],
+      "probes": [
+        "What is your own read before you see mine?",
+        "What assumption would hurt most if it turned out wrong?",
+        "What alternative did you already rule out, and why?",
+        "What new information would change your mind?"
+      ]
+    }
+  },
+  "default_frame": "general",
+  "coach_first_roles": ["student"],
+  "decision_markers": [
+    "you should",
+    "i recommend",
+    "we recommend",
+    "the best option",
+    "the right choice",
+    "the correct answer",
+    "must choose",
+    "definitely do"
+  ],
+  "reasoning_markers": {
+    "assumptions": ["assumption", "assuming", "this assumes"],
+    "alternatives": ["alternative", "another option", "other approaches", "instead of this"],
+    "change_conditions": ["would change", "revisit if", "unless", "if new evidence", "reconsider if"]
+  },
+  "negation_markers": ["no ", "not ", "without ", "never ", "none ", "makes no", "carries no", "lacks ", "zero "],
+  "enforcement": {
+    "check_name": "reasoning_visibility",
+    "minimum_risk_tier": "yellow",
+    "action_modes": ["recommend"],
+    "reason_code": "EDENA-JUDGMENT-VISIBILITY"
+  }
+}

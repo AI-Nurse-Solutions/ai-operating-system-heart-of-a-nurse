@@ -27,6 +27,7 @@ from .contract import (
     RiskTier,
     ValidationIssue,
 )
+from .judgment import JudgmentGuidance, JudgmentGuide, ReasoningLedger
 from .observability import GatewayTracer
 from .policy import EdenaPolicyEngine
 from .privacy import PrivacyScreen
@@ -49,6 +50,8 @@ class GatewayResult:
     validation_issues: tuple[ValidationIssue, ...] = ()
     stage: str = "complete"
     detail: dict[str, Any] = field(default_factory=dict)
+    judgment: JudgmentGuidance | None = None
+    reasoning_ledger: ReasoningLedger | None = None
 
     @property
     def allowed(self) -> bool:
@@ -65,11 +68,15 @@ class EdenaPolicyGateway:
         privacy: PrivacyScreen | None = None,
         validator: TrafficValidator | None = None,
         tracer: GatewayTracer | None = None,
+        judgment: JudgmentGuide | None = None,
     ):
         self.policy = policy or EdenaPolicyEngine()
         self.privacy = privacy or PrivacyScreen()
         self.validator = validator or TrafficValidator()
         self.tracer = tracer or GatewayTracer(trace_root)
+        self.judgment = judgment or JudgmentGuide(
+            role_aliases=self.policy.policy.get("role_aliases", {})
+        )
 
     def submit(
         self,
@@ -77,6 +84,14 @@ class EdenaPolicyGateway:
         executor: Callable[[GatewayRequest], str] | None = None,
     ) -> GatewayResult:
         trace_id = self.tracer.start_trace(request)
+        # Judgment support runs for every request: the frame and probe
+        # are part of how an answer is allowed to arrive, not an add-on.
+        guidance = self.judgment.guidance(request)
+        self.tracer.record_span(
+            trace_id,
+            "judgment_frame",
+            {"frame": guidance.frame, "coach_first": guidance.coach_first},
+        )
 
         input_check = self.validator.validate_input(request)
         self.tracer.record_span(
@@ -91,6 +106,7 @@ class EdenaPolicyGateway:
                 Decision.DENY,
                 ("EDENA-INPUT-VALIDATION",),
                 stage="validate_input",
+                judgment=guidance,
                 screened="",
                 issues=input_check.issues,
             )
@@ -114,6 +130,7 @@ class EdenaPolicyGateway:
                 Decision.DENY,
                 ("EDENA-PRIVACY-REDLINE",),
                 stage="privacy_screen",
+                judgment=guidance,
                 screened="",
                 entity_types=entity_types,
             )
@@ -147,6 +164,7 @@ class EdenaPolicyGateway:
                 policy_decision.decision,
                 policy_decision.reason_codes,
                 stage="policy_decision",
+                judgment=guidance,
                 screened=privacy_result.transformed_text,
                 obligations=policy_decision.obligations,
                 entity_types=entity_types,
@@ -154,6 +172,7 @@ class EdenaPolicyGateway:
 
         output: str | None = None
         issues: tuple[ValidationIssue, ...] = ()
+        ledger: ReasoningLedger | None = None
         if executor is not None:
             try:
                 raw_output = executor(screened_request)
@@ -169,6 +188,7 @@ class EdenaPolicyGateway:
                     Decision.DENY,
                     ("EDENA-EXECUTOR-ERROR",),
                     stage="execute",
+                    judgment=guidance,
                     screened=privacy_result.transformed_text,
                     entity_types=entity_types,
                 )
@@ -185,6 +205,7 @@ class EdenaPolicyGateway:
                     Decision.DENY,
                     ("EDENA-OUTPUT-VALIDATION",),
                     stage="validate_output",
+                    judgment=guidance,
                     screened=privacy_result.transformed_text,
                     issues=output_check.issues,
                     entity_types=entity_types,
@@ -207,6 +228,7 @@ class EdenaPolicyGateway:
                     Decision.DENY,
                     ("EDENA-PRIVACY-REDLINE",),
                     stage="privacy_screen_output",
+                    judgment=guidance,
                     screened=privacy_result.transformed_text,
                     entity_types=tuple(
                         sorted({f.entity_type for f in output_privacy.findings})
@@ -214,6 +236,31 @@ class EdenaPolicyGateway:
                 )
             output = output_privacy.transformed_text
             issues = output_check.issues
+            ledger = self.judgment.ledger(output)
+            self.tracer.record_span(
+                trace_id,
+                "judgment_ledger",
+                {
+                    "decision_shaped": ledger.decision_shaped,
+                    "visible_reasoning": ledger.visible_reasoning,
+                    "missing": list(ledger.missing),
+                },
+            )
+            if self.judgment.refuses(request, ledger):
+                # A consequential recommendation may not leave the gateway
+                # as a naked verdict: the human must receive judgment
+                # material — assumptions, alternatives, change conditions.
+                return self._finish(
+                    trace_id,
+                    request,
+                    Decision.DENY,
+                    (self.judgment.reason_code,),
+                    stage="judgment_ledger",
+                    judgment=guidance,
+                    screened=privacy_result.transformed_text,
+                    entity_types=entity_types,
+                    reasoning_ledger=ledger,
+                )
 
         self.tracer.end_trace(trace_id, "allow")
         return GatewayResult(
@@ -225,6 +272,8 @@ class EdenaPolicyGateway:
             privacy_entity_types=entity_types,
             output=output,
             validation_issues=issues,
+            judgment=guidance,
+            reasoning_ledger=ledger,
         )
 
     def _finish(
@@ -238,6 +287,8 @@ class EdenaPolicyGateway:
         obligations: tuple[str, ...] = (),
         issues: tuple[ValidationIssue, ...] = (),
         entity_types: tuple[str, ...] = (),
+        judgment: JudgmentGuidance | None = None,
+        reasoning_ledger: ReasoningLedger | None = None,
     ) -> GatewayResult:
         outcome = decision.value if decision is not Decision.ALLOW else "allow"
         self.tracer.end_trace(trace_id, outcome)
@@ -250,4 +301,6 @@ class EdenaPolicyGateway:
             privacy_entity_types=entity_types,
             validation_issues=issues,
             stage=stage,
+            judgment=judgment,
+            reasoning_ledger=reasoning_ledger,
         )

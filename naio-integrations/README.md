@@ -155,6 +155,28 @@ research-governance audit obligation. Drafting a protocol or research
 question remains ordinary draft work through the Knowledge and
 Evidence Center.
 
+### Judgment layer (the runtime companion to "Humans judge")
+
+`judgment.py` embeds critical, systems, and design thinking in how
+answers are allowed to arrive — like EDENA, it lives at the gateway
+and is driven by reviewed configuration
+(`config/judgment-frames.json`), not by prompt-pack advice. Every
+request is matched to a named thinking frame (clinical judgment,
+systems lens, design studio, evidence appraisal, or general judgment)
+with a deterministic commit-then-compare probe; students are
+coach-first by default through the same role-alias table the policy
+engine uses, and any user can opt in. Every output is scanned into a
+reasoning ledger — visible assumptions, alternatives, and change
+conditions — and at consequential tiers (Yellow and above, in
+Recommend mode) every output must carry that material or it is
+refused at the gateway with `EDENA-JUDGMENT-VISIBILITY`. The gate
+keys on the declared action mode, not on detecting verdict wording,
+so no phrasing bypasses it. Each result carries the
+frame, probe, and a user-facing notice naming the feature, so the
+person always knows the structure exists to serve their judgment. The
+ledger detects wording, not wisdom: it makes judgment material
+present; the human remains the judge.
+
 ## Layer responsibilities
 
 | Layer | Question it answers |

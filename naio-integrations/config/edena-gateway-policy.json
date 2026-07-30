@@ -82,6 +82,7 @@
     "EDENA-RESEARCH-ZONE": "Research execution runs only in the restricted data zone.",
     "EDENA-RESEARCH-UNAFFILIATED": "Research execution requires an authenticated organizational context matching the current workspace.",
     "EDENA-RESEARCH-APPROVAL": "Research execution requires a recorded governance approval (IRB or equivalent) before it proceeds.",
-    "EDENA-EXECUTOR-ERROR": "The executor failed while producing output; the request fails closed with a completed audit trail."
+    "EDENA-EXECUTOR-ERROR": "The executor failed while producing output; the request fails closed with a completed audit trail.",
+    "EDENA-JUDGMENT-VISIBILITY": "A consequential recommendation may not arrive as a naked verdict; it must carry visible assumptions, alternatives, or change conditions for human judgment."
   }
 }

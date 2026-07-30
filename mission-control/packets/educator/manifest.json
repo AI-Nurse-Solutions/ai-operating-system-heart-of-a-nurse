@@ -51,7 +51,7 @@
     "institutional_approval_granted": false
   },
   "integrations_enabled_by_default": false,
-  "integrity_checksum": "sha256:f5123120d6ec0c0266039615b7ef71ae822d28084aa576b1b898dd3a2a307105",
+  "integrity_checksum": "sha256:8d8a0aa772dfe81e5ca53db2b9de175c31673dd22e061d1cf11222118f948189",
   "manifest_schema": "1.0.0",
   "migration_version": "1",
   "optional_dependencies": [
@@ -94,7 +94,8 @@
     "simulation-studio",
     "competency-and-observation-tools",
     "feedback-coach",
-    "deidentified-cohort-dashboard"
+    "deidentified-cohort-dashboard",
+    "summative-authority-gates"
   ],
   "supported_exports": [
     "markdown",

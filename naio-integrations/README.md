@@ -63,6 +63,9 @@ data class, and action mode):
   accountable human).
 - Student mode cannot generate patient-specific recommendations and is
   capped at Draft.
+- AI never grades alone: summative decisions are gated by activity
+  class behind a named educator approval, and a student cannot carry a
+  summative intent at all.
 - No agent sends, publishes, deletes, purchases, or modifies external
   systems without the required approval.
 - Personal memory and institutional memory cannot cross tenant
@@ -154,6 +157,26 @@ reference is denied outright; every allowed execution carries a
 research-governance audit obligation. Drafting a protocol or research
 question remains ordinary draft work through the Knowledge and
 Evidence Center.
+
+### Summative-intent gates (Nurse Formation doctrine)
+
+The educator packet ships a `summative-authority-gates` module backed
+by real policy, built in the same pattern as the research governance
+gates: the summative act — `grade_assignment`,
+`progression_determination`, `competency_signoff`,
+`professionalism_finding` — is gated by activity class in
+`config/edena-gateway-policy.json`, independent of action mode.
+Summative intents execute only in the educational-record data zone,
+require an authenticated organizational context matching the current
+workspace, and require a named human educator approval recorded for
+the actor (`EDENA-EDUCATOR-AUTHORITY`) — an unrelated approval
+satisfies nothing, and a fabricated reference is denied outright.
+Every allowed execution carries a summative-authority audit
+obligation. Students cannot carry a summative intent at all, even
+holding a recorded approval: the role gate denies before the
+summative gate is consulted. Drafting feedback, items, or rubrics for
+an educator's review remains ordinary draft work — AI never grades
+alone, and it never gates a career.
 
 ### Judgment layer (the runtime companion to "Humans judge")
 

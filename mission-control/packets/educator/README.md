@@ -13,6 +13,7 @@ An educator, preceptor, or mentor using Nurse AI OS as a governed professional e
 - Competency and observation tools
 - Feedback coach
 - Deidentified cohort dashboard
+- Summative authority gates
 
 ## What it will never do on its own
 

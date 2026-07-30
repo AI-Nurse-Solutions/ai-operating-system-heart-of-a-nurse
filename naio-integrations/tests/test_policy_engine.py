@@ -451,5 +451,146 @@ class ResearchGovernanceGateTests(unittest.TestCase):
             self.assertIsNot(decision.decision, Decision.ALLOW, intent)
 
 
+class SummativeAuthorityGateTests(unittest.TestCase):
+    """Formation doctrine: summative decisions never run on AI authority alone."""
+
+    SUMMATIVE_INTENTS = (
+        "grade_assignment",
+        "progression_determination",
+        "competency_signoff",
+        "professionalism_finding",
+    )
+
+    def setUp(self):
+        self.engine = EdenaPolicyEngine()
+        self.educator = Actor(
+            actor_id="ed-1",
+            role="educator",
+            tenant="org:riverview-college",
+            authenticated_org="org:riverview-college",
+        )
+
+    def _summative_request(self, **overrides):
+        from naio_integrations.contract import DataZone
+
+        defaults = dict(
+            actor=self.educator,
+            intent="grade_assignment",
+            data_zone=DataZone.EDUCATIONAL_RECORD,
+        )
+        defaults.update(overrides)
+        return make_request(**defaults)
+
+    def test_summative_execution_outside_educational_record_is_denied(self):
+        from naio_integrations.contract import DataZone
+
+        decision = self.engine.decide(
+            self._summative_request(data_zone=DataZone.PRIVATE)
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-SUMMATIVE-ZONE", decision.reason_codes)
+
+    def test_summative_execution_without_org_context_is_denied(self):
+        unaffiliated = Actor(
+            actor_id="ed-1", role="educator", tenant="personal:ed-1"
+        )
+        decision = self.engine.decide(
+            self._summative_request(actor=unaffiliated)
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-SUMMATIVE-UNAFFILIATED", decision.reason_codes)
+
+    def test_summative_execution_without_named_approval_requires_it(self):
+        decision = self.engine.decide(self._summative_request())
+        self.assertIs(decision.decision, Decision.REQUIRE_APPROVAL)
+        self.assertIn("EDENA-EDUCATOR-AUTHORITY", decision.reason_codes)
+        self.assertIn(
+            "record_educator_summative_approval", decision.obligations
+        )
+
+    def test_unrelated_approval_is_not_educator_authority(self):
+        # Holding some approval is not the same as naming an educator
+        # sign-off on the request.
+        holder = Actor(
+            actor_id="ed-1",
+            role="educator",
+            tenant="org:riverview-college",
+            authenticated_org="org:riverview-college",
+            approvals=("appr-77",),
+        )
+        decision = self.engine.decide(self._summative_request(actor=holder))
+        self.assertIs(decision.decision, Decision.REQUIRE_APPROVAL)
+        self.assertIn("EDENA-EDUCATOR-AUTHORITY", decision.reason_codes)
+
+    def test_fabricated_educator_approval_reference_is_denied(self):
+        holder = Actor(
+            actor_id="ed-1",
+            role="educator",
+            tenant="org:riverview-college",
+            authenticated_org="org:riverview-college",
+            approvals=("appr-77",),
+        )
+        decision = self.engine.decide(
+            self._summative_request(
+                actor=holder,
+                metadata={"educator_approval_id": "signoff-invented"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", decision.reason_codes)
+
+    def test_summative_execution_with_recorded_signoff_is_allowed(self):
+        approved = Actor(
+            actor_id="ed-1",
+            role="educator",
+            tenant="org:riverview-college",
+            authenticated_org="org:riverview-college",
+            approvals=("signoff-2026-031",),
+        )
+        decision = self.engine.decide(
+            self._summative_request(
+                actor=approved,
+                metadata={"educator_approval_id": "signoff-2026-031"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.ALLOW)
+        self.assertIn("summative_authority_audit", decision.obligations)
+
+    def test_feedback_drafting_stays_ordinary_draft_work(self):
+        decision = self.engine.decide(
+            make_request(intent="draft_assignment_feedback")
+        )
+        self.assertIs(decision.decision, Decision.ALLOW)
+        self.assertNotIn("summative_authority_audit", decision.obligations)
+
+    def test_every_summative_intent_is_gated(self):
+        for intent in self.SUMMATIVE_INTENTS:
+            decision = self.engine.decide(make_request(intent=intent))
+            self.assertIsNot(decision.decision, Decision.ALLOW, intent)
+
+    def test_students_cannot_carry_a_summative_intent_at_all(self):
+        # Educator authority cannot be borrowed: even with a recorded
+        # approval named on the request, a student actor is denied before
+        # the summative gate is ever consulted — AI never gates a career.
+        for role in ("student", "pre-licensure-student"):
+            student = Actor(
+                actor_id="sn-1",
+                role=role,
+                tenant="org:riverview-college",
+                authenticated_org="org:riverview-college",
+                approvals=("signoff-2026-031",),
+            )
+            for intent in self.SUMMATIVE_INTENTS:
+                decision = self.engine.decide(
+                    self._summative_request(
+                        actor=student,
+                        intent=intent,
+                        metadata={"educator_approval_id": "signoff-2026-031"},
+                    )
+                )
+                self.assertIs(decision.decision, Decision.DENY, (role, intent))
+                self.assertIn("EDENA-STUDENT-MODE", decision.reason_codes)
+
+
 if __name__ == "__main__":
     unittest.main()

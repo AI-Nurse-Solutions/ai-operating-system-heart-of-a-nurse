@@ -539,6 +539,45 @@ class SummativeAuthorityGateTests(unittest.TestCase):
         self.assertIs(decision.decision, Decision.DENY)
         self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", decision.reason_codes)
 
+    def test_naming_an_unscoped_held_approval_is_denied(self):
+        # The laundering path: the actor really does hold "appr-77" and
+        # names it as the educator sign-off — but membership is not
+        # authority, and an approval without educator-summative scope
+        # provenance fails closed.
+        holder = Actor(
+            actor_id="ed-1",
+            role="educator",
+            tenant="org:riverview-college",
+            authenticated_org="org:riverview-college",
+            approvals=("appr-77",),
+        )
+        decision = self.engine.decide(
+            self._summative_request(
+                actor=holder,
+                metadata={"educator_approval_id": "appr-77"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-SCOPE", decision.reason_codes)
+
+    def test_approval_scoped_to_another_authority_is_denied(self):
+        holder = Actor(
+            actor_id="ed-1",
+            role="educator",
+            tenant="org:riverview-college",
+            authenticated_org="org:riverview-college",
+            approvals=("irb-2026-014",),
+            approval_scopes=(("irb-2026-014", "research-governance"),),
+        )
+        decision = self.engine.decide(
+            self._summative_request(
+                actor=holder,
+                metadata={"educator_approval_id": "irb-2026-014"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-SCOPE", decision.reason_codes)
+
     def test_summative_execution_with_recorded_signoff_is_allowed(self):
         approved = Actor(
             actor_id="ed-1",
@@ -546,6 +585,7 @@ class SummativeAuthorityGateTests(unittest.TestCase):
             tenant="org:riverview-college",
             authenticated_org="org:riverview-college",
             approvals=("signoff-2026-031",),
+            approval_scopes=(("signoff-2026-031", "educator-summative"),),
         )
         decision = self.engine.decide(
             self._summative_request(
@@ -579,6 +619,7 @@ class SummativeAuthorityGateTests(unittest.TestCase):
                 tenant="org:riverview-college",
                 authenticated_org="org:riverview-college",
                 approvals=("signoff-2026-031",),
+                approval_scopes=(("signoff-2026-031", "educator-summative"),),
             )
             for intent in self.SUMMATIVE_INTENTS:
                 decision = self.engine.decide(

@@ -169,8 +169,11 @@ gates: the summative act — `grade_assignment`,
 Summative intents execute only in the educational-record data zone,
 require an authenticated organizational context matching the current
 workspace, and require a named human educator approval recorded for
-the actor (`EDENA-EDUCATOR-AUTHORITY`) — an unrelated approval
-satisfies nothing, and a fabricated reference is denied outright.
+the actor in the educator-summative authority scope
+(`EDENA-EDUCATOR-AUTHORITY`) — an unrelated approval satisfies
+nothing even when named on the request (`EDENA-APPROVAL-SCOPE`;
+membership is not authority), and a fabricated reference is denied
+outright.
 Every allowed execution carries a summative-authority audit
 obligation. Students cannot carry a summative intent at all, even
 holding a recorded approval: the role gate denies before the

@@ -165,6 +165,15 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
                     )
                 if approval_ref not in actor.approvals:
                     return self._deny("EDENA-APPROVAL-UNRECOGNIZED")
+                # Membership is not authority: an unrelated approval the
+                # actor holds cannot be laundered into an educator sign-off
+                # by naming it. The recorded provenance must carry the
+                # required scope, or the gate fails closed.
+                required_scope = summative_rules.get("required_approval_scope")
+                if required_scope and (
+                    (approval_ref, required_scope) not in actor.approval_scopes
+                ):
+                    return self._deny("EDENA-APPROVAL-SCOPE")
 
         data_ceiling = self.policy["tier_data_ceilings"].get(tier.value)
         if data_ceiling is None or data.rank > DataClass(data_ceiling).rank:

@@ -74,7 +74,8 @@
     "required_zone": "educational_record",
     "requires_institutional_authentication": true,
     "requires_recorded_approval": true,
-    "approval_metadata_key": "educator_approval_id"
+    "approval_metadata_key": "educator_approval_id",
+    "required_approval_scope": "educator-summative"
   },
   "prohibited": {
     "risk_tiers": ["red-p"],
@@ -103,6 +104,7 @@
     "EDENA-SUMMATIVE-ZONE": "Summative decisions execute only in the educational-record data zone.",
     "EDENA-SUMMATIVE-UNAFFILIATED": "Summative execution requires an authenticated organizational context matching the current workspace.",
     "EDENA-EDUCATOR-AUTHORITY": "A summative decision requires a named human educator approval recorded for the actor — AI never grades alone.",
+    "EDENA-APPROVAL-SCOPE": "The named approval is recorded for this actor but does not carry the authority scope this action requires.",
     "EDENA-EXECUTOR-ERROR": "The executor failed while producing output; the request fails closed with a completed audit trail.",
     "EDENA-JUDGMENT-VISIBILITY": "A consequential recommendation may not arrive as a naked verdict; it must carry visible assumptions, alternatives, or change conditions for human judgment."
   }

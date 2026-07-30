@@ -252,6 +252,7 @@ class MultiRoleIdentity:
         workspace_tenant: str,
         authenticated_org: str | None = None,
         approvals: tuple[str, ...] = (),
+        approval_scopes: tuple[tuple[str, str], ...] = (),
     ) -> Actor:
         if self.state["active_role"] is None:
             raise IdentityError("no active role; activate one before acting")
@@ -266,6 +267,7 @@ class MultiRoleIdentity:
             tenant=workspace_tenant,
             authenticated_org=authenticated_org,
             approvals=approvals,
+            approval_scopes=approval_scopes,
         )
 
     # ------------------------------------------------------------------

@@ -45,13 +45,17 @@ class NurseFormationDocsTests(unittest.TestCase):
     @staticmethod
     def _heading_slugs(markdown_path: Path) -> set[str]:
         # GitHub-style anchors: lowercase, punctuation stripped, spaces
-        # become hyphens.
-        slugs = set()
+        # become hyphens; repeated headings gain -1, -2, ... suffixes.
+        slugs: set[str] = set()
+        seen: dict[str, int] = {}
         for line in markdown_path.read_text(encoding="utf-8").splitlines():
             if line.startswith("#"):
                 heading = line.lstrip("#").strip().casefold()
                 heading = re.sub(r"[^\w\- ]", "", heading)
-                slugs.add(heading.replace(" ", "-"))
+                slug = heading.replace(" ", "-")
+                count = seen.get(slug, 0)
+                seen[slug] = count + 1
+                slugs.add(slug if count == 0 else f"{slug}-{count}")
         return slugs
 
     def test_relative_markdown_links_resolve(self) -> None:
@@ -219,7 +223,7 @@ class NurseFormationDocsTests(unittest.TestCase):
             "causal learning improvement",
         ):
             self.assertIn(banned_claim_context, doctrine_block)
-            self.assertIn(banned_claim_context.split(",")[0], playbook_block)
+            self.assertIn(banned_claim_context, playbook_block)
         self.assertIn(
             "must never be represented as evidence of learning", self.flat_doctrine
         )

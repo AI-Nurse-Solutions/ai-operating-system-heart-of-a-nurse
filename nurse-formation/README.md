@@ -35,9 +35,10 @@ Community     → belonging, integration, collaboration
 Proof of work → a portfolio of actual outputs, not scores alone
 ```
 
-The ecosystem's ASCEND program page already frames the same quartet —
-AI mentor, human mentorship, community, and credential evidence; this
-doctrine gives it constitutional form in [§4.5](DOCTRINE.md#45-the-formation-quartet).
+The ecosystem's [ASCEND program page](https://nurse-ai-os.org/ascend/)
+already frames the same quartet — AI mentor, human mentorship,
+community, and credential evidence; this doctrine gives it
+constitutional form in [§4.5](DOCTRINE.md#45-the-formation-quartet).
 
 > **Agents coach. Learners commit. Educators judge. Institutions credential. Nurses steward.**
 
@@ -59,8 +60,8 @@ the public record, including:
 - the [NLN Vision Series statement on AI in nursing education](https://www.nln.org/detail-pages/news/2025/09/17/nln-publishes-new-vision-statement-on-artificial-intelligence-(ai)-in-nursing-education) (September 2025) — national AI literacy standards and the foundational-to-advanced competency ladder;
 - the AACN *Essentials* (2021) — informatics and healthcare technology as core competencies within competency-based education;
 - the [NCSBN Clinical Judgment Measurement Model](https://www.nclex.com/clinical-judgment-measurement-model.page) — recognize cues, analyze cues, prioritize hypotheses, generate solutions, take actions, evaluate outcomes: the judgment spine any educational AI must load, not lift;
-- the 2025–2026 cognitive-offloading literature — primary studies such as Gerlich (2025), *AI Tools in Society: Impacts on Cognitive Offloading and the Future of Critical Thinking* ([overview and commentary](https://www.epicpeople.org/future-of-critical-thinking/)), concentrated in higher-education and knowledge-work populations: unstructured reliance on generative AI is associated with weakened higher-order reasoning, with the youngest adult learners most vulnerable, while structured, reflective, guided use can strengthen critical thinking;
-- U.S. Department of Education guidance on responsible AI in learning and the state AI-in-education legislative wave — emerging AI-literacy requirements (general-education mandates in some jurisdictions, proposals in others), human-in-the-loop expectations, learner privacy protections, and limits on AI-only grading and discipline;
+- the 2025–2026 cognitive-offloading literature — primary studies such as [Gerlich (2025), *AI Tools in Society: Impacts on Cognitive Offloading and the Future of Critical Thinking*, *Societies* 15(1):6](https://doi.org/10.3390/soc15010006) (see also [secondary commentary](https://www.epicpeople.org/future-of-critical-thinking/)), concentrated in higher-education and knowledge-work populations: unstructured reliance on generative AI is associated with weakened higher-order reasoning, with the youngest adult learners most vulnerable, while structured, reflective, guided use can strengthen critical thinking;
+- [U.S. Department of Education guidance on responsible AI in learning](https://www.ed.gov/about/news/press-release/us-department-of-education-issues-guidance-artificial-intelligence-use-schools-proposes-additional-supplemental-priority) and the state AI-in-education legislative wave (tracked at [FutureEd's legislative tracker](https://www.future-ed.org/legislative-tracker-2026-state-ai-in-education-bills/)) — emerging AI-literacy requirements (general-education mandates in some jurisdictions, proposals in others), human-in-the-loop expectations, learner privacy protections, and jurisdiction-specific limits on AI-only grading and discipline;
 - the ANA position statement on the ethical use of AI in nursing practice (2022).
 
 ## Relationship to Nurse AI OS

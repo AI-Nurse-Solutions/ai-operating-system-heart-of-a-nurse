@@ -114,6 +114,11 @@ machine diverged, which assumptions each carried, and what the learner
 now holds and why. A human grades it. This makes AI use the object of
 judgment rather than its substitute.
 
+During a Days 61–90 bounded pilot, this assignment runs **ungraded**:
+the comparison is written and debriefed as formative work, consistent
+with the pilot gate that nothing summative touches AI. The graded
+version follows only after the pilot evaluation clears expansion.
+
 ### 5.2 AI-visible assignment design
 
 Every assignment states its AI posture up front: prohibited, permitted
@@ -188,7 +193,7 @@ Reading a refusal correctly is applied AI literacy.
 
 | Activity | AI may | AI may not | Human requirement |
 |---|---|---|---|
-| Practice / formative feedback | Generate, adapt, score with disclosure | Report results to anyone but the learner without disclosure | Educator reviews patterns, not every item |
+| Practice / formative feedback | Generate, adapt, and score where validated, disclosed, and appealable | Report results to anyone but the learner without disclosure | Educator reviews patterns, not every item |
 | Item and rubric development | Draft for review | Deploy without human review | Educator edits and approves each item |
 | Summative scoring | Assist where validated, disclosed, appealable | Be the sole basis of any grade | Educator judges and signs |
 | Progression / remediation / discipline | Organize evidence a human will weigh | Decide, recommend-as-default, or rank learners | Named human decision with appeal route |
@@ -235,8 +240,11 @@ record.
 
 - educator simulation trial on synthetic cases;
 - edge cases and diverse learner populations tested;
-- no-added-burden check: the tool must not increase educator
-  documentation or learner cognitive load in controlled trial;
+- no-added-burden check: the tool must not add educator documentation
+  burden or **extraneous** learner cognitive load in controlled trial —
+  the productive effort of commitment and comparison is the design,
+  not a defect, so this gate screens for wasted load, never for the
+  deliberate friction the doctrine prescribes;
 - pilot consent language ready.
 
 ### Gate C — Operate

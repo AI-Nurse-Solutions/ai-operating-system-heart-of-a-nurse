@@ -61,6 +61,13 @@ class FrameAndProbeTests(unittest.TestCase):
         request = make_request(metadata={"thinking_frame": "mind_reading"})
         self.assertEqual(self.guide.frame_for(request), "evidence")
 
+    def test_malformed_frame_override_does_not_crash(self):
+        # Metadata is caller-controlled: an unhashable override must be
+        # treated as unknown, never raise mid-request.
+        for bad in ([], {"nested": True}, 7, None):
+            request = make_request(metadata={"thinking_frame": bad})
+            self.assertEqual(self.guide.frame_for(request), "evidence", bad)
+
     def test_probe_selection_is_deterministic_per_request(self):
         request = make_request(request_id="stable-1", intent="process_improvement")
         first = self.guide.guidance(request).probe
@@ -117,6 +124,21 @@ class ReasoningLedgerTests(unittest.TestCase):
         ledger = self.guide.ledger("The policy describes rounding frequency and documentation.")
         self.assertFalse(ledger.decision_shaped)
 
+    def test_negated_mentions_do_not_count_as_reasoning(self):
+        for bypass in (
+            "You should adopt hourly rounding. No alternative was considered.",
+            "This recommendation makes no assumptions and is final.",
+            "Adopt rounding without alternative approaches reviewed.",
+        ):
+            ledger = self.guide.ledger(bypass)
+            self.assertFalse(ledger.visible_reasoning, bypass)
+
+    def test_negation_after_a_marker_still_credits(self):
+        ledger = self.guide.ledger(
+            "Revisit if fall rates do not move within one quarter."
+        )
+        self.assertTrue(ledger.change_conditions_stated)
+
 
 class GatewayEnforcementTests(unittest.TestCase):
     def setUp(self):
@@ -147,6 +169,38 @@ class GatewayEnforcementTests(unittest.TestCase):
         self.assertEqual(result.stage, "judgment_ledger")
         self.assertIsNone(result.output)
         self.assertIsNotNone(result.reasoning_ledger)
+
+    def test_unlisted_verdict_wording_cannot_bypass_the_gate(self):
+        # The gate keys on the declared action mode, not verdict wording:
+        # a terse imperative with no configured marker is still refused.
+        for verdict in ("Adopt hourly rounding.", "Hourly rounding is preferable."):
+            result = self.gateway.submit(
+                self._yellow_recommend(request_id=f"jdg-{len(verdict)}"),
+                executor=lambda _r, v=verdict: v,
+            )
+            self.assertIs(result.decision, Decision.DENY, verdict)
+            self.assertIn("EDENA-JUDGMENT-VISIBILITY", result.reason_codes, verdict)
+
+    def test_negated_reasoning_mentions_are_refused_at_the_gate(self):
+        result = self.gateway.submit(
+            self._yellow_recommend(request_id="jdg-negation"),
+            executor=lambda _r: (
+                "You should adopt hourly rounding. No alternative was "
+                "considered and this makes no assumptions."
+            ),
+        )
+        self.assertIs(result.decision, Decision.DENY)
+        self.assertIn("EDENA-JUDGMENT-VISIBILITY", result.reason_codes)
+
+    def test_malformed_override_still_completes_with_verified_trace(self):
+        result = self.gateway.submit(
+            make_request(request_id="jdg-bad-meta", metadata={"thinking_frame": []})
+        )
+        self.assertIs(result.decision, Decision.ALLOW)
+        self.assertEqual(result.judgment.frame, "evidence")
+        records = self.gateway.tracer.read("personal:rn-1")
+        self.assertEqual(records[-1]["kind"], "trace_end")
+        self.assertTrue(self.gateway.tracer.verify("personal:rn-1")["ok"])
 
     def test_recommendation_with_judgment_material_passes(self):
         result = self.gateway.submit(

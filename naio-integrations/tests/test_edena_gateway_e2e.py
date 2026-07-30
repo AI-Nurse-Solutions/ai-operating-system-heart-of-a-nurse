@@ -84,7 +84,10 @@ class EdenaPolicyGatewayTests(unittest.TestCase):
                     "number 555-867-5309; recommend staffing changes."
                 ),
             ),
-            executor=lambda req: f"Based on the screened summary: {req.content}",
+            executor=lambda req: (
+                f"Based on the screened summary: {req.content} "
+                "Revisit if incident rates change next quarter."
+            ),
         )
         self.assertTrue(result.allowed)
         for raw in ("A123456", "555-867-5309"):
@@ -155,7 +158,10 @@ class EdenaPolicyGatewayTests(unittest.TestCase):
                 data_class=DataClass.D2,
                 action_mode=ActionMode.RECOMMEND,
             ),
-            executor=lambda req: "Contact the educator at educator@example.org for slides.",
+            executor=lambda req: (
+                "Contact the educator at educator@example.org for slides. "
+                "Another option is the unit education intranet page."
+            ),
         )
         self.assertTrue(result.allowed)
         self.assertNotIn("educator@example.org", result.output)

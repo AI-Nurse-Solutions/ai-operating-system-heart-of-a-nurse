@@ -96,6 +96,7 @@
     "alternatives": ["alternative", "another option", "other approaches", "instead of this"],
     "change_conditions": ["would change", "revisit if", "unless", "if new evidence", "reconsider if"]
   },
+  "negation_markers": ["no ", "not ", "without ", "never ", "none ", "makes no", "carries no", "lacks ", "zero "],
   "enforcement": {
     "check_name": "reasoning_visibility",
     "minimum_risk_tier": "yellow",

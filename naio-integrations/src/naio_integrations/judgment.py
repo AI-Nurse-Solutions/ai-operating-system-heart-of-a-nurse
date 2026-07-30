@@ -19,10 +19,12 @@ Three mechanics, all deterministic:
   roles (students by default) are always probed.
 * **Reasoning ledger** — outputs are scanned for visible judgment
   material: stated assumptions, alternatives, and change conditions.
-  Decision-shaped output at consequential tiers (Yellow and above, in
-  Recommend mode) that carries none of them is refused at the gateway
-  with ``EDENA-JUDGMENT-VISIBILITY`` — a consequential recommendation
-  may not leave the gateway as a naked verdict.
+  At consequential tiers (Yellow and above, in Recommend mode) every
+  output must carry that material or it is refused at the gateway with
+  ``EDENA-JUDGMENT-VISIBILITY``. The gate keys on the declared action
+  mode, not on detecting verdict wording, so no phrasing bypasses it —
+  a consequential recommendation may not leave the gateway as a naked
+  verdict, however it is worded.
 
 The ledger detects wording, not wisdom: a visible assumption can still
 be a bad assumption. The layer makes judgment material present; the
@@ -37,7 +39,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .contract import ActionMode, GatewayRequest, RiskTier
+from .contract import GatewayRequest, RiskTier
 
 DEFAULT_FRAMES_PATH = (
     Path(__file__).resolve().parents[2] / "config" / "judgment-frames.json"
@@ -107,8 +109,10 @@ class JudgmentGuide:
 
     def frame_for(self, request: GatewayRequest) -> str:
         override = request.metadata.get("thinking_frame")
-        if override in self.config["frames"]:
-            return str(override)
+        # Metadata is caller-controlled: a non-string override (including
+        # an unhashable container) is treated as unknown, never an error.
+        if isinstance(override, str) and override in self.config["frames"]:
+            return override
         return self._intent_to_frame.get(
             request.intent, self.config["default_frame"]
         )
@@ -138,12 +142,32 @@ class JudgmentGuide:
     # ------------------------------------------------------------------
     # Reasoning ledger (over the answer)
 
+    def _credited(self, folded: str, marker: str) -> bool:
+        """True when a marker appears at least once without a nearby negation.
+
+        "No alternative was considered" mentions alternatives while
+        explicitly providing none — a negated mention must not count as
+        visible reasoning. Only the text immediately before the marker is
+        inspected, so a change condition like "revisit if rates do not
+        move" still credits.
+        """
+        negations = self.config["negation_markers"]
+        start = 0
+        while True:
+            index = folded.find(marker, start)
+            if index == -1:
+                return False
+            window = folded[max(0, index - 24) : index]
+            if not any(negation in window for negation in negations):
+                return True
+            start = index + len(marker)
+
     def ledger(self, output: str) -> ReasoningLedger:
         folded = output.casefold()
         markers = self.config["reasoning_markers"]
 
         def any_marker(kind: str) -> bool:
-            return any(marker in folded for marker in markers[kind])
+            return any(self._credited(folded, marker) for marker in markers[kind])
 
         return ReasoningLedger(
             decision_shaped=any(
@@ -155,14 +179,21 @@ class JudgmentGuide:
         )
 
     def refuses(self, request: GatewayRequest, ledger: ReasoningLedger) -> bool:
-        """True when a consequential recommendation arrives as a naked verdict."""
+        """True when a consequential recommendation arrives as a naked verdict.
+
+        The gate does not depend on detecting verdict wording — that would
+        be bypassable by any phrasing outside the marker list. The action
+        mode itself is the structured declaration: a request made in
+        Recommend mode at the enforcement tier or above has asked for a
+        consequential recommendation, so its output must carry visible
+        reasoning no matter how the verdict is worded. The ledger's
+        ``decision_shaped`` flag remains descriptive metadata only.
+        """
         enforcement = self.config["enforcement"]
         floor = RiskTier(enforcement["minimum_risk_tier"]).rank
         return (
             request.risk_tier.rank >= floor
             and request.action_mode.value in enforcement["action_modes"]
-            and request.action_mode.rank <= ActionMode.CONSTRAINED_AUTONOMY.rank
-            and ledger.decision_shaped
             and not ledger.visible_reasoning
         )
 

@@ -47,18 +47,20 @@ doctrine gives it constitutional form in [§4.5](DOCTRINE.md#45-the-formation-qu
 
 ## Research anchors
 
-This doctrine synthesizes five commissioned research briefs (nurse-led
-bias mitigation, the AI-in-learning policy landscape, the NIN-NAIO role
-and architecture, integration challenges in daily nursing workflows,
-and human-in-the-loop requirements for nursing AI tools) with the
-public record, including:
+This doctrine synthesizes five commissioned research briefs — July
+2026 AI-assisted literature scans prepared for this doctrine and
+reviewed by the founder, covering (1) nurse-led bias mitigation,
+(2) the AI-in-learning policy landscape, (3) the NIN-NAIO role and
+architecture, (4) integration challenges in daily nursing workflows,
+and (5) human-in-the-loop requirements for nursing AI tools — with
+the public record, including:
 
-- the [American Academy of Nursing position statement on AI in health care](https://aannet.org/page/AI-position-statement-2026) (February 2026) — human-in-the-loop oversight standards and AI as augmentation, never replacement, of nursing judgment;
+- the [American Academy of Nursing position statement on AI in health care](https://aannet.org/page/AI-position-statement-2026) (board-approved February 2026) — human-in-the-loop oversight standards and AI as augmentation, never replacement, of nursing judgment;
 - the [NLN Vision Series statement on AI in nursing education](https://www.nln.org/detail-pages/news/2025/09/17/nln-publishes-new-vision-statement-on-artificial-intelligence-(ai)-in-nursing-education) (September 2025) — national AI literacy standards and the foundational-to-advanced competency ladder;
 - the AACN *Essentials* (2021) — informatics and healthcare technology as core competencies within competency-based education;
 - the [NCSBN Clinical Judgment Measurement Model](https://www.nclex.com/clinical-judgment-measurement-model.page) — recognize cues, analyze cues, prioritize hypotheses, generate solutions, take actions, evaluate outcomes: the judgment spine any educational AI must load, not lift;
-- the 2025–2026 cognitive-offloading literature (e.g., [Gerlich 2025 and successors](https://www.epicpeople.org/future-of-critical-thinking/)) — unstructured reliance on generative AI is associated with weakened higher-order reasoning, with the youngest learners most vulnerable, while structured, reflective, guided use can strengthen critical thinking;
-- U.S. Department of Education guidance on responsible AI in learning and the state AI-in-education legislative wave — AI literacy mandates, human-in-the-loop expectations, learner privacy protections, and limits on AI-only grading and discipline;
+- the 2025–2026 cognitive-offloading literature — primary studies such as Gerlich (2025), *AI Tools in Society: Impacts on Cognitive Offloading and the Future of Critical Thinking* ([overview and commentary](https://www.epicpeople.org/future-of-critical-thinking/)), concentrated in higher-education and knowledge-work populations: unstructured reliance on generative AI is associated with weakened higher-order reasoning, with the youngest adult learners most vulnerable, while structured, reflective, guided use can strengthen critical thinking;
+- U.S. Department of Education guidance on responsible AI in learning and the state AI-in-education legislative wave — emerging AI-literacy requirements (general-education mandates in some jurisdictions, proposals in others), human-in-the-loop expectations, learner privacy protections, and limits on AI-only grading and discipline;
 - the ANA position statement on the ethical use of AI in nursing practice (2022).
 
 ## Relationship to Nurse AI OS

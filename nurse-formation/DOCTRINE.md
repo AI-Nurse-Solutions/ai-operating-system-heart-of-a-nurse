@@ -108,13 +108,17 @@ and deciding get exercised — or bypassed?
 
 ### 4.2 The offloading hazard
 
-The evidence base of 2024–2026 is consistent: unstructured reliance on
+Studies from 2024–2026 — concentrated so far in higher-education and
+knowledge-work populations — converge: unstructured reliance on
 generative AI is associated with cognitive offloading and weakened
-higher-order reasoning, and the youngest learners show the greatest
-vulnerability to dependence. The same literature shows the counter-
-pattern: structured, guided, reflective use — where the learner
-commits, compares, and critiques — can strengthen critical thinking
-rather than erode it.
+higher-order reasoning, and the youngest adult learners show the
+greatest vulnerability to dependence in those studies. The same
+literature shows the counter-pattern: structured, guided, reflective
+use — where the learner commits, compares, and critiques — can
+strengthen critical thinking rather than erode it. Nursing-specific
+evidence is still thin; the posture below is therefore a protective
+design commitment grounded in the best available evidence, not a
+settled empirical law.
 
 The doctrinal consequence is a default posture, not a warning label:
 
@@ -251,8 +255,10 @@ past what their role already holds.
 AI literacy is a licensure-lifespan competency, not an orientation
 module. Three literacies form the ladder, aligned with the NLN
 foundational-to-advanced progression, the AACN *Essentials*
-informatics competencies, and the state AI-literacy mandates now in
-force:
+informatics competencies, and the AI-literacy requirements emerging
+in state education law (general-education mandates in some
+jurisdictions, proposals in others — none yet a nursing-licensure
+requirement):
 
 1. **Foundational literacy** — what these systems are and are not;
    where they fail; how bias enters through data and design; privacy
@@ -361,7 +367,9 @@ human-in-the-loop standard:
 - **Validation:** tools are trialed in realistic simulations with
   educator observers, tested on edge cases and diverse learner
   populations, and must demonstrate that they do not add errors or
-  cognitive burden before any learner-facing use;
+  extraneous cognitive burden before any learner-facing use — the
+  deliberate, productive effort of commitment and comparison is
+  design, not burden;
 - **Routine use:** high-impact outputs prompt human review by design;
   educators and learners can override, annotate, or disable the tool,
   with overrides logged; monitoring reviews performance, drift, and

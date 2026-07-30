@@ -31,6 +31,7 @@ class NurseFormationDocsTests(unittest.TestCase):
         root_readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("NIN Nurse Formation doctrine and playbook", root_readme)
         self.assertIn("[`nurse-formation/`](nurse-formation/)", root_readme)
+        self.assertTrue(FORMATION.is_dir(), "root README links a missing directory")
         self.assertIn(
             "Status: proposed education doctrine and operating playbook", self.index
         )
@@ -41,13 +42,26 @@ class NurseFormationDocsTests(unittest.TestCase):
             "capabilities remain inactive until built and verified", self.playbook
         )
 
+    @staticmethod
+    def _heading_slugs(markdown_path: Path) -> set[str]:
+        # GitHub-style anchors: lowercase, punctuation stripped, spaces
+        # become hyphens.
+        slugs = set()
+        for line in markdown_path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("#"):
+                heading = line.lstrip("#").strip().casefold()
+                heading = re.sub(r"[^\w\- ]", "", heading)
+                slugs.add(heading.replace(" ", "-"))
+        return slugs
+
     def test_relative_markdown_links_resolve(self) -> None:
         for source in (INDEX, DOCTRINE, PLAYBOOK):
             text = source.read_text(encoding="utf-8")
             for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text):
                 if target.startswith(("http://", "https://", "mailto:", "#")):
                     continue
-                relative_target = unquote(target.split("#", 1)[0])
+                path_part, _, fragment = target.partition("#")
+                relative_target = unquote(path_part)
                 self.assertFalse(
                     Path(relative_target).is_absolute(),
                     f"{source.relative_to(ROOT)} has a non-relative link to {target}",
@@ -61,6 +75,12 @@ class NurseFormationDocsTests(unittest.TestCase):
                     resolved.exists(),
                     f"{source.relative_to(ROOT)} has a broken link to {target}",
                 )
+                if fragment and resolved.suffix == ".md":
+                    self.assertIn(
+                        fragment,
+                        self._heading_slugs(resolved),
+                        f"{source.relative_to(ROOT)} links to a missing heading: {target}",
+                    )
 
     def test_doctrine_preserves_the_formation_maxims(self) -> None:
         for required in (
@@ -149,6 +169,14 @@ class NurseFormationDocsTests(unittest.TestCase):
             "Planned enforcement (design intentions, not yet implemented)",
             self.doctrine,
         )
+        # Placement, not just presence: planned items must live outside the
+        # enforced-today section, which must come first.
+        enforced_start = self.doctrine.index("### 14.1 Enforced today")
+        planned_start = self.doctrine.index("### 14.2 Planned enforcement")
+        self.assertLess(enforced_start, planned_start)
+        enforced_section = self.doctrine[enforced_start:planned_start]
+        self.assertNotIn("EDENA-EDUCATOR-AUTHORITY", enforced_section)
+        self.assertNotIn("growth mirror", enforced_section)
 
     def test_playbook_preserves_adoption_order_and_deferrals(self) -> None:
         for required in (
@@ -164,16 +192,34 @@ class NurseFormationDocsTests(unittest.TestCase):
             "Designed, documented, implemented, tested, committed, merged, deployed, and live-verified are distinct states",
         ):
             self.assertIn(required, self.flat_playbook)
+        # The adoption stages must keep their governance-first order.
+        govern = self.playbook.index("Govern first")
+        faculty = self.playbook.index("Form the faculty")
+        pilot = self.playbook.index("Bounded pilot")
+        self.assertLess(govern, faculty)
+        self.assertLess(faculty, pilot)
 
     def test_claims_discipline_matches_bounded_language(self) -> None:
+        # Each bounded claim must sit inside its prohibitive context, not
+        # merely somewhere in the file.
+        doctrine_block = self.flat_doctrine[
+            self.flat_doctrine.index(
+                "no formation artifact or program may claim:"
+            ) : self.flat_doctrine.index("Review labels are dimensional")
+        ]
+        playbook_block = self.flat_playbook[
+            self.flat_playbook.index(
+                "Do not infer or claim from AI use alone:"
+            ) : self.flat_playbook.index("## 13. Explicit deferrals")
+        ]
         for banned_claim_context in (
             "licensure or examination success",
             "clinical competence, readiness, or entrustment",
             "clinical-hour equivalence",
             "causal learning improvement",
         ):
-            self.assertIn(banned_claim_context, self.flat_doctrine)
-            self.assertIn(banned_claim_context.split(",")[0], self.flat_playbook)
+            self.assertIn(banned_claim_context, doctrine_block)
+            self.assertIn(banned_claim_context.split(",")[0], playbook_block)
         self.assertIn(
             "must never be represented as evidence of learning", self.flat_doctrine
         )

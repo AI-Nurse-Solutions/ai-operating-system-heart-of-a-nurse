@@ -136,11 +136,13 @@ the debrief is the lesson.
 
 ### 5.4 The bias autopsy
 
-Take one real AI output into class and interrogate it together: Who
-was in the training data? Who was left out? What context about this
-patient or population did it miss? How would it perform for the people
-in front of us? The write-up is a bias sighting exercise and feeds the
-program's sighting log.
+Take one AI output generated from an approved synthetic case bundle
+into class and interrogate it together: Who was in the training data?
+Who was left out? What context about this synthetic patient or
+population did it miss? How would it perform for the people in front
+of us? No PHI, patient-specific detail, or learner-private content
+enters the exercise. The write-up is a bias sighting exercise and
+feeds the program's sighting log.
 
 ### 5.5 The rubric guardrail
 
@@ -166,8 +168,9 @@ Reading a refusal correctly is applied AI literacy.
 - **Disclose by habit,** even when not strictly required. Disclosure
   is a professional reflex you are building for licensure life.
 - **Challenge the tool.** When output conflicts with your assessment
-  or your patient's context, that conflict is a finding. Record it and
-  report it through the bias-sighting route.
+  or the context of the person in front of you, that conflict is a
+  finding. Record it without patient-identifying details and report
+  it through the bias-sighting route.
 - **Know what stays private.** Your reflections, journals, prompts,
   and drafts live in your private zone. Faculty see what you submit,
   not what you wondered.

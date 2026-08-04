@@ -203,6 +203,12 @@ export class DemoStore {
     return conversation;
   }
 
+  async getConversationClientId(conversationId) {
+    const conversation = this.data.conversations.find((c) => c.id === conversationId);
+    if (!conversation || !this.canSee(conversation.clientId)) throw new Error('Conversation not found.');
+    return conversation.clientId;
+  }
+
   /* Draft is returned for editing only — sending stays a human action. */
   async draftWithAi(conversationId) {
     this.requireAdmin();
@@ -406,11 +412,16 @@ export class SupabaseStore {
       messages = await supabase.from('messages').select('*').in('conversation_id', conversationIds).order('created_at');
       throwOn(messages.error);
     }
-    const { data: names } = await supabase.from('profiles').select('id,name').eq('client_id', clientId);
+    // portal_directory is a name-only view: clients resolve their own team
+    // plus admin names, admins resolve everyone. Names are cosmetic, so a
+    // failure degrades to the 'Team member' fallback rather than erroring.
+    const { data: names, error: namesError } = await supabase.from('portal_directory').select('id,name');
+    if (namesError) console.warn('portal: name lookup failed —', namesError.message);
     for (const row of names || []) this.profiles.set(row.id, row.name);
     if (this.profile) this.profiles.set(this.profile.id, this.profile.name);
 
     const activity = await supabase.from('activity_events').select('*').eq('client_id', clientId).order('created_at', { ascending: false }).limit(50);
+    throwOn(activity.error);
 
     return {
       client: mapClient(client.data),
@@ -437,15 +448,24 @@ export class SupabaseStore {
     return mapAction(data);
   }
 
+  /* One transaction server-side: a failed message insert must not leave an
+   * empty conversation the client cannot repair (only admins can delete). */
   async createConversation({ clientId, subject, category, relatedId, body }) {
-    const { data, error } = await this.supabase.from('conversations')
-      .insert({ client_id: clientId, subject, category, related_id: relatedId || null, created_by: this.profile.id })
-      .select().single();
+    const { data, error } = await this.supabase.rpc('portal_open_conversation', {
+      p_client_id: clientId,
+      p_subject: subject,
+      p_category: category,
+      p_related_id: relatedId || null,
+      p_body: body
+    });
     throwOn(error);
-    const { error: msgError } = await this.supabase.from('messages')
-      .insert({ conversation_id: data.id, sender_id: this.profile.id, body });
-    throwOn(msgError);
     return mapConversation(data);
+  }
+
+  async getConversationClientId(conversationId) {
+    const { data, error } = await this.supabase.from('conversations').select('client_id').eq('id', conversationId).single();
+    throwOn(error);
+    return data.client_id;
   }
 
   async addMessage(conversationId, body, { aiAssisted = false } = {}) {

@@ -22,7 +22,25 @@ const esc = (value) => String(value ?? '')
   .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
   .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 
+/* Only http(s), relative paths, and fragments may render as hrefs. */
+const safeHref = (value) => {
+  const raw = String(value || '').trim();
+  return /^(https?:|\/|\.\/|\.\.\/|#)/i.test(raw) ? raw : '';
+};
+
 const todayIso = () => new Date().toISOString().slice(0, 10);
+
+/* Store writes can fail in Supabase mode (network, RLS). Funnel every write
+ * through here so failures surface as a notice instead of a silent success. */
+async function tryStore(fn) {
+  try {
+    return await fn();
+  } catch (err) {
+    setNotice('error', `That didn't save: ${err.message}`);
+    render();
+    return null;
+  }
+}
 
 function setNotice(kind, text) {
   notice = text ? { kind, text } : null;
@@ -254,7 +272,7 @@ async function renderHome(clientId, user) {
   app.innerHTML = `${demoRibbon()}${noticeHtml()}
     <div class="portal-page-head">
       <div>
-        <p class="eyebrow">Welcome back, ${esc(user.name.split(' ')[0])}</p>
+        <p class="eyebrow">Welcome back, ${esc(String(user.name || '').split(' ')[0] || 'there')}</p>
         <h1>${esc(ws.client.organization)}</h1>
       </div>
       ${badge('badge-stage', labelFor(LIFECYCLE_STAGES, ws.client.stage))}
@@ -344,7 +362,7 @@ function actionItem(action, editable) {
     <p class="portal-list-meta">
       <span>Owner: ${esc(action.owner)}</span>
       <span>Due ${esc(formatDate(action.dueDate))}</span>
-      ${action.link ? `<a href="${esc(action.link)}" rel="noopener">Supporting link ↗</a>` : ''}
+      ${safeHref(action.link) ? `<a href="${esc(safeHref(action.link))}" rel="noopener noreferrer">Supporting link ↗</a>` : ''}
     </p>
     ${editable ? `<form class="portal-form" data-action-form>
         <div class="portal-form-row">
@@ -378,16 +396,24 @@ async function renderActions(clientId) {
     event.preventDefault();
     const actionId = form.closest('[data-action-id]').dataset.actionId;
     const comment = form.elements.comment.value;
-    const screen = screenSubmission(comment);
-    if (!screen.ok && form.dataset.confirmed !== 'yes') {
-      form.dataset.confirmed = 'yes';
-      alertScreen(form, screen);
-      return;
-    }
-    await store.updateActionStatus(actionId, form.elements.status.value, comment);
+    if (!screenGate(form, comment)) return;
+    const saved = await tryStore(() => store.updateActionStatus(actionId, form.elements.status.value, comment));
+    if (!saved) return;
     setNotice('info', 'Action updated.');
     render();
   }));
+}
+
+/* The screening speed bump: a flagged submission is blocked once and shown a
+ * warning; only re-submitting the *same* text passes. Editing the text after
+ * the warning re-screens it from scratch. */
+function screenGate(form, text) {
+  const screen = screenSubmission(text);
+  if (screen.ok) return true;
+  if (form.dataset.confirmedFor === text) return true;
+  form.dataset.confirmedFor = text;
+  alertScreen(form, screen);
+  return false;
 }
 
 function alertScreen(form, screen) {
@@ -395,6 +421,7 @@ function alertScreen(form, screen) {
   if (!warning) {
     warning = document.createElement('p');
     warning.className = 'screen-warning';
+    warning.setAttribute('role', 'alert');
     form.prepend(warning);
   }
   warning.textContent =
@@ -458,17 +485,13 @@ async function renderNewQuestion(clientId, relatedId) {
     event.preventDefault();
     const subject = form.elements.subject.value.trim();
     const body = form.elements.body.value.trim();
-    const screen = screenSubmission(`${subject}\n${body}`);
-    if (!screen.ok && form.dataset.confirmed !== 'yes') {
-      form.dataset.confirmed = 'yes';
-      alertScreen(form, screen);
-      return;
-    }
-    const conversation = await store.createConversation({
+    if (!screenGate(form, `${subject}\n${body}`)) return;
+    const conversation = await tryStore(() => store.createConversation({
       clientId, subject, body,
       category: form.elements.category.value,
       relatedId: form.elements.related.value || null
-    });
+    }));
+    if (!conversation) return;
     setNotice('info', 'Question submitted. You will see the reply here, in this thread.');
     go(`#/conversation/${conversation.id}`);
   });
@@ -482,18 +505,11 @@ async function renderConversation(conversationId) {
 
   // Resolve the conversation through the viewer's workspace so access
   // control stays in the data layer.
-  let ws;
-  let conversation;
-  if (isAdmin) {
-    for (const client of await store.listClients()) {
-      const candidate = await store.getWorkspace(client.id);
-      conversation = candidate.conversations.find((c) => c.id === conversationId);
-      if (conversation) { ws = candidate; break; }
-    }
-  } else {
-    ws = await store.getWorkspace(user.clientId);
-    conversation = ws.conversations.find((c) => c.id === conversationId);
-  }
+  const clientId = isAdmin
+    ? await store.getConversationClientId(conversationId)
+    : user.clientId;
+  const ws = await store.getWorkspace(clientId);
+  const conversation = ws.conversations.find((c) => c.id === conversationId);
   if (!conversation) throw new Error('Conversation not found.');
 
   const thread = ws.messages
@@ -572,16 +588,15 @@ function bindReplyForm(conversation, isAdmin) {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const body = form.elements.body.value.trim();
-    const screen = screenSubmission(body);
-    if (!screen.ok && form.dataset.confirmed !== 'yes') {
-      form.dataset.confirmed = 'yes';
-      alertScreen(form, screen);
-      return;
-    }
-    await store.addMessage(conversation.id, body, {
-      aiAssisted: isAdmin ? form.elements.aiAssisted.checked : false
+    if (!screenGate(form, body)) return;
+    const sent = await tryStore(async () => {
+      const message = await store.addMessage(conversation.id, body, {
+        aiAssisted: isAdmin ? form.elements.aiAssisted.checked : false
+      });
+      if (isAdmin) await store.setConversationStatus(conversation.id, form.elements.status.value);
+      return message;
     });
-    if (isAdmin) await store.setConversationStatus(conversation.id, form.elements.status.value);
+    if (!sent) return;
     setNotice('info', isAdmin ? 'Reply sent to the client.' : 'Message sent.');
     render();
   });
@@ -671,14 +686,16 @@ async function renderAdminList() {
     });
   };
   filter.addEventListener('input', applyFilter);
+  filter.addEventListener('submit', (event) => event.preventDefault());
 
   app.querySelector('#new-client-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
-    const client = await store.createClient({
+    const client = await tryStore(() => store.createClient({
       organization: form.elements.organization.value.trim(),
       stage: form.elements.stage.value
-    });
+    }));
+    if (!client) return;
     setNotice('info', `Client “${client.organization}” created.`);
     go(`#/admin/client/${client.id}`);
   });
@@ -797,21 +814,24 @@ async function renderAdminClient(clientId) {
   app.querySelector('#client-edit-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
-    await store.updateClient(clientId, {
+    const saved = await tryStore(() => store.updateClient(clientId, {
       stage: form.elements.stage.value,
       governanceTier: form.elements.governanceTier.value,
       configLabel: form.elements.configLabel.value,
       setupProfile: form.elements.setupProfile.value,
       lastReview: form.elements.lastReview.value || null,
       nextReview: form.elements.nextReview.value || null
-    });
+    }));
+    if (!saved) return;
     setNotice('info', 'Client record saved.');
     render();
   });
 
   app.querySelectorAll('[data-milestone-status]').forEach((select) => select.addEventListener('change', async () => {
     const milestoneId = select.closest('[data-milestone-id]').dataset.milestoneId;
-    await store.updateMilestone(milestoneId, select.value);
+    // On failure, tryStore re-renders from the store, restoring the select.
+    const saved = await tryStore(() => store.updateMilestone(milestoneId, select.value));
+    if (!saved) return;
     setNotice('info', 'Milestone updated.');
     render();
   }));
@@ -819,7 +839,8 @@ async function renderAdminClient(clientId) {
   app.querySelector('#new-milestone-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const title = event.currentTarget.elements.title.value.trim();
-    await store.createMilestone(clientId, { title });
+    const created = await tryStore(() => store.createMilestone(clientId, { title }));
+    if (!created) return;
     setNotice('info', 'Milestone added.');
     render();
   });
@@ -828,14 +849,15 @@ async function renderAdminClient(clientId) {
   app.querySelector('#report-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
-    await store.publishReport(clientId, {
+    const published = await tryStore(() => store.publishReport(clientId, {
       summary: form.elements.summary.value.trim(),
       accomplishments: lines(form.elements.accomplishments.value),
       risks: lines(form.elements.risks.value),
       capabilities: lines(form.elements.capabilities.value),
       nextPriorities: lines(form.elements.nextPriorities.value),
       acknowledgeNote: form.elements.acknowledgeNote.value.trim()
-    });
+    }));
+    if (!published) return;
     setNotice('info', 'Progress report published — the client can see it now.');
     render();
   });
@@ -843,14 +865,15 @@ async function renderAdminClient(clientId) {
   app.querySelector('#action-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
-    await store.createAction(clientId, {
+    const created = await tryStore(() => store.createAction(clientId, {
       title: form.elements.title.value.trim(),
       instructions: form.elements.instructions.value.trim(),
       category: form.elements.category.value,
       priority: form.elements.priority.value,
       dueDate: form.elements.dueDate.value || null,
       link: form.elements.link.value.trim()
-    });
+    }));
+    if (!created) return;
     setNotice('info', 'Action assigned.');
     render();
   });

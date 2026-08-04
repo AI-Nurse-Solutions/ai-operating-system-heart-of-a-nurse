@@ -94,6 +94,11 @@ create table public.conversations (
   updated_at timestamptz not null default now()
 );
 
+-- Note on author references: messages.sender_id and conversations.created_by
+-- deliberately keep the default restrictive delete behavior. Deleting an auth
+-- user who has posted history is therefore blocked — the supported removal
+-- path is deactivation (profiles.active = false), which preserves the audit
+-- trail and thread attribution required by PRD §10.
 create table public.messages (
   id uuid primary key default gen_random_uuid(),
   conversation_id uuid not null references public.conversations (id) on delete cascade,
@@ -192,7 +197,8 @@ begin
   if public.portal_is_admin() then
     return new;
   end if;
-  if new.client_id      is distinct from old.client_id
+  if new.id             is distinct from old.id
+     or new.client_id   is distinct from old.client_id
      or new.category    is distinct from old.category
      or new.title       is distinct from old.title
      or new.instructions is distinct from old.instructions
@@ -228,7 +234,16 @@ begin
     v_type := 'conversation';
   elsif tg_table_name = 'progress_reports' then
     v_client := new.client_id;
-    v_action := case when tg_op = 'INSERT' then 'published progress report' else 'updated progress report' end;
+    -- Unpublished drafts are invisible to clients; logging them would leak a
+    -- "published" notice for a report the client cannot open.
+    if not new.published then
+      return new;
+    end if;
+    v_action := case
+      when tg_op = 'INSERT' then 'published progress report'
+      when old.published is distinct from new.published then 'published progress report'
+      else 'updated progress report'
+    end;
     v_type := 'report';
   elsif tg_table_name = 'action_items' then
     v_client := new.client_id;
@@ -356,6 +371,59 @@ create policy "messages: send as self" on public.messages
 -- activity events: read-only in the API; rows come from definer triggers
 create policy "activity: read own or admin" on public.activity_events
   for select using (client_id = public.portal_client_id() or public.portal_is_admin());
+
+-- ------------------------------------------------- helper RPC and views
+
+-- Open a conversation and its first message in one transaction, so a failed
+-- message insert can never leave an empty thread the client cannot repair.
+-- SECURITY DEFINER re-implements the same checks the RLS policies make:
+-- caller must be signed in, and must be the workspace's client or an admin.
+create or replace function public.portal_open_conversation(
+  p_client_id uuid,
+  p_subject text,
+  p_category text,
+  p_related_id uuid,
+  p_body text
+) returns public.conversations
+language plpgsql security definer set search_path = public as $$
+declare
+  v_conversation public.conversations;
+begin
+  if auth.uid() is null then
+    raise exception 'Not signed in';
+  end if;
+  if not (public.portal_is_admin() or p_client_id = public.portal_client_id()) then
+    raise exception 'Not authorized for this workspace';
+  end if;
+  insert into public.conversations (client_id, subject, category, related_id, created_by)
+  values (p_client_id, p_subject, p_category, p_related_id, auth.uid())
+  returning * into v_conversation;
+  insert into public.messages (conversation_id, sender_id, body)
+  values (v_conversation.id, auth.uid(), p_body);
+  return v_conversation;
+end;
+$$;
+
+revoke all on function public.portal_open_conversation(uuid, text, text, uuid, text) from anon, public;
+grant execute on function public.portal_open_conversation(uuid, text, text, uuid, text) to authenticated;
+
+-- Name-only directory so message threads can attribute authors on both
+-- sides. Clients resolve their own team plus admin names; admins resolve
+-- everyone. Emails, roles, and all other profile fields stay private —
+-- this is deliberately narrower than widening the profiles select policy.
+create or replace view public.portal_directory
+with (security_invoker = false) as
+select p.id, p.name
+from public.profiles p
+where p.active
+  and (
+    p.role = 'admin'
+    or p.client_id = public.portal_client_id()
+    or public.portal_is_admin()
+  );
+
+revoke all on public.portal_directory from anon;
+grant select on public.portal_directory to authenticated;
 
 -- ------------------------------------------------------------ admin view
 -- Portfolio rollup for the admin client list. security_invoker keeps the

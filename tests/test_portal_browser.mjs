@@ -43,8 +43,18 @@ async function launch() {
   return chromium.launch({ headless: true, executablePath });
 }
 
-const browser = await launch();
-const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+let browser;
+let page;
+try {
+  browser = await launch();
+  page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+} catch (error) {
+  // Without this, a failed Chromium launch leaves the HTTP server holding
+  // the event loop open and the test hangs instead of failing.
+  if (browser) await browser.close();
+  await new Promise((resolveClose) => server.close(resolveClose));
+  throw error;
+}
 const errors = [];
 const isOptionalFontUrl = (url) => url.startsWith('https://fonts.googleapis.com/') || url.startsWith('https://fonts.gstatic.com/');
 page.on('console', (message) => {

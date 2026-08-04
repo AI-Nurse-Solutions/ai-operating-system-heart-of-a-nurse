@@ -14,12 +14,17 @@
 // security stays in force — this function holds no service-role key.
 
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
-import Anthropic from "npm:@anthropic-ai/sdk@0.57.0";
+import Anthropic from "npm:@anthropic-ai/sdk@0.88.0";
 
 const DRAFT_MODEL = Deno.env.get("DRAFT_MODEL") ?? "claude-opus-5";
 
+// Only the portal deployment may make cross-origin calls; override
+// PORTAL_ORIGIN for staging deployments.
+const ALLOWED_ORIGIN = Deno.env.get("PORTAL_ORIGIN") ?? "https://nurse-ai-os.org";
+
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
@@ -105,11 +110,13 @@ Deno.serve(async (req) => {
       .select("organization, stage, governance_tier, config_label, setup_profile")
       .eq("id", conversation.client_id)
       .single(),
+    // Newest twelve, then restored to chronological order below — a long
+    // thread must keep the message being answered, not the opening exchange.
     supabase
       .from("messages")
       .select("sender_id, body, created_at")
       .eq("conversation_id", conversationId)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(12),
   ]);
 
@@ -123,7 +130,7 @@ Deno.serve(async (req) => {
     relatedAction = data;
   }
 
-  const thread = (messages ?? [])
+  const thread = [...(messages ?? [])].reverse()
     .map((m) => {
       const who = m.sender_id === authData.user.id ? "Robert (support)" : "Client";
       return `${who} (${m.created_at}):\n${m.body}`;
@@ -145,9 +152,14 @@ Deno.serve(async (req) => {
     "Draft Robert's next reply to the client.",
   ].join("\n");
 
-  const anthropic = new Anthropic({ apiKey: Deno.env.get("ANTHROPIC_API_KEY") });
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) {
+    console.error("draft-with-ai: ANTHROPIC_API_KEY is not configured");
+    return json(503, { error: "AI drafting is not configured. Reply directly instead." });
+  }
 
   try {
+    const anthropic = new Anthropic({ apiKey });
     // Server-side fallbacks: if the model's safety classifiers decline the
     // request, the API retries it on Anthropic's recommended fallback model
     // in the same call instead of returning an empty draft.

@@ -94,3 +94,5 @@ backend exists and doubles as a safe environment to rehearse the flows.
 - `python3 -m unittest tests.test_client_care_portal -v` — structural,
   policy-coverage, and no-secrets checks.
 - `node tests/test_portal_model.mjs` — pure model logic.
+- `npm run test:portal-browser` — Playwright smoke test of the client and
+  admin journeys against the demo store.

@@ -174,12 +174,17 @@ class NurseFormationDocsTests(unittest.TestCase):
             self.doctrine,
         )
         # Placement, not just presence: planned items must live outside the
-        # enforced-today section, which must come first.
+        # enforced-today section, which must come first. The summative gate
+        # is built and tested in the policy engine, so honesty now requires
+        # it in the enforced table and gone from the planned list.
         enforced_start = self.doctrine.index("### 14.1 Enforced today")
         planned_start = self.doctrine.index("### 14.2 Planned enforcement")
         self.assertLess(enforced_start, planned_start)
         enforced_section = self.doctrine[enforced_start:planned_start]
-        self.assertNotIn("EDENA-EDUCATOR-AUTHORITY", enforced_section)
+        planned_section = self.doctrine[planned_start:]
+        self.assertIn("EDENA-EDUCATOR-AUTHORITY", enforced_section)
+        self.assertNotIn("Summative-intent gates:", planned_section)
+        self.assertIn("growth mirror", planned_section)
         self.assertNotIn("growth mirror", enforced_section)
 
     def test_playbook_preserves_adoption_order_and_deferrals(self) -> None:

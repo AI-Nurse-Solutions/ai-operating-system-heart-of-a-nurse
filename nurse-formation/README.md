@@ -71,6 +71,7 @@ implementation in this repository's [Integration Contract](../naio-integrations/
 
 - the **judgment layer** delivers commit-then-compare probes, names the thinking frame in use, treats students as coach-first by default, and refuses consequential naked verdicts (`EDENA-JUDGMENT-VISIBILITY`);
 - **student mode** blocks patient-specific recommendations and caps students at Draft (`EDENA-STUDENT-MODE`);
+- **summative-intent gates** hold the summative act — grading, progression, competency sign-off, professionalism findings — behind a named educator approval recorded for the actor (`EDENA-EDUCATOR-AUTHORITY`); AI never grades alone, and a student cannot carry a summative intent at all;
 - the **healthcare sandbox** provides a practice field of patient-shaped synthetic data with no patients in it, behind a strict admission boundary;
 - **data zones** keep private reflections out of faculty, manager, and cohort views (`EDENA-PRIVATE-REFLECTION`) and forbid silent zone migration (`EDENA-ZONE-MIGRATION`);
 - every decision is traced to a tenant-separated, hash-chained, metadata-only audit stream.

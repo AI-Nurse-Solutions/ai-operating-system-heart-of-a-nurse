@@ -41,7 +41,13 @@
   },
   "role_rules": {
     "student": {
-      "denied_intents": ["patient_specific_recommendation"],
+      "denied_intents": [
+        "patient_specific_recommendation",
+        "grade_assignment",
+        "progression_determination",
+        "competency_signoff",
+        "professionalism_finding"
+      ],
       "max_action_mode": "draft",
       "reason_code": "EDENA-STUDENT-MODE"
     }
@@ -58,6 +64,19 @@
     "requires_recorded_approval": true,
     "approval_metadata_key": "research_approval_id"
   },
+  "summative_rules": {
+    "execution_intents": [
+      "grade_assignment",
+      "progression_determination",
+      "competency_signoff",
+      "professionalism_finding"
+    ],
+    "required_zone": "educational_record",
+    "requires_institutional_authentication": true,
+    "requires_recorded_approval": true,
+    "approval_metadata_key": "educator_approval_id",
+    "required_approval_scope": "educator-summative"
+  },
   "prohibited": {
     "risk_tiers": ["red-p"],
     "action_modes": ["unrestricted_autonomy"]
@@ -72,7 +91,7 @@
     "EDENA-APPROVAL-REQUIRED": "A recorded human approval is required before this action.",
     "EDENA-APPROVAL-UNRECOGNIZED": "The supplied approval id does not match any approval recorded for this actor.",
     "EDENA-INSTITUTIONAL-CONTROLS": "Red-E execution requires defined institutional controls.",
-    "EDENA-STUDENT-MODE": "Student mode cannot generate patient-specific recommendations.",
+    "EDENA-STUDENT-MODE": "Student mode cannot generate patient-specific recommendations or carry a summative decision.",
     "EDENA-PRIVATE-REFLECTION": "Private reflections never appear in manager, faculty, cohort, or executive views.",
     "EDENA-ZONE-MIGRATION": "Moving content between data zones requires an explicit, recorded approval.",
     "EDENA-INVALID-ZONE": "The requested target data zone is not a recognized data zone.",
@@ -82,6 +101,10 @@
     "EDENA-RESEARCH-ZONE": "Research execution runs only in the restricted data zone.",
     "EDENA-RESEARCH-UNAFFILIATED": "Research execution requires an authenticated organizational context matching the current workspace.",
     "EDENA-RESEARCH-APPROVAL": "Research execution requires a recorded governance approval (IRB or equivalent) before it proceeds.",
+    "EDENA-SUMMATIVE-ZONE": "Summative decisions execute only in the educational-record data zone.",
+    "EDENA-SUMMATIVE-UNAFFILIATED": "Summative execution requires an authenticated organizational context matching the current workspace.",
+    "EDENA-EDUCATOR-AUTHORITY": "A summative decision requires a named human educator approval recorded for the actor — AI never grades alone.",
+    "EDENA-APPROVAL-SCOPE": "The named approval is recorded for this actor but does not carry the authority scope this action requires.",
     "EDENA-EXECUTOR-ERROR": "The executor failed while producing output; the request fails closed with a completed audit trail.",
     "EDENA-JUDGMENT-VISIBILITY": "A consequential recommendation may not arrive as a naked verdict; it must carry visible assumptions, alternatives, or change conditions for human judgment."
   }

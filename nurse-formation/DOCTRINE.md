@@ -429,6 +429,7 @@ the direction and activates nothing.
 | Rule 2 — Visible reasoning | Judgment layer + gateway | Reasoning ledger over every output; consequential recommendations without visible assumptions, alternatives, or change conditions are refused with `EDENA-JUDGMENT-VISIBILITY` |
 | Rule 3 — The practice field | Healthcare sandbox | Synthetic-only admission boundary (schema allowlist, generation markers, privacy screen); governance unchanged for synthetic data; synthetic passages retrieve last and always carry a warning |
 | Rule 4 — Human evaluative authority (protective floor) | Policy engine | Student mode blocks patient-specific recommendations and caps students at Draft (`EDENA-STUDENT-MODE`); side-effect actions require recorded approval |
+| Rule 4 — Human evaluative authority (summative gate) | Policy engine | `grade_assignment`, `progression_determination`, `competency_signoff`, and `professionalism_finding` execute only in the educational-record zone, in an authenticated organizational context, with a named educator approval recorded for the actor in the educator-summative authority scope (`EDENA-EDUCATOR-AUTHORITY`); naming an unrelated held approval fails closed (`EDENA-APPROVAL-SCOPE`), a fabricated approval fails closed, and a student cannot carry a summative intent at all |
 | §10 — Learner data | Data zones + tenants | Private reflections never reach faculty, manager, or cohort views (`EDENA-PRIVATE-REFLECTION`); no silent zone migration (`EDENA-ZONE-MIGRATION`); tenant isolation fails closed |
 | §12 — Traceability | Observability | Every decision traced to a tenant-separated, hash-chained, metadata-only audit stream |
 | §6 — Scoped roles | Role packets | Pre-licensure-student and educator packets ship explicit DATA-BOUNDARY records and templates |
@@ -438,13 +439,9 @@ the direction and activates nothing.
 
 The following are named so they can be built honestly, in the same
 pattern as the research governance gates. None exists until built,
-tested, and verified:
+tested, and verified. (The summative-intent gates were built exactly
+this way and now live in §14.1.)
 
-- **Summative-intent gates:** `grade_assignment`,
-  `progression_determination`, `competency_signoff`, and
-  `professionalism_finding` as gated execution intents requiring a
-  named human educator approval recorded on the request — proposed
-  reason code `EDENA-EDUCATOR-AUTHORITY`;
 - **Formation-mode delivery:** probe-before-answer presentation at the
   host surface for coach-first roles, with answer-first as the
   justified exception;

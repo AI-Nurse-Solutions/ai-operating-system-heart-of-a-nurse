@@ -53,6 +53,7 @@ SPEC_ROLE_MODULES = {
         "competency-and-observation-tools",
         "feedback-coach",
         "deidentified-cohort-dashboard",
+        "summative-authority-gates",
     },
     "licensed-clinician": {
         "evidence-to-practice-workspace",

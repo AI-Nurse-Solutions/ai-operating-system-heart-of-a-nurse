@@ -266,6 +266,23 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
 .hero-note { font-size: .95rem; color: #a9bccb; }
 .hero-note strong { color: var(--gold-300); }
 
+/* ---------- Our Intent ---------- */
+.our-intent {
+  padding: 3.5rem 0;
+  background: linear-gradient(135deg, var(--navy-900), #173b57 60%, #0b6f73);
+  color: #e8eef4;
+}
+.our-intent .container { max-width: 820px; }
+.our-intent h2 { color: var(--white); margin-bottom: 1.35rem; }
+.our-intent p { color: #d7e2eb; }
+.our-intent-lead {
+  margin-top: 1.5rem;
+  color: var(--gold-300) !important;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-style: italic;
+}
+
 /* ---------- The Steward's Charter ---------- */
 .stewards-charter {
   position: relative;

@@ -282,6 +282,17 @@ html[lang="ar"] details.faq summary::after { right: auto; left: 1.2rem; }
   font-size: 1.25rem;
   font-style: italic;
 }
+.our-intent-glossary {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(236, 200, 127, .42);
+}
+.our-intent-glossary-title {
+  color: var(--gold-300) !important;
+  font-weight: 700;
+}
+.our-intent-glossary p { margin-bottom: 1rem; }
+.our-intent-glossary p:last-child { margin-bottom: 0; }
 
 /* ---------- The Steward's Charter ---------- */
 .stewards-charter {

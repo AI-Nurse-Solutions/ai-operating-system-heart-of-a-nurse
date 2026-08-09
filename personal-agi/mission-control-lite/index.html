@@ -48,6 +48,8 @@
     .pill.yellow{background:#fef3c7;color:#78350f}
     .pill.plan{background:#e0e7ff;color:#3730a3}
     .pill.doc{background:#fef9c3;color:#713f12}
+    .chipbtn{appearance:none;border:1px solid var(--line);background:white;color:var(--navy);border-radius:999px;padding:9px 14px;font-weight:800;font-size:.88rem;cursor:pointer;margin:0 8px 8px 0}
+    .chipbtn[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:white}
     .tabbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
     .tab{appearance:none;border:1px solid var(--line);background:white;color:var(--navy);border-radius:999px;padding:10px 16px;font-weight:850;cursor:pointer}
     .tab[aria-selected="true"]{background:var(--navy);color:white;border-color:var(--navy)}
@@ -94,15 +96,41 @@
   </div>
 
   <main>
+    <section class="section" id="onboarding" hidden>
+      <div class="wrap">
+        <div class="callout" style="border-left-color:var(--gold)">
+          <h2>Two-minute start</h2>
+          <p class="muted">The minimal path: name what you're actually carrying, skip everything else. This drafts a starter <strong>SOUL.md</strong> for your AI and fills your tabs — a student can be done in two minutes. You can always go deeper later, and this page will gently remind you when the time comes. No PHI, ever.</p>
+          <div class="grid two">
+            <div>
+              <span class="label">First name (optional)</span>
+              <input id="obName" placeholder="how your system should address you" maxlength="60">
+              <span class="label" style="display:block;margin-top:12px">My role lane</span>
+              <select id="obRole" aria-label="Role lane for starter profile"></select>
+            </div>
+            <div>
+              <span class="label">What are you carrying right now? Pick 1–3 to start</span>
+              <div id="obChips" role="group" aria-label="Life areas" style="margin-top:8px"></div>
+            </div>
+          </div>
+          <div class="row" style="margin-top:14px">
+            <button class="btn gold" id="obBuild">Build my starter system</button>
+            <button class="btn light" id="obSkip">I already have my files — skip</button>
+          </div>
+          <p class="muted" style="margin-top:10px">Want the whole map now instead? Take the full <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> (17 life domains), then import <strong>naio-projects.json</strong> with the button above.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="wrap grid two">
         <div class="callout">
           <h2>How this page grows with you</h2>
           <ol>
-            <li>Take the <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and set up your core (SOUL file + <a href="https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse/tree/main/personal-agi/memory-fabric-kit">Memory Fabric Kit</a>).</li>
-            <li>Take the <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> and import its <strong>naio-projects.json</strong> here — your sphere tabs fill with your real projects.</li>
+            <li>Do the <strong>two-minute start</strong> above — it drafts your starter SOUL.md and fills your sphere tabs with your first projects. Minimal is a complete beginning, not a lesser one.</li>
+            <li>Go deeper whenever you're ready: the full <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> map all 17 life domains — import the <strong>naio-projects.json</strong> here and it replaces the starter map.</li>
             <li>Pick your role below. The module rail tunes its doors to your lane.</li>
-            <li>Connect <strong>one</strong> module at a time, record the connection in your trust ledger, and let it earn its place before the next.</li>
+            <li>Connect <strong>one</strong> module at a time, record the connection in your trust ledger (in your <code>Memory/</code> folder), and let it earn its place before the next.</li>
           </ol>
         </div>
         <div class="callout warning">
@@ -127,6 +155,7 @@
       <div class="wrap">
         <h2>Sphere tabs — your projects</h2>
         <p class="muted" id="projMeta">No projects imported yet. Take the <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> and import its <strong>naio-projects.json</strong> with the button above.</p>
+        <div class="callout warning" id="depthNudge" hidden></div>
         <div class="tabbar" role="tablist" id="tabbar"></div>
         <div id="tabpanels"></div>
       </div>
@@ -194,7 +223,72 @@
       ];
     }
 
-    let state = { role:'staff', connections:{}, notes:{}, projectsData:null, activeTab:'personal', savedAt:null };
+    const SPHERE_EXPORT_LABELS = {personal:'Personal / Family', interest:'Interest / Hobby', professional:'Professional', community:'Community / Advocacy', sidegig:'Side Gig / Entrepreneurial'};
+    const GATE_FOR_TIER = { green:'every-output', yellow:'before-external-use' };
+    const OB_DOMAINS = [
+      {id:'learning-certification', sphere:'professional', tier:'green',  label:'Studying / certification', prompt:'Socratic Study Session'},
+      {id:'shift-organization',     sphere:'professional', tier:'green',  label:'Shift life & organization', prompt:'Pre-Shift Setup Brief'},
+      {id:'health-wellbeing',       sphere:'personal',     tier:'green',  label:'My health & energy',       prompt:'Weekly Energy Review'},
+      {id:'family-relationships',   sphere:'personal',     tier:'green',  label:'Family & relationships',   prompt:'Family Logistics Brief'},
+      {id:'finances',               sphere:'personal',     tier:'yellow', label:'Money & budgeting',        prompt:'Monthly Money Review'},
+      {id:'rest-renewal',           sphere:'personal',     tier:'green',  label:'Rest & recovery',          prompt:'Shift-Recovery Checklist'},
+      {id:'career-map',             sphere:'professional', tier:'yellow', label:'Career map',               prompt:'Career Map Review'},
+      {id:'hobby-interest',         sphere:'interest',     tier:'green',  label:'A hobby or interest',      prompt:'Hobby Learning Path'},
+      {id:'community-advocacy',     sphere:'community',    tier:'yellow', label:'Community & advocacy',     prompt:'Advocacy One-Pager Draft'},
+      {id:'side-gig-idea',          sphere:'sidegig',      tier:'yellow', label:'A side-gig idea',          prompt:'Side-Gig Validation Sprint'}
+    ];
+    function starterProjects(selected, name){
+      const projects = selected.map(d=>({
+        name: d.label, suggested_prompt_name: d.prompt, sphere: d.sphere,
+        sphere_label: SPHERE_EXPORT_LABELS[d.sphere], edena_tier: d.tier, slug: d.id,
+        help: '', goal_90_days: '', human_gate: GATE_FOR_TIER[d.tier],
+        reversibility: 'reversible', file_path: '04-Projects/'+d.id+'.md'
+      }));
+      return { schema_version:'1.0.0', generated_at: new Date().toISOString(), generator:'mission-control-starter',
+               identity:{name:name||''}, spheres_active:[...new Set(projects.map(p=>p.sphere))],
+               project_count: projects.length, projects };
+    }
+    function starterSoul(name, roleKey, selected){
+      const role = ROLES[roleKey] || ROLES.staff;
+      const bySphere = {};
+      selected.forEach(d=>{ (bySphere[d.sphere] = bySphere[d.sphere]||[]).push(d.label); });
+      const carrying = Object.entries(bySphere).map(([s,items])=>`- **${SPHERE_EXPORT_LABELS[s]}:** ${items.join(', ')}`).join('\n') || '- (nothing named yet — ask me gently)';
+      return `# SOUL.md — Starter Profile
+
+> Minimal by design. Generated by Mission Control Lite's two-minute start · nurse-ai-os.org
+> Expand any time with the full SOUL Quiz (https://nurse-ai-os.org/soul-quiz.html) and
+> Life & Projects Quiz (https://nurse-ai-os.org/life-quiz.html) — a fuller SOUL.md replaces this one.
+
+## Who I am
+${name ? `Call me ${name}. ` : ''}My role lane: ${role.label}.
+
+## What I'm carrying right now
+${carrying}
+
+## How to work with me
+- Agents propose. Humans judge. Nurses steward.
+- Draft-and-attest: you gather, prepare, and stage; I review and commit.
+- Ceilings: Green/Yellow risk, D0/D1 data, Observe → Draft → Recommend. Never wider.
+- Start minimal. Ask before assuming depth I haven't given you.
+
+## Hard boundaries
+- No PHI, ever: no patient names, identifiers, rooms, or reconstructable patient stories.
+- No employer-confidential material. No credentials or secrets.
+- No clinical decisions, clinical assessments, or patient-specific recommendations.
+- You never send, post, submit, install, schedule, or act outside our conversation.
+
+## This profile is a beginning
+I chose the minimal path on purpose. Check in with me occasionally about whether it's time
+to map more of my life — but respect the pace I set.
+`;
+    }
+    function downloadFile(filename, text, type){
+      const blob = new Blob([text], {type: type||'text/markdown'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = filename; a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    let state = { role:'staff', connections:{}, notes:{}, projectsData:null, activeTab:'personal', savedAt:null, onboarded:false, profileDepth:null, onboardedAt:null, identityName:'' };
     function str(v){ return typeof v==='string' ? v : ''; }
     function isObj(v){ return v && typeof v==='object' && !Array.isArray(v); }
     function sanitizeProjects(data){
@@ -216,7 +310,11 @@
         notes: stringMap(raw.notes),
         projectsData: raw.projectsData ? sanitizeProjects(raw.projectsData) : null,
         activeTab: SPHERES.some(s=>s.id===raw.activeTab) ? raw.activeTab : 'personal',
-        savedAt: str(raw.savedAt) || null
+        savedAt: str(raw.savedAt) || null,
+        onboarded: raw.onboarded === true,
+        profileDepth: raw.profileDepth==='full' ? 'full' : (raw.profileDepth==='starter' ? 'starter' : null),
+        onboardedAt: str(raw.onboardedAt) || null,
+        identityName: str(raw.identityName)
       };
     }
     function load(){ try{ const clean = sanitizeState(JSON.parse(localStorage.getItem(STORAGE_ID)||'{}')); if(clean) state = clean; }catch{} }
@@ -284,7 +382,8 @@
       r.onload = ()=>{ try{
           const clean = sanitizeProjects(JSON.parse(r.result));
           if(!clean) throw new Error('shape');
-          state.projectsData = clean; persist(); renderTabs();
+          state.projectsData = clean; state.profileDepth = 'full'; state.onboarded = true;
+          persist(); renderAll();
           setStatus('naio-projects.json imported and saved locally.');
         }catch{ setStatus('Import failed — choose the naio-projects.json exported by the Life & Projects Quiz.'); } };
       r.readAsText(file);
@@ -304,7 +403,46 @@
         }catch{ setStatus('Import failed — choose a valid Mission Control Lite backup.'); } };
       r.readAsText(file);
     }
-    function renderAll(){ renderRoles(); renderModules(); renderTabs(); }
+    function renderOnboarding(){
+      const sec = document.getElementById('onboarding');
+      sec.hidden = !!state.onboarded;
+      if(sec.hidden) return;
+      const sel = document.getElementById('obRole');
+      if(!sel.options.length){
+        sel.innerHTML = Object.entries(ROLES).map(([k,r])=>`<option value="${k}"${k===state.role?' selected':''}>${esc(r.label)}</option>`).join('');
+        const chips = document.getElementById('obChips');
+        chips.innerHTML = OB_DOMAINS.map(d=>`<button type="button" class="chipbtn" data-ob="${d.id}" aria-pressed="false">${esc(d.label)}</button>`).join('');
+        chips.querySelectorAll('.chipbtn').forEach(b=> b.addEventListener('click', ()=>{
+          b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='true' ? 'false' : 'true');
+        }));
+        document.getElementById('obBuild').addEventListener('click', ()=>{
+          const picked = [...document.querySelectorAll('#obChips .chipbtn[aria-pressed="true"]')].map(b=>OB_DOMAINS.find(d=>d.id===b.dataset.ob)).filter(Boolean);
+          if(!picked.length){ setStatus('Pick at least one thing you\'re carrying — one is a perfectly good start.'); return; }
+          const name = document.getElementById('obName').value.trim().slice(0,60);
+          state.role = sel.value; state.identityName = name;
+          state.projectsData = sanitizeProjects(starterProjects(picked, name));
+          state.onboarded = true; state.profileDepth = 'starter'; state.onboardedAt = new Date().toISOString();
+          persist(); renderAll();
+          downloadFile('SOUL.md', starterSoul(name, sel.value, picked));
+          setStatus('Starter system built — SOUL.md downloaded. Save it with your AI, next to your Memory folder.');
+        });
+        document.getElementById('obSkip').addEventListener('click', ()=>{
+          state.onboarded = true; persist(); renderOnboarding();
+          setStatus('Skipped — import your files with the buttons above.');
+        });
+      }
+    }
+    function renderNudge(){
+      const el = document.getElementById('depthNudge');
+      if(state.profileDepth !== 'starter'){ el.hidden = true; return; }
+      el.hidden = false;
+      let days = 0;
+      if(state.onboardedAt){ const t = Date.parse(state.onboardedAt); if(!isNaN(t)) days = Math.floor((Date.now()-t)/86400000); }
+      el.innerHTML = days >= 30
+        ? `<strong>Your starter profile is ${days} days old.</strong> If it still fits, keep it — minimal is valid. When you're ready for more, the full <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> map all 17 life domains, and importing the export here replaces this map.`
+        : `<strong>Starter profile active</strong> — a deliberate minimal beginning. Go deeper any time with the full <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a>; this page will nudge you again after a month.`;
+    }
+    function renderAll(){ renderOnboarding(); renderRoles(); renderModules(); renderTabs(); renderNudge(); }
 
     document.getElementById('saveBtn').addEventListener('click', ()=>{ persist(); setStatus('Saved locally at '+new Date().toLocaleTimeString()); });
     document.getElementById('importProjectsBtn').addEventListener('click', ()=>document.getElementById('projectsFile').click());

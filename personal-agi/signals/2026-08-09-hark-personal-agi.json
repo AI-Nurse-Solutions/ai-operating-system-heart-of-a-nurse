@@ -4,7 +4,11 @@
     "source": "Internal strategy note (user-authored, describing Hark's personal-AI product approach secondhand)",
     "date": "2026-08-09",
     "signal_class": "AGENTIC_AUTONOMY",
-    "secondary_classes": ["EDGE_COMPUTE", "HUMAN_AI_RELATIONAL", "MARKET_VENDOR"],
+    "secondary_classes": [
+      "EDGE_COMPUTE",
+      "HUMAN_AI_RELATIONAL",
+      "MARKET_VENDOR"
+    ],
     "evidence_tier": "PRESS_SPECULATION"
   },
   "triage": {
@@ -12,12 +16,22 @@
     "urgency": "NEAR_TERM",
     "valence": "DUAL",
     "confidence": "MEDIUM",
-    "primary_domains": ["NURSE_AI_OS", "FLORENCE_X", "EDGE_NODES", "EDENA"]
+    "primary_domains": [
+      "NURSE_AI_OS",
+      "FLORENCE_X",
+      "EDGE_NODES",
+      "EDENA"
+    ]
   },
   "signal_summary": "A strategy note proposes evolving Nurse AI OS from a governed application into a persistent 'personal AGI' companion for nurses, modeled on Hark's consumer personal-AI approach. Four capabilities are proposed: wearable ambient listening/vision hardware, a 'Handoff' computer-use agent that navigates the EHR and completes administrative screen work, persistent personalized memory spanning a nurse's routines and shift context, and proactive reasoning over vitals, labs, and remembered observations. The note asks which capability should be sequenced first for a frontline initiative.",
   "ontology_implication": {
     "analysis": "The signal extends the Nurse AI OS concept from a role-configured toolset to a persistent, sphere-scoped personal companion, which the ontology must formalize as distinct from institutional clinical AI. It introduces the delegated screen-work ('handoff') agent as a category between draft-only assistants and write-capable clinical agents, distinguished by whether its target surface is a personal system or the record of care. Wearable ambient sensing extends the Edge Node concept from computation-locality to perception-locality. Proactive reasoning splits ontologically into personal-sphere anticipation (briefs, reminders, preparation) and clinical physiological monitoring, which crosses into regulated device territory and cannot be treated as a feature increment of the former.",
-    "affected_action_stages": ["NAVIGATE", "ASSESS", "INTEGRATE", "ORCHESTRATE"],
+    "affected_action_stages": [
+      "NAVIGATE",
+      "ASSESS",
+      "INTEGRATE",
+      "ORCHESTRATE"
+    ],
     "new_or_updated_concepts": [
       "Personal-Sphere AGI (persistent companion scoped to non-clinical spheres)",
       "Sphere Ladder (personal → interest → professional non-clinical → community → institutional-clinical, with a hard governance break before the last rung)",
@@ -99,5 +113,42 @@
     "Does proactive monitoring of vitals and labs with 'prepared protocols' constitute software as a medical device in the target jurisdictions, and under which pathway?",
     "What consent and disclosure framework would ambient capture in patient areas require, and has any institution's counsel accepted one?",
     "What retention, export, and deletion guarantees can a persistent memory fabric make that survive device loss, platform migration, and employer-owned hardware?"
-  ]
+  ],
+  "role_briefs": {
+    "student": {
+      "what_happened": "Consumer 'personal AGI' products promising persistent memory, hands-free hardware, and agents that operate software for you are being announced and marketed.",
+      "why_it_matters_to_you": "You will be offered these tools before any school or hospital governs them, and habits you build now are the ones you will carry to the bedside.",
+      "do_now": "Build your starter system the governed way — no-PHI memory, draft-and-attest on your study workflows — so the safe habit forms first.",
+      "dont_do": "Do not bring consumer recording wearables to clinicals, and never let an agent log in to school or clinical portals for you.",
+      "watch": "Classmates using ungoverned recorders or auto-writers at clinical sites — that is shadow AI, and it is how programs end up banning everything."
+    },
+    "staff": {
+      "what_happened": "Vendors are reportedly packaging ambient listening, personalized memory, and EHR-operating agents as bedside 'AI partners'.",
+      "why_it_matters_to_you": "These pitches will reach your unit as documentation help, and the difference between augmentation and a sidelining risk is the human gate.",
+      "do_now": "Practice gated handoffs on your own no-PHI screen work now, and know which pilot tools on your unit hold EHR write access.",
+      "dont_do": "Do not wear consumer recording devices in patient areas, and never treat an agent-prepared note or protocol as anything but a draft you verify.",
+      "watch": "Efficiency claims from documentation pilots being converted into staffing ratios — that is a compression vector, not a benefit."
+    },
+    "np": {
+      "what_happened": "Agentic systems described as navigating records and staging orders are the sharp edge of the personal-AI wave.",
+      "why_it_matters_to_you": "Order-capable automation reaches prescribers first, and your license carries the risk for anything that enters the record under your name.",
+      "do_now": "Keep your own renewals and CME on gated handoffs, and require an attributable per-action validation gate in any pilot you touch.",
+      "dont_do": "Never allow an agent-drafted entry, order, or message to reach the record or a patient without your explicit review.",
+      "watch": "Predictive monitoring with 'prepared protocols' — it is likely a regulated medical-device function, whatever the marketing says."
+    },
+    "leader": {
+      "what_happened": "Ambient-plus-agentic AI is being marketed to units as an efficiency package, with autonomous EHR action as the headline claim.",
+      "why_it_matters_to_you": "You will sign the pilots, and the highest doctrine exposure — machine-to-EHR action without a human gate — lands on your authorization.",
+      "do_now": "Before any pilot: require a per-agent write-permission registry, a one-touch kill switch, and a written fence between efficiency metrics and staffing math.",
+      "dont_do": "Do not accept vendor efficiency figures as evidence, and do not let a draft-only tool arrive with auto-filing quietly enabled.",
+      "watch": "Staff bringing personal AI devices and accounts to work ahead of policy — govern the path early or inherit shadow AI."
+    },
+    "educator": {
+      "what_happened": "Consumer personal AI that remembers its user and acts for them is being marketed to the students in your classrooms.",
+      "why_it_matters_to_you": "Formation doctrine meets this reality in your classroom first: the habits of gated use are teachable, and ungoverned habits are too.",
+      "do_now": "Teach draft-and-attest and memory hygiene inside coursework, and use the governed starter system as a live teaching artifact.",
+      "dont_do": "Do not respond with blanket bans that push use into the shadows, and do not let AI-assisted work go undisclosed.",
+      "watch": "Care plans and reflections that read machine-written without disclosure — the integrity conversation is better had early and openly."
+    }
+  }
 }

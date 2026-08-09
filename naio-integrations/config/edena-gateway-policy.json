@@ -75,7 +75,8 @@
     "requires_institutional_authentication": true,
     "requires_recorded_approval": true,
     "approval_metadata_key": "educator_approval_id",
-    "required_approval_scope": "educator-summative"
+    "required_approval_scope": "educator-summative",
+    "binding_metadata_key": "summative_record_id"
   },
   "prohibited": {
     "risk_tiers": ["red-p"],
@@ -105,6 +106,8 @@
     "EDENA-SUMMATIVE-UNAFFILIATED": "Summative execution requires an authenticated organizational context matching the current workspace.",
     "EDENA-EDUCATOR-AUTHORITY": "A summative decision requires a named human educator approval recorded for the actor — AI never grades alone.",
     "EDENA-APPROVAL-SCOPE": "The named approval is recorded for this actor but does not carry the authority scope this action requires.",
+    "EDENA-APPROVAL-BINDING": "An educator approval authorizes exactly the summative record it signed; the request must name that record and the approval must be bound to it.",
+    "EDENA-SUMMATIVE-UNGOVERNED": "This policy document does not define summative governance; summative decisions fail closed.",
     "EDENA-EXECUTOR-ERROR": "The executor failed while producing output; the request fails closed with a completed audit trail.",
     "EDENA-JUDGMENT-VISIBILITY": "A consequential recommendation may not arrive as a naked verdict; it must carry visible assumptions, alternatives, or change conditions for human judgment."
   }

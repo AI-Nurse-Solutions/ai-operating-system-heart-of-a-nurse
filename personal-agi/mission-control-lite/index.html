@@ -275,6 +275,8 @@
         const d = state.projectsData;
         const projectCount = Array.isArray(d.projects) ? d.projects.length : 0;
         meta.innerHTML = `${projectCount} project(s) imported${d.generated_at?` · generated ${esc(String(d.generated_at).slice(0,10))}`:''} · stays in this browser. Re-import any time after retaking the <a href="https://nurse-ai-os.org/life-quiz.html">quiz</a>.`;
+      } else {
+        meta.innerHTML = 'No projects imported yet. Take the <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> and import its <strong>naio-projects.json</strong> with the button above.';
       }
     }
     function importProjects(file){

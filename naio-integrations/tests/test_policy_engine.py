@@ -647,15 +647,24 @@ class SummativeAuthorityGateTests(unittest.TestCase):
             self.assertIn("EDENA-SUMMATIVE-UNGOVERNED", decision.reason_codes)
 
     def test_config_edit_cannot_ungate_a_summative_intent(self):
-        # Removing an intent from the configured list does not release it:
-        # the engine's mandatory floor keeps every summative intent gated.
+        # Removing an intent from the configured list forbids it, never
+        # frees it: even a fully signed request for the omitted intent is
+        # denied as ungoverned.
         self.engine.policy["summative_rules"]["execution_intents"] = [
             "grade_assignment"
         ]
         decision = self.engine.decide(
-            make_request(intent="professionalism_finding")
+            self._summative_request(
+                actor=self._signing_educator(),
+                intent="professionalism_finding",
+                metadata={
+                    "educator_approval_id": "signoff-2026-031",
+                    "summative_record_id": "rec-2026-115",
+                },
+            )
         )
-        self.assertIsNot(decision.decision, Decision.ALLOW)
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-SUMMATIVE-UNGOVERNED", decision.reason_codes)
 
     def test_feedback_drafting_stays_ordinary_draft_work(self):
         decision = self.engine.decide(

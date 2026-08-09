@@ -154,7 +154,13 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
             or request.intent in summative_rules.get("execution_intents", ())
         )
         if summative_gated:
-            if not summative_rules.get("execution_intents"):
+            # A mandatory intent the policy document does not explicitly
+            # govern cannot execute: removing an intent from the
+            # configured list forbids it, never frees it.
+            if request.intent in self.MANDATORY_SUMMATIVE_INTENTS and (
+                request.intent
+                not in summative_rules.get("execution_intents", ())
+            ):
                 return self._deny("EDENA-SUMMATIVE-UNGOVERNED")
             if request.data_zone.value != summative_rules["required_zone"]:
                 return self._deny("EDENA-SUMMATIVE-ZONE")

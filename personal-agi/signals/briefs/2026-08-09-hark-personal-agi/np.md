@@ -4,7 +4,7 @@
 > **Evidence tier:** PRESS_SPECULATION · **Urgency:** NEAR_TERM · **Valence:** DUAL
 > **Source record:** `2026-08-09-hark-personal-agi.json` — the full distillation, including refusal-posture analysis and open questions.
 
-**What happened.** Agentic systems that navigate records and stage orders are the sharp edge of the personal-AI wave.
+**What happened.** Agentic systems described as navigating records and staging orders are the sharp edge of the personal-AI wave.
 
 **Why it matters to you.** Order-capable automation reaches prescribers first, and your license carries the risk for anything that enters the record under your name.
 

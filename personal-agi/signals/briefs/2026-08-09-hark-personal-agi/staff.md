@@ -4,7 +4,7 @@
 > **Evidence tier:** PRESS_SPECULATION · **Urgency:** NEAR_TERM · **Valence:** DUAL
 > **Source record:** `2026-08-09-hark-personal-agi.json` — the full distillation, including refusal-posture analysis and open questions.
 
-**What happened.** Vendors are packaging ambient listening, personalized memory, and EHR-operating agents as bedside 'AI partners'.
+**What happened.** Vendors are reportedly packaging ambient listening, personalized memory, and EHR-operating agents as bedside 'AI partners'.
 
 **Why it matters to you.** These pitches will reach your unit as documentation help, and the difference between augmentation and a sidelining risk is the human gate.
 

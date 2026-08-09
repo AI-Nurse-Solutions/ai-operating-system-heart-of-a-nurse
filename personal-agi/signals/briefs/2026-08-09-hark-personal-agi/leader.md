@@ -4,7 +4,7 @@
 > **Evidence tier:** PRESS_SPECULATION · **Urgency:** NEAR_TERM · **Valence:** DUAL
 > **Source record:** `2026-08-09-hark-personal-agi.json` — the full distillation, including refusal-posture analysis and open questions.
 
-**What happened.** Ambient-plus-agentic AI is being sold to units as an efficiency package, with autonomous EHR action as the headline feature.
+**What happened.** Ambient-plus-agentic AI is being marketed to units as an efficiency package, with autonomous EHR action as the headline claim.
 
 **Why it matters to you.** You will sign the pilots, and the highest doctrine exposure — machine-to-EHR action without a human gate — lands on your authorization.
 

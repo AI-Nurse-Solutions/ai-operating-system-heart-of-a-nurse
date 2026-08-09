@@ -39,6 +39,16 @@ class SignalBriefTests(unittest.TestCase):
                     )
         self.assertTrue(found_any, "no signal record carries role_briefs")
 
+    def test_hark_record_covers_the_core_role_lanes(self) -> None:
+        hark = SIGNALS / "2026-08-09-hark-personal-agi.json"
+        with hark.open(encoding="utf-8") as handle:
+            roles = set(json.load(handle).get("role_briefs", {}))
+        self.assertLessEqual(
+            {"student", "staff", "np", "leader", "educator"},
+            roles,
+            "the Hark record must keep briefs for all five core role lanes",
+        )
+
     def test_rendered_briefs_match_records(self) -> None:
         result = subprocess.run(
             [sys.executable, str(RENDERER), "--check"],

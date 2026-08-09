@@ -4,7 +4,7 @@
 > **Evidence tier:** PRESS_SPECULATION · **Urgency:** NEAR_TERM · **Valence:** DUAL
 > **Source record:** `2026-08-09-hark-personal-agi.json` — the full distillation, including refusal-posture analysis and open questions.
 
-**What happened.** Consumer 'personal AGI' products are arriving: persistent memory, hands-free hardware, and agents that operate software for you.
+**What happened.** Consumer 'personal AGI' products promising persistent memory, hands-free hardware, and agents that operate software for you are being announced and marketed.
 
 **Why it matters to you.** You will be offered these tools before any school or hospital governs them, and habits you build now are the ones you will carry to the bedside.
 

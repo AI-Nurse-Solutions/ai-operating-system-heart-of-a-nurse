@@ -14,7 +14,7 @@ signals/briefs/<slug>/<role>.md
 
 Two rules make the pipeline trustworthy:
 
-1. **Judgment at distillation time only.** The role-tuned text is written when the signal is distilled and lives in the record's `role_briefs` field. The renderer adds no words of its own — it is a template, testable in CI, and `--check` fails the build if the checked-in briefs drift from their records.
+1. **Judgment at distillation time only.** The role-tuned text is written when the signal is distilled and lives in the record's `role_briefs` field. The renderer adds no role-specific judgment of its own — only a fixed template of headings, provenance labels, and boundary text. It is testable in CI, and `--check` fails the build if the checked-in briefs drift from their records.
 2. **A brief is a hypothesis, never an instruction.** Every rendered brief says so, cites its source record, and inherits the record's evidence tier. Briefs are Green/D0, Observe/Draft artifacts.
 
 ## The brief format

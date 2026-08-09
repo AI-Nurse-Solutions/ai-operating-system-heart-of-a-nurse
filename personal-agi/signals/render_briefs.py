@@ -17,6 +17,8 @@ from __future__ import annotations
 import argparse
 import filecmp
 import json
+import re
+import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -47,6 +49,7 @@ FIELDS = (
 
 
 def load_records(signals_dir: Path) -> list[tuple[Path, dict]]:
+    """Load every signal record JSON in the directory, sorted by filename."""
     records = []
     for path in sorted(signals_dir.glob("*.json")):
         with path.open(encoding="utf-8") as handle:
@@ -55,6 +58,7 @@ def load_records(signals_dir: Path) -> list[tuple[Path, dict]]:
 
 
 def brief_markdown(record_path: Path, record: dict, role: str, fields: dict) -> str:
+    """Render one role's brief as markdown, purely from record content."""
     meta = record.get("signal_metadata", {})
     triage = record.get("triage", {})
     title = meta.get("title", record_path.stem)
@@ -89,6 +93,7 @@ def brief_markdown(record_path: Path, record: dict, role: str, fields: dict) -> 
 
 
 def index_markdown(entries: list[tuple[str, str, list[str]]]) -> str:
+    """Render the briefs index page listing every signal and its role briefs."""
     lines = [
         "# Role briefs",
         "",
@@ -109,6 +114,14 @@ def index_markdown(entries: list[tuple[str, str, list[str]]]) -> str:
 
 
 def render(signals_dir: Path, out_dir: Path) -> int:
+    """Rebuild out_dir from the records, removing any orphaned briefs.
+
+    The output tree is entirely generated, so it is rebuilt from scratch:
+    briefs whose role or record no longer exists disappear on re-render
+    instead of lingering and permanently failing --check.
+    """
+    if out_dir.exists():
+        shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     entries = []
     count = 0
@@ -121,6 +134,12 @@ def render(signals_dir: Path, out_dir: Path) -> int:
         slug_dir.mkdir(parents=True, exist_ok=True)
         roles = []
         for role, fields in role_briefs.items():
+            if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", role):
+                raise SystemExit(
+                    f"{record_path.name}: invalid role name {role!r} — "
+                    "role keys become filenames and must be lowercase "
+                    "letters, digits, hyphens, or underscores"
+                )
             missing = [key for key, _ in FIELDS if not str(fields.get(key, "")).strip()]
             if missing:
                 raise SystemExit(
@@ -139,6 +158,7 @@ def render(signals_dir: Path, out_dir: Path) -> int:
 
 
 def trees_match(left: Path, right: Path) -> bool:
+    """Compare two brief trees by filename set and exact file content."""
     left_files = sorted(p.relative_to(left) for p in left.rglob("*.md"))
     right_files = sorted(p.relative_to(right) for p in right.rglob("*.md"))
     if left_files != right_files:
@@ -149,6 +169,7 @@ def trees_match(left: Path, right: Path) -> bool:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """CLI entry point: render briefs, or verify freshness with --check."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--check", action="store_true")

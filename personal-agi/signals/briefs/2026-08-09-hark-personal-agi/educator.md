@@ -4,7 +4,7 @@
 > **Evidence tier:** PRESS_SPECULATION · **Urgency:** NEAR_TERM · **Valence:** DUAL
 > **Source record:** `2026-08-09-hark-personal-agi.json` — the full distillation, including refusal-posture analysis and open questions.
 
-**What happened.** Students now arrive with persistent personal AI that remembers them and acts for them.
+**What happened.** Consumer personal AI that remembers its user and acts for them is being marketed to the students in your classrooms.
 
 **Why it matters to you.** Formation doctrine meets this reality in your classroom first: the habits of gated use are teachable, and ungoverned habits are too.
 

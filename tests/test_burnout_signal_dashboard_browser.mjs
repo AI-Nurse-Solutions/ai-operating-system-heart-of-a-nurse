@@ -53,8 +53,10 @@ async function launchBrowser() {
 
 function collectPageErrors(page, errors) {
   page.on('console', (message) => {
-    // Ignore blocked third-party font fetches in offline sandboxes.
-    if (message.type() === 'error' && !/googleapis|gstatic|net::ERR/i.test(message.text())) {
+    // Ignore blocked third-party font fetches in offline sandboxes; the URL of
+    // a failed fetch lives in the message location, not always in its text.
+    const target = `${message.text()} ${message.location()?.url || ''}`;
+    if (message.type() === 'error' && !/fonts\.googleapis\.com|fonts\.gstatic\.com/i.test(target)) {
       errors.push(message.text());
     }
   });
@@ -111,6 +113,11 @@ try {
   await saveWeek(page, { weekOf: '2026-07-13', staffCount: 10, shiftsWorked: 20, lateDepartures: 25, breaksMissed: 0, staffNoRecentPto: 0 });
   assert.match(await page.locator('#entry-status').textContent(), /cannot exceed their denominators/);
   assert.equal(await page.locator('#weeks-body tr').count(), 1, 'invalid week is not stored');
+
+  // Fractional counts are rejected, not silently floored.
+  await saveWeek(page, { weekOf: '2026-07-13', staffCount: 10, shiftsWorked: 20, lateDepartures: 9.8, breaksMissed: 0, staffNoRecentPto: 0 });
+  assert.match(await page.locator('#entry-status').textContent(), /whole numbers/);
+  assert.equal(await page.locator('#weeks-body tr').count(), 1, 'fractional week is not stored');
 
   // Below the minimum staff count, the week is stored but every rate is withheld.
   await saveWeek(page, { weekOf: '2026-07-13', staffCount: 4, shiftsWorked: 20, lateDepartures: 5, breaksMissed: 8, staffNoRecentPto: 2 });
@@ -176,6 +183,30 @@ try {
       'export rows contain only aggregate fields'
     );
   }
+
+  // Imported weeks are rebuilt from the aggregate-field allowlist: an extra
+  // field that could carry individual data never enters the workspace.
+  await page.setInputFiles('#import-json', {
+    name: 'tampered.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({
+      weeks: [{
+        weekOf: '2026-07-20', staffCount: 11, shiftsWorked: 55, lateDepartures: 6,
+        breaksMissed: 9, staffNoRecentPto: 3, employeeName: 'should never survive import'
+      }]
+    }))
+  });
+  await page.locator('#export-status').filter({ hasText: 'Imported 1 week(s).' }).waitFor();
+  const recheckPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export data (JSON)' }).click();
+  const recheck = JSON.parse(readFileSync(await (await recheckPromise).path(), 'utf8'));
+  const imported = recheck.weeks.find((week) => week.weekOf === '2026-07-20');
+  assert.deepEqual(
+    Object.keys(imported).sort(),
+    ['breaksMissed', 'lateDepartures', 'shiftsWorked', 'staffCount', 'staffNoRecentPto', 'weekOf'],
+    'unrecognized import fields are stripped before storage'
+  );
+  assert.ok(!JSON.stringify(recheck).includes('should never survive import'));
 
   assert.equal(errors.length, 0, `functional-flow errors: ${errors.join(' | ')}`);
   await page.close();

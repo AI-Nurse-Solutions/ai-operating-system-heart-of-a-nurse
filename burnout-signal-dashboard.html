@@ -57,6 +57,7 @@
 .dash .rowactions button{background:transparent;border:1px solid var(--line);border-radius:8px;padding:3px 9px;cursor:pointer;font:inherit;font-size:.85rem;color:var(--ink-600)}
 .dash .rowactions button:hover{color:var(--navy-900);border-color:var(--teal-500)}
 .dash .synthetic-note{display:inline-block;background:var(--linen-100);border:1px dashed var(--gold-500);border-radius:8px;padding:2px 8px;font-size:.8rem;color:#8a6420;font-weight:700}
+.dash input[type=file]:focus + label,.dash input[type=file]:focus-visible + label{outline:2px solid var(--teal-500);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -204,8 +205,8 @@
       <div class="btnrow">
         <button type="button" class="btn" id="export-summary">Export Mission Control dashboard-summary draft</button>
         <button type="button" class="btn secondary" id="export-json">Export data (JSON)</button>
-        <label class="btn secondary" style="margin:0;" for="import-json">Import data (JSON)</label>
         <input type="file" id="import-json" accept="application/json,.json" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">
+        <label class="btn secondary" style="margin:0;" for="import-json">Import data (JSON)</label>
       </div>
       <p class="help">The dashboard-summary export follows the Mission Control leader packet template (<em>Measures included · What changed · Limitations · Suggested attention</em>) and is born a <strong>draft with a mandatory review banner</strong> — a named, accountable human must review and approve it before it is used anywhere.</p>
       <p class="status" id="export-status" role="status" aria-live="polite"></p>
@@ -283,6 +284,11 @@
     }
   ];
 
+  /* The only fields a stored week may carry. Imported or hand-edited data
+     is rebuilt from this allowlist so an unrecognized field — the one place
+     individual data could hide — never enters the workspace. */
+  var WEEK_COUNT_FIELDS = ['staffCount', 'shiftsWorked', 'lateDepartures', 'breaksMissed', 'staffNoRecentPto'];
+
   var form = document.getElementById('entry-form');
   var entryStatus = document.getElementById('entry-status');
   var exportStatus = document.getElementById('export-status');
@@ -299,7 +305,7 @@
       if (!raw) return { weeks: [] };
       var parsed = JSON.parse(raw);
       if (!parsed || !Array.isArray(parsed.weeks)) return { weeks: [] };
-      return { weeks: parsed.weeks.filter(isValidWeek) };
+      return { weeks: parsed.weeks.filter(isValidWeek).map(sanitizeWeek) };
     } catch (err) {
       return { weeks: [] };
     }
@@ -312,9 +318,8 @@
   function isValidWeek(week) {
     if (!week || typeof week !== 'object') return false;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(week.weekOf || ''))) return false;
-    var fields = ['staffCount', 'shiftsWorked', 'lateDepartures', 'breaksMissed', 'staffNoRecentPto'];
-    for (var i = 0; i < fields.length; i++) {
-      var value = week[fields[i]];
+    for (var i = 0; i < WEEK_COUNT_FIELDS.length; i++) {
+      var value = week[WEEK_COUNT_FIELDS[i]];
       if (typeof value !== 'number' || !isFinite(value) || value < 0 || value !== Math.floor(value)) return false;
     }
     if (week.staffCount < 1 || week.shiftsWorked < 1) return false;
@@ -322,6 +327,13 @@
     if (week.breaksMissed > week.shiftsWorked) return false;
     if (week.staffNoRecentPto > week.staffCount) return false;
     return true;
+  }
+
+  function sanitizeWeek(week) {
+    var clean = { weekOf: String(week.weekOf) };
+    WEEK_COUNT_FIELDS.forEach(function (field) { clean[field] = week[field]; });
+    if (week.source === 'synthetic-example') clean.source = week.source;
+    return clean;
   }
 
   var state = loadState();
@@ -478,9 +490,12 @@
     if (excluded > 0) {
       var note = document.createElement('div');
       note.className = 'banner warn';
-      note.innerHTML = '<strong>Minimum aggregation threshold.</strong> ' + excluded +
+      var noteLabel = document.createElement('strong');
+      noteLabel.textContent = 'Minimum aggregation threshold.';
+      note.appendChild(noteLabel);
+      note.appendChild(document.createTextNode(' ' + excluded +
         ' recorded week' + (excluded === 1 ? '' : 's') + ' with fewer than ' + MIN_STAFF_FOR_TRENDS +
-        ' staff ' + (excluded === 1 ? 'is' : 'are') + ' excluded from every trend and rate below. On a unit that small, an "aggregate" number can point at a person — so the dashboard withholds it.';
+        ' staff ' + (excluded === 1 ? 'is' : 'are') + ' excluded from every trend and rate below. On a unit that small, an "aggregate" number can point at a person — so the dashboard withholds it.'));
       thresholdNotice.appendChild(note);
     }
 
@@ -519,18 +534,25 @@
 
   /* ---------- entry form ---------- */
 
+  /* Strict parse: empty and fractional entries surface as invalid instead
+     of being silently coerced into a plausible-looking count. */
+  function readCount(id) {
+    var raw = document.getElementById(id).value.trim();
+    return raw === '' ? NaN : Number(raw);
+  }
+
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     var week = {
       weekOf: document.getElementById('week-of').value,
-      staffCount: Math.floor(Number(document.getElementById('staff-count').value)),
-      shiftsWorked: Math.floor(Number(document.getElementById('shifts-worked').value)),
-      lateDepartures: Math.floor(Number(document.getElementById('late-departures').value)),
-      breaksMissed: Math.floor(Number(document.getElementById('breaks-missed').value)),
-      staffNoRecentPto: Math.floor(Number(document.getElementById('staff-no-pto').value))
+      staffCount: readCount('staff-count'),
+      shiftsWorked: readCount('shifts-worked'),
+      lateDepartures: readCount('late-departures'),
+      breaksMissed: readCount('breaks-missed'),
+      staffNoRecentPto: readCount('staff-no-pto')
     };
     if (!isValidWeek(week)) {
-      entryStatus.textContent = 'Please check the numbers: every field is required, counts cannot exceed their denominators (late departures and skipped breaks ≤ shifts worked; no-PTO staff ≤ roster), and staff and shifts must be at least 1.';
+      entryStatus.textContent = 'Please check the numbers: every field is required, counts must be whole numbers, counts cannot exceed their denominators (late departures and skipped breaks ≤ shifts worked; no-PTO staff ≤ roster), and staff and shifts must be at least 1.';
       return;
     }
     state.weeks = state.weeks.filter(function (w) { return w.weekOf !== week.weekOf; });
@@ -564,7 +586,12 @@
     });
     saveState(state);
     renderAll();
-    entryStatus.innerHTML = 'Loaded <span class="synthetic-note">synthetic example</span> weeks (marked in the table). Delete them before tracking your real unit.';
+    entryStatus.textContent = 'Loaded ';
+    var syntheticNote = document.createElement('span');
+    syntheticNote.className = 'synthetic-note';
+    syntheticNote.textContent = 'synthetic example';
+    entryStatus.appendChild(syntheticNote);
+    entryStatus.appendChild(document.createTextNode(' weeks (marked in the table). Delete them before tracking your real unit.'));
   });
 
   document.getElementById('clear-all').addEventListener('click', function () {
@@ -607,7 +634,7 @@
     reader.onload = function () {
       try {
         var parsed = JSON.parse(String(reader.result));
-        var incoming = (parsed && Array.isArray(parsed.weeks) ? parsed.weeks : []).filter(isValidWeek);
+        var incoming = (parsed && Array.isArray(parsed.weeks) ? parsed.weeks : []).filter(isValidWeek).map(sanitizeWeek);
         if (!incoming.length) {
           exportStatus.textContent = 'No valid aggregate weeks found in that file. Only unit-aggregate exports from this tool can be imported.';
           return;
@@ -622,6 +649,10 @@
       } catch (err) {
         exportStatus.textContent = 'That file could not be read as JSON.';
       }
+      event.target.value = '';
+    };
+    reader.onerror = function () {
+      exportStatus.textContent = 'That file could not be read.';
       event.target.value = '';
     };
     reader.readAsText(file);

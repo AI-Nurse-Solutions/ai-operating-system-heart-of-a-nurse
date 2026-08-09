@@ -113,6 +113,10 @@ class Actor:
     # pairs. An approval without a scope record is unscoped and cannot
     # satisfy a rule that names a required authority scope.
     approval_scopes: tuple[tuple[str, str], ...] = ()
+    # Per-decision bindings: (approval_id, record_id) pairs tying an
+    # approval to the exact controlled object it signed. An approval
+    # without a binding cannot satisfy a rule that binds to a record.
+    approval_bindings: tuple[tuple[str, str], ...] = ()
 
 
 @dataclass(frozen=True)

@@ -173,7 +173,14 @@ the actor in the educator-summative authority scope
 (`EDENA-EDUCATOR-AUTHORITY`) — an unrelated approval satisfies
 nothing even when named on the request (`EDENA-APPROVAL-SCOPE`;
 membership is not authority), and a fabricated reference is denied
-outright.
+outright. Authority is per decision, not per career: the request must
+name the summative record it concerns and the approval must be bound
+to exactly that record (`EDENA-APPROVAL-BINDING`), so a sign-off for
+one learner's assignment can never be replayed for another decision.
+The four summative intents are a mandatory floor in the engine
+itself: a policy document that omits `summative_rules` cannot allow
+them (`EDENA-SUMMATIVE-UNGOVERNED`), and a config edit cannot quietly
+ungate one.
 Every allowed execution carries a summative-authority audit
 obligation. Students cannot carry a summative intent at all, even
 holding a recorded approval: the role gate denies before the

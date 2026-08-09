@@ -35,6 +35,19 @@ logger = logging.getLogger(__name__)
 class EdenaPolicyEngine(PolicyDecisionInterface):
     """Deterministic EDENA policy decision point."""
 
+    # Fail-closed floor: the doctrine's summative intents stay protected
+    # even under a policy document that omits summative_rules — a policy
+    # that does not define summative governance cannot allow a summative
+    # decision, and a config edit cannot quietly ungate one.
+    MANDATORY_SUMMATIVE_INTENTS = frozenset(
+        {
+            "grade_assignment",
+            "progression_determination",
+            "competency_signoff",
+            "professionalism_finding",
+        }
+    )
+
     def __init__(self, policy_path: Path | None = None):
         path = policy_path or DEFAULT_POLICY_PATH
         self.policy: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
@@ -136,10 +149,13 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
         # itself requires a named human educator approval — AI never
         # grades alone, and it never gates a career.
         summative_rules = self.policy.get("summative_rules", {})
-        summative_gated = request.intent in summative_rules.get(
-            "execution_intents", ()
+        summative_gated = (
+            request.intent in self.MANDATORY_SUMMATIVE_INTENTS
+            or request.intent in summative_rules.get("execution_intents", ())
         )
         if summative_gated:
+            if not summative_rules.get("execution_intents"):
+                return self._deny("EDENA-SUMMATIVE-UNGOVERNED")
             if request.data_zone.value != summative_rules["required_zone"]:
                 return self._deny("EDENA-SUMMATIVE-ZONE")
             if summative_rules.get("requires_institutional_authentication") and (
@@ -174,6 +190,20 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
                     (approval_ref, required_scope) not in actor.approval_scopes
                 ):
                     return self._deny("EDENA-APPROVAL-SCOPE")
+                # Authority is per decision, not per career: an educator
+                # approval authorizes exactly the summative record it
+                # signed. The request must name that record and the
+                # approval must be bound to it — a sign-off for one
+                # learner's assignment cannot be replayed for another
+                # learner's progression.
+                binding_key = summative_rules.get("binding_metadata_key")
+                if binding_key:
+                    record_ref = request.metadata.get(binding_key)
+                    if not record_ref or (
+                        (approval_ref, record_ref)
+                        not in actor.approval_bindings
+                    ):
+                        return self._deny("EDENA-APPROVAL-BINDING")
 
         data_ceiling = self.policy["tier_data_ceilings"].get(tier.value)
         if data_ceiling is None or data.rank > DataClass(data_ceiling).rank:

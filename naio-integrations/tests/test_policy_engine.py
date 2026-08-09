@@ -578,23 +578,84 @@ class SummativeAuthorityGateTests(unittest.TestCase):
         self.assertIs(decision.decision, Decision.DENY)
         self.assertIn("EDENA-APPROVAL-SCOPE", decision.reason_codes)
 
-    def test_summative_execution_with_recorded_signoff_is_allowed(self):
-        approved = Actor(
+    def _signing_educator(self, record="rec-2026-115"):
+        return Actor(
             actor_id="ed-1",
             role="educator",
             tenant="org:riverview-college",
             authenticated_org="org:riverview-college",
             approvals=("signoff-2026-031",),
             approval_scopes=(("signoff-2026-031", "educator-summative"),),
+            approval_bindings=(("signoff-2026-031", record),),
         )
+
+    def test_summative_execution_with_recorded_signoff_is_allowed(self):
         decision = self.engine.decide(
             self._summative_request(
-                actor=approved,
-                metadata={"educator_approval_id": "signoff-2026-031"},
+                actor=self._signing_educator(),
+                metadata={
+                    "educator_approval_id": "signoff-2026-031",
+                    "summative_record_id": "rec-2026-115",
+                },
             )
         )
         self.assertIs(decision.decision, Decision.ALLOW)
         self.assertIn("summative_authority_audit", decision.obligations)
+
+    def test_approval_cannot_be_replayed_for_another_record(self):
+        # A sign-off issued for one learner's assignment cannot authorize
+        # another learner's progression: authority is per decision.
+        decision = self.engine.decide(
+            self._summative_request(
+                actor=self._signing_educator(record="rec-2026-115"),
+                intent="progression_determination",
+                metadata={
+                    "educator_approval_id": "signoff-2026-031",
+                    "summative_record_id": "rec-2026-887",
+                },
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-BINDING", decision.reason_codes)
+
+    def test_request_must_name_the_summative_record(self):
+        decision = self.engine.decide(
+            self._summative_request(
+                actor=self._signing_educator(),
+                metadata={"educator_approval_id": "signoff-2026-031"},
+            )
+        )
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-BINDING", decision.reason_codes)
+
+    def test_policy_without_summative_rules_fails_closed(self):
+        # A pre-existing or custom policy document that does not define
+        # summative governance cannot allow a summative decision.
+        self.engine.policy.pop("summative_rules")
+        for intent in self.SUMMATIVE_INTENTS:
+            decision = self.engine.decide(
+                self._summative_request(
+                    actor=self._signing_educator(),
+                    intent=intent,
+                    metadata={
+                        "educator_approval_id": "signoff-2026-031",
+                        "summative_record_id": "rec-2026-115",
+                    },
+                )
+            )
+            self.assertIs(decision.decision, Decision.DENY, intent)
+            self.assertIn("EDENA-SUMMATIVE-UNGOVERNED", decision.reason_codes)
+
+    def test_config_edit_cannot_ungate_a_summative_intent(self):
+        # Removing an intent from the configured list does not release it:
+        # the engine's mandatory floor keeps every summative intent gated.
+        self.engine.policy["summative_rules"]["execution_intents"] = [
+            "grade_assignment"
+        ]
+        decision = self.engine.decide(
+            make_request(intent="professionalism_finding")
+        )
+        self.assertIsNot(decision.decision, Decision.ALLOW)
 
     def test_feedback_drafting_stays_ordinary_draft_work(self):
         decision = self.engine.decide(
@@ -620,6 +681,7 @@ class SummativeAuthorityGateTests(unittest.TestCase):
                 authenticated_org="org:riverview-college",
                 approvals=("signoff-2026-031",),
                 approval_scopes=(("signoff-2026-031", "educator-summative"),),
+                approval_bindings=(("signoff-2026-031", "rec-2026-115"),),
             )
             for intent in self.SUMMATIVE_INTENTS:
                 decision = self.engine.decide(

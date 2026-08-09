@@ -99,5 +99,42 @@
     "Does proactive monitoring of vitals and labs with 'prepared protocols' constitute software as a medical device in the target jurisdictions, and under which pathway?",
     "What consent and disclosure framework would ambient capture in patient areas require, and has any institution's counsel accepted one?",
     "What retention, export, and deletion guarantees can a persistent memory fabric make that survive device loss, platform migration, and employer-owned hardware?"
-  ]
+  ],
+  "role_briefs": {
+    "student": {
+      "what_happened": "Consumer 'personal AGI' products are arriving: persistent memory, hands-free hardware, and agents that operate software for you.",
+      "why_it_matters_to_you": "You will be offered these tools before any school or hospital governs them, and habits you build now are the ones you will carry to the bedside.",
+      "do_now": "Build your starter system the governed way — no-PHI memory, draft-and-attest on your study workflows — so the safe habit forms first.",
+      "dont_do": "Do not bring consumer recording wearables to clinicals, and never let an agent log in to school or clinical portals for you.",
+      "watch": "Classmates using ungoverned recorders or auto-writers at clinical sites — that is shadow AI, and it is how programs end up banning everything."
+    },
+    "staff": {
+      "what_happened": "Vendors are packaging ambient listening, personalized memory, and EHR-operating agents as bedside 'AI partners'.",
+      "why_it_matters_to_you": "These pitches will reach your unit as documentation help, and the difference between augmentation and a sidelining risk is the human gate.",
+      "do_now": "Practice gated handoffs on your own no-PHI screen work now, and know which pilot tools on your unit hold EHR write access.",
+      "dont_do": "Do not wear consumer recording devices in patient areas, and never treat an agent-prepared note or protocol as anything but a draft you verify.",
+      "watch": "Efficiency claims from documentation pilots being converted into staffing ratios — that is a compression vector, not a benefit."
+    },
+    "np": {
+      "what_happened": "Agentic systems that navigate records and stage orders are the sharp edge of the personal-AI wave.",
+      "why_it_matters_to_you": "Order-capable automation reaches prescribers first, and your license carries the risk for anything that enters the record under your name.",
+      "do_now": "Keep your own renewals and CME on gated handoffs, and require an attributable per-action validation gate in any pilot you touch.",
+      "dont_do": "Never allow an agent-drafted entry, order, or message to reach the record or a patient without your explicit review.",
+      "watch": "Predictive monitoring with 'prepared protocols' — it is likely a regulated medical-device function, whatever the marketing says."
+    },
+    "leader": {
+      "what_happened": "Ambient-plus-agentic AI is being sold to units as an efficiency package, with autonomous EHR action as the headline feature.",
+      "why_it_matters_to_you": "You will sign the pilots, and the highest doctrine exposure — machine-to-EHR action without a human gate — lands on your authorization.",
+      "do_now": "Before any pilot: require a per-agent write-permission registry, a one-touch kill switch, and a written fence between efficiency metrics and staffing math.",
+      "dont_do": "Do not accept vendor efficiency figures as evidence, and do not let a draft-only tool arrive with auto-filing quietly enabled.",
+      "watch": "Staff bringing personal AI devices and accounts to work ahead of policy — govern the path early or inherit shadow AI."
+    },
+    "educator": {
+      "what_happened": "Students now arrive with persistent personal AI that remembers them and acts for them.",
+      "why_it_matters_to_you": "Formation doctrine meets this reality in your classroom first: the habits of gated use are teachable, and ungoverned habits are too.",
+      "do_now": "Teach draft-and-attest and memory hygiene inside coursework, and use the governed starter system as a live teaching artifact.",
+      "dont_do": "Do not respond with blanket bans that push use into the shadows, and do not let AI-assisted work go undisclosed.",
+      "watch": "Care plans and reflections that read machine-written without disclosure — the integrity conversation is better had early and openly."
+    }
+  }
 }

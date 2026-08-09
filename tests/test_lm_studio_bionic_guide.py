@@ -75,6 +75,10 @@ class LmStudioBionicGuideTests(unittest.TestCase):
             )
             self.assertIsNotNone(match, route)
             datetime.date.fromisoformat(match.group(1))
+        lastmods = re.findall(r"<lastmod>([^<]+)</lastmod>", self.sitemap)
+        self.assertTrue(lastmods)
+        for value in lastmods:
+            datetime.date.fromisoformat(value)
 
     def test_public_safety_workflow_scans_the_nested_guide_route(self) -> None:
         scanner_pages = self.workflow.split("pages=(", 1)[1].split(")", 1)[0]

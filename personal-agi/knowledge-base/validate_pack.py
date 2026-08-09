@@ -10,7 +10,7 @@ no listed defect — it is not approval, and it never populates the library.
 Usage:
     python3 validate_pack.py PACK_DIR            # validate one pack
     python3 validate_pack.py --check             # validate all packs + the lock (exit 2 on refusal)
-    python3 validate_pack.py --relock            # refresh digests for already-accepted packs
+    python3 validate_pack.py --relock [--by NAME --date DATE]   # renew acceptance for changed packs
     python3 validate_pack.py --print-digests PACK_DIR   # print content digests for a manifest
 """
 
@@ -244,6 +244,8 @@ def _check_files(pack_dir: Path, manifest: dict) -> list[str]:
                 f"{name}: unexpected entry {entry.name!r} — a pack holds only "
                 "pack.json and content/"
             )
+    if (pack_dir / "content").is_symlink():
+        problems.append(f"{name}: content/ must not be a symlink")
 
     listed: set[Path] = set()
     for rel, digest in sorted(files.items()):
@@ -261,6 +263,12 @@ def _check_files(pack_dir: Path, manifest: dict) -> list[str]:
         target = pack_dir / rel_path
         if not target.is_file():
             problems.append(f"{label} listed but missing from disk")
+            continue
+        if target.is_symlink() or not target.resolve().is_relative_to(pack_dir.resolve()):
+            problems.append(
+                f"{label} refused — symlinked or out-of-tree content breaks "
+                "the byte-contained pack contract"
+            )
             continue
         listed.add(rel_path)
         if sha256_file(target) != digest:
@@ -354,14 +362,21 @@ def validate_library(kb_dir: Path = KB_DIR, repo_root: Path = REPO_ROOT) -> list
                 f"{label}: manifest digest is stale — re-inspect the pack and "
                 "re-accept before relocking"
             )
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        state = manifest.get("identity", {}).get("state")
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue  # already refused by validate_pack above
+        if not isinstance(manifest, dict):
+            continue  # already refused by validate_pack above
+        identity = manifest.get("identity")
+        identity = identity if isinstance(identity, dict) else {}
+        state = identity.get("state")
         if state in REMOVAL_STATES:
             problems.append(
                 f"{label}: pack state {state!r} must leave the library "
                 "(PLAYBOOK.md §11.7 removal and invalidation)"
             )
-        if manifest.get("identity", {}).get("version") != entry.get("version"):
+        if identity.get("version") != entry.get("version"):
             problems.append(
                 f"{label}: version differs from the manifest — re-inspect and re-accept"
             )
@@ -373,25 +388,62 @@ def validate_library(kb_dir: Path = KB_DIR, repo_root: Path = REPO_ROOT) -> list
     return problems
 
 
-def relock(kb_dir: Path = KB_DIR) -> int:
-    """Refresh digests and versions for already-accepted packs; never add entries."""
+def relock(kb_dir: Path = KB_DIR, by: str | None = None, date: str | None = None) -> int:
+    """Renew lock entries whose accepted bytes changed; never add or remove entries.
+
+    A digest change means the accepted bytes changed, and the original human
+    decision does not cover the new bytes. Without --by/--date every change is
+    refused; with them, this run records the renewed acceptance explicitly —
+    acceptance is never silent and never machine-invented.
+    """
     lock, lock_problems = load_lock(kb_dir / "library-lock.json")
     if lock is None:
         for problem in lock_problems:
             print(f"REFUSED: {problem}")
         return 2
+    if (by is None) != (date is None):
+        print("REFUSED: --by and --date must be provided together")
+        return 2
+    if date is not None and not parse_iso_date(date):
+        print("REFUSED: --date must be an ISO date")
+        return 2
+    renewed = 0
     for entry in lock["packs"]:
         manifest_path = kb_dir / "packs" / entry["id"] / "pack.json"
         if not manifest_path.is_file():
             print(f"REFUSED: accepted pack {entry['id']!r} is not on disk")
             return 2
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        entry["manifest_sha256"] = sha256_file(manifest_path)
-        entry["version"] = manifest.get("identity", {}).get("version")
+        digest = sha256_file(manifest_path)
+        if digest == entry.get("manifest_sha256"):
+            continue
+        if by is None:
+            print(
+                f"REFUSED: {entry['id']}: bytes changed since acceptance — "
+                "re-inspect the pack, then record a fresh acceptance with "
+                "--relock --by NAME --date YYYY-MM-DD; changed bytes are "
+                "never covered by an old decision"
+            )
+            return 2
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as err:
+            print(f"REFUSED: {entry['id']}: pack.json is not valid JSON ({err})")
+            return 2
+        identity = manifest.get("identity") if isinstance(manifest, dict) else None
+        identity = identity if isinstance(identity, dict) else {}
+        entry["manifest_sha256"] = digest
+        entry["version"] = identity.get("version")
+        entry["state_at_acceptance"] = identity.get("state")
+        entry["accepted_by"] = by
+        entry["accepted_date"] = date
+        renewed += 1
     (kb_dir / "library-lock.json").write_text(
         json.dumps(lock, indent=2) + "\n", encoding="utf-8"
     )
-    print(f"Relocked {len(lock['packs'])} accepted pack(s); no packs were added")
+    print(
+        f"Relocked: {renewed} renewed acceptance(s), "
+        f"{len(lock['packs']) - renewed} unchanged; no packs were added"
+    )
     return 0
 
 
@@ -414,11 +466,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("pack_dir", nargs="?", type=Path, default=None)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--relock", action="store_true")
+    parser.add_argument("--by", default=None, help="who renews acceptance for changed packs")
+    parser.add_argument("--date", default=None, help="ISO date of the renewed acceptance")
     parser.add_argument("--print-digests", action="store_true")
     args = parser.parse_args(argv)
 
     if args.relock:
-        return relock()
+        return relock(by=args.by, date=args.date)
     if args.print_digests:
         if args.pack_dir is None:
             print("REFUSED: --print-digests requires a pack directory")

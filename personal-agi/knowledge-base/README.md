@@ -18,16 +18,17 @@ personal library — guarded in CI by --check
 Three rules make the library trustworthy:
 
 1. **A passed scan is not approval.** The validator refuses packs with structural, rights, integrity, or governance defects — but passing it means only that automated checks found no listed defect. Acceptance is a separate, human act.
-2. **The lock is never auto-populated.** Every entry in `library-lock.json` records who accepted the pack and when. `--relock` refreshes digests for packs a human already accepted; it never adds a pack on its own. No step automatically grants the next state.
+2. **The lock is never auto-populated.** Every entry in `library-lock.json` records who accepted the pack and when. `--relock` never adds a pack, and it never silently re-accepts changed bytes: when an accepted pack's digest changes, the change is refused unless the same run records a fresh acceptance (`--relock --by NAME --date DATE`). Changed bytes are never covered by an old decision, and no step automatically grants the next state.
 3. **The library never widens a ceiling.** Packs are Green or bounded Yellow, D0 content only, with action modes capped at Observe → Draft → Recommend per `governance-kit/GOVERNANCE.yaml`. Quarantined, superseded, retired, recalled, or withdrawn packs cannot be held in the library.
 
 ## Using it
 
 ```bash
-python3 personal-agi/knowledge-base/validate_pack.py packs/governed-ai-study-basics   # validate one pack
-python3 personal-agi/knowledge-base/validate_pack.py --check                          # validate the whole library (exit 2 on any refusal)
-python3 personal-agi/knowledge-base/validate_pack.py --relock                         # refresh digests for already-accepted packs
-python3 personal-agi/knowledge-base/validate_pack.py --print-digests PACK_DIR         # print content digests for a manifest
+# from the repository root:
+python3 personal-agi/knowledge-base/validate_pack.py personal-agi/knowledge-base/packs/governed-ai-study-basics   # validate one pack
+python3 personal-agi/knowledge-base/validate_pack.py --check                            # validate the whole library (exit 2 on any refusal)
+python3 personal-agi/knowledge-base/validate_pack.py --relock --by NAME --date DATE     # renew acceptance for packs whose bytes changed
+python3 personal-agi/knowledge-base/validate_pack.py --print-digests PACK_DIR           # print content digests for a manifest
 ```
 
 The validator is deterministic and stdlib-only — no model, no network. The pack format is specified in [`PACK-FORMAT.md`](PACK-FORMAT.md).

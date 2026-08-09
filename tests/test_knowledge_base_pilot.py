@@ -176,6 +176,100 @@ class KnowledgeBasePilotTests(unittest.TestCase):
         problems = self.refusals(content="# Guide\n\nPatient SSN 123-45-6789.\n")
         self.assertTrue(any("PHI" in p for p in problems), problems)
 
+    def test_symlinked_content_is_refused(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            outside = root / "outside.md"
+            outside.write_text("# Outside the pack\n", encoding="utf-8")
+
+            def mutate(manifest, pack_dir):
+                link = pack_dir / "content" / "linked.md"
+                link.symlink_to(outside)
+                manifest["integrity"]["files"]["content/linked.md"] = hashlib.sha256(
+                    outside.read_bytes()
+                ).hexdigest()
+
+            pack_dir = build_pack(root, mutate)
+            problems = validate_pack.validate_pack(pack_dir, repo_root=ROOT)
+            self.assertTrue(any("symlink" in p for p in problems), problems)
+
+    def test_malformed_accepted_manifest_refuses_without_traceback(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            kb_dir = Path(tmp)
+            packs_dir = kb_dir / "packs"
+            packs_dir.mkdir()
+            pack_dir = build_pack(packs_dir)
+            (pack_dir / "pack.json").write_text("{not json", encoding="utf-8")
+            lock = {
+                "contract": "personal-library-lock v0.1",
+                "packs": [
+                    {
+                        "id": "test-pack",
+                        "version": "0.1.0",
+                        "path": "packs/test-pack",
+                        "manifest_sha256": "0" * 64,
+                        "accepted_by": "the tester",
+                        "accepted_date": "2026-08-09",
+                        "state_at_acceptance": "draft",
+                    }
+                ],
+            }
+            (kb_dir / "library-lock.json").write_text(
+                json.dumps(lock, indent=2) + "\n", encoding="utf-8"
+            )
+            problems = validate_pack.validate_library(kb_dir, repo_root=ROOT)
+            self.assertTrue(any("not valid JSON" in p for p in problems), problems)
+
+    def test_relock_refuses_changed_bytes_without_fresh_acceptance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            kb_dir = Path(tmp)
+            packs_dir = kb_dir / "packs"
+            packs_dir.mkdir()
+            pack_dir = build_pack(packs_dir)
+            lock = {
+                "contract": "personal-library-lock v0.1",
+                "packs": [
+                    {
+                        "id": "test-pack",
+                        "version": "0.1.0",
+                        "path": "packs/test-pack",
+                        "manifest_sha256": hashlib.sha256(
+                            (pack_dir / "pack.json").read_bytes()
+                        ).hexdigest(),
+                        "accepted_by": "the tester",
+                        "accepted_date": "2026-08-09",
+                        "state_at_acceptance": "draft",
+                    }
+                ],
+            }
+            lock_path = kb_dir / "library-lock.json"
+            lock_path.write_text(json.dumps(lock, indent=2) + "\n", encoding="utf-8")
+
+            # Unchanged bytes: relock is a no-op that succeeds.
+            self.assertEqual(validate_pack.relock(kb_dir), 0)
+
+            # Change the accepted bytes.
+            manifest = json.loads((pack_dir / "pack.json").read_text(encoding="utf-8"))
+            manifest["identity"]["version"] = "0.2.0"
+            (pack_dir / "pack.json").write_text(
+                json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+            )
+
+            # Without a fresh acceptance the change is refused and nothing is written.
+            self.assertEqual(validate_pack.relock(kb_dir), 2)
+            unchanged = json.loads(lock_path.read_text(encoding="utf-8"))
+            self.assertEqual(unchanged["packs"][0]["accepted_by"], "the tester")
+            self.assertEqual(unchanged["packs"][0]["version"], "0.1.0")
+
+            # A renewed acceptance is recorded explicitly.
+            self.assertEqual(
+                validate_pack.relock(kb_dir, by="a human", date="2026-08-10"), 0
+            )
+            renewed = json.loads(lock_path.read_text(encoding="utf-8"))
+            self.assertEqual(renewed["packs"][0]["accepted_by"], "a human")
+            self.assertEqual(renewed["packs"][0]["accepted_date"], "2026-08-10")
+            self.assertEqual(renewed["packs"][0]["version"], "0.2.0")
+
     def test_removal_state_cannot_stay_in_library(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             kb_dir = Path(tmp)

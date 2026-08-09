@@ -63,4 +63,6 @@ Deferred to the Commons implementation (not part of this pilot): package signatu
 
 Because the manifest pins every content digest and the lock pins the manifest digest, an accepted pack is pinned byte-for-byte. `--check` validates every pack in `packs/` (accepted or not) and every lock entry; packs in a removal state — `quarantined`, `superseded`, `retired`, `recalled`, `withdrawn` — are refused as library members per PLAYBOOK.md §11.7.
 
+Acceptance binds exact bytes. When an accepted pack's bytes change, `--relock` refuses the change unless the same run records who renewed the acceptance and when (`--relock --by NAME --date DATE`) — an old decision never silently covers new bytes.
+
 *Agents propose. Humans judge. Nurses steward.*

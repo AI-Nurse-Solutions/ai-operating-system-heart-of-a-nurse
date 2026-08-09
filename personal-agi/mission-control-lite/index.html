@@ -195,7 +195,31 @@
     }
 
     let state = { role:'staff', connections:{}, notes:{}, projectsData:null, activeTab:'personal', savedAt:null };
-    function load(){ try{ state = {...state, ...JSON.parse(localStorage.getItem(STORAGE_ID)||'{}')}; }catch{} }
+    function str(v){ return typeof v==='string' ? v : ''; }
+    function isObj(v){ return v && typeof v==='object' && !Array.isArray(v); }
+    function sanitizeProjects(data){
+      if(!isObj(data) || !Array.isArray(data.projects)) return null;
+      const projects = data.projects.filter(isObj).map(p=>({
+        name: str(p.name), sphere: str(p.sphere), sphere_label: str(p.sphere_label),
+        edena_tier: p.edena_tier==='yellow' ? 'yellow' : 'green',
+        suggested_prompt_name: str(p.suggested_prompt_name), slug: str(p.slug),
+        goal_90_days: str(p.goal_90_days), human_gate: str(p.human_gate), file_path: str(p.file_path)
+      }));
+      return { schema_version: str(data.schema_version), generated_at: str(data.generated_at), projects };
+    }
+    function stringMap(v){ const out={}; if(isObj(v)) for(const [k,val] of Object.entries(v)) if(typeof val==='string') out[k]=val; return out; }
+    function sanitizeState(raw){
+      if(!isObj(raw)) return null;
+      return {
+        role: (typeof raw.role==='string' && ROLES[raw.role]) ? raw.role : 'staff',
+        connections: stringMap(raw.connections),
+        notes: stringMap(raw.notes),
+        projectsData: raw.projectsData ? sanitizeProjects(raw.projectsData) : null,
+        activeTab: SPHERES.some(s=>s.id===raw.activeTab) ? raw.activeTab : 'personal',
+        savedAt: str(raw.savedAt) || null
+      };
+    }
+    function load(){ try{ const clean = sanitizeState(JSON.parse(localStorage.getItem(STORAGE_ID)||'{}')); if(clean) state = clean; }catch{} }
     function persist(){ state.savedAt = new Date().toISOString(); localStorage.setItem(STORAGE_ID, JSON.stringify(state)); }
     function setStatus(t){ document.getElementById('status').textContent = t; }
     function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -249,15 +273,16 @@
       const meta = document.getElementById('projMeta');
       if(state.projectsData){
         const d = state.projectsData;
-        meta.innerHTML = `${d.project_count||((d.projects||[]).length)} project(s) imported${d.generated_at?` · generated ${esc(String(d.generated_at).slice(0,10))}`:''} · stays in this browser. Re-import any time after retaking the <a href="https://nurse-ai-os.org/life-quiz.html">quiz</a>.`;
+        const projectCount = Array.isArray(d.projects) ? d.projects.length : 0;
+        meta.innerHTML = `${projectCount} project(s) imported${d.generated_at?` · generated ${esc(String(d.generated_at).slice(0,10))}`:''} · stays in this browser. Re-import any time after retaking the <a href="https://nurse-ai-os.org/life-quiz.html">quiz</a>.`;
       }
     }
     function importProjects(file){
       const r = new FileReader();
       r.onload = ()=>{ try{
-          const data = JSON.parse(r.result);
-          if(!data || !Array.isArray(data.projects)) throw new Error('shape');
-          state.projectsData = data; persist(); renderTabs();
+          const clean = sanitizeProjects(JSON.parse(r.result));
+          if(!clean) throw new Error('shape');
+          state.projectsData = clean; persist(); renderTabs();
           setStatus('naio-projects.json imported and saved locally.');
         }catch{ setStatus('Import failed — choose the naio-projects.json exported by the Life & Projects Quiz.'); } };
       r.readAsText(file);
@@ -270,8 +295,11 @@
     }
     function importBackup(file){
       const r = new FileReader();
-      r.onload = ()=>{ try{ state = {...state, ...JSON.parse(r.result)}; persist(); renderAll(); setStatus('Backup imported and saved locally.'); }
-        catch{ setStatus('Import failed — choose a valid Mission Control Lite backup.'); } };
+      r.onload = ()=>{ try{
+          const clean = sanitizeState(JSON.parse(r.result));
+          if(!clean) throw new Error('shape');
+          state = clean; persist(); renderAll(); setStatus('Backup imported and saved locally.');
+        }catch{ setStatus('Import failed — choose a valid Mission Control Lite backup.'); } };
       r.readAsText(file);
     }
     function renderAll(){ renderRoles(); renderModules(); renderTabs(); }

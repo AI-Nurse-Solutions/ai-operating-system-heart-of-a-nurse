@@ -202,9 +202,9 @@
     function moduleDefs(roleKey){
       const role = ROLES[roleKey] || ROLES.staff;
       return [
-        {key:'knowledge', name:'Knowledge Base', status:'Doctrine ready', cls:'doc',
-         desc:'Your governed library — Knowledge Packs, local retrieval with citations, adapted to your specialty and locality.',
-         links:[['Knowledge Commons doctrine', GH+'/tree/main/knowledge-commons'],['Resources','https://nurse-ai-os.org/resources.html']]},
+        {key:'knowledge', name:'Knowledge Base', status:'Live — personal library', cls:'',
+         desc:'Your governed library — Knowledge Packs you inspect and accept one by one, validated fail-closed, read with citations.',
+         links:[['Personal library pilot', GH+'/tree/main/personal-agi/knowledge-base'],['Knowledge Commons doctrine', GH+'/tree/main/knowledge-commons']]},
         {key:'academy', name:'Learning Academy', status:'Live now', cls:'',
          desc:'AI-assisted formation for your lane: commit-then-compare study, human evaluative authority.',
          links:role.academy},

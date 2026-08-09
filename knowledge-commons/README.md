@@ -49,6 +49,8 @@ As of this version:
 
 Several retrieval principles in this doctrine already have a tested reference implementation in this repository's [Integration Contract](../naio-integrations/): governed retrieval that refuses to answer without an indexed source and preserves per-passage provenance and warnings; an evidence ledger in which source-backed claims require citations that exist ("no citation, no claim"); tenant-scoped stores whose foreign reads fail closed; and synthetic teaching content that always retrieves with an explicit warning, ranked after policy, local practice, and research. That code is reference implementation evidence for the direction — it is not the Commons, a catalog, or a hosted retrieval service.
 
+At personal scale, the [personal Knowledge Base pilot](../personal-agi/knowledge-base/) implements this playbook's pack-manifest contract, fail-closed intake checks, and human-accepted local library for a single nurse's own library. It is likewise implementation evidence, not the Commons: it creates no shared catalog, namespace, reviewer council, or hosted retrieval.
+
 ## Authority and precedence
 
 These documents are subordinate to applicable law, professional duties, institutional policy, the current NIN–NAIO Master Directive, repository governance, EDENA requirements, and artifact-specific licenses. Where a conflict exists, the more protective applicable authority controls.

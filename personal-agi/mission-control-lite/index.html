@@ -309,15 +309,21 @@ to map more of my life — but respect the pace I set.
     function stringMap(v){ const out={}; if(isObj(v)) for(const [k,val] of Object.entries(v)) if(typeof val==='string') out[k]=val; return out; }
     function sanitizeState(raw){
       if(!isObj(raw)) return null;
+      const projectsData = raw.projectsData ? sanitizeProjects(raw.projectsData) : null;
+      // Migration: state saved before the onboarding fields existed has no
+      // `onboarded` flag, but a present project map means the user already set
+      // up via full-quiz import — never show them the starter flow, whose
+      // Build action would replace that map.
+      const hasProjects = !!(projectsData && projectsData.projects.length);
       return {
         role: (typeof raw.role==='string' && ROLES[raw.role]) ? raw.role : 'staff',
         connections: stringMap(raw.connections),
         notes: stringMap(raw.notes),
-        projectsData: raw.projectsData ? sanitizeProjects(raw.projectsData) : null,
+        projectsData,
         activeTab: SPHERES.some(s=>s.id===raw.activeTab) ? raw.activeTab : 'personal',
         savedAt: str(raw.savedAt) || null,
-        onboarded: raw.onboarded === true,
-        profileDepth: raw.profileDepth==='full' ? 'full' : (raw.profileDepth==='starter' ? 'starter' : null),
+        onboarded: raw.onboarded === true || hasProjects,
+        profileDepth: raw.profileDepth==='full' ? 'full' : (raw.profileDepth==='starter' ? 'starter' : (hasProjects ? 'full' : null)),
         onboardedAt: str(raw.onboardedAt) || null,
         identityName: str(raw.identityName)
       };

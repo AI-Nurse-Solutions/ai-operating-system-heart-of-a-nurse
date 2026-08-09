@@ -8,11 +8,11 @@ The gentlest first card. Before a shift, your AI assembles a one-page brief abou
 | **EDENA risk tier** | Green — posture ceiling: Draft |
 | **Action mode** | Draft |
 | **Data class** | D1 |
-| **What the AI does** | Reads your calendar, `Memory/spheres/professional/` (shift pattern, commute, prep routine) and `personal/` (sleep, family logistics for the day), then drafts one page: shift time and commute plan, what to prep tonight vs. tomorrow, and one line on recovery after. Personal-sphere details inform the draft but are not copied into it — the saved brief carries only minimal flags ("hard stop 16:40 — personal logistics"), with the underlying details staying in their personal-sphere notes. Saves it as a draft for you to read with coffee. |
-| **What the AI never does** | Touch anything about the unit, census, acuity, assignments, colleagues, or patients. Never copies personal-sphere content into the professional evidence log. Never messages anyone. Never reschedules anything. |
+| **What the AI does** | Reads your calendar, `Memory/spheres/professional/` (shift pattern, commute, prep routine) and `personal/` (sleep, family logistics for the day), then drafts one page: shift time and commute plan, what to prep tonight vs. tomorrow, and one line on recovery after. Personal-sphere details inform the draft under one controlled exception: the saved brief may carry a minimal non-sensitive flag — a time plus the words "personal logistics" ("hard stop 16:40 — personal logistics") — and nothing more; the underlying details stay in their personal-sphere notes. Saves it as a draft for you to read with coffee. |
+| **What the AI never does** | Touch anything about the unit, census, acuity, assignments, colleagues, or patients. Beyond the minimal flag defined above, it never copies personal-sphere content into the brief or its evidence log. It never messages anyone and never reschedules anything. |
 | **Accounts/credentials touched** | Personal calendar (read-only). Nothing else. |
 | **Stop conditions** | Universal list, plus: calendar shows an event it can't classify → it asks instead of guessing. |
-| **Evidence log** | `Memory/spheres/professional/pre-shift-briefs/` — one file per brief, flags-only where personal life is concerned. |
+| **Evidence log** | `Memory/spheres/professional/pre-shift-briefs/` — one file per brief, carrying at most the same minimal flag where personal life is concerned. |
 | **Revoke** | Record `REVOKED: Pre-Shift Setup Brief` in the trust ledger, tell your AI the card is revoked, then delete the card. Done. |
 
 ## Why this card first

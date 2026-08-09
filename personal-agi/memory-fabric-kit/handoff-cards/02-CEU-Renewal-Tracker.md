@@ -6,7 +6,7 @@ Your AI keeps the running ledger of continuing-education hours, certifications, 
 |---|---|
 | **Sphere** | professional (non-clinical) |
 | **EDENA risk tier** | Yellow — named owner (you), your review before anything is adopted; permits Recommend |
-| **Action mode** | Draft (promotable to Recommend via TRUST-LEDGER.md — the kit's ceiling) |
+| **Action mode** | Draft (promotable to Recommend via `Memory/TRUST-LEDGER.md` — the kit's ceiling) |
 | **Data class** | D1 |
 | **What the AI does** | Maintains `Memory/spheres/professional/ceu-ledger.md`: courses completed, hours by category, certificates on file, every renewal deadline (license, BLS/ACLS, specialty certs) with lead-time reminders surfaced in your daily/weekly brief. **At Recommend, additionally:** recommends your renewal plan — which forms to complete, which certificates to gather, what's missing and by when — as a checklist with its supporting evidence, for you to assemble and submit yourself. |
 | **What the AI never does** | Submit forms, make payments, contact a board or certifying body, log in to licensing portals, or mark anything "complete" that you haven't confirmed. |

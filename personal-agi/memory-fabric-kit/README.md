@@ -30,7 +30,7 @@ memory-fabric-kit/
 The kit follows the starter kit's split: numbered folders are the library you read; `Memory/` is yours to fill.
 
 1. Copy this folder into your vault as `My-Nurse-AI-OS/19-Memory-Fabric/`. It stays there as the reference library — the cards and guides are read from it and edited in place when you revise a card.
-2. Create the sphere folders under `Memory/` as described in `VAULT-STRUCTURE.md`, and copy `TRUST-LEDGER.md` to `Memory/TRUST-LEDGER.md` — that copy is your working ledger; every run, promotion, and revocation is recorded there (the kit copy stays as a clean template).
+2. Create the sphere folders under `Memory/` as described in `VAULT-STRUCTURE.md`, and copy `TRUST-LEDGER.md` and `MONTHLY-MEMORY-REVIEW.md` into `Memory/` — those copies are your working records: every run, promotion, revocation, and review entry is written there, while the kit copies stay clean templates.
 3. Pick **one** handoff card — Pre-Shift Setup Brief is the gentlest — and run it with your AI for a week, logging every run in `Memory/TRUST-LEDGER.md`. Evidence logs live where each card says, under `Memory/spheres/`.
 4. Put the monthly memory review on your calendar now, before enthusiasm fades.
 

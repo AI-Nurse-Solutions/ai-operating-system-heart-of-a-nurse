@@ -32,7 +32,9 @@ The AI halts and hands back the moment any of these appear, no matter what the c
 ## Run record (append per run, one line in the trust ledger too)
 
 ```text
-RUN: <date> — <what was prepared> — <reviewed: Y/N> — <corrections> — <outcome>
+RUN: <date> — <what was prepared> — <reviewed: Y/N> — <corrections> — <outcome: what you committed>
 ```
 
-Every field of every record — here and in the trust ledger — is written to the no-PHI standard: no patient-adjacent detail, no credentials, no employer-confidential content, no third-party private information. Describe the work, not the sensitive thing that stopped it. A run halted by a stop condition is logged as `BLOCKED: <stop condition name>` and nothing more.
+In a single-user vault the reviewer is always you: the Y is your attestation, and the outcome field is the final-commit evidence — what you actually did with the work (used as-is, edited then sent, filed, discarded).
+
+Every field of every record — here and in the trust ledger — is written to the no-PHI standard: no patient-adjacent detail, no credentials, no employer-confidential content, no third-party private information. Describe the work, not the sensitive thing that stopped it. A run halted by a stop condition uses one canonical format in the evidence log and the ledger alike — `RUN: <date> — BLOCKED: <stop-condition name>` — omitting only the sensitive trigger content, never the marker itself.

@@ -28,18 +28,17 @@ This is the non-negotiable section. Even careful nurses leak by accident — a d
 - [ ] Check where the vault actually lives: what syncs it, what backs it up, what device it's on. Still all yours? Still off employer hardware?
 - [ ] Re-read one handoff card's evidence log and confirm nothing patient-adjacent rode along in a "helpful" summary.
 
-**Any hit — contain, then record:**
+**Any hit — stop, record, then contain:**
 
 1. Stop the related card or memory habit now: a written `NARROWED` or `REVOKED` entry per TRUST-LEDGER.md.
-2. Delete the content locally — then hunt the copies: sync targets, backups, exports, evidence logs, and any AI conversation where the note's content appeared (delete those conversations and any stored AI memory of them).
-3. Record the miss below and in the ledger as non-sensitive metadata only — what kind of detail, where it was found, what was cleaned — never the detail itself.
-4. If the content ever reached a hosted or connected AI, treat it by the incident posture of [`SAFETY.md`](../../SAFETY.md) §4: report through the applicable channel without repeating the PHI.
+2. Record the miss first — below and in the ledger — as non-sensitive metadata only: what kind of detail, where it was found, what you're about to clean. Never the detail itself. Recording before deleting preserves what an incident report needs.
+3. Delete the content locally, then identify the copies: sync targets, backups, exports, and evidence logs. If the content appeared in a hosted or connected AI conversation, follow the incident posture of [`SAFETY.md`](../../SAFETY.md) §4 *before* cleanup there — report through the applicable channel without repeating the PHI — then request deletion through the provider's own data controls. Deleting a visible conversation does not confirm provider-side removal; say so in your record.
 
 One leak is a lesson; an unrecorded leak is a pattern waiting.
 
 ### 5. Attest and log
 
-Append one block per review to the bottom of this file:
+Append one block per review to the bottom of your working copy (`Memory/MONTHLY-MEMORY-REVIEW.md` — never the kit template):
 
 ```text
 REVIEW: 2026-09-01

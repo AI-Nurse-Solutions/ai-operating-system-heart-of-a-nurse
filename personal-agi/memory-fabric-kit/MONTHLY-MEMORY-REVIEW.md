@@ -20,17 +20,25 @@ Skim the sphere folders. Personal details drifting into `professional/` or `comm
 
 This is the non-negotiable section. Even careful nurses leak by accident — a debrief note after a hard shift is how it usually happens.
 
-- [ ] Search the whole vault (not just `Memory/`) for patient names you can think of from this month. Any hit: delete the content, then note the miss below.
-- [ ] Search for room/bed numbers, MRN-shaped numbers, and dates paired with clinical events ("the code on the 14th").
+**Do this section offline, by hand — with your AI closed.** Use your text editor's or file manager's *local* search only, with any cloud, AI, or "smart search" features off. Never type a patient name, room number, or MRN into an AI chat, a connected search box, or anything that syncs or retains history — searching that way *is* the exposure this audit exists to catch. (Steps 1–3 above talk to your AI; this step never does.) If you use a terminal instead, use a search that doesn't leave the terms in your shell history. Review any match with your own eyes before deleting or recording anything.
+
+- [ ] Local-search the whole vault (not just `Memory/`) for patient names you can think of from this month. Any hit: delete the content, then note the miss below.
+- [ ] Local-search for room/bed numbers, MRN-shaped numbers, and dates paired with clinical events ("the code on the 14th").
 - [ ] Skim every note created after a hard shift. Venting is healthy; venting *into the vault* with identifying detail is a leak.
 - [ ] Check where the vault actually lives: what syncs it, what backs it up, what device it's on. Still all yours? Still off employer hardware?
 - [ ] Re-read one handoff card's evidence log and confirm nothing patient-adjacent rode along in a "helpful" summary.
 
-**Any hit:** delete the content, record the miss (below, without repeating the detail), and narrow the related card or memory habit per TRUST-LEDGER.md. One leak is a lesson; an unrecorded leak is a pattern waiting.
+**Any hit — stop, record, then contain:**
+
+1. Stop the related card or memory habit now: a written `NARROWED` or `REVOKED` entry per TRUST-LEDGER.md.
+2. Record the miss first — below and in the ledger — as non-sensitive metadata only: what kind of detail, where it was found, what you're about to clean. Never the detail itself. Recording before deleting preserves what an incident report needs.
+3. Delete the content locally, then identify the copies: sync targets, backups, exports, and evidence logs. If the content appeared in a hosted or connected AI conversation, follow the incident posture of [`SAFETY.md`](../../SAFETY.md) §4 *before* cleanup there — report through the applicable channel without repeating the PHI — then request deletion through the provider's own data controls. Deleting a visible conversation does not confirm provider-side removal; say so in your record.
+
+One leak is a lesson; an unrecorded leak is a pattern waiting.
 
 ### 5. Attest and log
 
-Append one block per review to the bottom of this file:
+Append one block per review to the bottom of your working copy (`Memory/MONTHLY-MEMORY-REVIEW.md` — never the kit template):
 
 ```text
 REVIEW: 2026-09-01

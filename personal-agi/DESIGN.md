@@ -87,7 +87,7 @@ In every row, the pattern is identical: the memory fabric makes the agent *this 
 
 ## 7. Handoff doctrine
 
-- **Action-mode ladder.** Observe → Draft → Recommend → Prepare Action → Act With Approval. Constrained Autonomy is unavailable in v0.1; unrestricted autonomy is prohibited everywhere.
+- **Action-mode ladder.** Observe → Draft → Recommend → Prepare Action → Act With Approval names the full instrument, but the personal kit reaches only Observe → Draft → Recommend — the public ceiling of the governance kit (`governance-kit/GOVERNANCE.yaml`). Prepare Action and Act With Approval belong to separately authorized environments; Constrained Autonomy is unavailable in v0.1; unrestricted autonomy is prohibited everywhere.
 - **Handoff cards.** Every delegated task class is registered with scope, credentials touched, permitted mode, stop conditions, and where its evidence log lives — with one-touch revoke.
 - **Draft-and-attest.** The agent gathers, prepares, and stages; the human reviews and commits. This is the interaction standard the OS would later demand of any clinical agent, so it is practiced from day one where the stakes are groceries and CEUs, not orders and charts.
 - **Complacency is the tracked failure mode.** Approval-without-review rate is the metric that decides whether a handoff class keeps its action mode.
@@ -106,7 +106,7 @@ The personal AGI is succeeding when a nurse can say: *my system knows my life, c
 
 ## 10. Amendment
 
-Material changes — any PHI-adjacent memory, any EHR-facing handoff, any perception hardware, any Constrained Autonomy — require explicit founder judgment and the applicable governance process. AI may draft amendments; it may not ratify them.
+Material changes — any PHI-adjacent memory, any EHR-facing handoff, any perception hardware, any Constrained Autonomy — touch the safety posture of `SAFETY.md` and are therefore substantial changes under [`GOVERNANCE.md`](../GOVERNANCE.md) §3: a proposal issue, an open comment period, and a steward decision recorded with published rationale, where the default answer is no. Founder judgment is exercised through that recorded process, not in place of it. AI may draft amendments; it may not ratify them.
 
 ---
 

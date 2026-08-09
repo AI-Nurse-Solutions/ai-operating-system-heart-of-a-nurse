@@ -66,7 +66,7 @@
   "product_service_direction": {
     "florence_x": [
       "Handoff registry: every delegated screen-work agent is registered with scope, credentials used, permitted action mode, and a one-touch revoke.",
-      "Action-mode ladder enforcement (Observe → Draft → Recommend → Prepare Action → Act With Approval); Constrained Autonomy unavailable in the personal-AGI v0.1 design.",
+      "Action-mode ladder enforcement: Observe → Draft → Recommend within the personal kit's public ceiling; Prepare Action and Act With Approval are reserved to separately, formally authorized environments, and Constrained Autonomy is unavailable in the personal-AGI v0.1 design.",
       "Attachment-drift monitoring pattern for persistent companions, adapted from agent-registry doctrine to single-user personal deployments."
     ],
     "edena": [

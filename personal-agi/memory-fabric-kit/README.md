@@ -23,13 +23,15 @@ memory-fabric-kit/
 
 1. You have a `SOUL.md` (from the [SOUL Quiz](https://nurse-ai-os.org/soul-quiz.html) or the starter kit).
 2. You've read `00-Start-Here/NO-PHI-BOUNDARY.md` and `00-Start-Here/DO-NOT-REMEMBER.md` in the starter kit. This kit assumes both, everywhere, always.
-3. Optional but recommended: a `naio-projects.json` export from the [Life & Projects Quiz](https://nurse-ai-os.org/life-quiz.html) — it maps your 3 spheres / 17 domains, which is exactly the shape this fabric uses.
+3. Optional but recommended: a `naio-projects.json` export from the [Life & Projects Quiz](https://nurse-ai-os.org/life-quiz.html). Its 17 domains carry sphere tags that map onto this fabric's four folders: `personal` → personal, `interest` → interest, `professional` → professional, and both `community` and `sidegig` → community.
 
 ## Day one
 
-1. Copy this folder into your vault as `My-Nurse-AI-OS/19-Memory-Fabric/`.
-2. Create the sphere folders described in `VAULT-STRUCTURE.md` (five minutes).
-3. Pick **one** handoff card — Pre-Shift Setup Brief is the gentlest — and run it with your AI for a week, logging every run in `TRUST-LEDGER.md`.
+The kit follows the starter kit's split: numbered folders are the library you read; `Memory/` is yours to fill.
+
+1. Copy this folder into your vault as `My-Nurse-AI-OS/19-Memory-Fabric/`. It stays there as the reference library — the cards and guides are read from it and edited in place when you revise a card.
+2. Create the sphere folders under `Memory/` as described in `VAULT-STRUCTURE.md`, and copy `TRUST-LEDGER.md` and `MONTHLY-MEMORY-REVIEW.md` into `Memory/` — those copies are your working records: every run, promotion, revocation, and review entry is written there, while the kit copies stay clean templates.
+3. Pick **one** handoff card — Pre-Shift Setup Brief is the gentlest — and run it with your AI for a week, logging every run in `Memory/TRUST-LEDGER.md`. Evidence logs live where each card says, under `Memory/spheres/`.
 4. Put the monthly memory review on your calendar now, before enthusiasm fades.
 
 Do not start with three cards. One card, reviewed honestly, beats three approved on autopilot.

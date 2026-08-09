@@ -1,0 +1,14 @@
+{
+  "contract": "personal-library-lock v0.1",
+  "packs": [
+    {
+      "id": "governed-ai-study-basics",
+      "version": "0.1.0",
+      "path": "packs/governed-ai-study-basics",
+      "manifest_sha256": "4ee05cbfccf5fa98c56b2a641015a5df791d676e08305a00ed4283d7fd4486f8",
+      "accepted_by": "Founding steward (acceptance takes effect with the steward's merge of the pilot change)",
+      "accepted_date": "2026-08-09",
+      "state_at_acceptance": "draft"
+    }
+  ]
+}

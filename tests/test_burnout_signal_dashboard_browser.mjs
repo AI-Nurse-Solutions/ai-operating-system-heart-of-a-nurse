@@ -208,6 +208,21 @@ try {
   );
   assert.ok(!JSON.stringify(recheck).includes('should never survive import'));
 
+  // Legacy storage written by an older version is scrubbed on load, with no
+  // user action: fields outside the allowlist must not linger in localStorage.
+  await page.evaluate(() => {
+    localStorage.setItem('naio-burnout-signal-v1', JSON.stringify({
+      weeks: [{
+        weekOf: '2026-07-27', staffCount: 9, shiftsWorked: 45, lateDepartures: 4,
+        breaksMissed: 6, staffNoRecentPto: 2, employeeName: 'legacy leftover'
+      }]
+    }));
+  });
+  await page.reload();
+  const scrubbed = await page.evaluate(() => localStorage.getItem('naio-burnout-signal-v1'));
+  assert.ok(!scrubbed.includes('legacy leftover'), 'legacy extra fields are scrubbed from storage on load');
+  assert.ok(scrubbed.includes('2026-07-27'), 'the legacy week itself survives the scrub');
+
   assert.equal(errors.length, 0, `functional-flow errors: ${errors.join(' | ')}`);
   await page.close();
 

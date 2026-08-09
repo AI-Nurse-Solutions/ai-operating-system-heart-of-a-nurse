@@ -305,7 +305,13 @@
       if (!raw) return { weeks: [] };
       var parsed = JSON.parse(raw);
       if (!parsed || !Array.isArray(parsed.weeks)) return { weeks: [] };
-      return { weeks: parsed.weeks.filter(isValidWeek).map(sanitizeWeek) };
+      var state = { weeks: parsed.weeks.filter(isValidWeek).map(sanitizeWeek) };
+      /* Scrub, don't just filter: data written by an older version may carry
+         fields outside the allowlist, so the sanitized state is persisted
+         back immediately rather than lingering until the next save. */
+      var cleaned = JSON.stringify(state);
+      if (cleaned !== raw) window.localStorage.setItem(STORAGE_KEY, cleaned);
+      return state;
     } catch (err) {
       return { weeks: [] };
     }

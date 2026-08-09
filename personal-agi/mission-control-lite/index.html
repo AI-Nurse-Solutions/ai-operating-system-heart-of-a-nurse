@@ -199,7 +199,7 @@
     function isObj(v){ return v && typeof v==='object' && !Array.isArray(v); }
     function sanitizeProjects(data){
       if(!isObj(data) || !Array.isArray(data.projects)) return null;
-      const projects = data.projects.filter(isObj).map(p=>({
+      const projects = data.projects.filter(p=>isObj(p) && SPHERES.some(s=>s.id===p.sphere)).map(p=>({
         name: str(p.name), sphere: str(p.sphere), sphere_label: str(p.sphere_label),
         edena_tier: p.edena_tier==='yellow' ? 'yellow' : 'green',
         suggested_prompt_name: str(p.suggested_prompt_name), slug: str(p.slug),

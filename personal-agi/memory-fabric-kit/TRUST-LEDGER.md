@@ -18,12 +18,12 @@ Every field follows the no-PHI standard from the card template: no patient-adjac
 
 A card changes action mode only here, in writing, by you.
 
-**To widen a card's mode** (e.g., Draft → Prepare Action), all five must be true over the trailing month:
+**To widen a card's mode** (e.g., Draft → Recommend), all five must be true over the trailing month:
 
 1. at least 10 logged runs in the current mode;
 2. "Read it all?" is Y on every one of them;
 3. corrections were minor (wording, staleness) — never wrong-target, invented content, or scope creep;
-4. the target mode sits within the card's EDENA risk-tier ceiling — a Green card stops at Draft; Recommend and above require a Yellow card. If the tier itself seems wrong, that's a card revision made against the EDENA Stewardship Lens first, separately from — and never inside — a ledger promotion;
+4. the target mode sits within the ceilings — a Green card stops at Draft, Recommend requires a Yellow card, and nothing in this kit promotes past Recommend. If the tier itself seems wrong, that's a card revision made against the EDENA Stewardship Lens first, separately from — and never inside — a ledger promotion;
 5. you can say why widening helps *you*, not just the AI.
 
 Record it: `PROMOTED: <card> to <mode>, <date>, because <reason>`.
@@ -39,12 +39,13 @@ Record it: `REVOKED/NARROWED: <card>, <date>, because <reason>`.
 
 ## Ceilings
 
-Act With Approval is the widest mode any card in this kit can ever reach, and only ever inside the personal, interest, professional (non-clinical), and community spheres. Constrained Autonomy is not available in v0.1 at all. No ledger streak — however clean — promotes a card toward patient data, employer systems, or clinical surfaces. Those ceilings belong to [DESIGN.md](../DESIGN.md), not to this file.
+Recommend is the widest mode any card in this kit can ever reach — the public ceiling of the governance kit (`governance-kit/GOVERNANCE.yaml`) — and only ever inside the personal, interest, professional (non-clinical), and community spheres. Prepare Action, Act With Approval, and Constrained Autonomy require a separately, formally authorized environment that this kit cannot grant. No ledger streak — however clean — promotes a card past that ceiling or toward patient data, employer systems, or clinical surfaces. Those ceilings belong to [DESIGN.md](../DESIGN.md) and `GOVERNANCE.yaml`, not to this file.
 
 ## Promotion log
 
 ```text
 (example)
-PROMOTED: CEU-Renewal-Tracker to Prepare Action, 2026-09-15, because a month of
-clean Draft runs and I want the renewal packet staged, not just listed.
+PROMOTED: CEU-Renewal-Tracker to Recommend, 2026-09-15, because a month of
+clean Draft runs and I want the renewal plan recommended with evidence,
+not just tracked.
 ```

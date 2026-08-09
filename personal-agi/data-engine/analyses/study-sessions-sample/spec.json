@@ -1,0 +1,34 @@
+{
+  "title": "Study sessions — July sample",
+  "question": "Where is my study time going, and am I committing to my own answer before comparing with the AI?",
+  "edena_tier": "green",
+  "data_class": "D0",
+  "columns": [
+    {"name": "date", "type": "date"},
+    {"name": "topic", "type": "string"},
+    {"name": "minutes", "type": "number"},
+    {"name": "mode", "type": "string"},
+    {"name": "committed_first", "type": "string"}
+  ],
+  "analyses": [
+    {"op": "count"},
+    {"op": "sum", "column": "minutes"},
+    {"op": "mean", "column": "minutes"},
+    {"op": "count_by", "column": "topic"},
+    {"op": "count_by", "column": "mode"},
+    {"op": "count_by", "column": "committed_first"}
+  ],
+  "provenance": {
+    "source": "Synthetic sample data — not a real nurse's log",
+    "no_phi_attested": true
+  },
+  "boundaries": {
+    "intended_use": [
+      "A worked example of the closed analysis-spec format over a synthetic study log",
+      "A template a nursing student can copy for their own local study log"
+    ],
+    "not_claims": [
+      "Counts and minutes are adoption signals and learning evidence only — they establish no learning outcome, competency, or examination-success finding"
+    ]
+  }
+}

@@ -129,6 +129,52 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
                 if approval_ref not in actor.approvals:
                     return self._deny("EDENA-APPROVAL-UNRECOGNIZED")
 
+        # Summative-intent gates (Nurse Formation doctrine): grading,
+        # progression, competency sign-off, and professionalism findings
+        # are gated by activity class, independent of action mode. AI may
+        # draft feedback for an educator's review; the summative act
+        # itself requires a named human educator approval — AI never
+        # grades alone, and it never gates a career.
+        summative_rules = self.policy.get("summative_rules", {})
+        summative_gated = request.intent in summative_rules.get(
+            "execution_intents", ()
+        )
+        if summative_gated:
+            if request.data_zone.value != summative_rules["required_zone"]:
+                return self._deny("EDENA-SUMMATIVE-ZONE")
+            if summative_rules.get("requires_institutional_authentication") and (
+                not actor.authenticated_org
+                or actor.authenticated_org != actor.tenant
+            ):
+                return self._deny("EDENA-SUMMATIVE-UNAFFILIATED")
+            if summative_rules.get("requires_recorded_approval"):
+                # The educator's sign-off must be named on the request AND
+                # recorded for the actor — an unrelated approval the actor
+                # happens to hold is not educator authority, and a
+                # fabricated reference fails closed.
+                key = summative_rules.get(
+                    "approval_metadata_key", "educator_approval_id"
+                )
+                approval_ref = request.metadata.get(key)
+                if not approval_ref:
+                    return PolicyDecision(
+                        decision=Decision.REQUIRE_APPROVAL,
+                        reason_codes=("EDENA-EDUCATOR-AUTHORITY",),
+                        obligations=("record_educator_summative_approval",),
+                        policy_version=self.version,
+                    )
+                if approval_ref not in actor.approvals:
+                    return self._deny("EDENA-APPROVAL-UNRECOGNIZED")
+                # Membership is not authority: an unrelated approval the
+                # actor holds cannot be laundered into an educator sign-off
+                # by naming it. The recorded provenance must carry the
+                # required scope, or the gate fails closed.
+                required_scope = summative_rules.get("required_approval_scope")
+                if required_scope and (
+                    (approval_ref, required_scope) not in actor.approval_scopes
+                ):
+                    return self._deny("EDENA-APPROVAL-SCOPE")
+
         data_ceiling = self.policy["tier_data_ceilings"].get(tier.value)
         if data_ceiling is None or data.rank > DataClass(data_ceiling).rank:
             return self._deny("EDENA-DATA-CLASS-CEILING")
@@ -143,6 +189,8 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
             obligations.append("log_zone_migration")
         if research_gated:
             obligations.append("research_governance_audit")
+        if summative_gated:
+            obligations.append("summative_authority_audit")
 
         if tier in (RiskTier.ORANGE, RiskTier.RED_E):
             requirements = self.policy[

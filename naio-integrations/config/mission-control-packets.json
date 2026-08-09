@@ -137,7 +137,8 @@
         "simulation-studio",
         "competency-and-observation-tools",
         "feedback-coach",
-        "deidentified-cohort-dashboard"
+        "deidentified-cohort-dashboard",
+        "summative-authority-gates"
       ],
       "default_agents": [
         "guide-navigator",

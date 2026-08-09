@@ -109,6 +109,10 @@ class Actor:
     tenant: str  # personal:<user> or org:<institution>
     authenticated_org: str | None = None
     approvals: tuple[str, ...] = ()  # recorded approval ids held by this actor
+    # Structured provenance for recorded approvals: (approval_id, scope)
+    # pairs. An approval without a scope record is unscoped and cannot
+    # satisfy a rule that names a required authority scope.
+    approval_scopes: tuple[tuple[str, str], ...] = ()
 
 
 @dataclass(frozen=True)

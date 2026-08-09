@@ -1,0 +1,103 @@
+{
+  "signal_metadata": {
+    "title": "Hark-inspired 'personal AGI' direction for Nurse AI OS: ambient multi-modal hardware, agentic EHR handoff, persistent personalized memory, proactive reasoning",
+    "source": "Internal strategy note (user-authored, describing Hark's personal-AI product approach secondhand)",
+    "date": "2026-08-09",
+    "signal_class": "AGENTIC_AUTONOMY",
+    "secondary_classes": ["EDGE_COMPUTE", "HUMAN_AI_RELATIONAL", "MARKET_VENDOR"],
+    "evidence_tier": "PRESS_SPECULATION"
+  },
+  "triage": {
+    "relevance_score": 4,
+    "urgency": "NEAR_TERM",
+    "valence": "DUAL",
+    "confidence": "MEDIUM",
+    "primary_domains": ["NURSE_AI_OS", "FLORENCE_X", "EDGE_NODES", "EDENA"]
+  },
+  "signal_summary": "A strategy note proposes evolving Nurse AI OS from a governed application into a persistent 'personal AGI' companion for nurses, modeled on Hark's consumer personal-AI approach. Four capabilities are proposed: wearable ambient listening/vision hardware, a 'Handoff' computer-use agent that navigates the EHR and completes administrative screen work, persistent personalized memory spanning a nurse's routines and shift context, and proactive reasoning over vitals, labs, and remembered observations. The note asks which capability should be sequenced first for a frontline initiative.",
+  "ontology_implication": {
+    "analysis": "The signal extends the Nurse AI OS concept from a role-configured toolset to a persistent, sphere-scoped personal companion, which the ontology must formalize as distinct from institutional clinical AI. It introduces the delegated screen-work ('handoff') agent as a category between draft-only assistants and write-capable clinical agents, distinguished by whether its target surface is a personal system or the record of care. Wearable ambient sensing extends the Edge Node concept from computation-locality to perception-locality. Proactive reasoning splits ontologically into personal-sphere anticipation (briefs, reminders, preparation) and clinical physiological monitoring, which crosses into regulated device territory and cannot be treated as a feature increment of the former.",
+    "affected_action_stages": ["NAVIGATE", "ASSESS", "INTEGRATE", "ORCHESTRATE"],
+    "new_or_updated_concepts": [
+      "Personal-Sphere AGI (persistent companion scoped to non-clinical spheres)",
+      "Sphere Ladder (personal → interest → professional non-clinical → community → institutional-clinical, with a hard governance break before the last rung)",
+      "Delegated Screen-Work (Handoff) Agent",
+      "Perception-Locality Wearable",
+      "Trust Ledger (accumulated evidence of gated agent performance used to justify wider action modes)"
+    ]
+  },
+  "doctrine_implication": {
+    "refusal_posture_analysis": {
+      "compression": {
+        "exposure": "MODERATE",
+        "analysis": "Offloading administrative screen time is supportive of the refusal if reclaimed time returns to direct care, but a persistent companion marketed as an 'intelligent partner' invites relational substitution framing, and any efficiency figures will be reused to justify higher ratios unless explicitly fenced."
+      },
+      "substitution": {
+        "exposure": "MODERATE",
+        "analysis": "Proactive surfacing of vitals changes and 'prepared protocols' drifts toward AI outputs being treated as conclusions. All anticipatory output must remain a hypothesis requiring clinical validation, and predictive physiological monitoring is likely a regulated medical-device function, not an OS feature."
+      },
+      "sidelining": {
+        "exposure": "HIGH",
+        "analysis": "The 'Handoff' capability as described — an agent that independently navigates the EHR, gathers data, and completes digital tasks — is machine-to-EHR action. Without a per-action human validation gate it violates the Refusal of Sidelining outright; with gates, it is only admissible under institutional authorization that no personal progression can confer."
+      }
+    },
+    "verdict": "MIXED",
+    "ethics_notes": "Ambient listening and vision in patient areas capture PHI and third-party audio, raising consent, disclosure, retention, and secondary-use questions for patients, families, and colleagues. Persistent memory of 'passing observations about a patient's comfort' is PHI in agent memory, which current Nurse AI OS boundaries prohibit; the personal-sphere memory fabric must carry an enforced no-PHI invariant. Anti-surveillance doctrine applies: a nurse's personal memory fabric must never feed employer analytics, competency scoring, or discipline."
+  },
+  "playbook_update": {
+    "bedside_actions": [
+      "Do not wear or activate consumer ambient-recording devices (badge, earpiece, glasses) in patient-care areas; institutional authorization and consent frameworks do not yet exist for this class.",
+      "Begin the personal-AGI build in the personal sphere: SOUL file, Life & Projects Quiz sphere map, and a local-first memory vault containing no PHI and no reconstructable patient narrative.",
+      "Treat any proactive alert or prepared protocol from any AI system as a hypothesis: verify against the patient, the monitor, and local policy before acting.",
+      "Practice supervised handoffs only on personal-sphere and non-clinical professional screen work (scheduling, CEU tracking, personal inbox, side-gig admin), with review of every action the agent prepared."
+    ],
+    "training_needs": [
+      "Supervising a computer-use agent: scoping a handoff, reading its action log, catching wrong-target and over-reach errors before approval.",
+      "Memory hygiene: what a personal AI may remember, how to inspect and delete it, and why patient details must never enter it.",
+      "Recognizing automation complacency and attachment drift in daily use of a persistent companion."
+    ],
+    "monitoring_requirements": [
+      "Audit personal memory stores for PHI leakage (nurse self-audit routine plus tooling check), monthly.",
+      "Track handoff approval-without-review rates as a complacency indicator (Florence X concern once instrumented).",
+      "Watch for shadow-AI adoption: frontline staff bringing consumer personal-AI wearables into clinical settings ahead of governance.",
+      "Monitor vendor and market movement on EHR-overlay agents and personal-AI hardware entering healthcare, quarterly."
+    ]
+  },
+  "product_service_direction": {
+    "florence_x": [
+      "Handoff registry: every delegated screen-work agent is registered with scope, credentials used, permitted action mode, and a one-touch revoke.",
+      "Action-mode ladder enforcement (Observe → Draft → Recommend → Prepare Action → Act With Approval); Constrained Autonomy unavailable in the personal-AGI v0.1 design.",
+      "Attachment-drift monitoring pattern for persistent companions, adapted from agent-registry doctrine to single-user personal deployments."
+    ],
+    "edena": [
+      "Sphere-scoped memory gates: memory writes are namespaced by sphere and blocked from crossing into higher data classes; a no-PHI invariant check runs on the memory fabric.",
+      "A recording/perception gate: any capability that senses the environment (audio, vision) is classified and refused by default outside authorized contexts.",
+      "Publication and outreach from community-sphere handoffs require explicit human approval per artifact."
+    ],
+    "nurse_ai_os": [
+      "Treaty clause: the handoff interaction standard is draft-and-attest — an agent may gather, prepare, and stage; a human reviews and commits.",
+      "Sequencing standard: personal-sphere-first; no capability graduates a sphere on performance alone, only by explicit human decision recorded in the trust ledger.",
+      "A hard governance break between the community sphere and any institutional-clinical use: the personal AGI never carries itself into the EHR."
+    ],
+    "edge_nodes": [
+      "Local-first memory storage as the default substrate (files and local index the nurse owns, inspects, exports, and deletes).",
+      "If perception hardware is ever pursued, require on-device processing with no raw audio/video retention as a design precondition, before any clinical conversation begins."
+    ]
+  },
+  "risk_vectors": [
+    "PHI accumulates in persistent personal memory through casual shift notes, later exposed by sync, backup, subpoena, or breach.",
+    "An EHR handoff agent acts on the wrong patient context or stale screen state and the error enters the record of care before review.",
+    "Automation complacency: nurses attest agent-prepared work without reading it, hollowing the validation gate.",
+    "Ambient wearables record patients, families, and colleagues without consent, creating covert-surveillance and trust harms.",
+    "Vendor efficiency claims for handoff agents are converted into staffing reductions, turning an augmentation tool into a compression vector.",
+    "Emotional reliance on a persistent companion substitutes for peer support and debriefing, masking burnout signals.",
+    "Personal memory fabrics become employer-readable through workplace device policies, enabling surveillance the doctrine prohibits."
+  ],
+  "open_questions": [
+    "Which of Hark's described capabilities are shipping versus roadmap, and what is their verified performance? (Secondhand description; no independent evidence reviewed.)",
+    "Do major EHR vendors' terms of service and hospital security policies permit third-party computer-use agents on clinical workstations at all?",
+    "Does proactive monitoring of vitals and labs with 'prepared protocols' constitute software as a medical device in the target jurisdictions, and under which pathway?",
+    "What consent and disclosure framework would ambient capture in patient areas require, and has any institution's counsel accepted one?",
+    "What retention, export, and deletion guarantees can a persistent memory fabric make that survive device loss, platform migration, and employer-owned hardware?"
+  ]
+}

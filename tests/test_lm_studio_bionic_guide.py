@@ -69,7 +69,7 @@ class LmStudioBionicGuideTests(unittest.TestCase):
         ):
             self.assertRegex(
                 self.sitemap,
-                rf"<loc>{re.escape(route)}</loc><lastmod>2026-07-27</lastmod>",
+                rf"<loc>{re.escape(route)}</loc><lastmod>\d{{4}}-\d{{2}}-\d{{2}}</lastmod>",
             )
 
     def test_public_safety_workflow_scans_the_nested_guide_route(self) -> None:

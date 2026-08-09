@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import datetime
 import re
 import unittest
 from pathlib import Path
@@ -66,11 +67,14 @@ class LmStudioBionicGuideTests(unittest.TestCase):
             "https://nurse-ai-os.org/",
             "https://nurse-ai-os.org/resources.html",
             "https://nurse-ai-os.org/guides/nurse-ai-os-lm-studio-bionic/",
+            "https://nurse-ai-os.org/personal-agi/mission-control-lite/",
         ):
-            self.assertRegex(
+            match = re.search(
+                rf"<loc>{re.escape(route)}</loc><lastmod>(\d{{4}}-\d{{2}}-\d{{2}})</lastmod>",
                 self.sitemap,
-                rf"<loc>{re.escape(route)}</loc><lastmod>\d{{4}}-\d{{2}}-\d{{2}}</lastmod>",
             )
+            self.assertIsNotNone(match, route)
+            datetime.date.fromisoformat(match.group(1))
 
     def test_public_safety_workflow_scans_the_nested_guide_route(self) -> None:
         scanner_pages = self.workflow.split("pages=(", 1)[1].split(")", 1)[0]

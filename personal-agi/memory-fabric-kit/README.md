@@ -4,7 +4,7 @@ This kit turns the [Sphere-First Design Doctrine](../DESIGN.md) (sections 6–7)
 
 Downloading or copying this kit does not install anything, activate any agent, or authorize any institutional use.
 
-**Easiest path:** this kit ships pre-assembled inside the [Personal AGI Starter bundle](../downloads/) (`personal-agi-starter-v0.2.zip`) — Mission Control plus this kit with the day-one steps below already done. Use this page directly only if you're assembling by hand.
+**Easiest path:** this kit ships pre-assembled inside the [Personal AGI Starter bundle](../downloads/) (`personal-agi-starter-v0.2.zip`) — Mission Control plus this kit, with the folder setup from the day-one steps below already done (your SOUL.md still comes from the dashboard's two-minute start or the SOUL Quiz). Use this page directly only if you're assembling by hand.
 
 ## What's inside
 

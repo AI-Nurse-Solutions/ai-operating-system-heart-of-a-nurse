@@ -265,6 +265,11 @@ ${name ? `Call me ${name}. ` : ''}My role lane: ${role.label}.
 ## What I'm carrying right now
 ${carrying}
 
+## Your first responsibilities
+${selected.map(d=>`- **${d.label}** — start with a "${d.prompt}": Draft mode only, my review on every output.`).join('\n')}
+- Keep each area's notes in its own sphere folder under \`Memory/spheres/\` — never mixed, never patient-adjacent.
+- Log every run in \`Memory/TRUST-LEDGER.md\` and surface anything due in my briefs.
+
 ## How to work with me
 - Agents propose. Humans judge. Nurses steward.
 - Draft-and-attest: you gather, prepare, and stage; I review and commit.
@@ -413,7 +418,12 @@ to map more of my life — but respect the pace I set.
         const chips = document.getElementById('obChips');
         chips.innerHTML = OB_DOMAINS.map(d=>`<button type="button" class="chipbtn" data-ob="${d.id}" aria-pressed="false">${esc(d.label)}</button>`).join('');
         chips.querySelectorAll('.chipbtn').forEach(b=> b.addEventListener('click', ()=>{
-          b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='true' ? 'false' : 'true');
+          const on = b.getAttribute('aria-pressed')==='true';
+          if(!on && chips.querySelectorAll('.chipbtn[aria-pressed="true"]').length >= 3){
+            setStatus('Three is the starter maximum — the full Life & Projects Quiz maps everything else, later.');
+            return;
+          }
+          b.setAttribute('aria-pressed', on ? 'false' : 'true');
         }));
         document.getElementById('obBuild').addEventListener('click', ()=>{
           const picked = [...document.querySelectorAll('#obChips .chipbtn[aria-pressed="true"]')].map(b=>OB_DOMAINS.find(d=>d.id===b.dataset.ob)).filter(Boolean);
@@ -434,13 +444,11 @@ to map more of my life — but respect the pace I set.
     }
     function renderNudge(){
       const el = document.getElementById('depthNudge');
-      if(state.profileDepth !== 'starter'){ el.hidden = true; return; }
-      el.hidden = false;
       let days = 0;
       if(state.onboardedAt){ const t = Date.parse(state.onboardedAt); if(!isNaN(t)) days = Math.floor((Date.now()-t)/86400000); }
-      el.innerHTML = days >= 30
-        ? `<strong>Your starter profile is ${days} days old.</strong> If it still fits, keep it — minimal is valid. When you're ready for more, the full <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> map all 17 life domains, and importing the export here replaces this map.`
-        : `<strong>Starter profile active</strong> — a deliberate minimal beginning. Go deeper any time with the full <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a>; this page will nudge you again after a month.`;
+      if(state.profileDepth !== 'starter' || days < 30){ el.hidden = true; return; }
+      el.hidden = false;
+      el.innerHTML = `<strong>Your starter profile is ${days} days old.</strong> If it still fits, keep it — minimal is valid. When you're ready for more, the full <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> map all 17 life domains, and importing the export here replaces this map.`;
     }
     function renderAll(){ renderOnboarding(); renderRoles(); renderModules(); renderTabs(); renderNudge(); }
 

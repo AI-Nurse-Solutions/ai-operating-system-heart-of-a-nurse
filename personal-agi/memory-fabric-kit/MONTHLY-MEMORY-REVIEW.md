@@ -20,13 +20,22 @@ Skim the sphere folders. Personal details drifting into `professional/` or `comm
 
 This is the non-negotiable section. Even careful nurses leak by accident — a debrief note after a hard shift is how it usually happens.
 
-- [ ] Search the whole vault (not just `Memory/`) for patient names you can think of from this month. Any hit: delete the content, then note the miss below.
-- [ ] Search for room/bed numbers, MRN-shaped numbers, and dates paired with clinical events ("the code on the 14th").
+**Do this section offline, by hand — with your AI closed.** Use your text editor's or file manager's *local* search only, with any cloud, AI, or "smart search" features off. Never type a patient name, room number, or MRN into an AI chat, a connected search box, or anything that syncs or retains history — searching that way *is* the exposure this audit exists to catch. (Steps 1–3 above talk to your AI; this step never does.) If you use a terminal instead, use a search that doesn't leave the terms in your shell history. Review any match with your own eyes before deleting or recording anything.
+
+- [ ] Local-search the whole vault (not just `Memory/`) for patient names you can think of from this month. Any hit: delete the content, then note the miss below.
+- [ ] Local-search for room/bed numbers, MRN-shaped numbers, and dates paired with clinical events ("the code on the 14th").
 - [ ] Skim every note created after a hard shift. Venting is healthy; venting *into the vault* with identifying detail is a leak.
 - [ ] Check where the vault actually lives: what syncs it, what backs it up, what device it's on. Still all yours? Still off employer hardware?
 - [ ] Re-read one handoff card's evidence log and confirm nothing patient-adjacent rode along in a "helpful" summary.
 
-**Any hit:** delete the content, record the miss (below, without repeating the detail), and narrow the related card or memory habit per TRUST-LEDGER.md. One leak is a lesson; an unrecorded leak is a pattern waiting.
+**Any hit — contain, then record:**
+
+1. Stop the related card or memory habit now: a written `NARROWED` or `REVOKED` entry per TRUST-LEDGER.md.
+2. Delete the content locally — then hunt the copies: sync targets, backups, exports, evidence logs, and any AI conversation where the note's content appeared (delete those conversations and any stored AI memory of them).
+3. Record the miss below and in the ledger as non-sensitive metadata only — what kind of detail, where it was found, what was cleaned — never the detail itself.
+4. If the content ever reached a hosted or connected AI, treat it by the incident posture of [`SAFETY.md`](../../SAFETY.md) §4: report through the applicable channel without repeating the PHI.
+
+One leak is a lesson; an unrecorded leak is a pattern waiting.
 
 ### 5. Attest and log
 

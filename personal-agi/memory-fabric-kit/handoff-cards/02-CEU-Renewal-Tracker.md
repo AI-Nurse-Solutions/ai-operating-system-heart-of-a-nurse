@@ -5,6 +5,7 @@ Your AI keeps the running ledger of continuing-education hours, certifications, 
 | Field | Value |
 |---|---|
 | **Sphere** | professional (non-clinical) |
+| **EDENA risk tier** | Yellow — named owner (you), your review before anything is adopted; ceiling permits Prepare Action |
 | **Action mode** | Draft (promotable to Prepare Action via TRUST-LEDGER.md) |
 | **Data class** | D1 |
 | **What the AI does** | Maintains `Memory/spheres/professional/ceu-ledger.md`: courses completed, hours by category, certificates on file, every renewal deadline (license, BLS/ACLS, specialty certs) with lead-time reminders surfaced in your daily/weekly brief. **At Prepare Action, additionally:** assembles the renewal packet — filled forms saved locally, certificate copies gathered, a checklist of what's missing — staged for you to verify and submit yourself. |
@@ -12,7 +13,7 @@ Your AI keeps the running ledger of continuing-education hours, certifications, 
 | **Accounts/credentials touched** | None at Draft (works from files you drop in the vault). At Prepare Action: still none — portal logins remain yours; the AI prepares around them. |
 | **Stop conditions** | Universal list, plus: any discrepancy between your records and a requirement (hours short, category mismatch) → it flags loudly rather than papering over. |
 | **Evidence log** | `Memory/spheres/professional/ceu-ledger.md` (append-only run notes at the bottom). |
-| **Revoke** | Delete this card from your vault; tell your AI the card is revoked. The ledger file stays — it's yours. |
+| **Revoke** | Record `REVOKED: CEU & Renewal Tracker` in the trust ledger, tell your AI the card is revoked, then delete the card. The CEU ledger file stays — it's yours. |
 
 ## Why this card second
 

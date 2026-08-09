@@ -29,7 +29,7 @@ Each sphere folder holds plain markdown notes: preferences, routines, running co
 
 ## What your AI does with this
 
-When a session starts, your AI reads `SOUL.md`, the KARDEX, and only the sphere folders relevant to the task at hand. When it learns something worth keeping, it proposes the note and the sphere — you approve the write. Point your AI at this file once so it knows the rules; after that, hold it to them.
+When a session starts, your AI reads `SOUL.md`, the KARDEX, and only the sphere folders relevant to the task at hand. Before any handoff run, it must also resolve the named handoff card and the current state of `Memory/TRUST-LEDGER.md` — the card's mode as promoted or narrowed, and any revocation. If the card or the ledger is missing, ambiguous, or contradictory, the AI does nothing and asks; a handoff never runs on an assumed mode. When it learns something worth keeping, it proposes the note and the sphere — you approve the write. Point your AI at this file once so it knows the rules; after that, hold it to them.
 
 ## What never goes in any sphere
 

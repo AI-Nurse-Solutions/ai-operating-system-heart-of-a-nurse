@@ -106,7 +106,7 @@ The personal AGI is succeeding when a nurse can say: *my system knows my life, c
 
 ## 10. Amendment
 
-Material changes — any PHI-adjacent memory, any EHR-facing handoff, any perception hardware, any Constrained Autonomy — require explicit founder judgment and the applicable governance process. AI may draft amendments; it may not ratify them.
+Material changes — any PHI-adjacent memory, any EHR-facing handoff, any perception hardware, any Constrained Autonomy — touch the safety posture of `SAFETY.md` and are therefore substantial changes under [`GOVERNANCE.md`](../GOVERNANCE.md) §3: a proposal issue, an open comment period, and a steward decision recorded with published rationale, where the default answer is no. Founder judgment is exercised through that recorded process, not in place of it. AI may draft amendments; it may not ratify them.
 
 ---
 

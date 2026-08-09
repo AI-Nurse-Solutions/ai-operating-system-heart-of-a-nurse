@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Mission Control Lite · Nurse AI OS</title>
+  <style>
+    :root{
+      --navy:#10213f; --teal:#0f766e; --gold:#b7791f; --amber:#fbbf24;
+      --cream:#f8fafc; --paper:#ffffff; --slate:#5b6678; --ink:#172033;
+      --line:#d9e2ec; --soft:#eef7f5; --rose:#fff7ed; --danger:#7f1d1d;
+      --shadow:0 18px 40px rgba(16,33,63,.10); --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f7fbfb 0%,#fff 38%,#fffaf0 100%);color:var(--ink);font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;line-height:1.55}
+    a{color:var(--teal);font-weight:750}
+    .wrap{max-width:1180px;margin:0 auto;padding:28px 20px}
+    .hero{background:radial-gradient(circle at 20% 0%,rgba(251,191,36,.28),transparent 34%),linear-gradient(135deg,#081427 0%,#10213f 58%,#0f766e 150%);color:white;padding:52px 0 38px;position:relative;overflow:hidden}
+    .hero:after{content:"";position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;background:rgba(251,191,36,.12);filter:blur(8px)}
+    .hero .wrap{position:relative;z-index:1}
+    .eyebrow{letter-spacing:.14em;text-transform:uppercase;font-size:.76rem;font-weight:900;color:var(--amber)}
+    h1{font-size:clamp(2.2rem,5vw,4.6rem);line-height:.95;letter-spacing:-.05em;margin:.35rem 0 1rem;max-width:900px}
+    h2{font-size:clamp(1.35rem,3vw,2.1rem);line-height:1.05;margin:0 0 .7rem;letter-spacing:-.03em;color:var(--navy)}
+    h3{margin:.2rem 0 .5rem;color:var(--navy)}
+    p{margin:.35rem 0 1rem}
+    .lede{font-size:1.1rem;color:#dbeafe;max-width:820px}
+    .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .chip{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);border-radius:999px;padding:8px 12px;font-weight:800;font-size:.84rem}
+    .toolbar{position:sticky;top:0;z-index:5;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    .toolbar .wrap{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+    .btn{appearance:none;border:0;border-radius:999px;background:var(--navy);color:white;padding:10px 14px;font-weight:850;cursor:pointer;box-shadow:0 10px 22px rgba(16,33,63,.14)}
+    .btn.alt{background:var(--teal)} .btn.gold{background:var(--gold)} .btn.light{background:#e6fffb;color:#07423e}
+    .status{font-size:.88rem;color:var(--slate);font-weight:750}
+    .grid{display:grid;gap:18px}
+    .three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .callout{background:#ecfdf5;border:1px solid #bbf7d0;border-left:6px solid var(--teal);border-radius:18px;padding:18px}
+    .warning{background:#fff7ed;border-color:#fed7aa;border-left-color:var(--gold)}
+    .danger{background:#fff1f2;border-color:#fecdd3;border-left-color:var(--danger)}
+    .label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);font-weight:900}
+    .section{padding:26px 0}.section.alt{background:rgba(238,247,245,.5)}
+    textarea,input,select{width:100%;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font:inherit;background:white;color:var(--ink)}
+    textarea{min-height:120px;resize:vertical}
+    .row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .pill{display:inline-flex;border-radius:999px;background:var(--soft);color:#075c55;padding:5px 10px;font-size:.76rem;font-weight:900;margin:0 6px 6px 0}
+    .pill.yellow{background:#fef3c7;color:#78350f}
+    .pill.plan{background:#e0e7ff;color:#3730a3}
+    .pill.doc{background:#fef9c3;color:#713f12}
+    .tabbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
+    .tab{appearance:none;border:1px solid var(--line);background:white;color:var(--navy);border-radius:999px;padding:10px 16px;font-weight:850;cursor:pointer}
+    .tab[aria-selected="true"]{background:var(--navy);color:white;border-color:var(--navy)}
+    .tab .count{opacity:.65;font-weight:800;margin-left:6px}
+    .proj{border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:0 0 12px;background:white}
+    .proj h3{margin:0 0 .2rem}
+    .proj p{margin:.2rem 0}
+    .muted{color:var(--slate);font-size:.9rem}
+    .mod-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .mod-links{margin:.4rem 0 .6rem}
+    .mod-links a{display:inline-block;margin:0 12px 6px 0;font-size:.92rem}
+    .conn input{font-size:.9rem}
+    .footer{background:#081427;color:#cbd5e1;margin-top:28px}
+    .footer h2{color:white}.footer .wrap{padding-top:38px;padding-bottom:38px}
+    @media(max-width:900px){.three,.two{grid-template-columns:1fr}.toolbar{position:relative}.btn{width:100%}.row{align-items:flex-start}}
+    @media print{.toolbar,.no-print{display:none!important}.hero{background:#10213f!important}.card,.proj{break-inside:avoid;box-shadow:none}.wrap{max-width:none}.section{padding:10px 0}}
+  </style>
+</head>
+<body data-dashboard-template="mission-control-lite">
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Nurse AI OS · Personal AGI Surface · Preview</div>
+      <h1>Mission Control Lite.</h1>
+      <p class="lede">One core system, six module sockets, and a tab for every sphere of your life. Import your Life &amp; Projects Quiz export, pick your role, and see your whole governed system on one page — browser-only, local storage, no PHI ever.</p>
+      <div class="chips" aria-label="Safety chips">
+        <span class="chip">Browser-only</span><span class="chip">No account</span><span class="chip">Local storage</span><span class="chip">No PHI</span><span class="chip">Observe &amp; Draft only</span><span class="chip">Human gate before acting</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="toolbar no-print">
+    <div class="wrap">
+      <div class="row">
+        <button class="btn alt" id="saveBtn">Save</button>
+        <button class="btn gold" id="importProjectsBtn">Import naio-projects.json</button>
+        <button class="btn" id="exportBtn">Export backup JSON</button>
+        <button class="btn light" id="importBtn">Import backup</button>
+        <button class="btn light" id="printBtn">Print / PDF</button>
+        <input type="file" id="projectsFile" accept="application/json" hidden>
+        <input type="file" id="importFile" accept="application/json" hidden>
+      </div>
+      <div class="status" id="status">Ready · everything stays in this browser.</div>
+    </div>
+  </div>
+
+  <main>
+    <section class="section">
+      <div class="wrap grid two">
+        <div class="callout">
+          <h2>How this page grows with you</h2>
+          <ol>
+            <li>Take the <a href="https://nurse-ai-os.org/soul-quiz.html">SOUL Quiz</a> and set up your core (SOUL file + <a href="https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse/tree/main/personal-agi/memory-fabric-kit">Memory Fabric Kit</a>).</li>
+            <li>Take the <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> and import its <strong>naio-projects.json</strong> here — your sphere tabs fill with your real projects.</li>
+            <li>Pick your role below. The module rail tunes its doors to your lane.</li>
+            <li>Connect <strong>one</strong> module at a time, record the connection in your trust ledger, and let it earn its place before the next.</li>
+          </ol>
+        </div>
+        <div class="callout warning">
+          <h2>Safety boundary</h2>
+          <p><strong>No PHI. No patient identifiers. No employer secrets. No credentials.</strong> This page is a personal, browser-local view of your own governed system. It uploads nothing, activates nothing, and grants no authority. Modules marked planned or doctrine-ready are honest labels — not features pretending to exist.</p>
+          <p class="muted">Ceilings: Green/Yellow · D0/D1 · Observe → Draft → Recommend. Anything wider needs a separately authorized environment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <div class="row">
+          <div><h2>Module rail — your six sockets</h2><p class="muted">Each card names where the module lives today. "My connection" is your one-line note of what you actually plugged in — it stays in this browser.</p></div>
+          <div style="min-width:260px"><span class="label">My role lane</span><select id="roleSel" aria-label="Role lane"></select></div>
+        </div>
+        <div class="grid three" id="moduleRail"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>Sphere tabs — your projects</h2>
+        <p class="muted" id="projMeta">No projects imported yet. Take the <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> and import its <strong>naio-projects.json</strong> with the button above.</p>
+        <div class="tabbar" role="tablist" id="tabbar"></div>
+        <div id="tabpanels"></div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap grid two">
+        <div class="card danger"><h2>Human gate</h2><p>Before acting on anything this page shows, answer:</p><ol><li>Could this affect health, money, work, family, or clinical judgment?</li><li>Could it expose PHI, employer secrets, or credentials?</li><li>Does it need a licensed professional, mentor, or trusted human first?</li></ol><p><strong>Agents propose. Humans judge. Nurses steward.</strong></p></div>
+        <div class="card"><h2>Where this is heading</h2><p>This page is the first rung. The <a href="https://nurse-ai-os.org/switchboard/">Switchboard</a> holds the multi-role, multi-context architecture; the Hermes-built Mission Control (role packets, ADPIE workbench, Deliverable Studio) is the destination. The module architecture behind this page is recorded in <a href="https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse/blob/main/personal-agi/MODULES.md">MODULES.md</a>.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <h2>Carry the lamp. Keep the ledger.</h2>
+      <p>One core personal AGI, grown one module at a time. Save this file locally, bookmark it under <strong>Dashboards</strong>, and export a backup before changing devices.</p>
+    </div>
+  </footer>
+
+  <script>
+    const STORAGE_ID = 'naio-mission-control-lite-v1';
+    const SPHERES = [
+      {id:'personal',     label:'Personal'},
+      {id:'interest',     label:'Interest'},
+      {id:'professional', label:'Professional'},
+      {id:'community',    label:'Community'},
+      {id:'sidegig',      label:'Side Gig'}
+    ];
+    const ROLES = {
+      student:  {label:'Nursing Student & Assistant (FUTURE)', academy:[['Builder Academy','https://nurse-ai-os.org/builder-academy.html'],['Start Here','https://nurse-ai-os.org/start-here.html']]},
+      staff:    {label:'Staff Nurse (SHIFT)',                  academy:[['ASCEND Program','https://nurse-ai-os.org/ascend/'],['CCRN Mentor Guide','https://nurse-ai-os.org/ccrn-mentor-guide.html']]},
+      np:       {label:'Nurse Practitioner, USA (WINGS)',      academy:[['ASCEND Program','https://nurse-ai-os.org/ascend/'],['AI Mentors','https://nurse-ai-os.org/ai-mentors.html']]},
+      leader:   {label:'Nurse Leader & Manager (LEAD)',        academy:[['ASCEND Program','https://nurse-ai-os.org/ascend/'],['Governed Harness','https://nurse-ai-os.org/governed-harness.html']]},
+      educator: {label:'Nurse Educator (TEACH)',               academy:[['ASCEND Program','https://nurse-ai-os.org/ascend/'],['Nurse Formation doctrine','https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse/tree/main/nurse-formation']]},
+      ally:     {label:'Nurse-Connected Ally',                 academy:[['Start Here','https://nurse-ai-os.org/start-here.html'],['AI Mentors','https://nurse-ai-os.org/ai-mentors.html']]},
+      resident: {label:'Medical Resident (ROUNDS)',            academy:[['ROUNDS lane','https://nurse-ai-os.org/medical-residents/'],['AI Mentors','https://nurse-ai-os.org/ai-mentors.html']]},
+      resp:     {label:'Respiratory Care (BREATHE)',           academy:[['BREATHE lane','https://nurse-ai-os.org/respiratory-care/'],['AI Mentors','https://nurse-ai-os.org/ai-mentors.html']]},
+      research: {label:'Research & Innovation Leader (DISCOVER)', academy:[['DISCOVER lane','https://nurse-ai-os.org/healthcare-research-innovation-leaders/'],['Care Intelligence','https://nurse-ai-os.org/care-intelligence/']]},
+      admin:    {label:'Hospital / Clinic Administrator (STEWARD)', academy:[['STEWARD lane','https://nurse-ai-os.org/hospital-clinic-administrators/'],['Governed Harness','https://nurse-ai-os.org/governed-harness.html']]},
+      wellness: {label:'Wellness Business (THRIVE)',           academy:[['THRIVE lane','https://nurse-ai-os.org/wellness-services-marketing-managers/'],['Side-Gig Playbook','https://nurse-ai-os.org/nurse-side-gig-playbook/']]}
+    };
+    const GH = 'https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse';
+    function moduleDefs(roleKey){
+      const role = ROLES[roleKey] || ROLES.staff;
+      return [
+        {key:'knowledge', name:'Knowledge Base', status:'Doctrine ready', cls:'doc',
+         desc:'Your governed library — Knowledge Packs, local retrieval with citations, adapted to your specialty and locality.',
+         links:[['Knowledge Commons doctrine', GH+'/tree/main/knowledge-commons'],['Resources','https://nurse-ai-os.org/resources.html']]},
+        {key:'academy', name:'Learning Academy', status:'Live now', cls:'',
+         desc:'AI-assisted formation for your lane: commit-then-compare study, human evaluative authority.',
+         links:role.academy},
+        {key:'projects', name:'Projects', status:'Live — this page', cls:'',
+         desc:'Every active life area — including a business — as a governed project with a 90-day win and a human gate.',
+         links:[['Life & Projects Quiz','https://nurse-ai-os.org/life-quiz.html'],['Side-Gig Starter Kit','https://nurse-ai-os.org/side-gig-starter-kit/']]},
+        {key:'data', name:'Data Analysis Engine', status:'Planned', cls:'plan',
+         desc:'Analysis of your own no-PHI data: adoption signals, learning evidence, project metrics, manual CSVs.',
+         links:[['Outcomes Ledger (anchor)', GH+'/tree/main/naio-os']]},
+        {key:'signals', name:'Market Signal Engine', status:'First records live', cls:'doc',
+         desc:'External AI and healthcare signals distilled through the NAIO ontology into role-relevant briefs.',
+         links:[['Signal records', GH+'/tree/main/personal-agi/signals'],['Care Intelligence','https://nurse-ai-os.org/care-intelligence/']]},
+        {key:'guide', name:'Guide', status:'Live now', cls:'',
+         desc:'The always-on front desk: orientation, boundaries, recovery, and what to do next.',
+         links:[['When Things Go Wrong','https://nurse-ai-os.org/when-things-go-wrong.html'],['AI Mentors','https://nurse-ai-os.org/ai-mentors.html'],['FAQ','https://nurse-ai-os.org/faq.html']]}
+      ];
+    }
+
+    let state = { role:'staff', connections:{}, notes:{}, projectsData:null, activeTab:'personal', savedAt:null };
+    function str(v){ return typeof v==='string' ? v : ''; }
+    function isObj(v){ return v && typeof v==='object' && !Array.isArray(v); }
+    function sanitizeProjects(data){
+      if(!isObj(data) || !Array.isArray(data.projects)) return null;
+      const projects = data.projects.filter(p=>isObj(p) && SPHERES.some(s=>s.id===p.sphere)).map(p=>({
+        name: str(p.name), sphere: str(p.sphere), sphere_label: str(p.sphere_label),
+        edena_tier: p.edena_tier==='yellow' ? 'yellow' : 'green',
+        suggested_prompt_name: str(p.suggested_prompt_name), slug: str(p.slug),
+        goal_90_days: str(p.goal_90_days), human_gate: str(p.human_gate), file_path: str(p.file_path)
+      }));
+      return { schema_version: str(data.schema_version), generated_at: str(data.generated_at), projects };
+    }
+    function stringMap(v){ const out={}; if(isObj(v)) for(const [k,val] of Object.entries(v)) if(typeof val==='string') out[k]=val; return out; }
+    function sanitizeState(raw){
+      if(!isObj(raw)) return null;
+      return {
+        role: (typeof raw.role==='string' && ROLES[raw.role]) ? raw.role : 'staff',
+        connections: stringMap(raw.connections),
+        notes: stringMap(raw.notes),
+        projectsData: raw.projectsData ? sanitizeProjects(raw.projectsData) : null,
+        activeTab: SPHERES.some(s=>s.id===raw.activeTab) ? raw.activeTab : 'personal',
+        savedAt: str(raw.savedAt) || null
+      };
+    }
+    function load(){ try{ const clean = sanitizeState(JSON.parse(localStorage.getItem(STORAGE_ID)||'{}')); if(clean) state = clean; }catch{} }
+    function persist(){ state.savedAt = new Date().toISOString(); localStorage.setItem(STORAGE_ID, JSON.stringify(state)); }
+    function setStatus(t){ document.getElementById('status').textContent = t; }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    function renderRoles(){
+      const sel = document.getElementById('roleSel');
+      sel.innerHTML = Object.entries(ROLES).map(([k,r])=>`<option value="${k}"${k===state.role?' selected':''}>${esc(r.label)}</option>`).join('');
+      sel.onchange = ()=>{ state.role = sel.value; persist(); renderModules(); setStatus('Role lane saved.'); };
+    }
+    function renderModules(){
+      const rail = document.getElementById('moduleRail');
+      rail.innerHTML = moduleDefs(state.role).map(m=>`
+        <div class="card">
+          <div class="mod-head"><h3>${esc(m.name)}</h3><span class="pill ${m.cls}">${esc(m.status)}</span></div>
+          <p class="muted">${esc(m.desc)}</p>
+          <div class="mod-links">${m.links.map(([t,u])=>`<a href="${esc(u)}">${esc(t)} →</a>`).join('')}</div>
+          <div class="conn"><span class="label">My connection</span>
+            <input data-conn="${m.key}" placeholder="e.g., not connected yet / my Obsidian folder / ledger entry date" value="${esc(state.connections[m.key]||'')}">
+          </div>
+        </div>`).join('');
+      rail.querySelectorAll('[data-conn]').forEach(el=> el.addEventListener('input', ()=>{ state.connections[el.dataset.conn]=el.value; }));
+    }
+    function projectsBySphere(id){
+      const list = (state.projectsData && Array.isArray(state.projectsData.projects)) ? state.projectsData.projects : [];
+      return list.filter(p=>p.sphere===id);
+    }
+    function renderTabs(){
+      const bar = document.getElementById('tabbar'), panels = document.getElementById('tabpanels');
+      bar.innerHTML = SPHERES.map(s=>{
+        const n = projectsBySphere(s.id).length;
+        return `<button class="tab" role="tab" data-tab="${s.id}" aria-selected="${state.activeTab===s.id}">${esc(s.label)}<span class="count">${n}</span></button>`;
+      }).join('');
+      const s = SPHERES.find(x=>x.id===state.activeTab) || SPHERES[0];
+      const projs = projectsBySphere(s.id);
+      panels.innerHTML = `
+        <div role="tabpanel" aria-label="${esc(s.label)} projects">
+          ${projs.length ? projs.map(p=>`
+            <div class="proj">
+              <div class="row"><h3>${esc(p.name)}</h3><span class="pill ${p.edena_tier==='yellow'?'yellow':''}">${esc(p.edena_tier||'green')} tier</span></div>
+              ${p.goal_90_days?`<p><strong>90-day win:</strong> ${esc(p.goal_90_days)}</p>`:''}
+              ${p.suggested_prompt_name?`<p class="muted">Prompt: ${esc(p.suggested_prompt_name)} · file: ${esc(p.file_path||'')}</p>`:''}
+              ${p.human_gate?`<p class="muted"><strong>Human gate:</strong> ${esc(p.human_gate)}</p>`:''}
+            </div>`).join('')
+          : `<div class="proj"><p class="muted">No ${esc(s.label)} projects yet. Import your naio-projects.json, or mark this sphere active in the <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a>.</p></div>`}
+          <div class="card small"><h3>${esc(s.label)} notes</h3>
+            <textarea data-notes="${s.id}" aria-label="${esc(s.label)} notes" placeholder="No-PHI working notes for this sphere. Saved in this browser only.">${esc(state.notes[s.id]||'')}</textarea>
+          </div>
+        </div>`;
+      bar.querySelectorAll('.tab').forEach(t=> t.addEventListener('click', ()=>{ state.activeTab=t.dataset.tab; persist(); renderTabs(); }));
+      panels.querySelectorAll('[data-notes]').forEach(el=> el.addEventListener('input', ()=>{ state.notes[el.dataset.notes]=el.value; }));
+      const meta = document.getElementById('projMeta');
+      if(state.projectsData){
+        const d = state.projectsData;
+        const projectCount = Array.isArray(d.projects) ? d.projects.length : 0;
+        meta.innerHTML = `${projectCount} project(s) imported${d.generated_at?` · generated ${esc(String(d.generated_at).slice(0,10))}`:''} · stays in this browser. Re-import any time after retaking the <a href="https://nurse-ai-os.org/life-quiz.html">quiz</a>.`;
+      } else {
+        meta.innerHTML = 'No projects imported yet. Take the <a href="https://nurse-ai-os.org/life-quiz.html">Life &amp; Projects Quiz</a> and import its <strong>naio-projects.json</strong> with the button above.';
+      }
+    }
+    function importProjects(file){
+      const r = new FileReader();
+      r.onload = ()=>{ try{
+          const clean = sanitizeProjects(JSON.parse(r.result));
+          if(!clean) throw new Error('shape');
+          state.projectsData = clean; persist(); renderTabs();
+          setStatus('naio-projects.json imported and saved locally.');
+        }catch{ setStatus('Import failed — choose the naio-projects.json exported by the Life & Projects Quiz.'); } };
+      r.readAsText(file);
+    }
+    function exportBackup(){
+      const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'nurse-ai-os-mission-control-lite-backup.json'; a.click(); URL.revokeObjectURL(a.href);
+      setStatus('Backup exported. Store it somewhere private and no-PHI.');
+    }
+    function importBackup(file){
+      const r = new FileReader();
+      r.onload = ()=>{ try{
+          const clean = sanitizeState(JSON.parse(r.result));
+          if(!clean) throw new Error('shape');
+          state = clean; persist(); renderAll(); setStatus('Backup imported and saved locally.');
+        }catch{ setStatus('Import failed — choose a valid Mission Control Lite backup.'); } };
+      r.readAsText(file);
+    }
+    function renderAll(){ renderRoles(); renderModules(); renderTabs(); }
+
+    document.getElementById('saveBtn').addEventListener('click', ()=>{ persist(); setStatus('Saved locally at '+new Date().toLocaleTimeString()); });
+    document.getElementById('importProjectsBtn').addEventListener('click', ()=>document.getElementById('projectsFile').click());
+    document.getElementById('projectsFile').addEventListener('change', e=>{ if(e.target.files[0]) importProjects(e.target.files[0]); });
+    document.getElementById('exportBtn').addEventListener('click', exportBackup);
+    document.getElementById('importBtn').addEventListener('click', ()=>document.getElementById('importFile').click());
+    document.getElementById('importFile').addEventListener('change', e=>{ if(e.target.files[0]) importBackup(e.target.files[0]); });
+    document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+
+    load(); renderAll();
+  </script>
+</body>
+</html>

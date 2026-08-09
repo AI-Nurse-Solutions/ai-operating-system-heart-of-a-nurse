@@ -137,6 +137,18 @@ class BurnoutSignalDashboardTests(unittest.TestCase):
             "both localStorage loads and JSON imports must pass through the "
             "allowlist so unrecognized fields never enter the workspace",
         )
+        self.assertIn(
+            "window.localStorage.setItem(STORAGE_KEY, cleaned)",
+            self.page,
+            "loading must persist the sanitized state back so legacy data "
+            "written by an older version cannot linger in localStorage",
+        )
+        self.assertIn(
+            "} catch (writeError) {}",
+            self.page,
+            "the scrub write is best-effort: a failed setItem must not cost "
+            "the manager read access to the sanitized in-memory data",
+        )
 
     # ---------- Observe mode (§20): describe, never recommend ----------
 

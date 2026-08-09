@@ -122,6 +122,21 @@ class BurnoutSignalDashboardTests(unittest.TestCase):
         self.assertIn("week.breaksMissed > week.shiftsWorked", self.page)
         self.assertIn("week.staffNoRecentPto > week.staffCount", self.page)
         self.assertIn("cannot exceed their denominators", self.page)
+        self.assertIn("counts must be whole numbers", self.page)
+        self.assertNotIn(
+            "Math.floor(Number(",
+            self.page,
+            "counts must be validated as entered, never floored into validity",
+        )
+
+    def test_stored_weeks_are_rebuilt_from_the_aggregate_field_allowlist(self) -> None:
+        self.assertIn("function sanitizeWeek", self.page)
+        self.assertEqual(
+            2,
+            self.page.count(".map(sanitizeWeek)"),
+            "both localStorage loads and JSON imports must pass through the "
+            "allowlist so unrecognized fields never enter the workspace",
+        )
 
     # ---------- Observe mode (§20): describe, never recommend ----------
 
@@ -216,6 +231,8 @@ class BurnoutSignalDashboardTests(unittest.TestCase):
         self.assertIn("head.scope = 'row'", self.page)
         self.assertIn("accessible source of truth", self.page)
         self.assertIn("plain-language reading beside each chart", self.page)
+        self.assertIn("input[type=file]:focus + label", self.page)
+        self.assertNotIn(".innerHTML", self.page)
 
     # ---------- discoverability and harness wiring ----------
 

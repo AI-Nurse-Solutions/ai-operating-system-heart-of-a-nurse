@@ -77,6 +77,8 @@ In every row, the pattern is identical: the memory fabric makes the agent *this 
 
 ## 6. Memory doctrine
 
+*Sections 6 and 7 have a runnable v0.1 implementation: the [Personal Memory Fabric Kit](memory-fabric-kit/).*
+
 - **Sphere-scoped namespaces.** Memory writes are tagged by sphere and may not silently cross spheres or rise in data class.
 - **Local-first ownership.** The fabric is files and a local index the nurse can read, export, and delete. Hosted sync is opt-in and never a condition of use.
 - **The no-PHI invariant.** No patient name, identifier, or reconstructable patient narrative enters memory — including the Hark scenario of "recalling a passing observation about a patient's comfort from hours ago." That capability is real and valuable, and it is *clinical memory*: it belongs behind the governance break, inside institutional systems, or nowhere. The personal fabric remembers the nurse's life, not the patient's.

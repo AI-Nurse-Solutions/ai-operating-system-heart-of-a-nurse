@@ -628,6 +628,34 @@ class SummativeAuthorityGateTests(unittest.TestCase):
         self.assertIs(decision.decision, Decision.DENY)
         self.assertIn("EDENA-APPROVAL-BINDING", decision.reason_codes)
 
+    def test_binding_is_never_optional(self):
+        # A policy document that omits binding_metadata_key does not turn
+        # off per-decision protection: the default record key still
+        # applies, so an approval bound to a different record fails
+        # closed while the properly bound decision still executes.
+        del self.engine.policy["summative_rules"]["binding_metadata_key"]
+        replay = self.engine.decide(
+            self._summative_request(
+                actor=self._signing_educator(record="rec-2026-115"),
+                metadata={
+                    "educator_approval_id": "signoff-2026-031",
+                    "summative_record_id": "rec-2026-887",
+                },
+            )
+        )
+        self.assertIs(replay.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-BINDING", replay.reason_codes)
+        allowed = self.engine.decide(
+            self._summative_request(
+                actor=self._signing_educator(),
+                metadata={
+                    "educator_approval_id": "signoff-2026-031",
+                    "summative_record_id": "rec-2026-115",
+                },
+            )
+        )
+        self.assertIs(allowed.decision, Decision.ALLOW)
+
     def test_policy_without_summative_rules_fails_closed(self):
         # A pre-existing or custom policy document that does not define
         # summative governance cannot allow a summative decision.

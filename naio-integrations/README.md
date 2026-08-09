@@ -176,7 +176,9 @@ membership is not authority), and a fabricated reference is denied
 outright. Authority is per decision, not per career: the request must
 name the summative record it concerns and the approval must be bound
 to exactly that record (`EDENA-APPROVAL-BINDING`), so a sign-off for
-one learner's assignment can never be replayed for another decision.
+one learner's assignment can never be replayed for another decision —
+and binding is never optional, since a policy document that omits the
+binding key still enforces it under the default record key.
 The four summative intents are a mandatory floor in the engine
 itself: a mandatory intent the policy document does not explicitly
 govern cannot execute (`EDENA-SUMMATIVE-UNGOVERNED`) — omitting

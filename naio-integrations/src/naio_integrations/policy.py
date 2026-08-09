@@ -201,15 +201,18 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
                 # signed. The request must name that record and the
                 # approval must be bound to it — a sign-off for one
                 # learner's assignment cannot be replayed for another
-                # learner's progression.
-                binding_key = summative_rules.get("binding_metadata_key")
-                if binding_key:
-                    record_ref = request.metadata.get(binding_key)
-                    if not record_ref or (
-                        (approval_ref, record_ref)
-                        not in actor.approval_bindings
-                    ):
-                        return self._deny("EDENA-APPROVAL-BINDING")
+                # learner's progression. Binding is never optional: a
+                # policy document that omits the key enforces it under
+                # the default record key.
+                binding_key = summative_rules.get(
+                    "binding_metadata_key", "summative_record_id"
+                )
+                record_ref = request.metadata.get(binding_key)
+                if not record_ref or (
+                    (approval_ref, record_ref)
+                    not in actor.approval_bindings
+                ):
+                    return self._deny("EDENA-APPROVAL-BINDING")
 
         data_ceiling = self.policy["tier_data_ceilings"].get(tier.value)
         if data_ceiling is None or data.rank > DataClass(data_ceiling).rank:

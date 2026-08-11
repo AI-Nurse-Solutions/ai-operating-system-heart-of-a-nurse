@@ -145,6 +145,12 @@ CREATE TABLE IF NOT EXISTS notes_index (
 -- longer answer "what happened to that idea I jotted down Tuesday?" — which is
 -- the question §7.6 says this pipeline exists to answer. One row per promotion,
 -- unique per (note, destination) so a double-click cannot mint a second task.
+--
+-- The row is also the LOCK, not only the record: `_promote` inserts it before
+-- it creates the task or writes the file, with target='' meaning "reserved,
+-- artifact not made yet". The UNIQUE constraint is what makes two simultaneous
+-- clicks resolve to one artifact — a check-then-act could not, because both
+-- requests would read an empty table before either wrote to it.
 CREATE TABLE IF NOT EXISTS note_promotions (
   id INTEGER PRIMARY KEY,
   note_id INTEGER NOT NULL,
@@ -244,6 +250,14 @@ def init_db() -> None:
                 conn.execute(
                     "INSERT OR IGNORE INTO note_promotions(note_id,destination,target,ts) "
                     "VALUES(?,?,?,?)", (row["id"], dest, stamp, now_iso()))
+
+        # A reservation with no target is a promotion that was interrupted
+        # between claiming its slot and producing its artifact. `_promote`
+        # releases its own on any error, so one can only survive the process
+        # being killed mid-write — and then it would block that destination
+        # forever. Startup is the safe moment to clear them: nothing is in
+        # flight yet.
+        conn.execute("DELETE FROM note_promotions WHERE target=''")
         conn.execute(
             "INSERT OR IGNORE INTO settings(key,value) VALUES('schema_version',?)",
             (VERSION,),
@@ -913,13 +927,22 @@ class Handler(BaseHTTPRequestHandler):
                 # The whole trail, not just the latest stamp. A note promoted to
                 # a task on Tuesday and to the vault on Friday has two answers to
                 # "what happened to it", and the tab should be able to give both.
+                # Scoped to the notes actually being returned: the table is
+                # append-only and outlives the 300-note window, so reading all
+                # of it to answer for 300 gets slower every month for nothing.
+                # target='' rows are reservations for a promotion still being
+                # written — not history yet.
                 trails = {}
-                for row in conn.execute(
-                        "SELECT note_id,destination,target,ts FROM note_promotions "
-                        "ORDER BY ts"):
-                    trails.setdefault(row["note_id"], []).append(
-                        {"destination": row["destination"], "target": row["target"],
-                         "ts": row["ts"]})
+                note_ids = [row["id"] for row in notes]
+                if note_ids:
+                    holes = ",".join("?" * len(note_ids))
+                    for row in conn.execute(
+                            "SELECT note_id,destination,target,ts FROM note_promotions "
+                            f"WHERE note_id IN ({holes}) AND target<>'' ORDER BY ts, id",
+                            note_ids):
+                        trails.setdefault(row["note_id"], []).append(
+                            {"destination": row["destination"], "target": row["target"],
+                             "ts": row["ts"]})
                 conn.close()
                 cfg = config()
                 vault = resolve(cfg["vault_root"])
@@ -1177,13 +1200,34 @@ class Handler(BaseHTTPRequestHandler):
 
         # Idempotent per (note, destination). Promoting the same note the same
         # way twice used to mint a second Kanban row or a second Inbox file, so
-        # a double-click cost the nurse a duplicate to clean up. The first
-        # promotion is returned instead, with what it produced and when.
-        prior = conn.execute(
-            "SELECT target, ts FROM note_promotions WHERE note_id=? AND destination=?",
-            (note_id, dest)).fetchone()
-        if prior:
+        # a double-click cost the nurse a duplicate to clean up.
+        #
+        # The claim has to come BEFORE the artifact, not after it. This server
+        # is threaded, so two clicks land in two handlers at once; if each one
+        # looked for a prior row first, both would find none, both would write,
+        # and only then would one of them lose the race to record it — leaving
+        # a duplicate task nobody asked for and no row saying it exists. The
+        # UNIQUE constraint decides instead: whoever inserts first owns the
+        # promotion, and everyone else reads back what that one produced.
+        # Recording it afterwards had the same hole across a crash, where the
+        # artifact outlived the process that was about to record it.
+        reserved_at = now_iso()
+        try:
+            with conn:
+                conn.execute(
+                    "INSERT INTO note_promotions(note_id,destination,target,ts) "
+                    "VALUES(?,?,'',?)", (note_id, dest, reserved_at))
+        except sqlite3.IntegrityError:
+            prior = conn.execute(
+                "SELECT target, ts FROM note_promotions WHERE note_id=? AND destination=?",
+                (note_id, dest)).fetchone()
             conn.close()
+            if prior is None or not prior["target"]:
+                # Reserved but not finished: the other request is mid-write.
+                return self._json({
+                    "error": f"a promotion of this note to {dest} is already in progress",
+                    "already_promoted": True,
+                }, 409)
             return self._json({
                 "ok": True, "promoted_to": prior["target"],
                 "already_promoted": True, "promoted_at": prior["ts"],
@@ -1196,6 +1240,44 @@ class Handler(BaseHTTPRequestHandler):
         title = note["title"] or "(untitled)"
         stamp = None
 
+        try:
+            stamp = self._make_promotion_artifact(conn, dest, note, cfg, title)
+        except Exception:
+            # Release the claim rather than leaving the destination barred by a
+            # promotion that never happened.
+            with contextlib.suppress(sqlite3.Error):
+                with conn:
+                    conn.execute(
+                        "DELETE FROM note_promotions WHERE note_id=? AND destination=? "
+                        "AND target=''", (note_id, dest))
+            conn.close()
+            raise
+
+        with conn:
+            # The history is the record; promoted_to keeps holding the latest so
+            # the vault pruner's tombstone and every existing reader still work.
+            # Upsert rather than update: if the reservation was swept out from
+            # under this request, the finished promotion still lands.
+            conn.execute(
+                "INSERT INTO note_promotions(note_id,destination,target,ts) VALUES(?,?,?,?) "
+                "ON CONFLICT(note_id,destination) DO UPDATE SET target=excluded.target",
+                (note_id, dest, stamp, reserved_at))
+            conn.execute("UPDATE notes_index SET promoted_to=? WHERE id=?", (stamp, note_id))
+        trail = [dict(r) for r in conn.execute(
+            "SELECT destination,target,ts FROM note_promotions "
+            "WHERE note_id=? AND target<>'' ORDER BY ts, id", (note_id,))]
+        conn.close()
+        return self._json({
+            "ok": True, "promoted_to": stamp,
+            "already_promoted": False, "promotions": trail,
+            "wrote_runtime_memory": False,
+            "note": ("A proposal was written for you to approve in the runtime. "
+                     "Nothing was written to memory." if dest == "memory" else None),
+        }, 201)
+
+    @staticmethod
+    def _make_promotion_artifact(conn, dest: str, note, cfg: dict, title: str) -> str:
+        """The side effect itself, kept separate so its failure can release the claim."""
         if dest == "task":
             with conn:
                 cur = conn.execute(
@@ -1233,24 +1315,7 @@ class Handler(BaseHTTPRequestHandler):
                 f"there, where the gate lives.\n")
             stamp = f"memory-proposal:{target.name}"
 
-        with conn:
-            # The history is the record; promoted_to keeps holding the latest so
-            # the vault pruner's tombstone and every existing reader still work.
-            conn.execute(
-                "INSERT INTO note_promotions(note_id,destination,target,ts) VALUES(?,?,?,?)",
-                (note_id, dest, stamp, now_iso()))
-            conn.execute("UPDATE notes_index SET promoted_to=? WHERE id=?", (stamp, note_id))
-        trail = [dict(r) for r in conn.execute(
-            "SELECT destination,target,ts FROM note_promotions WHERE note_id=? ORDER BY ts",
-            (note_id,))]
-        conn.close()
-        return self._json({
-            "ok": True, "promoted_to": stamp,
-            "already_promoted": False, "promotions": trail,
-            "wrote_runtime_memory": False,
-            "note": ("A proposal was written for you to approve in the runtime. "
-                     "Nothing was written to memory." if dest == "memory" else None),
-        }, 201)
+        return stamp
 
     # -- data shaping -----------------------------------------------------
     def _health(self) -> dict:

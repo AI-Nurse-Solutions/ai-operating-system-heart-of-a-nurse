@@ -1643,7 +1643,11 @@ async function renderMemoryTab(){
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({note_id:+b.dataset.note, to:b.dataset.to})});
     const out = await res.json();
-    if(out.note) console.info(out.note);
+    // A refusal used to re-render and look like nothing happened. It matters
+    // most for 409 — the same note promoted the same way from two tabs at once,
+    // where the honest answer is "the other one is writing it, not yours".
+    if(!res.ok){ alert(out.error || 'Could not promote that note.'); b.disabled = false; }
+    else if(out.note) console.info(out.note);
     renderMemoryTab();
   }));
 }

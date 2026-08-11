@@ -430,6 +430,33 @@ def main() -> int:
               f"already={again.get('already_promoted')} "
               f"tasks {len(tl_before['tasks'])}→{len(tl_after['tasks'])}")
 
+        # ...including when the two clicks land at the same instant. The server
+        # is threaded, so "look for a prior row, then write" is not idempotence:
+        # both handlers look before either writes, and the nurse gets two tasks.
+        # The UNIQUE row has to be claimed before the artifact is made.
+        race_note = notes[2]["id"]
+        st_before, tl_before = get("/api/tasks", port)
+        minted, rejected = [], []
+
+        def race():
+            try:
+                minted.append(promote(race_note, "task"))
+            except urllib.error.HTTPError as exc:
+                rejected.append(exc.code)
+
+        racers = [threading.Thread(target=race) for _ in range(4)]
+        for t in racers:
+            t.start()
+        for t in racers:
+            t.join()
+        st_after, tl_after = get("/api/tasks", port)
+        fresh = [r for r in minted if not r.get("already_promoted")]
+        check("four simultaneous promotions of one note mint exactly one task",
+              len(tl_after["tasks"]) == len(tl_before["tasks"]) + 1 and len(fresh) == 1
+              and all(c == 409 for c in rejected),
+              f"tasks {len(tl_before['tasks'])}→{len(tl_after['tasks'])}, "
+              f"{len(fresh)} fresh, {len(minted)} ok, rejected={rejected}")
+
         st, mem_trail = get("/api/memory", port)
         row = next((n for n in mem_trail["notes"] if n["id"] == multi), None)
         check("the Memory tab can read the whole trail, not just the last stamp",
@@ -443,15 +470,57 @@ def main() -> int:
         st, mem2 = get("/api/memory", port)
         promoted = [n for n in mem2["notes"] if n["promoted_to"]]
         # Six notes carry a stamp: three from the routing check, two from the
-        # collision probe, and the one promoted twice above — which contributes
-        # one stamped note and two promotions, the distinction this whole
+        # collision probe, and the one promoted twice above. Eight promotions
+        # across those six notes — one note went two ways, and one of the three
+        # from the routing check picked up a second destination in the race
+        # check. That gap between six and eight is the distinction this whole
         # section exists to keep.
         check("promotion stamps the trail on the note", len(promoted) == 6,
               f"{len(promoted)} stamped")
         check("the trail counts promotions, not notes",
-              sum(len(n.get("promotions", [])) for n in mem2["notes"]) == 7,
+              sum(len(n.get("promotions", [])) for n in mem2["notes"]) == 8,
               str([(n["id"], len(n.get("promotions", []))) for n in mem2["notes"]
                    if n.get("promotions")]))
+
+        # A dashboard that has been running since before note_promotions existed
+        # carries its whole trail in promoted_to. If startup did not seed the
+        # history from those stamps, the upgrade would read to the nurse as
+        # "nothing was ever promoted" — every promotion she made, gone from the
+        # tab. The seeding runs on every start, so it also has to be idempotent.
+        legacy = workdir / "legacy.db"
+        saved_db = mc.DB_PATH
+        stamp_legacy = "obsidian:Inbox/2020-01-01-older.md"
+        legacy_ts = datetime.now(timezone.utc).isoformat()
+        try:
+            mc.DB_PATH = legacy
+            mc.init_db()
+            conn_l = sqlite3.connect(str(legacy), timeout=10)
+            with conn_l:
+                # ...as it stood before the table existed: a stamp and no history,
+                # plus a reservation abandoned by a process killed mid-promotion,
+                # which would otherwise bar that destination forever.
+                conn_l.execute("DELETE FROM note_promotions")
+                conn_l.execute(
+                    "INSERT INTO notes_index(source,external_id,title,folder,modified_ts,"
+                    "promoted_to) VALUES('obsidian','legacy-1','Older idea','Inbox',?,?)",
+                    (legacy_ts, stamp_legacy))
+                conn_l.execute(
+                    "INSERT INTO note_promotions(note_id,destination,target,ts) "
+                    "SELECT id,'task','',? FROM notes_index WHERE external_id='legacy-1'",
+                    (legacy_ts,))
+            conn_l.close()
+            mc.init_db()
+            mc.init_db()          # every start, so it has to be repeatable
+            conn_l = sqlite3.connect(str(legacy), timeout=10)
+            seeded = conn_l.execute(
+                "SELECT destination,target FROM note_promotions ORDER BY id").fetchall()
+            conn_l.close()
+        finally:
+            mc.DB_PATH = saved_db
+        check("upgrading seeds the trail from the stamps already on disk, exactly once",
+              [r for r in seeded if r[1]] == [("vault", stamp_legacy)], str(seeded))
+        check("startup clears a reservation left behind by an interrupted promotion",
+              not any(r for r in seeded if not r[1]), str(seeded))
 
         # -- 9b. library ------------------------------------------------------
         st, lib = get("/api/library", port)

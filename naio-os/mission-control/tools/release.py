@@ -9,9 +9,16 @@ and every claim about the count is written by the same command that made the zip
 
     python3 tools/release.py            # verify + manifest + stamp docs
     python3 tools/release.py --zip out/mission-control.zip
+    python3 tools/release.py --sign ~/keys/naio-os-release.pem   # key-holder only
+    python3 tools/release.py --chain-entry     # the line naio-os's manifest needs
 
-What it does NOT do: sign anything. There is no key, so there is no signature,
-and the manifest says so on its face rather than implying a trust it does not have.
+Signing. Mission Control now speaks the same signature contract naio-os has used
+since Phase 6 — detached RSA-SHA256 over the manifest, verified with the release
+public key, fail-closed. What this command cannot do is invent the private half:
+`--sign` needs the key for `naio-os-release-key-2026-06`, which is not in this
+repository and should never be. Without it the build is unsigned, `naio-mc
+verify` says so in exactly those words, and nothing here implies a provenance it
+does not have.
 """
 from __future__ import annotations
 
@@ -19,6 +26,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 import subprocess
 import sys
 import zipfile
@@ -27,6 +35,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
 MANIFEST = HERE / "manifest.json"
+
+# The signature contract, in one place because three files have to agree on it:
+# this builder, `naio-mc verify`, and whatever naio-os's release cut records.
+SIG_NAME = "manifest.sig"
+SIG_ALGORITHM = "RSA-SHA256"
+KEY_ID = "naio-os-release-key-2026-06"
+PUBLIC_KEY_REL = "../config/naio-os-release-public.pem"
+MANIFEST_SIG = HERE / SIG_NAME
 
 SKIP_DIRS = {"__pycache__", "backups", "governance", "proposals", ".git"}
 SKIP_SUFFIX = {".pyc", ".db", ".db-wal", ".db-shm", ".zip"}
@@ -44,7 +60,12 @@ def tracked_files() -> list[Path]:
         rel = path.relative_to(HERE)
         if any(part in SKIP_DIRS for part in rel.parts):
             continue
-        if path.suffix in SKIP_SUFFIX or rel.name == "manifest.json":
+        # manifest.json cannot checksum itself, and manifest.sig is written
+        # AFTER the manifest it signs — listing either guarantees drift. Match
+        # the top-level paths, not the basename: a nested tools/manifest.sig
+        # would otherwise be excluded from the manifest AND from the untracked
+        # report, which is the one combination nobody would notice.
+        if path.suffix in SKIP_SUFFIX or str(rel) in ("manifest.json", SIG_NAME):
             continue
         out.append(rel)
     return out
@@ -90,14 +111,25 @@ def build_manifest(passed: int, failed: int) -> dict:
         }
     return {
         "_note": "Checksums of what was actually built, written by tools/release.py "
-                 "at the same moment the self-test ran. MISSION CONTROL IS NOT "
-                 "SIGNED — there is no Mission Control release key yet, so this "
-                 "proves this tree is unchanged since packaging, and nothing more. "
-                 "Do not read it as provenance. Scope: naio-os itself has been "
-                 "signed since Phase 6 (manifest.sig, release-history.json, "
-                 "fail-closed verifier); Mission Control does not yet participate "
-                 "in that chain.",
-        "signed": False,
+                 "at the same moment the self-test ran. On its own this proves the "
+                 "tree is unchanged since packaging and nothing more. Provenance "
+                 "comes from the detached signature described under 'signature' — "
+                 "if manifest.sig is absent, this build is UNSIGNED and `naio-mc "
+                 "verify` says so.",
+        # A description of the contract, never an assertion that it was met. The
+        # old 'signed: false' field was a claim living inside the very bytes a
+        # signature would cover: sign the file and the field is a lie, leave it
+        # and it has to be hand-edited at exactly the moment nobody is looking.
+        # Whether this build is signed is now answered by checking the signature.
+        "signature": {
+            "algorithm": SIG_ALGORITHM,
+            "detached": SIG_NAME,
+            "public_key": PUBLIC_KEY_REL,
+            "key_id": KEY_ID,
+            "note": "Same key and same fail-closed posture as the naio-os release "
+                    "chain. Verify with: openssl dgst -sha256 -verify "
+                    f"{PUBLIC_KEY_REL} -signature {SIG_NAME} manifest.json",
+        },
         "version": version(),
         "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "self_test": {"passed": passed, "failed": failed},
@@ -153,12 +185,86 @@ def stamp_docs(passed: int) -> list[str]:
     return touched
 
 
+def sign_manifest(key_path: Path, public_key: Path | None = None) -> None:
+    """
+    Detached RSA-SHA256 over manifest.json, written to manifest.sig.
+
+    Deliberately the same two openssl invocations naio-os has used since Phase 6
+    rather than a second scheme with its own bugs: sign here, verify in
+    `naio-mc verify`, and the signature this writes is checked immediately so a
+    key that produces something unverifiable fails at the moment it is used and
+    not on a nurse's laptop a week later.
+    """
+    openssl = shutil.which("openssl")
+    if not openssl:
+        raise SystemExit("release: openssl not found — cannot sign")
+    if not key_path.is_file():
+        raise SystemExit(f"release: no signing key at {key_path}")
+
+    signed = subprocess.run(
+        [openssl, "dgst", "-sha256", "-sign", str(key_path),
+         "-out", str(MANIFEST_SIG), str(MANIFEST)],
+        text=True, capture_output=True)
+    if signed.returncode != 0:
+        MANIFEST_SIG.unlink(missing_ok=True)
+        raise SystemExit(f"release: signing failed — {(signed.stderr or '').strip()}")
+
+    public_key = (public_key or (HERE / PUBLIC_KEY_REL)).resolve()
+    checked = subprocess.run(
+        [openssl, "dgst", "-sha256", "-verify", str(public_key),
+         "-signature", str(MANIFEST_SIG), str(MANIFEST)],
+        text=True, capture_output=True)
+    if checked.returncode != 0:
+        MANIFEST_SIG.unlink(missing_ok=True)
+        raise SystemExit(
+            f"release: the signature this key produced does NOT verify against "
+            f"{public_key}. Wrong key for {KEY_ID}? Nothing was left behind.")
+
+
+def chain_entry() -> dict:
+    """
+    The one entry naio-os's signed manifest needs to cover all of Mission Control.
+
+    Two levels, not fifty-two: naio-os's signature covers its manifest.yaml,
+    which records the checksum of THIS manifest.json, which records the checksum
+    of every Mission Control file. Adding one line to the signed manifest brings
+    the whole directory under the chain, and re-cutting a Mission Control build
+    changes exactly one checksum upstream instead of dozens.
+    """
+    return {
+        "path": f"{HERE.name}/manifest.json",
+        "role": "mission-control-manifest",
+        "sha256": sha256(MANIFEST),
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Build the manifest and stamp the claims")
     ap.add_argument("--zip", help="also write a zip of the tree to this path")
     ap.add_argument("--skip-tests", action="store_true",
                     help="only for iterating; a release without a green suite is not one")
+    ap.add_argument("--sign", metavar="KEY",
+                    help=f"sign manifest.json with the private half of {KEY_ID}")
+    ap.add_argument("--public-key", metavar="PEM",
+                    help="check the signature against this public key instead of "
+                         f"{PUBLIC_KEY_REL}. For testing the signing path with a "
+                         "throwaway key; `naio-mc verify` remains pinned and is "
+                         "not affected by this flag.")
+    ap.add_argument("--chain-entry", action="store_true",
+                    help="print the naio-os manifest.yaml entry that covers this build")
     args = ap.parse_args()
+
+    if args.chain_entry:
+        if not MANIFEST.is_file():
+            raise SystemExit("release: no manifest.json yet — run this without "
+                             "--chain-entry first")
+        entry = chain_entry()
+        print("\n# Add to naio-os/manifest.yaml under `contents:`, then re-run")
+        print("# scripts/compute-checksums.sh and re-sign the manifest.\n")
+        print(f"- path: {entry['path']}")
+        print(f"  role: {entry['role']}")
+        print(f"  sha256: {entry['sha256']}\n")
+        return 0
 
     print("\nrelease\n")
     if args.skip_tests:
@@ -181,13 +287,54 @@ def main() -> int:
     manifest = build_manifest(passed, failed)
     MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"  ✓ manifest.json — {manifest['file_count']} files, version {manifest['version']}")
-    print("  ! not signed — there is no release key, and the manifest says so")
+
+    # A stale signature over the previous manifest is worse than none: it would
+    # fail verification and look like tampering rather than like a build step
+    # that was not run. The manifest has just been rewritten, so the old
+    # signature is already stale — clear it BEFORE attempting to sign, not only
+    # on the unsigned path. Signing can still fail (missing key, no openssl),
+    # and that failure must not leave the previous signature sitting over bytes
+    # it never covered.
+    had_signature = MANIFEST_SIG.exists()
+    if had_signature:
+        MANIFEST_SIG.unlink()
+        if not args.sign:
+            print(f"  ! removed a {SIG_NAME} that signed the PREVIOUS manifest — "
+                  f"re-run with --sign to sign this one")
+    if args.sign:
+        sign_manifest(Path(args.sign).expanduser(),
+                      Path(args.public_key).expanduser() if args.public_key else None)
+        print(f"  ✓ signed — {SIG_NAME} verifies against {PUBLIC_KEY_REL}")
+        print("  → next: add this to naio-os/manifest.yaml, then re-sign it:")
+        entry = chain_entry()
+        print(f"      - path: {entry['path']}")
+        print(f"        role: {entry['role']}")
+        print(f"        sha256: {entry['sha256']}")
+    else:
+        print(f"  ! not signed — the private half of {KEY_ID} is not in this "
+              f"repository, and `naio-mc verify` reports the build as unsigned")
 
     if args.zip:
         out = Path(args.zip).expanduser().resolve()
         out.parent.mkdir(parents=True, exist_ok=True)
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
             z.write(MANIFEST, f"{HERE.name}/manifest.json")
+            if MANIFEST_SIG.is_file():
+                z.write(MANIFEST_SIG, f"{HERE.name}/{SIG_NAME}")
+                # A signature is useless without the key, and this archive is
+                # routinely unpacked outside a naio-os tree where `../config/`
+                # does not exist. Ship the PUBLIC half at the layout the
+                # verifier's standalone candidate looks for. Safe to bundle
+                # only because naio-mc pins the key's fingerprint in code: an
+                # attacker who swaps this file is refused, not believed.
+                key = (HERE / PUBLIC_KEY_REL).resolve()
+                if key.is_file():
+                    z.write(key, f"{HERE.name}/config/{key.name}")
+                    print(f"  ✓ bundled the release public key for standalone "
+                          f"verification")
+                else:
+                    print(f"  ! signed, but {PUBLIC_KEY_REL} is missing — this "
+                          f"zip cannot be verified where it lands")
             for rel in tracked_files():
                 z.write(HERE / rel, f"{HERE.name}/{rel}")
         print(f"  ✓ {out} ({out.stat().st_size // 1024} KB)")

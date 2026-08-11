@@ -394,7 +394,7 @@ naio-mc start        # → http://127.0.0.1:8321
 
 Distributed the NAIO way: carried inside the existing bundle rather than inventing a second update channel.
 
-**Mission Control itself is not signed yet.** naio-os has been signed since Phase 6, and the parent bundle that contains this directory carries its own checksums and `bootstrap.sh` verification — but `manifest.json` here is a self-generated checksum list with no release key behind it, and `release.py` prints that in as many words. Bringing Mission Control under the signing chain is the next step, not a thing this describes as done. Directory layout:
+**Mission Control speaks the signing chain's language; it is not yet signed with its key.** naio-os has been signed since Phase 6, and the parent bundle carries its own checksums and `bootstrap.sh` verification. Mission Control now implements the same contract — detached RSA-SHA256 over `manifest.json`, the same public key, the same fail-closed verifier — but the private half of `naio-os-release-key-2026-06` is not in this repository and must not be, so builds cut here are unsigned and say so. §11 is the two-command step that closes it. Directory layout:
 
 ```
 ~/NAIO/mission-control/
@@ -431,7 +431,94 @@ The full content pipeline (Scholar → Scribe → Advocate, orchestrated hand-of
 
 ---
 
-## 11. Build roadmap
+## 11. Bringing Mission Control under the signing chain
+
+Everything below the key is built. What follows is the part that needs a secret
+this repository does not have, written down so it is a procedure rather than a
+memory.
+
+**Why two levels instead of one.** naio-os's signature covers `manifest.yaml`,
+which records a sha256 for every file it ships. Mission Control re-cuts on its
+own cadence, so listing its files individually would put dozens of churning
+checksums inside the signed manifest and make every dashboard change a release
+event for the whole bundle. Instead the signed manifest carries **one** entry —
+`mission-control/manifest.json` — and that file carries every Mission Control
+file. The chain reads:
+
+```text
+manifest.sig  ──covers──▶  naio-os/manifest.yaml
+                                 │  (one entry, one sha256)
+                                 ▼
+              mission-control/manifest.json
+                                 │  (one sha256 per file)
+                                 ▼
+                   every Mission Control file
+```
+
+Re-cutting Mission Control changes exactly one checksum upstream.
+
+**What the chain entry does NOT do, and why it is not enough on its own.**
+`bootstrap.sh` fetches exactly the paths `manifest.yaml` lists and verifies each
+against its recorded sha256. It does not traverse a nested manifest. So adding
+only the entry above gets a downloader `mission-control/manifest.json` — an
+authenticated list of files, and not one of the files on it, `naio-mc` included.
+The nested manifest makes the checksums **signed**; it does not make them
+**fetched**. Whoever cuts the release has to close that separately, and the two
+honest ways are:
+
+1. **Ship an archive.** Add `assets/mission-control.zip` (built by
+   `tools/release.py --zip`) to `manifest.yaml` as well, so bootstrap downloads
+   and checksum-verifies one artifact that contains the whole directory. The
+   nested `manifest.json` then verifies the unpacked tree, and the signed zip
+   already carries the release public key for `naio-mc verify` to use offline.
+2. **List the files.** Add every Mission Control path to `manifest.yaml`
+   directly. Straightforward, and it reintroduces exactly the churn the two-level
+   chain exists to avoid.
+
+Option 1 is the intended one. Until either is done, the chain entry is a
+*signature* improvement and not a *distribution* one, and this section says so
+rather than leaving a key-holder to discover it after cutting a release.
+
+**The procedure.** With the private half of `naio-os-release-key-2026-06`:
+
+```bash
+cd naio-os/mission-control
+python3 tools/release.py --sign /path/to/naio-os-release-private.pem
+```
+
+That runs the self-test, rebuilds `manifest.json`, writes `manifest.sig`, and
+then *verifies its own output* against `config/naio-os-release-public.pem` —
+a key that produces an unverifiable signature fails there, leaving nothing
+behind, rather than shipping. It then prints the entry for the next step.
+
+```bash
+cd ../..                      # repo root
+# add the printed entry to naio-os/manifest.yaml under `contents:`
+naio-os/scripts/compute-checksums.sh
+openssl dgst -sha256 -sign /path/to/naio-os-release-private.pem \
+  -out naio-os/manifest.sig naio-os/manifest.yaml
+sha256sum naio-os/manifest.yaml | awk '{print $1"  manifest.yaml"}' \
+  > naio-os/manifest.sha256
+# update release.json's manifest.sha256 to match, then:
+python3 naio-os/scripts/verify-release.py
+```
+
+`python3 tools/release.py --chain-entry` prints the entry on its own at any time.
+
+**Why this is not done here.** Editing `manifest.yaml` invalidates `manifest.sig`,
+and `verify-release.py` is fail-closed by design — it refuses a release whose
+signature does not verify. A change that added Mission Control to the signed
+manifest without re-signing it would take release verification from passing to
+failing for everyone, and there is no way to re-sign without the key. So the
+mechanism ships and the manifest is left alone. That is the correct trade, not a
+shortcut: a chain you cannot verify is worse than an honest gap you can see.
+
+**What a nurse sees in the meantime.** `naio-mc verify` reports the build as
+unsigned, in those words, and still passes — the checksums are true and are
+worth what they are worth. Nothing in the UI, the manifest, or the docs claims a
+provenance that does not exist yet.
+
+## 12. Build roadmap
 
 | Phase | Deliverable | Proof it works |
 |---|---|---|

@@ -218,6 +218,50 @@ def sign_bundle(staged: Path, key: Path, public_key: Path, epoch: str,
     return notes
 
 
+def publish(staged: Path, dest_root: Path, backup: Path) -> list[str]:
+    """
+    Copy the staged artifacts across, or put everything back.
+
+    Publication is the one step that touches the repository, and it is eight
+    separate copies. A failure partway through — a full disk, an unwritable
+    destination, a Ctrl-C — would leave a new manifest.yaml beside the old
+    nested artifacts it no longer describes: a tree that verifies neither as the
+    old release nor as the new one, with no key on hand to re-cut it. Staging
+    makes the *computation* all-or-nothing; this makes the write all-or-nothing
+    too, which is the half that a reviewer of the first version rightly pointed
+    out was still missing.
+
+    Takes dest_root rather than reading the module global so the rollback can be
+    tested against a scratch tree. An untested rollback is a comment.
+    """
+    done: list[tuple[str, bool]] = []       # (path, did it exist before this run)
+    try:
+        for rel in OUTPUTS:
+            src, dst = staged / rel, dest_root / rel
+            if not src.is_file():
+                continue
+            existed = dst.is_file()
+            if existed:
+                keep = backup / rel
+                keep.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(dst, keep)
+            # Recorded BEFORE the write, not after: copy2 truncates its
+            # destination first, so the file being written when a disk fills is
+            # the one most in need of restoring.
+            done.append((rel, existed))
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+    except (OSError, KeyboardInterrupt):
+        for rel, existed in reversed(done):
+            with suppress(OSError):
+                if existed:
+                    shutil.copy2(backup / rel, dest_root / rel)
+                else:
+                    (dest_root / rel).unlink()
+        raise
+    return [rel for rel, _ in done]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(
         description="Bring Mission Control under the naio-os signing chain")
@@ -278,13 +322,13 @@ def main() -> int:
                 print(f"     · {note}")
             return 0
 
-        for rel in OUTPUTS:
-            src, dst = staged / rel, ROOT / rel
-            if not src.is_file():
-                continue
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, dst)
-        say(f"  ✓ wrote {len(OUTPUTS)} artifacts into the working tree")
+        try:
+            written = publish(staged, ROOT, work / "rollback")
+        except (OSError, KeyboardInterrupt) as exc:
+            print(f"\n  ✗ publishing failed: {exc}")
+            print("\n❌ ROLLED BACK — the repository is as it was before this run.")
+            return 1
+        say(f"  ✓ wrote {len(written)} artifacts into the working tree")
 
     print("\n✅ MISSION CONTROL IS SIGNED AND IN THE CHAIN.")
     print("   Commit the artifacts, publish the archive at the release base_url,")

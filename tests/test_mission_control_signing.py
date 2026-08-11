@@ -22,6 +22,8 @@ exists to prevent.
 from __future__ import annotations
 
 import hashlib
+import importlib.util
+import json
 import os
 import shutil
 import subprocess
@@ -96,26 +98,146 @@ class SigningRehearsalTests(unittest.TestCase):
 
 
 class ReproducibleArchiveTests(unittest.TestCase):
-    """The digest recorded in a signed manifest has to be a function of source."""
+    """
+    The digest recorded in a signed manifest has to be a function of source.
+
+    Every build here runs in a COPY of Mission Control, never in the checkout.
+    `release.py` rewrites manifest.json on each run and deletes a manifest.sig
+    it did not just produce, so pointing these at the working tree would make
+    running the test suite quietly overwrite release provenance — and after a
+    real signing, destroy the signature. That is not hypothetical: the first
+    version of this file did exactly that, and committed a manifest.json
+    claiming `0 passed` with a test's pinned build time.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.mc = Path(self._tmp.name) / "mission-control"
+        shutil.copytree(MC, self.mc, symlinks=True,
+                        ignore=shutil.ignore_patterns("__pycache__", "*.pyc",
+                                                      "mission_control.db", "backups"))
+        self.addCleanup(self._tmp.cleanup)
 
     def test_two_builds_of_one_tree_are_byte_identical(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            digests = []
-            for n in (1, 2):
-                out = Path(tmp) / f"mc-{n}.zip"
-                r = run([sys.executable, "tools/release.py", "--skip-tests",
-                         "--zip", str(out)], MC, {"SOURCE_DATE_EPOCH": "1785024000"})
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                digests.append(hashlib.sha256(out.read_bytes()).hexdigest())
-            self.assertEqual(digests[0], digests[1],
-                             "the release archive is not reproducible")
+        digests = []
+        for n in (1, 2):
+            out = self.mc.parent / f"mc-{n}.zip"
+            r = run([sys.executable, "tools/release.py", "--skip-tests",
+                     "--zip", str(out)], self.mc, {"SOURCE_DATE_EPOCH": "1785024000"})
+            self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+            digests.append(hashlib.sha256(out.read_bytes()).hexdigest())
+        self.assertEqual(digests[0], digests[1],
+                         "the release archive is not reproducible")
 
     def test_a_bad_source_date_epoch_is_refused(self) -> None:
         """Silently falling back to the clock would reintroduce the problem."""
-        r = run([sys.executable, "tools/release.py", "--skip-tests"], MC,
+        r = run([sys.executable, "tools/release.py", "--skip-tests"], self.mc,
                 {"SOURCE_DATE_EPOCH": "yesterday"})
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("SOURCE_DATE_EPOCH", r.stdout + r.stderr)
+
+
+class CommittedProvenanceTests(unittest.TestCase):
+    """
+    What the packaged manifest claims about itself has to be true.
+
+    `naio-mc verify` prints `self_test` as "the self-test at build time", so a
+    manifest built with --skip-tests states, in a shipped artifact, that the
+    suite passed nothing. This test exists because that is what got committed:
+    a test suite building in the working tree left `0 passed` and a pinned
+    epoch behind, and nothing downstream would have called it a lie.
+    """
+
+    def setUp(self) -> None:
+        self.manifest = json.loads((MC / "manifest.json").read_text(encoding="utf-8"))
+
+    def test_the_manifest_records_a_real_suite_result(self) -> None:
+        result = self.manifest.get("self_test", {})
+        self.assertEqual(result.get("failed"), 0, "packaged with a failing suite")
+        self.assertGreater(result.get("passed", 0), 0,
+                           "manifest.json claims the suite passed nothing — it was "
+                           "built with --skip-tests and must be rebuilt")
+
+    def test_the_manifest_agrees_with_the_documented_count(self) -> None:
+        """README and the manifest are two copies of one number; they drift."""
+        readme = (MC / "README.md").read_text(encoding="utf-8")
+        passed = self.manifest["self_test"]["passed"]
+        self.assertIn(f"{passed} checks", readme,
+                      f"README does not mention the manifest's {passed} checks")
+
+
+class PublicationRollbackTests(unittest.TestCase):
+    """
+    The write step is all-or-nothing, and that is checked rather than claimed.
+
+    Staging already makes the computation transactional. The eight copies that
+    follow were not: a failure partway through left a new manifest.yaml beside
+    the nested artifacts it no longer described — a tree verifying as neither
+    release, with no key on hand to re-cut it.
+    """
+
+    def setUp(self) -> None:
+        spec = importlib.util.spec_from_file_location("signer", SIGNER)
+        self.signer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.signer)
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.tmp = Path(self._tmp.name)
+
+        # A destination tree where every output already exists with known
+        # content, and a staged tree that would replace all of them.
+        self.dest, self.staged = self.tmp / "dest", self.tmp / "staged"
+        for rel in self.signer.OUTPUTS:
+            for root, body in ((self.dest, "before"), (self.staged, "after")):
+                p = root / rel
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(body, encoding="utf-8")
+
+    def _block_one_output(self, index: int) -> str:
+        """
+        Make one output impossible to write, the way a broken tree would.
+
+        Its parent directory becomes a file, so the mkdir before the copy
+        raises. Blocking it by making the *destination* a directory does not
+        work — copy2 would cheerfully write the file inside it — which is
+        exactly the kind of thing that makes an untested rollback worthless.
+        """
+        rel = self.signer.OUTPUTS[index]
+        parent = (self.dest / rel).parent
+        self.assertNotEqual(parent, self.dest, "pick an output inside a subdirectory")
+        shutil.rmtree(parent)
+        parent.write_text("this is a file where a directory must be", encoding="utf-8")
+        return rel
+
+    def test_a_failure_partway_through_restores_every_earlier_copy(self) -> None:
+        blocked = self._block_one_output(4)
+        earlier = self.signer.OUTPUTS[:4]
+
+        with self.assertRaises(OSError):
+            self.signer.publish(self.staged, self.dest, self.tmp / "rollback")
+
+        for rel in earlier:
+            self.assertEqual((self.dest / rel).read_text(encoding="utf-8"), "before",
+                             f"{rel} was left holding a release that failed to publish "
+                             f"at {blocked}")
+
+    def test_a_file_that_did_not_exist_before_is_removed_on_failure(self) -> None:
+        """Restoring means gone, not empty, for anything the run created."""
+        fresh = self.signer.OUTPUTS[0]
+        (self.dest / fresh).unlink()
+        self._block_one_output(4)
+
+        with self.assertRaises(OSError):
+            self.signer.publish(self.staged, self.dest, self.tmp / "rollback")
+
+        self.assertFalse((self.dest / fresh).exists(),
+                         f"{fresh} was created by a run that failed")
+
+    def test_a_clean_run_writes_every_artifact(self) -> None:
+        written = self.signer.publish(self.staged, self.dest, self.tmp / "rollback")
+        self.assertEqual(len(written), len(self.signer.OUTPUTS))
+        for rel in self.signer.OUTPUTS:
+            self.assertEqual((self.dest / rel).read_text(encoding="utf-8"), "after")
 
 
 class RefusalTests(unittest.TestCase):

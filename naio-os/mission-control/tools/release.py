@@ -61,8 +61,11 @@ def tracked_files() -> list[Path]:
         if any(part in SKIP_DIRS for part in rel.parts):
             continue
         # manifest.json cannot checksum itself, and manifest.sig is written
-        # AFTER the manifest it signs — listing either guarantees drift.
-        if path.suffix in SKIP_SUFFIX or rel.name in ("manifest.json", SIG_NAME):
+        # AFTER the manifest it signs — listing either guarantees drift. Match
+        # the top-level paths, not the basename: a nested tools/manifest.sig
+        # would otherwise be excluded from the manifest AND from the untracked
+        # report, which is the one combination nobody would notice.
+        if path.suffix in SKIP_SUFFIX or str(rel) in ("manifest.json", SIG_NAME):
             continue
         out.append(rel)
     return out
@@ -182,7 +185,7 @@ def stamp_docs(passed: int) -> list[str]:
     return touched
 
 
-def sign_manifest(key_path: Path) -> None:
+def sign_manifest(key_path: Path, public_key: Path | None = None) -> None:
     """
     Detached RSA-SHA256 over manifest.json, written to manifest.sig.
 
@@ -206,7 +209,7 @@ def sign_manifest(key_path: Path) -> None:
         MANIFEST_SIG.unlink(missing_ok=True)
         raise SystemExit(f"release: signing failed — {(signed.stderr or '').strip()}")
 
-    public_key = (HERE / PUBLIC_KEY_REL).resolve()
+    public_key = (public_key or (HERE / PUBLIC_KEY_REL)).resolve()
     checked = subprocess.run(
         [openssl, "dgst", "-sha256", "-verify", str(public_key),
          "-signature", str(MANIFEST_SIG), str(MANIFEST)],
@@ -214,8 +217,8 @@ def sign_manifest(key_path: Path) -> None:
     if checked.returncode != 0:
         MANIFEST_SIG.unlink(missing_ok=True)
         raise SystemExit(
-            "release: the signature this key produced does NOT verify against "
-            f"{PUBLIC_KEY_REL}. Wrong key for {KEY_ID}? Nothing was left behind.")
+            f"release: the signature this key produced does NOT verify against "
+            f"{public_key}. Wrong key for {KEY_ID}? Nothing was left behind.")
 
 
 def chain_entry() -> dict:
@@ -242,6 +245,11 @@ def main() -> int:
                     help="only for iterating; a release without a green suite is not one")
     ap.add_argument("--sign", metavar="KEY",
                     help=f"sign manifest.json with the private half of {KEY_ID}")
+    ap.add_argument("--public-key", metavar="PEM",
+                    help="check the signature against this public key instead of "
+                         f"{PUBLIC_KEY_REL}. For testing the signing path with a "
+                         "throwaway key; `naio-mc verify` remains pinned and is "
+                         "not affected by this flag.")
     ap.add_argument("--chain-entry", action="store_true",
                     help="print the naio-os manifest.yaml entry that covers this build")
     args = ap.parse_args()
@@ -282,15 +290,22 @@ def main() -> int:
 
     # A stale signature over the previous manifest is worse than none: it would
     # fail verification and look like tampering rather than like a build step
-    # that was not run. Clear it, then sign the bytes that actually exist.
-    if MANIFEST_SIG.exists() and not args.sign:
+    # that was not run. The manifest has just been rewritten, so the old
+    # signature is already stale — clear it BEFORE attempting to sign, not only
+    # on the unsigned path. Signing can still fail (missing key, no openssl),
+    # and that failure must not leave the previous signature sitting over bytes
+    # it never covered.
+    had_signature = MANIFEST_SIG.exists()
+    if had_signature:
         MANIFEST_SIG.unlink()
-        print(f"  ! removed a {SIG_NAME} that signed the PREVIOUS manifest — "
-              f"re-run with --sign to sign this one")
+        if not args.sign:
+            print(f"  ! removed a {SIG_NAME} that signed the PREVIOUS manifest — "
+                  f"re-run with --sign to sign this one")
     if args.sign:
-        sign_manifest(Path(args.sign).expanduser())
+        sign_manifest(Path(args.sign).expanduser(),
+                      Path(args.public_key).expanduser() if args.public_key else None)
         print(f"  ✓ signed — {SIG_NAME} verifies against {PUBLIC_KEY_REL}")
-        print(f"  → next: add this to naio-os/manifest.yaml, then re-sign it:")
+        print("  → next: add this to naio-os/manifest.yaml, then re-sign it:")
         entry = chain_entry()
         print(f"      - path: {entry['path']}")
         print(f"        role: {entry['role']}")
@@ -306,6 +321,20 @@ def main() -> int:
             z.write(MANIFEST, f"{HERE.name}/manifest.json")
             if MANIFEST_SIG.is_file():
                 z.write(MANIFEST_SIG, f"{HERE.name}/{SIG_NAME}")
+                # A signature is useless without the key, and this archive is
+                # routinely unpacked outside a naio-os tree where `../config/`
+                # does not exist. Ship the PUBLIC half at the layout the
+                # verifier's standalone candidate looks for. Safe to bundle
+                # only because naio-mc pins the key's fingerprint in code: an
+                # attacker who swaps this file is refused, not believed.
+                key = (HERE / PUBLIC_KEY_REL).resolve()
+                if key.is_file():
+                    z.write(key, f"{HERE.name}/config/{key.name}")
+                    print(f"  ✓ bundled the release public key for standalone "
+                          f"verification")
+                else:
+                    print(f"  ! signed, but {PUBLIC_KEY_REL} is missing — this "
+                          f"zip cannot be verified where it lands")
             for rel in tracked_files():
                 z.write(HERE / rel, f"{HERE.name}/{rel}")
         print(f"  ✓ {out} ({out.stat().st_size // 1024} KB)")

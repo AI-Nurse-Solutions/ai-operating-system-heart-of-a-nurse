@@ -16,6 +16,7 @@ Nothing here mutates ~/.hermes, schedules a cron job, or resolves a gate.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -92,12 +93,54 @@ def doctor() -> int:
     return 1 if problems else 0
 
 
-def _check_signature(man: dict, manifest_path) -> bool:
+# The trust anchor, pinned in code — the same fingerprint bootstrap.sh pins.
+#
+# Everything else about the signature may be read from manifest.json; the KEY
+# may not. manifest.json is the file being authenticated, so taking the key
+# from it lets anyone who can edit the tree finish the job: rewrite the
+# checksums to match their files, point `signature.public_key` at a key they
+# hold, sign it, and watch `verify` announce a valid signature by whatever
+# key_id they typed. A verifier that accepts the subject's own choice of
+# authority is not a verifier. Pinning the path is necessary; pinning the
+# fingerprint is what makes a key shipped alongside the artifact safe to use.
+SIG_NAME = "manifest.sig"
+SIG_ALGORITHM = "RSA-SHA256"
+KEY_ID = "naio-os-release-key-2026-06"
+PUBLIC_KEY_CANDIDATES = (
+    "../config/naio-os-release-public.pem",   # inside a naio-os tree
+    "config/naio-os-release-public.pem",      # a standalone signed zip
+)
+PUBLIC_KEY_SHA256 = "9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f"
+
+
+def _pinned_public_key():
+    """(path, problem). Returns the first candidate whose fingerprint matches."""
+    seen = []
+    for rel in PUBLIC_KEY_CANDIDATES:
+        candidate = (HERE / rel).resolve()
+        if not candidate.is_file():
+            continue
+        digest = hashlib.sha256(candidate.read_bytes()).hexdigest()
+        if digest == PUBLIC_KEY_SHA256:
+            return candidate, None
+        seen.append(f"{rel} (sha256 {digest[:16]}…)")
+    if seen:
+        return None, ("a release key was found but does NOT match the pinned "
+                      f"fingerprint: {', '.join(seen)}. Pinned: "
+                      f"{PUBLIC_KEY_SHA256[:16]}…. Unless a key rotation was "
+                      f"announced, treat this as a compromised source.")
+    return None, ("no release public key found at " +
+                  " or ".join(PUBLIC_KEY_CANDIDATES))
+
+
+def _check_signature(man: dict, manifest_path) -> tuple[bool, bool]:
     """
     Verify the detached signature over manifest.json, the way naio-os does.
 
-    Returns True only on a signature that verified. Three outcomes, and the
-    middle one is the one that matters:
+    Returns (present, verified). `present` is reported from here rather than
+    re-derived by the caller, so the two can never disagree about which file
+    they mean. `verified` is True only for a signature that checked out against
+    the PINNED key. Four outcomes:
 
       * no manifest.sig       — unsigned. Says so plainly and does not fail;
                                 checksums still prove the tree is intact.
@@ -106,46 +149,66 @@ def _check_signature(man: dict, manifest_path) -> bool:
                                 signal than no signature at all, and it is
                                 treated that way rather than downgraded to a
                                 warning.
+      * key missing/mismatched — fails. The pinned fingerprint is the anchor;
+                                a key that does not match it proves nothing,
+                                and a missing one cannot be substituted for.
       * openssl missing       — cannot be checked, so it is not claimed. Fails,
                                 because a build that ships a signature nobody
                                 can verify should not read as verified.
     """
-    contract = man.get("signature") or {}
-    sig_name = contract.get("detached", "manifest.sig")
-    sig_path = HERE / sig_name
-    public_key = (HERE / contract.get("public_key",
-                                      "../config/naio-os-release-public.pem")).resolve()
+    # A hand-corrupted manifest can carry a non-dict here; `.get` on a string
+    # would raise, and a crash is a worse answer than a refusal.
+    contract = man.get("signature")
+    if not isinstance(contract, dict):
+        contract = {}
+    sig_path = HERE / SIG_NAME
 
     if not sig_path.is_file():
-        _warn(f"MISSION CONTROL IS NOT SIGNED — no {sig_name}. Checksums prove "
+        _warn(f"MISSION CONTROL IS NOT SIGNED — no {SIG_NAME}. Checksums prove "
               f"this tree is unchanged since packaging, and nothing more. It is "
               f"not provenance. (naio-os itself is signed; a Mission Control "
               f"build is only signed once the release key has been applied.)")
-        return False
+        return False, False
+
+    # A manifest that names a different key, algorithm or signature file is not
+    # a manifest to negotiate with — those fields are documentation, and the
+    # only reason to change them is to be believed about a different authority.
+    named_key = contract.get("public_key")
+    if named_key is not None and named_key not in PUBLIC_KEY_CANDIDATES:
+        _bad(f"the manifest names a release key this verifier does not trust "
+             f"({named_key!r}). The trusted key is pinned in naio-mc, not read "
+             f"from the file being checked. Refusing to verify.")
+        return True, False
+    if contract.get("algorithm", SIG_ALGORITHM) != SIG_ALGORITHM:
+        _bad(f"the manifest names algorithm {contract.get('algorithm')!r}; only "
+             f"{SIG_ALGORITHM} is trusted here. Refusing to verify.")
+        return True, False
 
     openssl = shutil.which("openssl")
     if not openssl:
-        _bad(f"{sig_name} is present but openssl is not installed — this "
+        _bad(f"{SIG_NAME} is present but openssl is not installed — this "
              f"signature cannot be checked, so it is not being trusted.")
-        return False
-    if not public_key.is_file():
-        _bad(f"{sig_name} is present but the release public key is missing at "
-             f"{contract.get('public_key')} — cannot verify.")
-        return False
+        return True, False
+
+    public_key, problem = _pinned_public_key()
+    if public_key is None:
+        _bad(f"{SIG_NAME} is present but {problem}")
+        return True, False
 
     proc = subprocess.run(
         [openssl, "dgst", "-sha256", "-verify", str(public_key),
          "-signature", str(sig_path), str(manifest_path)],
         text=True, capture_output=True)
     if proc.returncode != 0:
-        _bad(f"SIGNATURE DOES NOT VERIFY against {contract.get('public_key')}. "
+        _bad(f"SIGNATURE DOES NOT VERIFY against the pinned release key. "
              f"This manifest is not the one that was signed. Do not trust this "
              f"tree — re-download it. ({(proc.stdout + proc.stderr).strip()[:120]})")
-        return False
+        return True, False
 
-    _ok(f"signed and verified — {contract.get('algorithm', 'RSA-SHA256')} by "
-        f"{contract.get('key_id', 'the release key')}")
-    return True
+    # Named from the pinned constants, never from the file just verified.
+    _ok(f"signed and verified — {SIG_ALGORITHM} by {KEY_ID} "
+        f"(key fingerprint matches the one pinned in naio-mc)")
+    return True, True
 
 
 def verify() -> int:
@@ -186,7 +249,7 @@ def verify() -> int:
           f"{man.get('file_count')} files")
     st = man.get("self_test", {})
     print(f"  self-test at build time: {st.get('passed')} passed, {st.get('failed')} failed")
-    signature_ok = _check_signature(man, manifest_path)
+    sig_present, signature_ok = _check_signature(man, manifest_path)
 
     if mutated:
         print()
@@ -210,8 +273,7 @@ def verify() -> int:
     # A present-but-invalid signature fails the command. An absent one does
     # not: unsigned is an honest state this build is allowed to be in, and
     # `_check_signature` has already said so out loud.
-    sig_failed = (HERE / (man.get('signature', {}).get('detached', 'manifest.sig'))
-                  ).is_file() and not signature_ok
+    sig_failed = sig_present and not signature_ok
     return 1 if (changed or missing or sig_failed) else 0
 
 

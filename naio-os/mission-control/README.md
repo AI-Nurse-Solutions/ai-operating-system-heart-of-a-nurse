@@ -10,7 +10,7 @@ The observation plane for Nurse AI OS. Local-only, stdlib-only, read-mostly.
 ```bash
 ./naio-mc doctor      # preflight — python, presets, content, runtime, port
 ./naio-mc start       # → http://127.0.0.1:8321
-./naio-mc self-test   # 107 checks, including the ones that matter
+./naio-mc self-test   # 111 checks, including the ones that matter
 ./naio-mc verify      # is this tree the one that was packaged?
 ./naio-mc configure   # point it at your own vault and SOUL files
 ./naio-mc notes-check # run the Apple Notes bridge once and see what it returns
@@ -32,7 +32,7 @@ No install step, no dependency to fetch. Python 3.10+ and the standard library.
 | **SOUL bridge** | `naio-soul.json` → real content, replacing sample | built |
 | **Editing** | set your season; add the credentials that could lapse | built |
 
-All seven tabs are live. `self-test` runs 107 checks and attacks the rules rather than asserting them: it writes a malicious preset, probes for an endpoint that approves a gate, probes for one that schedules cron, kills a collector for real, and checks that promoting to memory left `SOUL.md` untouched byte-for-byte.
+All seven tabs are live. `self-test` runs 111 checks and attacks the rules rather than asserting them: it writes a malicious preset, probes for an endpoint that approves a gate, probes for one that schedules cron, kills a collector for real, and checks that promoting to memory left `SOUL.md` untouched byte-for-byte.
 
 ```
 mission-control/
@@ -290,6 +290,12 @@ Mission Control now speaks the same signature contract naio-os has used since Ph
 | No `manifest.sig` | Says **NOT SIGNED** in those words, and passes — unsigned is an honest state, and the checksums still mean what they mean |
 | Signature present and valid | `signed and verified — RSA-SHA256 by naio-os-release-key-2026-06` |
 | Signature present and invalid | **Fails, non-zero.** A signature that does not check out is a stronger signal than no signature, and it is treated that way rather than softened into a warning |
+| The manifest names a different key or algorithm | **Fails, non-zero.** The trusted key is pinned in `naio-mc`; a file cannot nominate the authority that vouches for it |
+| A key is present but its fingerprint does not match the pinned one | **Fails, non-zero.** Unless a key rotation was announced, treat it as a compromised source |
+| Signature present, no release key found | **Fails, non-zero.** Names the paths it looked in |
+| Signature present, `openssl` not installed | **Fails, non-zero.** The signature cannot be checked, so it is not trusted — install `openssl` and re-run |
+
+The trust anchor is the key's **sha256 fingerprint, pinned in `naio-mc`** — the same fingerprint `bootstrap.sh` pins. Reading the key path out of `manifest.json` would have let anyone who can write to the tree pick the key that vouches for their own edit; pinning the fingerprint is also what makes it safe for a signed zip to carry the public half for offline verification.
 
 What is still missing is the one thing this repository must not contain: the private half of `naio-os-release-key-2026-06`. Until a key-holder runs `python3 tools/release.py --sign <key>`, every build here is unsigned and every surface says so. The mechanism is done; the key step is somebody's to take, and it is two commands — see [ARCHITECTURE.md §11](ARCHITECTURE.md#11-bringing-mission-control-under-the-signing-chain).
 

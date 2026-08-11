@@ -16,6 +16,7 @@ MC-1 self-test — proves the acceptance criteria, not just that imports resolve
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -759,34 +760,91 @@ def main() -> int:
             priv, pub = keydir / "private.pem", keydir / "public.pem"
             subprocess.run([openssl, "genpkey", "-algorithm", "RSA", "-out", str(priv),
                             "-pkeyopt", "rsa_keygen_bits:2048"],
-                           capture_output=True, check=True, timeout=120)
+                           capture_output=True, check=True, timeout=180)
             subprocess.run([openssl, "rsa", "-in", str(priv), "-pubout", "-out", str(pub)],
                            capture_output=True, check=True, timeout=60)
 
-            # Point the staged manifest at the throwaway public half, then sign
-            # the bytes as they stand.
-            staged = json.loads(man_path.read_text())
-            staged["signature"]["public_key"] = str(pub)
-            man_path.write_text(json.dumps(staged, indent=2) + "\n", encoding="utf-8")
+            # The verifier pins the release key's FINGERPRINT, so a throwaway key
+            # cannot be substituted at runtime — which is the whole point. To
+            # drive the real code path, re-pin the STAGED copy of naio-mc to the
+            # throwaway key, exactly as a different release would pin a different
+            # key. Nothing about the shipped verifier is relaxed to do this.
+            staged_cli = stage / "naio-mc"
+            throwaway_digest = hashlib.sha256(pub.read_bytes()).hexdigest()
+            cli_src = staged_cli.read_text(encoding="utf-8")
+            real_pin = re.search(r'PUBLIC_KEY_SHA256 = "([0-9a-f]{64})"', cli_src).group(1)
+            staged_cli.write_text(
+                cli_src.replace(f'PUBLIC_KEY_SHA256 = "{real_pin}"',
+                                f'PUBLIC_KEY_SHA256 = "{throwaway_digest}"'),
+                encoding="utf-8")
+            (stage / "config").mkdir(exist_ok=True)
+            shutil.copy(pub, stage / "config" / "naio-os-release-public.pem")
+
+            # release.py verifies the signature it just produced. --public-key
+            # points that self-check at the throwaway public half; the VERIFIER
+            # is unaffected by the flag and stays pinned.
             signed = subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
-                                     "--skip-tests", "--sign", str(priv)],
+                                     "--skip-tests", "--sign", str(priv),
+                                     "--public-key", str(pub)],
                                     capture_output=True, text=True, cwd=str(stage),
-                                    timeout=120)
-            # release.py rebuilds the manifest, which resets public_key — so sign
-            # the rebuilt bytes directly, the way a key-holder's openssl would.
-            staged = json.loads(man_path.read_text())
-            staged["signature"]["public_key"] = str(pub)
-            man_path.write_text(json.dumps(staged, indent=2) + "\n", encoding="utf-8")
-            subprocess.run([openssl, "dgst", "-sha256", "-sign", str(priv),
-                            "-out", str(stage / "manifest.sig"), str(man_path)],
-                           capture_output=True, check=True, timeout=60)
+                                    timeout=180)
+            check("release.py --sign writes a signature it has itself verified",
+                  signed.returncode == 0 and (stage / "manifest.sig").is_file(),
+                  (signed.stdout + signed.stderr).strip().replace("\n", " | ")[-200:])
+
             v = naio("verify")
             check("a valid signature verifies and is reported",
                   v.returncode == 0 and "signed and verified" in v.stdout,
                   v.stdout.strip().replace("\n", " | ")[-200:])
 
+            # THE attack both reviewers found: the trust anchor must not be
+            # readable from the file being authenticated. Point the manifest at a
+            # key the attacker controls, sign it with the matching private half,
+            # and a verifier that believed the manifest would announce a valid
+            # signature by whatever key_id was typed into it.
+            attacker = workdir / "attacker-key"
+            attacker.mkdir(exist_ok=True)
+            a_priv, a_pub = attacker / "private.pem", attacker / "public.pem"
+            subprocess.run([openssl, "genpkey", "-algorithm", "RSA", "-out", str(a_priv),
+                            "-pkeyopt", "rsa_keygen_bits:2048"],
+                           capture_output=True, check=True, timeout=180)
+            subprocess.run([openssl, "rsa", "-in", str(a_priv), "-pubout", "-out", str(a_pub)],
+                           capture_output=True, check=True, timeout=60)
+            shutil.copy(a_pub, stage / "evil-public.pem")
+            hijacked = json.loads(man_path.read_text())
+            hijacked["signature"]["public_key"] = "evil-public.pem"
+            hijacked["signature"]["key_id"] = "naio-os-release-key-2026-06"
+            man_path.write_text(json.dumps(hijacked, indent=2) + "\n", encoding="utf-8")
+            subprocess.run([openssl, "dgst", "-sha256", "-sign", str(a_priv),
+                            "-out", str(stage / "manifest.sig"), str(man_path)],
+                           capture_output=True, check=True, timeout=60)
+            v = naio("verify")
+            check("a manifest cannot nominate the key that verifies it",
+                  v.returncode == 1 and "does not trust" in v.stdout,
+                  v.stdout.strip().replace("\n", " | ")[-200:])
+
+            # Same attack, but the attacker overwrites the key at the pinned
+            # PATH instead of naming a new one. The pinned FINGERPRINT is what
+            # catches this one.
+            (stage / "evil-public.pem").unlink()
+            shutil.copy(a_pub, stage / "config" / "naio-os-release-public.pem")
+            clean = json.loads(man_path.read_text())
+            clean["signature"]["public_key"] = "config/naio-os-release-public.pem"
+            man_path.write_text(json.dumps(clean, indent=2) + "\n", encoding="utf-8")
+            subprocess.run([openssl, "dgst", "-sha256", "-sign", str(a_priv),
+                            "-out", str(stage / "manifest.sig"), str(man_path)],
+                           capture_output=True, check=True, timeout=60)
+            v = naio("verify")
+            check("a swapped key at the pinned path is caught by the fingerprint",
+                  v.returncode == 1 and "pinned fingerprint" in v.stdout,
+                  v.stdout.strip().replace("\n", " | ")[-200:])
+            shutil.copy(pub, stage / "config" / "naio-os-release-public.pem")
+
             # Edit one byte of the signed manifest: the checksums still describe
             # the tree, but the signature no longer covers these bytes.
+            subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
+                            "--skip-tests", "--sign", str(priv), "--public-key", str(pub)],
+                           capture_output=True, text=True, cwd=str(stage), timeout=180)
             tampered = json.loads(man_path.read_text())
             tampered["version"] = "9.9.9-not-what-was-signed"
             man_path.write_text(json.dumps(tampered, indent=2) + "\n", encoding="utf-8")
@@ -795,23 +853,33 @@ def main() -> int:
                   v.returncode == 1 and "DOES NOT VERIFY" in v.stdout,
                   v.stdout.strip().replace("\n", " | ")[-200:])
 
-            # A key whose public half is not the one the manifest names must be
-            # refused at signing time, not shipped for a nurse to discover.
-            other = keydir / "other.pem"
-            subprocess.run([openssl, "genpkey", "-algorithm", "RSA", "-out", str(other),
-                            "-pkeyopt", "rsa_keygen_bits:2048"],
-                           capture_output=True, check=True, timeout=120)
-            staged = json.loads(man_path.read_text())
-            staged["signature"]["public_key"] = str(pub)
-            man_path.write_text(json.dumps(staged, indent=2) + "\n", encoding="utf-8")
+            # A signing key whose public half does not verify what it produced is
+            # refused by release.py — checked against the key given to --sign's
+            # self-check, never against anything the manifest claims.
             wrong = subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
-                                    "--skip-tests", "--sign", str(other)],
+                                    "--skip-tests", "--sign", str(a_priv),
+                                    "--public-key", str(pub)],
                                    capture_output=True, text=True, cwd=str(stage),
                                    timeout=180)
             check("release.py refuses a key that does not match the public half",
                   wrong.returncode != 0
                   and not (stage / "manifest.sig").is_file(),
                   (wrong.stdout + wrong.stderr).strip().replace("\n", " | ")[-200:])
+
+            # A failed --sign must not leave the PREVIOUS signature sitting over
+            # a manifest it never covered — that reads as tampering later.
+            subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
+                            "--skip-tests", "--sign", str(priv), "--public-key", str(pub)],
+                           capture_output=True, text=True, cwd=str(stage), timeout=180)
+            subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
+                            "--skip-tests", "--sign", str(keydir / "no-such-key.pem")],
+                           capture_output=True, text=True, cwd=str(stage), timeout=180)
+            check("a failed signing leaves no stale signature behind",
+                  not (stage / "manifest.sig").is_file())
+
+            # Restore the real pin so nothing downstream runs against a test key.
+            staged_cli.write_text(cli_src, encoding="utf-8")
+            shutil.rmtree(stage / "config", ignore_errors=True)
 
             # Back to a clean, unsigned, freshly-built tree for the checks below.
             subprocess.run([sys.executable, str(stage / "tools" / "release.py"),

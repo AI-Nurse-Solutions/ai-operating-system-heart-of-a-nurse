@@ -2,7 +2,7 @@
   "_note": "Checksums of what was actually built, written by tools/release.py at the same moment the self-test ran. MISSION CONTROL IS NOT SIGNED \u2014 there is no Mission Control release key yet, so this proves this tree is unchanged since packaging, and nothing more. Do not read it as provenance. Scope: naio-os itself has been signed since Phase 6 (manifest.sig, release-history.json, fail-closed verifier); Mission Control does not yet participate in that chain.",
   "signed": false,
   "version": "0.4.0",
-  "built_at": "2026-08-11T11:47:42+00:00",
+  "built_at": "2026-08-11T12:18:10+00:00",
   "self_test": {
     "passed": 89,
     "failed": 0
@@ -250,8 +250,8 @@
       "mutable": false
     },
     "tests/self_test.py": {
-      "sha256": "21e011a155ba2d2ba3cb9b414875ce42afa6490ba849a940a5829aadc0670b88",
-      "bytes": 40398,
+      "sha256": "11321f21848135ed271afc3a5e8b141563f30d8be6c0d71fe023505e223c0f77",
+      "bytes": 41031,
       "mutable": false
     },
     "tools/rebuild-governance-kit.sh": {

@@ -453,17 +453,25 @@ def main() -> int:
                 skip("the committed v2 fixture still matches what soul-quiz emits",
                      "could not read the quiz's representative state from its own tests")
             else:
-                gen = quiz_model.parent.parent / "_mc_fixture_probe.mjs"
-                gen.write_text(
-                    "import {createInitialState,buildOsConfig} from "
-                    "'./soul-quiz/soul-quiz-model.mjs';\n" + state_js.group(1) +
-                    "\nconsole.log(JSON.stringify(buildOsConfig(s,"
-                    "'2026-07-20T00:00:00.000Z')));\n", encoding="utf-8")
+                # The probe goes in a temp dir and imports the model by file://
+                # URL. An earlier version wrote it into the repo root and deleted
+                # it afterwards, which dirtied the working tree for the length of
+                # the run and left the file behind whenever the delete failed or
+                # the process died first — precisely what CI's
+                # `test -z "$(git status --porcelain)"` gate exists to catch. A
+                # test that can fail the build by running is not a test.
+                probe_dir = Path(tempfile.mkdtemp(prefix="mc-quiz-probe-"))
                 try:
-                    live = subprocess.run([node, gen.name], capture_output=True,
-                                          text=True, cwd=str(gen.parent))
+                    gen = probe_dir / "probe.mjs"
+                    gen.write_text(
+                        "import {createInitialState,buildOsConfig} from "
+                        f"'{quiz_model.resolve().as_uri()}';\n" + state_js.group(1) +
+                        "\nconsole.log(JSON.stringify(buildOsConfig(s,"
+                        "'2026-07-20T00:00:00.000Z')));\n", encoding="utf-8")
+                    live = subprocess.run([node, str(gen)], capture_output=True,
+                                          text=True, cwd=str(probe_dir))
                 finally:
-                    gen.unlink(missing_ok=True)
+                    shutil.rmtree(probe_dir, ignore_errors=True)
                 emitted = json.loads(live.stdout) if live.returncode == 0 else {}
                 committed = json.loads(v2_fixture.read_text(encoding="utf-8"))
                 check("the committed v2 fixture still matches what soul-quiz emits",

@@ -29,8 +29,18 @@ const { port } = server.address();
 const baseUrl = `http://127.0.0.1:${port}/switchboard/`;
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+// A webfont CDN being unreachable is not a defect in the page under test: the
+// stylesheet is loaded with display=swap and every one of these pages renders
+// its fallback face when it never arrives. A CI runner that cannot reach
+// fonts.googleapis.com was failing this assertion with ten identical resource
+// errors that say nothing about the code — this file already filtered them for
+// one page and not for the one that failed.
+const isOptionalExternal = (url) => /^https:\/\/fonts\.(googleapis|gstatic)\.com\//.test(url || '');
+
 const errors = [];
-page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
+page.on('console', (message) => {
+  if (message.type() === 'error' && !isOptionalExternal(message.location()?.url)) errors.push(message.text());
+});
 page.on('pageerror', (error) => errors.push(error.message));
 
 try {
@@ -269,7 +279,7 @@ try {
   const postSetupErrors = [];
   const postSetupFailedResponses = [];
   const postSetupFailedRequests = [];
-  const isOptionalFontUrl = (url) => url.startsWith('https://fonts.googleapis.com/') || url.startsWith('https://fonts.gstatic.com/');
+  const isOptionalFontUrl = isOptionalExternal;
   postSetupPage.on('console', (message) => {
     const location = message.location().url || '';
     if (message.type() === 'error' && !isOptionalFontUrl(location)) {

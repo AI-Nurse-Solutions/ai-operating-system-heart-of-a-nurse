@@ -10,7 +10,7 @@ The observation plane for Nurse AI OS. Local-only, stdlib-only, read-mostly.
 ```bash
 ./naio-mc doctor      # preflight — python, presets, content, runtime, port
 ./naio-mc start       # → http://127.0.0.1:8321
-./naio-mc self-test   # 103 checks, including the ones that matter
+./naio-mc self-test   # 107 checks, including the ones that matter
 ./naio-mc verify      # is this tree the one that was packaged?
 ./naio-mc configure   # point it at your own vault and SOUL files
 ./naio-mc notes-check # run the Apple Notes bridge once and see what it returns
@@ -32,7 +32,7 @@ No install step, no dependency to fetch. Python 3.10+ and the standard library.
 | **SOUL bridge** | `naio-soul.json` → real content, replacing sample | built |
 | **Editing** | set your season; add the credentials that could lapse | built |
 
-All seven tabs are live. `self-test` runs 103 checks and attacks the rules rather than asserting them: it writes a malicious preset, probes for an endpoint that approves a gate, probes for one that schedules cron, kills a collector for real, and checks that promoting to memory left `SOUL.md` untouched byte-for-byte.
+All seven tabs are live. `self-test` runs 107 checks and attacks the rules rather than asserting them: it writes a malicious preset, probes for an endpoint that approves a gate, probes for one that schedules cron, kills a collector for real, and checks that promoting to memory left `SOUL.md` untouched byte-for-byte.
 
 ```
 mission-control/
@@ -281,9 +281,17 @@ Either way it refuses a path that does not exist, tells you how many files it wo
 
 `tools/release.py` builds `manifest.json` — a sha256 of every tracked file, the version, and the self-test result **captured at the moment of packaging**. `verify` recomputes and reports drift, separating two cases: code that changed since packaging (a failure, named file by file) and files you are meant to edit like `config.json` and `content/` (expected, reported as such).
 
-**Mission Control is not signed, and it says so in three places** — the manifest, the command output, and here. Checksums prove this tree is unchanged since packaging. They are not provenance, and pretending otherwise is exactly the claim this project keeps refusing to make.
+**A Mission Control build is signed or it is not, and `naio-mc verify` tells you which** — it no longer takes the manifest's word for it. Checksums prove this tree is unchanged since packaging; only a signature says who packaged it, and the two are now reported separately.
 
-Note the asymmetry, because it cuts both ways: `naio-os` itself *is* signed, and has been since Phase 6 — `manifest.sig`, `release-history.json`, and a fail-closed verifier that refuses a release it cannot verify. Mission Control ships inside that tree without yet participating in that chain. There is no Mission Control release key, so `manifest.json` records `"signed": false` and every surface repeats it. Reading "not signed" here as a statement about naio-os would be just as wrong as reading naio-os's signature as covering Mission Control. Bringing Mission Control under the existing chain is the obvious next step, and it is not done.
+Mission Control now speaks the same signature contract naio-os has used since Phase 6 — a detached `manifest.sig`, RSA-SHA256 over `manifest.json`, verified against the same `config/naio-os-release-public.pem` with the same fail-closed posture. Three outcomes, and the middle one is the point:
+
+| State | `naio-mc verify` |
+|---|---|
+| No `manifest.sig` | Says **NOT SIGNED** in those words, and passes — unsigned is an honest state, and the checksums still mean what they mean |
+| Signature present and valid | `signed and verified — RSA-SHA256 by naio-os-release-key-2026-06` |
+| Signature present and invalid | **Fails, non-zero.** A signature that does not check out is a stronger signal than no signature, and it is treated that way rather than softened into a warning |
+
+What is still missing is the one thing this repository must not contain: the private half of `naio-os-release-key-2026-06`. Until a key-holder runs `python3 tools/release.py --sign <key>`, every build here is unsigned and every surface says so. The mechanism is done; the key step is somebody's to take, and it is two commands — see [ARCHITECTURE.md §11](ARCHITECTURE.md#11-bringing-mission-control-under-the-signing-chain).
 
 ### Why this exists
 

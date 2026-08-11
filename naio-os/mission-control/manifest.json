@@ -1,22 +1,28 @@
 {
-  "_note": "Checksums of what was actually built, written by tools/release.py at the same moment the self-test ran. MISSION CONTROL IS NOT SIGNED \u2014 there is no Mission Control release key yet, so this proves this tree is unchanged since packaging, and nothing more. Do not read it as provenance. Scope: naio-os itself has been signed since Phase 6 (manifest.sig, release-history.json, fail-closed verifier); Mission Control does not yet participate in that chain.",
-  "signed": false,
+  "_note": "Checksums of what was actually built, written by tools/release.py at the same moment the self-test ran. On its own this proves the tree is unchanged since packaging and nothing more. Provenance comes from the detached signature described under 'signature' \u2014 if manifest.sig is absent, this build is UNSIGNED and `naio-mc verify` says so.",
+  "signature": {
+    "algorithm": "RSA-SHA256",
+    "detached": "manifest.sig",
+    "public_key": "../config/naio-os-release-public.pem",
+    "key_id": "naio-os-release-key-2026-06",
+    "note": "Same key and same fail-closed posture as the naio-os release chain. Verify with: openssl dgst -sha256 -verify ../config/naio-os-release-public.pem -signature manifest.sig manifest.json"
+  },
   "version": "0.4.0",
-  "built_at": "2026-08-11T16:37:01+00:00",
+  "built_at": "2026-08-11T18:59:38+00:00",
   "self_test": {
-    "passed": 103,
+    "passed": 107,
     "failed": 0
   },
   "file_count": 52,
   "files": {
     "ARCHITECTURE.md": {
-      "sha256": "a68702005159fa3802b1c97e715746ea31b6f31cf9cbc6cac28db9f8ea44970b",
-      "bytes": 38317,
+      "sha256": "8a01c2f8bf3334f5eae3910a370e12a07b999afb613212c514c65b464e579e2b",
+      "bytes": 41439,
       "mutable": false
     },
     "README.md": {
-      "sha256": "398aad33a78050fb5edb4fb78607430c15cb68021e4c46719972bcd2dd526dca",
-      "bytes": 20135,
+      "sha256": "815d1daa6a96c1e12c3a5ce1857a68289057204cd79cfa500e94c01a71e79ba5",
+      "bytes": 20698,
       "mutable": false
     },
     "adapters/__init__.py": {
@@ -195,8 +201,8 @@
       "mutable": false
     },
     "naio-mc": {
-      "sha256": "552b0af14f800f785d7c24d1804396b9814ecd385a4c4683a2c58f49299a7b89",
-      "bytes": 21857,
+      "sha256": "41f963893ea4ddf835b4def2d6aac2c66890785659542322df2bd93620bee1e8",
+      "bytes": 24697,
       "mutable": false
     },
     "roles/README.md": {
@@ -255,8 +261,8 @@
       "mutable": false
     },
     "tests/self_test.py": {
-      "sha256": "7670896ca968dfefc5508e6905b634f597f758ec977f7c0c6927022b54c42e61",
-      "bytes": 50944,
+      "sha256": "e406eb5fdb0de5042d323424ccda327d39711d59a5b1c82439d3f874532476c3",
+      "bytes": 56537,
       "mutable": false
     },
     "tools/rebuild-governance-kit.sh": {
@@ -265,8 +271,8 @@
       "mutable": false
     },
     "tools/release.py": {
-      "sha256": "1fe918c728c59eacff297471d8b2dfc425a1c01429b95bc1c4b725b7d7d8994f",
-      "bytes": 8092,
+      "sha256": "9853d2edd0439be11b67658130a3d5ba5a019e6f30fcaf646caf05aed45ee36a",
+      "bytes": 13826,
       "mutable": false
     }
   }

@@ -710,7 +710,14 @@ def main() -> int:
         man_path = stage / "manifest.json"
         check("release.py writes a manifest", rel.returncode == 0 and man_path.is_file())
         man = json.loads(man_path.read_text())
-        check("the manifest declares itself unsigned", man.get("signed") is False)
+        # The manifest describes the signature contract; it no longer ASSERTS a
+        # state. A 'signed: false' inside the very bytes a signature covers is a
+        # claim that goes stale the moment the file is signed.
+        check("the manifest carries the signature contract, not a claim",
+              isinstance(man.get("signature"), dict)
+              and man["signature"].get("algorithm") == "RSA-SHA256"
+              and man["signature"].get("detached") == "manifest.sig"
+              and "signed" not in man)
         check("the manifest checksums the whole tree", man.get("file_count", 0) >= 40)
 
         def naio(*a):
@@ -728,6 +735,88 @@ def main() -> int:
               v.returncode == 1 and "CODE CHANGED" in v.stdout
               and "runtime.py" in v.stdout)
         code_file.write_text(code_file.read_text().replace("\n# tamper\n", ""))
+
+        # -- 13b. the signature is checked, not just described -----------------
+        # Mission Control has no release key of its own in this repo — and must
+        # not — so the whole chain is exercised against a throwaway keypair
+        # generated here. That proves the code path a real key will travel:
+        # signed and valid passes, absent is honestly reported, and a manifest
+        # edited after signing FAILS rather than degrading to a warning.
+        openssl = shutil.which("openssl")
+        if not openssl:
+            for name in ("an unsigned build says so and still passes",
+                         "a valid signature verifies and is reported",
+                         "a manifest edited after signing FAILS verification",
+                         "release.py refuses a key that does not match the public half"):
+                skip(name, "openssl not available")
+        else:
+            v = naio("verify")
+            check("an unsigned build says so and still passes",
+                  v.returncode == 0 and "IS NOT SIGNED" in v.stdout)
+
+            keydir = workdir / "throwaway-key"
+            keydir.mkdir(exist_ok=True)
+            priv, pub = keydir / "private.pem", keydir / "public.pem"
+            subprocess.run([openssl, "genpkey", "-algorithm", "RSA", "-out", str(priv),
+                            "-pkeyopt", "rsa_keygen_bits:2048"],
+                           capture_output=True, check=True, timeout=120)
+            subprocess.run([openssl, "rsa", "-in", str(priv), "-pubout", "-out", str(pub)],
+                           capture_output=True, check=True, timeout=60)
+
+            # Point the staged manifest at the throwaway public half, then sign
+            # the bytes as they stand.
+            staged = json.loads(man_path.read_text())
+            staged["signature"]["public_key"] = str(pub)
+            man_path.write_text(json.dumps(staged, indent=2) + "\n", encoding="utf-8")
+            signed = subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
+                                     "--skip-tests", "--sign", str(priv)],
+                                    capture_output=True, text=True, cwd=str(stage),
+                                    timeout=120)
+            # release.py rebuilds the manifest, which resets public_key — so sign
+            # the rebuilt bytes directly, the way a key-holder's openssl would.
+            staged = json.loads(man_path.read_text())
+            staged["signature"]["public_key"] = str(pub)
+            man_path.write_text(json.dumps(staged, indent=2) + "\n", encoding="utf-8")
+            subprocess.run([openssl, "dgst", "-sha256", "-sign", str(priv),
+                            "-out", str(stage / "manifest.sig"), str(man_path)],
+                           capture_output=True, check=True, timeout=60)
+            v = naio("verify")
+            check("a valid signature verifies and is reported",
+                  v.returncode == 0 and "signed and verified" in v.stdout,
+                  v.stdout.strip().replace("\n", " | ")[-200:])
+
+            # Edit one byte of the signed manifest: the checksums still describe
+            # the tree, but the signature no longer covers these bytes.
+            tampered = json.loads(man_path.read_text())
+            tampered["version"] = "9.9.9-not-what-was-signed"
+            man_path.write_text(json.dumps(tampered, indent=2) + "\n", encoding="utf-8")
+            v = naio("verify")
+            check("a manifest edited after signing FAILS verification",
+                  v.returncode == 1 and "DOES NOT VERIFY" in v.stdout,
+                  v.stdout.strip().replace("\n", " | ")[-200:])
+
+            # A key whose public half is not the one the manifest names must be
+            # refused at signing time, not shipped for a nurse to discover.
+            other = keydir / "other.pem"
+            subprocess.run([openssl, "genpkey", "-algorithm", "RSA", "-out", str(other),
+                            "-pkeyopt", "rsa_keygen_bits:2048"],
+                           capture_output=True, check=True, timeout=120)
+            staged = json.loads(man_path.read_text())
+            staged["signature"]["public_key"] = str(pub)
+            man_path.write_text(json.dumps(staged, indent=2) + "\n", encoding="utf-8")
+            wrong = subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
+                                    "--skip-tests", "--sign", str(other)],
+                                   capture_output=True, text=True, cwd=str(stage),
+                                   timeout=180)
+            check("release.py refuses a key that does not match the public half",
+                  wrong.returncode != 0
+                  and not (stage / "manifest.sig").is_file(),
+                  (wrong.stdout + wrong.stderr).strip().replace("\n", " | ")[-200:])
+
+            # Back to a clean, unsigned, freshly-built tree for the checks below.
+            subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
+                            "--skip-tests"], capture_output=True, text=True,
+                           cwd=str(stage), timeout=120)
 
         cfg = stage / "config.json"
         cfg.write_text(json.dumps({**json.loads(cfg.read_text()), "vault_inbox": "Elsewhere"}))

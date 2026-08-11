@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import socket
 import subprocess
 import sys
@@ -91,6 +92,62 @@ def doctor() -> int:
     return 1 if problems else 0
 
 
+def _check_signature(man: dict, manifest_path) -> bool:
+    """
+    Verify the detached signature over manifest.json, the way naio-os does.
+
+    Returns True only on a signature that verified. Three outcomes, and the
+    middle one is the one that matters:
+
+      * no manifest.sig       — unsigned. Says so plainly and does not fail;
+                                checksums still prove the tree is intact.
+      * signature present     — must verify, or `verify` exits non-zero. A
+                                signature that does not check out is a stronger
+                                signal than no signature at all, and it is
+                                treated that way rather than downgraded to a
+                                warning.
+      * openssl missing       — cannot be checked, so it is not claimed. Fails,
+                                because a build that ships a signature nobody
+                                can verify should not read as verified.
+    """
+    contract = man.get("signature") or {}
+    sig_name = contract.get("detached", "manifest.sig")
+    sig_path = HERE / sig_name
+    public_key = (HERE / contract.get("public_key",
+                                      "../config/naio-os-release-public.pem")).resolve()
+
+    if not sig_path.is_file():
+        _warn(f"MISSION CONTROL IS NOT SIGNED — no {sig_name}. Checksums prove "
+              f"this tree is unchanged since packaging, and nothing more. It is "
+              f"not provenance. (naio-os itself is signed; a Mission Control "
+              f"build is only signed once the release key has been applied.)")
+        return False
+
+    openssl = shutil.which("openssl")
+    if not openssl:
+        _bad(f"{sig_name} is present but openssl is not installed — this "
+             f"signature cannot be checked, so it is not being trusted.")
+        return False
+    if not public_key.is_file():
+        _bad(f"{sig_name} is present but the release public key is missing at "
+             f"{contract.get('public_key')} — cannot verify.")
+        return False
+
+    proc = subprocess.run(
+        [openssl, "dgst", "-sha256", "-verify", str(public_key),
+         "-signature", str(sig_path), str(manifest_path)],
+        text=True, capture_output=True)
+    if proc.returncode != 0:
+        _bad(f"SIGNATURE DOES NOT VERIFY against {contract.get('public_key')}. "
+             f"This manifest is not the one that was signed. Do not trust this "
+             f"tree — re-download it. ({(proc.stdout + proc.stderr).strip()[:120]})")
+        return False
+
+    _ok(f"signed and verified — {contract.get('algorithm', 'RSA-SHA256')} by "
+        f"{contract.get('key_id', 'the release key')}")
+    return True
+
+
 def verify() -> int:
     """Checksum the tree against manifest.json. Says what changed, and where."""
     import hashlib
@@ -129,11 +186,7 @@ def verify() -> int:
           f"{man.get('file_count')} files")
     st = man.get("self_test", {})
     print(f"  self-test at build time: {st.get('passed')} passed, {st.get('failed')} failed")
-    if not man.get("signed", False):
-        _warn("MISSION CONTROL IS NOT SIGNED — checksums prove this tree is "
-              "unchanged since packaging, and nothing more. It is not provenance. "
-              "(naio-os itself is signed; Mission Control is not yet part of "
-              "that chain.)")
+    signature_ok = _check_signature(man, manifest_path)
 
     if mutated:
         print()
@@ -154,7 +207,12 @@ def verify() -> int:
         _ok("every tracked file matches the manifest")
 
     print()
-    return 1 if (changed or missing) else 0
+    # A present-but-invalid signature fails the command. An absent one does
+    # not: unsigned is an honest state this build is allowed to be in, and
+    # `_check_signature` has already said so out loud.
+    sig_failed = (HERE / (man.get('signature', {}).get('detached', 'manifest.sig'))
+                  ).is_file() and not signature_ok
+    return 1 if (changed or missing or sig_failed) else 0
 
 
 def configure() -> int:

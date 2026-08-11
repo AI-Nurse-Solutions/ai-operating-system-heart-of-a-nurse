@@ -1612,13 +1612,23 @@ async function renderMemoryTab(){
       <span class="m-title">${esc(n.title)}</span>
       <div class="m-meta">${esc(n.folder||'')} · ${fmtTs(n.modified_ts)}</div>
       ${n.tags?`<div class="m-tags">${n.tags.split(',').filter(Boolean).map(t=>`<span class="mtag">#${esc(t)}</span>`).join('')}</div>`:''}
-      ${n.promoted_to
-        ? `<div class="promoted">→ ${esc(n.promoted_to)}</div>`
-        : `<div class="promote">
-             <button class="pbtn" data-note="${n.id}" data-to="task">→ task</button>
-             <button class="pbtn" data-note="${n.id}" data-to="vault">→ vault Inbox</button>
-             <button class="pbtn" data-note="${n.id}" data-to="memory">→ propose memory</button>
-           </div>`}
+      ${(n.promotions||[]).length
+        ? `<div class="promoted">${(n.promotions||[]).map(p=>
+             `→ ${esc(p.target)}`).join('<br>')}</div>`
+        : (n.promoted_to ? `<div class="promoted">→ ${esc(n.promoted_to)}</div>` : '')}
+      ${(()=>{
+         /* One button per destination NOT yet used. The trail used to replace
+            the buttons wholesale, so a note sent to a task could never also be
+            kept in the vault — the pipeline allowed three destinations and the
+            screen allowed one. */
+         const taken = new Set((n.promotions||[]).map(p=>p.destination));
+         const left = [['task','→ task'],['vault','→ vault Inbox'],
+                       ['memory','→ propose memory']].filter(([d])=>!taken.has(d));
+         if(!left.length) return '';
+         return `<div class="promote">` + left.map(([d,label])=>
+           `<button class="pbtn" data-note="${n.id}" data-to="${d}">${label}</button>`
+         ).join('') + `</div>`;
+       })()}
     </div>`;
   const vault = m.notes.filter(n=>n.source==='obsidian');
   const apple = m.notes.filter(n=>n.source==='apple_notes');
@@ -1633,7 +1643,11 @@ async function renderMemoryTab(){
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({note_id:+b.dataset.note, to:b.dataset.to})});
     const out = await res.json();
-    if(out.note) console.info(out.note);
+    // A refusal used to re-render and look like nothing happened. It matters
+    // most for 409 — the same note promoted the same way from two tabs at once,
+    // where the honest answer is "the other one is writing it, not yours".
+    if(!res.ok){ alert(out.error || 'Could not promote that note.'); b.disabled = false; }
+    else if(out.note) console.info(out.note);
     renderMemoryTab();
   }));
 }

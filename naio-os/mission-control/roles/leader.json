@@ -63,6 +63,5 @@
     "ai_draft_becomes_personnel_decision",
     "ungoverned_window"
   ],
-  "scope_note": "Nothing in this system is an HR record, and no output of it is a personnel action. Positional authority is not a governance credential: a management span does not raise a tier ceiling, and if anything argues for keeping the gates exactly where they are.",
   "tier_note": "No personnel-identifiable content. No staffing system access. Ledger tab is first-class for this role."
 }

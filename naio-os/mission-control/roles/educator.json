@@ -63,6 +63,5 @@
     "clinical_story_from_rotation",
     "ungoverned_window"
   ],
-  "standing_note": "Two privacy regimes meet in this role, not one. Patient information is HIPAA's; student records are FERPA's. Both are refused by the same mechanism.",
   "tier_note": "Cohort-mode boundaries apply: no certification claims, no automatic scoring, no student records."
 }

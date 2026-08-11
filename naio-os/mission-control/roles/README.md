@@ -32,8 +32,12 @@ Personalization is **configuration, not code**. Adding a role is adding a file h
 | `standing_rows` | Credential rows the License & standing panel keeps current for this role. |
 | `privacy_regimes` | Which boundaries this role's risk briefing surfaces: `phi` always, plus `ferpa`, `personnel`, `academic_integrity`, or `employer_ip`. |
 | `risk_briefing` | Three risks, in order. The third is always the one the system cannot catch. |
-| `scope_note` / `standing_note` | Optional standing text rendered in the License & standing panel. |
 | `tier_note` | The boundary reminder shown with this role. |
+
+That table is the whole contract — a preset carrying any other key is rejected
+(rule 6 below). Standing text addressed to the nurse is not preset
+configuration and does not live here; it lives in `../content/` alongside the
+role id, which is what the License & standing panel actually renders.
 
 ## The hard rule
 
@@ -45,9 +49,9 @@ Ceilings move only through a logged decision in `governance-kit/GOVERNANCE.yaml`
 
 ## Why the clinical roles carry a scope note
 
-`np.json` and `resident.json` render standing text because the earlier doctrine did not address them and they would otherwise read Rail 2 as a claim about their scope. It is not. Diagnosing and prescribing are plainly within an NP's or a physician's license. The refusal exists because *this tool* has no regulatory clearance, no clinical validation, and no institutional governance — the rail is about the tool, not the profession.
+The note itself lives in `../content/np.json` and `../content/resident.json`, not in the preset — but it exists because the earlier doctrine did not address those roles, and they would otherwise read Rail 2 as a claim about their scope. It is not. Diagnosing and prescribing are plainly within an NP's or a physician's license. The refusal exists because *this tool* has no regulatory clearance, no clinical validation, and no institutional governance — the rail is about the tool, not the profession.
 
-`leader.json` carries the same rule aimed at positional rather than clinical authority. `entrepreneur.json` carries it aimed at the founder's temptation to ship fast.
+The leader and entrepreneur content carries the same rule, aimed at positional rather than clinical authority in the first case and at the founder's temptation to ship fast in the second.
 
 ## Validation
 
@@ -57,7 +61,19 @@ A preset is valid when:
 2. `tier_ceilings` is absent.
 3. `privacy_regimes` contains `phi`.
 4. `risk_briefing` has exactly three entries.
-5. Every `standing_rows` entry resolves to a known credential type.
+5. Every `standing_rows` entry resolves to a known credential type — the set in
+   `CREDENTIAL_TYPES` in `mission_control.py`. Adding a credential is an edit
+   there, deliberately, so a misspelling is a rejection rather than a standing
+   row for a credential that does not exist.
+6. There are no keys beyond the ones in the contract table. A preset is
+   configuration; a key the loader does not read renders nowhere and drifts
+   silently. Prose addressed to the nurse belongs in `../content/` — every
+   preset once carried a `scope_note` or `standing_note` that no code loaded,
+   sitting stale beside the version that actually rendered.
+
+All six are enforced by the loader, and `naio-mc check-presets` exits non-zero on
+any rejection. A rule documented here and unchecked there is how the first two
+got out of step.
 
 ---
 

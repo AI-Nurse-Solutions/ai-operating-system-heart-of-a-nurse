@@ -30,11 +30,13 @@ WHAT IT DOES, in order:
   4. compute-checksums.sh, manifest.sha256, release.json's digest, manifest.sig.
   5. verify-release.py.
 
-ALL OR NOTHING. Everything happens in a staging copy of the tree. The real
-tree is touched only after verify-release.py passes there — so a run that fails
-anywhere leaves a repository that still verifies, which is the property that
-matters when the alternative is a half-signed release nobody can roll back
-without the key.
+ALL OR NOTHING, in both halves. The computation happens in a staging copy, and
+the real tree is touched only after verify-release.py passes there. The writes
+that follow are transactional too: originals are held aside and restored if any
+copy fails, so a full disk partway through cannot leave a new manifest.yaml
+beside the nested artifacts it no longer describes. Either half alone would
+still let a run end with a repository that verifies as neither the old release
+nor the new one, and no key on hand to re-cut it.
 
   Agents propose. Humans judge. Nurses steward.
 """

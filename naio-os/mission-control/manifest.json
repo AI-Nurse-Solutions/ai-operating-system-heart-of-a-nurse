@@ -1,0 +1,273 @@
+{
+  "_note": "Checksums of what was actually built, written by tools/release.py at the same moment the self-test ran. MISSION CONTROL IS NOT SIGNED \u2014 there is no Mission Control release key yet, so this proves this tree is unchanged since packaging, and nothing more. Do not read it as provenance. Scope: naio-os itself has been signed since Phase 6 (manifest.sig, release-history.json, fail-closed verifier); Mission Control does not yet participate in that chain.",
+  "signed": false,
+  "version": "0.4.0",
+  "built_at": "2026-08-11T16:37:01+00:00",
+  "self_test": {
+    "passed": 103,
+    "failed": 0
+  },
+  "file_count": 52,
+  "files": {
+    "ARCHITECTURE.md": {
+      "sha256": "a68702005159fa3802b1c97e715746ea31b6f31cf9cbc6cac28db9f8ea44970b",
+      "bytes": 38317,
+      "mutable": false
+    },
+    "README.md": {
+      "sha256": "398aad33a78050fb5edb4fb78607430c15cb68021e4c46719972bcd2dd526dca",
+      "bytes": 20135,
+      "mutable": false
+    },
+    "adapters/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mutable": false
+    },
+    "adapters/phi.py": {
+      "sha256": "6f1d6f392669d9296847ebb2fe59b5d3671888abca96622cad70cde52147e18f",
+      "bytes": 1445,
+      "mutable": false
+    },
+    "adapters/runtime.py": {
+      "sha256": "dc084f83310ae3b84b00701add87e6b874ac436e471d019a4f974694ca362e2c",
+      "bytes": 9286,
+      "mutable": false
+    },
+    "bin/mc-log": {
+      "sha256": "9249f53604fce7b2d10472cce1ec6db7229ef082ae33c3431007b728d0adb66a",
+      "bytes": 2782,
+      "mutable": false
+    },
+    "bin/naio-soul-import": {
+      "sha256": "2e0140b809a579c9ba90177aee88f52e36696253d84f0fdcfb12266845d3a3d5",
+      "bytes": 21480,
+      "mutable": false
+    },
+    "bridges/apple_notes.jxa": {
+      "sha256": "6939e0e20256130c2e092163dbae71c7ff6181abc397674befda0c799e197a9f",
+      "bytes": 1883,
+      "mutable": false
+    },
+    "config.json": {
+      "sha256": "d46b60948cf885a77854c6e617af415d5395705d1bab55018c5252d539110a7e",
+      "bytes": 408,
+      "mutable": true
+    },
+    "content/_guards.json": {
+      "sha256": "0f2d86c42d30a67fc5937653a7f7d3662d9d44bad5aec6ffcacedd30382d7ad5",
+      "bytes": 534,
+      "mutable": true
+    },
+    "content/bedside.sample.json": {
+      "sha256": "0dcb0fe8ffc3bbb4d368909b5b2fe8c62370b06ae4083932903b1248c186f079",
+      "bytes": 10995,
+      "mutable": true
+    },
+    "content/charge.sample.json": {
+      "sha256": "d5b8915e9e5fa68e8d67b811ecfd137c664781962c16b029ed029386a7281d4b",
+      "bytes": 10065,
+      "mutable": true
+    },
+    "content/educator.sample.json": {
+      "sha256": "dddb269c84d1df20d1e722ffff68cab09701ba134982fa4525ebed11798d0c59",
+      "bytes": 10611,
+      "mutable": true
+    },
+    "content/entrepreneur.sample.json": {
+      "sha256": "1073d0026de67960208bfcc3ab48fb43158e161dfdbaee4155cf956f589f7444",
+      "bytes": 10644,
+      "mutable": true
+    },
+    "content/leader.sample.json": {
+      "sha256": "b955368b8996470fab31236075e4c3497e6789066b8e826995ea27277cd44c85",
+      "bytes": 10868,
+      "mutable": true
+    },
+    "content/np.sample.json": {
+      "sha256": "787b7273f81679cc5e7bb04f8df8b754728209d0c19de0cd5271fd99a9dfa196",
+      "bytes": 11421,
+      "mutable": true
+    },
+    "content/resident.sample.json": {
+      "sha256": "85f6634a092abde0142684d4df93f0384769febdee63d803f2efedea8e80ddce",
+      "bytes": 11496,
+      "mutable": true
+    },
+    "content/student.sample.json": {
+      "sha256": "2a4d3073313c75e3442d68b7766d2edd6ae98e8d3afd68fe751edd6a3868d236",
+      "bytes": 10730,
+      "mutable": true
+    },
+    "demo-vault/Inbox/2026-08-10-night-thought.md": {
+      "sha256": "d739de55648accbf947045dbfb25b0dc47f1a38f8d630efa441e8f944da957f7",
+      "bytes": 91,
+      "mutable": true
+    },
+    "demo-vault/Inbox/2026-08-11-Dr Ng.md": {
+      "sha256": "bf44c8732fb2428cba395ecd04f1a912bff1ce5ce1d9c17a8fe8427e40a07d31",
+      "bytes": 163,
+      "mutable": true
+    },
+    "demo-vault/People/dr-ng.md": {
+      "sha256": "9d79a765f99e97170c84a438f9d379786dcb4cfdb92269619d8d93f4ff693936",
+      "bytes": 91,
+      "mutable": true
+    },
+    "demo-vault/Projects/cmc-study-plan.md": {
+      "sha256": "1eaf054e677da949e6fc8cc5fe205190048b37ae191a2089545fd078c273d9db",
+      "bytes": 89,
+      "mutable": true
+    },
+    "demo-vault/Projects/handoff-script-idea.md": {
+      "sha256": "9bb2d9e1db1163aeeb6134070fa6da2896314c046ba86890638f3e4dbdd1bd2d",
+      "bytes": 118,
+      "mutable": true
+    },
+    "demo-vault/reflections-2026-08.md": {
+      "sha256": "6c2347633e678d91ecd2152c09c1cee56eb17fc0d9dac16e2175a7b86408dbb6",
+      "bytes": 89,
+      "mutable": true
+    },
+    "demo-workspace/SOUL.md": {
+      "sha256": "d8527cd12aabd5adb47b7c44cd9d2dbcab7ce52d864d26ca97987a3758190ad1",
+      "bytes": 366,
+      "mutable": true
+    },
+    "demo-workspace/content/florence/2026-08-04-morning-brief.md": {
+      "sha256": "2f801f11a556fa94f5e0e1390d72c02318299618f69bf09b5de65565863f1a2a",
+      "bytes": 82,
+      "mutable": true
+    },
+    "demo-workspace/content/florence/2026-08-09-weekly-ledger.md": {
+      "sha256": "86f2c51a70160fa87dd6076a859781852d1845934639ee9c733d93ecdfbfd063",
+      "bytes": 183,
+      "mutable": true
+    },
+    "demo-workspace/content/florence/shift-recovery-checklist.md": {
+      "sha256": "cf2c1068666d503647e3024e5945d5435cda75fa30b8659f589ce3d17142e6bb",
+      "bytes": 101,
+      "mutable": true
+    },
+    "demo-workspace/content/scholar/blueprint-coverage.md": {
+      "sha256": "8fddfd79eac3904f59b7429530d39e5b483f5467b00d5da0294fb3db4360a43e",
+      "bytes": 82,
+      "mutable": true
+    },
+    "demo-workspace/content/scholar/cmc-pharm-gap.md": {
+      "sha256": "98d087960181ea37ee217be9274d853d173148df13637120b999ae4b73d5e90c",
+      "bytes": 84,
+      "mutable": true
+    },
+    "demo-workspace/content/scribe/linkedin-draft-governed-ai.md": {
+      "sha256": "6ca27bd11eddc8d87659242e733710623825560d49895e24bb3c9a01421b8d1e",
+      "bytes": 83,
+      "mutable": true
+    },
+    "demo-workspace/memory.md": {
+      "sha256": "eec310c25e894a30eee515c6113ef809939ea395bf7a300d30825838ada55c2b",
+      "bytes": 232,
+      "mutable": true
+    },
+    "fixtures/naio-soul.example.json": {
+      "sha256": "53fc462e7c8bdec9e9204577acba1748d0113b6224b2cf745deaf9b297b673f2",
+      "bytes": 1531,
+      "mutable": false
+    },
+    "fixtures/naio-soul.legacy-1.0.0.json": {
+      "sha256": "1cb6eb45ba9b37bc401c2290c9ebcb18d3c10c281cbeffff56e0650fb46828c8",
+      "bytes": 1532,
+      "mutable": false
+    },
+    "fixtures/naio-soul.v2-role-constellation.json": {
+      "sha256": "82b9f1b14847ee6ed747865635ea3fc3b08cc1ad7a39bb80e53c3858e234b838",
+      "bytes": 18752,
+      "mutable": false
+    },
+    "index.html": {
+      "sha256": "7279ae37ca310305a55a750f6c501ca1a5ea7ddd5f8059727db6bbf59b2ef43b",
+      "bytes": 97062,
+      "mutable": false
+    },
+    "mission_control.py": {
+      "sha256": "9aa836b08c7a728afe0695adf4bcc90000ab096db35214d2c07ad69be56b221f",
+      "bytes": 57480,
+      "mutable": false
+    },
+    "naio-mc": {
+      "sha256": "552b0af14f800f785d7c24d1804396b9814ecd385a4c4683a2c58f49299a7b89",
+      "bytes": 21857,
+      "mutable": false
+    },
+    "roles/README.md": {
+      "sha256": "1afc0a5257ad5fc40c142c210de7f81abdde1f787aa52b5b560469a6cd13c40e",
+      "bytes": 3821,
+      "mutable": false
+    },
+    "roles/bedside.json": {
+      "sha256": "a596f57c5cc3ddf4741abd7793d4384318185d6fb3a0e9b1f2889936affb2ad2",
+      "bytes": 1140,
+      "mutable": false
+    },
+    "roles/charge.json": {
+      "sha256": "6447eb1d4c8268fc280b55f1b9b6b281971867ccff7634daaa2629e34d43b837",
+      "bytes": 1040,
+      "mutable": false
+    },
+    "roles/educator.json": {
+      "sha256": "09af97770d7ad0785bfae7caa605dc15009abd586255059d2c19cf7f671f2cbd",
+      "bytes": 1352,
+      "mutable": false
+    },
+    "roles/entrepreneur.json": {
+      "sha256": "0ac91518198e66cc86560711b60ea1216897f82729d0f1eb8e5a84a3583afb34",
+      "bytes": 1489,
+      "mutable": false
+    },
+    "roles/leader.json": {
+      "sha256": "4351c9a94d6fca94ff6cd49e5290a8a8270bf812d30b551ffde2edd3b9cf05eb",
+      "bytes": 1494,
+      "mutable": false
+    },
+    "roles/np.json": {
+      "sha256": "220d23516579effa51d35c70389822c51bf674ac1156d5cc24c3fa3128e4cd9a",
+      "bytes": 1766,
+      "mutable": false
+    },
+    "roles/resident.json": {
+      "sha256": "b699d0ce5fb680f1bfd912266ab478ad36c52cb64730c0d75a6ff72f0d415db4",
+      "bytes": 1685,
+      "mutable": false
+    },
+    "roles/student.json": {
+      "sha256": "1de0e9b9df18664526790d09a5d7f690cc6f1c806a81f1e5eda4db8dffe0b757",
+      "bytes": 1411,
+      "mutable": false
+    },
+    "schema/naio-soul.schema.json": {
+      "sha256": "1fdcdcbc2c8af6ddc1e1f7143546e59cb45eb7568444af484ae85d7e077676e6",
+      "bytes": 5326,
+      "mutable": false
+    },
+    "skills/naio-activity-log/SKILL.md": {
+      "sha256": "6bb4f7d2df482ea5817453c6ef4c96b8fc08e8b04b833e957289b9dba6b5523f",
+      "bytes": 3569,
+      "mutable": false
+    },
+    "tests/self_test.py": {
+      "sha256": "7670896ca968dfefc5508e6905b634f597f758ec977f7c0c6927022b54c42e61",
+      "bytes": 50944,
+      "mutable": false
+    },
+    "tools/rebuild-governance-kit.sh": {
+      "sha256": "2ca198dd747d3ddfd17fcb23e8d5f984cfd0e4574b7cc6fb4fa513ca6b261009",
+      "bytes": 2325,
+      "mutable": false
+    },
+    "tools/release.py": {
+      "sha256": "1fe918c728c59eacff297471d8b2dfc425a1c01429b95bc1c4b725b7d7d8994f",
+      "bytes": 8092,
+      "mutable": false
+    }
+  }
+}

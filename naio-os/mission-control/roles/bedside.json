@@ -1,0 +1,65 @@
+{
+  "role_id": "bedside",
+  "label": "Bedside / Staff nurse",
+  "licensure": "licensed",
+  "tabs": [
+    "overview",
+    "agents",
+    "tasks",
+    "schedule",
+    "memory",
+    "library",
+    "ledger"
+  ],
+  "overview_cards": [
+    "north_star",
+    "today",
+    "license_standing",
+    "stewardship_balance",
+    "momentum",
+    "evidence",
+    "signals",
+    "opportunities",
+    "reflection",
+    "agent_team"
+  ],
+  "starter_agents": [
+    "florence",
+    "scholar",
+    "scribe"
+  ],
+  "task_lanes": [
+    "To-do",
+    "In-progress",
+    "Waiting on someone",
+    "Done"
+  ],
+  "library_filters": [
+    "ce",
+    "study",
+    "protocol-public",
+    "wellbeing"
+  ],
+  "ritual_pack": "bedside",
+  "domain_emphasis": [
+    "health",
+    "family",
+    "career",
+    "learning"
+  ],
+  "standing_rows": [
+    "rn_license",
+    "specialty_certification",
+    "acls_bls",
+    "state_ce"
+  ],
+  "privacy_regimes": [
+    "phi"
+  ],
+  "risk_briefing": [
+    "screenshot_in_a_hurry",
+    "patient_specific_question",
+    "ungoverned_window"
+  ],
+  "tier_note": "No PHI at any tier. Health sphere is read-only to agents unless the nurse asks."
+}

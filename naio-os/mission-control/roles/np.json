@@ -1,0 +1,69 @@
+{
+  "role_id": "np",
+  "label": "Nurse practitioner",
+  "licensure": "advanced_practice",
+  "tabs": [
+    "overview",
+    "agents",
+    "tasks",
+    "schedule",
+    "memory",
+    "library",
+    "ledger"
+  ],
+  "overview_cards": [
+    "north_star",
+    "today",
+    "license_standing",
+    "stewardship_balance",
+    "momentum",
+    "evidence",
+    "signals",
+    "opportunities",
+    "reflection",
+    "agent_team"
+  ],
+  "starter_agents": [
+    "florence",
+    "scholar",
+    "scribe"
+  ],
+  "task_lanes": [
+    "To-do",
+    "In-progress",
+    "Waiting on practice",
+    "Done"
+  ],
+  "library_filters": [
+    "cme",
+    "pharmacology",
+    "patient-education-general",
+    "credentialing"
+  ],
+  "ritual_pack": "advanced_practice",
+  "domain_emphasis": [
+    "career",
+    "learning",
+    "family",
+    "health"
+  ],
+  "standing_rows": [
+    "aprn_license",
+    "national_certification",
+    "prescriptive_authority",
+    "dea_registration",
+    "collaborative_agreement",
+    "pharmacology_ce",
+    "malpractice"
+  ],
+  "privacy_regimes": [
+    "phi"
+  ],
+  "risk_briefing": [
+    "the_question_that_is_your_actual_job",
+    "chart_detail_in_a_hurry",
+    "ungoverned_window"
+  ],
+  "scope_note": "Your scope is wide. Your agent's is not, and it does not widen with yours. Prescriptive authority raises what you may decide; it does not raise what this system may do without you. If anything the gates tighten, because the consequence of an unreviewed draft is now a prescription. Autonomy is earned by the agent, per sphere, on evidence — never inherited from your license.",
+  "tier_note": "Rail 2 holds at every tier. The refusal is justified by the tool's lack of clearance, validation, and institutional governance — never by the practitioner's scope."
+}

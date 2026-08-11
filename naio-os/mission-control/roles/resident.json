@@ -1,0 +1,68 @@
+{
+  "role_id": "resident",
+  "label": "MD resident",
+  "licensure": "physician_trainee",
+  "tabs": [
+    "overview",
+    "agents",
+    "tasks",
+    "schedule",
+    "memory",
+    "library",
+    "ledger"
+  ],
+  "overview_cards": [
+    "north_star",
+    "today",
+    "license_standing",
+    "stewardship_balance",
+    "momentum",
+    "evidence",
+    "signals",
+    "opportunities",
+    "reflection",
+    "agent_team"
+  ],
+  "starter_agents": [
+    "florence",
+    "scholar",
+    "scribe"
+  ],
+  "task_lanes": [
+    "To-do",
+    "Studying",
+    "Waiting on program",
+    "Done"
+  ],
+  "library_filters": [
+    "boards",
+    "ite",
+    "case-report",
+    "credentialing"
+  ],
+  "ritual_pack": "trainee",
+  "domain_emphasis": [
+    "career",
+    "learning",
+    "health",
+    "finance"
+  ],
+  "standing_rows": [
+    "training_license",
+    "step_3",
+    "dea_registration",
+    "acls_bls",
+    "duty_hour_attestation",
+    "milestone_review"
+  ],
+  "privacy_regimes": [
+    "phi"
+  ],
+  "risk_briefing": [
+    "the_question_that_is_your_actual_job",
+    "chart_detail_at_4am",
+    "ungoverned_window_at_4am"
+  ],
+  "scope_note": "You are operating inside nursing-authored doctrine, on purpose. EDENA was written by nurses and anchored in nursing ethics, and it governs you here exactly as it governs them. Nothing about it needed to be medicine-specific, because the rails describe the tool's limits rather than the profession's. Agents propose. Humans judge. Nurses steward — including the ones who wrote the rules you are working under.",
+  "tier_note": "Rail 2 holds at every tier. Your program's own AI policy governs anywhere this system does not run; NAIO makes no claim over it."
+}

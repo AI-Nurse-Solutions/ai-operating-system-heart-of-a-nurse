@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.org/naio-os/schema/naio-soul.schema.json",
+  "title": "naio-soul.json",
+  "description": "The personalization bridge contract. Derived from what soul-quiz.html actually emits (buildOsConfig), not invented — the quiz is the producer and this schema follows it. Contains no PHI by design, and the quiz refuses to export unless both hard boundaries are confirmed. 1.1.0 aligned identity.role with the eight role presets; 1.0.0 files still import. 2.0.0 is the role-constellation export the live quiz emits today — this schema pinned ^1. and rejected it, so taking the quiz and importing the result failed end to end until 2026-08-11. The quiz is the producer; when it moves, this file moves with it, and the suite now validates a real export instead of a fixture written from memory.",
+  "type": "object",
+  "required": ["schema_version", "identity", "spheres", "boundaries"],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[12]\\.[0-9]+\\.[0-9]+$" },
+    "generated_at": { "type": "string" },
+    "generator": {
+      "type": "string",
+      "enum": ["soul-quiz", "soul-quiz-role-constellation", "manual", "import"]
+    },
+
+    "identity": {
+      "type": "object",
+      "required": ["role"],
+      "properties": {
+        "name": { "type": "string" },
+        "role": {
+          "type": "string",
+          "enum": ["student", "bedside", "charge", "educator", "leader", "np", "resident", "entrepreneur", "other", "staff"],
+          "description": "From schema_version 1.1.0 the quiz emits the same eight role ids the presets use, plus 'other'. 'staff' is the retired 1.0.0 spelling of 'bedside' and is still accepted so a soul file exported before the change keeps working — the importer maps it and says so."
+        },
+        "role_label": { "type": "string" },
+        "one_liner": { "type": "string" },
+        "always_remember": { "type": "string" }
+      }
+    },
+
+    "voice": {
+      "type": "object",
+      "properties": {
+        "length": { "type": "string" },
+        "formality": { "type": "string" },
+        "pushback": { "type": "string" },
+        "avoid": { "type": "string" }
+      }
+    },
+
+    "values": { "type": "array", "items": { "type": "string" } },
+
+    "spheres": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["personal", "professional", "community", "sidegig", "interest"]
+      }
+    },
+
+    "role_constellation": {
+      "type": "object",
+      "description": "The 2.0.0 role constellation. primary[0].role_id is the AUTHORITATIVE role for an import: identity.role is only the legacy value the quiz collapses all 36 constellation roles into four of ('staff', 'leader', 'other', 'student'), so reading it alone sends a nurse practitioner, a resident and an entrepreneur to the same preset and makes five of the eight presets unreachable. Declared loosely on purpose — the full contract lives in naio-os/schema/naio-soul.schema.json; this copy only has to be strong enough for the importer to read the primary role, and must refuse nothing a live export contains.",
+      "additionalProperties": true,
+      "properties": {
+        "primary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "role_id": { "type": "string" },
+              "label": { "type": "string" },
+              "domain_id": { "type": "string" },
+              "status": { "type": "string" }
+            }
+          }
+        },
+        "supporting": { "type": "array" },
+        "emerging": { "type": "array" },
+        "contextual": { "type": "array" }
+      }
+    },
+
+    "interests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "why": { "type": "string" },
+          "help": { "type": "string" },
+          "anti_goal": { "type": "string" },
+          "visibility": { "type": "string" }
+        }
+      }
+    },
+
+    "tier_ceilings": {
+      "type": "object",
+      "description": "The nurse's own logged autonomy decision, per sphere. Onboarding clamps to green/yellow. This belongs to GOVERNANCE, never to a role preset — the importer writes it to governance/tier-ceilings.json and a preset carrying the key is rejected outright (Rail 3).",
+      "additionalProperties": { "type": "string", "enum": ["green", "yellow"] }
+    },
+
+    "boundaries": {
+      "type": "object",
+      "required": ["no_phi_confirmed", "no_clinical_decisions_confirmed"],
+      "properties": {
+        "no_phi_confirmed": { "const": true },
+        "no_clinical_decisions_confirmed": { "const": true },
+        "confidential_list": { "type": "array", "items": { "type": "string" } },
+        "wellbeing_rule": { "type": "string" },
+        "decisions_always_mine": { "type": "array", "items": { "type": "string" } },
+        "drafts_without_asking": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "doctrine": {
+      "type": "object",
+      "properties": {
+        "edena": { "type": "string" },
+        "florence_x": { "type": "string" },
+        "core_line": { "type": "string" }
+      }
+    }
+  }
+}

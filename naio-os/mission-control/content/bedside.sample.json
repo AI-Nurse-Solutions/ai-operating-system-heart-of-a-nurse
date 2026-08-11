@@ -1,0 +1,313 @@
+{
+  "label": "Bedside / Staff nurse",
+  "values": [
+    "Presence over throughput",
+    "Earn it, then claim it",
+    "Leave it better",
+    "My people first"
+  ],
+  "mission": "Become the nurse who brings governed AI to the bedside — without letting the bedside cost me my health or my people.",
+  "sub": "Maya Reyes, RN, CCRN · night shift, cardiac ICU · 11 years in · mother of two · building something on the side. Your agents work across all of it — not just the twelve hours the hospital sees.",
+  "season": "Certification & consolidation",
+  "seasonBody": "You chose depth this season: finish the CMC, steady the house, and let the venture idle on purpose. Nothing here is behind — it is sequenced.",
+  "seasonMeta": "Week 9 of 16 · you set this on 12 June · next review 2 September",
+  "actions": [
+    {
+      "domain": "Health & Energy",
+      "title": "Protect the two nights before your next stretch",
+      "why": "You have three twelves starting Thursday. The last two stretches you went in already short on sleep, and both weeks after them show your lowest honored-commitment counts.",
+      "cost": "2 minutes to block · Florence will not touch it again",
+      "cta": "Block both nights"
+    },
+    {
+      "domain": "Finances",
+      "title": "File the certification reimbursement",
+      "why": "Roughly $740 across two dated items, and the window closes 3 September. Scribe has the form filled from your own records — it needs your eyes and your send.",
+      "cost": "6 minutes · waits at a human gate",
+      "cta": "Review the draft"
+    },
+    {
+      "domain": "Learning & Mastery",
+      "title": "Twenty minutes on pharm, while it is quiet",
+      "why": "Pharm just overtook hemodynamics as your weakest blueprint area. Scholar has eleven cards queued from your own wrong answers, not a generic bank.",
+      "cost": "20 minutes · your usual pre-shift slot",
+      "cta": "Start the set"
+    }
+  ],
+  "domains": {
+    "health": {
+      "share": 9,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Four of the last seven nights under six hours. Your own line, not ours.",
+      "detail": "You wrote “sleep is the one I trade first” in your SOUL file in June. This is the third month it has trended down. <b>Florence has drafted nothing here</b> — Health is the one sphere she cannot act in without you asking."
+    },
+    "family": {
+      "share": 21,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Eleven protected evenings held. Zero cancelled for a shift swap.",
+      "detail": "Two standing blocks — Sunday dinner, Thursday pickup — have survived nine straight weeks, including your two hardest stretches. <b>This is the thing that is working.</b>"
+    },
+    "career": {
+      "share": 24,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Unit council seat accepted through December. Preceptor load steady at two.",
+      "detail": "The work itself — your role, your unit, your practice. <b>Nothing here has drifted</b>, which in the season you chose is correct rather than a flat line to fix. Your license and standing are held separately, above."
+    },
+    "learning": {
+      "share": 16,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "CMC blueprint 62% covered. Weakest area moved from hemodynamics to pharm.",
+      "detail": "Scholar runs spaced repetition against your own weak-point log. <b>At this pace the blueprint closes three weeks before your test date</b> — the buffer you asked for."
+    },
+    "finance": {
+      "share": 6,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Certification reimbursement window closes in 23 days. Nothing filed yet.",
+      "detail": "Two dated items sit unclaimed: the CMC exam fee and last year’s conference travel. <b>Roughly $740, and the door closes 3 September.</b> Filing is a form, not a decision."
+    },
+    "creative": {
+      "share": 11,
+      "state": "steady",
+      "dir": "up",
+      "signal": "Nine notes captured, three promoted to the vault, one became a skill.",
+      "detail": "Your capture-to-keep ratio holds at about one in three, which is healthy. <b>The handoff-script idea has been re-noted four times</b> — that usually means it wants to be built."
+    },
+    "service": {
+      "share": 8,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Two Lamp Huddles attended. One new grad mentored weekly since May.",
+      "detail": "Mentorship is the most consistent line in this domain for four months. <b>You have never once rescheduled it</b>, which says more than the number does."
+    },
+    "business": {
+      "share": 5,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Paused by you on 12 June until the CMC is behind you. Resumes 2 September.",
+      "detail": "A chosen pause, logged with an end date — not neglect. <b>Nothing here will be surfaced as a signal until 2 September</b>, so it stops competing for your attention."
+    }
+  },
+  "momentum": {
+    "hero": "31",
+    "unit": "hours",
+    "label": "returned to you this month by work your agents carried and you reviewed.",
+    "note": "Estimated from your own logged task times before and after each skill file went live. Your estimate, not ours — edit any of it.",
+    "kpis": [
+      [
+        "Morning huddle streak",
+        "34",
+        "days",
+        "longest yet"
+      ],
+      [
+        "Commitments honored",
+        "47",
+        "/52",
+        "+6 vs July"
+      ],
+      [
+        "Skills captured",
+        "12",
+        "",
+        "+3 this month"
+      ]
+    ],
+    "weekly": [
+      3,
+      4,
+      4,
+      6,
+      5,
+      7,
+      6,
+      8,
+      7,
+      9,
+      8,
+      11
+    ],
+    "caption": "the flywheel caught around week 5",
+    "evidence": [
+      [
+        6,
+        4,
+        2
+      ],
+      [
+        7,
+        5,
+        3
+      ],
+      [
+        5,
+        6,
+        4
+      ],
+      [
+        9,
+        5,
+        5
+      ],
+      [
+        8,
+        7,
+        6
+      ],
+      [
+        11,
+        6,
+        7
+      ]
+    ]
+  },
+  "license": {
+    "days": 62,
+    "gates": 41,
+    "currency": [
+      {
+        "name": "RN license",
+        "meta": "Renews 30 September 2027 · 25 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "CCRN",
+        "meta": "Renews 1 March 2027 · 62 of 100 CERPs logged",
+        "state": "flourishing"
+      },
+      {
+        "name": "CMC",
+        "meta": "In progress · test date 14 November 2026",
+        "state": "steady"
+      },
+      {
+        "name": "ACLS",
+        "meta": "Renews 24 October 2026 · 74 days · no class booked",
+        "state": "attention"
+      },
+      {
+        "name": "State CE",
+        "meta": "18 of 30 hours · 5 months left in the cycle",
+        "state": "steady"
+      }
+    ],
+    "reputation": [
+      {
+        "name": "Published",
+        "meta": "6 pieces carry your name · 6 reviewed by you · 0 auto-sent",
+        "state": "flourishing"
+      },
+      {
+        "name": "Awaiting you",
+        "meta": "1 draft has been sitting 6 days · send it or bin it",
+        "state": "attention"
+      },
+      {
+        "name": "Employer content",
+        "meta": "None in this system, by policy — not by preference",
+        "state": "flourishing"
+      }
+    ],
+    "risks": [
+      {
+        "what": "A screenshot pasted in a hurry",
+        "guard": "Import refuses on PHI indicators and a nightly lint sweeps everything already stored. <b>The system catches it.</b>"
+      },
+      {
+        "what": "A patient-specific clinical question",
+        "guard": "Refused at every tier, in every sphere, including Green. <b>The system catches it.</b>"
+      },
+      {
+        "what": "Reaching for an ungoverned window instead",
+        "guard": "No governed system can reach a chat window it does not run. <b>This one is yours to keep</b> — it is the reason the rails are worth having."
+      }
+    ]
+  },
+  "signals": [
+    {
+      "state": "attention",
+      "title": "Sleep is trending down for a third month",
+      "body": "Not an alarm — a pattern you told the system to watch for. Two protected nights before Thursday would break it.",
+      "action": "Block the two nights"
+    },
+    {
+      "state": "attention",
+      "title": "A dated window closes on 3 September",
+      "body": "Certification reimbursement, roughly $740, still unfiled. The only item here with a hard deadline.",
+      "action": "Open the filled form"
+    },
+    {
+      "state": "steady",
+      "title": "Your library has 14 pages with no provenance",
+      "body": "A library nobody curates is a garbage dump with great search. Twenty minutes of the librarian ritual clears it.",
+      "action": "Run the hygiene pass"
+    },
+    {
+      "state": "attention",
+      "title": "ACLS renews in 74 days, with no class booked",
+      "body": "The only item on your standing with a date and no plan attached. Everything else is current or in progress.",
+      "action": "Find a class"
+    }
+  ],
+  "opps": [
+    {
+      "kind": "Certification",
+      "title": "CMC test date opens for November",
+      "body": "Your blueprint coverage projects a three-week buffer if the current pace holds.",
+      "when": "Registration opens 1 September"
+    },
+    {
+      "kind": "Relationship",
+      "title": "Dr. Ng asked about the handoff idea",
+      "body": "She raised it unprompted in June. Your notes say you meant to follow up and did not.",
+      "when": "Six weeks cold — still warm enough"
+    },
+    {
+      "kind": "Idea",
+      "title": "Handoff-script skill, noted four times",
+      "body": "The same idea keeps returning to your capture inbox. That is usually the signal to build it.",
+      "when": "Ready when the pause lifts"
+    },
+    {
+      "kind": "Contribution",
+      "title": "One skill is clean enough to share",
+      "body": "Your shift-recovery checklist has no PHI, no employer content, and no secrets.",
+      "when": "NIN contribution flow is open"
+    }
+  ],
+  "agents": [
+    {
+      "initials": "FL",
+      "name": "Florence",
+      "role": "Generalist · your preceptor",
+      "tier": "Green",
+      "tierCls": "tier-green",
+      "scope": "All spheres, read-only outside Health. Drafts freely; sends nothing.",
+      "await": null
+    },
+    {
+      "initials": "SC",
+      "name": "Scholar",
+      "role": "Learning & mastery",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Learning sphere only. Reads your weak-point log; writes to the study queue.",
+      "await": "Wants to add 4 pages to your CMC library"
+    },
+    {
+      "initials": "SB",
+      "name": "Scribe",
+      "role": "Creativity & business",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Creativity and Business spheres. No calendar access, no outbound send.",
+      "await": "Drafted a LinkedIn post — unsent"
+    }
+  ],
+  "sample": true,
+  "role_id": "bedside"
+}

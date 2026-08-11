@@ -1,0 +1,319 @@
+{
+  "label": "Nurse practitioner",
+  "values": [
+    "Top of license, not top of volume",
+    "The patient, not the screen",
+    "Ask when I do not know",
+    "Keep the panel human-sized"
+  ],
+  "mission": "Practice at the top of my license without letting the volume decide what kind of clinician I am.",
+  "sub": "Priya Raman, DNP, FNP-BC · family practice, panel of 1,180 · third year in practice · precepting one student.",
+  "season": "Panel consolidation",
+  "seasonBody": "You stopped growing the panel in June to fix how you run the one you have. Volume was never the problem you actually needed to solve.",
+  "seasonMeta": "Month 3 of 9 · panel held at 1,180 · next review 1 December",
+  "actions": [
+    {
+      "domain": "Learning & Mastery",
+      "title": "Log the eight pharmacology hours you are short",
+      "why": "Your certification renewal requires 25 pharmacology hours and you are at 17 with five months left. Scholar has candidates drawn from topics you flagged in your own notes.",
+      "cost": "Two evenings · dated requirement",
+      "cta": "See the options"
+    },
+    {
+      "domain": "Career & Practice",
+      "title": "Chase the collaborative agreement draft",
+      "why": "Your CPA renews 14 October and the practice has not circulated the revision. This is the one item on your standing that another person controls.",
+      "cost": "5 minutes · Scribe has the note drafted",
+      "cta": "Review the note"
+    },
+    {
+      "domain": "Family & Relationships",
+      "title": "Hold Sunday the way you held it in June",
+      "why": "Three of the last four Sundays went to charting catch-up. June was the month you proved the panel can survive an untouched Sunday.",
+      "cost": "2 minutes to block",
+      "cta": "Block Sunday"
+    }
+  ],
+  "domains": {
+    "health": {
+      "share": 8,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Lunch taken one day in five. Charting is eating the break.",
+      "detail": "The pattern behind this is a documentation habit, not a willpower problem. <b>Florence has drafted nothing here</b> — Health is a sphere she cannot act in unasked."
+    },
+    "family": {
+      "share": 17,
+      "state": "steady",
+      "dir": "down",
+      "signal": "Three of the last four Sundays went to charting catch-up.",
+      "detail": "In June you held four Sundays straight and the panel was fine. <b>You already ran the experiment</b> — this is a drift, not a constraint."
+    },
+    "career": {
+      "share": 29,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Panel held at 1,180 by choice. Visit templates rebuilt.",
+      "detail": "Holding the panel was the season’s central decision and it is being kept. <b>Your license, prescriptive authority, and CPA are held separately, above</b> — none of them is a share of your week."
+    },
+    "learning": {
+      "share": 13,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Pharmacology hours 17 of 25. Certification renews next year.",
+      "detail": "On pace but not ahead. <b>Eight hours across five months is two evenings</b> — the only reason it is flagged is that it is dated."
+    },
+    "finance": {
+      "share": 9,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Loan repayment on track. CME allowance half unspent.",
+      "detail": "Your CME allowance resets in December and half of it is unclaimed. <b>It converts directly into the pharmacology hours you owe.</b>"
+    },
+    "creative": {
+      "share": 5,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Two patient-education handouts written. Both plain-language reviewed.",
+      "detail": "Written for a general audience, no patient specifics anywhere. <b>Exactly the kind of work this system is for.</b>"
+    },
+    "service": {
+      "share": 11,
+      "state": "steady",
+      "dir": "up",
+      "signal": "Precepting one student. Two community talks booked.",
+      "detail": "Precepting is the line most likely to be cut when the panel gets loud. <b>It has survived three months.</b>"
+    },
+    "business": {
+      "share": 8,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Practice-ownership research paused until the panel review in December.",
+      "detail": "A chosen pause with a date, logged 12 June. <b>It will not be surfaced until 1 December</b> — the same review that decides the panel."
+    }
+  },
+  "momentum": {
+    "hero": "34",
+    "unit": "hours",
+    "label": "returned to you this quarter — patient-education writing, CME planning, credential admin, and correspondence you no longer draft cold.",
+    "note": "Estimated from your own logged times. No clinical work is included in this number, because none of it happens here.",
+    "kpis": [
+      [
+        "Sundays protected",
+        "7",
+        "/12",
+        "June was 4 of 4"
+      ],
+      [
+        "Commitments honored",
+        "51",
+        "/57",
+        "+8 vs Q2"
+      ],
+      [
+        "Handouts written",
+        "2",
+        "",
+        "plain-language reviewed"
+      ]
+    ],
+    "weekly": [
+      4,
+      5,
+      5,
+      6,
+      6,
+      7,
+      7,
+      8,
+      8,
+      9,
+      9,
+      10
+    ],
+    "caption": "templates stopped eating evenings in week 5",
+    "evidence": [
+      [
+        5,
+        5,
+        3
+      ],
+      [
+        6,
+        6,
+        3
+      ],
+      [
+        6,
+        6,
+        4
+      ],
+      [
+        7,
+        7,
+        5
+      ],
+      [
+        8,
+        8,
+        5
+      ],
+      [
+        9,
+        8,
+        6
+      ]
+    ]
+  },
+  "license": {
+    "days": 59,
+    "gates": 47,
+    "currency": [
+      {
+        "name": "APRN license",
+        "meta": "Renews 31 May 2027 · 21 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "FNP-BC (ANCC)",
+        "meta": "Renews 1 February 2028 · 17 of 25 pharmacology hours",
+        "state": "attention"
+      },
+      {
+        "name": "Prescriptive authority",
+        "meta": "Current · tied to APRN license and CPA",
+        "state": "flourishing"
+      },
+      {
+        "name": "DEA registration",
+        "meta": "Renews 30 June 2027 · 22 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "Collaborative agreement",
+        "meta": "Renews 14 October 2026 · 64 days · draft not circulated",
+        "state": "attention"
+      },
+      {
+        "name": "Malpractice",
+        "meta": "Own policy, current to 1 January 2027",
+        "state": "flourishing"
+      }
+    ],
+    "reputation": [
+      {
+        "name": "Published",
+        "meta": "4 pieces carry your name · 4 reviewed by you · 0 auto-sent",
+        "state": "flourishing"
+      },
+      {
+        "name": "Precepting",
+        "meta": "1 student · evaluations current · no identifiable content here",
+        "state": "flourishing"
+      },
+      {
+        "name": "Awaiting you",
+        "meta": "1 community-talk outline drafted, unsent",
+        "state": "attention"
+      }
+    ],
+    "risks": [
+      {
+        "what": "The question that is your actual job",
+        "guard": "Differential, dosing, workup — for an identified patient. Refused here at every tier, including Green. Not because it is outside your scope; it plainly is not. Because this system has no clearance, no validation, and no institutional governance behind it. <b>The boundary is about the tool, not about you.</b>"
+      },
+      {
+        "what": "A chart detail carried across in a hurry",
+        "guard": "Import refuses on PHI indicators and a nightly lint sweeps everything already stored. <b>The system catches it.</b>"
+      },
+      {
+        "what": "Reaching for an ungoverned window instead",
+        "guard": "No governed system can reach a chat window it does not run. <b>This one is yours to keep</b> — it is the reason the rails are worth having."
+      }
+    ],
+    "scopeNote": "<b>Your scope is wide. Your agent’s is not — and it does not widen with yours.</b> Prescriptive authority raises what you may decide. It does not raise what this system may do without you. If anything the gates tighten, because the consequence of an unreviewed draft is now a prescription. Autonomy here is earned by the agent, per sphere, on evidence — never inherited from your license."
+  },
+  "signals": [
+    {
+      "state": "attention",
+      "title": "Your collaborative agreement renews in 64 days",
+      "body": "The draft sits with the practice, not with you. It is the only item on your standing another person controls — which is why it needs chasing, not waiting.",
+      "action": "Send the note"
+    },
+    {
+      "state": "attention",
+      "title": "Eight pharmacology hours short, five months left",
+      "body": "Dated and specific. Your unspent CME allowance covers it entirely and resets in December.",
+      "action": "See the options"
+    },
+    {
+      "state": "attention",
+      "title": "Sunday has gone to charting three weeks running",
+      "body": "In June you held four straight and the panel was fine. You already have the evidence.",
+      "action": "Block Sunday"
+    },
+    {
+      "state": "flourishing",
+      "title": "59 days without a boundary refusal",
+      "body": "In a role where the clinical question is the whole job, that number is worth more than it is in any other role on this screen.",
+      "action": "Open the ledger view"
+    }
+  ],
+  "opps": [
+    {
+      "kind": "Certification",
+      "title": "Pharmacology CME your allowance already covers",
+      "body": "Half your annual allowance is unspent and resets in December. The hours you owe cost nothing.",
+      "when": "Allowance resets 31 December"
+    },
+    {
+      "kind": "Relationship",
+      "title": "Your preceptee asked about staying on",
+      "body": "She raised it in July. Your notes say you meant to talk to the practice and did not.",
+      "when": "Six weeks cold"
+    },
+    {
+      "kind": "Idea",
+      "title": "Your visit templates would help other NPs",
+      "body": "Rebuilt from scratch this season and demonstrably faster. No patient content in them at all.",
+      "when": "Sanitizes in one pass"
+    },
+    {
+      "kind": "Business",
+      "title": "Practice-ownership research resumes 1 December",
+      "body": "Paused on purpose, with a date. The December panel review decides both together.",
+      "when": "Paused until 1 December"
+    }
+  ],
+  "agents": [
+    {
+      "initials": "FL",
+      "name": "Florence",
+      "role": "Generalist · your preceptor",
+      "tier": "Green",
+      "tierCls": "tier-green",
+      "scope": "All spheres, read-only outside Health. Drafts freely; sends nothing; refuses clinical questions at every tier.",
+      "await": null
+    },
+    {
+      "initials": "SC",
+      "name": "Scholar",
+      "role": "CME & credentialing",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Learning sphere. Reads public literature and your own notes; no patient record, ever.",
+      "await": "Wants to add 6 pharmacology CME candidates"
+    },
+    {
+      "initials": "SB",
+      "name": "Scribe",
+      "role": "Writing & correspondence",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Creativity and Career spheres. No clinical content, no outbound send.",
+      "await": "Drafted the community-talk outline — unsent"
+    }
+  ],
+  "sample": true,
+  "role_id": "np"
+}

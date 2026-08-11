@@ -9,6 +9,8 @@
 //
 // Usage:  osascript -l JavaScript apple_notes.jxa "Folder A" "Folder B"
 //
+ObjC.import('stdlib');                     // for $.exit — see the catch below
+
 function run(argv) {
   if (!argv || argv.length === 0) return JSON.stringify([]);
   const wanted = argv.map(String);
@@ -33,7 +35,13 @@ function run(argv) {
       }
     }
   } catch (e) {
-    return JSON.stringify({ error: String(e) });
+    // Fail on stderr with a non-zero exit, NOT with an error object on stdout:
+    // the collector checks only the exit code and then iterates what it decoded
+    // as a list of notes, so an {error: …} object surfaced as a TypeError deep
+    // in the indexer instead of "the Notes bridge could not run". console.log
+    // goes to stderr under osascript, which is where this belongs.
+    console.log("apple_notes.jxa: " + String(e));
+    $.exit(1);
   }
   return JSON.stringify(out);
 }

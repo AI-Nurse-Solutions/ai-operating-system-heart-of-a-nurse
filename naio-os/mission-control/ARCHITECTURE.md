@@ -330,7 +330,7 @@ Telegram is the primary conversational channel (BotFather bot, locked to the nur
 Apple Notes is where nurses actually capture things at 2 a.m. — so treat it as the **capture inbox**, not a database.
 
 - **Bridge:** a JXA (JavaScript for Automation) script run via `osascript`, invoked by the `apple_notes` collector. Scope-limited to folders the nurse explicitly selects in Settings (e.g., "NAIO Inbox"); first run triggers the macOS Automation permission prompt for Notes.
-- **Reads:** note id, title, folder, modified date, and plain-text body *transiently* for preview/promotion — bodies are not persisted to the index (metadata only), keeping the PHI surface minimal.
+- **Reads:** note id, title, folder, and modified date. **No body, ever** — not persisted, and not read transiently either: the JXA bridge never calls `note.body()`, and previews and promotions work from metadata alone. A promoted note carries its title and a link back to the source; the words stay in Notes.
 - **Promotions (explicit human click, §7.6):** note → Task, note → Obsidian (written as markdown into an `Inbox/` folder of the vault), note → candidate memory (rendered as a *proposed* `memory.md` addition the nurse pastes/approves in chat — the dashboard never edits Hermes memory directly).
 - **Non-macOS:** collector reports "unavailable on this OS"; everything else works.
 
@@ -392,7 +392,9 @@ naio-mc install --role bedside --vault "~/Obsidian/NurseVault"
 naio-mc start        # → http://127.0.0.1:8321
 ```
 
-Distributed the NAIO way: shipped inside the existing signed bundle pipeline (`manifest.yaml` checksums, `bootstrap.sh` verification, dry-run default) rather than inventing a second update channel. Directory layout:
+Distributed the NAIO way: carried inside the existing bundle rather than inventing a second update channel.
+
+**Mission Control itself is not signed yet.** naio-os has been signed since Phase 6, and the parent bundle that contains this directory carries its own checksums and `bootstrap.sh` verification — but `manifest.json` here is a self-generated checksum list with no release key behind it, and `release.py` prints that in as many words. Bringing Mission Control under the signing chain is the next step, not a thing this describes as done. Directory layout:
 
 ```
 ~/NAIO/mission-control/

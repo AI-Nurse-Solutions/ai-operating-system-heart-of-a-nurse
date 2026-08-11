@@ -50,6 +50,30 @@
       }
     },
 
+    "role_constellation": {
+      "type": "object",
+      "description": "The 2.0.0 role constellation. primary[0].role_id is the AUTHORITATIVE role for an import: identity.role is only the legacy value the quiz collapses all 36 constellation roles into four of ('staff', 'leader', 'other', 'student'), so reading it alone sends a nurse practitioner, a resident and an entrepreneur to the same preset and makes five of the eight presets unreachable. Declared loosely on purpose — the full contract lives in naio-os/schema/naio-soul.schema.json; this copy only has to be strong enough for the importer to read the primary role, and must refuse nothing a live export contains.",
+      "additionalProperties": true,
+      "properties": {
+        "primary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "role_id": { "type": "string" },
+              "label": { "type": "string" },
+              "domain_id": { "type": "string" },
+              "status": { "type": "string" }
+            }
+          }
+        },
+        "supporting": { "type": "array" },
+        "emerging": { "type": "array" },
+        "contextual": { "type": "array" }
+      }
+    },
+
     "interests": {
       "type": "array",
       "items": {

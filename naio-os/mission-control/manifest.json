@@ -2,21 +2,21 @@
   "_note": "Checksums of what was actually built, written by tools/release.py at the same moment the self-test ran. MISSION CONTROL IS NOT SIGNED \u2014 there is no Mission Control release key yet, so this proves this tree is unchanged since packaging, and nothing more. Do not read it as provenance. Scope: naio-os itself has been signed since Phase 6 (manifest.sig, release-history.json, fail-closed verifier); Mission Control does not yet participate in that chain.",
   "signed": false,
   "version": "0.4.0",
-  "built_at": "2026-08-11T12:18:10+00:00",
+  "built_at": "2026-08-11T16:33:22+00:00",
   "self_test": {
-    "passed": 89,
+    "passed": 103,
     "failed": 0
   },
-  "file_count": 51,
+  "file_count": 52,
   "files": {
     "ARCHITECTURE.md": {
-      "sha256": "f4abc4663ae2bed78274d11b991c6675346b82326d046374212d0525b0a76e75",
-      "bytes": 37346,
+      "sha256": "c202988914226ee09cf3b488dd4cc4e64dcf6e68e1a1d26ec3828b305031a88e",
+      "bytes": 37807,
       "mutable": false
     },
     "README.md": {
-      "sha256": "a496669b0cd9ab0cb28d4b668edbc98bfc7cc53d64eb8073a39f05c139ee26ef",
-      "bytes": 19541,
+      "sha256": "c59e983f89d4870dfd9e91d901c57fed036569cafc742ebc1f5e66fa328e587d",
+      "bytes": 19718,
       "mutable": false
     },
     "adapters/__init__.py": {
@@ -24,24 +24,29 @@
       "bytes": 0,
       "mutable": false
     },
+    "adapters/phi.py": {
+      "sha256": "6f1d6f392669d9296847ebb2fe59b5d3671888abca96622cad70cde52147e18f",
+      "bytes": 1445,
+      "mutable": false
+    },
     "adapters/runtime.py": {
-      "sha256": "83d223560b2978c66ca7ebd503a8265d7e2662d81468ddbf4c5a8a0dabec99dc",
-      "bytes": 5342,
+      "sha256": "dc084f83310ae3b84b00701add87e6b874ac436e471d019a4f974694ca362e2c",
+      "bytes": 9286,
       "mutable": false
     },
     "bin/mc-log": {
-      "sha256": "d301fb77c06dfe7a3b5ea77d1f4829704c8e3d2993432725a0f1214fdb9e397c",
-      "bytes": 2201,
+      "sha256": "9249f53604fce7b2d10472cce1ec6db7229ef082ae33c3431007b728d0adb66a",
+      "bytes": 2782,
       "mutable": false
     },
     "bin/naio-soul-import": {
-      "sha256": "6eb0fa6305554e79a945af0a9c53d1ec046e32b24137c672de7e48e03e878dde",
-      "bytes": 14772,
+      "sha256": "2e0140b809a579c9ba90177aee88f52e36696253d84f0fdcfb12266845d3a3d5",
+      "bytes": 21480,
       "mutable": false
     },
     "bridges/apple_notes.jxa": {
-      "sha256": "7ed1fc57811783570afb9ee97c5f66a0e98a145a590e56f07c3ee2a9d5f328d5",
-      "bytes": 1395,
+      "sha256": "6939e0e20256130c2e092163dbae71c7ff6181abc397674befda0c799e197a9f",
+      "bytes": 1883,
       "mutable": false
     },
     "config.json": {
@@ -65,8 +70,8 @@
       "mutable": true
     },
     "content/educator.sample.json": {
-      "sha256": "bc180220925a0a169684d2a8a58b128ad34d421581f0807c05b96d84129b7b72",
-      "bytes": 10643,
+      "sha256": "dddb269c84d1df20d1e722ffff68cab09701ba134982fa4525ebed11798d0c59",
+      "bytes": 10611,
       "mutable": true
     },
     "content/entrepreneur.sample.json": {
@@ -90,8 +95,8 @@
       "mutable": true
     },
     "content/student.sample.json": {
-      "sha256": "6f98c9966f856864cc73dcc071c3f1a7a9183ce4ad5a69d3fecd900cedb4c1fd",
-      "bytes": 10727,
+      "sha256": "2a4d3073313c75e3442d68b7766d2edd6ae98e8d3afd68fe751edd6a3868d236",
+      "bytes": 10730,
       "mutable": true
     },
     "demo-vault/Inbox/2026-08-10-night-thought.md": {
@@ -180,18 +185,18 @@
       "mutable": false
     },
     "index.html": {
-      "sha256": "6ab18ab7eb938b54ffec85fbf921eb958aeecb1da5b29b24861e8b2af0793d40",
-      "bytes": 95686,
+      "sha256": "7279ae37ca310305a55a750f6c501ca1a5ea7ddd5f8059727db6bbf59b2ef43b",
+      "bytes": 97062,
       "mutable": false
     },
     "mission_control.py": {
-      "sha256": "9dffe3cd8f0a58b296b306163f28c50e3b0f9934c6aefe4d7ddbc531364b235f",
-      "bytes": 52771,
+      "sha256": "9aa836b08c7a728afe0695adf4bcc90000ab096db35214d2c07ad69be56b221f",
+      "bytes": 57480,
       "mutable": false
     },
     "naio-mc": {
-      "sha256": "879973213133960830fcb805c9daa9467ff8f8bbdfb93630f33280518cf36eb0",
-      "bytes": 21670,
+      "sha256": "552b0af14f800f785d7c24d1804396b9814ecd385a4c4683a2c58f49299a7b89",
+      "bytes": 21857,
       "mutable": false
     },
     "roles/README.md": {
@@ -240,8 +245,8 @@
       "mutable": false
     },
     "schema/naio-soul.schema.json": {
-      "sha256": "75946c6314c7a7dad2218d342bbc089e5b1fbb84c887e61aae6ddfe602a001f5",
-      "bytes": 4055,
+      "sha256": "1fdcdcbc2c8af6ddc1e1f7143546e59cb45eb7568444af484ae85d7e077676e6",
+      "bytes": 5326,
       "mutable": false
     },
     "skills/naio-activity-log/SKILL.md": {
@@ -250,18 +255,18 @@
       "mutable": false
     },
     "tests/self_test.py": {
-      "sha256": "11321f21848135ed271afc3a5e8b141563f30d8be6c0d71fe023505e223c0f77",
-      "bytes": 41031,
+      "sha256": "7670896ca968dfefc5508e6905b634f597f758ec977f7c0c6927022b54c42e61",
+      "bytes": 50944,
       "mutable": false
     },
     "tools/rebuild-governance-kit.sh": {
-      "sha256": "11ddd0a96f843ed8af0e19ce5648cf087f658d4154c8ed95fdb200e724b06705",
-      "bytes": 1415,
+      "sha256": "2ca198dd747d3ddfd17fcb23e8d5f984cfd0e4574b7cc6fb4fa513ca6b261009",
+      "bytes": 2325,
       "mutable": false
     },
     "tools/release.py": {
-      "sha256": "6ccde08d6adae8f46350d56854768957e8317bfcc8a5055ed5e8e4ecc0673597",
-      "bytes": 8093,
+      "sha256": "1fe918c728c59eacff297471d8b2dfc425a1c01429b95bc1c4b725b7d7d8994f",
+      "bytes": 8092,
       "mutable": false
     }
   }

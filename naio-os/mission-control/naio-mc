@@ -176,10 +176,11 @@ def configure() -> int:
     cfg_path = HERE / "config.json"
     cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.is_file() else {}
 
-    PHI = [(r"\bMRN[ _-]?\d{3,}", "medical record number"),
-           (r"\b\d{3}-\d{2}-\d{4}\b", "SSN-shaped number"),
-           (r"\b(?:0?[1-9]|1[0-2])[-_.](?:0?[1-9]|[12]\d|3[01])[-_.](?:19|20)\d{2}\b", "date of birth"),
-           (r"\b(?:room|rm|bed)[ _-]?\d{1,4}[A-Da-d]?\b", "room or bed number")]
+    # The same list the server's lint and the SOUL importer use. Three copies
+    # had drifted far enough that `MRN 123` was refused at one door and waved
+    # through at another. (adapters/phi.py)
+    sys.path.insert(0, str(HERE))
+    from adapters.phi import PHI_PATTERNS as PHI          # noqa: PLC0415
 
     print("naio-mc configure\n")
     problems = 0
@@ -472,7 +473,10 @@ def notes_check() -> int:
     print()
     for note in data[:5]:
         title = str(note.get("title", ""))[:70]
-        print(f"      {note.get('folder', '?')} · {title}  ({note.get('modified', '?')[:10]})")
+        # str() first: the default only applies to a MISSING key, so a bridge
+        # that emits "modified": null used to slice None and traceback.
+        modified = str(note.get("modified") or "?")[:10]
+        print(f"      {note.get('folder', '?')} · {title}  ({modified})")
     if len(data) > 5:
         print(f"      … and {len(data) - 5} more")
 

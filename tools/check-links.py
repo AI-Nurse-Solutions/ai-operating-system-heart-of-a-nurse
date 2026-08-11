@@ -78,6 +78,12 @@ def broken() -> list[tuple[str, str]]:
                 continue
             base = ROOT if target.startswith("/") else page.parent
             resolved = (base / target.lstrip("/")).resolve()
+            # Containment before existence. `../../../etc/passwd` and a symlink
+            # out of the tree both exist, and both would have passed as a
+            # perfectly good link to a file no reader can reach.
+            if not resolved.is_relative_to(ROOT):
+                found.append((str(page.relative_to(ROOT)), raw))
+                continue
             if not resolved.exists():
                 found.append((str(page.relative_to(ROOT)), raw))
     return found

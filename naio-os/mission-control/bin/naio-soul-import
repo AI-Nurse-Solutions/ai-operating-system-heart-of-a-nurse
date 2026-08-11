@@ -64,6 +64,123 @@ ROLE_MAP = {
               "first quiz step to emit the current vocabulary."),
 }
 
+# From schema 2.0.0 the quiz exports a role CONSTELLATION, and identity.role is
+# only the legacy value it collapses that constellation to: soul-quiz-model.mjs
+# maps all six direct-care and advanced-practice roles to 'staff', every
+# education, management, administration and quality role to 'leader', and the
+# remaining seventeen — residents, researchers, informaticists, entrepreneurs,
+# community and wellness roles — to 'other'. Reading identity.role for a 2.x
+# file therefore sends a nurse practitioner to the bedside preset and a resident
+# or an entrepreneur to the same place, and makes five of the eight presets
+# unreachable from a live quiz export. The authoritative answer is the primary
+# constellation role, so that is what this maps.
+#
+# Where a quiz role has no preset of its own the nearest one is used and a
+# caveat is printed — a lossy map that says so beats a silent default.
+CONSTELLATION_ROLE_MAP: dict[str, tuple[str, str | None]] = {
+    "prelicensure-nursing-student": ("student", None),
+    "nursing-assistant-pct": ("bedside",
+                              "There is no assistant/CNA preset yet — 'bedside' is the "
+                              "closest. Re-run with --role to choose another."),
+    "newly-licensed-clinician": ("bedside", None),
+    "bedside-nurse": ("bedside", None),
+    "allied-health-clinician": ("bedside",
+                                "Allied health has no preset of its own yet — 'bedside' "
+                                "is the closest direct-care one."),
+    "advanced-practice-clinician": ("np", None),
+    "nurse-practitioner": ("np", None),
+    "clinical-nurse-specialist": ("np", None),
+    "medical-resident-fellow": ("resident", None),
+    "physician": ("resident",
+                  "There is no attending-physician preset — 'resident' is the closest. "
+                  "Re-run with --role to choose another."),
+    "clinical-preceptor": ("educator", None),
+    "nurse-educator": ("educator", None),
+    "faculty-instructor": ("educator", None),
+    "simulation-facilitator": ("educator", None),
+    "charge-nurse-team-lead": ("charge", None),
+    "nurse-manager": ("leader", None),
+    "healthcare-leader": ("leader", None),
+    "hospital-administrator": ("leader", None),
+    "clinic-manager": ("leader", None),
+    "operations-program-manager": ("leader", None),
+    "quality-improvement-specialist": ("leader", None),
+    "patient-safety-governance-specialist": ("leader", None),
+    "nurse-researcher": ("educator",
+                         "Research has no preset of its own yet — 'educator' carries the "
+                         "closest scholarship framing."),
+    "evidence-practice-specialist": ("educator",
+                                     "Evidence-based practice has no preset of its own yet "
+                                     "— 'educator' is the closest."),
+    "nurse-informaticist": ("entrepreneur",
+                            "Informatics has no preset of its own yet — 'entrepreneur' "
+                            "carries the closest build-and-ship framing."),
+    "ai-innovator": ("entrepreneur", None),
+    "health-technology-specialist": ("entrepreneur", None),
+    "clinical-product-developer": ("entrepreneur", None),
+    "nurse-entrepreneur": ("entrepreneur", None),
+    "healthcare-business-owner": ("entrepreneur", None),
+    "community-population-health-professional": ("leader",
+                                                 "Community and population health has no "
+                                                 "preset yet — 'leader' is the closest."),
+    "community-organizer": ("leader",
+                            "Community organizing has no preset yet — 'leader' is the "
+                            "closest."),
+    "professional-advocate-steward": ("leader",
+                                      "Advocacy and stewardship has no preset yet — "
+                                      "'leader' is the closest."),
+    "wellness-manager": ("leader",
+                         "Wellness has no preset yet — 'leader' is the closest."),
+    "wellness-coach-advocate": ("entrepreneur",
+                                "Coaching has no preset yet — 'entrepreneur' is the "
+                                "closest practice-building one."),
+    "family-caregiver": ("bedside",
+                         "Family caregiving has no preset yet — 'bedside' is the closest "
+                         "care-giving one."),
+}
+
+
+def primary_constellation_role(soul: dict) -> str | None:
+    """The role_id the nurse marked primary, if this is a 2.x constellation export."""
+    constellation = soul.get("role_constellation")
+    if not isinstance(constellation, dict):
+        return None
+    primary = constellation.get("primary")
+    if not isinstance(primary, list):
+        return None
+    for entry in primary:
+        if isinstance(entry, dict) and isinstance(entry.get("role_id"), str):
+            role_id = entry["role_id"].strip()
+            if role_id:
+                return role_id
+    return None
+
+
+def map_role(soul: dict) -> tuple[str, str | None, str, str]:
+    """
+    (preset_id, caveat, source_field, source_value).
+
+    Prefers the constellation's primary role; falls back to the legacy
+    identity.role for 1.x files, for a constellation this map has not caught up
+    with, and for the quiz's own local-role-* custom entries.
+    """
+    legacy_role = str(soul.get("identity", {}).get("role", ""))
+    legacy_preset, legacy_caveat = ROLE_MAP.get(legacy_role, ("bedside", "unknown quiz role"))
+
+    primary = primary_constellation_role(soul)
+    if primary is None:
+        return legacy_preset, legacy_caveat, "identity.role", legacy_role
+
+    mapped = CONSTELLATION_ROLE_MAP.get(primary)
+    if mapped is None:
+        caveat = (f"primary role {primary!r} has no preset mapping yet — fell back to "
+                  f"identity.role {legacy_role!r} → {legacy_preset!r}. Re-run with --role "
+                  f"to choose, and please report the role id so the map catches up.")
+        return legacy_preset, caveat, "identity.role (constellation role unmapped)", legacy_role
+
+    preset, caveat = mapped
+    return preset, caveat, "role_constellation.primary[0].role_id", primary
+
 SPHERE_TO_DOMAIN = {
     "personal": ["health", "family", "finance"],
     "professional": ["career", "learning"],
@@ -79,13 +196,8 @@ DOMAIN_LABELS = [
     ("service", "Service & Community"), ("business", "Business & Ventures"),
 ]
 
-PHI_PATTERNS = [
-    (r"\bMRN[:# ]?\s*\d{3,}\b", "medical record number"),
-    (r"\b\d{3}-\d{2}-\d{4}\b", "SSN-shaped number"),
-    (r"\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])[/-](?:19|20)\d{2}\b", "date of birth format"),
-    (r"\b(?:room|rm|bed)\s*#?\s*\d{1,4}[A-Da-d]?\b", "room or bed number"),
-    (r"\bDOB[:\s]", "explicit DOB label"),
-]
+sys.path.insert(0, str(HERE))
+from adapters.phi import PHI_PATTERNS  # noqa: E402
 
 
 def fail(msg: str, code: int = 2) -> "NoReturn":       # noqa: F821
@@ -136,8 +248,14 @@ def validate(data, schema, path="$") -> list[str]:
             errs.append(f"{path}: does not match {schema['pattern']}")
     if "enum" in schema and data not in schema["enum"]:
         errs.append(f"{path}: {data!r} not one of {schema['enum']}")
-    if "const" in schema and data != schema["const"]:
-        errs.append(f"{path}: must be {schema['const']!r}, found {data!r}")
+    if "const" in schema:
+        const = schema["const"]
+        # `1 != True` is False in Python, so a boundary written as 1 satisfied
+        # "const": true and the schema error the nurse should have seen never
+        # fired. (The boundary re-check below still refused the file, so the
+        # refusal was right and the reason was wrong.)
+        if data != const or isinstance(data, bool) != isinstance(const, bool):
+            errs.append(f"{path}: must be {const!r}, found {data!r}")
     return errs
 
 
@@ -278,13 +396,16 @@ def main() -> int:
 
     # -- role mapping --------------------------------------------------------
     quiz_role = soul["identity"]["role"]
-    mapped, caveat = ROLE_MAP.get(quiz_role, ("bedside", "unknown quiz role"))
+    mapped, caveat, role_source, source_value = map_role(soul)
     role_id = args.role or mapped
     preset = ROLES_DIR / f"{role_id}.json"
     if not preset.is_file():
         fail(f"no preset for role {role_id!r}. Available: "
              f"{', '.join(sorted(p.stem for p in ROLES_DIR.glob('*.json')))}")
-    ok(f"quiz role {quiz_role!r} → preset {role_id!r}")
+    ok(f"quiz role {source_value!r} (from {role_source}) → preset {role_id!r}")
+    if role_source.startswith("role_constellation") and quiz_role != source_value:
+        ok(f"read the primary constellation role, not identity.role {quiz_role!r} — that "
+           f"field is the legacy value the 2.x quiz collapses every role to")
     if caveat and not args.role:
         warn(caveat)
 
@@ -331,6 +452,8 @@ def main() -> int:
         "schema_version": soul.get("schema_version"),
         "generator": soul.get("generator"),
         "quiz_role": quiz_role,
+        "constellation_role": primary_constellation_role(soul),
+        "role_source": role_source,
         "mapped_role": role_id,
         "role_mapping_caveat": caveat,
         "boundaries_confirmed": True,

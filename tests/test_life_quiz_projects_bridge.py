@@ -80,7 +80,7 @@ def quiz_export() -> dict:
         probe = workdir / "probe.mjs"
         probe.write_text(DOM_STUB + body + DRIVER, encoding="utf-8")
         run = subprocess.run(["node", str(probe)], capture_output=True,
-                             text=True, cwd=str(workdir))
+                             text=True, cwd=str(workdir), timeout=120)
         if run.returncode != 0:
             raise AssertionError(f"life-quiz export failed to run:\n{run.stderr[:2000]}")
         return json.loads(run.stdout)
@@ -128,7 +128,8 @@ class LifeQuizProjectsBridgeTests(unittest.TestCase):
             payload.write_text(json.dumps(self.emitted), encoding="utf-8")
             run = subprocess.run(
                 ["python3", str(IMPORTER), str(payload)],
-                capture_output=True, text=True, cwd=str(IMPORTER.parent.parent))
+                capture_output=True, text=True, cwd=str(IMPORTER.parent.parent),
+                timeout=120)
         finally:
             shutil.rmtree(workdir, ignore_errors=True)
         self.assertEqual(run.returncode, 0,
@@ -160,7 +161,7 @@ class LifeQuizProjectsBridgeTests(unittest.TestCase):
                 "\nconsole.log(JSON.stringify(buildOsConfig(s,"
                 "'2026-07-20T00:00:00.000Z')));\n", encoding="utf-8")
             gen = subprocess.run(["node", str(probe)], capture_output=True,
-                                 text=True, cwd=str(workdir))
+                                 text=True, cwd=str(workdir), timeout=120)
             self.assertEqual(gen.returncode, 0, gen.stderr[:1000])
             soul = json.loads(gen.stdout)
             self.assertTrue(str(soul.get("schema_version", "")).startswith("2."),
@@ -174,7 +175,7 @@ class LifeQuizProjectsBridgeTests(unittest.TestCase):
             run = subprocess.run(
                 ["bash", str(INSTALLER), "--dry-run",
                  "--soul", str(soul_path), "--projects", str(proj_path)],
-                capture_output=True, text=True, cwd=str(INSTALLER.parent))
+                capture_output=True, text=True, cwd=str(INSTALLER.parent), timeout=120)
         finally:
             shutil.rmtree(workdir, ignore_errors=True)
 

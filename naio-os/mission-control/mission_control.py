@@ -18,6 +18,7 @@ Binds 127.0.0.1 by hard default. Any other bind requires --bind and prints a war
 """
 
 import argparse
+import contextlib
 import json
 import mimetypes
 import os
@@ -74,6 +75,30 @@ from adapters.runtime import get_adapter  # noqa: E402
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def write_new_file(path: Path, text: str, limit: int = 500) -> Path:
+    """
+    Write `text` to `path`, or to `path` with a `-2`, `-3`, … suffix if that name
+    is taken. Returns the path actually written.
+
+    The promotion contract (§7.5) is that the dashboard writes *new* files into
+    the vault Inbox and never edits an existing note. A plain write_text() to a
+    computed `YYYY-MM-DD-title.md` breaks that quietly: promote two notes with
+    the same title on one day — or one whose name collides with a note the nurse
+    already wrote — and the first file is truncated with nothing to undo it.
+    Exclusive creation ('x') makes the collision impossible rather than unlikely.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    for n in range(1, limit + 1):
+        candidate = path if n == 1 else path.with_name(f"{path.stem}-{n}{path.suffix}")
+        try:
+            with open(candidate, "x", encoding="utf-8") as fh:
+                fh.write(text)
+            return candidate
+        except FileExistsError:
+            continue
+    raise FileExistsError(f"{limit} files already share the name {path.name}")
 
 
 # ---------------------------------------------------------------------------
@@ -142,7 +167,8 @@ CREATE TABLE IF NOT EXISTS content_index (
 
 CREATE TABLE IF NOT EXISTS runtime_snapshots (
   id INTEGER PRIMARY KEY, ts TEXT,
-  gateway_up INTEGER, sessions INTEGER, tokens_in INTEGER, tokens_out INTEGER,
+  gateway_up INTEGER, runtime_present INTEGER,
+  sessions INTEGER, tokens_in INTEGER, tokens_out INTEGER,
   est_cost_usd REAL, cpu_pct REAL, ram_pct REAL, disk_pct REAL,
   hermes_db_bytes INTEGER, mc_db_bytes INTEGER
 );
@@ -167,10 +193,23 @@ def db() -> sqlite3.Connection:
     return conn
 
 
+# Columns added after the first build. `CREATE TABLE IF NOT EXISTS` leaves an
+# existing database alone, so a dashboard that has been running since before a
+# column existed needs it added explicitly — otherwise the collector's INSERT
+# fails against a table that is one column short.
+ADDED_COLUMNS = [
+    ("runtime_snapshots", "runtime_present", "INTEGER"),
+]
+
+
 def init_db() -> None:
     conn = db()
     with conn:
         conn.executescript(SCHEMA)
+        for table, column, decl in ADDED_COLUMNS:
+            have = {r["name"] for r in conn.execute(f"PRAGMA table_info({table})")}
+            if column not in have:
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {decl}")
         conn.execute(
             "INSERT OR IGNORE INTO settings(key,value) VALUES('schema_version',?)",
             (VERSION,),
@@ -375,10 +414,11 @@ def collect_hermes_state(conn: sqlite3.Connection) -> None:
     state = adapter.gateway_state()
     with conn:
         conn.execute(
-            "INSERT INTO runtime_snapshots(ts,gateway_up,sessions,tokens_in,tokens_out,"
-            "est_cost_usd,cpu_pct,ram_pct,disk_pct,hermes_db_bytes,mc_db_bytes) "
-            "VALUES(?,?,?,?,?,?,NULL,NULL,NULL,?,?)",
-            (now_iso(), int(state["up"]), state["sessions"], state["tokens_in"],
+            "INSERT INTO runtime_snapshots(ts,gateway_up,runtime_present,sessions,tokens_in,"
+            "tokens_out,est_cost_usd,cpu_pct,ram_pct,disk_pct,hermes_db_bytes,mc_db_bytes) "
+            "VALUES(?,?,?,?,?,?,?,NULL,NULL,NULL,?,?)",
+            (now_iso(), int(state["up"]), int(state.get("present", False)),
+             state["sessions"], state["tokens_in"],
              state["tokens_out"], state["est_cost_usd"], state["hermes_db_bytes"],
              DB_PATH.stat().st_size if DB_PATH.exists() else 0),
         )
@@ -444,20 +484,24 @@ def collect_content_index(conn: sqlite3.Connection) -> None:
     """Long-form artifacts in the workspace. Titles and counts — never bodies."""
     root = resolve(config()["content_root"])
     seen = []
-    for path in _walk_md(root):
-        rel = str(path.relative_to(root))
-        agent = rel.split(os.sep)[0] if os.sep in rel else "unassigned"
-        try:
-            text = path.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            continue
-        title = next((ln.lstrip("# ").strip() for ln in text.splitlines()
-                      if ln.startswith("#")), path.stem)
-        words = len(text.split())
-        doc_type = path.parent.name if path.parent != root else "note"
-        stat = path.stat()
-        seen.append(rel)
-        with conn:
+    # One transaction for the whole run, not one per file. `with conn:` inside
+    # the loop committed up to 2000 times every 60 seconds; on a real vault that
+    # is thousands of fsyncs an hour for an index nobody is watching in
+    # real time.
+    with conn:
+        for path in _walk_md(root):
+            rel = str(path.relative_to(root))
+            agent = rel.split(os.sep)[0] if os.sep in rel else "unassigned"
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            title = next((ln.lstrip("# ").strip() for ln in text.splitlines()
+                          if ln.startswith("#")), path.stem)
+            words = len(text.split())
+            doc_type = path.parent.name if path.parent != root else "note"
+            stat = path.stat()
+            seen.append(rel)
             conn.execute(
                 "INSERT INTO content_index(agent_id,path,title,doc_type,created_ts,"
                 "modified_ts,word_count) VALUES(?,?,?,?,?,?,?) "
@@ -468,7 +512,6 @@ def collect_content_index(conn: sqlite3.Connection) -> None:
                  datetime.fromtimestamp(stat.st_ctime, timezone.utc).isoformat(timespec="seconds"),
                  datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat(timespec="seconds"),
                  words))
-    with conn:
         if seen:
             marks = ",".join("?" * len(seen))
             conn.execute(f"DELETE FROM content_index WHERE path NOT IN ({marks})", seen)
@@ -486,21 +529,23 @@ def collect_obsidian_index(conn: sqlite3.Connection) -> None:
     """
     root = resolve(config()["vault_root"])
     seen = []
-    for path in _walk_md(root):
-        rel = str(path.relative_to(root))
-        try:
-            head = path.read_text(encoding="utf-8", errors="replace")[:4000]
-        except OSError:
-            continue
-        title = next((ln.lstrip("# ").strip() for ln in head.splitlines()
-                      if ln.startswith("#")), path.stem)
-        tags = sorted({m.group(1) for m in TAG_RE.finditer(head)})[:12]
-        stat = path.stat()
-        seen.append(rel)
-        row = conn.execute(
-            "SELECT id, promoted_to FROM notes_index WHERE source='obsidian' AND external_id=?",
-            (rel,)).fetchone()
-        with conn:
+    # One transaction per run, as in collect_content_index above — a five-minute
+    # sweep of a large vault should not be thousands of separate commits.
+    with conn:
+        for path in _walk_md(root):
+            rel = str(path.relative_to(root))
+            try:
+                head = path.read_text(encoding="utf-8", errors="replace")[:4000]
+            except OSError:
+                continue
+            title = next((ln.lstrip("# ").strip() for ln in head.splitlines()
+                          if ln.startswith("#")), path.stem)
+            tags = sorted({m.group(1) for m in TAG_RE.finditer(head)})[:12]
+            stat = path.stat()
+            seen.append(rel)
+            row = conn.execute(
+                "SELECT id, promoted_to FROM notes_index WHERE source='obsidian' "
+                "AND external_id=?", (rel,)).fetchone()
             if row:
                 conn.execute(
                     "UPDATE notes_index SET title=?, folder=?, tags=?, modified_ts=?, "
@@ -515,7 +560,6 @@ def collect_obsidian_index(conn: sqlite3.Connection) -> None:
                     (rel, title[:200], str(path.parent.relative_to(root)), ",".join(tags),
                      datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat(timespec="seconds"),
                      now_iso()))
-    with conn:
         if seen:
             marks = ",".join("?" * len(seen))
             conn.execute(
@@ -594,34 +638,33 @@ def collect_apple_notes(conn: sqlite3.Connection) -> None:
 # PHI lint — a detection control backstopping the policy control (§8)
 # ---------------------------------------------------------------------------
 
-PHI_PATTERNS = [
-    (r"\bMRN[:# ]?\s*\d{4,}\b", "medical record number"),
-    (r"\b\d{3}-\d{2}-\d{4}\b", "SSN-shaped number"),
-    (r"\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])[/-](?:19|20)\d{2}\b", "date of birth format"),
-    (r"\b(?:room|rm|bed)\s*#?\s*\d{1,4}[A-Da-d]?\b", "room or bed number"),
-    (r"\bDOB[:\s]", "explicit DOB label"),
-]
+# The shapes live in adapters/phi.py — one list, three callers. (§7.3)
+from adapters.phi import PHI_PATTERNS  # noqa: E402
 
 
 def phi_lint() -> list[dict]:
     """Scan dashboard-owned text for PHI shapes. Detection, not prevention."""
-    conn = db()
     hits = []
     targets = [
         ("tasks", "title", "id"), ("tasks", "body", "id"),
         ("agent_logs", "task", "id"), ("agent_logs", "detail", "id"),
         ("content_index", "title", "id"),
     ]
-    for table, col, key in targets:
-        try:
-            rows = conn.execute(f"SELECT {key} AS k, {col} AS v FROM {table} WHERE {col} IS NOT NULL")
-        except sqlite3.Error:
-            continue
-        for row in rows:
-            for pattern, label in PHI_PATTERNS:
-                if re.search(pattern, row["v"] or "", re.IGNORECASE):
-                    hits.append({"table": table, "column": col, "row_id": row["k"], "pattern": label})
-    conn.close()
+    # closing(), because this runs on every /api/ledger and /api/phi-lint call:
+    # one raised exception on a bare close() leaks the handle for the life of
+    # the process, and this is the endpoint most likely to be hit in a loop.
+    with contextlib.closing(db()) as conn:
+        for table, col, key in targets:
+            try:
+                rows = conn.execute(
+                    f"SELECT {key} AS k, {col} AS v FROM {table} WHERE {col} IS NOT NULL")
+            except sqlite3.Error:
+                continue
+            for row in rows:
+                for pattern, label in PHI_PATTERNS:
+                    if re.search(pattern, row["v"] or "", re.IGNORECASE):
+                        hits.append({"table": table, "column": col,
+                                     "row_id": row["k"], "pattern": label})
     return hits
 
 
@@ -650,7 +693,10 @@ class Handler(BaseHTTPRequestHandler):
 
     def _static(self, rel: str) -> None:
         candidate = (HERE / rel.lstrip("/")).resolve()
-        if not str(candidate).startswith(str(HERE)) or not candidate.is_file():
+        # is_relative_to, not startswith: HERE carries no trailing separator, so
+        # a string prefix also matches a SIBLING directory whose name starts the
+        # same way — `/n/mission-control-backup/secrets.env` passed that check.
+        if not candidate.is_relative_to(HERE) or not candidate.is_file():
             self._json({"error": "not found"}, 404)
             return
         ctype = mimetypes.guess_type(str(candidate))[0] or "application/octet-stream"
@@ -662,8 +708,37 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    # -- the loopback control, actually enforced ---------------------------
+    # Binding to 127.0.0.1 does not stop a web page the nurse has open from
+    # POSTing to http://127.0.0.1:8321, and it does not stop DNS rebinding: a
+    # hostile page resolves its own name to 127.0.0.1 and reaches these
+    # endpoints with no preflight, because a form or a text/plain fetch needs
+    # none. There is no auth here by design, so the Host and Origin headers are
+    # the control — a same-origin request from the dashboard carries a loopback
+    # Host and no Origin.
+    # allowed_hosts starts as loopback only. Passing --bind explicitly adds that
+    # address, so the documented "reach it from a phone over Tailscale" path
+    # stays possible for someone who has read the warning — it is not silently
+    # closed, and it is not silently open either.
+    allowed_hosts: set = {"127.0.0.1", "localhost", "::1"}
+
+    def _local_only(self) -> bool:
+        host = (self.headers.get("Host") or "").rsplit(":", 1)[0].strip("[]").lower()
+        if host not in self.allowed_hosts:
+            self._json({"error": f"refused: unexpected Host {host!r}. This dashboard "
+                                 f"answers to the address it was bound to, and nothing "
+                                 f"else — that is what stands in for a login here."}, 403)
+            return False
+        if self.headers.get("Origin"):
+            self._json({"error": "refused: cross-origin request. Nothing here is "
+                                 "reachable from another page."}, 403)
+            return False
+        return True
+
     # -- routes -----------------------------------------------------------
     def do_GET(self):  # noqa: N802
+        if not self._local_only():
+            return None
         route = urlparse(self.path)
         path, query = route.path, parse_qs(route.query)
         try:
@@ -814,6 +889,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"error": str(exc)}, 500)
 
     def do_POST(self):  # noqa: N802
+        if not self._local_only():
+            return None
         route = urlparse(self.path)
         length = int(self.headers.get("Content-Length") or 0)
         raw = self.rfile.read(length) if length else b"{}"
@@ -881,6 +958,8 @@ class Handler(BaseHTTPRequestHandler):
         return self._json({"error": "not found"}, 404)
 
     def do_PATCH(self):  # noqa: N802
+        if not self._local_only():
+            return None
         route = urlparse(self.path)
         length = int(self.headers.get("Content-Length") or 0)
         try:
@@ -991,9 +1070,10 @@ class Handler(BaseHTTPRequestHandler):
         data["needs"] = needs
 
         CONTENT_DIR.mkdir(exist_ok=True)
+        created = not real.is_file()          # asked BEFORE the write, or it is always False
         real.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         return self._json({"ok": True, "changed": sorted(changed),
-                           "created": not real.is_file(), "needs": needs})
+                           "created": created, "needs": needs})
 
     # -- the promotion pipeline (architecture §7.6) ------------------------
     def _promote(self, payload: dict):
@@ -1033,21 +1113,20 @@ class Handler(BaseHTTPRequestHandler):
             inbox = resolve(cfg["vault_root"]) / cfg.get("vault_inbox", "Inbox")
             inbox.mkdir(parents=True, exist_ok=True)
             safe = re.sub(r"[^\w\- ]+", "", title)[:60].strip() or "note"
-            target = inbox / f"{datetime.now(timezone.utc):%Y-%m-%d}-{safe}.md"
-            target.write_text(
+            target = write_new_file(
+                inbox / f"{datetime.now(timezone.utc):%Y-%m-%d}-{safe}.md",
                 f"# {title}\n\n"
                 f"> Promoted from {note['source']} on {now_iso()}.\n"
                 f"> Source: `{note['external_id']}`\n\n"
-                f"<!-- The body stayed at the source. Paste what you want to keep. -->\n",
-                encoding="utf-8")
+                f"<!-- The body stayed at the source. Paste what you want to keep. -->\n")
             stamp = f"obsidian:{target.relative_to(resolve(cfg['vault_root']))}"
 
         else:  # memory
             proposals = HERE / "proposals"
             proposals.mkdir(exist_ok=True)
             safe = re.sub(r"[^\w\- ]+", "", title)[:60].strip() or "note"
-            target = proposals / f"{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}-{safe}.md"
-            target.write_text(
+            target = write_new_file(
+                proposals / f"{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}-{safe}.md",
                 f"# Proposed memory entry\n\n"
                 f"**Source:** {note['source']} · `{note['external_id']}`\n"
                 f"**Proposed:** {now_iso()}\n\n"
@@ -1055,8 +1134,7 @@ class Handler(BaseHTTPRequestHandler):
                 f"---\n\n"
                 f"This is a **proposal**, not a memory write. Mission Control does not and "
                 f"cannot write runtime memory. Review this in your runtime and approve it "
-                f"there, where the gate lives.\n",
-                encoding="utf-8")
+                f"there, where the gate lives.\n")
             stamp = f"memory-proposal:{target.name}"
 
         with conn:
@@ -1183,6 +1261,9 @@ def serve(bind: str, port: int, with_collectors: bool = True):
             c.start()
 
     if bind != "127.0.0.1":
+        # An explicit --bind is also an explicit consent: accept that Host, and
+        # keep refusing every other one.
+        Handler.allowed_hosts = set(Handler.allowed_hosts) | {bind.lower()}
         print(f"\n  ⚠  WARNING: binding to {bind}, not 127.0.0.1.\n"
               f"     Mission Control has no authentication because it is not supposed to be\n"
               f"     reachable. You are removing the only control that made that safe.\n",

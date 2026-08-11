@@ -553,15 +553,9 @@ footer.mc-foot .motto{color:var(--gold-300);font-family:var(--font-display);font
     </nav>
     <div class="mc-right">
       <label class="sr-only" for="role">Role</label>
-      <select id="role" class="role-select">
-        <option value="bedside" selected>Role: Bedside / Staff nurse</option>
-        <option value="student">Role: Nursing student</option>
-        <option value="educator">Role: Educator / Faculty</option>
-        <option value="leader">Role: Nurse manager / Leader</option>
-        <option value="np">Role: Nurse practitioner</option>
-        <option value="resident">Role: MD resident</option>
-        <option value="entrepreneur">Role: Nurse entrepreneur</option>
-      </select>
+      <!-- Filled from /api/roles at boot. It listed seven roles and had already
+           gone stale by omitting 'charge'; the server owns role identity. -->
+      <select id="role" class="role-select" aria-label="Role"></select>
       <button class="mode-toggle" id="modeToggle" aria-pressed="false">
         <span id="modeIcon">☾</span><span id="modeLabel">Night shift</span>
       </button>
@@ -1016,6 +1010,9 @@ const EV_SERIES = [
   { key:2, label:'Ideas advanced', varName:'--series-3' }
 ];
 const EV_MONTHS = ['Mar','Apr','May','Jun','Jul','Aug'];
+/* Six names for a six-month default. Content with more months got 'undefined'
+   on the axis, so anything past the list falls back to a generated label. */
+const monthLabel = i => EV_MONTHS[i] || `m${i+1}`;
 
 /* ==========================================================================
    Render
@@ -1061,12 +1058,12 @@ function renderTop(){
   } else
   $('#todayGrid').innerHTML = d.actions.map(a=>`
     <article class="card action-card">
-      <p class="a-domain">${a.domain}</p>
-      <h3>${a.title}</h3>
-      <p class="a-why">${a.why}</p>
+      <p class="a-domain">${esc(a.domain)}</p>
+      <h3>${esc(a.title)}</h3>
+      <p class="a-why">${esc(a.why)}</p>
       <div class="a-foot">
-        <button class="btn-do">${a.cta}</button>
-        <span class="a-cost">${a.cost}</span>
+        <button class="btn-do">${esc(a.cta)}</button>
+        <span class="a-cost">${esc(a.cost)}</span>
       </div>
     </article>`).join('');
 }
@@ -1110,10 +1107,10 @@ function renderLicense(){
     `<li><span class="g-ok">${ICONS.check}</span><span>${g}</span></li>`).join('');
 
   const row = r => {
-    const m = STATE_META[r.state];
+    const m = STATE_META[r.state] || STATE_META.steady;
     return `<div class="cur-row">
-      <span class="c-name">${r.name}</span>
-      <span class="c-meta">${r.meta}</span>
+      <span class="c-name">${esc(r.name)}</span>
+      <span class="c-meta">${esc(r.meta)}</span>
       <span class="c-chip state-chip ${m.cls}">${ICONS[m.icon]}${m.altLabel}</span>
     </div>`;
   };
@@ -1125,16 +1122,25 @@ function renderLicense(){
 
   $('#riskGrid').innerHTML = ((L.risks||[]).length ? L.risks : PRESET_RISKS()).map((r,i)=>`
     <div class="risk-item">
-      <p class="r-what">${i+1}. ${r.what}</p>
+      <p class="r-what">${i+1}. ${esc(r.what)}</p>
       <p class="r-guard">${r.guard}</p>
     </div>`).join('');
 }
 
 /* ---- Editing your own content: season + the credentials that could lapse ---- */
 async function patchContent(patch){
-  const res = await fetch('/api/content/'+encodeURIComponent(ROLE), {
-    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(patch)});
-  const out = await res.json();
+  /* A stopped server rejects the fetch, and an HTML error page rejects
+     res.json(). Unhandled, either rejection propagated out of the submit
+     handler and the form simply sat there, saying nothing. */
+  let res, out;
+  try{
+    res = await fetch('/api/content/'+encodeURIComponent(ROLE), {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(patch)});
+    out = await res.json().catch(()=>({}));
+  }catch(err){
+    alert('Could not save — Mission Control is not answering. Is it still running?');
+    return false;
+  }
   if(!res.ok){ alert(out.error || 'Could not save.'); return false; }
   await selectRole(ROLE);
   return true;
@@ -1171,7 +1177,12 @@ function renderDomains(){
   const measured = DOMAIN_META.map(([id])=>D[id]).filter(d=>d.share!=null);
   const maxShare = measured.length ? Math.max(...measured.map(d=>d.share)) : 1;
   $('#domainGrid').innerHTML = DOMAIN_META.map(([id,name])=>{
-    const d = D[id], m = STATE_META[d.state];
+    /* A missing domain or an unknown state must not blank the whole tab.
+       The samples always ship eight domains and four known states; imported
+       content is not obliged to, and one undefined lookup took the overview
+       down with it. */
+    const d = D[id] || {};
+    const m = STATE_META[d.state] || STATE_META.resting;
     const has = d.share != null;
     const trend = has ? trendFor(d.share, d.dir) : null;
     const delta = has ? trend[11]-trend[0] : 0;
@@ -1182,14 +1193,14 @@ function renderDomains(){
     return `
     <button class="domain-card" aria-expanded="false" data-domain="${id}">
       <div class="dc-top">
-        <span class="dc-name">${name}</span>
+        <span class="dc-name">${esc(name)}</span>
         <span class="dc-share">${has ? `${d.share}<span>%</span>` : '<span class="dc-unmeasured">—</span>'}</span>
       </div>
       <span class="state-chip ${m.cls}">${ICONS[m.icon]}${m.label}</span>
       <div class="meter" role="img" aria-label="${has ? d.share+' percent of tended attention' : 'not measured yet'}">
         ${has ? `<i style="width:${Math.round(d.share/maxShare*100)}%"></i>` : ''}
       </div>
-      <p class="dc-signal">${d.signal}</p>
+      <p class="dc-signal">${esc(d.signal)}</p>
       <div class="dc-foot">
         <span class="dc-trend">${trendWord}</span>
         <span class="dc-spark">${has ? sparkline(trend) : ''}</span>
@@ -1214,15 +1225,15 @@ function renderMomentum(){
     return;
   }
   $('#momentumCard').innerHTML = `
-    <p class="hero-fig">${m.hero}<span class="hero-unit">${m.unit}</span></p>
-    <p class="hero-label">${m.label}</p>
-    <p class="hero-note">${m.note}</p>
+    <p class="hero-fig">${esc(m.hero)}<span class="hero-unit">${esc(m.unit)}</span></p>
+    <p class="hero-label">${esc(m.label)}</p>
+    <p class="hero-note">${esc(m.note)}</p>
     <div class="kpi-row">
       ${m.kpis.map(k=>`
         <div class="kpi">
-          <p class="k-label">${k[0]}</p>
-          <p class="k-value">${k[1]}${k[2]?`<span style="font-size:.88rem;font-weight:400;color:var(--text-muted);">${k[2]}</span>`:''}</p>
-          <p class="k-delta">${k[3]}</p>
+          <p class="k-label">${esc(k[0])}</p>
+          <p class="k-value">${esc(k[1])}${k[2]?`<span style="font-size:.88rem;font-weight:400;color:var(--text-muted);">${esc(k[2])}</span>`:''}</p>
+          <p class="k-delta">${esc(k[3])}</p>
         </div>`).join('')}
     </div>`;
 }
@@ -1246,8 +1257,12 @@ function renderLine(){
   const area = `${line} L${x(weekly.length-1).toFixed(1)} ${py1} L${px0} ${py1} Z`;
   const grid = ticks.map(t=>`<line x1="${px0}" x2="${px1}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" stroke="var(--gridline)" stroke-width="1"/>`).join('');
   const yLabels = ticks.map(t=>`<text x="${px0-10}" y="${(y(t)+4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--text-muted)">${t}</text>`).join('');
-  const xLabels = WEEK_LABELS.map((lb,i)=> (i%2===0||i===weekly.length-1)
-    ? `<text x="${x(i).toFixed(1)}" y="${py1+20}" text-anchor="middle" font-size="11" fill="var(--text-muted)">${lb}</text>` : '').join('');
+  /* Labels follow the data. WEEK_LABELS is twelve long; imported content with
+     a different number of weeks produced 'undefined' on the axis and in the
+     accessible table. */
+  const weekLabel = i => WEEK_LABELS[i] || `w${i+1}`;
+  const xLabels = weekly.map((_,i)=> (i%2===0||i===weekly.length-1)
+    ? `<text x="${x(i).toFixed(1)}" y="${py1+20}" text-anchor="middle" font-size="11" fill="var(--text-muted)">${weekLabel(i)}</text>` : '').join('');
   const lastI=weekly.length-1;
   const endLabel = `<text x="${x(lastI).toFixed(1)}" y="${(y(weekly[lastI])-14).toFixed(1)}" text-anchor="end" font-size="12.5" font-weight="700" fill="var(--text-primary)">${weekly[lastI]} honored</text>`;
   const hit = weekly.map((v,i)=>`<rect class="hit" data-i="${i}" x="${(x(i)-22).toFixed(1)}" y="${py0}" width="44" height="${py1-py0}" fill="transparent"/>`).join('');
@@ -1270,7 +1285,7 @@ function renderLine(){
   $('#lineTable').innerHTML = `
   <table class="data-table"><caption class="sr-only">Commitments honored per week</caption>
     <thead><tr><th>Week</th><th>Honored</th></tr></thead>
-    <tbody>${weekly.map((v,i)=>`<tr><td>${WEEK_LABELS[i]}</td><td>${v}</td></tr>`).join('')}</tbody>
+    <tbody>${weekly.map((v,i)=>`<tr><td>${weekLabel(i)}</td><td>${v}</td></tr>`).join('')}</tbody>
   </table>`;
 
   const svg=$('#lineChart svg'), tip=$('#lineTip'), cross=$('#lineCross'), dot=$('#lineDot');
@@ -1331,12 +1346,12 @@ function renderBars(){
       cursor += v;
     });
     cols += `<text x="${cx.toFixed(1)}" y="${(y(total)-9).toFixed(1)}" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text-primary)">${total}</text>`;
-    cols += `<text x="${cx.toFixed(1)}" y="${py1+22}" text-anchor="middle" font-size="11.5" fill="var(--text-secondary)">${EV_MONTHS[ci]}</text>`;
+    cols += `<text x="${cx.toFixed(1)}" y="${py1+22}" text-anchor="middle" font-size="11.5" fill="var(--text-secondary)">${monthLabel(ci)}</text>`;
     cols += `<rect class="bhit" data-c="${ci}" x="${(cx-band/2).toFixed(1)}" y="${py0}" width="${band.toFixed(1)}" height="${(py1-py0).toFixed(1)}" fill="transparent"/>`;
   });
 
   $('#barChart').innerHTML = `
-  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Stacked column chart: commitments honored by kind over six months, from ${totals[0]} to ${totals[5]}.">
+  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Stacked column chart: commitments honored by kind over six months, from ${totals[0]} to ${totals[totals.length-1]}.">
     ${grid}
     <line x1="${px0}" x2="${px1}" y1="${py1}" y2="${py1}" stroke="var(--axis)" stroke-width="1"/>
     ${yLabels}
@@ -1349,14 +1364,14 @@ function renderBars(){
   $('#barTable').innerHTML = `
   <table class="data-table"><caption class="sr-only">Commitments honored by kind, by month</caption>
     <thead><tr><th>Month</th>${EV_SERIES.map(s=>`<th>${s.label}</th>`).join('')}<th>Total</th></tr></thead>
-    <tbody>${EV.map((r,i)=>`<tr><td>${EV_MONTHS[i]}</td>${r.map(v=>`<td>${v}</td>`).join('')}<td>${totals[i]}</td></tr>`).join('')}</tbody>
+    <tbody>${EV.map((r,i)=>`<tr><td>${monthLabel(i)}</td>${r.map(v=>`<td>${v}</td>`).join('')}<td>${totals[i]}</td></tr>`).join('')}</tbody>
   </table>`;
 
   const svg=$('#barChart svg'), tip=$('#barTip');
   svg.querySelectorAll('.bhit').forEach(r=>{
     r.addEventListener('mousemove',ev=>{
       const ci=+r.dataset.c, row=EV[ci];
-      tip.innerHTML=`<div class="tt-title">${EV_MONTHS[ci]} · ${totals[ci]} honored</div>`+
+      tip.innerHTML=`<div class="tt-title">${monthLabel(ci)} · ${totals[ci]} honored</div>`+
         EV_SERIES.map(s=>`<div class="tt-row"><span class="tt-dot" style="background:var(${s.varName})"></span>${s.label}<span class="tt-val">${row[s.key]}</span></div>`).join('');
       const card=$('#barCard').getBoundingClientRect();
       let lx=ev.clientX-card.left+14, ly=ev.clientY-card.top-10;
@@ -1374,15 +1389,15 @@ function renderRest(){
     $('#signalList').innerHTML = '<p class="e-body">No signals yet. A signal is a pattern noticed over time — there is not enough time in this system yet to notice one.</p>';
   } else
   $('#signalList').innerHTML = d.signals.map(s=>{
-    const m=STATE_META[s.state];
+    const m=STATE_META[s.state] || STATE_META.steady;
     const color = s.state==='attention' ? 'var(--status-attention)'
                 : s.state==='flourishing' ? 'var(--status-good)' : 'var(--text-muted)';
     return `<div class="signal">
       <span class="sig-icon" style="color:${color}">${ICONS[m.icon]}</span>
       <div>
-        <h4>${s.title}</h4>
-        <p>${s.body}</p>
-        <button class="sig-action">${s.action} →</button>
+        <h4>${esc(s.title)}</h4>
+        <p>${esc(s.body)}</p>
+        <button class="sig-action">${esc(s.action)} →</button>
       </div>
     </div>`;
   }).join('');
@@ -1392,10 +1407,10 @@ function renderRest(){
   } else
   $('#oppList').innerHTML = d.opps.map(o=>`
     <div class="opp">
-      <p class="o-kind">${o.kind}</p>
-      <h4>${o.title}</h4>
-      <p>${o.body}</p>
-      <p class="o-when">${o.when}</p>
+      <p class="o-kind">${esc(o.kind)}</p>
+      <h4>${esc(o.title)}</h4>
+      <p>${esc(o.body)}</p>
+      <p class="o-when">${esc(o.when)}</p>
     </div>`).join('');
 
   if(!(d.agents||[]).length){
@@ -1404,12 +1419,12 @@ function renderRest(){
   } else
   $('#agentGrid').innerHTML = d.agents.map(a=>`
     <div class="card agent">
-      <div class="agent-avatar">${a.initials}</div>
+      <div class="agent-avatar">${esc(a.initials)}</div>
       <div>
-        <h4>${a.name} <span class="tier-chip ${a.tierCls}">${a.tier} tier</span></h4>
-        <p style="color:var(--text-muted);font-size:.82rem;">${a.role}</p>
-        <p>${a.scope}</p>
-        ${a.await?`<p class="a-await"><b>Waiting on you:</b> ${a.await}</p>`:`<p class="a-await" style="color:var(--text-muted)">Nothing waiting.</p>`}
+        <h4>${esc(a.name)} <span class="tier-chip ${esc(a.tierCls)}">${esc(a.tier)} tier</span></h4>
+        <p style="color:var(--text-muted);font-size:.82rem;">${esc(a.role)}</p>
+        <p>${esc(a.scope)}</p>
+        ${a.await?`<p class="a-await"><b>Waiting on you:</b> ${esc(a.await)}</p>`:`<p class="a-await" style="color:var(--text-muted)">Nothing waiting.</p>`}
       </div>
     </div>`).join('');
 
@@ -1697,7 +1712,7 @@ async function refreshGates(){
     const {gates} = await api('/api/gates');
     if(gates && gates.length){
       $('#gateText').innerHTML = `<strong>${gates.length} human gate${gates.length>1?'s':''} waiting.</strong> `
-        + gates.map(g=>`${g.agent_id}: ${g.request}`).join(' · ')
+        + gates.map(g=>`${esc(g.agent_id)}: ${esc(g.request)}`).join(' · ')
         + '. Nothing sends until you say so — resolve it in the runtime, not here.';
     }
   }catch(e){ /* sample-derived banner stays; a dashboard outage is not a gate */ }
@@ -1712,12 +1727,18 @@ async function refreshHealth(){
       const cls = c.inactive ? 'sys-warn' : c.stale ? 'sys-stale' : 'sys-ok';
       const label = c.inactive ? 'inactive' : c.stale ? 'stale' : 'ok';
       const title = c.last_error ? ` title="${c.last_error.replace(/"/g,'&quot;')}"` : '';
-      return `<span class="sys-item ${cls}"${title}><b>${c.name}</b> ${label}` +
+      return `<span class="sys-item ${cls}"${title}><b>${esc(c.name)}</b> ${label}` +
              (c.failures ? ` · ${c.failures} fail` : '') + `</span>`;
     }).join('');
     const rt = h.runtime;
-    const rtLabel = rt && rt.gateway_up ? 'runtime up' : 'runtime absent';
-    const rtCls = rt && rt.gateway_up ? 'sys-ok' : 'sys-warn';
+    /* Three states, not two. An install on disk is not a running gateway, and
+       saying 'runtime up' for a stopped Hermes is the one thing this strip
+       must never do. */
+    const rtLabel = rt && rt.gateway_up ? 'runtime up'
+                  : rt && rt.runtime_present ? 'runtime installed · not running'
+                  : 'runtime absent';
+    const rtCls = rt && rt.gateway_up ? 'sys-ok'
+                : rt && rt.runtime_present ? 'sys-stale' : 'sys-warn';
     const errs = (h.preset_errors||[]).length
       ? `<span class="sys-item sys-stale"><b>presets</b> ${h.preset_errors.length} rejected</span>` : '';
     el.innerHTML = `<span class="sys-item ${rtCls}"><b>${rtLabel}</b></span>${cols}${errs}` +

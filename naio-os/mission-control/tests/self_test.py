@@ -20,6 +20,7 @@ import json
 import os
 import re
 import shutil
+import socket
 import sqlite3
 import subprocess
 import sys
@@ -28,6 +29,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
@@ -40,6 +42,13 @@ def check(name: str, cond: bool, detail: str = "") -> None:
     (PASS if cond else FAIL).append(name)
     mark = "\033[32m✓\033[0m" if cond else "\033[31m✗\033[0m"
     print(f"  {mark} {name}" + (f" — {detail}" if detail and not cond else ""))
+
+
+def free_port() -> int:
+    """An unused loopback port, so two runs never collide on a fixed one."""
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        return s.getsockname()[1]
 
 
 def skip(name: str, why: str) -> None:
@@ -66,7 +75,10 @@ def main() -> int:
     stage = workdir / "mission-control"
     shutil.copytree(HERE, stage, ignore=shutil.ignore_patterns(
         "backups", "*.db", "*.db-wal", "*.db-shm", "__pycache__"))
-    port = 8399
+    # An ephemeral port, not a fixed one. On 8399 a crashed earlier run leaves a
+    # server the health probe happily connects to, and the suite then asserts
+    # against someone else's tree and passes.
+    port = free_port()
 
     print("\nNAIO Mission Control — MC-1 self-test\n")
 
@@ -246,6 +258,58 @@ def main() -> int:
                 pass
         check("no endpoint schedules a cron job", not can_schedule)
 
+        # -- 8a. the loopback control, actually tested ------------------------
+        # Binding to 127.0.0.1 does not stop a page the nurse has open from
+        # POSTing here, so Host and Origin are the control that stands in for
+        # the login this dashboard deliberately does not have.
+        def raw(method, path, headers):
+            rq = urllib.request.Request(f"http://127.0.0.1:{port}{path}",
+                                        data=b"{}" if method != "GET" else None,
+                                        headers=headers, method=method)
+            try:
+                with urllib.request.urlopen(rq, timeout=5) as r:
+                    return r.status
+            except urllib.error.HTTPError as e:
+                return e.code
+
+        check("a request with a foreign Host is refused",
+              raw("POST", "/api/tasks", {"Host": "evil.example",
+                                         "Content-Type": "application/json"}) == 403)
+        check("a cross-origin request is refused even from loopback",
+              raw("POST", "/api/tasks", {"Host": f"127.0.0.1:{port}",
+                                         "Origin": "https://evil.example",
+                                         "Content-Type": "application/json"}) == 403)
+        check("a GET with a foreign Host is refused too",
+              raw("GET", "/api/health", {"Host": "evil.example"}) == 403)
+        check("the dashboard's own requests still work",
+              raw("GET", "/api/health", {"Host": f"127.0.0.1:{port}"}) == 200)
+
+        # -- 8b. installed is not running -------------------------------------
+        # The health strip must never say 'runtime up' for a Hermes that is only
+        # on disk. Presence and liveness are two different questions.
+        from adapters.runtime import HermesAdapter          # noqa: PLC0415
+        absent = HermesAdapter(workdir / "no-hermes").gateway_state()
+        installed_dir = workdir / "hermes-installed"
+        installed_dir.mkdir(exist_ok=True)
+        installed = HermesAdapter(installed_dir).gateway_state()
+        stale_pid = workdir / "hermes-stale"
+        stale_pid.mkdir(exist_ok=True)
+        (stale_pid / "hermes.pid").write_text("2147480000\n")
+        stale = HermesAdapter(stale_pid).gateway_state()
+        live_dir = workdir / "hermes-live"
+        live_dir.mkdir(exist_ok=True)
+        (live_dir / "hermes.pid").write_text(f"{os.getpid()}\n")
+        alive = HermesAdapter(live_dir).gateway_state()
+        check("an absent runtime is neither present nor up",
+              absent["present"] is False and absent["up"] is False)
+        check("an installed but stopped runtime is present and NOT up",
+              installed["present"] is True and installed["up"] is False,
+              installed["liveness"])
+        check("a pid file pointing at nothing does not count as up",
+              stale["present"] is True and stale["up"] is False, stale["liveness"])
+        check("a live pid file is what makes the runtime up",
+              alive["present"] is True and alive["up"] is True, alive["liveness"])
+
         # -- 9. MC-3: the promotion pipeline ----------------------------------
         st, mem = get("/api/memory", port)
         notes = mem["notes"]
@@ -260,27 +324,64 @@ def main() -> int:
             with urllib.request.urlopen(rq, timeout=5) as r:
                 return json.loads(r.read())
 
+        # Every baseline below is read BEFORE the action it is a baseline for.
+        # Read afterwards, `any(Inbox.glob('*.md'))` was already true from the two
+        # notes the demo vault ships, and the SOUL/memory comparison compared a
+        # file to itself: two green checks that could not go red.
+        inbox_before = {p.name for p in (stage / "demo-vault" / "Inbox").glob("*.md")}
+        soul_before = (stage / "demo-workspace" / "SOUL.md").read_text()
+        mem_before = (stage / "demo-workspace" / "memory.md").read_text()
+
         p_task = promote(notes[0]["id"], "task")
         p_vault = promote(notes[1]["id"], "vault")
         p_mem = promote(notes[2]["id"], "memory")
+        inbox_after = {p.name for p in (stage / "demo-vault" / "Inbox").glob("*.md")}
         check("promote → task", p_task["promoted_to"].startswith("task:"))
-        check("promote → vault Inbox writes a file",
+        check("promote → vault Inbox writes a file that was not there before",
               p_vault["promoted_to"].startswith("obsidian:")
-              and any((stage / "demo-vault" / "Inbox").glob("*.md")))
+              and len(inbox_after - inbox_before) == 1,
+              f"new files: {sorted(inbox_after - inbox_before)}")
         check("promote → memory writes a PROPOSAL, not memory",
               p_mem["promoted_to"].startswith("memory-proposal:")
               and p_mem["wrote_runtime_memory"] is False
               and (stage / "proposals").is_dir())
 
-        soul_before = (stage / "demo-workspace" / "SOUL.md").read_text()
-        mem_before = (stage / "demo-workspace" / "memory.md").read_text()
+        # A promotion writes a NEW note. It never truncates one. Two notes with
+        # the same title promoted on the same day used to compute the same
+        # `YYYY-MM-DD-title.md` and the second write silently replaced the first
+        # — the vault is the nurse's own writing, and losing a paragraph of it to
+        # a name collision is not a rounding error.
+        inbox = stage / "demo-vault" / "Inbox"
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        keeper = inbox / f"{today}-collision probe.md"
+        keeper.write_text("# Mine\n\nWords the nurse wrote herself.\n", encoding="utf-8")
+        conn_probe = sqlite3.connect(str(stage / "mission_control.db"))
+        with conn_probe:
+            for i in range(2):
+                conn_probe.execute(
+                    "INSERT INTO notes_index(source,external_id,title,folder,modified_ts) "
+                    "VALUES('apple_notes',?,'collision probe','Inbox',?)",
+                    (f"probe-{i}", today))
+        rows = conn_probe.execute(
+            "SELECT id FROM notes_index WHERE external_id LIKE 'probe-%' ORDER BY id"
+        ).fetchall()
+        conn_probe.close()
+        p_a = promote(rows[0][0], "vault")
+        p_b = promote(rows[1][0], "vault")
+        check("two same-title promotions on one day write two files",
+              p_a["promoted_to"] != p_b["promoted_to"],
+              f"{p_a['promoted_to']} vs {p_b['promoted_to']}")
+        check("promotion never overwrites a note the nurse already wrote",
+              keeper.read_text() == "# Mine\n\nWords the nurse wrote herself.\n")
+
         check("promoting to memory did not touch SOUL.md or memory.md",
               soul_before == (stage / "demo-workspace" / "SOUL.md").read_text()
               and mem_before == (stage / "demo-workspace" / "memory.md").read_text())
 
         st, mem2 = get("/api/memory", port)
         promoted = [n for n in mem2["notes"] if n["promoted_to"]]
-        check("promotion stamps the trail on the note", len(promoted) == 3)
+        check("promotion stamps the trail on the note", len(promoted) == 5,
+              f"{len(promoted)} stamped")
 
         # -- 9b. library ------------------------------------------------------
         st, lib = get("/api/library", port)
@@ -431,6 +532,51 @@ def main() -> int:
               r_v2.returncode == 0 and "REFUSED" not in r_v2.stdout,
               r_v2.stdout.strip().replace("\n", " | ")[:300])
 
+        # A 2.x export's identity.role is the LEGACY value — the quiz collapses
+        # 36 constellation roles into four of them, so an NP, a resident and an
+        # entrepreneur all arrive as 'staff' or 'other' and land on the bedside
+        # preset. Five of the eight presets were unreachable from a live export.
+        # The primary constellation role is the authoritative one.
+        v2_cases = [
+            ("nurse-practitioner", "staff", "np"),
+            ("nurse-educator", "leader", "educator"),
+            ("charge-nurse-team-lead", "leader", "charge"),
+            ("medical-resident-fellow", "other", "resident"),
+            ("nurse-entrepreneur", "other", "entrepreneur"),
+            ("bedside-nurse", "staff", "bedside"),
+            ("prelicensure-nursing-student", "student", "student"),
+        ]
+        v2_mapped = []
+        for role_id, legacy, expected in v2_cases:
+            probe = workdir / f"v2-{role_id}.json"
+            soul = json.loads(v2_fixture.read_text())
+            soul["identity"]["role"] = legacy
+            soul["role_constellation"]["primary"][0]["role_id"] = role_id
+            probe.write_text(json.dumps(soul))
+            r = run_import(probe)
+            if r.returncode == 0 and f"→ preset {expected!r}" in r.stdout:
+                v2_mapped.append(role_id)
+        check("a 2.x export maps from its PRIMARY constellation role, not the "
+              "legacy identity.role", len(v2_mapped) == len(v2_cases),
+              f"mapped {v2_mapped}")
+
+        # A role id the map has not caught up with must fall back and say so,
+        # never guess silently.
+        unknown = workdir / "v2-unknown-role.json"
+        soul = json.loads(v2_fixture.read_text())
+        soul["role_constellation"]["primary"][0]["role_id"] = "role-invented-tomorrow"
+        unknown.write_text(json.dumps(soul))
+        r_unknown = run_import(unknown)
+        check("an unmapped constellation role falls back to identity.role and warns",
+              r_unknown.returncode == 0
+              and "has no preset mapping yet" in r_unknown.stdout,
+              r_unknown.stdout.strip().replace("\n", " | ")[:200])
+
+        # A 1.x file has no constellation, so identity.role stays authoritative.
+        r_v1_role = run_import(fixture)
+        check("a 1.x file still maps from identity.role",
+              r_v1_role.returncode == 0 and "from identity.role" in r_v1_role.stdout)
+
         # A committed fixture is a photograph of the producer, and photographs
         # age. When this runs inside the site repo, regenerate from soul-quiz's
         # own model and fail if the fixture no longer matches what it emits —
@@ -469,17 +615,43 @@ def main() -> int:
                         "\nconsole.log(JSON.stringify(buildOsConfig(s,"
                         "'2026-07-20T00:00:00.000Z')));\n", encoding="utf-8")
                     live = subprocess.run([node, str(gen)], capture_output=True,
-                                          text=True, cwd=str(probe_dir))
+                                          text=True, cwd=str(probe_dir), timeout=60)
+                except subprocess.TimeoutExpired:
+                    live = None
                 finally:
                     shutil.rmtree(probe_dir, ignore_errors=True)
-                emitted = json.loads(live.stdout) if live.returncode == 0 else {}
-                committed = json.loads(v2_fixture.read_text(encoding="utf-8"))
-                check("the committed v2 fixture still matches what soul-quiz emits",
-                      live.returncode == 0
-                      and emitted.get("schema_version") == committed.get("schema_version")
-                      and emitted.get("generator") == committed.get("generator"),
-                      f"live={emitted.get('schema_version')}/{emitted.get('generator')} "
-                      f"fixture={committed.get('schema_version')}/{committed.get('generator')}")
+                if live is None:
+                    skip("the committed v2 fixture still matches what soul-quiz emits",
+                         "the node probe did not finish inside 60s")
+                    skip("every quiz role maps to a preset", "the node probe timed out")
+                else:
+                    emitted = json.loads(live.stdout) if live.returncode == 0 else {}
+                    committed = json.loads(v2_fixture.read_text(encoding="utf-8"))
+                    check("the committed v2 fixture still matches what soul-quiz emits",
+                          live.returncode == 0
+                          and emitted.get("schema_version") == committed.get("schema_version")
+                          and emitted.get("generator") == committed.get("generator"),
+                          f"live={emitted.get('schema_version')}/{emitted.get('generator')} "
+                          f"fixture={committed.get('schema_version')}/{committed.get('generator')}"
+                          + (f" node_stderr={live.stderr.strip()[:200]}"
+                             if live.returncode != 0 else ""))
+
+                    # The importer's constellation map is a copy of the quiz's
+                    # role list, and copies drift. Read the ids the model
+                    # actually declares and fail here when one has no preset —
+                    # a new quiz role should break a test, not quietly land a
+                    # nurse on the fallback.
+                    declared = set(re.findall(r"role\('([a-z0-9-]+)',",
+                                              quiz_model.read_text(encoding="utf-8")))
+                    importer_src = (stage / "bin" / "naio-soul-import").read_text(
+                        encoding="utf-8")
+                    mapped_block = re.search(
+                        r"CONSTELLATION_ROLE_MAP.*?\n\}", importer_src, re.DOTALL)
+                    mapped_ids = set(re.findall(r'"([a-z0-9-]+)":\s*\(',
+                                                mapped_block.group(0) if mapped_block else ""))
+                    check("every role the quiz can emit has a preset mapping",
+                          declared and not (declared - mapped_ids),
+                          f"unmapped: {sorted(declared - mapped_ids)}")
 
         # -- 12. editing your own season and standing rows ---------------------
         def patch(role, body):

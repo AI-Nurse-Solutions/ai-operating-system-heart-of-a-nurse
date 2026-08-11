@@ -42,8 +42,16 @@ def main() -> int:
                 return 0
             print(f"mc-log: server returned {resp.status}", file=sys.stderr)
             return 1
-    except urllib.error.URLError as exc:
-        # A dashboard being down must never break an agent's actual work.
+    except urllib.error.HTTPError as exc:
+        # HTTPError IS a URLError, so it has to be caught first — otherwise a 400
+        # or a 500 was reported as "could not reach Mission Control" and exited 0,
+        # which reads as a successful log of an action that was never recorded.
+        print(f"mc-log: server returned {exc.code} — {exc.reason}", file=sys.stderr)
+        return 1
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        # A dashboard being down must never break an agent's actual work. A read
+        # timeout can surface as a bare TimeoutError rather than a URLError, and
+        # a traceback out of a logging helper is not an acceptable answer.
         print(f"mc-log: could not reach Mission Control ({exc}). Action not logged.",
               file=sys.stderr)
         return 0

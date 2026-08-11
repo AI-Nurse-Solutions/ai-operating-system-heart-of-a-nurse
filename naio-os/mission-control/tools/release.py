@@ -181,7 +181,7 @@ def main() -> int:
     manifest = build_manifest(passed, failed)
     MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"  ✓ manifest.json — {manifest['file_count']} files, version {manifest['version']}")
-    print(f"  ! not signed — there is no release key, and the manifest says so")
+    print("  ! not signed — there is no release key, and the manifest says so")
 
     if args.zip:
         out = Path(args.zip).expanduser().resolve()

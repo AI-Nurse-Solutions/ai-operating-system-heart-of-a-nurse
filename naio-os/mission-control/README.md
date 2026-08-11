@@ -283,7 +283,7 @@ Either way it refuses a path that does not exist, tells you how many files it wo
 
 **A Mission Control build is signed or it is not, and `naio-mc verify` tells you which** — it no longer takes the manifest's word for it. Checksums prove this tree is unchanged since packaging; only a signature says who packaged it, and the two are now reported separately.
 
-Mission Control now speaks the same signature contract naio-os has used since Phase 6 — a detached `manifest.sig`, RSA-SHA256 over `manifest.json`, verified against the same `config/naio-os-release-public.pem` with the same fail-closed posture. Three outcomes, and the middle one is the point:
+Mission Control now speaks the same signature contract naio-os has used since Phase 6 — a detached `manifest.sig`, RSA-SHA256 over `manifest.json`, verified against the same `config/naio-os-release-public.pem` with the same fail-closed posture. Every outcome, because the interesting ones are the failures:
 
 | State | `naio-mc verify` |
 |---|---|
@@ -297,7 +297,7 @@ Mission Control now speaks the same signature contract naio-os has used since Ph
 
 The trust anchor is the key's **sha256 fingerprint, pinned in `naio-mc`** — the same fingerprint `bootstrap.sh` pins. Reading the key path out of `manifest.json` would have let anyone who can write to the tree pick the key that vouches for their own edit; pinning the fingerprint is also what makes it safe for a signed zip to carry the public half for offline verification.
 
-What is still missing is the one thing this repository must not contain: the private half of `naio-os-release-key-2026-06`. Until a key-holder runs `python3 tools/release.py --sign <key>`, every build here is unsigned and every surface says so. The mechanism is done; the key step is somebody's to take, and it is two commands — see [ARCHITECTURE.md §11](ARCHITECTURE.md#11-bringing-mission-control-under-the-signing-chain).
+What is still missing is the one thing this repository must not contain: the private half of `naio-os-release-key-2026-06`. Until a key-holder runs `python3 tools/release.py --sign <key>`, every build here is unsigned and every surface says so. The mechanism is done; the key step is somebody's to take — see [ARCHITECTURE.md §11](ARCHITECTURE.md#11-bringing-mission-control-under-the-signing-chain), which also explains why adding the chain entry alone signs Mission Control without distributing it.
 
 ### Why this exists
 

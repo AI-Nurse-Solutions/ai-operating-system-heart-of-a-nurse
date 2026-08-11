@@ -104,6 +104,36 @@ def main() -> int:
           f"errors={errors}")
     bad.unlink()
 
+    # roles/README.md claimed two rules the loader never checked, so a typo in a
+    # credential name rendered a standing row for a credential that does not
+    # exist, and a key nobody reads sat in every preset looking configured.
+    typo = stage / "roles" / "_typo.json"
+    good = json.loads((stage / "roles" / "bedside.json").read_text())
+    good.update({"role_id": "_typo", "label": "Typo",
+                 "standing_rows": ["rn_licence"]})          # British spelling
+    typo.write_text(json.dumps(good))
+    _, typo_errors = mc.load_presets()
+    check("a standing_rows credential typo is rejected, and named",
+          any("_typo" in e and "rn_licence" in e for e in typo_errors),
+          f"errors={typo_errors}")
+    typo.unlink()
+
+    stray = stage / "roles" / "_stray.json"
+    good = json.loads((stage / "roles" / "bedside.json").read_text())
+    good.update({"role_id": "_stray", "label": "Stray",
+                 "scope_note": "prose no code reads"})
+    stray.write_text(json.dumps(good))
+    _, stray_errors = mc.load_presets()
+    check("a preset key the loader does not read is rejected",
+          any("_stray" in e and "scope_note" in e for e in stray_errors),
+          f"errors={stray_errors}")
+    stray.unlink()
+
+    check("no shipped preset carries prose the loader never reads",
+          not any(k in json.loads(p.read_text())
+                  for p in (stage / "roles").glob("*.json")
+                  for k in ("scope_note", "standing_note")))
+
     presets, errors = mc.load_presets()
     check("8 presets valid once the bad file is gone", len(presets) == 8 and not errors,
           f"{len(presets)} valid, {len(errors)} errors")
@@ -375,14 +405,53 @@ def main() -> int:
         check("promotion never overwrites a note the nurse already wrote",
               keeper.read_text() == "# Mine\n\nWords the nurse wrote herself.\n")
 
+        # A note can go more than one way, and the trail has to keep all of it.
+        # `promoted_to` holds a single value, so the second promotion overwrote
+        # the first and the Memory tab could no longer answer the question §7.6
+        # says this pipeline exists to answer.
+        multi = notes[3]["id"] if len(notes) > 3 else notes[0]["id"]
+        m_task = promote(multi, "task")
+        m_vault = promote(multi, "vault")
+        check("a note promoted twice keeps both destinations",
+              m_task["promoted_to"].startswith("task:")
+              and m_vault["promoted_to"].startswith("obsidian:")
+              and len(m_vault.get("promotions", [])) == 2
+              and {p["destination"] for p in m_vault["promotions"]} == {"task", "vault"},
+              str(m_vault.get("promotions")))
+
+        # And the same promotion twice must not mint a second artifact.
+        st_before, tl_before = get("/api/tasks", port)
+        again = promote(multi, "task")
+        st_after, tl_after = get("/api/tasks", port)
+        check("promoting the same note the same way twice is idempotent",
+              again.get("already_promoted") is True
+              and again["promoted_to"] == m_task["promoted_to"]
+              and len(tl_after["tasks"]) == len(tl_before["tasks"]),
+              f"already={again.get('already_promoted')} "
+              f"tasks {len(tl_before['tasks'])}→{len(tl_after['tasks'])}")
+
+        st, mem_trail = get("/api/memory", port)
+        row = next((n for n in mem_trail["notes"] if n["id"] == multi), None)
+        check("the Memory tab can read the whole trail, not just the last stamp",
+              row is not None and len(row.get("promotions", [])) == 2,
+              str(row.get("promotions") if row else "note missing"))
+
         check("promoting to memory did not touch SOUL.md or memory.md",
               soul_before == (stage / "demo-workspace" / "SOUL.md").read_text()
               and mem_before == (stage / "demo-workspace" / "memory.md").read_text())
 
         st, mem2 = get("/api/memory", port)
         promoted = [n for n in mem2["notes"] if n["promoted_to"]]
-        check("promotion stamps the trail on the note", len(promoted) == 5,
+        # Six notes carry a stamp: three from the routing check, two from the
+        # collision probe, and the one promoted twice above — which contributes
+        # one stamped note and two promotions, the distinction this whole
+        # section exists to keep.
+        check("promotion stamps the trail on the note", len(promoted) == 6,
               f"{len(promoted)} stamped")
+        check("the trail counts promotions, not notes",
+              sum(len(n.get("promotions", [])) for n in mem2["notes"]) == 7,
+              str([(n["id"], len(n.get("promotions", []))) for n in mem2["notes"]
+                   if n.get("promotions")]))
 
         # -- 9b. library ------------------------------------------------------
         st, lib = get("/api/library", port)

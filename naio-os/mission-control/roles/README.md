@@ -57,7 +57,19 @@ A preset is valid when:
 2. `tier_ceilings` is absent.
 3. `privacy_regimes` contains `phi`.
 4. `risk_briefing` has exactly three entries.
-5. Every `standing_rows` entry resolves to a known credential type.
+5. Every `standing_rows` entry resolves to a known credential type — the set in
+   `CREDENTIAL_TYPES` in `mission_control.py`. Adding a credential is an edit
+   there, deliberately, so a misspelling is a rejection rather than a standing
+   row for a credential that does not exist.
+6. There are no keys beyond the required ones. A preset is configuration; a key
+   the loader does not read renders nowhere and drifts silently. Prose addressed
+   to the nurse belongs in `content/<id>.json` — every preset once carried a
+   `scope_note` or `standing_note` that no code loaded, sitting stale beside the
+   version that actually rendered.
+
+All six are enforced by the loader, and `naio-mc check-presets` exits non-zero on
+any rejection. A rule documented here and unchecked there is how the first two
+got out of step.
 
 ---
 

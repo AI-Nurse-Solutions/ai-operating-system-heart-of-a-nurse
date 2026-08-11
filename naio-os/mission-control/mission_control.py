@@ -139,6 +139,22 @@ CREATE TABLE IF NOT EXISTS notes_index (
   promoted_to TEXT
 );
 
+-- Append-only. `notes_index.promoted_to` holds the LATEST destination and is
+-- what the vault pruner reads as a tombstone; it cannot also be a history,
+-- because a second promotion overwrote the first and the Memory tab could no
+-- longer answer "what happened to that idea I jotted down Tuesday?" — which is
+-- the question §7.6 says this pipeline exists to answer. One row per promotion,
+-- unique per (note, destination) so a double-click cannot mint a second task.
+CREATE TABLE IF NOT EXISTS note_promotions (
+  id INTEGER PRIMARY KEY,
+  note_id INTEGER NOT NULL,
+  destination TEXT NOT NULL CHECK(destination IN ('task','vault','memory')),
+  target TEXT NOT NULL,
+  ts TEXT NOT NULL,
+  UNIQUE(note_id, destination)
+);
+CREATE INDEX IF NOT EXISTS idx_note_promotions_note ON note_promotions(note_id);
+
 CREATE TABLE IF NOT EXISTS memory_events (
   id INTEGER PRIMARY KEY,
   ts TEXT, file TEXT, change_summary TEXT, diff_lines INTEGER
@@ -210,6 +226,24 @@ def init_db() -> None:
             have = {r["name"] for r in conn.execute(f"PRAGMA table_info({table})")}
             if column not in have:
                 conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {decl}")
+
+        # A dashboard that has been running since before note_promotions existed
+        # already has trails — one destination per note, in promoted_to. Seed the
+        # history from them so upgrading does not read as "nothing was ever
+        # promoted". The stamp carries its own destination prefix, so it can be
+        # recovered rather than guessed. INSERT OR IGNORE makes this idempotent
+        # against the UNIQUE(note_id, destination) constraint, so it is safe on
+        # every start rather than a one-shot nobody can re-run.
+        for row in conn.execute(
+                "SELECT id, promoted_to FROM notes_index WHERE promoted_to IS NOT NULL"):
+            stamp = row["promoted_to"] or ""
+            dest = ("task" if stamp.startswith("task:")
+                    else "vault" if stamp.startswith("obsidian:")
+                    else "memory" if stamp.startswith("memory-proposal:") else None)
+            if dest:
+                conn.execute(
+                    "INSERT OR IGNORE INTO note_promotions(note_id,destination,target,ts) "
+                    "VALUES(?,?,?,?)", (row["id"], dest, stamp, now_iso()))
         conn.execute(
             "INSERT OR IGNORE INTO settings(key,value) VALUES('schema_version',?)",
             (VERSION,),
@@ -229,6 +263,21 @@ REQUIRED_KEYS = {
 }
 STATE_VALUES = {"flourishing", "steady", "attention", "resting"}
 LICENSURE_CLASSES = {"pre_licensure", "licensed", "advanced_practice", "physician_trainee"}
+
+# roles/README.md rule 5 — "every standing_rows entry resolves to a known
+# credential type" — was documented and never enforced, so `check-presets` would
+# accept `rn_licence` and the standing panel would render a row for a credential
+# that does not exist. These are the types the eight shipped presets use; adding
+# one is a deliberate edit here, which is the point.
+CREDENTIAL_TYPES = {
+    "acls_bls", "aprn_license", "background_check", "bls", "business_registration",
+    "clinical_packet", "cne", "collaborative_agreement", "dea_registration",
+    "duty_hour_attestation", "faculty_appointment", "leadership_certification",
+    "malpractice", "manager_training", "milestone_review", "national_certification",
+    "nclex_eligibility", "pharmacology_ce", "prescriptive_authority",
+    "program_standing", "rn_license", "specialty_certification", "state_ce",
+    "step_3", "training_license",
+}
 
 
 class PresetError(ValueError):
@@ -272,6 +321,25 @@ def validate_preset(data: dict, filename: str) -> dict:
     for key in ("tabs", "overview_cards", "starter_agents", "standing_rows"):
         if not isinstance(data[key], list) or not data[key]:
             raise PresetError(f"{filename}: {key} must be a non-empty list")
+
+    # Rule 5 — every standing row names a credential this system knows about
+    unknown_rows = [r for r in data["standing_rows"] if r not in CREDENTIAL_TYPES]
+    if unknown_rows:
+        raise PresetError(
+            f"{filename}: unknown credential type(s) in standing_rows: "
+            f"{sorted(unknown_rows)}. Known types: {', '.join(sorted(CREDENTIAL_TYPES))}. "
+            f"Adding one is an edit to CREDENTIAL_TYPES, not a typo to absorb.")
+
+    # A key nobody reads is worse than a missing one: it looks configured. Every
+    # preset shipped `scope_note`/`standing_note` prose that no code ever loaded,
+    # which is how a stale draft sat beside the rendered copy for months. An
+    # unrecognised key is now a rejection with the name in it.
+    unknown_keys = set(data) - REQUIRED_KEYS
+    if unknown_keys:
+        raise PresetError(
+            f"{filename}: unknown key(s) {sorted(unknown_keys)}. A preset is "
+            f"configuration; a key the loader does not read renders nowhere and "
+            f"drifts silently. Content belongs in content/{stem}.json.")
 
     return data
 
@@ -842,12 +910,23 @@ class Handler(BaseHTTPRequestHandler):
                 notes = conn.execute(
                     "SELECT id,source,external_id,title,folder,tags,modified_ts,promoted_to "
                     "FROM notes_index ORDER BY modified_ts DESC LIMIT 300").fetchall()
+                # The whole trail, not just the latest stamp. A note promoted to
+                # a task on Tuesday and to the vault on Friday has two answers to
+                # "what happened to it", and the tab should be able to give both.
+                trails = {}
+                for row in conn.execute(
+                        "SELECT note_id,destination,target,ts FROM note_promotions "
+                        "ORDER BY ts"):
+                    trails.setdefault(row["note_id"], []).append(
+                        {"destination": row["destination"], "target": row["target"],
+                         "ts": row["ts"]})
                 conn.close()
                 cfg = config()
                 vault = resolve(cfg["vault_root"])
                 return self._json({
                     "memory_events": [dict(r) for r in events],
-                    "notes": [dict(r) for r in notes],
+                    "notes": [{**dict(r), "promotions": trails.get(r["id"], [])}
+                              for r in notes],
                     "vault_root": str(vault),
                     "vault_name": vault.name,
                     "soul_files": [str(resolve(f)) for f in cfg["soul_files"]],
@@ -1096,6 +1175,23 @@ class Handler(BaseHTTPRequestHandler):
             conn.close()
             return self._json({"error": f"no note {note_id!r}"}, 404)
 
+        # Idempotent per (note, destination). Promoting the same note the same
+        # way twice used to mint a second Kanban row or a second Inbox file, so
+        # a double-click cost the nurse a duplicate to clean up. The first
+        # promotion is returned instead, with what it produced and when.
+        prior = conn.execute(
+            "SELECT target, ts FROM note_promotions WHERE note_id=? AND destination=?",
+            (note_id, dest)).fetchone()
+        if prior:
+            conn.close()
+            return self._json({
+                "ok": True, "promoted_to": prior["target"],
+                "already_promoted": True, "promoted_at": prior["ts"],
+                "wrote_runtime_memory": False,
+                "note": f"Already promoted to {dest} on {prior['ts']}. Nothing new "
+                        f"was created — the original is still there.",
+            }, 200)
+
         cfg = config()
         title = note["title"] or "(untitled)"
         stamp = None
@@ -1138,10 +1234,19 @@ class Handler(BaseHTTPRequestHandler):
             stamp = f"memory-proposal:{target.name}"
 
         with conn:
+            # The history is the record; promoted_to keeps holding the latest so
+            # the vault pruner's tombstone and every existing reader still work.
+            conn.execute(
+                "INSERT INTO note_promotions(note_id,destination,target,ts) VALUES(?,?,?,?)",
+                (note_id, dest, stamp, now_iso()))
             conn.execute("UPDATE notes_index SET promoted_to=? WHERE id=?", (stamp, note_id))
+        trail = [dict(r) for r in conn.execute(
+            "SELECT destination,target,ts FROM note_promotions WHERE note_id=? ORDER BY ts",
+            (note_id,))]
         conn.close()
         return self._json({
             "ok": True, "promoted_to": stamp,
+            "already_promoted": False, "promotions": trail,
             "wrote_runtime_memory": False,
             "note": ("A proposal was written for you to approve in the runtime. "
                      "Nothing was written to memory." if dest == "memory" else None),

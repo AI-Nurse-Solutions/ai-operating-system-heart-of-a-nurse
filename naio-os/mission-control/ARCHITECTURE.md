@@ -239,7 +239,24 @@ CREATE TABLE notes_index (
   external_id TEXT,                -- vault-relative path, or Notes item id
   title TEXT, folder TEXT, tags TEXT,
   modified_ts TEXT, indexed_ts TEXT,
-  promoted_to TEXT                 -- NULL | 'task:<id>' | 'obsidian:<path>' | 'memory'
+  promoted_to TEXT                 -- the LATEST destination, and the pruner's
+                                   -- tombstone: an indexed note whose file has
+                                   -- left the vault is kept if it was promoted.
+                                   -- The trail lives in note_promotions.
+);
+
+-- Append-only, one row per promotion. promoted_to holds a single value, so a
+-- note promoted to a task on Tuesday and to the vault on Friday lost the first
+-- answer the moment it gained the second. UNIQUE(note_id, destination) also
+-- makes a repeated promotion idempotent: a double-click returns the original
+-- rather than minting a second task or a second Inbox file.
+CREATE TABLE note_promotions (
+  id INTEGER PRIMARY KEY,
+  note_id INTEGER NOT NULL,
+  destination TEXT NOT NULL CHECK(destination IN ('task','vault','memory')),
+  target TEXT NOT NULL,            -- 'task:<id>' | 'obsidian:<path>' | 'memory-proposal:<file>'
+  ts TEXT NOT NULL,
+  UNIQUE(note_id, destination)
 );
 
 -- Changes observed in SOUL.md / memory.md / sphere files
@@ -354,7 +371,11 @@ Apple Notes (capture)  ──promote──►  Task (Kanban)          [dashboard
                                              (operate)        runtime writes memory.md]
 ```
 
-Each promotion stamps `notes_index.promoted_to`, so the Memory tab can answer "what happened to that idea I jotted down Tuesday?" This pipeline is the single most valuable idea borrowed from the source builds — capture is only useful if it reliably becomes action or knowledge.
+Each promotion appends a row to `note_promotions`, so the Memory tab can answer "what happened to that idea I jotted down Tuesday?" — including when the answer is *both*, because a note can become a task **and** be kept in the vault. `notes_index.promoted_to` still carries the latest destination for the vault pruner's tombstone, but it is no longer the record: a single column could only ever hold the most recent answer, and the second promotion silently erased the first.
+
+A note may go to each destination once. Promoting it the same way again returns the original — with what it produced and when — instead of minting a second Kanban row or a second Inbox file from a double-click. The three destination buttons narrow to the ones not yet used rather than disappearing after the first, which is what previously made a second destination unreachable from the screen.
+
+This pipeline is the single most valuable idea borrowed from the source builds — capture is only useful if it reliably becomes action or knowledge.
 
 ### 7.7 Terminal window integration
 

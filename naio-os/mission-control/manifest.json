@@ -8,20 +8,20 @@
     "note": "Same key and same fail-closed posture as the naio-os release chain. Verify with: openssl dgst -sha256 -verify ../config/naio-os-release-public.pem -signature manifest.sig manifest.json"
   },
   "version": "0.4.0",
-  "built_at": "2026-08-11T22:10:32+00:00",
+  "built_at": "2026-08-11T22:40:35+00:00",
   "self_test": {
-    "passed": 112,
+    "passed": 119,
     "failed": 0
   },
   "file_count": 52,
   "files": {
     "ARCHITECTURE.md": {
-      "sha256": "49af0c20c3b0f0c8d556b25da546a67ba9438bc6fd27b42c35fa4236e93dbded",
-      "bytes": 42805,
+      "sha256": "fe24093ac9c91f06c0c85a1652be63af928180feeaa949970f0c62edfb7c66a1",
+      "bytes": 44468,
       "mutable": false
     },
     "README.md": {
-      "sha256": "1d2efa26f1d947f64f3047ff0128040a9e3258c093de6991575b9ff009327948",
+      "sha256": "f07dab45fea485e97937c794d3f03aaf9100898aba3c1adeaaf5f3b08e2c1edb",
       "bytes": 22588,
       "mutable": false
     },
@@ -191,13 +191,13 @@
       "mutable": false
     },
     "index.html": {
-      "sha256": "7279ae37ca310305a55a750f6c501ca1a5ea7ddd5f8059727db6bbf59b2ef43b",
-      "bytes": 97062,
+      "sha256": "565b38e08afa15352ac1d247d55abc50001227f888bbf73d925fa28fc86a5e94",
+      "bytes": 97641,
       "mutable": false
     },
     "mission_control.py": {
-      "sha256": "9aa836b08c7a728afe0695adf4bcc90000ab096db35214d2c07ad69be56b221f",
-      "bytes": 57480,
+      "sha256": "05b7128b0e2c5cbf47833965ffcd9dd61eb83d15bff02fc1baeabb4f12d71d8b",
+      "bytes": 63585,
       "mutable": false
     },
     "naio-mc": {
@@ -206,8 +206,8 @@
       "mutable": false
     },
     "roles/README.md": {
-      "sha256": "1afc0a5257ad5fc40c142c210de7f81abdde1f787aa52b5b560469a6cd13c40e",
-      "bytes": 3821,
+      "sha256": "d0002e2f64dc87e4c787a1d3c83f1a7bcb4e6a454ffd4fcca1e9b5f3305614a5",
+      "bytes": 4572,
       "mutable": false
     },
     "roles/bedside.json": {
@@ -221,33 +221,33 @@
       "mutable": false
     },
     "roles/educator.json": {
-      "sha256": "09af97770d7ad0785bfae7caa605dc15009abd586255059d2c19cf7f671f2cbd",
-      "bytes": 1352,
+      "sha256": "c53b18f379fff8c722f493d26f40070820b23713943a7144f9b3358bcef229fc",
+      "bytes": 1181,
       "mutable": false
     },
     "roles/entrepreneur.json": {
-      "sha256": "0ac91518198e66cc86560711b60ea1216897f82729d0f1eb8e5a84a3583afb34",
-      "bytes": 1489,
+      "sha256": "cc894c39ed3e69ec74705a5d7837ae34d2e419da3bfb9a5ec481069d100091be",
+      "bytes": 1252,
       "mutable": false
     },
     "roles/leader.json": {
-      "sha256": "4351c9a94d6fca94ff6cd49e5290a8a8270bf812d30b551ffde2edd3b9cf05eb",
-      "bytes": 1494,
+      "sha256": "6a3b908539cafbcaf8c49c4e61047d78e5c85d4b2472f89c309421dc94c01d14",
+      "bytes": 1221,
       "mutable": false
     },
     "roles/np.json": {
-      "sha256": "220d23516579effa51d35c70389822c51bf674ac1156d5cc24c3fa3128e4cd9a",
-      "bytes": 1766,
+      "sha256": "1ea3baf08e2d0444497529709b6394e97617007100d86ffeb669acd536e0237b",
+      "bytes": 1369,
       "mutable": false
     },
     "roles/resident.json": {
-      "sha256": "b699d0ce5fb680f1bfd912266ab478ad36c52cb64730c0d75a6ff72f0d415db4",
-      "bytes": 1685,
+      "sha256": "e40139d50e2cf45a1553fc64e3059428ed64679d03fe864077b6d0eb3ec00ef1",
+      "bytes": 1255,
       "mutable": false
     },
     "roles/student.json": {
-      "sha256": "1de0e9b9df18664526790d09a5d7f690cc6f1c806a81f1e5eda4db8dffe0b757",
-      "bytes": 1411,
+      "sha256": "1f1ea70d0c08ef666d98eee671f9270f66014d194e3a56a612ce4ae3ea38d321",
+      "bytes": 1236,
       "mutable": false
     },
     "schema/naio-soul.schema.json": {
@@ -261,8 +261,8 @@
       "mutable": false
     },
     "tests/self_test.py": {
-      "sha256": "d26b3d3170945a573ad476865490167726db2feeafe2db9c17d379618c3d21d0",
-      "bytes": 61726,
+      "sha256": "7433d329fa64c37be30cf8175695c63e2822282428c42810c90e413e66f65a1b",
+      "bytes": 65522,
       "mutable": false
     },
     "tools/rebuild-governance-kit.sh": {

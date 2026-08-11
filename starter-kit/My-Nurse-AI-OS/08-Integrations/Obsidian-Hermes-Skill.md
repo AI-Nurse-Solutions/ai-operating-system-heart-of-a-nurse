@@ -63,26 +63,46 @@ My-Nurse-AI-OS/
 │   ├── MY-AI-VALUES.md
 │   ├── NO-PHI-BOUNDARY.md
 │   ├── HUMAN-AGENCY-RULES.md
-│   └── SOUL.md
+│   ├── DO-NOT-REMEMBER.md
+│   ├── Hermes-Setup-Safety-Checklist.md
+│   └── SOUL.md                     ← your core soul
+├── 01-Personal/ … 05-Templates/    ← spheres of your life, numbered
 ├── 06-Profiles/
-│   ├── Personal-SOUL.md
-│   ├── Professional-SOUL.md
-│   └── Community-SOUL.md
+│   ├── Personal-Learning-SOUL.md   ← example sphere souls
+│   ├── Personal-Projects-SOUL.md
+│   └── Profile-Setup-Guide.md
 ├── 07-Learning/
-│   ├── knowledge-inbox.md
-│   └── weekly-review.md
-├── Skills/
-│   ├── research/
-│   ├── writing/
-│   └── governance/
-├── Memory/
-│   ├── yearly-goals.md
-│   ├── quarterly-reviews/
-│   └── decisions/
-└── Projects/
-    ├── community/
-    └── career/
+│   ├── Knowledge-Inbox-Workflow.md
+│   ├── Weekly-Learning-Review.md
+│   └── Process-Learning-Inbox-Skill-Draft.md
+├── 08-Integrations/ … 18-Bedside-OS/
+├── Skills/                         ← yours to fill; ships a README
+├── Memory/                         ← yours to fill; ships a README
+│   ├── KARDEX.md                   ← session handoffs
+│   ├── weekly-reviews/             ← one file per week
+│   └── decisions/                  ← one file per decision
+└── Projects/                       ← yours to fill; ships a README
 ```
+
+This is the kit as it ships, not an idealised version of it. The numbered
+folders are the library you read; `Skills/`, `Memory/` and `Projects/` are
+yours to fill, which is why they arrive holding only a README. `Memory/` names
+its own contents in `Memory/README.md` — create `weekly-reviews/` and
+`decisions/` the first time you write one.
+
+**The two paths that are a contract**, because `naio-mc configure --kit` and the
+workbook both read them:
+
+- `00-Start-Here/SOUL.md` — your core soul. One file, that exact name.
+- `<folder>/<name>-SOUL.md` — one level down. Any file ending `-SOUL.md` is
+  found, wherever it sits, so adding a sphere needs no configuration. The kit
+  ships three: `06-Profiles/Personal-Learning-SOUL.md` and
+  `Personal-Projects-SOUL.md` as sphere examples, and
+  `11-Messaging-Team/Team-Lab-SOUL.md`, which is a **shared team agent persona
+  rather than one of your spheres** — it matches the same pattern, so
+  `configure --kit` lists it too. Being watched means Mission Control records
+  *that* the file changed and by how many lines, for the Memory tab. It never
+  reads the contents into anything and never writes back.
 
 ## Setup prompts
 
@@ -104,11 +124,14 @@ Ensure the local sync directory is /root/My-Nurse-AI-OS or /home/hermes/My-Nurse
 Do not proceed until a test file created on the VPS appears in Obsidian on the MacBook.
 ```
 
+Whichever of the two you chose is your vault path. It is written `<VAULT>` below —
+substitute it rather than copying a path that belongs to the other choice.
+
 ### 3. Point Hermes at the vault
 
 ```text
-Configure Hermes to load skills from /root/My-Nurse-AI-OS/Skills/
-and use /root/My-Nurse-AI-OS/00-Start-Here/SOUL.md as part of its system memory.
+Configure Hermes to load skills from <VAULT>/Skills/
+and use <VAULT>/00-Start-Here/SOUL.md as part of its system memory.
 Only load these files when relevant to keep the context window clean.
 ```
 
@@ -126,7 +149,7 @@ Confirm within 30 seconds that the change appears back in Obsidian on the MacBoo
 
 > "Please edit my Research skill to always include an EDENA evidence-quality check (source, methodology, bias, applicability) before citing any source."
 
-Hermes opens `Skills/research/Research-Skill-Prompts.md`, adds the instruction, and saves. Because the vault syncs, you see the change instantly in Obsidian.
+Hermes opens the research skill under `Skills/`, adds the instruction, and saves. Because the vault syncs, you see the change instantly in Obsidian. (`Skills/` ships empty apart from its README — the layout under it is yours, and Hermes edits whatever you put there.)
 
 ### Run a `/go` research task into your vault
 
@@ -136,7 +159,10 @@ Hermes works until the task is complete. The result is a **living file** you can
 
 ### Build a weekly review from your notes
 
-> "Read my knowledge-inbox.md, weekly-review.md, and Memory/decisions/ from the last 7 days. Summarize what I learned, what I decided, and what I should focus on next week. Save the review to Memory/weekly-reviews/2026-W25.md."
+> "Read `07-Learning/Knowledge-Inbox-Workflow.md`, `07-Learning/Weekly-Learning-Review.md`, and `Memory/decisions/` from the last 7 days. Summarize what I learned, what I decided, and what I should focus on next week. Save the review to `Memory/weekly-reviews/2026-W25.md`."
+
+That last path is the same one the workbook's weekly-review prompt writes to, so
+the two rituals land in one place instead of two.
 
 ## Safety and governance boundaries
 

@@ -76,6 +76,18 @@ To replace blank-page paralysis ("what do I put in my SOUL file?") with a guided
 └── Interest-<Name>-SOUL.md     ← one per interest/hobby
 ```
 
+The core soul's name and location are fixed. Sphere souls follow a **pattern**
+rather than a fixed list: any file ending `-SOUL.md`, one level below the vault
+root, is picked up — so the names above and the examples the kit ships in
+`06-Profiles/` are all equally valid, and adding a sphere needs no configuration.
+
+The pattern is deliberately wider than "your spheres", so read the list it
+produces rather than assuming. In the shipped kit it also matches
+`11-Messaging-Team/Team-Lab-SOUL.md`, which is a shared team agent persona and
+not one of your spheres at all. `naio-mc configure --kit` prints every file it
+matched, by name, for exactly this reason — what it does with them is watch for
+changes to show in the Memory tab, never load them into an agent.
+
 ---
 
 ## 3. Interview rules (for the agent)
@@ -125,7 +137,11 @@ The agent must:
 
 ### Stage 2 — Core SOUL Interview (10–15 minutes)
 
-This produces `Core-SOUL.md` — applies to all spheres.
+This produces your core soul, saved as `00-Start-Here/SOUL.md` — it applies to
+all spheres. That filename is a contract, not a preference: it is what
+`naio-mc configure --kit` looks for and what the workbook tells a nurse to
+expect. (The *template* it is drafted from is `templates/core-soul.md`; the
+file you save is `SOUL.md`.)
 
 **Identity (3 questions):**
 
@@ -156,7 +172,7 @@ This produces `Core-SOUL.md` — applies to all spheres.
 12. What kinds of decisions do you always want to make yourself, even with AI help? *(financial, clinical, ethical, relational, health, legal, license-related)*
 13. What kinds of work are you happy for Hermes to draft, summarize, or organize without asking? *(notes, summaries, outlines, schedules, templates, brainstorms)*
 
-**Agent action:** Draft `Core-SOUL.md` using the [Core SOUL template](./templates/core-soul.md). Show the draft. Ask: *"Save, edit, or skip?"*
+**Agent action:** Draft the core soul using the [Core SOUL template](./templates/core-soul.md), to be saved as `00-Start-Here/SOUL.md`. Show the draft. Ask: *"Save, edit, or skip?"*
 
 ---
 

@@ -10,7 +10,7 @@ The observation plane for Nurse AI OS. Local-only, stdlib-only, read-mostly.
 ```bash
 ./naio-mc doctor      # preflight — python, presets, content, runtime, port
 ./naio-mc start       # → http://127.0.0.1:8321
-./naio-mc self-test   # 111 checks, including the ones that matter
+./naio-mc self-test   # 112 checks, including the ones that matter
 ./naio-mc verify      # is this tree the one that was packaged?
 ./naio-mc configure   # point it at your own vault and SOUL files
 ./naio-mc notes-check # run the Apple Notes bridge once and see what it returns
@@ -32,7 +32,7 @@ No install step, no dependency to fetch. Python 3.10+ and the standard library.
 | **SOUL bridge** | `naio-soul.json` → real content, replacing sample | built |
 | **Editing** | set your season; add the credentials that could lapse | built |
 
-All seven tabs are live. `self-test` runs 111 checks and attacks the rules rather than asserting them: it writes a malicious preset, probes for an endpoint that approves a gate, probes for one that schedules cron, kills a collector for real, and checks that promoting to memory left `SOUL.md` untouched byte-for-byte.
+All seven tabs are live. `self-test` runs 112 checks and attacks the rules rather than asserting them: it writes a malicious preset, probes for an endpoint that approves a gate, probes for one that schedules cron, kills a collector for real, and checks that promoting to memory left `SOUL.md` untouched byte-for-byte.
 
 ```
 mission-control/
@@ -258,9 +258,20 @@ If you unzipped the [Starter Kit](https://nurse-ai-os.org/start-here.html), the 
 ./naio-mc configure --kit ~/My-Nurse-AI-OS --apply
 ```
 
-That sets the vault to the kit, the Library to `04-Projects/`, the capture inbox to `03-Memory/inbox/`, and watches every real file in `01-SOUL/` — skipping the `.template.md` files, because a template is not a soul.
+Two kit layouts exist and both work, so the command detects which one it is looking at rather than assuming — and says which it found. For the **published** kit, the one nurse-ai-os.org actually serves:
 
-It refuses a folder that is not actually a kit rather than configuring nonsense and failing confusingly three screens later. If `01-SOUL/` holds only templates it says so, wires everything else, and tells you to go take the quiz.
+| Setting | Where it points |
+|---|---|
+| vault | the kit folder itself |
+| Library | `Projects/` |
+| capture inbox | `Memory/inbox/` if it exists, otherwise `Memory/` — and it says which |
+| SOUL files | `00-Start-Here/SOUL.md`, plus every `*/*-SOUL.md` one level down. The pattern is wider than "your spheres" on purpose — in the shipped kit it also matches `11-Messaging-Team/Team-Lab-SOUL.md`, a shared team persona — so the command prints every file it matched, by name |
+
+The older **component** layout — `01-SOUL/`, `03-Memory/`, `04-Projects/` — is still accepted, and there the same three settings point at those folders instead.
+
+`README.md` and any `*.template.md` are never counted as souls, because a template is not a soul and "watching 1 file" on a folder nobody has filled in is a false pass.
+
+It refuses a folder that is not actually a kit rather than configuring nonsense and failing confusingly three screens later. If the core `SOUL.md` is missing it wires everything else, says the dashboard will not know who you are, and points you at the quiz.
 
 Or set them individually:
 

@@ -1,0 +1,59 @@
+{
+  "role_id": "charge",
+  "label": "Charge / Coordinator",
+  "licensure": "licensed",
+  "tabs": [
+    "overview",
+    "agents",
+    "tasks",
+    "schedule",
+    "memory",
+    "library",
+    "ledger"
+  ],
+  "overview_cards": [
+    "north_star",
+    "today",
+    "license_standing",
+    "stewardship_balance",
+    "signals",
+    "agent_team",
+    "reflection"
+  ],
+  "starter_agents": [
+    "florence",
+    "scribe"
+  ],
+  "task_lanes": [
+    "Now",
+    "This shift",
+    "Escalated",
+    "Done"
+  ],
+  "library_filters": [
+    "checklist",
+    "escalation",
+    "protocol-public"
+  ],
+  "ritual_pack": "charge",
+  "domain_emphasis": [
+    "career",
+    "service",
+    "health"
+  ],
+  "standing_rows": [
+    "rn_license",
+    "specialty_certification",
+    "acls_bls",
+    "state_ce"
+  ],
+  "privacy_regimes": [
+    "phi"
+  ],
+  "risk_briefing": [
+    "assignment_context_leak",
+    "patient_specific_question",
+    "ungoverned_window"
+  ],
+  "tier_note": "Assignment and staffing context is employer data. It does not enter this system."
+}

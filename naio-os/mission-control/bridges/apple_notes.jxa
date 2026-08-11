@@ -1,0 +1,39 @@
+#!/usr/bin/env osascript -l JavaScript
+//
+// NAIO Apple Notes bridge — metadata only, configured folders only, macOS only.
+//
+// Apple Notes is where nurses actually capture things at 2 a.m., so it is treated
+// as the capture inbox, not a database. This script emits titles, folders, and
+// modification dates. It never emits a note body — bodies stay in Notes, which is
+// the PHI posture rather than an optimisation.
+//
+// Usage:  osascript -l JavaScript apple_notes.jxa "Folder A" "Folder B"
+//
+function run(argv) {
+  if (!argv || argv.length === 0) return JSON.stringify([]);
+  const wanted = argv.map(String);
+  const Notes = Application("Notes");
+  Notes.includeStandardAdditions = true;
+  const out = [];
+  try {
+    const folders = Notes.folders();
+    for (let f = 0; f < folders.length; f++) {
+      const folder = folders[f];
+      const fname = folder.name();
+      if (wanted.indexOf(fname) === -1) continue;
+      const notes = folder.notes();
+      for (let n = 0; n < notes.length; n++) {
+        const note = notes[n];
+        out.push({
+          id: String(note.id()),
+          title: String(note.name()),        // title only — never note.body()
+          folder: fname,
+          modified: new Date(note.modificationDate()).toISOString(),
+        });
+      }
+    }
+  } catch (e) {
+    return JSON.stringify({ error: String(e) });
+  }
+  return JSON.stringify(out);
+}

@@ -1,0 +1,68 @@
+{
+  "role_id": "leader",
+  "label": "Nurse manager / Leader",
+  "licensure": "licensed",
+  "tabs": [
+    "overview",
+    "agents",
+    "tasks",
+    "schedule",
+    "memory",
+    "library",
+    "ledger"
+  ],
+  "overview_cards": [
+    "north_star",
+    "today",
+    "license_standing",
+    "stewardship_balance",
+    "momentum",
+    "evidence",
+    "signals",
+    "opportunities",
+    "reflection",
+    "agent_team"
+  ],
+  "starter_agents": [
+    "florence",
+    "scholar",
+    "scribe"
+  ],
+  "task_lanes": [
+    "To-do",
+    "In-progress",
+    "Waiting on decision",
+    "Done"
+  ],
+  "library_filters": [
+    "policy",
+    "governance",
+    "adoption",
+    "retention"
+  ],
+  "ritual_pack": "leader",
+  "domain_emphasis": [
+    "career",
+    "service",
+    "family",
+    "health"
+  ],
+  "standing_rows": [
+    "rn_license",
+    "leadership_certification",
+    "bls",
+    "manager_training",
+    "state_ce"
+  ],
+  "privacy_regimes": [
+    "phi",
+    "personnel"
+  ],
+  "risk_briefing": [
+    "personnel_conversation_typed_in",
+    "ai_draft_becomes_personnel_decision",
+    "ungoverned_window"
+  ],
+  "scope_note": "Nothing in this system is an HR record, and no output of it is a personnel action. Positional authority is not a governance credential: a management span does not raise a tier ceiling, and if anything argues for keeping the gates exactly where they are.",
+  "tier_note": "No personnel-identifiable content. No staffing system access. Ledger tab is first-class for this role."
+}

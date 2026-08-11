@@ -1,0 +1,314 @@
+{
+  "label": "Nurse entrepreneur",
+  "values": [
+    "Build for nurses, not about them",
+    "Governance before growth",
+    "Ship nothing I would not use on shift",
+    "Own the repo"
+  ],
+  "mission": "Turn what I know into something that serves nurses at scale — without becoming the kind of vendor I complain about.",
+  "sub": "Maya Reyes, RN, CCRN · night shift, cardiac ICU · building a nurse-facing product on the side · deliberately paused until September.",
+  "season": "Chosen pause",
+  "seasonBody": "The venture is idling by written decision until the CMC is done. This screen keeps it quiet rather than letting it nag — that is what a logged pause is for.",
+  "seasonMeta": "Paused 12 June · resumes 2 September · 22 days to go",
+  "actions": [
+    {
+      "domain": "Business & Ventures",
+      "title": "Do nothing here — and let that be correct",
+      "why": "You paused this on purpose, with an end date in the ledger. The system is holding the line you drew so it stops competing for attention you have already allocated elsewhere.",
+      "cost": "0 minutes · resumes 2 September",
+      "cta": "See the pause record"
+    },
+    {
+      "domain": "Creativity & Ideas",
+      "title": "Capture, do not build",
+      "why": "Four notes about the handoff-script idea are stacking up. Capture is allowed during a pause; building is not. The inbox will hold them without cost.",
+      "cost": "3 minutes · one line each",
+      "cta": "Open capture"
+    },
+    {
+      "domain": "Finances",
+      "title": "File the certification reimbursement",
+      "why": "Unrelated to the venture, dated, and worth about $740. It closes 3 September — the same week your pause lifts, so it will not compete then.",
+      "cost": "6 minutes · waits at a human gate",
+      "cta": "Review the draft"
+    }
+  ],
+  "domains": {
+    "health": {
+      "share": 9,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Four of the last seven nights under six hours.",
+      "detail": "The pause exists partly to protect this. <b>It has not worked yet</b>, which is worth knowing before September."
+    },
+    "family": {
+      "share": 21,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Eleven protected evenings held. Zero cancelled.",
+      "detail": "Nine straight weeks including your two hardest stretches. <b>This is what the pause bought.</b>"
+    },
+    "career": {
+      "share": 24,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Unit council seat through December. Preceptor load at two.",
+      "detail": "Unchanged by the pause, by design. <b>The day job was never what you were pausing.</b>"
+    },
+    "learning": {
+      "share": 16,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "CMC blueprint 62% covered. Three-week buffer projected.",
+      "detail": "The reason for the pause, and it is working. <b>The buffer is the whole return on the decision.</b>"
+    },
+    "finance": {
+      "share": 6,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Reimbursement window closes in 23 days. Nothing filed.",
+      "detail": "Roughly $740 across two dated items. <b>The door closes 3 September</b> — filing is a form, not a decision."
+    },
+    "creative": {
+      "share": 11,
+      "state": "steady",
+      "dir": "up",
+      "signal": "Nine notes captured. Building deferred until the pause lifts.",
+      "detail": "Capture is permitted during a pause; building is not. <b>The distinction is what makes the pause survivable</b> — ideas are not lost, only deferred."
+    },
+    "service": {
+      "share": 8,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Two Lamp Huddles attended. One mentee, weekly since May.",
+      "detail": "Never rescheduled once. <b>The most consistent line you have.</b>"
+    },
+    "business": {
+      "share": 5,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Paused 12 June until the CMC is behind you. Resumes 2 September.",
+      "detail": "Logged with an end date, not neglected. <b>Nothing here will be surfaced as a signal until 2 September</b>, so it stops competing for your attention."
+    }
+  },
+  "momentum": {
+    "hero": "31",
+    "unit": "hours",
+    "label": "returned to you this month by work your agents carried and you reviewed.",
+    "note": "Estimated from your own logged task times before and after each skill file went live. Your estimate, not ours — edit any of it.",
+    "kpis": [
+      [
+        "Days into the pause",
+        "60",
+        "of 82",
+        "held, all 60"
+      ],
+      [
+        "Commitments honored",
+        "47",
+        "/52",
+        "+6 vs July"
+      ],
+      [
+        "Ideas captured, not built",
+        "9",
+        "",
+        "the pause working"
+      ]
+    ],
+    "weekly": [
+      3,
+      4,
+      4,
+      6,
+      5,
+      7,
+      6,
+      8,
+      7,
+      9,
+      8,
+      11
+    ],
+    "caption": "the flywheel caught around week 5",
+    "evidence": [
+      [
+        6,
+        4,
+        2
+      ],
+      [
+        7,
+        5,
+        3
+      ],
+      [
+        5,
+        6,
+        4
+      ],
+      [
+        9,
+        5,
+        5
+      ],
+      [
+        8,
+        7,
+        6
+      ],
+      [
+        11,
+        6,
+        7
+      ]
+    ]
+  },
+  "license": {
+    "days": 62,
+    "gates": 41,
+    "currency": [
+      {
+        "name": "RN license",
+        "meta": "Renews 30 September 2027 · 25 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "CCRN",
+        "meta": "Renews 1 March 2027 · 62 of 100 CERPs logged",
+        "state": "flourishing"
+      },
+      {
+        "name": "CMC",
+        "meta": "In progress · test date 14 November 2026",
+        "state": "steady"
+      },
+      {
+        "name": "ACLS",
+        "meta": "Renews 24 October 2026 · 74 days · no class booked",
+        "state": "attention"
+      },
+      {
+        "name": "Business registration",
+        "meta": "Current · annual filing due 1 April 2027",
+        "state": "flourishing"
+      }
+    ],
+    "reputation": [
+      {
+        "name": "Published",
+        "meta": "6 pieces carry your name · 6 reviewed by you · 0 auto-sent",
+        "state": "flourishing"
+      },
+      {
+        "name": "Awaiting you",
+        "meta": "1 draft has been sitting 6 days · send it or bin it",
+        "state": "attention"
+      },
+      {
+        "name": "Employer content",
+        "meta": "None in this system, and none in the venture. Ever.",
+        "state": "flourishing"
+      }
+    ],
+    "risks": [
+      {
+        "what": "A screenshot pasted in a hurry",
+        "guard": "Import refuses on PHI indicators and a nightly lint sweeps everything already stored. <b>The system catches it.</b>"
+      },
+      {
+        "what": "Your employer’s work becoming your product",
+        "guard": "Nothing from the unit — protocols, forms, materials, workflows — enters this system, so nothing of theirs can quietly end up in something you sell. <b>This one is yours to keep</b>, and it is the line that decides whether the venture survives scrutiny."
+      },
+      {
+        "what": "Reaching for an ungoverned window instead",
+        "guard": "No governed system can reach a chat window it does not run. <b>This one is yours to keep</b> — it is the reason the rails are worth having."
+      }
+    ],
+    "scopeNote": "<b>Building a product does not raise your agent’s tier.</b> A founder who ships an ungoverned agent risks a product. You would be risking a license, a patient’s privacy, and the standing of the profession you are selling to — which is precisely the reason anyone would buy from you rather than a vendor."
+  },
+  "signals": [
+    {
+      "state": "attention",
+      "title": "A dated window closes on 3 September",
+      "body": "Certification reimbursement, roughly $740, still unfiled. Unrelated to the venture and the only hard deadline here.",
+      "action": "Open the filled form"
+    },
+    {
+      "state": "attention",
+      "title": "Sleep is trending down for a third month",
+      "body": "Part of what the pause was meant to protect. It has not moved yet — worth knowing before September.",
+      "action": "Block two nights"
+    },
+    {
+      "state": "flourishing",
+      "title": "Sixty days of a chosen pause, held",
+      "body": "Not one exception in two months. That is the discipline the venture will actually need later.",
+      "action": "Log it in the ledger"
+    },
+    {
+      "state": "steady",
+      "title": "Nine ideas captured, none built",
+      "body": "Exactly the behaviour a logged pause is supposed to produce. Nothing is lost, only deferred.",
+      "action": "Review the inbox"
+    }
+  ],
+  "opps": [
+    {
+      "kind": "Idea",
+      "title": "Handoff-script skill, noted four times",
+      "body": "The same idea keeps returning to your capture inbox. That is usually the signal to build it.",
+      "when": "Ready when the pause lifts"
+    },
+    {
+      "kind": "Contribution",
+      "title": "One skill is clean enough to share",
+      "body": "Your shift-recovery checklist has no PHI, no employer content, and no secrets.",
+      "when": "NIN contribution flow is open"
+    },
+    {
+      "kind": "Relationship",
+      "title": "Two nurses asked to borrow your tracker",
+      "body": "Unprompted, both in July. That is the earliest signal a tool of one is becoming a product.",
+      "when": "Both still waiting"
+    },
+    {
+      "kind": "Certification",
+      "title": "CMC test date opens for November",
+      "body": "The pause ends when this does. Both decisions are actually one decision.",
+      "when": "Registration opens 1 September"
+    }
+  ],
+  "agents": [
+    {
+      "initials": "FL",
+      "name": "Florence",
+      "role": "Generalist · your preceptor",
+      "tier": "Green",
+      "tierCls": "tier-green",
+      "scope": "All spheres, read-only outside Health. Drafts freely; sends nothing.",
+      "await": null
+    },
+    {
+      "initials": "SC",
+      "name": "Scholar",
+      "role": "Learning & mastery",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Learning sphere only. Reads your weak-point log; writes to the study queue.",
+      "await": "Wants to add 4 pages to your CMC library"
+    },
+    {
+      "initials": "SB",
+      "name": "Scribe",
+      "role": "Creativity & business",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Creativity and Business spheres. Capture only while the pause holds.",
+      "await": "Drafted a LinkedIn post — unsent"
+    }
+  ],
+  "sample": true,
+  "role_id": "entrepreneur"
+}

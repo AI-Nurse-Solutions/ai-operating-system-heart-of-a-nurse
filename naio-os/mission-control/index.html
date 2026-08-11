@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stewardship Home — NAIO Mission Control</title>
+<meta name="description" content="The Overview tab of NAIO Mission Control, rebuilt as a stewardship environment for the whole person who happens to be a nurse.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   Stewardship Home — NAIO Mission Control, Overview tab
+   Palette derived from nurse-ai-os.org (navy · scrub teal · lamplight gold ·
+   warm linen) and validated with the dataviz six checks in both modes:
+
+   LIGHT  surface #ffffff — teal #009490 · gold #b0801c · rose #b8467a
+          lightness PASS · chroma PASS · CVD adj ΔE 15.9 · normal-vis 18.9 · contrast PASS
+   DARK   surface #12263c — teal #0f9c97 · gold #b98d20 · rose #c4577f
+          lightness PASS · chroma PASS · CVD adj ΔE 13.8 · normal-vis 18.8 · contrast PASS
+
+   Status steps are reserved and always ship with an icon + label.
+   ========================================================================== */
+
+:root, :root[data-theme="light"] {
+  color-scheme: light;
+
+  /* brand */
+  --navy-900:#0e1f33; --navy-800:#16304a; --navy-700:#1f3d5c;
+  --gold-500:#d9a441; --gold-300:#ecc87f; --gold-100:#faf0da;
+  --teal-100:#e2f3f2;
+
+  /* surfaces */
+  --page:#faf7f1;
+  --surface-1:#ffffff;
+  --surface-2:#f3eee4;
+  --surface-sunk:#f7f4ee;
+  --hairline:rgba(14,31,51,.10);
+  --hairline-strong:rgba(14,31,51,.16);
+
+  /* ink */
+  --text-primary:#0e1f33;
+  --text-secondary:#4c5b6a;
+  --text-muted:#6b7a8a;
+  --on-navy:#dbe6ef;
+  --on-navy-dim:#a9bccb;
+
+  /* categorical series (validated, fixed order) */
+  --series-1:#009490;   /* teal   — Learning & mastery */
+  --series-2:#b0801c;   /* gold   — Relationships */
+  --series-3:#b8467a;   /* rose   — Ideas advanced */
+
+  /* sequential teal ramp (meters, magnitude) */
+  --seq-track:#dceeed;
+  --seq-fill:#009490;
+  --seq-fill-soft:rgba(0,148,144,.12);
+
+  /* de-emphasis (sparkline body) */
+  --deemph:#b9c6cf;
+
+  /* status — reserved, icon+label always */
+  --status-good:#0ca30c;
+  --status-attention:#d97742;
+  --status-good-wash:rgba(12,163,12,.10);
+  --status-attention-wash:rgba(217,119,66,.12);
+  --neutral-wash:rgba(14,31,51,.06);
+
+  /* chart chrome */
+  --gridline:#e7e2d8;
+  --axis:#cfc9bd;
+
+  --shadow-sm:0 1px 3px rgba(14,31,51,.07);
+  --shadow-md:0 8px 26px rgba(14,31,51,.09);
+  --radius:14px;
+  --radius-sm:10px;
+  --font-display:"Fraunces","Iowan Old Style",Georgia,serif;
+  --font-body:"Source Sans 3","Segoe UI",-apple-system,Helvetica,Arial,sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --page:#0a1826;
+  --surface-1:#12263c;
+  --surface-2:#16304a;
+  --surface-sunk:#0f2135;
+  --hairline:rgba(255,255,255,.10);
+  --hairline-strong:rgba(255,255,255,.18);
+
+  --text-primary:#f1f6fa;
+  --text-secondary:#b3c3d1;
+  --text-muted:#93a6b8;
+  --on-navy:#dbe6ef;
+  --on-navy-dim:#a9bccb;
+
+  --series-1:#0f9c97;
+  --series-2:#b98d20;
+  --series-3:#c4577f;
+
+  --seq-track:#1d3a55;
+  --seq-fill:#0f9c97;
+  --seq-fill-soft:rgba(15,156,151,.16);
+
+  --deemph:#4a6076;
+
+  --status-good:#0ca30c;
+  --status-attention:#d97742;
+  --status-good-wash:rgba(12,163,12,.16);
+  --status-attention-wash:rgba(217,119,66,.18);
+  --neutral-wash:rgba(255,255,255,.07);
+
+  --gridline:#20384f;
+  --axis:#2c4761;
+
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4);
+  --shadow-md:0 8px 26px rgba(0,0,0,.45);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  font-size:16.5px;
+  line-height:1.6;
+  color:var(--text-primary);
+  background:var(--page);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display);color:var(--text-primary);line-height:1.2;margin:0;}
+p{margin:0;}
+button{font-family:inherit;font-size:inherit;color:inherit;}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 1.5rem;}
+
+
+/* ---------------- Sample banner + system strip ---------------- */
+.sample-banner{background:var(--teal-100);border-bottom:1px solid rgba(0,148,144,.35);color:#0b4f4d;}
+:root[data-theme="dark"] .sample-banner{background:#10312f;border-bottom-color:rgba(15,156,151,.4);color:#9fded9;}
+.sample-inner{max-width:1180px;margin:0 auto;padding:.55rem 1.5rem;display:flex;gap:.7rem;align-items:flex-start;font-size:.9rem;}
+.sample-inner svg{flex:none;margin-top:.2rem;}
+.sample-inner code{background:rgba(0,0,0,.08);border-radius:4px;padding:0 .3rem;font-size:.86em;}
+:root[data-theme="dark"] .sample-inner code{background:rgba(255,255,255,.12);}
+
+.sys-strip{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;padding-top:.2rem;}
+.sys-item{font-size:.78rem;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:.15rem .6rem;color:#bccddb;white-space:nowrap;}
+.sys-item b{color:#e4edf4;font-weight:700;}
+.sys-item.sys-ok{border-color:rgba(12,163,12,.5);}
+.sys-item.sys-ok b{color:#5ada5a;}
+.sys-item.sys-warn{border-color:rgba(217,119,66,.55);}
+.sys-item.sys-warn b{color:#f0a077;}
+.sys-item.sys-stale{border-color:rgba(217,119,66,.75);background:rgba(217,119,66,.16);}
+.sys-item.sys-stale b{color:#f5b593;}
+
+
+/* ---------------- Tabs and the six deeper views ---------------- */
+.tab-panel[hidden]{display:none;}
+.readonly-note{font-size:.9rem;color:var(--text-secondary);background:var(--surface-sunk);border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:.7rem .85rem;margin-bottom:.9rem;}
+.readonly-note b{color:var(--text-primary);}
+
+.task-add{display:flex;gap:.6rem;flex-wrap:wrap;}
+.task-input{flex:1 1 320px;min-width:0;border:1px solid var(--hairline-strong);border-radius:999px;padding:.55rem 1rem;background:var(--surface-sunk);color:var(--text-primary);font-family:inherit;font-size:.95rem;}
+.task-input:focus{outline:2px solid var(--seq-fill);outline-offset:1px;}
+.task-select{border:1px solid var(--hairline-strong);border-radius:999px;padding:.55rem .9rem;background:var(--surface-sunk);color:var(--text-primary);font-family:inherit;font-size:.9rem;}
+.kanban{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem;align-items:start;}
+.lane{background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--radius);padding:.8rem;}
+.lane h4{font-family:var(--font-body);font-size:.82rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin:0 0 .6rem;}
+.lane h4 span{color:var(--text-secondary);font-weight:700;}
+.tcard{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:.6rem .7rem;margin-bottom:.55rem;box-shadow:var(--shadow-sm);}
+.tcard p{font-size:.9rem;}
+.tcard .t-meta{font-size:.75rem;color:var(--text-muted);margin-top:.3rem;}
+.tcard .t-moves{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.45rem;}
+.tmove{border:1px solid var(--hairline-strong);background:none;border-radius:999px;padding:.1rem .55rem;font-size:.74rem;cursor:pointer;color:var(--text-secondary);}
+.tmove:hover{border-color:var(--seq-fill);color:var(--seq-fill);}
+.empty{font-size:.88rem;color:var(--text-muted);padding:.6rem 0;}
+
+.mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;align-items:start;}
+.mrow{border-bottom:1px solid var(--hairline);padding:.6rem 0;font-size:.9rem;}
+.mrow:last-child{border-bottom:0;}
+.mrow .m-title{font-weight:600;}
+.mrow .m-meta{font-size:.76rem;color:var(--text-muted);margin-top:.15rem;}
+.mrow .m-tags{display:inline-flex;gap:.25rem;flex-wrap:wrap;margin-top:.2rem;}
+.mtag{font-size:.7rem;border:1px solid var(--hairline-strong);border-radius:999px;padding:.02rem .45rem;color:var(--text-muted);}
+.promote{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.4rem;}
+.pbtn{border:1px solid var(--hairline-strong);background:none;border-radius:999px;padding:.1rem .55rem;font-size:.74rem;cursor:pointer;color:var(--text-secondary);}
+.pbtn:hover{border-color:var(--seq-fill);color:var(--seq-fill);}
+.promoted{font-size:.74rem;color:var(--status-good);font-weight:700;margin-top:.35rem;}
+:root[data-theme="dark"] .promoted{color:#4cd44c;}
+
+.lib-filters{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.9rem;}
+.lib-filters button{border:1px solid var(--hairline-strong);background:none;border-radius:999px;padding:.25rem .8rem;font-size:.83rem;cursor:pointer;color:var(--text-secondary);}
+.lib-filters button[aria-pressed="true"]{background:var(--seq-fill-soft);border-color:var(--seq-fill);color:var(--seq-fill);font-weight:700;}
+
+.stat-card{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:.9rem 1rem;}
+.stat-card .s-label{font-size:.78rem;color:var(--text-muted);}
+.stat-card .s-value{font-size:1.6rem;font-weight:600;line-height:1.15;}
+.stat-card .s-note{font-size:.78rem;color:var(--text-secondary);}
+.lint-clean{color:var(--status-good);font-weight:700;}
+:root[data-theme="dark"] .lint-clean{color:#4cd44c;}
+.lint-hit{color:var(--status-attention);font-weight:700;}
+
+@media (max-width:960px){ .mem-grid{grid-template-columns:1fr;} }
+
+
+.real-banner{background:var(--gold-100);border-bottom-color:rgba(217,164,65,.45);color:#5c4413;}
+:root[data-theme="dark"] .real-banner{background:#2c2413;color:#f0dcae;border-bottom-color:rgba(217,164,65,.35);}
+.empty-card{border-style:dashed;}
+.e-title{font-family:var(--font-display);font-size:1.05rem;font-weight:600;margin-bottom:.35rem;}
+.e-body{font-size:.9rem;color:var(--text-secondary);}
+.dc-unmeasured{color:var(--text-muted);font-weight:400;}
+
+
+.season-edit,.season-cancel{margin-top:.9rem;background:none;border:1px solid rgba(236,200,127,.45);color:var(--gold-300);border-radius:999px;padding:.3rem .9rem;font-size:.85rem;cursor:pointer;}
+.season-edit:hover,.season-cancel:hover{background:rgba(236,200,127,.12);}
+.season-form{margin-top:.9rem;display:grid;gap:.5rem;}
+.season-input{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#eef4f9;font-family:inherit;font-size:.92rem;padding:.5rem .7rem;}
+.season-input:focus{outline:2px solid var(--gold-300);outline-offset:1px;}
+.season-actions{display:flex;gap:.5rem;align-items:center;}
+.season-hint{font-size:.78rem;color:var(--on-navy-dim);}
+.cur-add{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem;padding-top:.7rem;border-top:1px dashed var(--hairline-strong);}
+.cur-input{flex:1 1 140px;min-width:0;border:1px solid var(--hairline-strong);border-radius:999px;padding:.35rem .8rem;background:var(--surface-sunk);color:var(--text-primary);font-family:inherit;font-size:.85rem;}
+.cur-wide{flex:2 1 220px;}
+.cur-state{border:1px solid var(--hairline-strong);border-radius:999px;padding:.35rem .6rem;background:var(--surface-sunk);color:var(--text-primary);font-family:inherit;font-size:.85rem;}
+.cur-btn{border:1px solid var(--hairline-strong);background:none;border-radius:999px;padding:.35rem 1rem;font-size:.85rem;cursor:pointer;color:var(--text-primary);}
+.cur-btn:hover{border-color:var(--seq-fill);color:var(--seq-fill);}
+
+/* ---------------- Mission Control shell ---------------- */
+.mc-header{background:var(--navy-900);position:sticky;top:0;z-index:60;box-shadow:0 1px 0 rgba(255,255,255,.06);}
+.mc-bar{display:flex;align-items:center;gap:1.2rem;max-width:1180px;margin:0 auto;padding:.6rem 1.5rem;flex-wrap:wrap;}
+.mc-brand{display:flex;align-items:center;gap:.5rem;color:var(--gold-300);font-family:var(--font-display);font-weight:600;font-size:1.05rem;white-space:nowrap;}
+.mc-brand .lamp{font-size:1.15rem;}
+.mc-tabs{display:flex;gap:.15rem;flex-wrap:wrap;flex:1;}
+.mc-tab{background:none;border:0;cursor:pointer;color:#8ea4b7;font-size:.9rem;padding:.4rem .7rem;border-radius:8px;border-bottom:2px solid transparent;}
+.mc-tab[aria-current="page"]{color:var(--gold-300);border-bottom-color:var(--gold-500);font-weight:700;}
+.mc-tab:not([aria-current]):hover{color:#c6d6e2;background:rgba(255,255,255,.05);}
+.mc-right{display:flex;align-items:center;gap:.6rem;}
+.role-select{
+  background:rgba(255,255,255,.08);color:#e4edf4;border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;padding:.35rem .8rem;font-size:.86rem;cursor:pointer;
+}
+.role-select:focus-visible{outline:2px solid var(--gold-300);outline-offset:2px;}
+.mode-toggle{
+  background:rgba(255,255,255,.08);color:#e4edf4;border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;padding:.35rem .85rem;font-size:.86rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;
+}
+.mode-toggle:hover{background:rgba(255,255,255,.15);}
+.mode-toggle:focus-visible{outline:2px solid var(--gold-300);outline-offset:2px;}
+
+/* ---------------- Gate banner ---------------- */
+.gate-banner{
+  background:var(--gold-100);border-bottom:1px solid rgba(217,164,65,.45);
+  color:#5c4413;
+}
+:root[data-theme="dark"] .gate-banner{background:#2c2413;border-bottom-color:rgba(217,164,65,.35);color:#f0dcae;}
+.gate-inner{max-width:1180px;margin:0 auto;padding:.6rem 1.5rem;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;font-size:.93rem;}
+.gate-inner > span{flex:1 1 340px;min-width:0;}
+.gate-inner strong{font-weight:700;}
+.gate-pill{
+  margin-left:auto;background:var(--navy-900);color:var(--gold-300);border:0;
+  border-radius:999px;padding:.35rem .95rem;font-size:.85rem;font-weight:700;cursor:pointer;
+}
+.gate-pill:hover{background:var(--navy-800);}
+
+/* ---------------- North Star ---------------- */
+.northstar{
+  background:linear-gradient(160deg,var(--navy-900) 0%,var(--navy-800) 58%,#1c4258 100%);
+  color:var(--on-navy);padding:2.9rem 0 2.6rem;
+}
+.ns-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:2.6rem;align-items:start;}
+.kicker{color:var(--gold-300);text-transform:uppercase;letter-spacing:.15em;font-size:.76rem;font-weight:700;margin-bottom:.5rem;}
+.ns-mission{font-family:var(--font-display);font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:600;color:#fff;line-height:1.25;margin:0 0 .9rem;}
+.ns-sub{color:#c3d3e0;font-size:1.03rem;max-width:56ch;}
+.ns-values{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:1.25rem;}
+.value-chip{
+  border:1px solid rgba(236,200,127,.4);color:var(--gold-300);
+  border-radius:999px;padding:.24rem .8rem;font-size:.83rem;letter-spacing:.02em;
+}
+.ns-season{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--radius);padding:1.15rem 1.25rem;
+}
+.ns-season .lbl{font-size:.76rem;text-transform:uppercase;letter-spacing:.14em;color:var(--on-navy-dim);font-weight:700;}
+.ns-season .season-name{font-family:var(--font-display);font-size:1.32rem;color:#fff;margin:.3rem 0 .35rem;font-weight:600;}
+.ns-season p{font-size:.93rem;color:#bccddb;}
+.ns-season .season-meta{margin-top:.85rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.13);font-size:.86rem;color:var(--on-navy-dim);}
+
+/* ---------------- Sections ---------------- */
+.section{padding:2.6rem 0 .4rem;}
+.section-head{display:flex;align-items:flex-end;gap:1rem;margin-bottom:1.15rem;flex-wrap:wrap;}
+.section-head h2{font-size:1.5rem;font-weight:600;}
+.section-head .sh-sub{color:var(--text-secondary);font-size:.95rem;margin-top:.15rem;}
+.outcome-tag{
+  margin-left:auto;font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;font-weight:700;
+  color:var(--text-muted);border:1px solid var(--hairline-strong);border-radius:999px;padding:.2rem .7rem;white-space:nowrap;
+}
+
+.card{
+  background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);padding:1.25rem 1.35rem;
+}
+.grid{display:grid;gap:1.1rem;}
+.cols-3{grid-template-columns:repeat(3,1fr);}
+.cols-2{grid-template-columns:repeat(2,1fr);}
+.cols-4{grid-template-columns:repeat(4,1fr);}
+
+/* ---------------- Today ---------------- */
+.action-card{display:flex;flex-direction:column;gap:.6rem;position:relative;overflow:hidden;}
+.action-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold-500);}
+.action-card .a-domain{font-size:.74rem;text-transform:uppercase;letter-spacing:.13em;font-weight:700;color:var(--text-muted);}
+.action-card h3{font-size:1.1rem;font-weight:600;}
+.action-card .a-why{font-size:.92rem;color:var(--text-secondary);}
+.action-card .a-foot{margin-top:auto;padding-top:.7rem;border-top:1px solid var(--hairline);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.btn-do{
+  background:var(--navy-900);color:var(--gold-300);border:0;border-radius:999px;
+  padding:.42rem 1.05rem;font-size:.87rem;font-weight:700;cursor:pointer;
+}
+.btn-do:hover{background:var(--navy-800);}
+.btn-do:focus-visible{outline:2px solid var(--gold-500);outline-offset:2px;}
+.a-cost{font-size:.83rem;color:var(--text-muted);}
+
+/* ---------------- Domain cards ---------------- */
+.domain-card{
+  background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);padding:1rem 1.05rem 1.05rem;display:flex;flex-direction:column;gap:.55rem;
+  text-align:left;width:100%;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;
+}
+.domain-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.domain-card:focus-visible{outline:2px solid var(--seq-fill);outline-offset:2px;}
+.dc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;}
+.dc-name{font-family:var(--font-display);font-size:1.03rem;font-weight:600;line-height:1.25;}
+.dc-share{font-size:1.42rem;font-weight:600;letter-spacing:-.01em;line-height:1;}
+.dc-share span{font-size:.8rem;font-weight:400;color:var(--text-muted);}
+
+.state-chip{
+  display:inline-flex;align-self:flex-start;align-items:center;gap:.35rem;border-radius:999px;
+  padding:.16rem .6rem .16rem .45rem;font-size:.78rem;font-weight:700;letter-spacing:.01em;white-space:nowrap;
+}
+.state-flourishing{background:var(--status-good-wash);color:var(--status-good);}
+.state-attention{background:var(--status-attention-wash);color:var(--status-attention);}
+.state-steady{background:var(--neutral-wash);color:var(--text-secondary);}
+.state-resting{background:var(--neutral-wash);color:var(--text-muted);}
+:root[data-theme="dark"] .state-flourishing{color:#4cd44c;}
+:root[data-theme="dark"] .state-attention{color:#f0a077;}
+
+/* meter — sequential ramp, track is a lighter step of the same hue */
+.meter{height:8px;border-radius:999px;background:var(--seq-track);overflow:hidden;}
+.meter > i{display:block;height:100%;border-radius:999px;background:var(--seq-fill);}
+.dc-signal{font-size:.87rem;color:var(--text-secondary);}
+.dc-foot{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-top:.15rem;}
+.dc-spark{flex:none;}
+.dc-trend{font-size:.78rem;color:var(--text-muted);}
+
+/* expandable detail */
+.dc-detail{
+  display:none;font-size:.87rem;color:var(--text-secondary);
+  border-top:1px solid var(--hairline);padding-top:.6rem;margin-top:.15rem;
+}
+.domain-card[aria-expanded="true"] .dc-detail{display:block;}
+.dc-detail b{color:var(--text-primary);font-weight:600;}
+
+/* ---------------- License & Standing (the guarded domain) ---------------- */
+.license-panel{
+  background:var(--surface-1);border:1px solid var(--hairline);border-top:3px solid var(--seq-fill);
+  border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:1.35rem 1.45rem 1.45rem;
+}
+.lic-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:1.9rem;align-items:start;}
+.lic-stat{font-size:2.6rem;font-weight:600;line-height:1;letter-spacing:-.02em;}
+.lic-stat span{font-size:1rem;font-weight:600;color:var(--text-secondary);margin-left:.35rem;}
+.lic-stat-label{font-size:.95rem;color:var(--text-secondary);margin-top:.35rem;}
+.guard-list{list-style:none;margin:1.1rem 0 0;padding:0;display:grid;gap:.5rem;}
+.guard-list li{display:flex;gap:.55rem;align-items:flex-start;font-size:.89rem;color:var(--text-secondary);}
+.guard-list .g-ok{color:var(--status-good);flex:none;margin-top:.2rem;}
+:root[data-theme="dark"] .guard-list .g-ok{color:#4cd44c;}
+.guard-list b{color:var(--text-primary);font-weight:600;}
+
+.lic-sub{font-size:.78rem;text-transform:uppercase;letter-spacing:.13em;font-weight:700;color:var(--text-muted);margin-bottom:.5rem;}
+.cur-row{display:flex;gap:.7rem;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--hairline);font-size:.89rem;}
+.cur-row:last-child{border-bottom:0;}
+.cur-row .c-name{font-weight:600;flex:none;min-width:8.5rem;}
+.cur-row .c-meta{color:var(--text-secondary);flex:1;}
+.cur-row .c-chip{flex:none;align-self:center;}
+
+.scope-note{
+  margin-top:1.1rem;background:var(--seq-fill-soft);border:1px solid var(--seq-fill);
+  border-radius:var(--radius-sm);padding:.85rem .95rem;font-size:.88rem;color:var(--text-secondary);
+}
+.scope-note b{color:var(--text-primary);font-weight:700;}
+.risk-block{margin-top:1.5rem;padding-top:1.1rem;border-top:1px solid var(--hairline);}
+.risk-block .r-head{font-size:.95rem;font-weight:700;margin-bottom:.15rem;}
+.risk-block .r-lede{font-size:.87rem;color:var(--text-secondary);margin-bottom:.7rem;}
+.risk-grid{display:grid;gap:.7rem;}
+.risk-item{background:var(--surface-sunk);border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:.75rem .85rem;}
+.risk-item .r-what{font-size:.88rem;font-weight:600;margin-bottom:.25rem;}
+.risk-item .r-guard{font-size:.83rem;color:var(--text-secondary);}
+.risk-item .r-guard b{color:var(--seq-fill);font-weight:700;}
+
+/* ---------------- Momentum ---------------- */
+.momentum-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:1.1rem;align-items:stretch;}
+.hero-fig{font-size:clamp(3rem,7vw,4.25rem);font-weight:600;line-height:1;letter-spacing:-.02em;color:var(--text-primary);}
+.hero-unit{font-size:1rem;font-weight:600;color:var(--text-secondary);margin-left:.4rem;}
+.hero-label{font-size:.95rem;color:var(--text-secondary);margin-top:.35rem;}
+.hero-note{font-size:.85rem;color:var(--text-muted);margin-top:.5rem;}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;margin-top:1.2rem;}
+.kpi{border-top:1px solid var(--hairline);padding-top:.6rem;}
+.kpi .k-label{font-size:.79rem;color:var(--text-muted);}
+.kpi .k-value{font-size:1.35rem;font-weight:600;line-height:1.2;}
+.kpi .k-delta{font-size:.8rem;color:var(--status-good);font-weight:600;}
+:root[data-theme="dark"] .kpi .k-delta{color:#4cd44c;}
+
+/* ---------------- Charts ---------------- */
+.chart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.4rem;flex-wrap:wrap;}
+.chart-title{font-family:var(--font-display);font-size:1.06rem;font-weight:600;}
+.chart-sub{font-size:.86rem;color:var(--text-muted);}
+.chart-wrap{position:relative;}
+.chart-wrap svg{display:block;width:100%;height:auto;overflow:visible;}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;margin:.5rem 0 .1rem;}
+.legend-item{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;color:var(--text-secondary);}
+.legend-swatch{width:11px;height:11px;border-radius:3px;flex:none;}
+.view-toggle{display:flex;gap:.25rem;background:var(--surface-sunk);border:1px solid var(--hairline);border-radius:999px;padding:.15rem;}
+.view-toggle button{
+  background:none;border:0;border-radius:999px;padding:.25rem .75rem;font-size:.8rem;cursor:pointer;color:var(--text-secondary);
+}
+.view-toggle button[aria-pressed="true"]{background:var(--surface-1);color:var(--text-primary);font-weight:700;box-shadow:var(--shadow-sm);}
+.view-toggle button:focus-visible{outline:2px solid var(--seq-fill);outline-offset:1px;}
+
+table.data-table{width:100%;border-collapse:collapse;font-size:.88rem;font-variant-numeric:tabular-nums;}
+table.data-table th,table.data-table td{text-align:right;padding:.4rem .5rem;border-bottom:1px solid var(--hairline);}
+table.data-table th:first-child,table.data-table td:first-child{text-align:left;}
+table.data-table thead th{color:var(--text-muted);font-weight:600;font-size:.8rem;}
+.hidden{display:none;}
+
+.tooltip{
+  position:absolute;pointer-events:none;opacity:0;transition:opacity .1s ease;
+  background:var(--navy-900);color:#eef4f9;border-radius:8px;padding:.5rem .65rem;
+  font-size:.82rem;line-height:1.45;box-shadow:var(--shadow-md);z-index:20;white-space:nowrap;
+  border:1px solid rgba(255,255,255,.12);
+}
+.tooltip .tt-title{font-weight:700;color:var(--gold-300);margin-bottom:.2rem;}
+.tooltip .tt-row{display:flex;align-items:center;gap:.4rem;}
+.tooltip .tt-dot{width:8px;height:8px;border-radius:2px;flex:none;}
+.tooltip .tt-val{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:600;}
+
+/* ---------------- Signals / opportunities ---------------- */
+.signal{display:flex;gap:.8rem;align-items:flex-start;padding:.85rem 0;border-bottom:1px solid var(--hairline);}
+.signal:last-child{border-bottom:0;padding-bottom:0;}
+.signal:first-child{padding-top:0;}
+.sig-icon{flex:none;margin-top:.15rem;}
+.signal h4{font-family:var(--font-body);font-size:.98rem;font-weight:700;margin:0 0 .15rem;}
+.signal p{font-size:.89rem;color:var(--text-secondary);}
+.sig-action{
+  margin-top:.4rem;display:inline-block;background:none;border:1px solid var(--hairline-strong);
+  border-radius:999px;padding:.25rem .8rem;font-size:.82rem;cursor:pointer;color:var(--text-primary);
+}
+.sig-action:hover{border-color:var(--seq-fill);color:var(--seq-fill);}
+.sig-action:focus-visible{outline:2px solid var(--seq-fill);outline-offset:2px;}
+
+.opp{border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:.85rem .95rem;background:var(--surface-sunk);}
+.opp .o-kind{font-size:.72rem;text-transform:uppercase;letter-spacing:.13em;font-weight:700;color:var(--seq-fill);}
+.opp h4{font-family:var(--font-body);font-size:.98rem;font-weight:700;margin:.2rem 0 .2rem;}
+.opp p{font-size:.86rem;color:var(--text-secondary);}
+.opp .o-when{font-size:.8rem;color:var(--text-muted);margin-top:.4rem;}
+
+/* ---------------- Reflection ---------------- */
+.reflect-input{
+  width:100%;border:1px solid var(--hairline-strong);border-radius:var(--radius-sm);
+  background:var(--surface-sunk);color:var(--text-primary);font-family:inherit;font-size:.95rem;
+  padding:.8rem .9rem;resize:vertical;min-height:76px;
+}
+.reflect-input:focus{outline:2px solid var(--seq-fill);outline-offset:1px;}
+.reflect-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0 .2rem;}
+.rtag{border:1px solid var(--hairline-strong);background:none;border-radius:999px;padding:.22rem .75rem;font-size:.82rem;cursor:pointer;color:var(--text-secondary);}
+.rtag[aria-pressed="true"]{background:var(--seq-fill-soft);border-color:var(--seq-fill);color:var(--seq-fill);font-weight:700;}
+.rtag:focus-visible{outline:2px solid var(--seq-fill);outline-offset:2px;}
+.entry{padding:.7rem 0;border-bottom:1px solid var(--hairline);font-size:.9rem;}
+.entry:last-child{border-bottom:0;}
+.entry .e-meta{font-size:.78rem;color:var(--text-muted);margin-bottom:.15rem;}
+
+/* ---------------- Agent team ---------------- */
+.agent{display:flex;gap:.9rem;align-items:flex-start;}
+.agent-avatar{
+  width:40px;height:40px;border-radius:11px;flex:none;display:grid;place-items:center;
+  background:var(--seq-fill-soft);color:var(--seq-fill);font-weight:700;font-size:.95rem;
+}
+.agent h4{font-family:var(--font-body);font-size:1rem;font-weight:700;margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.tier-chip{font-size:.72rem;font-weight:700;border-radius:999px;padding:.12rem .6rem;letter-spacing:.02em;}
+.tier-green{background:var(--status-good-wash);color:var(--status-good);}
+.tier-yellow{background:var(--status-attention-wash);color:var(--status-attention);}
+:root[data-theme="dark"] .tier-green{color:#4cd44c;}
+:root[data-theme="dark"] .tier-yellow{color:#f0a077;}
+.agent p{font-size:.87rem;color:var(--text-secondary);margin-top:.15rem;}
+.agent .a-await{font-size:.84rem;color:var(--text-primary);margin-top:.4rem;}
+.agent .a-await b{color:var(--status-attention);font-weight:700;}
+
+/* ---------------- Transparency ---------------- */
+.transparency{background:var(--surface-2);border-top:1px solid var(--hairline);margin-top:2.6rem;padding:2.2rem 0 2.4rem;}
+.tp-principle{
+  font-family:var(--font-display);font-size:clamp(1.15rem,2.4vw,1.5rem);font-weight:600;
+  color:var(--text-primary);margin-bottom:.4rem;
+}
+.tp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-top:1.2rem;}
+.tp-item{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:.85rem .95rem;}
+.tp-item .t-q{font-size:.8rem;font-weight:700;color:var(--text-primary);margin-bottom:.2rem;}
+.tp-item .t-a{font-size:.85rem;color:var(--text-secondary);}
+.tp-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.2rem;}
+.tp-btn{background:none;border:1px solid var(--hairline-strong);border-radius:999px;padding:.4rem 1rem;font-size:.86rem;cursor:pointer;color:var(--text-primary);}
+.tp-btn:hover{border-color:var(--status-attention);color:var(--status-attention);}
+.tp-btn:focus-visible{outline:2px solid var(--seq-fill);outline-offset:2px;}
+
+footer.mc-foot{background:var(--navy-900);color:var(--on-navy-dim);padding:1.6rem 0;font-size:.86rem;}
+footer.mc-foot .motto{color:var(--gold-300);font-family:var(--font-display);font-size:1rem;margin-bottom:.4rem;}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+
+@media (max-width:860px){
+  .mc-bar{flex-direction:column;align-items:stretch;gap:.55rem;padding:.7rem 1.1rem;}
+  .mc-bar > *{min-width:0;max-width:100%;}
+  .mc-tabs{flex:0 1 auto;width:100%;min-width:0;flex-wrap:nowrap;overflow-x:auto;gap:.1rem;scrollbar-width:none;}
+  .mc-tabs::-webkit-scrollbar{display:none;}
+  .mc-tab{white-space:nowrap;padding:.35rem .55rem;}
+  .mc-right{justify-content:space-between;}
+  .role-select{flex:1 1 auto;min-width:0;}
+}
+@media (max-width:960px){
+  .ns-grid{grid-template-columns:1fr;}
+  .lic-grid{grid-template-columns:1fr;gap:1.5rem;}
+  .cols-3,.cols-4{grid-template-columns:repeat(2,1fr);}
+  .momentum-grid{grid-template-columns:1fr;}
+  .tp-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:620px){
+  .cols-2,.cols-3,.cols-4,.kpi-row,.tp-grid{grid-template-columns:1fr;}
+  .cur-row{flex-wrap:wrap;}
+  .cur-row .c-name{min-width:0;flex:1 1 auto;}
+  .cur-row .c-meta{flex:1 1 100%;order:3;}
+  .license-panel{padding:1.1rem 1rem 1.2rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ Mission Control shell ============ -->
+<header class="mc-header">
+  <div class="mc-bar">
+    <div class="mc-brand"><span class="lamp">🕯️</span> NAIO Mission Control</div>
+    <nav class="mc-tabs" aria-label="Mission Control sections">
+      <button class="mc-tab" data-tab="overview" aria-current="page">Overview</button>
+      <button class="mc-tab" data-tab="agents">Agents</button>
+      <button class="mc-tab" data-tab="tasks">Tasks</button>
+      <button class="mc-tab" data-tab="schedule">Schedule</button>
+      <button class="mc-tab" data-tab="memory">Memory</button>
+      <button class="mc-tab" data-tab="library">Library</button>
+      <button class="mc-tab" data-tab="ledger">Ledger</button>
+    </nav>
+    <div class="mc-right">
+      <label class="sr-only" for="role">Role</label>
+      <select id="role" class="role-select">
+        <option value="bedside" selected>Role: Bedside / Staff nurse</option>
+        <option value="student">Role: Nursing student</option>
+        <option value="educator">Role: Educator / Faculty</option>
+        <option value="leader">Role: Nurse manager / Leader</option>
+        <option value="np">Role: Nurse practitioner</option>
+        <option value="resident">Role: MD resident</option>
+        <option value="entrepreneur">Role: Nurse entrepreneur</option>
+      </select>
+      <button class="mode-toggle" id="modeToggle" aria-pressed="false">
+        <span id="modeIcon">☾</span><span id="modeLabel">Night shift</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ Gate banner (persistent on every tab) ============ -->
+<div class="sample-banner" id="sampleBanner" role="status" style="display:none;">
+  <div class="sample-inner">
+    <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.6v4.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.4" r=".85" fill="currentColor"/></svg>
+    <span><strong>Sample content.</strong> The role configuration is real and loaded from <code>roles/</code>. Everything a person says or owns on this screen is demonstration data until the SOUL bridge lands — no nurse's life is in here yet.</span>
+  </div>
+</div>
+<div class="gate-banner" role="status">
+  <div class="gate-inner">
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 14.5 13.5h-13z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.6" r=".9" fill="currentColor"/></svg>
+    <span id="gateText"><strong>2 human gates waiting.</strong> Scribe drafted a LinkedIn post and Scholar wants to add 4 pages to your CMC library. Nothing sends until you say so.</span>
+    <button class="gate-pill">Review in Hermes →</button>
+  </div>
+</div>
+
+<!-- ============ North Star ============ -->
+<div class="tab-panel" id="tab-overview">
+<section class="northstar" data-card="north_star">
+  <div class="wrap ns-grid">
+    <div>
+      <p class="kicker">Your direction</p>
+      <h1 class="ns-mission" id="nsMission">Become the nurse who brings governed AI to the bedside — without letting the bedside cost me my health or my people.</h1>
+      <p class="ns-sub" id="nsSub">Maya Reyes, RN, CCRN · night shift, cardiac ICU · 11 years in · mother of two · building something on the side. Your agents work across all of it — not just the twelve hours the hospital sees.</p>
+      <div class="ns-values" id="nsValues"></div>
+    </div>
+    <aside class="ns-season" aria-label="Current season">
+      <p class="lbl">Your current season</p>
+      <p class="season-name" id="seasonName">Certification &amp; consolidation</p>
+      <p id="seasonBody">You chose depth this season: finish the CMC, steady the house, and let the venture idle on purpose. Nothing here is behind — it is sequenced.</p>
+      <p class="season-meta"><span id="seasonMeta">Week 9 of 16 · you set this on 12 June · next review 2 September</span></p>
+      <button class="season-edit" id="seasonEdit" type="button">Set your season</button>
+      <form class="season-form" id="seasonForm" hidden>
+        <label class="sr-only" for="sName">Season name</label>
+        <input id="sName" class="season-input" placeholder="e.g. Certification &amp; consolidation" maxlength="80">
+        <label class="sr-only" for="sBody">What this season means</label>
+        <textarea id="sBody" class="season-input" rows="3" placeholder="What you chose, and what you deliberately paused." maxlength="400"></textarea>
+        <label class="sr-only" for="sMeta">Timing</label>
+        <input id="sMeta" class="season-input" placeholder="e.g. Week 9 of 16 · next review 2 September" maxlength="120">
+        <div class="season-actions">
+          <button type="submit" class="btn-do">Save</button>
+          <button type="button" class="season-cancel" id="seasonCancel">Cancel</button>
+        </div>
+        <p class="season-hint">Saved to your own <code>content/</code> file on this machine. No patient information belongs here — the lint checks before it writes.</p>
+      </form>
+    </aside>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <!-- ============ Today ============ -->
+  <section class="section" data-card="today" aria-labelledby="h-today">
+    <div class="section-head">
+      <div>
+        <h2 id="h-today">Today, three things that matter</h2>
+        <p class="sh-sub">Chosen for impact and alignment with your season — not everything you could do.</p>
+      </div>
+      <span class="outcome-tag">Recommends</span>
+    </div>
+    <div class="grid cols-3" id="todayGrid"></div>
+  </section>
+
+  <!-- ============ License & Standing ============ -->
+  <section class="section" data-card="license_standing" aria-labelledby="h-license">
+    <div class="section-head">
+      <div>
+        <h2 id="h-license">License &amp; standing</h2>
+        <p class="sh-sub">The one domain that is not a place you spend attention. It is a thing you protect — so it is held apart, and it is never a percentage.</p>
+      </div>
+      <span class="outcome-tag">Protects</span>
+    </div>
+    <div class="license-panel">
+      <div class="lic-grid">
+        <div>
+          <p class="lic-stat" id="licDays">62<span>days</span></p>
+          <p class="lic-stat-label">since anything in this system came near a boundary. Not a score — a record you can show anyone.</p>
+          <ul class="guard-list" id="guardList"></ul>
+
+          <div class="risk-block">
+            <p class="r-head">What would actually put this at risk</p>
+            <p class="r-lede">Said plainly, because a guard you cannot see is not a guard. Two of these the system stops. The third is yours.</p>
+            <div class="risk-grid" id="riskGrid"></div>
+          </div>
+        </div>
+        <div>
+          <p class="lic-sub">Currency — what could lapse</p>
+          <div id="currencyRows"></div>
+          <form class="cur-add" id="curAdd">
+            <input id="curName" class="cur-input" placeholder="Credential (e.g. ACLS)" maxlength="80" required>
+            <input id="curMeta" class="cur-input cur-wide" placeholder="Renews 24 October 2026 · no class booked" maxlength="160">
+            <select id="curState" class="cur-state">
+              <option value="flourishing">Current</option>
+              <option value="steady">On track</option>
+              <option value="attention">Wants a look</option>
+            </select>
+            <button type="submit" class="cur-btn">Add</button>
+          </form>
+          <p class="lic-sub" style="margin-top:1.15rem;">Reputation — what carries your name</p>
+          <div id="reputationRows"></div>
+          <p class="chart-sub" style="margin-top:1.1rem;">Dates come from what you entered once. Nothing here is read from an employer system, and nothing is reported to one.</p>
+          <div id="scopeNote"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Stewardship balance ============ -->
+  <section class="section" data-card="stewardship_balance" aria-labelledby="h-domains">
+    <div class="section-head">
+      <div>
+        <h2 id="h-domains">Your stewardship balance</h2>
+        <p class="sh-sub">The eight domains where your time and attention actually go, over the last 30 days — read from your own calendar, notes, and honored commitments. Select a domain for the detail.</p>
+      </div>
+      <span class="outcome-tag">Reveals</span>
+    </div>
+    <div class="grid cols-4" id="domainGrid"></div>
+    <p class="chart-sub" style="margin-top:.9rem;">
+      Shares sum to 100% of tended attention. A low share is not a failure — <b style="font-weight:600;color:var(--text-secondary);">Business &amp; ventures is resting because you paused it on purpose.</b>
+    </p>
+  </section>
+
+  <!-- ============ Momentum ============ -->
+  <section class="section" data-card="momentum" aria-labelledby="h-momentum">
+    <div class="section-head">
+      <div>
+        <h2 id="h-momentum">Momentum</h2>
+        <p class="sh-sub">What the system carried, and what you got back.</p>
+      </div>
+      <span class="outcome-tag">Celebrates</span>
+    </div>
+    <div class="momentum-grid">
+      <div class="card" id="momentumCard"></div>
+
+      <div class="card chart-wrap" id="lineCard">
+        <div class="chart-head">
+          <div>
+            <p class="chart-title">Commitments honored per week</p>
+            <p class="chart-sub" id="lineCaption">Last 12 weeks · the flywheel caught around week 5</p>
+          </div>
+          <div class="view-toggle" role="group" aria-label="Chart or table view">
+            <button data-view="chart" data-target="line" aria-pressed="true">Chart</button>
+            <button data-view="table" data-target="line" aria-pressed="false">Table</button>
+          </div>
+        </div>
+        <div id="lineChart"></div>
+        <div id="lineTable" class="hidden"></div>
+        <div class="tooltip" id="lineTip" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Evidence of progress ============ -->
+  <section class="section" data-card="evidence" aria-labelledby="h-evidence">
+    <div class="section-head">
+      <div>
+        <h2 id="h-evidence">Your evidence of progress</h2>
+        <p class="sh-sub">Six months of what you actually advanced — the answer to “show me how you use AI responsibly,” already assembled.</p>
+      </div>
+      <span class="outcome-tag">Celebrates</span>
+    </div>
+    <div class="card chart-wrap" id="barCard">
+      <div class="chart-head">
+        <div>
+          <p class="chart-title">Commitments honored, by kind</p>
+          <p class="chart-sub">Feeds your EDENA evidence trail · no patient data, at any tier</p>
+        </div>
+        <div class="view-toggle" role="group" aria-label="Chart or table view">
+          <button data-view="chart" data-target="bar" aria-pressed="true">Chart</button>
+          <button data-view="table" data-target="bar" aria-pressed="false">Table</button>
+        </div>
+      </div>
+      <div class="legend" id="barLegend"></div>
+      <div id="barChart"></div>
+      <div id="barTable" class="hidden"></div>
+      <div class="tooltip" id="barTip" role="status"></div>
+    </div>
+  </section>
+
+  <!-- ============ Signals + Opportunities ============ -->
+  <section class="section">
+    <div class="grid cols-2" style="align-items:start;">
+      <div data-card="signals">
+        <div class="section-head">
+          <div>
+            <h2 id="h-signals" style="font-size:1.3rem;">Stewardship signals</h2>
+            <p class="sh-sub">Noticed, not judged.</p>
+          </div>
+          <span class="outcome-tag">Protects</span>
+        </div>
+        <div class="card" id="signalList" aria-labelledby="h-signals"></div>
+      </div>
+      <div data-card="opportunities">
+        <div class="section-head">
+          <div>
+            <h2 id="h-opps" style="font-size:1.3rem;">Opportunities</h2>
+            <p class="sh-sub">Doors that are open right now.</p>
+          </div>
+          <span class="outcome-tag">Reveals</span>
+        </div>
+        <div class="grid" style="gap:.75rem;" id="oppList" aria-labelledby="h-opps"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Reflection ============ -->
+  <section class="section" data-card="reflection" aria-labelledby="h-reflect">
+    <div class="section-head">
+      <div>
+        <h2 id="h-reflect">Reflection</h2>
+        <p class="sh-sub">The ledger only works if something goes in it. One line is enough.</p>
+      </div>
+      <span class="outcome-tag">Protects</span>
+    </div>
+    <div class="grid cols-2" style="align-items:start;">
+      <div class="card">
+        <label class="sr-only" for="reflectBox">Reflection entry</label>
+        <textarea class="reflect-input" id="reflectBox" placeholder="What did you learn, decide, or notice today?"></textarea>
+        <div class="reflect-tags" role="group" aria-label="Entry kind">
+          <button class="rtag" aria-pressed="true">Lesson</button>
+          <button class="rtag" aria-pressed="false">Decision</button>
+          <button class="rtag" aria-pressed="false">Gratitude</button>
+          <button class="rtag" aria-pressed="false">Concern</button>
+          <button class="rtag" aria-pressed="false">Aspiration</button>
+        </div>
+        <p class="chart-sub" style="margin-top:.5rem;">Saved to your vault on this machine. Your agents may read it; nothing leaves without a gate.</p>
+      </div>
+      <div class="card">
+        <p class="chart-title" style="margin-bottom:.4rem;">Recent entries</p>
+        <div class="entry">
+          <p class="e-meta">Decision · 8 August</p>
+          <p>Told the unit council I'd take the AI-policy seat, but only through December. Naming the end date is why I could say yes.</p>
+        </div>
+        <div class="entry">
+          <p class="e-meta">Lesson · 6 August</p>
+          <p>The study-plan skill kept drifting into content review. Fixed the file instead of re-explaining it. Third time is a bug, not a conversation.</p>
+        </div>
+        <div class="entry">
+          <p class="e-meta">Gratitude · 3 August</p>
+          <p>Woke up to the Friday wrap-up already written. First time the day wasn't the unit of work.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Agent team ============ -->
+  <section class="section" data-card="agent_team" aria-labelledby="h-agents">
+    <div class="section-head">
+      <div>
+        <h2 id="h-agents">Your agent team</h2>
+        <p class="sh-sub">Who is helping, what they are allowed to do, and what is waiting on you.</p>
+      </div>
+      <span class="outcome-tag">Protects</span>
+    </div>
+    <div class="grid cols-3" id="agentGrid"></div>
+  </section>
+
+</main>
+
+<!-- ============ Transparency ============ -->
+<section class="transparency">
+  <div class="wrap">
+    <p class="kicker" style="color:var(--seq-fill);">Governance, in plain sight</p>
+    <p class="tp-principle">Expansive in possibility. Conservative in access. Transparent in action.</p>
+    <p style="color:var(--text-secondary);max-width:70ch;font-size:.95rem;">
+      There is no PHI anywhere in this screen — but your health, money, family, and employment are still yours alone. So the answers stay on the page, not in a policy you have to go find.
+    </p>
+    <div class="tp-grid">
+      <div class="tp-item"><p class="t-q">What information is being used?</p><p class="t-a">Your calendar, your vault notes, your honored commitments, your SOUL files. Nothing from your employer's systems.</p></div>
+      <div class="tp-item"><p class="t-q">Where is it stored?</p><p class="t-a">On this machine, in <code>~/NAIO</code>. The dashboard's own database holds counts and timestamps — never note bodies.</p></div>
+      <div class="tp-item"><p class="t-q">Which agent can reach it?</p><p class="t-a">Florence: all spheres, read-only outside Health. Scholar: Learning only. Scribe: Creativity + Business, no calendar.</p></div>
+      <div class="tp-item"><p class="t-q">Why is this being recommended?</p><p class="t-a">Every card links to its reason — the signal, the file, and the rule that surfaced it. Nothing appears here unexplained.</p></div>
+      <div class="tp-item"><p class="t-q">What happens before anything is sent?</p><p class="t-a">It stops at a human gate and waits for you. Green drafts freely; Yellow and Red need your hand. Irreversible is gated at every tier.</p></div>
+      <div class="tp-item"><p class="t-q">How do I pause, revoke, or delete?</p><p class="t-a">One click per domain, per agent, or all of it. Revoking is instant and does not need a reason.</p></div>
+    </div>
+    <div class="tp-actions">
+      <button class="tp-btn">Pause all agents</button>
+      <button class="tp-btn">Revoke a sphere</button>
+      <button class="tp-btn">Export everything</button>
+      <button class="tp-btn">Delete a domain's data</button>
+    </div>
+  </div>
+</section>
+</div><!-- /tab-overview -->
+
+<div class="tab-panel" id="tab-agents" hidden>
+  <main class="wrap"><section class="section">
+    <div class="section-head"><div>
+      <h2>Your agent team</h2>
+      <p class="sh-sub">Who is helping, what they may do, and what they have actually done. Counts come from the activity log, not from a promise.</p>
+    </div><span class="outcome-tag">Protects</span></div>
+    <div class="grid cols-3" id="agentsPanel"></div>
+    <div class="card" style="margin-top:1.1rem;">
+      <p class="chart-title" style="margin-bottom:.5rem;">Recent activity</p>
+      <div id="activityList"></div>
+    </div>
+  </section></main>
+</div>
+
+<div class="tab-panel" id="tab-tasks" hidden>
+  <main class="wrap"><section class="section">
+    <div class="section-head"><div>
+      <h2>Tasks</h2>
+      <p class="sh-sub">Lanes come from your role preset. Assigning a task to an agent proposes work; it never dispatches it.</p>
+    </div><span class="outcome-tag">Recommends</span></div>
+    <div class="card" style="margin-bottom:1.1rem;">
+      <div class="task-add">
+        <input id="taskTitle" class="task-input" placeholder="What needs doing? (no PHI — the lint watches this field)">
+        <select id="taskAssignee" class="task-select"><option value="me">me</option></select>
+        <button class="btn-do" id="taskAdd">Add</button>
+      </div>
+    </div>
+    <div class="kanban" id="kanban"></div>
+  </section></main>
+</div>
+
+<div class="tab-panel" id="tab-schedule" hidden>
+  <main class="wrap"><section class="section">
+    <div class="section-head"><div>
+      <h2>Schedule</h2>
+      <p class="sh-sub">A read-only mirror of the runtime's schedule.</p>
+    </div><span class="outcome-tag">Protects</span></div>
+    <div class="card">
+      <p class="readonly-note"><b>Display only.</b> Mission Control shows rituals; it does not schedule them, and there is no endpoint here that could. Cron lives in the runtime, where the human is.</p>
+      <div id="schedulePanel"></div>
+    </div>
+  </section></main>
+</div>
+
+<div class="tab-panel" id="tab-memory" hidden>
+  <main class="wrap"><section class="section">
+    <div class="section-head"><div>
+      <h2>Memory</h2>
+      <p class="sh-sub">Three layers, side by side — and the pipeline that turns a 2 a.m. capture into something that compounds.</p>
+    </div><span class="outcome-tag">Reveals</span></div>
+    <div class="card" style="margin-bottom:1.1rem;">
+      <p class="readonly-note"><b>Metadata only.</b> Note bodies are never stored here — they stay at the source. That is the PHI posture, not an optimisation. <b>Promoting to memory writes a proposal, never memory itself</b>; you approve it in the runtime, where the gate lives.</p>
+    </div>
+    <div class="mem-grid">
+      <div class="card"><p class="chart-title">SOUL &amp; memory changes</p><p class="chart-sub" id="soulFiles"></p><div id="memEvents"></div></div>
+      <div class="card"><p class="chart-title">Vault index</p><p class="chart-sub" id="vaultRoot"></p><div id="vaultNotes"></div></div>
+      <div class="card"><p class="chart-title">Apple Notes inbox</p><p class="chart-sub">Capture inbox, macOS only, configured folders only.</p><div id="appleNotes"></div></div>
+    </div>
+  </section></main>
+</div>
+
+<div class="tab-panel" id="tab-library" hidden>
+  <main class="wrap"><section class="section">
+    <div class="section-head"><div>
+      <h2>Library</h2>
+      <p class="sh-sub">Long-form artifacts your agents produced and you reviewed. Filters come from your role preset.</p>
+    </div><span class="outcome-tag">Celebrates</span></div>
+    <div class="lib-filters" id="libFilters"></div>
+    <div class="card"><div id="libraryList"></div></div>
+  </section></main>
+</div>
+
+<div class="tab-panel" id="tab-ledger" hidden>
+  <main class="wrap"><section class="section">
+    <div class="section-head"><div>
+      <h2>Ledger</h2>
+      <p class="sh-sub">The EDENA evidence trail. This is the tab you would show an educator, a manager, or a skeptic.</p>
+    </div><span class="outcome-tag">Protects</span></div>
+    <div class="grid cols-4" id="ledgerStats" style="margin-bottom:1.1rem;"></div>
+    <div class="grid cols-2" style="align-items:start;">
+      <div class="card"><p class="chart-title">Human gates</p><p class="chart-sub">Never auto-pruned. Surfaced here; resolved in the runtime.</p><div id="ledgerGates"></div></div>
+      <div class="card"><p class="chart-title">Boundary refusals</p><p class="chart-sub">The most valuable rows in the ledger.</p><div id="ledgerRefusals"></div></div>
+    </div>
+    <div class="card" style="margin-top:1.1rem;"><p class="chart-title">Nightly PHI lint</p><div id="ledgerLint"></div></div>
+  </section></main>
+</div>
+
+<footer class="mc-foot">
+  <div class="wrap">
+    <p class="motto">🕯️ Carry the lamp. Keep the ledger.</p>
+    <div class="sys-strip" id="systemStrip" aria-label="System status"></div>
+    <p style="margin-top:.8rem;">Agents propose. Humans judge. Nurses steward. · No PHI, at any tier · Mission Control surfaces gates; it never approves them.</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   Data — a multidimensional nurse in a stewardship posture.
+   Personal lane only: no PHI anywhere, by construction.
+   ========================================================================== */
+/* ==========================================================================
+   Data — seven practitioners in a stewardship posture.
+   Personal lane only: no PHI anywhere, for any role, by construction.
+   ========================================================================== */
+
+/* The eight domains where time and attention actually go.
+   License & standing is deliberately NOT one of them: you do not spend
+   attention on a thing you protect. */
+const DOMAIN_META = [
+  ['health',  'Health & Energy'],
+  ['family',  'Family & Relationships'],
+  ['career',  'Career & Practice'],
+  ['learning','Learning & Mastery'],
+  ['finance', 'Finances'],
+  ['creative','Creativity & Ideas'],
+  ['service', 'Service & Community'],
+  ['business','Business & Ventures']
+];
+
+const STATE_META = {
+  flourishing:{ label:'Flourishing',   altLabel:'Current',      cls:'state-flourishing', icon:'up' },
+  steady:     { label:'Steady',        altLabel:'On track',     cls:'state-steady',      icon:'dot' },
+  attention:  { label:'Wants a look',  altLabel:'Wants a look', cls:'state-attention',   icon:'diamond' },
+  resting:    { label:'Resting, on purpose', altLabel:'Paused', cls:'state-resting',     icon:'pause' }
+};
+
+const ICONS = {
+  up:'<svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2 10.5 9.5h-9z" fill="currentColor"/></svg>',
+  dot:'<svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="3.6" fill="currentColor"/></svg>',
+  diamond:'<svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.4 10.6 6 6 10.6 1.4 6z" fill="currentColor"/></svg>',
+  pause:'<svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><rect x="2.6" y="2.2" width="2.6" height="7.6" rx="1" fill="currentColor"/><rect x="6.8" y="2.2" width="2.6" height="7.6" rx="1" fill="currentColor"/></svg>',
+  check:'<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.6 7.4 5.6 10.4 11.4 3.9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+
+/* Deterministic 12-point trend ending on the current share. */
+function trendFor(share, dir){
+  const amp = dir==='flat' ? 1 : Math.max(2, Math.round(share*0.5));
+  const start = dir==='up' ? share-amp : dir==='down' ? share+amp : share;
+  const wob = [0,1,-1,1,0,-1,1,0,-1,1,0,0];
+  const out = [];
+  for(let i=0;i<12;i++){
+    const base = start + (share-start)*(i/11);
+    out.push(Math.max(1, Math.round(base + wob[i]*(dir==='flat'?1:0.9))));
+  }
+  out[11] = share;
+  return out;
+}
+
+/* Guards that hold for every role — the rails do not vary by profession. */
+const BASE_GUARDS = (days, gates) => ([
+  '<b>No PHI has entered this system.</b> Zero import refusals needed, zero hits across ' + days + ' nightly lint scans.',
+  '<b>No patient-specific clinical reasoning has happened here.</b> Every practice-adjacent draft stopped at a gate and ended with you.',
+  '<b>Nothing irreversible ran unreviewed.</b> ' + gates + ' gates raised this quarter; ' + gates + ' answered by your hand.',
+  '<b>Your evidence trail is current to 8 August</b> — artifact log, gate ledger, and EDENA reflections, exportable in one pass.'
+]);
+
+const WEEK_LABELS = ['w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11','w12'];
+const EV_SERIES = [
+  { key:0, label:'Learning',       varName:'--series-1' },
+  { key:1, label:'Relationships',  varName:'--series-2' },
+  { key:2, label:'Ideas advanced', varName:'--series-3' }
+];
+const EV_MONTHS = ['Mar','Apr','May','Jun','Jul','Aug'];
+
+/* ==========================================================================
+   Render
+   ========================================================================== */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+
+/* ---- state comes from the server, never from a literal in this file ---- */
+let ROLE = null;          // active role_id
+let PRESET = null;        // roles/<id>.json  — configuration
+let CONTENT = null;       // content/<id>.*.json — what fills the configured slots
+const R = () => CONTENT;
+
+async function api(path){
+  const res = await fetch(path, {headers:{'Accept':'application/json'}});
+  if(!res.ok) throw new Error(`${path} → ${res.status}`);
+  return res.json();
+}
+
+/* ---- North Star + today ---- */
+function emptyCard(title, body){
+  return `<div class="card empty-card"><p class="e-title">${esc(title)}</p><p class="e-body">${esc(body)}</p></div>`;
+}
+
+function renderTop(){
+  const d = R();
+  $('#nsMission').textContent = d.mission;
+  $('#nsSub').textContent = d.sub;
+  const hasSeason = !!(d.season && d.season.trim());
+  $('#seasonName').textContent = hasSeason ? d.season : 'Not set yet';
+  $('#seasonBody').textContent = hasSeason ? d.seasonBody
+    : 'A season is the chapter you are in and what you have deliberately paused. Nothing on this screen can be sequenced without it — so it stays blank rather than guessing.';
+  $('#seasonMeta').textContent = hasSeason ? d.seasonMeta : 'Set it in your SOUL file and re-import.';
+  $('#nsValues').innerHTML = (d.values||[]).map(v=>`<span class="value-chip">${esc(v)}</span>`).join('');
+  const own = !d.sample;
+  $('#seasonEdit').hidden = !own || !$('#seasonForm').hidden;
+  $('#seasonEdit').textContent = (d.season && d.season.trim()) ? 'Change your season' : 'Set your season';
+  $('#seasonForm').hidden = $('#seasonForm').hidden || !own;
+  const ca = $('#curAdd'); if(ca) ca.hidden = !own;
+  if(!d.actions || !d.actions.length){
+    $('#todayGrid').innerHTML = emptyCard('No actions yet',
+      'Three meaningful actions are chosen from your season, your signals, and what your agents have observed. Set your season and let a collector run for a week — the system will not invent three things for you to do.');
+  } else
+  $('#todayGrid').innerHTML = d.actions.map(a=>`
+    <article class="card action-card">
+      <p class="a-domain">${a.domain}</p>
+      <h3>${a.title}</h3>
+      <p class="a-why">${a.why}</p>
+      <div class="a-foot">
+        <button class="btn-do">${a.cta}</button>
+        <span class="a-cost">${a.cost}</span>
+      </div>
+    </article>`).join('');
+}
+
+/* ---- Sparkline: single series, de-emphasis body + accent end dot ---- */
+function sparkline(values){
+  const W=100,H=26,P=3;
+  const min=Math.min(...values), max=Math.max(...values), span=(max-min)||1;
+  const pts = values.map((v,i)=>{
+    const x = P + i*((W-2*P)/(values.length-1));
+    const y = H-P - ((v-min)/span)*(H-2*P);
+    return [x,y];
+  });
+  const d = pts.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+  const last = pts[pts.length-1];
+  return `<svg width="100" height="26" viewBox="0 0 ${W} ${H}" role="img" aria-label="12-week trend">
+    <path d="${d}" fill="none" stroke="var(--deemph)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="4"
+            fill="var(--seq-fill)" stroke="var(--surface-1)" stroke-width="2"/>
+  </svg>`;
+}
+
+/* When content has no risk text yet, name the slots the preset declares. */
+function PRESET_RISKS(){
+  const slots = (PRESET && PRESET.risk_briefing) || [];
+  return slots.map(id=>({
+    what: id.replace(/_/g,' ').replace(/^./, c=>c.toUpperCase()),
+    guard: 'Declared by your role preset. The wording arrives with your content — the boundary is already enforced either way.',
+  }));
+}
+
+/* ---- License & standing ---- */
+function renderLicense(){
+  const L = R().license || {};
+  const known = L.days != null;
+  $('#licDays').innerHTML = known ? `${L.days}<span>days</span>`
+    : `<span class="dc-unmeasured">—</span><span>no record yet</span>`;
+  $('#guardList').innerHTML = (known ? BASE_GUARDS(L.days, L.gates) : [
+    'The guards are live from the moment you start — but <b>this panel counts days, and it has none to count yet.</b> The first refusal, the first gate, the first nightly lint pass will fill it.',
+  ]).map(g=>
+    `<li><span class="g-ok">${ICONS.check}</span><span>${g}</span></li>`).join('');
+
+  const row = r => {
+    const m = STATE_META[r.state];
+    return `<div class="cur-row">
+      <span class="c-name">${r.name}</span>
+      <span class="c-meta">${r.meta}</span>
+      <span class="c-chip state-chip ${m.cls}">${ICONS[m.icon]}${m.altLabel}</span>
+    </div>`;
+  };
+  const noRows = '<p class="e-body">Nothing added yet. A soul file says who you are; it does not know what expires. Add your credentials here and the panel starts keeping them current.</p>';
+  $('#currencyRows').innerHTML   = (L.currency||[]).length ? L.currency.map(row).join('') : noRows;
+  $('#reputationRows').innerHTML = (L.reputation||[]).length ? L.reputation.map(row).join('')
+    : '<p class="e-body">Nothing carries your name yet through this system.</p>';
+  $('#scopeNote').innerHTML = L.scopeNote ? `<div class="scope-note">${L.scopeNote}</div>` : '';
+
+  $('#riskGrid').innerHTML = ((L.risks||[]).length ? L.risks : PRESET_RISKS()).map((r,i)=>`
+    <div class="risk-item">
+      <p class="r-what">${i+1}. ${r.what}</p>
+      <p class="r-guard">${r.guard}</p>
+    </div>`).join('');
+}
+
+/* ---- Editing your own content: season + the credentials that could lapse ---- */
+async function patchContent(patch){
+  const res = await fetch('/api/content/'+encodeURIComponent(ROLE), {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(patch)});
+  const out = await res.json();
+  if(!res.ok){ alert(out.error || 'Could not save.'); return false; }
+  await selectRole(ROLE);
+  return true;
+}
+
+$('#seasonEdit').addEventListener('click', ()=>{
+  const d = R() || {};
+  $('#sName').value = d.season || ''; $('#sBody').value = d.seasonBody || '';
+  $('#sMeta').value = d.seasonMeta || '';
+  $('#seasonForm').hidden = false; $('#seasonEdit').hidden = true; $('#sName').focus();
+});
+$('#seasonCancel').addEventListener('click', ()=>{
+  $('#seasonForm').hidden = true; $('#seasonEdit').hidden = false;
+});
+$('#seasonForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const okd = await patchContent({season:$('#sName').value.trim(),
+    seasonBody:$('#sBody').value.trim(), seasonMeta:$('#sMeta').value.trim()});
+  if(okd){ $('#seasonForm').hidden = true; $('#seasonEdit').hidden = false; }
+});
+
+$('#curAdd').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const name = $('#curName').value.trim(); if(!name) return;
+  const rows = [...(((R()||{}).license||{}).currency || []),
+                {name, meta:$('#curMeta').value.trim(), state:$('#curState').value}];
+  const okd = await patchContent({currency: rows});
+  if(okd){ $('#curName').value=''; $('#curMeta').value=''; }
+});
+
+/* ---- Domain cards ---- */
+function renderDomains(){
+  const D = R().domains;
+  const measured = DOMAIN_META.map(([id])=>D[id]).filter(d=>d.share!=null);
+  const maxShare = measured.length ? Math.max(...measured.map(d=>d.share)) : 1;
+  $('#domainGrid').innerHTML = DOMAIN_META.map(([id,name])=>{
+    const d = D[id], m = STATE_META[d.state];
+    const has = d.share != null;
+    const trend = has ? trendFor(d.share, d.dir) : null;
+    const delta = has ? trend[11]-trend[0] : 0;
+    const trendWord = !has ? 'not measured yet'
+                    : delta>1 ? `up ${delta} pts over 12 weeks`
+                    : delta<-1 ? `down ${Math.abs(delta)} pts over 12 weeks`
+                    : 'holding steady';
+    return `
+    <button class="domain-card" aria-expanded="false" data-domain="${id}">
+      <div class="dc-top">
+        <span class="dc-name">${name}</span>
+        <span class="dc-share">${has ? `${d.share}<span>%</span>` : '<span class="dc-unmeasured">—</span>'}</span>
+      </div>
+      <span class="state-chip ${m.cls}">${ICONS[m.icon]}${m.label}</span>
+      <div class="meter" role="img" aria-label="${has ? d.share+' percent of tended attention' : 'not measured yet'}">
+        ${has ? `<i style="width:${Math.round(d.share/maxShare*100)}%"></i>` : ''}
+      </div>
+      <p class="dc-signal">${d.signal}</p>
+      <div class="dc-foot">
+        <span class="dc-trend">${trendWord}</span>
+        <span class="dc-spark">${has ? sparkline(trend) : ''}</span>
+      </div>
+      <p class="dc-detail">${d.detail}</p>
+    </button>`;
+  }).join('');
+
+  document.querySelectorAll('.domain-card').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      btn.setAttribute('aria-expanded', btn.getAttribute('aria-expanded')==='true' ? 'false':'true');
+    });
+  });
+}
+
+/* ---- Momentum tile ---- */
+function renderMomentum(){
+  const m = R().momentum || {};
+  if(m.hero == null){
+    $('#momentumCard').innerHTML = `<p class="e-title">Nothing measured yet</p>
+      <p class="e-body">${esc(m.label || 'Momentum fills in from your own logged times and honored commitments. It will stay empty until there is something real to count.')}</p>`;
+    return;
+  }
+  $('#momentumCard').innerHTML = `
+    <p class="hero-fig">${m.hero}<span class="hero-unit">${m.unit}</span></p>
+    <p class="hero-label">${m.label}</p>
+    <p class="hero-note">${m.note}</p>
+    <div class="kpi-row">
+      ${m.kpis.map(k=>`
+        <div class="kpi">
+          <p class="k-label">${k[0]}</p>
+          <p class="k-value">${k[1]}${k[2]?`<span style="font-size:.88rem;font-weight:400;color:var(--text-muted);">${k[2]}</span>`:''}</p>
+          <p class="k-delta">${k[3]}</p>
+        </div>`).join('')}
+    </div>`;
+}
+
+/* ---- Line chart: single series, crosshair + tooltip ---- */
+function renderLine(){
+  const weekly = (R().momentum && R().momentum.weekly) || [];
+  if(weekly.length < 2){
+    $('#lineChart').innerHTML = '<p class="e-body" style="padding:1.2rem 0;">No weeks logged yet. This chart appears once there are two.</p>';
+    $('#lineTable').innerHTML = ''; $('#lineCaption').textContent = 'Waiting on your first weeks';
+    return;
+  }
+  const W=620,H=210, L=46,Rr=14,T=16,B=34;
+  const px0=L, px1=W-Rr, py0=T, py1=H-B;
+  const yMax = Math.max(4, Math.ceil(Math.max(...weekly)/4)*4);
+  const ticks=[0,yMax/4,yMax/2,yMax*3/4,yMax];
+  const x=i=>px0+i*((px1-px0)/(weekly.length-1));
+  const y=v=>py1-(v/yMax)*(py1-py0);
+
+  const line = weekly.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+  const area = `${line} L${x(weekly.length-1).toFixed(1)} ${py1} L${px0} ${py1} Z`;
+  const grid = ticks.map(t=>`<line x1="${px0}" x2="${px1}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" stroke="var(--gridline)" stroke-width="1"/>`).join('');
+  const yLabels = ticks.map(t=>`<text x="${px0-10}" y="${(y(t)+4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--text-muted)">${t}</text>`).join('');
+  const xLabels = WEEK_LABELS.map((lb,i)=> (i%2===0||i===weekly.length-1)
+    ? `<text x="${x(i).toFixed(1)}" y="${py1+20}" text-anchor="middle" font-size="11" fill="var(--text-muted)">${lb}</text>` : '').join('');
+  const lastI=weekly.length-1;
+  const endLabel = `<text x="${x(lastI).toFixed(1)}" y="${(y(weekly[lastI])-14).toFixed(1)}" text-anchor="end" font-size="12.5" font-weight="700" fill="var(--text-primary)">${weekly[lastI]} honored</text>`;
+  const hit = weekly.map((v,i)=>`<rect class="hit" data-i="${i}" x="${(x(i)-22).toFixed(1)}" y="${py0}" width="44" height="${py1-py0}" fill="transparent"/>`).join('');
+
+  $('#lineChart').innerHTML = `
+  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line chart: commitments honored per week over the last twelve weeks, rising from ${weekly[0]} to ${weekly[lastI]}.">
+    ${grid}
+    <line x1="${px0}" x2="${px1}" y1="${py1}" y2="${py1}" stroke="var(--axis)" stroke-width="1"/>
+    ${yLabels}${xLabels}
+    <path d="${area}" fill="var(--seq-fill)" opacity="0.10"/>
+    <path d="${line}" fill="none" stroke="var(--seq-fill)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <line id="lineCross" x1="0" x2="0" y1="${py0}" y2="${py1}" stroke="var(--axis)" stroke-width="1" opacity="0"/>
+    <circle id="lineDot" r="5" fill="var(--seq-fill)" stroke="var(--surface-1)" stroke-width="2" opacity="0"/>
+    <circle cx="${x(lastI).toFixed(1)}" cy="${y(weekly[lastI]).toFixed(1)}" r="5" fill="var(--seq-fill)" stroke="var(--surface-1)" stroke-width="2"/>
+    ${endLabel}
+    ${hit}
+  </svg>`;
+  $('#lineCaption').textContent = `Last 12 weeks · ${R().momentum.caption}`;
+
+  $('#lineTable').innerHTML = `
+  <table class="data-table"><caption class="sr-only">Commitments honored per week</caption>
+    <thead><tr><th>Week</th><th>Honored</th></tr></thead>
+    <tbody>${weekly.map((v,i)=>`<tr><td>${WEEK_LABELS[i]}</td><td>${v}</td></tr>`).join('')}</tbody>
+  </table>`;
+
+  const svg=$('#lineChart svg'), tip=$('#lineTip'), cross=$('#lineCross'), dot=$('#lineDot');
+  svg.querySelectorAll('.hit').forEach(r=>{
+    r.addEventListener('mouseenter',()=>{
+      const i=+r.dataset.i;
+      cross.setAttribute('x1',x(i)); cross.setAttribute('x2',x(i)); cross.setAttribute('opacity','1');
+      dot.setAttribute('cx',x(i)); dot.setAttribute('cy',y(weekly[i])); dot.setAttribute('opacity','1');
+      tip.innerHTML=`<div class="tt-title">Week ${i+1}</div><div class="tt-row"><span class="tt-dot" style="background:var(--seq-fill)"></span>Honored<span class="tt-val">${weekly[i]}</span></div>`;
+      const box=svg.getBoundingClientRect(), card=$('#lineCard').getBoundingClientRect();
+      const sx=box.left-card.left + (x(i)/W)*box.width;
+      const sy=box.top-card.top + (y(weekly[i])/H)*box.height;
+      tip.style.left=Math.max(8,Math.min(sx-tip.offsetWidth/2, card.width-tip.offsetWidth-8))+'px';
+      tip.style.top=(sy-tip.offsetHeight-12)+'px';
+      tip.style.opacity='1';
+    });
+    r.addEventListener('mouseleave',()=>{tip.style.opacity='0';cross.setAttribute('opacity','0');dot.setAttribute('opacity','0');});
+  });
+}
+
+/* ---- Stacked columns: 3 series, 2px surface gaps, rounded top end ---- */
+function renderBars(){
+  const EV = (R().momentum && R().momentum.evidence) || [];
+  if(!EV.length){
+    $('#barChart').innerHTML = '<p class="e-body" style="padding:1.2rem 0;">No months of evidence yet. Every honored commitment your agents log lands here.</p>';
+    $('#barLegend').innerHTML = ''; $('#barTable').innerHTML = '';
+    return;
+  }
+  const W=880,H=280, L=46,Rr=16,T=22,B=40;
+  const px0=L, px1=W-Rr, py0=T, py1=H-B;
+  const totals = EV.map(r=>r[0]+r[1]+r[2]);
+  const yMax = Math.max(10, Math.ceil(Math.max(...totals)/10)*10);
+  const ticks=[0,yMax/2,yMax];
+  const band=(px1-px0)/EV.length, colW=24, gap=2, radius=4;
+  const y=v=>py1-(v/yMax)*(py1-py0);
+
+  const grid = ticks.map(t=>`<line x1="${px0}" x2="${px1}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" stroke="var(--gridline)" stroke-width="1"/>`).join('');
+  const yLabels = ticks.map(t=>`<text x="${px0-10}" y="${(y(t)+4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--text-muted)">${t}</text>`).join('');
+
+  let cols='';
+  EV.forEach((row,ci)=>{
+    const cx = px0 + band*ci + band/2;
+    const x0 = cx - colW/2;
+    const total = totals[ci];
+    let cursor = 0;
+    EV_SERIES.forEach((se,si)=>{
+      const v=row[se.key];
+      const yTop=y(cursor+v), yBot=y(cursor);
+      const isTop = si===EV_SERIES.length-1;
+      let h=(yBot-yTop)-(isTop?0:gap); if(h<1) h=1;
+      const fill=`var(${se.varName})`;
+      if(isTop){
+        const r=Math.min(radius,h);
+        cols += `<path d="M${x0} ${(yTop+h).toFixed(1)} L${x0} ${(yTop+r).toFixed(1)} Q${x0} ${yTop.toFixed(1)} ${(x0+r).toFixed(1)} ${yTop.toFixed(1)} L${(x0+colW-r).toFixed(1)} ${yTop.toFixed(1)} Q${(x0+colW).toFixed(1)} ${yTop.toFixed(1)} ${(x0+colW).toFixed(1)} ${(yTop+r).toFixed(1)} L${(x0+colW).toFixed(1)} ${(yTop+h).toFixed(1)} Z" fill="${fill}"/>`;
+      } else {
+        cols += `<rect x="${x0}" y="${yTop.toFixed(1)}" width="${colW}" height="${h.toFixed(1)}" fill="${fill}"/>`;
+      }
+      cursor += v;
+    });
+    cols += `<text x="${cx.toFixed(1)}" y="${(y(total)-9).toFixed(1)}" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--text-primary)">${total}</text>`;
+    cols += `<text x="${cx.toFixed(1)}" y="${py1+22}" text-anchor="middle" font-size="11.5" fill="var(--text-secondary)">${EV_MONTHS[ci]}</text>`;
+    cols += `<rect class="bhit" data-c="${ci}" x="${(cx-band/2).toFixed(1)}" y="${py0}" width="${band.toFixed(1)}" height="${(py1-py0).toFixed(1)}" fill="transparent"/>`;
+  });
+
+  $('#barChart').innerHTML = `
+  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Stacked column chart: commitments honored by kind over six months, from ${totals[0]} to ${totals[5]}.">
+    ${grid}
+    <line x1="${px0}" x2="${px1}" y1="${py1}" y2="${py1}" stroke="var(--axis)" stroke-width="1"/>
+    ${yLabels}
+    ${cols}
+  </svg>`;
+
+  $('#barLegend').innerHTML = EV_SERIES.map(s=>
+    `<span class="legend-item"><span class="legend-swatch" style="background:var(${s.varName})"></span>${s.label}</span>`).join('');
+
+  $('#barTable').innerHTML = `
+  <table class="data-table"><caption class="sr-only">Commitments honored by kind, by month</caption>
+    <thead><tr><th>Month</th>${EV_SERIES.map(s=>`<th>${s.label}</th>`).join('')}<th>Total</th></tr></thead>
+    <tbody>${EV.map((r,i)=>`<tr><td>${EV_MONTHS[i]}</td>${r.map(v=>`<td>${v}</td>`).join('')}<td>${totals[i]}</td></tr>`).join('')}</tbody>
+  </table>`;
+
+  const svg=$('#barChart svg'), tip=$('#barTip');
+  svg.querySelectorAll('.bhit').forEach(r=>{
+    r.addEventListener('mousemove',ev=>{
+      const ci=+r.dataset.c, row=EV[ci];
+      tip.innerHTML=`<div class="tt-title">${EV_MONTHS[ci]} · ${totals[ci]} honored</div>`+
+        EV_SERIES.map(s=>`<div class="tt-row"><span class="tt-dot" style="background:var(${s.varName})"></span>${s.label}<span class="tt-val">${row[s.key]}</span></div>`).join('');
+      const card=$('#barCard').getBoundingClientRect();
+      let lx=ev.clientX-card.left+14, ly=ev.clientY-card.top-10;
+      if(lx+tip.offsetWidth>card.width-8) lx=ev.clientX-card.left-tip.offsetWidth-14;
+      tip.style.left=lx+'px'; tip.style.top=ly+'px'; tip.style.opacity='1';
+    });
+    r.addEventListener('mouseleave',()=>{tip.style.opacity='0';});
+  });
+}
+
+/* ---- Signals / opportunities / agents ---- */
+function renderRest(){
+  const d = R();
+  if(!(d.signals||[]).length){
+    $('#signalList').innerHTML = '<p class="e-body">No signals yet. A signal is a pattern noticed over time — there is not enough time in this system yet to notice one.</p>';
+  } else
+  $('#signalList').innerHTML = d.signals.map(s=>{
+    const m=STATE_META[s.state];
+    const color = s.state==='attention' ? 'var(--status-attention)'
+                : s.state==='flourishing' ? 'var(--status-good)' : 'var(--text-muted)';
+    return `<div class="signal">
+      <span class="sig-icon" style="color:${color}">${ICONS[m.icon]}</span>
+      <div>
+        <h4>${s.title}</h4>
+        <p>${s.body}</p>
+        <button class="sig-action">${s.action} →</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  if(!(d.opps||[]).length){
+    $('#oppList').innerHTML = '<p class="e-body">No opportunities surfaced yet. These come from your own notes, calendar, and the things you meant to follow up on.</p>';
+  } else
+  $('#oppList').innerHTML = d.opps.map(o=>`
+    <div class="opp">
+      <p class="o-kind">${o.kind}</p>
+      <h4>${o.title}</h4>
+      <p>${o.body}</p>
+      <p class="o-when">${o.when}</p>
+    </div>`).join('');
+
+  if(!(d.agents||[]).length){
+    $('#agentGrid').innerHTML = emptyCard('No agents yet',
+      'Your preset names which agents to start: ' + ((PRESET&&PRESET.starter_agents)||[]).join(', ') + '. They appear here once they log their first action through mc-log.');
+  } else
+  $('#agentGrid').innerHTML = d.agents.map(a=>`
+    <div class="card agent">
+      <div class="agent-avatar">${a.initials}</div>
+      <div>
+        <h4>${a.name} <span class="tier-chip ${a.tierCls}">${a.tier} tier</span></h4>
+        <p style="color:var(--text-muted);font-size:.82rem;">${a.role}</p>
+        <p>${a.scope}</p>
+        ${a.await?`<p class="a-await"><b>Waiting on you:</b> ${a.await}</p>`:`<p class="a-await" style="color:var(--text-muted)">Nothing waiting.</p>`}
+      </div>
+    </div>`).join('');
+
+  const waiting = (d.agents||[]).filter(a=>a.await);
+  $('#gateText').innerHTML = waiting.length
+    ? `<strong>${waiting.length} human gate${waiting.length>1?'s':''} waiting.</strong> ${waiting.map(a=>`${a.name}: ${a.await.charAt(0).toLowerCase()+a.await.slice(1)}`).join(' · ')}. Nothing sends until you say so.`
+    : `<strong>No gates waiting.</strong> Everything drafted has been read and answered by you.`;
+}
+
+function renderAll(){ renderTop(); renderLicense(); renderDomains(); renderMomentum(); renderLine(); renderBars(); renderRest(); }
+
+/* ---- View toggles ---- */
+document.querySelectorAll('.view-toggle button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const t=b.dataset.target, v=b.dataset.view;
+    document.querySelectorAll(`.view-toggle button[data-target="${t}"]`).forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+    $(`#${t}Chart`).classList.toggle('hidden', v!=='chart');
+    $(`#${t}Table`).classList.toggle('hidden', v!=='table');
+    if(t==='bar') $('#barLegend').classList.toggle('hidden', v!=='chart');
+  });
+});
+
+/* ---- Reflection tags ---- */
+document.querySelectorAll('.rtag').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.rtag').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  });
+});
+
+/* ---- Preset application: overview_cards decides what renders ---- */
+function applyPreset(preset){
+  const wanted = new Set(preset.overview_cards || []);
+  $$('[data-card]').forEach(el=>{
+    el.style.display = wanted.has(el.dataset.card) ? '' : 'none';
+  });
+  renderProvenance();
+}
+
+/* The banner has three honest states. It never says nothing. */
+function renderProvenance(){
+  const el = $('#sampleBanner');
+  if(!CONTENT){ el.style.display='none'; return; }
+  el.style.display = '';
+  if(CONTENT.sample){
+    el.className = 'sample-banner';
+    el.innerHTML = `<div class="sample-inner">${ICON_INFO}<span><strong>Sample content.</strong> The role configuration is real and loaded from <code>roles/</code>. Everything a person says or owns on this screen is demonstration data. Run <code>./bin/naio-soul-import your-naio-soul.json --apply</code> to replace it with your own.</span></div>`;
+    return;
+  }
+  const src = CONTENT.source || {};
+  const needs = CONTENT.needs || [];
+  el.className = 'sample-banner real-banner';
+  el.innerHTML = `<div class="sample-inner">${ICON_INFO}<span><strong>Your content — imported from your own SOUL file${src.imported_at?` on ${new Date(src.imported_at).toLocaleDateString()}`:''}.</strong> ` +
+    (needs.length
+      ? `Nothing on this screen is invented: anything not yet measured says so rather than showing a number. Still needed — ${needs.map(n=>esc(n.split(' — ')[0])).join(', ')}.`
+      : `Everything here is measured.`) +
+    `</span></div>`;
+}
+const ICON_INFO = '<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.6v4.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.4" r=".85" fill="currentColor"/></svg>';
+
+/* ---- Role switcher — a role is who you are, not something you put on ---- */
+async function selectRole(roleId){
+  const data = await api('/api/role/'+encodeURIComponent(roleId));
+  ROLE = roleId; PRESET = data.preset; CONTENT = data.content;
+  applyPreset(PRESET);
+  renderAll();
+  const active = $$('.mc-tab').find(b=>b.hasAttribute('aria-current'));
+  if(active && active.dataset.tab !== 'overview') await showTab(active.dataset.tab);
+}
+$('#role').addEventListener('change', async e=>{
+  try { await selectRole(e.target.value); window.scrollTo({top:0,behavior:'smooth'}); }
+  catch(err){ showFatal(err); }
+});
+
+/* ---- Light / night-shift mode (in-memory only) ---- */
+let dark=false;
+$('#modeToggle').addEventListener('click',()=>{
+  dark=!dark;
+  document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  $('#modeToggle').setAttribute('aria-pressed',String(dark));
+  $('#modeIcon').textContent = dark?'☀':'☾';
+  $('#modeLabel').textContent = dark?'Day':'Night shift';
+  if(CONTENT){ renderDomains(); renderLine(); renderBars(); }
+});
+
+/* ======================================================================
+   The six deeper views. Every one reads from the API; none holds data.
+   ====================================================================== */
+
+const fmtTs = t => { if(!t) return '—'; const d=new Date(t); return isNaN(d)?t:
+  d.toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); };
+const esc = t => String(t??'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---- Agents ---- */
+async function renderAgentsTab(){
+  const [{agents}, {activity}] = await Promise.all([api('/api/agents'), api('/api/activity?limit=25')]);
+  const live = Object.fromEntries(agents.map(a=>[a.agent_id,a]));
+  const configured = (CONTENT && CONTENT.agents) || [];
+  $('#agentsPanel').innerHTML = configured.map(a=>{
+    const id = a.name.toLowerCase();
+    const l = live[id] || {actions:0,refusals:0,failures:0,last_ts:null};
+    return `<div class="card agent">
+      <div class="agent-avatar">${esc(a.initials)}</div>
+      <div style="flex:1;min-width:0;">
+        <h4>${esc(a.name)} <span class="tier-chip ${a.tierCls}">${esc(a.tier)} tier</span></h4>
+        <p style="color:var(--text-muted);font-size:.82rem;">${esc(a.role)}</p>
+        <p>${esc(a.scope)}</p>
+        <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-top:.9rem;">
+          <div class="kpi"><p class="k-label">Actions</p><p class="k-value">${l.actions}</p></div>
+          <div class="kpi"><p class="k-label">Refusals</p><p class="k-value">${l.refusals||0}</p></div>
+          <div class="kpi"><p class="k-label">Failures</p><p class="k-value">${l.failures||0}</p></div>
+        </div>
+        <p class="t-meta" style="font-size:.76rem;color:var(--text-muted);margin-top:.5rem;">Last seen ${fmtTs(l.last_ts)}</p>
+        ${a.await?`<p class="a-await"><b>Waiting on you:</b> ${esc(a.await)}</p>`:''}
+      </div></div>`;
+  }).join('') || '<p class="empty">No agents configured for this role.</p>';
+
+  $('#activityList').innerHTML = activity.length ? activity.map(r=>`
+    <div class="mrow">
+      <span class="m-title">${esc(r.task)}</span>
+      <div class="m-meta">${esc(r.agent_id)} · ${esc(r.status)}${r.edena_tier?` · ${esc(r.edena_tier)}`:''}${r.sphere?` · ${esc(r.sphere)}`:''} · ${esc(r.model||'')} · ${fmtTs(r.ts)}</div>
+      ${r.detail?`<div class="m-meta">${esc(r.detail)}</div>`:''}
+    </div>`).join('')
+    : '<p class="empty">Nothing logged yet. Agents append rows through <code>mc-log</code>; a dashboard being down never blocks their work.</p>';
+}
+
+/* ---- Tasks ---- */
+async function renderTasksTab(){
+  const lanes = (PRESET && PRESET.task_lanes) || ['To-do','In-progress','Done'];
+  const {tasks} = await api('/api/tasks');
+  const key = l => l.toLowerCase().replace(/\s+/g,'-');
+  const sel = $('#taskAssignee');
+  const agents = (CONTENT && CONTENT.agents) || [];
+  sel.innerHTML = ['me', ...agents.map(a=>a.name.toLowerCase())]
+    .map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  $('#kanban').innerHTML = lanes.map(lane=>{
+    const mine = tasks.filter(t=>t.lane===key(lane));
+    return `<div class="lane"><h4>${esc(lane)} <span>${mine.length}</span></h4>
+      ${mine.map(t=>`<div class="tcard">
+        <p>${esc(t.title)}</p>
+        <div class="t-meta">${esc(t.assignee)}${t.source&&t.source!=='manual'?` · from ${esc(t.source)}`:''} · ${fmtTs(t.updated_ts)}</div>
+        <div class="t-moves">${lanes.filter(l=>key(l)!==t.lane).map(l=>
+          `<button class="tmove" data-id="${t.id}" data-lane="${key(l)}">→ ${esc(l)}</button>`).join('')}</div>
+      </div>`).join('') || '<p class="empty">Empty.</p>'}</div>`;
+  }).join('');
+  $$('.tmove').forEach(b=>b.addEventListener('click', async ()=>{
+    await fetch('/api/tasks/'+b.dataset.id, {method:'PATCH',
+      headers:{'Content-Type':'application/json'}, body:JSON.stringify({lane:b.dataset.lane})});
+    renderTasksTab();
+  }));
+}
+$('#taskAdd').addEventListener('click', async ()=>{
+  const title = $('#taskTitle').value.trim(); if(!title) return;
+  await fetch('/api/tasks', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({title, assignee:$('#taskAssignee').value, role_id:ROLE,
+                          lane:((PRESET&&PRESET.task_lanes)||['To-do'])[0].toLowerCase().replace(/\s+/g,'-')})});
+  $('#taskTitle').value=''; renderTasksTab();
+});
+
+/* ---- Schedule ---- */
+async function renderScheduleTab(){
+  const {jobs} = await api('/api/schedule');
+  $('#schedulePanel').innerHTML = jobs.length ? `
+    <table class="data-table"><thead><tr><th>Ritual</th><th>Agent</th><th>Schedule</th>
+    <th>Next run</th><th>Last run</th><th>Tier</th></tr></thead><tbody>
+    ${jobs.map(j=>`<tr>
+      <td>${esc(j.label)}${j.is_naio_ritual?' <span class="mtag">NAIO ritual</span>':''}</td>
+      <td>${esc(j.agent_id)}</td><td>${esc(j.schedule)}</td>
+      <td>${fmtTs(j.next_run_ts)}</td><td>${fmtTs(j.last_run_ts)}</td>
+      <td>${esc(j.edena_tier||'—')}</td></tr>`).join('')}
+    </tbody></table>`
+    : `<p class="empty">No rituals mirrored. Either the runtime has none scheduled, or no runtime is installed on this machine. Mission Control cannot create one — that is deliberate, not missing.</p>`;
+}
+
+/* ---- Memory + the promotion pipeline ---- */
+async function renderMemoryTab(){
+  const m = await api('/api/memory');
+  $('#soulFiles').textContent = m.soul_files.map(f=>f.split('/').pop()).join(' · ');
+  $('#vaultRoot').textContent = m.vault_root;
+  $('#memEvents').innerHTML = m.memory_events.length ? m.memory_events.map(e=>`
+    <div class="mrow"><span class="m-title">${esc(e.file)}</span>
+    <div class="m-meta">${esc(e.change_summary)} · ${fmtTs(e.ts)}</div></div>`).join('')
+    : '<p class="empty">No changes observed yet.</p>';
+
+  const row = n => `<div class="mrow">
+      <span class="m-title">${esc(n.title)}</span>
+      <div class="m-meta">${esc(n.folder||'')} · ${fmtTs(n.modified_ts)}</div>
+      ${n.tags?`<div class="m-tags">${n.tags.split(',').filter(Boolean).map(t=>`<span class="mtag">#${esc(t)}</span>`).join('')}</div>`:''}
+      ${n.promoted_to
+        ? `<div class="promoted">→ ${esc(n.promoted_to)}</div>`
+        : `<div class="promote">
+             <button class="pbtn" data-note="${n.id}" data-to="task">→ task</button>
+             <button class="pbtn" data-note="${n.id}" data-to="vault">→ vault Inbox</button>
+             <button class="pbtn" data-note="${n.id}" data-to="memory">→ propose memory</button>
+           </div>`}
+    </div>`;
+  const vault = m.notes.filter(n=>n.source==='obsidian');
+  const apple = m.notes.filter(n=>n.source==='apple_notes');
+  $('#vaultNotes').innerHTML = vault.length ? vault.map(row).join('')
+    : '<p class="empty">Vault not indexed. Point <code>vault_root</code> in config.json at your Obsidian vault.</p>';
+  $('#appleNotes').innerHTML = apple.length ? apple.map(row).join('')
+    : '<p class="empty">Inactive. macOS only, and only the folders you list in <code>apple_notes_folders</code>.</p>';
+
+  $$('.pbtn').forEach(b=>b.addEventListener('click', async ()=>{
+    b.disabled = true;
+    const res = await fetch('/api/promote', {method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({note_id:+b.dataset.note, to:b.dataset.to})});
+    const out = await res.json();
+    if(out.note) console.info(out.note);
+    renderMemoryTab();
+  }));
+}
+
+/* ---- Library ---- */
+let LIB_FILTER = null;
+async function renderLibraryTab(){
+  const {items, root} = await api('/api/library');
+  const filters = (PRESET && PRESET.library_filters) || [];
+  const types = [...new Set(items.map(i=>i.doc_type))];
+  const all = [...new Set([...filters, ...types])];
+  $('#libFilters').innerHTML = [`<button data-f="" aria-pressed="${!LIB_FILTER}">All</button>`,
+    ...all.map(f=>`<button data-f="${esc(f)}" aria-pressed="${LIB_FILTER===f}">${esc(f)}</button>`)].join('');
+  $$('#libFilters button').forEach(b=>b.addEventListener('click',()=>{
+    LIB_FILTER = b.dataset.f || null; renderLibraryTab();
+  }));
+  const shown = LIB_FILTER ? items.filter(i=>i.doc_type===LIB_FILTER || (i.agent_id===LIB_FILTER)) : items;
+  $('#libraryList').innerHTML = shown.length ? shown.map(i=>`
+    <div class="mrow"><span class="m-title">${esc(i.title)}</span>
+      <div class="m-meta">${esc(i.agent_id)} · ${esc(i.doc_type)} · ${i.word_count} words · ${fmtTs(i.modified_ts)}</div>
+      <div class="m-meta"><code>${esc(i.path)}</code></div></div>`).join('')
+    : `<p class="empty">Nothing indexed under <code>${esc(root)}</code>. Point <code>content_root</code> in config.json at your workspace.</p>`;
+}
+
+/* ---- Ledger ---- */
+async function renderLedgerTab(){
+  const l = await api('/api/ledger');
+  const c = l.status_counts || {};
+  const stat = (label,value,note) => `<div class="stat-card"><p class="s-label">${label}</p>
+    <p class="s-value">${value}</p><p class="s-note">${note}</p></div>`;
+  $('#ledgerStats').innerHTML =
+    stat('Actions logged', (c.completed||0)+(c.failed||0)+(c.refused||0)+(c.in_progress||0), 'across every agent') +
+    stat('Boundary refusals', c.refused||0, 'the rows that answer a skeptic') +
+    stat('Gates raised', l.gates.length, 'never auto-pruned') +
+    stat('PHI lint', l.phi_lint.clean ? '<span class="lint-clean">clean</span>' : `<span class="lint-hit">${l.phi_lint.hits.length}</span>`, l.phi_lint.clean?'nothing found':'review below');
+
+  $('#ledgerGates').innerHTML = l.gates.length ? l.gates.map(g=>`
+    <div class="mrow"><span class="m-title">${esc(g.request)}</span>
+      <div class="m-meta">${esc(g.agent_id)} · ${esc(g.outcome)}${g.edena_tier?` · ${esc(g.edena_tier)}`:''} · ${fmtTs(g.ts)}${g.resolved_via?` · via ${esc(g.resolved_via)}`:''}</div>
+    </div>`).join('') : '<p class="empty">No gates recorded.</p>';
+
+  $('#ledgerRefusals').innerHTML = l.refusals.length ? l.refusals.map(r=>`
+    <div class="mrow"><span class="m-title">${esc(r.task)}</span>
+      <div class="m-meta">${esc(r.agent_id)}${r.sphere?` · ${esc(r.sphere)}`:''} · ${fmtTs(r.ts)}</div>
+      ${r.detail?`<div class="m-meta">${esc(r.detail)}</div>`:''}</div>`).join('')
+    : '<p class="empty">No refusals recorded. That is either a very quiet month or a boundary nobody has approached.</p>';
+
+  $('#ledgerLint').innerHTML = l.phi_lint.clean
+    ? '<p class="empty"><span class="lint-clean">Clean.</span> No PHI-shaped strings in any dashboard-owned text. Detection is a backstop, not permission.</p>'
+    : l.phi_lint.hits.map(h=>`<div class="mrow"><span class="m-title lint-hit">${esc(h.pattern)}</span>
+        <div class="m-meta">${esc(h.table)}.${esc(h.column)} row ${h.row_id}</div></div>`).join('');
+}
+
+/* ---- Tab router ---- */
+const TAB_RENDER = {overview:null, agents:renderAgentsTab, tasks:renderTasksTab,
+                    schedule:renderScheduleTab, memory:renderMemoryTab,
+                    library:renderLibraryTab, ledger:renderLedgerTab};
+async function showTab(name){
+  if(!TAB_RENDER.hasOwnProperty(name)) name='overview';
+  $$('.tab-panel').forEach(p=>{ p.hidden = p.id !== 'tab-'+name; });
+  $$('.mc-tab').forEach(b=>{
+    if(b.dataset.tab===name) b.setAttribute('aria-current','page');
+    else b.removeAttribute('aria-current');
+  });
+  if(location.hash !== '#'+name) history.replaceState(null,'','#'+name);
+  const fn = TAB_RENDER[name];
+  if(fn){ try{ await fn(); }catch(err){ console.error(name, err); } }
+  window.scrollTo({top:0});
+}
+$$('.mc-tab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+window.addEventListener('hashchange',()=>showTab(location.hash.slice(1)));
+
+/* ---- Gates: real pending gates win over sample-derived ones ---- */
+async function refreshGates(){
+  try{
+    const {gates} = await api('/api/gates');
+    if(gates && gates.length){
+      $('#gateText').innerHTML = `<strong>${gates.length} human gate${gates.length>1?'s':''} waiting.</strong> `
+        + gates.map(g=>`${g.agent_id}: ${g.request}`).join(' · ')
+        + '. Nothing sends until you say so — resolve it in the runtime, not here.';
+    }
+  }catch(e){ /* sample-derived banner stays; a dashboard outage is not a gate */ }
+}
+
+/* ---- System strip: collectors, runtime posture, stale badges ---- */
+async function refreshHealth(){
+  const el = $('#systemStrip');
+  try{
+    const h = await api('/api/health');
+    const cols = (h.collectors||[]).map(c=>{
+      const cls = c.inactive ? 'sys-warn' : c.stale ? 'sys-stale' : 'sys-ok';
+      const label = c.inactive ? 'inactive' : c.stale ? 'stale' : 'ok';
+      const title = c.last_error ? ` title="${c.last_error.replace(/"/g,'&quot;')}"` : '';
+      return `<span class="sys-item ${cls}"${title}><b>${c.name}</b> ${label}` +
+             (c.failures ? ` · ${c.failures} fail` : '') + `</span>`;
+    }).join('');
+    const rt = h.runtime;
+    const rtLabel = rt && rt.gateway_up ? 'runtime up' : 'runtime absent';
+    const rtCls = rt && rt.gateway_up ? 'sys-ok' : 'sys-warn';
+    const errs = (h.preset_errors||[]).length
+      ? `<span class="sys-item sys-stale"><b>presets</b> ${h.preset_errors.length} rejected</span>` : '';
+    el.innerHTML = `<span class="sys-item ${rtCls}"><b>${rtLabel}</b></span>${cols}${errs}` +
+      `<span class="sys-item"><b>${h.roles_loaded}</b> roles · <b>${h.activity_rows}</b> logged actions · v${h.version}</span>`;
+  }catch(e){
+    el.innerHTML = `<span class="sys-item sys-stale"><b>dashboard</b> cannot reach its own API</span>`;
+  }
+}
+
+function showFatal(err){
+  $('#sampleBanner').style.display='';
+  $('#sampleBanner').innerHTML =
+    `<strong>Could not load role data.</strong> ${String(err)} — is Mission Control running? ` +
+    `Start it with <code>./naio-mc start</code>.`;
+}
+
+/* ---- Boot ---- */
+(async function boot(){
+  try{
+    const {roles, errors} = await api('/api/roles');
+    const sel = $('#role');
+    sel.innerHTML = roles.map(r=>`<option value="${r.role_id}">Role: ${r.label}</option>`).join('');
+    if(errors && errors.length) console.warn('rejected presets:', errors);
+    if(!roles.length) throw new Error('no valid role presets loaded');
+    await selectRole(roles.find(r=>r.role_id==='bedside') ? 'bedside' : roles[0].role_id);
+    sel.value = ROLE;
+    await showTab((location.hash||'#overview').slice(1));
+    refreshGates(); refreshHealth();
+    setInterval(refreshHealth, 15000);
+    setInterval(refreshGates, 20000);
+  }catch(err){ showFatal(err); }
+})();
+</script>
+</body>
+</html>

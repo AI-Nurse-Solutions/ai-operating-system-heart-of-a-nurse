@@ -2,7 +2,7 @@
   "_note": "Checksums of what was actually built, written by tools/release.py at the same moment the self-test ran. MISSION CONTROL IS NOT SIGNED \u2014 there is no Mission Control release key yet, so this proves this tree is unchanged since packaging, and nothing more. Do not read it as provenance. Scope: naio-os itself has been signed since Phase 6 (manifest.sig, release-history.json, fail-closed verifier); Mission Control does not yet participate in that chain.",
   "signed": false,
   "version": "0.4.0",
-  "built_at": "2026-08-11T16:33:22+00:00",
+  "built_at": "2026-08-11T16:37:01+00:00",
   "self_test": {
     "passed": 103,
     "failed": 0
@@ -10,13 +10,13 @@
   "file_count": 52,
   "files": {
     "ARCHITECTURE.md": {
-      "sha256": "c202988914226ee09cf3b488dd4cc4e64dcf6e68e1a1d26ec3828b305031a88e",
-      "bytes": 37807,
+      "sha256": "a68702005159fa3802b1c97e715746ea31b6f31cf9cbc6cac28db9f8ea44970b",
+      "bytes": 38317,
       "mutable": false
     },
     "README.md": {
-      "sha256": "c59e983f89d4870dfd9e91d901c57fed036569cafc742ebc1f5e66fa328e587d",
-      "bytes": 19718,
+      "sha256": "398aad33a78050fb5edb4fb78607430c15cb68021e4c46719972bcd2dd526dca",
+      "bytes": 20135,
       "mutable": false
     },
     "adapters/__init__.py": {

@@ -369,7 +369,7 @@ Two complementary modes, both v1:
 
 | Layer | Control |
 |---|---|
-| Network | `127.0.0.1` bind, hard default. No auth needed *because* nothing is exposed; adding Tailscale later keeps that true off-device. Any non-localhost bind requires an explicit flag + warning. |
+| Network | `127.0.0.1` bind, hard default, **and the bind is enforced at the request**: every `GET`, `POST` and `PATCH` is refused with 403 unless its `Host` header is the address the server was bound to and it carries no `Origin`. A loopback bind on its own is not a control — it does not stop a page the nurse already has open from POSTing to `http://127.0.0.1:8321`, and it does not stop DNS rebinding, neither of which needs a preflight. There is no auth *because* nothing should be reachable, so those two headers are what makes that true. `--bind` still requires an explicit flag and prints a warning, and adds that one address to the allowed set — enough for the Tailscale path, and nothing wider. |
 | Secrets | Zero secrets in Mission Control. Bot tokens, API keys, Codex auth all live in the runtime's credential store. The dashboard's config contains paths and preferences only. |
 | PHI | Inherits NAIO hard boundary: no PHI at any tier. Concretely: note bodies are not persisted; a nightly PHI-pattern lint (names+MRN patterns, DOB formats, room-bed patterns) runs over `tasks`, `agent_logs.detail`, and `content_index` titles and raises a red Ledger flag on hits — a *detection* control backstopping the *policy* control. |
 | Human gates | Gate approval never moves into the dashboard. Surfacing yes, acting no — preserving the runtime's non-removable gate chain for Green/Yellow. |

@@ -129,7 +129,7 @@ Every promotion stamps `promoted_to` on the note, so the Memory tab can answer *
 - hold a secret — credentials live in the runtime; the config here is paths and preferences
 - raise a tier ceiling
 
-It binds `127.0.0.1` by hard default. `--bind` anything else and it prints a warning explaining that you are removing the only control that made having no authentication safe.
+It binds `127.0.0.1` by hard default, and enforces that at every request: a `GET`, `POST` or `PATCH` whose `Host` is not the bound address, or which carries an `Origin` header at all, is refused with 403. Binding to loopback by itself would not be enough — a page you already have open in a browser can POST to `http://127.0.0.1:8321` without a preflight, and DNS rebinding gets there too. `--bind` anything else and it prints a warning explaining that you are removing the control that made having no authentication safe; that one address is then accepted as a `Host`, and nothing else is.
 
 ## Collectors
 

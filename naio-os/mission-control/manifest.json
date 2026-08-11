@@ -2,12 +2,12 @@
   "_note": "Checksums of what was actually built, written by tools/release.py at the same moment the self-test ran. MISSION CONTROL IS NOT SIGNED \u2014 there is no Mission Control release key yet, so this proves this tree is unchanged since packaging, and nothing more. Do not read it as provenance. Scope: naio-os itself has been signed since Phase 6 (manifest.sig, release-history.json, fail-closed verifier); Mission Control does not yet participate in that chain.",
   "signed": false,
   "version": "0.4.0",
-  "built_at": "2026-08-11T11:25:49+00:00",
+  "built_at": "2026-08-11T11:47:42+00:00",
   "self_test": {
-    "passed": 87,
+    "passed": 89,
     "failed": 0
   },
-  "file_count": 50,
+  "file_count": 51,
   "files": {
     "ARCHITECTURE.md": {
       "sha256": "f4abc4663ae2bed78274d11b991c6675346b82326d046374212d0525b0a76e75",
@@ -15,7 +15,7 @@
       "mutable": false
     },
     "README.md": {
-      "sha256": "f2c6992d7ef505970c30b71d62a55ee3b18ae9f590604100963391dc20daf2f6",
+      "sha256": "a496669b0cd9ab0cb28d4b668edbc98bfc7cc53d64eb8073a39f05c139ee26ef",
       "bytes": 19541,
       "mutable": false
     },
@@ -174,6 +174,11 @@
       "bytes": 1532,
       "mutable": false
     },
+    "fixtures/naio-soul.v2-role-constellation.json": {
+      "sha256": "82b9f1b14847ee6ed747865635ea3fc3b08cc1ad7a39bb80e53c3858e234b838",
+      "bytes": 18752,
+      "mutable": false
+    },
     "index.html": {
       "sha256": "6ab18ab7eb938b54ffec85fbf921eb958aeecb1da5b29b24861e8b2af0793d40",
       "bytes": 95686,
@@ -235,8 +240,8 @@
       "mutable": false
     },
     "schema/naio-soul.schema.json": {
-      "sha256": "a6ecf24484bbe63a593ef494c8b4721e5ae2d27417bbeb2ab9b3256599da4e56",
-      "bytes": 3665,
+      "sha256": "75946c6314c7a7dad2218d342bbc089e5b1fbb84c887e61aae6ddfe602a001f5",
+      "bytes": 4055,
       "mutable": false
     },
     "skills/naio-activity-log/SKILL.md": {
@@ -245,8 +250,8 @@
       "mutable": false
     },
     "tests/self_test.py": {
-      "sha256": "d97a58b93f29d74dbf8d095c4ac1357ca9b895b4552bb1aabdb80504c3509529",
-      "bytes": 36936,
+      "sha256": "21e011a155ba2d2ba3cb9b414875ce42afa6490ba849a940a5829aadc0670b88",
+      "bytes": 40398,
       "mutable": false
     },
     "tools/rebuild-governance-kit.sh": {

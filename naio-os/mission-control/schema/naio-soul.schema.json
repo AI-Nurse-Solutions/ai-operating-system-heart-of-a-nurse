@@ -2,14 +2,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://nurse-ai-os.org/naio-os/schema/naio-soul.schema.json",
   "title": "naio-soul.json",
-  "description": "The personalization bridge contract. Derived from what soul-quiz.html actually emits (buildOsConfig), not invented — the quiz is the producer and this schema follows it. Contains no PHI by design, and the quiz refuses to export unless both hard boundaries are confirmed. 1.1.0 aligned identity.role with the eight role presets; 1.0.0 files still import.",
+  "description": "The personalization bridge contract. Derived from what soul-quiz.html actually emits (buildOsConfig), not invented — the quiz is the producer and this schema follows it. Contains no PHI by design, and the quiz refuses to export unless both hard boundaries are confirmed. 1.1.0 aligned identity.role with the eight role presets; 1.0.0 files still import. 2.0.0 is the role-constellation export the live quiz emits today — this schema pinned ^1. and rejected it, so taking the quiz and importing the result failed end to end until 2026-08-11. The quiz is the producer; when it moves, this file moves with it, and the suite now validates a real export instead of a fixture written from memory.",
   "type": "object",
   "required": ["schema_version", "identity", "spheres", "boundaries"],
   "additionalProperties": true,
   "properties": {
-    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+    "schema_version": { "type": "string", "pattern": "^[12]\\.[0-9]+\\.[0-9]+$" },
     "generated_at": { "type": "string" },
-    "generator": { "type": "string", "enum": ["soul-quiz", "manual", "import"] },
+    "generator": {
+      "type": "string",
+      "enum": ["soul-quiz", "soul-quiz-role-constellation", "manual", "import"]
+    },
 
     "identity": {
       "type": "object",

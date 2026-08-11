@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import sqlite3
 import subprocess
@@ -417,6 +418,60 @@ def main() -> int:
         r_leg = run_import(legacy_fixture)
         check("a schema 1.0.0 soul file still imports, and says what it mapped",
               r_leg.returncode == 0 and "retired 1.0.0 spelling" in r_leg.stdout)
+
+        # -- 11b. the export the live quiz actually emits -----------------------
+        # Every soul test above used a fixture written by hand. The schema pinned
+        # schema_version to ^1. while soul-quiz.html moved to 2.0.0, so a nurse
+        # who took the quiz and imported the download was refused — and the suite
+        # stayed green, because no fixture had ever been 2.0.0. The producer is
+        # the quiz; the contract has to be checked against what it produces.
+        v2_fixture = stage / "fixtures" / "naio-soul.v2-role-constellation.json"
+        r_v2 = run_import(v2_fixture)
+        check("the 2.0.0 role-constellation export the live quiz emits imports",
+              r_v2.returncode == 0 and "REFUSED" not in r_v2.stdout,
+              r_v2.stdout.strip().replace("\n", " | ")[:300])
+
+        # A committed fixture is a photograph of the producer, and photographs
+        # age. When this runs inside the site repo, regenerate from soul-quiz's
+        # own model and fail if the fixture no longer matches what it emits —
+        # so the next version bump breaks a test here instead of breaking a
+        # nurse's first import.
+        quiz_model = HERE.parent.parent / "soul-quiz" / "soul-quiz-model.mjs"
+        quiz_test = HERE.parent.parent / "tests" / "test_soul_quiz_constellation.py"
+        node = shutil.which("node")
+        if not (quiz_model.is_file() and quiz_test.is_file()):
+            skip("the committed v2 fixture still matches what soul-quiz emits",
+                 "soul-quiz not present — running outside the site repo")
+        elif not node:
+            skip("the committed v2 fixture still matches what soul-quiz emits",
+                 "node not available")
+        else:
+            state_js = re.search(
+                r"def representative_state_js\(\).*?return\s+(?:f?\"\"\"|r?\"\"\")(.*?)\"\"\"",
+                quiz_test.read_text(encoding="utf-8"), re.DOTALL)
+            if not state_js:
+                skip("the committed v2 fixture still matches what soul-quiz emits",
+                     "could not read the quiz's representative state from its own tests")
+            else:
+                gen = quiz_model.parent.parent / "_mc_fixture_probe.mjs"
+                gen.write_text(
+                    "import {createInitialState,buildOsConfig} from "
+                    "'./soul-quiz/soul-quiz-model.mjs';\n" + state_js.group(1) +
+                    "\nconsole.log(JSON.stringify(buildOsConfig(s,"
+                    "'2026-07-20T00:00:00.000Z')));\n", encoding="utf-8")
+                try:
+                    live = subprocess.run([node, gen.name], capture_output=True,
+                                          text=True, cwd=str(gen.parent))
+                finally:
+                    gen.unlink(missing_ok=True)
+                emitted = json.loads(live.stdout) if live.returncode == 0 else {}
+                committed = json.loads(v2_fixture.read_text(encoding="utf-8"))
+                check("the committed v2 fixture still matches what soul-quiz emits",
+                      live.returncode == 0
+                      and emitted.get("schema_version") == committed.get("schema_version")
+                      and emitted.get("generator") == committed.get("generator"),
+                      f"live={emitted.get('schema_version')}/{emitted.get('generator')} "
+                      f"fixture={committed.get('schema_version')}/{committed.get('generator')}")
 
         # -- 12. editing your own season and standing rows ---------------------
         def patch(role, body):

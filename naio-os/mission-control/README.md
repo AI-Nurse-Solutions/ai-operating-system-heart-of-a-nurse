@@ -258,9 +258,20 @@ If you unzipped the [Starter Kit](https://nurse-ai-os.org/start-here.html), the 
 ./naio-mc configure --kit ~/My-Nurse-AI-OS --apply
 ```
 
-That sets the vault to the kit, the Library to `04-Projects/`, the capture inbox to `03-Memory/inbox/`, and watches every real file in `01-SOUL/` — skipping the `.template.md` files, because a template is not a soul.
+Two kit layouts exist and both work, so the command detects which one it is looking at rather than assuming — and says which it found. For the **published** kit, the one nurse-ai-os.org actually serves:
 
-It refuses a folder that is not actually a kit rather than configuring nonsense and failing confusingly three screens later. If `01-SOUL/` holds only templates it says so, wires everything else, and tells you to go take the quiz.
+| Setting | Where it points |
+|---|---|
+| vault | the kit folder itself |
+| Library | `Projects/` |
+| capture inbox | `Memory/inbox/` if it exists, otherwise `Memory/` — and it says which |
+| SOUL files | `00-Start-Here/SOUL.md`, plus every sphere soul one level down matching `*/*-SOUL.md` (the kit ships two in `06-Profiles/`) |
+
+The older **component** layout — `01-SOUL/`, `03-Memory/`, `04-Projects/` — is still accepted, and there the same three settings point at those folders instead.
+
+`README.md` and any `*.template.md` are never counted as souls, because a template is not a soul and "watching 1 file" on a folder nobody has filled in is a false pass.
+
+It refuses a folder that is not actually a kit rather than configuring nonsense and failing confusingly three screens later. If the core `SOUL.md` is missing it wires everything else, says the dashboard will not know who you are, and points you at the quiz.
 
 Or set them individually:
 

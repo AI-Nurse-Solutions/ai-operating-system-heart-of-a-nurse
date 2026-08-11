@@ -8,7 +8,7 @@
     "note": "Same key and same fail-closed posture as the naio-os release chain. Verify with: openssl dgst -sha256 -verify ../config/naio-os-release-public.pem -signature manifest.sig manifest.json"
   },
   "version": "0.4.0",
-  "built_at": "2026-08-11T21:30:59+00:00",
+  "built_at": "2026-08-11T21:52:19+00:00",
   "self_test": {
     "passed": 111,
     "failed": 0
@@ -21,8 +21,8 @@
       "mutable": false
     },
     "README.md": {
-      "sha256": "ce196df454a02bb2552ce78853f873f1f55fcfcccce2d399ebbd00750e32c7e6",
-      "bytes": 21754,
+      "sha256": "ccccf6e0568bcf30488a9f2dba15da5e0cc403f9653e8fd84a30c84fd7cc8f9f",
+      "bytes": 22438,
       "mutable": false
     },
     "adapters/__init__.py": {

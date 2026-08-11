@@ -1023,6 +1023,17 @@ def main() -> int:
                   and "no 00-Start-Here/SOUL.md yet" not in c.stdout,
                   c.stdout.strip().replace("\n", " | ")[:400])
 
+            # The `*/*-SOUL.md` pattern is wider than "your spheres", and the
+            # docs now say so out loud: the kit also ships Team-Lab-SOUL.md, a
+            # shared team persona. Whichever way that is later decided — keep
+            # the wide pattern, or narrow it — this check makes the docs and the
+            # command disagree loudly instead of quietly.
+            shipped_souls = sorted(p.name for p in real_kit.glob("*/*-SOUL.md"))
+            check("configure --kit names every SOUL file it matched",
+                  all(name in c.stdout for name in shipped_souls),
+                  f"kit ships {shipped_souls}; output: "
+                  + c.stdout.strip().replace("\n", " | ")[:300])
+
         # Both layouts must keep working. A fix that swapped one hard-coded
         # guess for another would pass the test above and still be a guess.
         bothkit = workdir / "component-kit"

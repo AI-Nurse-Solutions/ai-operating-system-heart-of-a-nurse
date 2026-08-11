@@ -78,8 +78,15 @@ To replace blank-page paralysis ("what do I put in my SOUL file?") with a guided
 
 The core soul's name and location are fixed. Sphere souls follow a **pattern**
 rather than a fixed list: any file ending `-SOUL.md`, one level below the vault
-root, is picked up — so the names above and the two examples the kit ships in
+root, is picked up — so the names above and the examples the kit ships in
 `06-Profiles/` are all equally valid, and adding a sphere needs no configuration.
+
+The pattern is deliberately wider than "your spheres", so read the list it
+produces rather than assuming. In the shipped kit it also matches
+`11-Messaging-Team/Team-Lab-SOUL.md`, which is a shared team agent persona and
+not one of your spheres at all. `naio-mc configure --kit` prints every file it
+matched, by name, for exactly this reason — what it does with them is watch for
+changes to show in the Memory tab, never load them into an agent.
 
 ---
 

@@ -94,9 +94,15 @@ its own contents in `Memory/README.md` — create `weekly-reviews/` and
 workbook both read them:
 
 - `00-Start-Here/SOUL.md` — your core soul. One file, that exact name.
-- `<folder>/<Sphere>-SOUL.md` — sphere souls, one level down. Any name ending
-  `-SOUL.md` is found; the kit ships two in `06-Profiles/` as examples and the
-  [SOUL Interview Agent](./SOUL-Interview-Agent.md) writes more there.
+- `<folder>/<name>-SOUL.md` — one level down. Any file ending `-SOUL.md` is
+  found, wherever it sits, so adding a sphere needs no configuration. The kit
+  ships three: `06-Profiles/Personal-Learning-SOUL.md` and
+  `Personal-Projects-SOUL.md` as sphere examples, and
+  `11-Messaging-Team/Team-Lab-SOUL.md`, which is a **shared team agent persona
+  rather than one of your spheres** — it matches the same pattern, so
+  `configure --kit` lists it too. Being watched means Mission Control records
+  *that* the file changed and by how many lines, for the Memory tab. It never
+  reads the contents into anything and never writes back.
 
 ## Setup prompts
 

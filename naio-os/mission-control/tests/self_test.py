@@ -32,13 +32,20 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
-PASS, FAIL = [], []
+PASS, FAIL, SKIP = [], [], []
 
 
 def check(name: str, cond: bool, detail: str = "") -> None:
     (PASS if cond else FAIL).append(name)
     mark = "\033[32m✓\033[0m" if cond else "\033[31m✗\033[0m"
     print(f"  {mark} {name}" + (f" — {detail}" if detail and not cond else ""))
+
+
+def skip(name: str, why: str) -> None:
+    """A check that could not run. Counted as neither pass nor fail, and said
+    out loud — a silently skipped test is a false pass wearing a green shirt."""
+    SKIP.append(name)
+    print(f"  \033[33m–\033[0m {name} — SKIPPED: {why}")
 
 
 def get(path: str, port: int):
@@ -593,6 +600,49 @@ def main() -> int:
               and "no 01-SOUL/SOUL.md yet" in c.stdout)
         cfg_path.write_bytes(before)
 
+        # -- 16b. the kit that actually ships -----------------------------------
+        # Every test above builds its own kit, so they only ever proved that
+        # --kit works against the layout the fixture invented. It did not: the
+        # published Starter Kit uses Projects/, Memory/ and 00-Start-Here/SOUL.md,
+        # and this command refused it outright while telling the nurse to go
+        # download the very kit it had just rejected. A green suite said nothing,
+        # because nothing pointed at the real thing.
+        #
+        # So point at the real thing. This reads the kit as it exists in the
+        # repo, not a copy of it, and is the check that would have caught it.
+        real_kit = HERE.parent.parent / "starter-kit" / "My-Nurse-AI-OS"
+        if not real_kit.is_dir():
+            skip("configure --kit accepts the published Starter Kit",
+                 f"no kit at {real_kit} — running outside the site repo")
+            skip("the published kit resolves a real SOUL.md", "same")
+        else:
+            c = naio("configure", "--kit", str(real_kit))
+            check("configure --kit accepts the published Starter Kit",
+                  c.returncode == 0
+                  and "does not look like a Starter Kit" not in c.stdout
+                  and "published Starter Kit layout" in c.stdout,
+                  c.stdout.strip().replace("\n", " | ")[:400])
+
+            # Accepting it is not enough; it has to wire the right folders. The
+            # nurse's own SOUL.md is the file that decides whether the dashboard
+            # knows who it is working for, so that is what gets asserted.
+            check("the published kit resolves a real SOUL.md",
+                  "watching" in c.stdout and "SOUL.md" in c.stdout
+                  and "no 00-Start-Here/SOUL.md yet" not in c.stdout,
+                  c.stdout.strip().replace("\n", " | ")[:400])
+
+        # Both layouts must keep working. A fix that swapped one hard-coded
+        # guess for another would pass the test above and still be a guess.
+        bothkit = workdir / "component-kit"
+        for d in ("00-Start-Here", "01-SOUL", "03-Memory/inbox", "04-Projects"):
+            (bothkit / d).mkdir(parents=True, exist_ok=True)
+        (bothkit / "01-SOUL" / "SOUL.md").write_text("# SOUL\n")
+        c = naio("configure", "--kit", str(bothkit))
+        check("the component layout still works after the published fix",
+              c.returncode == 0 and "component Starter Kit layout" in c.stdout
+              and "03-Memory/inbox" in c.stdout)
+        cfg_path.write_bytes(before)
+
         # -- 15. the Apple Notes bridge: never run on a Mac, so guard it statically
         # This is the one component shipped without ever having been executed. We
         # cannot run it here, so we assert the two things that must hold whether or
@@ -652,7 +702,8 @@ def main() -> int:
             proc.kill()
         shutil.rmtree(workdir, ignore_errors=True)
 
-    print(f"\n  {len(PASS)} passed, {len(FAIL)} failed")
+    print(f"\n  {len(PASS)} passed, {len(FAIL)} failed"
+          + (f", {len(SKIP)} skipped" if SKIP else ""))
     if FAIL:
         print("  failed: " + ", ".join(FAIL))
     print("\n  Agents propose. Humans judge. Nurses steward.\n")

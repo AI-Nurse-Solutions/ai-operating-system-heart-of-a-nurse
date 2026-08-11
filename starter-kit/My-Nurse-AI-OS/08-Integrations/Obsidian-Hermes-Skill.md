@@ -62,26 +62,26 @@ My-Nurse-AI-OS/
 │   ├── WELCOME-Carry-the-Lamp.md
 │   ├── MY-AI-VALUES.md
 │   ├── NO-PHI-BOUNDARY.md
-│   └── HUMAN-AGENCY-RULES.md
-├── 01-SOUL/
+│   ├── HUMAN-AGENCY-RULES.md
+│   └── SOUL.md
+├── 06-Profiles/
 │   ├── Personal-SOUL.md
 │   ├── Professional-SOUL.md
 │   └── Community-SOUL.md
-├── 02-Skills/
+├── 07-Learning/
+│   ├── knowledge-inbox.md
+│   └── weekly-review.md
+├── Skills/
 │   ├── research/
 │   ├── writing/
 │   └── governance/
-├── 03-Memory/
+├── Memory/
 │   ├── yearly-goals.md
 │   ├── quarterly-reviews/
 │   └── decisions/
-├── 04-Projects/
-│   ├── community/
-│   └── career/
-├── 05-Learning/
-│   ├── knowledge-inbox.md
-│   └── weekly-review.md
-└── 99-Archive/
+└── Projects/
+    ├── community/
+    └── career/
 ```
 
 ## Setup prompts
@@ -107,8 +107,8 @@ Do not proceed until a test file created on the VPS appears in Obsidian on the M
 ### 3. Point Hermes at the vault
 
 ```text
-Configure Hermes to load skills from /root/My-Nurse-AI-OS/02-Skills/
-and use /root/My-Nurse-AI-OS/01-SOUL/ as part of its system memory.
+Configure Hermes to load skills from /root/My-Nurse-AI-OS/Skills/
+and use /root/My-Nurse-AI-OS/00-Start-Here/SOUL.md as part of its system memory.
 Only load these files when relevant to keep the context window clean.
 ```
 
@@ -126,17 +126,17 @@ Confirm within 30 seconds that the change appears back in Obsidian on the MacBoo
 
 > "Please edit my Research skill to always include an EDENA evidence-quality check (source, methodology, bias, applicability) before citing any source."
 
-Hermes opens `02-Skills/research/Research-Skill-Prompts.md`, adds the instruction, and saves. Because the vault syncs, you see the change instantly in Obsidian.
+Hermes opens `Skills/research/Research-Skill-Prompts.md`, adds the instruction, and saves. Because the vault syncs, you see the change instantly in Obsidian.
 
 ### Run a `/go` research task into your vault
 
-> `/go Find the 10 most-cited papers on nurse-led AI governance from 2024–2026, summarize each, and save the results to 05-Learning/nurse-ai-governance-research.md.`
+> `/go Find the 10 most-cited papers on nurse-led AI governance from 2024–2026, summarize each, and save the results to 07-Learning/nurse-ai-governance-research.md.`
 
 Hermes works until the task is complete. The result is a **living file** you can reference, expand, or share — not a chat that scrolls away.
 
 ### Build a weekly review from your notes
 
-> "Read my knowledge-inbox.md, weekly-review.md, and 03-Memory/decisions/ from the last 7 days. Summarize what I learned, what I decided, and what I should focus on next week. Save the review to 03-Memory/weekly-reviews/2026-W25.md."
+> "Read my knowledge-inbox.md, weekly-review.md, and Memory/decisions/ from the last 7 days. Summarize what I learned, what I decided, and what I should focus on next week. Save the review to Memory/weekly-reviews/2026-W25.md."
 
 ## Safety and governance boundaries
 

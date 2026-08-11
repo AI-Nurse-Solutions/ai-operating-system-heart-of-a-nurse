@@ -2,15 +2,20 @@
   "_note": "Checksums of what was actually built, written by tools/release.py at the same moment the self-test ran. MISSION CONTROL IS NOT SIGNED \u2014 there is no Mission Control release key yet, so this proves this tree is unchanged since packaging, and nothing more. Do not read it as provenance. Scope: naio-os itself has been signed since Phase 6 (manifest.sig, release-history.json, fail-closed verifier); Mission Control does not yet participate in that chain.",
   "signed": false,
   "version": "0.4.0",
-  "built_at": "2026-08-11T11:01:58+00:00",
+  "built_at": "2026-08-11T11:25:49+00:00",
   "self_test": {
-    "passed": 84,
+    "passed": 87,
     "failed": 0
   },
-  "file_count": 49,
+  "file_count": 50,
   "files": {
+    "ARCHITECTURE.md": {
+      "sha256": "f4abc4663ae2bed78274d11b991c6675346b82326d046374212d0525b0a76e75",
+      "bytes": 37346,
+      "mutable": false
+    },
     "README.md": {
-      "sha256": "8cd1678a2d2ad0e5d40ce77af9934a6ae69c640e4a6917eb842858428ab19216",
+      "sha256": "f2c6992d7ef505970c30b71d62a55ee3b18ae9f590604100963391dc20daf2f6",
       "bytes": 19541,
       "mutable": false
     },
@@ -180,8 +185,8 @@
       "mutable": false
     },
     "naio-mc": {
-      "sha256": "b3c69eba0e9731dc4db2000a17930275afe7dc12eb1ed5be3e0492cf2585ee41",
-      "bytes": 19292,
+      "sha256": "879973213133960830fcb805c9daa9467ff8f8bbdfb93630f33280518cf36eb0",
+      "bytes": 21670,
       "mutable": false
     },
     "roles/README.md": {
@@ -240,8 +245,8 @@
       "mutable": false
     },
     "tests/self_test.py": {
-      "sha256": "e6c787f4f4c2f192721e36043c862442102fe503af08bd65bcb8a4de7ab56e15",
-      "bytes": 33988,
+      "sha256": "d97a58b93f29d74dbf8d095c4ac1357ca9b895b4552bb1aabdb80504c3509529",
+      "bytes": 36936,
       "mutable": false
     },
     "tools/rebuild-governance-kit.sh": {

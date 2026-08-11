@@ -10,7 +10,7 @@ The observation plane for Nurse AI OS. Local-only, stdlib-only, read-mostly.
 ```bash
 ./naio-mc doctor      # preflight — python, presets, content, runtime, port
 ./naio-mc start       # → http://127.0.0.1:8321
-./naio-mc self-test   # 84 checks, including the ones that matter
+./naio-mc self-test   # 87 checks, including the ones that matter
 ./naio-mc verify      # is this tree the one that was packaged?
 ./naio-mc configure   # point it at your own vault and SOUL files
 ./naio-mc notes-check # run the Apple Notes bridge once and see what it returns
@@ -32,7 +32,7 @@ No install step, no dependency to fetch. Python 3.10+ and the standard library.
 | **SOUL bridge** | `naio-soul.json` → real content, replacing sample | built |
 | **Editing** | set your season; add the credentials that could lapse | built |
 
-All seven tabs are live. `self-test` runs 84 checks and attacks the rules rather than asserting them: it writes a malicious preset, probes for an endpoint that approves a gate, probes for one that schedules cron, kills a collector for real, and checks that promoting to memory left `SOUL.md` untouched byte-for-byte.
+All seven tabs are live. `self-test` runs 87 checks and attacks the rules rather than asserting them: it writes a malicious preset, probes for an endpoint that approves a gate, probes for one that schedules cron, kills a collector for real, and checks that promoting to memory left `SOUL.md` untouched byte-for-byte.
 
 ```
 mission-control/

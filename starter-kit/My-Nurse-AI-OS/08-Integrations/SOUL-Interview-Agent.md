@@ -65,15 +65,15 @@ To replace blank-page paralysis ("what do I put in my SOUL file?") with a guided
 **Output files** saved to the user's Obsidian vault:
 
 ```text
-01-SOUL/
-├── Core-SOUL.md                ← always created
+00-Start-Here/
+├── SOUL.md                     ← always created
+└── MY-EDENA-TIERS.md           ← tier map per sphere
+06-Profiles/
 ├── Personal-SOUL.md            ← if Personal active
 ├── Professional-SOUL.md        ← if Professional active
 ├── Community-SOUL.md           ← if Community active
 ├── Side-Gig-SOUL.md            ← if Side Gig active
 └── Interest-<Name>-SOUL.md     ← one per interest/hobby
-00-Start-Here/
-└── MY-EDENA-TIERS.md           ← tier map per sphere
 ```
 
 ---

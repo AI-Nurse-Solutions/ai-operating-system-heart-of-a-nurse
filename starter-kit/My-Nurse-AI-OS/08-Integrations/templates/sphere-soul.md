@@ -1,7 +1,7 @@
 # <Sphere>-SOUL — <Name>
 
 > Loaded by Hermes only when working in the **<Sphere>** sphere.
-> Layered on top of `Core-SOUL.md`.
+> Layered on top of the core soul at `00-Start-Here/SOUL.md`.
 
 ## Context
 
@@ -50,8 +50,8 @@
 
 ## Sphere-specific resources
 
-- Notes folder: `04-Projects/<sphere-or-project>/`
-- Learning folder: `05-Learning/<sphere-area>/`
+- Notes folder: `Projects/<sphere-or-project>/`
+- Learning folder: `07-Learning/<sphere-area>/`
 - Related skills: <list>
 
 ## Stewardship line

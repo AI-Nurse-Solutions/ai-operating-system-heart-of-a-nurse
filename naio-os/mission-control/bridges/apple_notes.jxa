@@ -1,0 +1,47 @@
+#!/usr/bin/env osascript -l JavaScript
+//
+// NAIO Apple Notes bridge — metadata only, configured folders only, macOS only.
+//
+// Apple Notes is where nurses actually capture things at 2 a.m., so it is treated
+// as the capture inbox, not a database. This script emits titles, folders, and
+// modification dates. It never emits a note body — bodies stay in Notes, which is
+// the PHI posture rather than an optimisation.
+//
+// Usage:  osascript -l JavaScript apple_notes.jxa "Folder A" "Folder B"
+//
+ObjC.import('stdlib');                     // for $.exit — see the catch below
+
+function run(argv) {
+  if (!argv || argv.length === 0) return JSON.stringify([]);
+  const wanted = argv.map(String);
+  const Notes = Application("Notes");
+  Notes.includeStandardAdditions = true;
+  const out = [];
+  try {
+    const folders = Notes.folders();
+    for (let f = 0; f < folders.length; f++) {
+      const folder = folders[f];
+      const fname = folder.name();
+      if (wanted.indexOf(fname) === -1) continue;
+      const notes = folder.notes();
+      for (let n = 0; n < notes.length; n++) {
+        const note = notes[n];
+        out.push({
+          id: String(note.id()),
+          title: String(note.name()),        // title only — never note.body()
+          folder: fname,
+          modified: new Date(note.modificationDate()).toISOString(),
+        });
+      }
+    }
+  } catch (e) {
+    // Fail on stderr with a non-zero exit, NOT with an error object on stdout:
+    // the collector checks only the exit code and then iterates what it decoded
+    // as a list of notes, so an {error: …} object surfaced as a TypeError deep
+    // in the indexer instead of "the Notes bridge could not run". console.log
+    // goes to stderr under osascript, which is where this belongs.
+    console.log("apple_notes.jxa: " + String(e));
+    $.exit(1);
+  }
+  return JSON.stringify(out);
+}

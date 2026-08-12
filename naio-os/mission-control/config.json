@@ -1,0 +1,8 @@
+{
+  "content_root": "demo-workspace/content",
+  "vault_root": "demo-vault",
+  "vault_inbox": "Inbox",
+  "soul_files": ["demo-workspace/SOUL.md", "demo-workspace/memory.md"],
+  "apple_notes_folders": [],
+  "_note": "Demo paths. Repoint content_root and vault_root at your real workspace and Obsidian vault, and list the Apple Notes folders you want indexed (macOS only). Paths only — never a credential."
+}

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10213f">
+  <title>The Nurse's Side Gig Playbook | Nurse AI OS</title>
+  <meta name="description" content="A calm, step-by-step guide for nurses exploring a small side business without burning out, breaking rules, or betting the rent.">
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #10213f;
+      --navy-2: #163b5c;
+      --teal: #0f766e;
+      --teal-soft: #e8f6f3;
+      --gold: #b7791f;
+      --gold-soft: #fff5d9;
+      --ink: #172033;
+      --muted: #526174;
+      --linen: #fbf8f2;
+      --white: #fff;
+      --line: #dbe4ee;
+      --rose-soft: #fff0ee;
+      --shadow: 0 14px 36px rgba(16, 33, 63, .10);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--linen); color: var(--ink); font: 1.06rem/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    a { color: var(--teal); }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .skip { position: fixed; left: .75rem; top: .75rem; z-index: 20; transform: translateY(-160%); background: var(--gold-soft); color: var(--navy); padding: .7rem 1rem; border-radius: 10px; font-weight: 800; }
+    .skip:focus { transform: none; }
+    .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
+    .hero { color: var(--white); background: radial-gradient(circle at 12% 16%, rgba(23,128,126,.65), transparent 34%), linear-gradient(135deg, #0b1425, var(--navy) 60%, #0f766e); padding: 4.6rem 0 4rem; }
+    .eyebrow { color: #bff7ee; font-size: .78rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; line-height: 1.12; }
+    h1 { max-width: 850px; margin: .7rem 0 1rem; font-size: clamp(2.7rem, 7vw, 5.6rem); letter-spacing: -.035em; }
+    h2 { color: var(--navy); margin: 0 0 1rem; font-size: clamp(1.9rem, 4vw, 3rem); }
+    h3 { color: var(--navy); margin: .4rem 0 .5rem; font-size: 1.35rem; }
+    .subtitle { max-width: 820px; margin: 0; color: #eaf4ff; font-size: clamp(1.12rem, 2.2vw, 1.4rem); }
+    .actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.8rem; }
+    .btn { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; border-radius: 999px; padding: .72rem 1.1rem; font-weight: 850; text-decoration: none; }
+    .btn-primary { background: #f4c65e; color: #101b2d; }
+    .btn-secondary { border: 1px solid rgba(255,255,255,.45); color: var(--white); background: rgba(255,255,255,.10); }
+    .quick-nav { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); box-shadow: 0 2px 10px rgba(16,33,63,.05); }
+    .quick-nav .wrap { display: flex; flex-wrap: wrap; gap: .4rem 1rem; padding: .8rem 0; }
+    .quick-nav a { display: inline-flex; min-height: 44px; align-items: center; font-weight: 750; text-decoration: none; }
+    main { padding-bottom: 3rem; }
+    .section { padding: 4rem 0 0; }
+    .section-intro { max-width: 760px; color: var(--muted); font-size: 1.12rem; }
+    .grid { display: grid; gap: 1.2rem; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .card, .callout, .source-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.45rem; box-shadow: var(--shadow); }
+    .callout { border-left: 6px solid var(--teal); background: var(--teal-soft); box-shadow: none; }
+    .callout.warm { border-left-color: var(--gold); background: var(--gold-soft); }
+    .callout.alert { border-left-color: #b34a44; background: var(--rose-soft); }
+    .promise { border-top: 4px solid var(--teal); }
+    .number { display: inline-grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: var(--navy); color: var(--white); font-weight: 900; }
+    .badge { display: inline-block; border-radius: 999px; padding: .28rem .6rem; background: var(--teal-soft); color: var(--teal); font-size: .82rem; font-weight: 850; }
+    .badge.gold { background: var(--gold-soft); color: #785014; }
+    table { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    th, td { padding: 1rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--navy); color: var(--white); }
+    tr:last-child td { border-bottom: 0; }
+    .step { border-left: 5px solid var(--teal); }
+    .step small { color: var(--teal); font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
+    ol, ul { padding-left: 1.3rem; }
+    li + li { margin-top: .45rem; }
+    blockquote { margin: 1rem 0; padding: 1rem 1.2rem; border-left: 5px solid var(--gold); background: var(--gold-soft); font: 1.22rem/1.5 Georgia, serif; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; margin-top: 1.2rem; }
+    .stat { padding: 1rem; border-radius: 16px; background: var(--navy); color: var(--white); text-align: center; }
+    .stat strong { display: block; color: #f4c65e; font: 2rem/1 Georgia, serif; }
+    .source-card { margin-top: 1.2rem; box-shadow: none; background: #f2f6fa; }
+    footer { margin-top: 4rem; padding: 2.5rem 0; background: #0b1425; color: #dce8f4; }
+    footer a { color: #bff7ee; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: .3rem 1rem; }
+    @media (max-width: 850px) { .two, .three, .five, .stats { grid-template-columns: 1fr 1fr; } .five .card:last-child { grid-column: 1 / -1; } }
+    @media (max-width: 580px) { .two, .three, .five, .stats { grid-template-columns: 1fr; } .five .card:last-child { grid-column: auto; } .hero { padding-top: 3.4rem; } th, td { padding: .75rem; font-size: .96rem; } .quick-nav .wrap { gap: .15rem .75rem; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">A Nurse AI OS resource</div>
+      <h1>The Nurse's Side Gig Playbook</h1>
+      <p class="subtitle">A calm, step-by-step guide to exploring a side business without burning out, breaking rules, or betting the rent.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="../assets/the-nurses-side-gig-playbook.pdf" download>Download the PDF ↓</a>
+        <a class="btn btn-secondary" href="#steps">Jump to the steps</a>
+        <a class="btn btn-secondary" href="../resources.html">All resources</a>
+      </div>
+    </div>
+  </header>
+  <nav class="quick-nav" aria-label="Playbook sections">
+    <div class="wrap">
+      <a href="#start">Start here</a><a href="#triage">Triage</a><a href="#guardrails">Non-negotiables</a><a href="#landscape">Landscape</a><a href="#steps">Five steps</a><a href="#ai">Working with AI</a><a href="#warnings">Warnings</a>
+    </div>
+  </nav>
+  <main id="main">
+    <section id="start" class="section">
+      <div class="wrap">
+        <h2>Start here: a word before the steps</h2>
+        <p class="section-intro">If you are wondering whether the judgment, calm under pressure, and ability to explain hard things could earn something outside your shifts: they can. But the internet is loud about this topic, and much of what it shouts is a sales pitch.</p>
+        <div class="grid three">
+          <article class="card promise"><span class="number">1</span><h3>You can't break anything here</h3><p>Explore in small, reversible steps. Nothing in this playbook asks you to quit, spend big, or announce anything before you are ready.</p></article>
+          <article class="card promise"><span class="number">2</span><h3>You don't need to be technical</h3><p>If you can chart, you can do the steps in this guide. AI can help with drafts; you supply the judgment, just as you do with any assistant.</p></article>
+          <article class="card promise"><span class="number">3</span><h3>We name the risks early</h3><p>The warnings are up front, not buried in fine print. Nurses deserve informed consent before they spend their time, money, or professional capital.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="triage" class="section">
+      <div class="wrap">
+        <h2>Part 1 — Think like a triage nurse, not a lottery player</h2>
+        <p class="section-intro">Before giving any side gig your time, assess it against four vital signs. Passion can pick the lane; demand must pick the product.</p>
+        <div style="overflow-x:auto; margin-top:1.2rem;">
+          <table>
+            <thead><tr><th>Vital sign</th><th>The question</th><th>Red flag</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Demand</strong></td><td>Are real people already searching and paying for this?</td><td>“I'll create the demand.” Beginners usually cannot.</td></tr>
+              <tr><td><strong>Access</strong></td><td>Can you reach those people without building an audience from zero?</td><td>“Just post on social media consistently.”</td></tr>
+              <tr><td><strong>Cost of failure</strong></td><td>If it flops, what did it cost: hours, dollars, or your license?</td><td>Anything touching your license or requiring large upfront money.</td></tr>
+              <tr><td><strong>Fit</strong></td><td>Does it use what you already know, at hours you actually have?</td><td>A model that requires a year of skills-building before reliable income.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warm" style="margin-top:1.2rem;"><strong>Core finding:</strong> You make money by serving demand that already exists, not by expressing what you wish people wanted.</div>
+      </div>
+    </section>
+
+    <section id="guardrails" class="section">
+      <div class="wrap">
+        <h2>Part 2 — The non-negotiables</h2>
+        <p class="section-intro">Your license and professional trust outlast any side gig. Internalize these guardrails before exploring a business model.</p>
+        <div class="grid three">
+          <article class="card"><h3>No patient information. Ever.</h3><p>No identifiable stories, photos, or “de-identified” cases a coworker could recognize. No PHI. This is a hard boundary, not a suggestion.</p></article>
+          <article class="card"><h3>No clinical advice as a product</h3><p>Study skills, wellness habits, and career navigation are different from telling strangers what to do about symptoms or medications. Do not sell patient-specific clinical advice.</p></article>
+          <article class="card"><h3>Check employer policies</h3><p>Review outside-work, confidentiality, intellectual-property, and social-media policies before publishing under your own name.</p></article>
+          <article class="card"><h3>Use honest AI labels</h3><p>If AI helped generate content, disclose it wherever a platform requires disclosure. Transparency is the professional standard.</p></article>
+          <article class="card"><h3>You stay the decision-maker</h3><p>AI drafts, suggests, and organizes. You judge, edit, verify, and press publish. Nothing goes out that you have not personally read and can stand behind.</p></article>
+          <article class="callout alert"><strong>Stop and route through governance</strong><p>If an idea touches patient care, PHI, employer secrets, institutional approval, procurement, certification, or clinical deployment, this playbook is not the authorization path.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="landscape" class="section">
+      <div class="wrap">
+        <h2>Part 3 — The landscape: what's actually out there</h2>
+        <p class="section-intro">These models are not equally good or equally suited to a nurse's available time. Evaluate them through the four vital signs.</p>
+        <div class="grid five">
+          <article class="card"><span class="badge">People business</span><h3>Client-service businesses</h3><p>AI agencies, freelancing, and consulting have real demand, but require finding clients, selling, and meeting deadlines. Best for nurses who genuinely enjoy business development.</p></article>
+          <article class="card"><span class="badge">Build-heavy</span><h3>Apps or software</h3><p>Tools are more accessible, but when a product breaks, someone must fix it. Choose this to learn to build, not as a quick-income promise.</p></article>
+          <article class="card"><span class="badge">Audience-heavy</span><h3>Content channels</h3><p>YouTube, Instagram, and TikTok can work, but meaningful income may require a year or more of consistent publishing. Build only if you would enjoy creating without guaranteed pay.</p></article>
+          <article class="card" style="border-top:4px solid var(--gold);"><span class="badge gold">Beginner fit</span><h3>Digital products</h3><p>Ebooks and workbooks need no inventory, clients, or audience at the start. AI is useful for drafting, but demand validation and human editing remain your work.</p></article>
+          <article class="card"><span class="badge">Expertise-led</span><h3>Nurse-skill freelancing</h3><p>Health writing, tutoring, CPR teaching, and legal nurse consulting have a slower ceiling, but your expertise is the product on day one. Do not overlook proven demand because it is not shiny.</p></article>
+        </div>
+        <div class="callout" style="margin-top:1.2rem;"><strong>Watch the incentive:</strong> Many people teaching a business model earn their reliable money by selling the teaching. Treat income screenshots as advertising and evaluate the method on its own merit.</div>
+      </div>
+    </section>
+
+    <section id="steps" class="section">
+      <div class="wrap">
+        <h2>Part 4 — The five-step exploration path</h2>
+        <p class="section-intro">Each step is small, cheap, and reversible. Move forward only when the prior step gives you a clear green light.</p>
+        <div class="grid five" style="margin:1.2rem 0;">
+          <div class="card"><span class="number">1</span><h3>Take inventory</h3><p>List skills, assets, and ideas.</p></div>
+          <div class="card"><span class="number">2</span><h3>Check demand</h3><p>Validate interest with quick tests.</p></div>
+          <div class="card"><span class="number">3</span><h3>Build one thing</h3><p>Create a minimal, useful version.</p></div>
+          <div class="card"><span class="number">4</span><h3>Publish where buyers are</h3><p>Use places where your audience already shops.</p></div>
+          <div class="card"><span class="number">5</span><h3>Review and adjust</h3><p>Measure results and iterate.</p></div>
+        </div>
+        <div class="grid two">
+          <article class="card step"><small>Step 1 · one evening</small><h3>Take inventory</h3><ul><li>What do people already ask me for help with?</li><li>What do I know that felt hard to learn?</li><li>How many hours can I give without stealing from sleep?</li><li>What is my number? $200/month is a legitimate first goal.</li></ul></article>
+          <article class="card step"><small>Step 2 · one to two evenings</small><h3>Check demand first</h3><p>Pick two or three ideas. Search where buyers already are. Look for multiple books with reviews and visible gaps, or repeated questions in relevant nursing communities. Use AI for research assistance, then verify against real listings.</p><div class="callout warm"><strong>Gate:</strong> Do not build until one idea shows real, verifiable demand.</div></article>
+          <article class="card step"><small>Step 3 · two to six weeks of spare hours</small><h3>Build one small thing well</h3><ol><li><strong>Outline with AI.</strong> Identify the pain points and draft a title and outline.</li><li><strong>Draft one section at a time.</strong> Read, revise, and check consistency after every section.</li><li><strong>Add your real expertise.</strong> AI drafts are generic; your lived professional judgment is the differentiator.</li><li><strong>Get a decent cover.</strong> A simple, readable cover matters.</li><li><strong>Test with real readers.</strong> Ask two people who fit the reader profile before publishing.</li></ol></article>
+          <article class="card step"><small>Step 4 · publish</small><h3>Publish where buyers already are</h3><p>For books, Amazon KDP is free to start and places the product where buyers search. For templates and printables, marketplaces such as Etsy provide borrowed traffic for small fees. Follow each platform's current policies and disclose AI use where required.</p><p><strong>Publishing is the midpoint, not the finish line.</strong> Give one product 90 days of light, consistent attention before judging it.</p></article>
+          <article class="card step"><small>Step 5 · assess at 90 days</small><h3>Review like a nurse</h3><ul><li><strong>Selling?</strong> Deepen the offer, improve keywords, gather honest reviews, or add a companion product.</li><li><strong>Crickets?</strong> Diagnose before treating. Is the problem visibility or demand? Return to Step 2.</li><li>Either way, you now own first-hand knowledge of the whole loop.</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="ai" class="section">
+      <div class="wrap">
+        <h2>Part 5 — Work with AI without losing yourself</h2>
+        <p class="section-intro">AI is useful for drafting and rewriting. It also creates a risk of quiet steering. Keep the division of labor visible.</p>
+        <div class="grid three">
+          <article class="card"><h3>AI proposes; you judge</h3><p>Every draft is a proposal. Nothing from an AI tool is final until you say it is.</p></article>
+          <article class="card"><h3>Bot-sitting is real work</h3><p>Reviewing, correcting, and verifying output takes time. It is faster than a blank page, not push-button publishing.</p></article>
+          <article class="card"><h3>Never publish what you have not read</h3><p>Read all of it. Read aloud if useful. You are putting your professional name on the result.</p></article>
+          <article class="card"><h3>AI does not know what sells</h3><p>It can write beautifully about topics with zero buyer demand. Demand checking is your job permanently.</p></article>
+          <article class="card"><h3>You do not need special subscriptions</h3><p>Start with the general tools you already have. Upgrade only when a real bottleneck justifies it.</p></article>
+        </div>
+        <blockquote>Agents propose. Humans judge. Nurses steward.</blockquote>
+      </div>
+    </section>
+
+    <section id="warnings" class="section">
+      <div class="wrap">
+        <h2>Part 6 — Gentle warnings, gathered in one place</h2>
+        <p class="section-intro">These warnings are meant to save time and money, not to scare you away.</p>
+        <div class="grid three">
+          <article class="card"><h3>“No timeline, no odds” videos</h3><p>If a video promises income without a timeline or odds and ends with a mentorship link, enjoy the free education and skip the checkout page. The course may be the product, not the method.</p></article>
+          <article class="card"><h3>Realistic first-year expectations</h3><p>A first digital product may make $0–$300/month. Some do better; most do not. The model rewards patient stacking, not jackpots.</p></article>
+          <article class="card"><h3>Never pay to unlock the next step</h3><p>This exploration path costs almost nothing but hours. Required spending before validation is a warning sign, not a feature.</p></article>
+          <article class="card"><h3>Protect what matters most</h3><p>Protect your sleep, your license, and your shifts, in that order. A side gig that damages any of the three is a failed side gig.</p></article>
+          <article class="card"><h3>Curiosity versus dread is data</h3><p>If exploration starts feeling like a second job you dread, stop. That is information, not failure. Bedside expertise plus rest is already a complete career.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="card" style="background:linear-gradient(135deg,var(--navy),var(--navy-2));color:var(--white);">
+          <div class="eyebrow">Your one next step</div>
+          <h2 style="color:var(--white);">Not five. Just one.</h2>
+          <p>Tonight or this week, do Step 1: the four-question inventory. A notebook and thirty quiet minutes. That is the whole ask.</p>
+          <div class="grid two">
+            <div><strong>What do people already ask me for?</strong><br>Repeated requests are demand signals hiding in plain sight.</div>
+            <div><strong>What do I know that felt hard to learn?</strong><br>Hard-won knowledge can become useful product material.</div>
+            <div><strong>How many hours can I honestly give?</strong><br>Two focused hours beat ten resentful ones.</div>
+            <div><strong>What's my number?</strong><br>$200/month is a legitimate first goal. Name a real number.</div>
+          </div>
+          <p style="margin-bottom:0;color:#dce8f4;">You are not becoming an entrepreneur-influencer-guru. You are becoming a nurse who owns a small asset she built, judged, and stands behind.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>About this resource</h2>
+        <div class="grid two">
+          <div class="card"><h3>Nurse AI OS (NAIO)</h3><p>This playbook is a Nurse AI OS resource built around one doctrine:</p><blockquote>Agents propose. Humans judge. Nurses steward.</blockquote><p>The goal is to keep the professional in the decision-making seat, never to replace nursing judgment.</p></div>
+          <div class="callout alert"><h3>Educational resource</h3><p>This guide is educational, not legal, financial, tax, employment, licensure, or career advice.</p><p>Before publishing anything, verify current platform policies, state-board rules on outside work, employer policies, confidentiality obligations, and intellectual-property terms.</p><p><strong>No PHI. No patient-specific clinical advice. No employer secrets.</strong></p></div>
+        </div>
+        <div class="stats" aria-label="Playbook summary statistics"><div class="stat"><strong>5</strong>steps to a first product</div><div class="stat"><strong>4</strong>vital signs</div><div class="stat"><strong>90</strong>days before judging</div><div class="stat"><strong>$0</strong>required to start</div></div>
+        <div class="source-card">
+          <h3>Source and provenance</h3>
+          <p>This page is a Nurse AI OS web transformation of the public Gamma source <a href="https://nurses-side-gig-playbook-f59va3p.gamma.site/" rel="noopener">The Nurse's Side Gig Playbook</a>, accessed August 3, 2026. The downloadable PDF was supplied by Robert Domondon for this publication.</p>
+          <p>The page preserves the source's educational intent while making its boundaries, navigation, provenance, and PDF access explicit. Gamma layout and interactive presentation have been transformed into a static, reviewable GitHub Pages document.</p>
+          <p><a class="btn btn-primary" href="../assets/the-nurses-side-gig-playbook.pdf" download>Download the source PDF ↓</a> <a href="../side-gig-starter-kit/">Open the separate Side-Gig Starter Kit →</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap">
+      <p><strong>Carry the lamp. Keep the ledger.</strong> Agents propose. Humans judge. Nurses steward.</p>
+      <div class="footer-links"><a href="../">Nurse AI OS</a><a href="../resources.html">Resource Hub</a><a href="../side-gig-starter-kit/">Side-Gig Starter Kit</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div>
+      <p>© 2026 Nurse AI OS · Educational resource · No PHI</p>
+    </div>
+  </footer>
+</body>
+</html>

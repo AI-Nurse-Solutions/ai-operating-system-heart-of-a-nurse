@@ -1,0 +1,13 @@
+date,topic,minutes,mode,committed_first
+2026-07-01,pharmacology,45,ai-assisted,yes
+2026-07-02,med-surg,30,solo,yes
+2026-07-03,pharmacology,25,ai-assisted,no
+2026-07-05,fundamentals,40,solo,yes
+2026-07-08,pharmacology,50,ai-assisted,yes
+2026-07-10,med-surg,35,ai-assisted,yes
+2026-07-12,dosage-calc,20,solo,yes
+2026-07-15,pharmacology,30,ai-assisted,no
+2026-07-18,fundamentals,45,solo,yes
+2026-07-21,dosage-calc,25,ai-assisted,yes
+2026-07-24,med-surg,40,ai-assisted,yes
+2026-07-28,pharmacology,35,solo,yes

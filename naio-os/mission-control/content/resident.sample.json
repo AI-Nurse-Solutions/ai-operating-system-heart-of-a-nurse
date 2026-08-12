@@ -1,0 +1,319 @@
+{
+  "label": "MD resident",
+  "values": [
+    "Sleep is a clinical intervention",
+    "Ask early, not at 4 a.m.",
+    "Teach what I just learned",
+    "Come out still recognizable"
+  ],
+  "mission": "Get through residency without losing the reason I came — and come out a physician who understands how the system actually runs.",
+  "sub": "Daniel Ferreira, MD · PGY-2, internal medicine · Step 3 behind him, boards ahead · in-training exam on 22 October.",
+  "season": "PGY-2 — the long middle",
+  "seasonBody": "Intern year was survival and chief year is coming. This is the one where you either build the habits or inherit whatever the schedule gives you.",
+  "seasonMeta": "Month 3 of 12 · Step 3 cleared in June · ITE 22 October · boards 2028",
+  "actions": [
+    {
+      "domain": "Health & Energy",
+      "title": "Protect the post-call sleep block you keep trading",
+      "why": "Four of the last six post-call days went to errands instead of sleep. Every metric on this screen that dipped, dipped in the week that followed one of them.",
+      "cost": "2 minutes to block · nothing else moves",
+      "cta": "Block post-call"
+    },
+    {
+      "domain": "Finances",
+      "title": "Recertify PSLF employment before the window closes",
+      "why": "A missed certification year is a permanently missed year of qualifying payments. It is a form, it takes twelve minutes, and it is worth more than anything else on this list.",
+      "cost": "12 minutes · waits at a human gate",
+      "cta": "Open the form"
+    },
+    {
+      "domain": "Learning & Mastery",
+      "title": "Forty questions before the ITE, from your own misses",
+      "why": "The exam is on 22 October and your weakest two areas have not moved since July. Scholar has the set built from what you actually got wrong.",
+      "cost": "45 minutes · split it if you need to",
+      "cta": "Start the set"
+    }
+  ],
+  "domains": {
+    "health": {
+      "share": 6,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Four of six post-call days spent awake on errands.",
+      "detail": "This is the lowest health share on any role in this prototype, and it is not a character flaw — it is a schedule. <b>The one lever you hold is the post-call block</b>, and it is currently unheld."
+    },
+    "family": {
+      "share": 12,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Two of the last six planned calls home happened.",
+      "detail": "It has slipped every month since July. <b>Noticed, not judged</b> — but you asked to be told, and this is the telling."
+    },
+    "career": {
+      "share": 34,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Duty hours attested weekly. Milestone review clean at six months.",
+      "detail": "The largest share on the screen, which for PGY-2 is simply accurate. <b>Your training license, DEA, and duty-hour record are held separately, above</b> — they are not a share of your week."
+    },
+    "learning": {
+      "share": 21,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "ITE prep 480 questions in. Two weak areas unmoved since July.",
+      "detail": "Volume is excellent; targeting is not. <b>Unmoved weak areas after 480 questions means the sets are too broad</b> — Scholar can narrow them to your misses."
+    },
+    "finance": {
+      "share": 11,
+      "state": "attention",
+      "dir": "flat",
+      "signal": "PSLF employment certification due before 30 September.",
+      "detail": "A missed year of qualifying payments cannot be recovered later. <b>Twelve minutes now against a permanent cost</b> — the clearest cost-benefit on this screen."
+    },
+    "creative": {
+      "share": 4,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Case report paused until after the ITE. Logged 4 August.",
+      "detail": "A chosen pause with a date, not a dropped ball. <b>It will not be surfaced as a signal until 25 October.</b>"
+    },
+    "service": {
+      "share": 8,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Two medical-student teaching sessions a month, held.",
+      "detail": "The first thing most residents drop, and you have not. <b>It is also the best boards prep available to you</b>, which makes it a two-for-one."
+    },
+    "business": {
+      "share": 4,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Nothing here, on purpose, until fellowship applications open.",
+      "detail": "Correctly empty. <b>The system will not invent work for a domain you have deliberately left alone.</b>"
+    }
+  },
+  "momentum": {
+    "hero": "26",
+    "unit": "hours",
+    "label": "returned to you this quarter — study planning, credential admin, loan paperwork, and correspondence you no longer draft from nothing.",
+    "note": "Estimated from your own logged times. No clinical work appears in this number, because none of it happens here.",
+    "kpis": [
+      [
+        "Post-call blocks held",
+        "2",
+        "/6",
+        "the one to move"
+      ],
+      [
+        "Commitments honored",
+        "33",
+        "/41",
+        "+5 vs Q2"
+      ],
+      [
+        "ITE questions done",
+        "480",
+        "",
+        "2 weak areas left"
+      ]
+    ],
+    "weekly": [
+      2,
+      3,
+      3,
+      4,
+      4,
+      5,
+      5,
+      6,
+      6,
+      7,
+      7,
+      9
+    ],
+    "caption": "the study habit finally held from week 7",
+    "evidence": [
+      [
+        7,
+        3,
+        1
+      ],
+      [
+        8,
+        3,
+        2
+      ],
+      [
+        9,
+        4,
+        2
+      ],
+      [
+        10,
+        4,
+        3
+      ],
+      [
+        11,
+        5,
+        3
+      ],
+      [
+        12,
+        5,
+        4
+      ]
+    ]
+  },
+  "license": {
+    "days": 44,
+    "gates": 29,
+    "currency": [
+      {
+        "name": "Training license",
+        "meta": "Renews with program year · next 1 July 2027",
+        "state": "flourishing"
+      },
+      {
+        "name": "USMLE Step 3",
+        "meta": "Cleared 14 June 2026",
+        "state": "flourishing"
+      },
+      {
+        "name": "DEA registration",
+        "meta": "Institutional · tied to program enrollment",
+        "state": "flourishing"
+      },
+      {
+        "name": "ACLS / BLS",
+        "meta": "ACLS renews 3 March 2027 · BLS current",
+        "state": "flourishing"
+      },
+      {
+        "name": "Duty-hour attestation",
+        "meta": "Weekly · current · none missed this block",
+        "state": "flourishing"
+      },
+      {
+        "name": "Milestone review",
+        "meta": "Semi-annual · next 15 December 2026",
+        "state": "steady"
+      }
+    ],
+    "reputation": [
+      {
+        "name": "Published",
+        "meta": "1 case report carries your name · reviewed by you · 0 auto-sent",
+        "state": "flourishing"
+      },
+      {
+        "name": "Teaching",
+        "meta": "2 student sessions a month · no identifiable content here",
+        "state": "flourishing"
+      },
+      {
+        "name": "Awaiting you",
+        "meta": "Nothing pending. Everything drafted has been read and sent.",
+        "state": "flourishing"
+      }
+    ],
+    "risks": [
+      {
+        "what": "The question that is your actual job",
+        "guard": "Differential, dosing, workup — for an identified patient. Refused here at every tier, including Green. Not because it is outside your training; it is the whole of your training. Because this system has no clearance, no validation, and no institutional governance behind it. <b>The boundary is about the tool, not about you.</b>"
+      },
+      {
+        "what": "A chart detail carried across at 4 a.m.",
+        "guard": "Import refuses on PHI indicators and a nightly lint sweeps everything already stored. Post-call is exactly when it would happen. <b>The system catches it.</b>"
+      },
+      {
+        "what": "Reaching for an ungoverned window at 4 a.m.",
+        "guard": "No governed system can reach a chat window it does not run, and your program’s own AI policy governs there, not this. <b>This one is yours to keep</b> — it is the reason the rails are worth having."
+      }
+    ],
+    "scopeNote": "<b>You are operating inside nursing-authored doctrine, on purpose.</b> EDENA was written by nurses and anchored in nursing ethics, and it governs you here exactly as it governs them. Nothing about it needed to be medicine-specific, because the rails describe the tool’s limits rather than the profession’s. Agents propose. Humans judge. Nurses steward — including the ones who wrote the rules you are working under."
+  },
+  "signals": [
+    {
+      "state": "attention",
+      "title": "PSLF certification closes before 30 September",
+      "body": "A missed year of qualifying payments is permanent. Twelve minutes against a cost you cannot recover later.",
+      "action": "Open the form"
+    },
+    {
+      "state": "attention",
+      "title": "Post-call sleep has been traded four times in six",
+      "body": "Every dipped metric on this screen dipped in the week after one of them. Noticed, not judged.",
+      "action": "Block post-call"
+    },
+    {
+      "state": "attention",
+      "title": "Two ITE weak areas unmoved after 480 questions",
+      "body": "Volume is not the problem. The sets are too broad to touch what you actually miss.",
+      "action": "Narrow the set"
+    },
+    {
+      "state": "steady",
+      "title": "Calls home have slipped every month since July",
+      "body": "You asked to be told about this one. That is the whole of the intervention.",
+      "action": "Block one"
+    }
+  ],
+  "opps": [
+    {
+      "kind": "Publication",
+      "title": "Your case report resumes 25 October",
+      "body": "Paused on purpose until after the ITE, with the date logged. The co-author has been told.",
+      "when": "Paused until 25 October"
+    },
+    {
+      "kind": "Teaching",
+      "title": "The student sessions could be a formal elective",
+      "body": "The clerkship director asked in August whether you would make it official.",
+      "when": "Reply still open"
+    },
+    {
+      "kind": "Relationship",
+      "title": "Your July attending offered a fellowship conversation",
+      "body": "Unprompted. Your notes say you meant to follow up and the month got away.",
+      "when": "Eight weeks cold — still warm"
+    },
+    {
+      "kind": "Finances",
+      "title": "Your program’s CME stipend is unclaimed",
+      "body": "It covers the ITE question bank you are already paying for yourself.",
+      "when": "Claim by 31 December"
+    }
+  ],
+  "agents": [
+    {
+      "initials": "FL",
+      "name": "Florence",
+      "role": "Generalist · your preceptor",
+      "tier": "Green",
+      "tierCls": "tier-green",
+      "scope": "All spheres, read-only outside Health. Drafts freely; sends nothing; refuses clinical questions at every tier.",
+      "await": null
+    },
+    {
+      "initials": "SC",
+      "name": "Scholar",
+      "role": "Boards & ITE",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Learning sphere. Builds sets from your own misses; reads public literature only.",
+      "await": "Wants to narrow 2 weak-area sets"
+    },
+    {
+      "initials": "SB",
+      "name": "Scribe",
+      "role": "Admin & correspondence",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Career and Finance spheres. No clinical content, no outbound send.",
+      "await": null
+    }
+  ],
+  "sample": true,
+  "role_id": "resident"
+}

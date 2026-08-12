@@ -63,6 +63,9 @@ data class, and action mode):
   accountable human).
 - Student mode cannot generate patient-specific recommendations and is
   capped at Draft.
+- AI never grades alone: summative decisions are gated by activity
+  class behind a named educator approval, and a student cannot carry a
+  summative intent at all.
 - No agent sends, publishes, deletes, purchases, or modifies external
   systems without the required approval.
 - Personal memory and institutional memory cannot cross tenant
@@ -154,6 +157,39 @@ reference is denied outright; every allowed execution carries a
 research-governance audit obligation. Drafting a protocol or research
 question remains ordinary draft work through the Knowledge and
 Evidence Center.
+
+### Summative-intent gates (Nurse Formation doctrine)
+
+The educator packet ships a `summative-authority-gates` module backed
+by real policy, built in the same pattern as the research governance
+gates: the summative act — `grade_assignment`,
+`progression_determination`, `competency_signoff`,
+`professionalism_finding` — is gated by activity class in
+`config/edena-gateway-policy.json`, independent of action mode.
+Summative intents execute only in the educational-record data zone,
+require an authenticated organizational context matching the current
+workspace, and require a named human educator approval recorded for
+the actor in the educator-summative authority scope
+(`EDENA-EDUCATOR-AUTHORITY`) — an unrelated approval satisfies
+nothing even when named on the request (`EDENA-APPROVAL-SCOPE`;
+membership is not authority), and a fabricated reference is denied
+outright. Authority is per decision, not per career: the request must
+name the summative record it concerns and the approval must be bound
+to exactly that record (`EDENA-APPROVAL-BINDING`), so a sign-off for
+one learner's assignment can never be replayed for another decision —
+and binding is never optional, since a policy document that omits the
+binding key still enforces it under the default record key.
+The four summative intents are a mandatory floor in the engine
+itself: a mandatory intent the policy document does not explicitly
+govern cannot execute (`EDENA-SUMMATIVE-UNGOVERNED`) — omitting
+`summative_rules` denies all four, and removing an intent from the
+configured list forbids it, never frees it.
+Every allowed execution carries a summative-authority audit
+obligation. Students cannot carry a summative intent at all, even
+holding a recorded approval: the role gate denies before the
+summative gate is consulted. Drafting feedback, items, or rubrics for
+an educator's review remains ordinary draft work — AI never grades
+alone, and it never gates a career.
 
 ### Judgment layer (the runtime companion to "Humans judge")
 

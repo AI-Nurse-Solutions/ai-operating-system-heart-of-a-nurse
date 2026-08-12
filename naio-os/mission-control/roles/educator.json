@@ -1,0 +1,67 @@
+{
+  "role_id": "educator",
+  "label": "Educator / Faculty",
+  "licensure": "licensed",
+  "tabs": [
+    "overview",
+    "agents",
+    "tasks",
+    "schedule",
+    "memory",
+    "library",
+    "ledger"
+  ],
+  "overview_cards": [
+    "north_star",
+    "today",
+    "license_standing",
+    "stewardship_balance",
+    "momentum",
+    "evidence",
+    "signals",
+    "opportunities",
+    "reflection",
+    "agent_team"
+  ],
+  "starter_agents": [
+    "florence",
+    "scholar",
+    "scribe"
+  ],
+  "task_lanes": [
+    "To-do",
+    "In-progress",
+    "Waiting on students",
+    "Done"
+  ],
+  "library_filters": [
+    "lesson-plan",
+    "rubric",
+    "handout",
+    "cohort"
+  ],
+  "ritual_pack": "educator",
+  "domain_emphasis": [
+    "creative",
+    "service",
+    "career",
+    "family"
+  ],
+  "standing_rows": [
+    "rn_license",
+    "cne",
+    "faculty_appointment",
+    "bls",
+    "state_ce"
+  ],
+  "privacy_regimes": [
+    "phi",
+    "ferpa"
+  ],
+  "risk_briefing": [
+    "student_identifiable_record",
+    "clinical_story_from_rotation",
+    "ungoverned_window"
+  ],
+  "tier_note": "Cohort-mode boundaries apply: no certification claims, no automatic scoring, no student records."
+}

@@ -1,0 +1,309 @@
+{
+  "role_id": "charge",
+  "sample": true,
+  "label": "Charge / Coordinator",
+  "mission": "Run a shift where nobody is left alone with something they cannot carry — including me.",
+  "sub": "Devon Marsh, RN · charge, 32-bed med-surg · nights · nine years in · two new grads on the floor most weeks.",
+  "values": [
+    "Nobody drowns quietly",
+    "Say the number out loud",
+    "Fair beats equal",
+    "Leave the shift better than I found it"
+  ],
+  "season": "Steadying the nights",
+  "seasonBody": "Two new grads and a thin float pool. You decided in June that this season is about making the night shift survivable rather than heroic, and you wrote down what that means.",
+  "seasonMeta": "Month 3 of 6 · 2 new grads active · next review 1 November",
+  "actions": [
+    {
+      "domain": "Service & Community",
+      "title": "Finish the assignment-fairness draft",
+      "why": "Three nurses have raised the same pattern about weekend acuity. You have the data in your own notes and a draft two-thirds written; the next huddle is the moment it is useful.",
+      "cost": "20 minutes · Scribe has your notes staged",
+      "cta": "Open the draft"
+    },
+    {
+      "domain": "Career & Practice",
+      "title": "Debrief last Thursday's escalation",
+      "why": "It went well, which is exactly why it never gets debriefed. The new grad who called it should hear that she called it correctly.",
+      "cost": "10 minutes · no PHI in the note",
+      "cta": "Open the debrief guide"
+    },
+    {
+      "domain": "Health & Energy",
+      "title": "Take the break you assign everyone else",
+      "why": "You covered four breaks last stretch and took none. The pattern is visible in your own logs, not in anyone's complaint.",
+      "cost": "30 minutes · block it like theirs",
+      "cta": "Block a break"
+    }
+  ],
+  "domains": {
+    "health": {
+      "share": 8,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Four breaks covered for others last stretch, none taken.",
+      "detail": "You are the only person on the floor whose break nobody assigns. <b>Noticed, not judged</b> — but it is the third stretch running."
+    },
+    "family": {
+      "share": 15,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Standing Saturday breakfast held seven of eight weeks.",
+      "detail": "The one fixture nights have not taken. <b>Worth defending as hard as the schedule.</b>"
+    },
+    "career": {
+      "share": 28,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Two new grads through orientation. Zero escalation misses this quarter.",
+      "detail": "The season's actual scoreboard, and it is good. <b>Your license and standing are held separately, above.</b>"
+    },
+    "learning": {
+      "share": 11,
+      "state": "steady",
+      "dir": "up",
+      "signal": "CE hours 19 of 30. Charge-nurse leadership module half done.",
+      "detail": "On pace without effort. <b>Nothing dated is at risk this cycle.</b>"
+    },
+    "finance": {
+      "share": 7,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Differential reconciliation clean. Nothing outstanding.",
+      "detail": "Checked in July and correct. <b>Nothing here needs your attention.</b>"
+    },
+    "creative": {
+      "share": 9,
+      "state": "steady",
+      "dir": "up",
+      "signal": "Three process drafts. One adopted by day shift.",
+      "detail": "Your handoff tightening is now running on days too. <b>That is influence without a title.</b>"
+    },
+    "service": {
+      "share": 19,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Two new grads mentored weekly. Never once rescheduled.",
+      "detail": "The highest-leverage line on this screen and it is fully tended. <b>Consistency is the whole intervention.</b>"
+    },
+    "business": {
+      "share": 3,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Nothing here, on purpose, this season.",
+      "detail": "Correctly empty. <b>The system will not invent work for a domain you have deliberately left alone.</b>"
+    }
+  },
+  "momentum": {
+    "hero": "24",
+    "unit": "hours",
+    "label": "returned to you this quarter — huddle prep, assignment drafts, escalation notes, and debriefs you no longer write from nothing.",
+    "note": "Estimated from your own logged times. Nothing here reads a staffing system, and nothing is reported to one.",
+    "kpis": [
+      [
+        "Escalations debriefed",
+        "9",
+        "/11",
+        "+4 vs Q2"
+      ],
+      [
+        "Commitments honored",
+        "41",
+        "/47",
+        "+5 vs Q2"
+      ],
+      [
+        "Process drafts",
+        "3",
+        "",
+        "1 adopted"
+      ]
+    ],
+    "weekly": [
+      3,
+      4,
+      4,
+      5,
+      5,
+      6,
+      6,
+      7,
+      7,
+      8,
+      8,
+      9
+    ],
+    "caption": "huddle prep stopped eating the first hour in week 5",
+    "evidence": [
+      [
+        4,
+        6,
+        2
+      ],
+      [
+        5,
+        6,
+        3
+      ],
+      [
+        5,
+        7,
+        3
+      ],
+      [
+        6,
+        8,
+        4
+      ],
+      [
+        7,
+        8,
+        5
+      ],
+      [
+        8,
+        9,
+        5
+      ]
+    ]
+  },
+  "license": {
+    "days": 51,
+    "gates": 33,
+    "currency": [
+      {
+        "name": "RN license",
+        "meta": "Renews 31 July 2027 · 23 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "BLS / ACLS",
+        "meta": "ACLS renews 12 January 2027 · BLS current",
+        "state": "flourishing"
+      },
+      {
+        "name": "Charge certification",
+        "meta": "Leadership module 4 of 8 complete",
+        "state": "steady"
+      },
+      {
+        "name": "State CE",
+        "meta": "19 of 30 hours · cycle closes June 2027",
+        "state": "steady"
+      }
+    ],
+    "reputation": [
+      {
+        "name": "Published",
+        "meta": "1 process note carries your name · reviewed by you · 0 auto-sent",
+        "state": "flourishing"
+      },
+      {
+        "name": "Sent to staff",
+        "meta": "0 messages to the unit have left this system unreviewed",
+        "state": "flourishing"
+      },
+      {
+        "name": "Awaiting you",
+        "meta": "1 assignment-fairness draft, unsent",
+        "state": "attention"
+      }
+    ],
+    "risks": [
+      {
+        "what": "Assignment context typed into a prompt",
+        "guard": "Acuity, room, and patient context are employer data and patient data at once. Import refuses on identifier patterns and the nightly lint sweeps what is stored. <b>The system catches it.</b>"
+      },
+      {
+        "what": "A patient-specific clinical question",
+        "guard": "Refused at every tier, in every sphere, including Green. <b>The system catches it.</b>"
+      },
+      {
+        "what": "Reaching for an ungoverned window instead",
+        "guard": "No governed system can reach a chat window it does not run. <b>This one is yours to keep</b> — it is the reason the rails are worth having."
+      }
+    ],
+    "scopeNote": "<b>Running the floor does not raise your agent's ceiling.</b> Charge authority is authority over an assignment, not over a gate. The agent drafts the fairness note; you send it."
+  },
+  "signals": [
+    {
+      "state": "attention",
+      "title": "Three stretches without taking your own break",
+      "body": "You covered four for other people. Noticed, not judged — and visible only in your own logs.",
+      "action": "Block a break"
+    },
+    {
+      "state": "attention",
+      "title": "The fairness draft has been two-thirds written for nine days",
+      "body": "Three nurses raised the same pattern. The draft is the reply; it needs finishing, not more evidence.",
+      "action": "Open the draft"
+    },
+    {
+      "state": "flourishing",
+      "title": "Zero escalation misses this quarter",
+      "body": "Across two new grads and a thin float pool. Worth logging before the quarter closes and it becomes background.",
+      "action": "Log it in the ledger"
+    },
+    {
+      "state": "steady",
+      "title": "Six library pages predate the handoff change",
+      "body": "Stale process notes are worse than none — they are confidently out of date.",
+      "action": "Run the hygiene pass"
+    }
+  ],
+  "opps": [
+    {
+      "kind": "Governance",
+      "title": "Day shift asked for your handoff draft",
+      "body": "They adopted the first version unprompted. The second one could be written jointly.",
+      "when": "Four weeks cold — still warm"
+    },
+    {
+      "kind": "Certification",
+      "title": "Charge leadership module, half complete",
+      "body": "Four of eight done. The remaining four are the ones that count toward your CE cycle.",
+      "when": "Cycle closes June 2027"
+    },
+    {
+      "kind": "Relationship",
+      "title": "Your July new grad wants to precept",
+      "body": "She asked in August. Your notes say you meant to talk to the educator.",
+      "when": "Reply still open"
+    },
+    {
+      "kind": "Idea",
+      "title": "The escalation debrief template is reusable",
+      "body": "No PHI, no employer content. It would sanitize in one pass.",
+      "when": "NIN contribution flow is open"
+    }
+  ],
+  "agents": [
+    {
+      "initials": "FL",
+      "name": "Florence",
+      "role": "Generalist · your preceptor",
+      "tier": "Green",
+      "tierCls": "tier-green",
+      "scope": "All spheres, read-only outside Health. Drafts freely; sends nothing.",
+      "await": null
+    },
+    {
+      "initials": "SC",
+      "name": "Scholar",
+      "role": "CE & leadership",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Learning sphere only. Reads public material and your own notes.",
+      "await": null
+    },
+    {
+      "initials": "SB",
+      "name": "Scribe",
+      "role": "Notes & briefs",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Creativity and Career spheres. No roster, no staffing system, no outbound send.",
+      "await": "Assignment-fairness draft — unsent"
+    }
+  ]
+}

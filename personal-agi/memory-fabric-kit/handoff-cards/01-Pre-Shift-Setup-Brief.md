@@ -1,0 +1,24 @@
+# Handoff Card — Pre-Shift Setup Brief
+
+The gentlest first card. Before a shift, your AI assembles a one-page brief about *your* day — never the unit's, never a patient's.
+
+| Field | Value |
+|---|---|
+| **Sphere** | professional (non-clinical) |
+| **EDENA risk tier** | Green — posture ceiling: Draft |
+| **Action mode** | Draft |
+| **Data class** | D1 |
+| **What the AI does** | Reads your calendar, `Memory/spheres/professional/` (shift pattern, commute, prep routine) and `personal/` (sleep, family logistics for the day), then drafts one page: shift time and commute plan, what to prep tonight vs. tomorrow, and one line on recovery after. Personal-sphere details inform the draft under one controlled exception: the saved brief may carry a minimal non-sensitive flag — a time plus the words "personal logistics" ("hard stop 16:40 — personal logistics") — and nothing more; the underlying details stay in their personal-sphere notes. Saves it as a draft for you to read with coffee. |
+| **What the AI never does** | Touch anything about the unit, census, acuity, assignments, colleagues, or patients. Beyond the minimal flag defined above, it never copies personal-sphere content into the brief or its evidence log. It never messages anyone and never reschedules anything. |
+| **Accounts/credentials touched** | Personal calendar (read-only). Nothing else. |
+| **Stop conditions** | Universal list, plus: calendar shows an event it can't classify → it asks instead of guessing. |
+| **Evidence log** | `Memory/spheres/professional/pre-shift-briefs/` — one file per brief, carrying at most the same minimal flag where personal life is concerned. |
+| **Revoke** | Record `REVOKED: Pre-Shift Setup Brief` in the trust ledger, tell your AI the card is revoked, then delete the card. Done. |
+
+## Why this card first
+
+It runs often (every shift), its failures are cheap (a wrong commute note), and it exercises the whole loop — memory read, draft, your review, ledger entry — daily. Two clean weeks here teach you more about supervising an agent than any document can.
+
+## Prompt seed
+
+> Using my SOUL file, my calendar for tomorrow, and my professional and personal sphere notes, draft my pre-shift setup brief per handoff card 01. Keep personal details out of the saved brief — minimal flags only. Draft only — I review at [time]. Halt and hand back on anything patient-adjacent or unclear.

@@ -1,0 +1,80 @@
+# Role presets
+
+Eight presets, shipped as JSON. A role is not a hat: a hat is flimsy and blows away in the wind, a role speaks to the core — it carries standing, accountability, and credentials, and that is exactly what these files configure.
+
+Personalization is **configuration, not code**. Adding a role is adding a file here.
+
+| File | Role | Licensure class |
+|---|---|---|
+| `bedside.json` | Bedside / staff nurse | licensed |
+| `charge.json` | Charge / coordinator | licensed |
+| `student.json` | Nursing student | pre_licensure |
+| `educator.json` | Educator / faculty | licensed |
+| `leader.json` | Nurse manager / leader | licensed |
+| `np.json` | Nurse practitioner | advanced_practice |
+| `resident.json` | MD resident | physician_trainee |
+| `entrepreneur.json` | Nurse entrepreneur | licensed |
+
+## The contract
+
+| Key | Meaning |
+|---|---|
+| `role_id` | Stable identifier. Never renamed once shipped. |
+| `label` | Human-facing name. |
+| `licensure` | `pre_licensure` · `licensed` · `advanced_practice` · `physician_trainee`. Informational only — see the hard rule below. |
+| `tabs` | Which Mission Control tabs load. |
+| `overview_cards` | Which Stewardship Home panels render, in order. |
+| `starter_agents` | Agents rendered at install. Each still gets its own SOUL, workspace, and memory. |
+| `task_lanes` | Kanban lanes on the Tasks tab. |
+| `library_filters` | Default filters on the Library tab. |
+| `ritual_pack` | Which cron ritual templates render. Templates only — nothing is scheduled automatically. |
+| `domain_emphasis` | Which of the eight attention domains lead the balance grid. |
+| `standing_rows` | Credential rows the License & standing panel keeps current for this role. |
+| `privacy_regimes` | Which boundaries this role's risk briefing surfaces: `phi` always, plus `ferpa`, `personnel`, `academic_integrity`, or `employer_ip`. |
+| `risk_briefing` | Three risks, in order. The third is always the one the system cannot catch. |
+| `tier_note` | The boundary reminder shown with this role. |
+
+That table is the whole contract — a preset carrying any other key is rejected
+(rule 6 below). Standing text addressed to the nurse is not preset
+configuration and does not live here; it lives in `../content/` alongside the
+role id, which is what the License & standing panel actually renders.
+
+## The hard rule
+
+**A preset may not raise a tier ceiling, and `tier_ceilings` is not a valid key. A loader encountering it must reject the file.**
+
+Scope of practice and agent autonomy are orthogonal axes, and the second never inherits from the first. An NP preset and a student preset differ in what they *display* and *track* — never in how much the agent may do unreviewed. `licensure` exists so the standing panel knows which credential rows to render; it is not an input to any autonomy decision.
+
+Ceilings move only through a logged decision in `governance-kit/GOVERNANCE.yaml`, per sphere, on demonstrated evidence. See Rail 3 in `../DOCTRINE.md` and §5.4 of `../MISSION-CONTROL-ARCHITECTURE.md`.
+
+## Why the clinical roles carry a scope note
+
+The note itself lives in `../content/np.json` and `../content/resident.json`, not in the preset — but it exists because the earlier doctrine did not address those roles, and they would otherwise read Rail 2 as a claim about their scope. It is not. Diagnosing and prescribing are plainly within an NP's or a physician's license. The refusal exists because *this tool* has no regulatory clearance, no clinical validation, and no institutional governance — the rail is about the tool, not the profession.
+
+The leader and entrepreneur content carries the same rule, aimed at positional rather than clinical authority in the first case and at the founder's temptation to ship fast in the second.
+
+## Validation
+
+A preset is valid when:
+
+1. `role_id` is unique and matches the filename.
+2. `tier_ceilings` is absent.
+3. `privacy_regimes` contains `phi`.
+4. `risk_briefing` has exactly three entries.
+5. Every `standing_rows` entry resolves to a known credential type — the set in
+   `CREDENTIAL_TYPES` in `mission_control.py`. Adding a credential is an edit
+   there, deliberately, so a misspelling is a rejection rather than a standing
+   row for a credential that does not exist.
+6. There are no keys beyond the ones in the contract table. A preset is
+   configuration; a key the loader does not read renders nowhere and drifts
+   silently. Prose addressed to the nurse belongs in `../content/` — every
+   preset once carried a `scope_note` or `standing_note` that no code loaded,
+   sitting stale beside the version that actually rendered.
+
+All six are enforced by the loader, and `naio-mc check-presets` exits non-zero on
+any rejection. A rule documented here and unchecked there is how the first two
+got out of step.
+
+---
+
+*Agents propose. Humans judge. Nurses steward.*

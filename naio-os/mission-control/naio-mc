@@ -1,0 +1,640 @@
+#!/usr/bin/env python3
+"""
+naio-mc — the entry point (architecture §9).
+
+  naio-mc doctor            preflight: python, presets, roles, content, runtime, ports
+  naio-mc start             run the server on 127.0.0.1:8321
+  naio-mc backup            timestamped restore point before you touch anything
+  naio-mc check-presets     validate roles/*.json; non-zero on any rejection
+  naio-mc phi-lint          scan dashboard-owned text for PHI shapes
+  naio-mc self-test         start, exercise every endpoint, prove the rules, stop
+  naio-mc verify            checksum this tree against manifest.json and report drift
+  naio-mc configure         point it at your Starter Kit (--kit), or at your own folders
+  naio-mc notes-check       run the Apple Notes bridge once and report what happened
+
+Nothing here mutates ~/.hermes, schedules a cron job, or resolves a gate.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import shutil
+import socket
+import subprocess
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+PY = sys.executable or "python3"
+SERVER = HERE / "mission_control.py"
+
+
+def _ok(msg): print(f"  \033[32m✓\033[0m {msg}")
+def _warn(msg): print(f"  \033[33m!\033[0m {msg}")
+def _bad(msg): print(f"  \033[31m✗\033[0m {msg}")
+
+
+def doctor() -> int:
+    print("naio-mc doctor\n")
+    problems = 0
+
+    if sys.version_info >= (3, 10):
+        _ok(f"python {sys.version.split()[0]}")
+    else:
+        _bad(f"python {sys.version.split()[0]} — 3.10+ required"); problems += 1
+
+    # stdlib only: prove it
+    try:
+        import sqlite3, http.server, threading, json as _j  # noqa: F401
+        _ok("stdlib only — no third-party dependency to install")
+    except ImportError as exc:
+        _bad(f"stdlib import failed: {exc}"); problems += 1
+
+    sys.path.insert(0, str(HERE))
+    from mission_control import load_presets, CONTENT_DIR  # noqa: E402
+
+    presets, errors = load_presets()
+    if presets and not errors:
+        _ok(f"{len(presets)} role presets valid")
+    else:
+        for err in errors:
+            _bad(f"preset rejected — {err}")
+        problems += len(errors)
+        if not presets:
+            _bad("no valid presets"); problems += 1
+
+    missing = [rid for rid in presets if not (CONTENT_DIR / f"{rid}.sample.json").is_file()]
+    if missing:
+        _warn(f"presets without content: {', '.join(missing)} — those roles will 404")
+    else:
+        _ok(f"content present for every role")
+
+    if (HERE / "index.html").is_file():
+        _ok("index.html present")
+    else:
+        _bad("index.html missing"); problems += 1
+
+    hermes = Path(os.environ.get("HERMES_HOME", "~/.hermes")).expanduser()
+    if hermes.is_dir():
+        _ok(f"Hermes runtime found at {hermes}")
+    else:
+        _warn(f"no Hermes install at {hermes} — the dashboard runs and says so honestly")
+
+    port = int(os.environ.get("NAIO_MC_PORT", "8321"))
+    with socket.socket() as sock:
+        sock.settimeout(0.4)
+        if sock.connect_ex(("127.0.0.1", port)) == 0:
+            _warn(f"port {port} already in use — something is listening")
+        else:
+            _ok(f"port {port} free")
+
+    print(f"\n{'ready' if not problems else f'{problems} problem(s) to fix first'}")
+    return 1 if problems else 0
+
+
+# The trust anchor, pinned in code — the same fingerprint bootstrap.sh pins.
+#
+# Everything else about the signature may be read from manifest.json; the KEY
+# may not. manifest.json is the file being authenticated, so taking the key
+# from it lets anyone who can edit the tree finish the job: rewrite the
+# checksums to match their files, point `signature.public_key` at a key they
+# hold, sign it, and watch `verify` announce a valid signature by whatever
+# key_id they typed. A verifier that accepts the subject's own choice of
+# authority is not a verifier. Pinning the path is necessary; pinning the
+# fingerprint is what makes a key shipped alongside the artifact safe to use.
+SIG_NAME = "manifest.sig"
+SIG_ALGORITHM = "RSA-SHA256"
+KEY_ID = "naio-os-release-key-2026-06"
+PUBLIC_KEY_CANDIDATES = (
+    "../config/naio-os-release-public.pem",   # inside a naio-os tree
+    "config/naio-os-release-public.pem",      # a standalone signed zip
+)
+PUBLIC_KEY_SHA256 = "9c1eae2f1cf585734ab913aae1101abed1ac83676e972f20482520df6436861f"
+
+
+def _pinned_public_key():
+    """(path, problem). Returns the first candidate whose fingerprint matches."""
+    seen = []
+    for rel in PUBLIC_KEY_CANDIDATES:
+        candidate = (HERE / rel).resolve()
+        if not candidate.is_file():
+            continue
+        digest = hashlib.sha256(candidate.read_bytes()).hexdigest()
+        if digest == PUBLIC_KEY_SHA256:
+            return candidate, None
+        seen.append(f"{rel} (sha256 {digest[:16]}…)")
+    if seen:
+        return None, ("a release key was found but does NOT match the pinned "
+                      f"fingerprint: {', '.join(seen)}. Pinned: "
+                      f"{PUBLIC_KEY_SHA256[:16]}…. Unless a key rotation was "
+                      f"announced, treat this as a compromised source.")
+    return None, ("no release public key found at " +
+                  " or ".join(PUBLIC_KEY_CANDIDATES))
+
+
+def _check_signature(man: dict, manifest_path) -> tuple[bool, bool]:
+    """
+    Verify the detached signature over manifest.json, the way naio-os does.
+
+    Returns (present, verified). `present` is reported from here rather than
+    re-derived by the caller, so the two can never disagree about which file
+    they mean. `verified` is True only for a signature that checked out against
+    the PINNED key. Four outcomes:
+
+      * no manifest.sig       — unsigned. Says so plainly and does not fail;
+                                checksums still prove the tree is intact.
+      * signature present     — must verify, or `verify` exits non-zero. A
+                                signature that does not check out is a stronger
+                                signal than no signature at all, and it is
+                                treated that way rather than downgraded to a
+                                warning.
+      * key missing/mismatched — fails. The pinned fingerprint is the anchor;
+                                a key that does not match it proves nothing,
+                                and a missing one cannot be substituted for.
+      * openssl missing       — cannot be checked, so it is not claimed. Fails,
+                                because a build that ships a signature nobody
+                                can verify should not read as verified.
+    """
+    # A hand-corrupted manifest can carry a non-dict here; `.get` on a string
+    # would raise, and a crash is a worse answer than a refusal.
+    contract = man.get("signature")
+    if not isinstance(contract, dict):
+        contract = {}
+    sig_path = HERE / SIG_NAME
+
+    if not sig_path.is_file():
+        _warn(f"MISSION CONTROL IS NOT SIGNED — no {SIG_NAME}. Checksums prove "
+              f"this tree is unchanged since packaging, and nothing more. It is "
+              f"not provenance. (naio-os itself is signed; a Mission Control "
+              f"build is only signed once the release key has been applied.)")
+        return False, False
+
+    # A manifest that names a different key, algorithm or signature file is not
+    # a manifest to negotiate with — those fields are documentation, and the
+    # only reason to change them is to be believed about a different authority.
+    named_key = contract.get("public_key")
+    if named_key is not None and named_key not in PUBLIC_KEY_CANDIDATES:
+        _bad(f"the manifest names a release key this verifier does not trust "
+             f"({named_key!r}). The trusted key is pinned in naio-mc, not read "
+             f"from the file being checked. Refusing to verify.")
+        return True, False
+    if contract.get("algorithm", SIG_ALGORITHM) != SIG_ALGORITHM:
+        _bad(f"the manifest names algorithm {contract.get('algorithm')!r}; only "
+             f"{SIG_ALGORITHM} is trusted here. Refusing to verify.")
+        return True, False
+
+    openssl = shutil.which("openssl")
+    if not openssl:
+        _bad(f"{SIG_NAME} is present but openssl is not installed — this "
+             f"signature cannot be checked, so it is not being trusted.")
+        return True, False
+
+    public_key, problem = _pinned_public_key()
+    if public_key is None:
+        _bad(f"{SIG_NAME} is present but {problem}")
+        return True, False
+
+    proc = subprocess.run(
+        [openssl, "dgst", "-sha256", "-verify", str(public_key),
+         "-signature", str(sig_path), str(manifest_path)],
+        text=True, capture_output=True)
+    if proc.returncode != 0:
+        _bad(f"SIGNATURE DOES NOT VERIFY against the pinned release key. "
+             f"This manifest is not the one that was signed. Do not trust this "
+             f"tree — re-download it. ({(proc.stdout + proc.stderr).strip()[:120]})")
+        return True, False
+
+    # Named from the pinned constants, never from the file just verified.
+    _ok(f"signed and verified — {SIG_ALGORITHM} by {KEY_ID} "
+        f"(key fingerprint matches the one pinned in naio-mc)")
+    return True, True
+
+
+def verify() -> int:
+    """Checksum the tree against manifest.json. Says what changed, and where."""
+    import hashlib
+    sys.path.insert(0, str(HERE / "tools"))
+    manifest_path = HERE / "manifest.json"
+    print("naio-mc verify\n")
+    if not manifest_path.is_file():
+        _bad("no manifest.json — this tree was not built by tools/release.py")
+        print("\n  Run: python3 tools/release.py")
+        return 1
+    man = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    def sha(path):
+        h = hashlib.sha256()
+        with path.open("rb") as fh:
+            for chunk in iter(lambda: fh.read(65536), b""):
+                h.update(chunk)
+        return h.hexdigest()
+
+    recorded = man.get("files", {})
+    changed, missing, mutated, extra = [], [], [], []
+    for rel, meta in recorded.items():
+        path = HERE / rel
+        if not path.is_file():
+            missing.append(rel)
+            continue
+        if sha(path) != meta["sha256"]:
+            (mutated if meta.get("mutable") else changed).append(rel)
+
+    from release import tracked_files  # same definition, one source
+    for rel in tracked_files():
+        if str(rel) not in recorded:
+            extra.append(str(rel))
+
+    print(f"  built {man.get('built_at')} · version {man.get('version')} · "
+          f"{man.get('file_count')} files")
+    st = man.get("self_test", {})
+    print(f"  self-test at build time: {st.get('passed')} passed, {st.get('failed')} failed")
+    sig_present, signature_ok = _check_signature(man, manifest_path)
+
+    if mutated:
+        print()
+        for rel in mutated:
+            _warn(f"changed (expected — yours to edit): {rel}")
+    if changed:
+        print()
+        for rel in changed:
+            _bad(f"CODE CHANGED since packaging: {rel}")
+    if missing:
+        for rel in missing:
+            _bad(f"missing: {rel}")
+    if extra:
+        for rel in extra:
+            _warn(f"not in the manifest: {rel}")
+    if not (changed or missing):
+        print()
+        _ok("every tracked file matches the manifest")
+
+    print()
+    # A present-but-invalid signature fails the command. An absent one does
+    # not: unsigned is an honest state this build is allowed to be in, and
+    # `_check_signature` has already said so out loud.
+    sig_failed = sig_present and not signature_ok
+    return 1 if (changed or missing or sig_failed) else 0
+
+
+def configure() -> int:
+    """Point Mission Control at real paths — with the checks that ought to run first."""
+    import argparse as _ap
+    import re as _re
+    parser = _ap.ArgumentParser(prog="naio-mc configure", add_help=True,
+                                description="Point Mission Control at your own files")
+    parser.add_argument("--kit", help="your My-Nurse-AI-OS folder — wires everything at once")
+    parser.add_argument("--vault", help="your Obsidian vault (indexed: titles, tags, mtimes)")
+    parser.add_argument("--content", help="your agent workspace content folder")
+    parser.add_argument("--soul", action="append", default=None,
+                        help="a SOUL/memory file to watch; repeatable")
+    parser.add_argument("--notes-folder", action="append", default=None,
+                        help="an Apple Notes folder to index (macOS only); repeatable")
+    parser.add_argument("--apply", action="store_true", help="write config.json")
+    args = parser.parse_args(sys.argv[2:])
+
+    cfg_path = HERE / "config.json"
+    cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.is_file() else {}
+
+    # The same list the server's lint and the SOUL importer use. Three copies
+    # had drifted far enough that `MRN 123` was refused at one door and waved
+    # through at another. (adapters/phi.py)
+    sys.path.insert(0, str(HERE))
+    from adapters.phi import PHI_PATTERNS as PHI          # noqa: PLC0415
+
+    print("naio-mc configure\n")
+    problems = 0
+
+    def check_dir(flag, value, label):
+        nonlocal problems
+        path = Path(value).expanduser()
+        if not path.is_dir():
+            _bad(f"{flag}: {path} is not a directory"); problems += 1; return None
+        files = [p for p in path.rglob("*.md")
+                 if not any(part.startswith(".") for part in p.parts)]
+        _ok(f"{label}: {path}  ({len(files)} markdown files would be indexed)")
+        hits = []
+        for p in files:
+            for pat, kind in PHI:
+                if _re.search(pat, p.name, _re.IGNORECASE):
+                    hits.append((p.name, kind)); break
+        if hits:
+            problems += 1
+            _bad(f"{len(hits)} filename(s) here look like patient information:")
+            for name, kind in hits[:6]:
+                print(f"        {name}  ({kind})")
+            print("      Only filenames were checked — bodies were never read. Nothing "
+                  "was written.\n      Move or rename these before pointing the "
+                  "dashboard at this folder.")
+            return None
+        _ok(f"{label}: no filename looks like patient information")
+        return str(path)
+
+    # -- the Starter Kit -----------------------------------------------------
+    # The kit and Mission Control shipped as two things that happened to sit in
+    # the same folder. This is the seam between them: one flag, because the
+    # layout is already known and making a nurse restate it in four flags is
+    # asking her to do the computer's job.
+    if args.kit:
+        root = Path(args.kit).expanduser()
+        if not root.is_dir():
+            _bad(f"--kit: {root} is not a directory")
+            print("      This should be the folder you unzipped from the Starter Kit,\n"
+                  "      usually named My-Nurse-AI-OS.\n")
+            return 1
+
+        # Two Starter Kit layouts exist, and both have to work.
+        #
+        #   published — what nurse-ai-os.org actually serves, and what lives in
+        #               starter-kit/My-Nurse-AI-OS/ in this repo: spheres by
+        #               number (01-Personal, 02-Professional, ...) with Skills/,
+        #               Memory/ and Projects/ unnumbered, core soul at
+        #               00-Start-Here/SOUL.md.
+        #   component — the OS-component layout: 01-SOUL, 02-Skills, 03-Memory,
+        #               04-Projects, 05-Learning.
+        #
+        # This command previously knew only the component layout, so it refused
+        # the only kit a nurse can actually download — and told her to go
+        # download it, from the page serving the kit it had just rejected.
+        # Detect rather than assume, and say which layout was found.
+        LAYOUTS = {
+            "published": {
+                "markers":  ["00-Start-Here", "Projects", "Memory", "Skills"],
+                "projects": "Projects",
+                "memory":   "Memory",
+                "soul_dir": "00-Start-Here",
+            },
+            "component": {
+                "markers":  ["00-Start-Here", "01-SOUL", "03-Memory", "04-Projects"],
+                "projects": "04-Projects",
+                "memory":   "03-Memory",
+                "soul_dir": "01-SOUL",
+            },
+        }
+        hits, layout_name, layout = max(
+            ((sum((root / d).is_dir() for d in spec["markers"]), name, spec)
+             for name, spec in LAYOUTS.items()),
+            key=lambda t: t[0])
+
+        if hits < 2:
+            _bad(f"{root} does not look like a Starter Kit")
+            print(f"      Looked for the published layout "
+                  f"({', '.join(LAYOUTS['published']['markers'])})\n"
+                  f"      and the component layout "
+                  f"({', '.join(LAYOUTS['component']['markers'])}),\n"
+                  f"      and found too little of either.\n"
+                  f"      Download it at https://nurse-ai-os.org/start-here.html, or point\n"
+                  f"      --vault and --soul at your own folders instead.\n")
+            return 1
+
+        _ok(f"{layout_name} Starter Kit layout")
+        for d in [d for d in layout["markers"] if not (root / d).is_dir()]:
+            _warn(f"no {d}/ in this kit — skipping what would have used it")
+
+        k = check_dir("--kit", str(root), "kit")
+        if not k:
+            return 1
+
+        projects_dir, memory_dir = layout["projects"], layout["memory"]
+
+        cfg["vault_root"] = str(root)
+        if (root / projects_dir).is_dir():
+            cfg["content_root"] = str(root / projects_dir)
+            _ok("projects → the Library tab")
+
+        inbox = root / memory_dir / "inbox"
+        if inbox.is_dir():
+            cfg["vault_inbox"] = f"{memory_dir}/inbox"
+            _ok(f"captures you promote will land in {memory_dir}/inbox/")
+        elif (root / memory_dir).is_dir():
+            cfg["vault_inbox"] = memory_dir
+            _warn(f"no {memory_dir}/inbox/ — promoted captures will land in "
+                  f"{memory_dir}/ instead")
+
+        # A soul folder ships documentation and templates alongside the real
+        # thing. Watching README.md as if it were a soul file would report a
+        # green "watching 1 file" on a folder where nothing has been written
+        # yet — a false pass, and the exact shape of failure this project keeps
+        # correcting. Excluded by name, and the suite checks it.
+        soul_dir = root / layout["soul_dir"]
+        NOT_A_SOUL = {"readme.md"}
+        if layout_name == "published":
+            # 00-Start-Here/ is mostly rules and welcome pages — DO-NOT-REMEMBER,
+            # NO-PHI-BOUNDARY, HUMAN-AGENCY-RULES. Only SOUL.md is a soul.
+            # Globbing the folder would claim "watching 7 files" on a kit nobody
+            # has filled in. Sphere souls live one level down as *-SOUL.md.
+            candidates = ([soul_dir / "SOUL.md"] if (soul_dir / "SOUL.md").is_file() else []) \
+                + sorted(p for p in root.glob("*/*-SOUL.md") if p.is_file())
+        else:
+            candidates = sorted(p for p in soul_dir.glob("*.md") if p.is_file()) \
+                if soul_dir.is_dir() else []
+        souls = [str(p) for p in candidates
+                 if p.name.lower() not in NOT_A_SOUL
+                 and not p.name.endswith(".template.md")]
+        if souls:
+            cfg["soul_files"] = souls
+            _ok(f"watching {len(souls)} SOUL file(s): "
+                f"{', '.join(Path(s).name for s in souls)}")
+
+        # A kit ships boundaries.md and delegation-map.md, so `souls` is rarely
+        # empty even on a folder nobody has filled in. SOUL.md is the file that
+        # actually means the system knows who it is working for — so that is
+        # what gets checked, rather than letting a non-empty list read as done.
+        if not (soul_dir / "SOUL.md").is_file():
+            _warn(f"no {layout['soul_dir']}/SOUL.md yet — the dashboard will not "
+                  f"know who you are")
+            print(f"      Take the SOUL Quiz at https://nurse-ai-os.org/soul-quiz.html,\n"
+                  f"      drop the downloads into {layout['soul_dir']}/, and run this again.\n"
+                  f"      Everything else is wired; panels that need it will say\n"
+                  f"      'not measured yet' rather than showing you a number nobody\n"
+                  f"      measured.")
+
+    if args.vault:
+        v = check_dir("--vault", args.vault, "vault")
+        if v: cfg["vault_root"] = v
+    if args.content:
+        c = check_dir("--content", args.content, "content root")
+        if c: cfg["content_root"] = c
+    if args.soul:
+        good = []
+        for entry in args.soul:
+            path = Path(entry).expanduser()
+            if path.is_file():
+                _ok(f"soul file: {path}")
+                good.append(str(path))
+            else:
+                _bad(f"--soul: {path} is not a file"); problems += 1
+        if good: cfg["soul_files"] = good
+    if args.notes_folder:
+        cfg["apple_notes_folders"] = args.notes_folder
+        if sys.platform != "darwin":
+            _warn("Apple Notes folders recorded, but this is not macOS — the collector "
+                  "will report 'inactive', not 'failed'")
+        else:
+            _ok(f"Apple Notes folders: {', '.join(args.notes_folder)}")
+
+    if not any([args.kit, args.vault, args.content, args.soul, args.notes_folder]):
+        print("  Current configuration:\n")
+        for key in ("content_root", "vault_root", "vault_inbox", "soul_files",
+                    "apple_notes_folders"):
+            print(f"      {key}: {cfg.get(key)}")
+        print("\n  Unzipped the Starter Kit? One flag wires all of it:\n"
+              "      ./naio-mc configure --kit ~/My-Nurse-AI-OS --apply\n"
+              "  Or set them individually with --vault / --content / --soul / --notes-folder.")
+        return 0
+
+    if problems:
+        print(f"\n  {problems} problem(s). Nothing written.\n")
+        return 1
+    if not args.apply:
+        print("\n  Dry run. Re-run with --apply to write config.json.\n")
+        return 0
+
+    cfg.setdefault("vault_inbox", "Inbox")
+    cfg["_note"] = ("Paths and preferences only — never a credential. Written by "
+                    "`naio-mc configure`.")
+    cfg_path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
+    _ok("config.json written")
+    print("\n  Restart Mission Control to pick it up.\n")
+    return 0
+
+
+def notes_check() -> int:
+    """
+    Run the Apple Notes bridge once, in the open, and say plainly what happened.
+
+    This exists because the bridge was written and shipped without ever having been
+    executed on a Mac. A collector that has never run is not a feature; it is a
+    claim. This turns the claim into an observation you can make in one command.
+
+    It writes nothing — not config.json, not the database. It reads titles and
+    stops there, and prints the folder/title list so you can see for yourself
+    that no note body came back.
+    """
+    folders = sys.argv[2:]
+    print("naio-mc notes-check\n")
+
+    if sys.platform != "darwin":
+        _warn(f"not macOS (this is {sys.platform}) — the Apple Notes bridge cannot run here")
+        print("      The collector reports 'inactive', not 'failed'. That distinction is\n"
+              "      deliberate: a collector that cannot run has not failed at anything.\n")
+        return 0
+
+    bridge = HERE / "bridges" / "apple_notes.jxa"
+    if not bridge.is_file():
+        _bad(f"bridge missing: {bridge}")
+        return 1
+
+    if not folders:
+        cfg_path = HERE / "config.json"
+        cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.is_file() else {}
+        folders = cfg.get("apple_notes_folders") or []
+    if not folders:
+        _warn("no folders to check")
+        print("      Pass them here, or set them once:\n"
+              "        ./naio-mc notes-check \"Inbox\" \"Shift Notes\"\n"
+              "        ./naio-mc configure --notes-folder \"Inbox\" --apply\n")
+        return 0
+
+    _ok(f"asking Notes for: {', '.join(folders)}")
+    print("      macOS will ask for permission the first time. That prompt is the\n"
+          "      system working; approve it in System Settings → Privacy & Security\n"
+          "      → Automation if you miss it.\n")
+
+    try:
+        out = subprocess.run(["osascript", "-l", "JavaScript", str(bridge), *folders],
+                             capture_output=True, text=True, timeout=90)
+    except FileNotFoundError:
+        _bad("osascript not found — this does not look like a working macOS install")
+        return 1
+    except subprocess.TimeoutExpired:
+        _bad("timed out after 90s — Notes may be waiting on a permission dialog")
+        return 1
+
+    if out.returncode != 0:
+        _bad(f"bridge exited {out.returncode}")
+        err = (out.stderr or "").strip()
+        if "not authori" in err.lower() or "-1743" in err:
+            print("      macOS refused the automation request. Grant it under\n"
+                  "      System Settings → Privacy & Security → Automation, then re-run.")
+        elif err:
+            print(f"      {err.splitlines()[0][:300]}")
+        return 1
+
+    try:
+        data = json.loads(out.stdout or "[]")
+    except json.JSONDecodeError:
+        _bad("the bridge returned something that is not JSON")
+        print(f"      {(out.stdout or '')[:300]}")
+        return 1
+
+    if isinstance(data, dict) and data.get("error"):
+        _bad(f"the bridge caught an error: {data['error'][:300]}")
+        return 1
+    if not isinstance(data, list):
+        _bad(f"expected a list of notes, got {type(data).__name__}")
+        return 1
+
+    _ok(f"bridge ran — {len(data)} note(s) visible")
+    if not data:
+        _warn("nothing came back. Check the folder names match Notes exactly "
+              "(they are case-sensitive).")
+        print()
+        return 0
+
+    leaked = [n for n in data if isinstance(n, dict)
+              and any(k in n for k in ("body", "plaintext", "content"))]
+    if leaked:
+        _bad(f"{len(leaked)} record(s) carried a note body — the bridge is supposed to "
+             f"emit titles only. Do not point the dashboard at Notes until this is fixed.")
+        return 1
+    _ok("titles only — no note body came back")
+
+    print()
+    for note in data[:5]:
+        title = str(note.get("title", ""))[:70]
+        # str() first: the default only applies to a MISSING key, so a bridge
+        # that emits "modified": null used to slice None and traceback.
+        modified = str(note.get("modified") or "?")[:10]
+        print(f"      {note.get('folder', '?')} · {title}  ({modified})")
+    if len(data) > 5:
+        print(f"      … and {len(data) - 5} more")
+
+    print("\n  Nothing was written. To index these, add the folders with "
+          "`configure --notes-folder`.\n")
+    return 0
+
+
+def self_test() -> int:
+    return subprocess.call([PY, str(HERE / "tests" / "self_test.py")])
+
+
+def main() -> int:
+    cmd = sys.argv[1] if len(sys.argv) > 1 else "start"
+    rest = sys.argv[2:]
+
+    if cmd == "doctor":
+        return doctor()
+    if cmd == "self-test":
+        return self_test()
+    if cmd == "verify":
+        return verify()
+    if cmd == "configure":
+        return configure()
+    if cmd == "notes-check":
+        return notes_check()
+    if cmd == "start":
+        return subprocess.call([PY, str(SERVER), *rest])
+    if cmd == "backup":
+        return subprocess.call([PY, str(SERVER), "--backup"])
+    if cmd == "check-presets":
+        return subprocess.call([PY, str(SERVER), "--check-presets"])
+    if cmd == "phi-lint":
+        return subprocess.call([PY, str(SERVER), "--phi-lint"])
+
+    print(__doc__)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())

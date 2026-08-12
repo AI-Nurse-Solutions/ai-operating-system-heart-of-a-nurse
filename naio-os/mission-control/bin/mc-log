@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""
+mc-log — the tiny CLI the naio-activity-log skill calls (architecture §6.2).
+
+An agent records what it did. That is all this does. It cannot approve a gate,
+raise a tier, or write runtime memory, because no such endpoint exists.
+
+  mc-log --agent florence --task "Drafted weekly ledger" --status completed \
+         --model anthropic/claude-sonnet --tier green --sphere career
+"""
+import argparse, json, sys, urllib.error, urllib.request
+
+DEFAULT_URL = "http://127.0.0.1:8321/api/activity"
+
+def main() -> int:
+    p = argparse.ArgumentParser(description="Append one row to the NAIO activity log")
+    p.add_argument("--agent", required=True)
+    p.add_argument("--task", required=True)
+    p.add_argument("--status", required=True,
+                   choices=["completed", "failed", "refused", "in_progress"])
+    p.add_argument("--model", required=True,
+                   help="the model actually used — never 'unknown'; the skill requires it")
+    p.add_argument("--detail")
+    p.add_argument("--tier", dest="edena_tier")
+    p.add_argument("--sphere")
+    p.add_argument("--url", default=DEFAULT_URL)
+    a = p.parse_args()
+
+    if a.model.strip().lower() in ("unknown", "", "n/a"):
+        print("mc-log: --model must name the model actually used.", file=sys.stderr)
+        return 2
+
+    body = json.dumps({
+        "agent_id": a.agent, "task": a.task, "status": a.status, "model": a.model,
+        "detail": a.detail, "edena_tier": a.edena_tier, "sphere": a.sphere,
+    }).encode()
+    req = urllib.request.Request(a.url, data=body,
+                                 headers={"Content-Type": "application/json"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            if resp.status in (200, 201):
+                return 0
+            print(f"mc-log: server returned {resp.status}", file=sys.stderr)
+            return 1
+    except urllib.error.HTTPError as exc:
+        # HTTPError IS a URLError, so it has to be caught first — otherwise a 400
+        # or a 500 was reported as "could not reach Mission Control" and exited 0,
+        # which reads as a successful log of an action that was never recorded.
+        print(f"mc-log: server returned {exc.code} — {exc.reason}", file=sys.stderr)
+        return 1
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        # A dashboard being down must never break an agent's actual work. A read
+        # timeout can surface as a bare TimeoutError rather than a URLError, and
+        # a traceback out of a logging helper is not an acceptable answer.
+        print(f"mc-log: could not reach Mission Control ({exc}). Action not logged.",
+              file=sys.stderr)
+        return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

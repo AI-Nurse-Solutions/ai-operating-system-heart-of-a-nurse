@@ -1,0 +1,558 @@
+{
+  "schema_version": "2.0.0",
+  "generated_at": "2026-07-20T00:00:00.000Z",
+  "generator": "soul-quiz-role-constellation",
+  "identity": {
+    "name": "Jordan",
+    "role": "staff",
+    "role_label": "Bedside Nurse",
+    "one_liner": "Serve critically ill adults and help newer nurses learn safely.",
+    "always_remember": "Works nights"
+  },
+  "voice": {
+    "length": "Bulleted & structured",
+    "formality": "Professional",
+    "pushback": "Push back when stakes are high",
+    "avoid": "No toxic positivity"
+  },
+  "values": [
+    "dignity",
+    "evidence",
+    "family",
+    "growth"
+  ],
+  "spheres": [
+    "personal",
+    "professional",
+    "community",
+    "sidegig",
+    "interest"
+  ],
+  "interests": [],
+  "tier_ceilings": {
+    "personal": "green",
+    "professional": "yellow",
+    "community": "yellow",
+    "sidegig": "green",
+    "interest": "green"
+  },
+  "boundaries": {
+    "no_phi_confirmed": true,
+    "no_clinical_decisions_confirmed": true,
+    "no_academic_dishonesty_confirmed": true,
+    "no_credential_inference_confirmed": true,
+    "confidential_list": [],
+    "wellbeing_rule": "Protect post-shift sleep and one no-study day",
+    "decisions_always_mine": [
+      "Clinical decisions",
+      "Academic and evaluative decisions",
+      "Employment and personnel decisions",
+      "Legal and financial decisions",
+      "Institutional authority decisions"
+    ],
+    "drafts_without_asking": [
+      "public-source-summary",
+      "private-plan-draft"
+    ],
+    "memory_allowed": [
+      "communication preferences",
+      "stable professional goals"
+    ],
+    "memory_forbidden": [
+      "PHI",
+      "student or employee records",
+      "credentials or secrets"
+    ],
+    "escalation_triggers": [
+      "patient-specific or clinical content",
+      "academic integrity concern",
+      "employment or institutional authority"
+    ],
+    "delegation_matrix": {
+      "public-source-summary": "independent-private",
+      "private-plan-draft": "independent-private",
+      "external-send": "explicit-confirmation",
+      "patient-specific-clinical-decision": "never-delegate",
+      "graded-or-evaluative-work": "professional-supervision",
+      "institutional-change": "accountable-human-judgment",
+      "academic-learning-support": "prepare-only",
+      "credential-or-competence-claim": "never-delegate"
+    }
+  },
+  "role_constellation": {
+    "primary": [
+      {
+        "role_id": "bedside-nurse",
+        "label": "Bedside Nurse",
+        "domain_id": "direct-clinical-care",
+        "status": "primary",
+        "intensity": 160,
+        "attention": 5,
+        "responsibility": 5,
+        "identity_salience": 5,
+        "confidence": 4,
+        "authorization": "licensed-or-credentialed-unverified",
+        "competence_evidence": "self-reported-practice-not-verified",
+        "credential_status": "self-reported-not-verified",
+        "verification": "self-reported-not-verified",
+        "authority_granted": false
+      }
+    ],
+    "supporting": [
+      {
+        "role_id": "clinical-preceptor",
+        "label": "Clinical Preceptor",
+        "domain_id": "education-mentorship",
+        "status": "supporting",
+        "intensity": 114,
+        "attention": 3,
+        "responsibility": 4,
+        "identity_salience": 4,
+        "confidence": 4,
+        "authorization": "formally-assigned-unverified",
+        "competence_evidence": "self-reported-practice-not-verified",
+        "credential_status": "not-claimed",
+        "verification": "self-reported-not-verified",
+        "authority_granted": false
+      },
+      {
+        "role_id": "quality-improvement-specialist",
+        "label": "Quality Improvement Specialist",
+        "domain_id": "quality-safety-governance",
+        "status": "supporting",
+        "intensity": 106,
+        "attention": 3,
+        "responsibility": 3,
+        "identity_salience": 3,
+        "confidence": 3,
+        "authorization": "formally-assigned-unverified",
+        "competence_evidence": "developing-not-verified",
+        "credential_status": "not-claimed",
+        "verification": "self-reported-not-verified",
+        "authority_granted": false
+      }
+    ],
+    "emerging": [
+      {
+        "role_id": "nurse-entrepreneur",
+        "label": "Nurse Entrepreneur",
+        "domain_id": "entrepreneurship-business",
+        "status": "emerging",
+        "intensity": 72,
+        "attention": 2,
+        "responsibility": 1,
+        "identity_salience": 3,
+        "confidence": 2,
+        "authorization": "self-declared",
+        "competence_evidence": "developing-not-verified",
+        "credential_status": "not-claimed",
+        "verification": "self-reported-not-verified",
+        "authority_granted": false
+      }
+    ],
+    "contextual": [],
+    "synergies": [
+      "Role synergies: current clinical experience can strengthen teaching and precepting while learners sharpen reflective practice.",
+      "Role synergies: frontline pattern recognition can inform bounded quality and safety preparation."
+    ],
+    "tensions": [
+      "Four or more active or developing roles create a realistic overload risk; protect capacity and choose a lead dashboard for each week.",
+      "Advanced Studies competes with work, family, and recovery time; milestones need explicit capacity limits.",
+      "Clinical and entrepreneurial roles require strict separation of patient, employer, claim, conflict-of-interest, and commercial boundaries."
+    ],
+    "custom_roles": []
+  },
+  "development": {
+    "stages": [
+      "experienced-clinician",
+      "certification-candidate",
+      "entrepreneur-innovator"
+    ],
+    "confidence_is_not_competence": true,
+    "quiz_verifies_competence": false
+  },
+  "capacity": {
+    "current_pressures": [
+      "workload",
+      "study-time",
+      "family-care"
+    ],
+    "self_reported_load": 4,
+    "wellness_limit": "Protect post-shift sleep and one no-study day",
+    "performance_or_fitness_assessment": false
+  },
+  "role_module_context": {
+    "clinical-care": {
+      "verification": "self-reported-context-not-verification",
+      "authority_granted": false,
+      "answers": {
+        "clinicalEnvironmentResponsibilities": "Adult critical-care role; no patient details",
+        "clinicalAuthorizationSupervision": "Licensed role reported; institutional policy remains controlling"
+      }
+    },
+    "education-mentorship": {
+      "verification": "self-reported-context-not-verification",
+      "authority_granted": false,
+      "answers": {
+        "educationResponsibilities": "Preceptor preparation and synthetic teaching support",
+        "educationAuthority": "Assignment reported; not verified here"
+      }
+    }
+  },
+  "advanced_studies": {
+    "active": true,
+    "pathways": [
+      {
+        "id": "study-pathway-1",
+        "type": "specialty-certification",
+        "target": "CCRN",
+        "stage": "active-preparation",
+        "motivation": "Deepen critical-care practice",
+        "outcome": "Certification preparation",
+        "milestoneDate": "2026-11-01",
+        "requiredCompetencies": "Critical-care knowledge domains",
+        "progressEvidence": "Study plan and practice scores",
+        "gaps": "Hemodynamics",
+        "priorities": "Weekly review",
+        "formats": [
+          "practice-questions",
+          "concept-maps"
+        ],
+        "availableTime": "4 hours/week",
+        "constraints": "Night shifts",
+        "accountability": "Weekly check-in",
+        "mentorship": "Critical-care mentor",
+        "roleRelationship": "Supports bedside and preceptor roles",
+        "financialBarriers": "",
+        "workloadBarriers": "Night shifts",
+        "familyResponsibilities": "Shared caregiving",
+        "wellnessConsiderations": "Protect recovery sleep",
+        "institutionalSupport": "Education days",
+        "applicationOpportunities": "Teach a synthetic review session",
+        "renewalRequirements": "Not applicable yet",
+        "integrityBoundary": "AI may tutor and quiz; it may not impersonate me or complete prohibited work",
+        "verification": "self-reported-not-verified",
+        "authority_granted": false
+      },
+      {
+        "id": "study-pathway-2",
+        "type": "masters-degree",
+        "target": "MSN",
+        "stage": "exploring",
+        "motivation": "Develop an additional evidence and leadership pathway",
+        "outcome": "Graduate preparation",
+        "milestoneDate": "",
+        "requiredCompetencies": "Not yet mapped",
+        "progressEvidence": "Planning only",
+        "gaps": "Program selection",
+        "priorities": "Compare programs",
+        "formats": [],
+        "availableTime": "Not yet set",
+        "constraints": "Shift work",
+        "accountability": "Not yet set",
+        "mentorship": "Needed",
+        "roleRelationship": "Supports emerging education and leadership roles",
+        "financialBarriers": "Tuition",
+        "workloadBarriers": "Capacity",
+        "familyResponsibilities": "Shared caregiving",
+        "wellnessConsiderations": "Do not overload",
+        "institutionalSupport": "Unknown",
+        "applicationOpportunities": "Future project",
+        "renewalRequirements": "Not applicable",
+        "integrityBoundary": "AI may compare public program information; it may not complete applications or assignments",
+        "verification": "self-reported-not-verified",
+        "authority_granted": false
+      }
+    ]
+  },
+  "mission": {
+    "purpose": "Serve critically ill adults and help newer nurses learn safely.",
+    "populations_and_systems": "Adult critical-care patients indirectly, learners, and the unit team",
+    "shared_goals": "Prepare safely for CCRN while strengthening preceptor and quality work.",
+    "commitment_boundaries": "Protect recovery sleep after night shifts; use broad calendar blocks only.",
+    "motivations": [
+      "service",
+      "mastery",
+      "stewardship"
+    ],
+    "strengths": "Calm communication and pattern recognition",
+    "work_styles": [
+      "structured",
+      "collaborative"
+    ],
+    "learning_styles": [
+      "practice",
+      "teach-back"
+    ]
+  },
+  "decision_style": {
+    "evidence": 5,
+    "uncertainty": 3,
+    "risk": 2,
+    "collaboration": 4,
+    "accountability": 5,
+    "innovation": 3,
+    "conflict": 3,
+    "timePressure": 4,
+    "ethicalConcerns": 5,
+    "competingPriorities": 3
+  },
+  "ai_operating_preferences": {
+    "primary_mode": "tutor",
+    "relationship_modes": [
+      "tutor",
+      "research-assistant",
+      "project-manager",
+      "governance-monitor"
+    ],
+    "delegation_matrix": {
+      "public-source-summary": "independent-private",
+      "private-plan-draft": "independent-private",
+      "external-send": "explicit-confirmation",
+      "patient-specific-clinical-decision": "never-delegate",
+      "graded-or-evaluative-work": "professional-supervision",
+      "institutional-change": "accountable-human-judgment",
+      "academic-learning-support": "prepare-only",
+      "credential-or-competence-claim": "never-delegate"
+    }
+  },
+  "mission_controls": [
+    {
+      "id": "bedside-clinical-command",
+      "name": "Bedside Clinical Command",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [
+        "Bedside Nurse"
+      ],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "wellness-sustainability",
+      "name": "Wellness and Personal Sustainability",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [
+        "Bedside Nurse"
+      ],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "education-mentorship",
+      "name": "Education and Mentorship",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [
+        "Clinical Preceptor"
+      ],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "clinical-learning-simulation",
+      "name": "Clinical Learning, Skills, and Simulation",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [
+        "Clinical Preceptor"
+      ],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "quality-safety-governance",
+      "name": "Quality, Safety, and Governance",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [
+        "Quality Improvement Specialist"
+      ],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "research-evidence",
+      "name": "Research and Evidence",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [
+        "Quality Improvement Specialist"
+      ],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "entrepreneurship-business",
+      "name": "Entrepreneurship and Business",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [
+        "Nurse Entrepreneur"
+      ],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "innovation-product-development",
+      "name": "Innovation and Product Development",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [
+        "Nurse Entrepreneur"
+      ],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "advanced-studies-certification",
+      "name": "Advanced Studies and Certification",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    },
+    {
+      "id": "graduate-degree-research",
+      "name": "Graduate Degree and Research",
+      "shared_foundation": "one-core-soul",
+      "autonomy": "A0-recommendation-only",
+      "roles_supported": [],
+      "human_review": [
+        "Human review before consequential, external, evaluative, or institutional use"
+      ],
+      "data_boundaries": [
+        "No PHI",
+        "No protected academic, employee, participant, or institutional records"
+      ]
+    }
+  ],
+  "recommended_agents": [
+    {
+      "id": "coach",
+      "name": "Coach",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "tutor",
+      "name": "Tutor",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "governance-monitor",
+      "name": "Governance Monitor",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "project-manager",
+      "name": "Project Manager",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "teacher",
+      "name": "Teacher",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "mentor",
+      "name": "Mentor",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "simulation-facilitator",
+      "name": "Simulation Facilitator",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "analyst",
+      "name": "Analyst",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "research-assistant",
+      "name": "Research Assistant",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "creative-collaborator",
+      "name": "Creative Collaborator",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    },
+    {
+      "id": "strategic-advisor",
+      "name": "Strategic Advisor",
+      "activation": "not-authorized",
+      "human_gate": "Human review remains required before consequential or external use."
+    }
+  ],
+  "authority": {
+    "self_reported_profile": true,
+    "credentials_verified": false,
+    "competence_verified": false,
+    "employment_or_assignment_verified": false,
+    "professional_authority_granted": false,
+    "institutional_authority_granted": false
+  },
+  "doctrine": {
+    "edena": "edena-policy@2.0.0",
+    "florence_x": "florence-x@2.0.0",
+    "core_line": "Agents propose. Humans judge. Nurses steward."
+  }
+}

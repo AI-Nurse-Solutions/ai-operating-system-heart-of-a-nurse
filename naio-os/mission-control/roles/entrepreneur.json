@@ -1,0 +1,66 @@
+{
+  "role_id": "entrepreneur",
+  "label": "Nurse entrepreneur",
+  "licensure": "licensed",
+  "tabs": [
+    "overview",
+    "agents",
+    "tasks",
+    "schedule",
+    "memory",
+    "library",
+    "ledger"
+  ],
+  "overview_cards": [
+    "north_star",
+    "today",
+    "license_standing",
+    "stewardship_balance",
+    "momentum",
+    "evidence",
+    "signals",
+    "opportunities",
+    "reflection",
+    "agent_team"
+  ],
+  "starter_agents": [
+    "florence",
+    "scholar",
+    "scribe"
+  ],
+  "task_lanes": [
+    "Capture",
+    "Building",
+    "Waiting on review",
+    "Done"
+  ],
+  "library_filters": [
+    "research",
+    "draft",
+    "publish",
+    "business"
+  ],
+  "ritual_pack": "entrepreneur",
+  "domain_emphasis": [
+    "business",
+    "creative",
+    "career",
+    "family"
+  ],
+  "standing_rows": [
+    "rn_license",
+    "specialty_certification",
+    "acls_bls",
+    "business_registration"
+  ],
+  "privacy_regimes": [
+    "phi",
+    "employer_ip"
+  ],
+  "risk_briefing": [
+    "screenshot_in_a_hurry",
+    "employer_work_becomes_your_product",
+    "ungoverned_window"
+  ],
+  "tier_note": "Nothing from an employer — protocols, forms, materials, workflows — enters this system, so nothing of theirs can end up in something you sell."
+}

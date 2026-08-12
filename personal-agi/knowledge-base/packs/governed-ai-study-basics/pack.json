@@ -1,0 +1,90 @@
+{
+  "identity": {
+    "id": "governed-ai-study-basics",
+    "namespace": "personal-pilot",
+    "title": "Governed AI Study Basics for Nursing Students",
+    "version": "0.1.0",
+    "state": "draft"
+  },
+  "people": {
+    "creator": "Nurse AI OS founding steward",
+    "maintainer": "Nurse AI OS founding steward",
+    "contact": "https://nurse-ai-os.org/about.html"
+  },
+  "purpose": {
+    "lane": "learn",
+    "subject": "Working with AI as a nursing student, the governed way",
+    "audience": "Nursing students and assistants (FUTURE lane); useful to any nurse starting a personal AI system",
+    "intended_use": [
+      "Personal study of governed AI habits: draft-and-attest, memory hygiene, hypothesis discipline",
+      "A worked example of the Knowledge Pack format for the personal library pilot"
+    ],
+    "prohibited_use": [
+      "Clinical decision support or bedside guidance of any kind",
+      "Institutional policy, academic-integrity ruling, or accreditation evidence",
+      "Competency, readiness, or examination-success claims"
+    ]
+  },
+  "context": {
+    "languages": ["en"],
+    "locality": "general",
+    "jurisdiction": "none claimed"
+  },
+  "governance": {
+    "edena_tier": "green",
+    "data_class": "D0",
+    "action_modes": ["observe", "draft"],
+    "no_phi_attested": true,
+    "accountable_human": "the nurse who accepts this pack into their personal library",
+    "stop_conditions": [
+      "Any request to apply this content to a real patient situation",
+      "Any conflict with the reader's school or institutional policy — the policy governs",
+      "Discovery of PHI or person-identifiable content in any pack file"
+    ]
+  },
+  "evidence": {
+    "sources": [
+      {"title": "Sphere-First Design Doctrine (draft-and-attest, memory-first sequencing)", "path": "personal-agi/DESIGN.md"},
+      {"title": "Personal Memory Fabric Kit — vault structure", "path": "personal-agi/memory-fabric-kit/VAULT-STRUCTURE.md"},
+      {"title": "Personal Memory Fabric Kit — trust ledger", "path": "personal-agi/memory-fabric-kit/TRUST-LEDGER.md"},
+      {"title": "Personal Memory Fabric Kit — monthly memory review", "path": "personal-agi/memory-fabric-kit/MONTHLY-MEMORY-REVIEW.md"},
+      {"title": "Nurse Formation doctrine (commit-then-compare, human evaluative authority)", "path": "nurse-formation/DOCTRINE.md"},
+      {"title": "NIN Knowledge Commons doctrine (citation-preserving retrieval)", "path": "knowledge-commons/DOCTRINE.md"},
+      {"title": "Market Signal Engine (briefs as hypotheses)", "path": "personal-agi/signals/README.md"}
+    ],
+    "evidence_status": "Doctrine-derived study guidance; no clinical evidence, learning-outcome evidence, or examination-success evidence is claimed",
+    "limitations": [
+      "Describes working habits, not any school's academic-integrity policy",
+      "Tool-agnostic: specific AI products' settings and behavior may differ",
+      "Educational content only; verification standards for coursework and clinical settings are set locally"
+    ],
+    "review_due": "2027-02-09"
+  },
+  "review": {
+    "status": "author_reviewed_only",
+    "independent_review": "None. Publication to any shared catalog requires independent review per knowledge-commons/PLAYBOOK.md §8.2; one person is never presented as two reviewers. This pack is held at state 'draft' until that review happens.",
+    "records": []
+  },
+  "rights": {
+    "license": "Apache-2.0",
+    "license_note": "Explicitly declared for this pack by its creator; not inherited from repository documentation licensing",
+    "third_party": []
+  },
+  "integrity": {
+    "files": {
+      "content/01-draft-and-attest.md": "190cf90db7c0fd19831ff0968c8a47df6dc4dc873062a8a78bad21bb0a503ea5",
+      "content/02-memory-hygiene.md": "ca59fd3079b450d32c1c8db43081537906d062b07b94b8fcc21201bcc11eda94",
+      "content/03-hypothesis-discipline.md": "815783d814232592800d2fdb2921943f06f9297cc0cec4970123643dccb295dc"
+    }
+  },
+  "lifecycle": {
+    "created": "2026-08-09",
+    "published": null
+  },
+  "relationships": {},
+  "ai_disclosure": {
+    "assisted": true,
+    "purpose": "Content drafted with AI assistance from this repository's existing doctrine documents",
+    "human_verification": "Reviewed and accepted by the founding steward before commit; acceptance into the pilot library takes effect with the steward's merge of the pilot change"
+  }
+}

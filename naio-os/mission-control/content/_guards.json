@@ -1,0 +1,8 @@
+{
+  "template": [
+    "<b>No PHI has entered this system.</b> Zero import refusals needed, zero hits across {days} nightly lint scans.",
+    "<b>No patient-specific clinical reasoning has happened here.</b> Every practice-adjacent draft stopped at a gate and ended with you.",
+    "<b>Nothing irreversible ran unreviewed.</b> {gates} gates raised this quarter; {gates} answered by your hand.",
+    "<b>Your evidence trail is current to 8 August</b> — artifact log, gate ledger, and EDENA reflections, exportable in one pass."
+  ]
+}

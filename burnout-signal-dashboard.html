@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Span-of-Control &amp; Burnout Signal Dashboard — Nurse AI OS</title>
+<meta name="description" content="A browser-local, aggregate-only tracker for nurse managers: enter weekly unit totals for late departures, break-skipping, and PTO non-use, and see plain-language trend descriptions before burnout becomes an exit interview. No individual data, no upload, no recommendations — you interpret every flag.">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon-lamp.svg">
+<link rel="canonical" href="https://nurse-ai-os.org/burnout-signal-dashboard.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+/* Dashboard-scoped styles — same engine conventions as life-quiz.html */
+:root{
+  --line:#e4ddcf;
+}
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--navy-900);color:#fff;padding:.6rem 1rem;border-radius:0 0 10px 0;z-index:50}
+.skip-link:focus{left:0}
+.dash .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:1.7rem 1.6rem;margin:1.1rem 0;box-shadow:var(--shadow-sm)}
+.dash .card h2{margin:.25rem 0 .35rem;font-size:1.4rem}
+.dash .kicker{display:inline-block;background:var(--gold-100);color:#8a6420;padding:3px 11px;border-radius:99px;font-size:.74rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.dash .sub{color:var(--ink-600);font-size:.97rem;margin-bottom:14px}
+.dash .banner{background:var(--teal-100);border-left:5px solid var(--teal-600);border-radius:10px;padding:1rem 1.1rem;color:var(--ink-900);font-size:.97rem;margin:10px 0 16px}
+.dash .banner strong{color:var(--navy-900)}
+.dash .banner.warn{background:var(--gold-100);border-left-color:var(--gold-500)}
+.dash label{display:block;margin:12px 0 6px;color:var(--navy-800);font-weight:600}
+.dash input[type=date],.dash input[type=number]{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #d8d0c0;background:var(--white);color:var(--ink-900);font:inherit;box-sizing:border-box}
+.dash input:focus{outline:2px solid var(--teal-500);outline-offset:1px}
+.dash .help{color:var(--ink-600);font-size:.87rem;margin-top:5px}
+.dash .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+@media (max-width:640px){.dash .grid2{grid-template-columns:1fr}}
+.dash fieldset{border:1px solid var(--line);border-radius:12px;padding:6px 16px 16px;margin:14px 0}
+.dash legend{font-weight:700;color:var(--navy-900);padding:0 6px}
+.dash .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.dash .btn{display:inline-block;padding:.68rem 1.35rem;border-radius:99px;border:none;background:var(--teal-600);color:#fff;text-decoration:none;font-weight:700;cursor:pointer;font:inherit}
+.dash .btn:hover{background:var(--teal-500)}
+.dash .btn.secondary{background:transparent;color:var(--teal-600);border:2px solid var(--teal-600)}
+.dash .btn.quiet{background:transparent;color:var(--ink-600);border:1px solid var(--line)}
+.dash table{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:10px}
+.dash caption{text-align:left;color:var(--ink-600);font-size:.88rem;padding-bottom:8px}
+.dash th,.dash td{border:1px solid var(--line);padding:7px 9px;text-align:right}
+.dash th{background:var(--linen-100);color:var(--navy-900)}
+.dash th[scope=row],.dash td:first-child,.dash th:first-child{text-align:left}
+.dash .table-wrap{overflow-x:auto}
+.dash .flag{border-left:4px solid var(--gold-500);background:var(--gold-100);border-radius:8px;padding:.7rem .9rem;margin:.5rem 0;font-size:.95rem}
+.dash .flag.steady{border-left-color:var(--teal-600);background:var(--teal-100)}
+.dash .flag.ambiguous{border-left-color:var(--navy-800);background:var(--linen-100)}
+.dash .chart-block{margin:18px 0 6px}
+.dash .chart-block h3{margin:.2rem 0 .2rem;font-size:1.08rem;color:var(--navy-900)}
+.dash .chart-block svg{width:100%;height:auto;background:var(--linen-100);border:1px solid var(--line);border-radius:10px}
+.dash .rules li{margin:.55rem 0}
+.dash .evidence{font-size:.93rem;color:var(--ink-600)}
+.dash .evidence strong{color:var(--navy-900)}
+.dash .status{min-height:1.2rem;font-size:.92rem;color:var(--teal-600);font-weight:600;margin-top:8px}
+.dash .rowactions button{background:transparent;border:1px solid var(--line);border-radius:8px;padding:3px 9px;cursor:pointer;font:inherit;font-size:.85rem;color:var(--ink-600)}
+.dash .rowactions button:hover{color:var(--navy-900);border-color:var(--teal-500)}
+.dash .synthetic-note{display:inline-block;background:var(--linen-100);border:1px dashed var(--gold-500);border-radius:8px;padding:2px 8px;font-size:.8rem;color:#8a6420;font-weight:700}
+.dash input[type=file]:focus + label,.dash input[type=file]:focus-visible + label{outline:2px solid var(--teal-500);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" style="padding:2.6rem 0;">
+  <div class="container narrow">
+    <p class="kicker" style="display:inline-block;background:var(--gold-100);color:#8a6420;padding:3px 11px;border-radius:99px;font-size:.74rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;">For nurse managers and leaders</p>
+    <h1>Span-of-Control &amp; Burnout Signal Dashboard</h1>
+    <p class="lede">See the warning signs before you lose a nurse — not in an exit interview. Enter weekly <em>unit totals</em> for three workload patterns research links to burnout-driven turnover: late departures, break-skipping, and PTO non-use. The dashboard describes the trend in plain language. <strong>You interpret every flag; the tool never recommends an action.</strong></p>
+  </div>
+</section>
+
+<main id="main-content" tabindex="-1">
+<section class="section" style="padding:1.6rem 0 3.5rem;">
+  <div class="container narrow dash">
+
+    <div class="banner">
+      <strong>This dashboard lives entirely in your browser.</strong> Nothing is uploaded, no account, no tracking — entries stay in this browser's local storage until you export or clear them. It is <strong>aggregate-only by design</strong>: the form takes unit-level counts and has no free-text fields, so no name, ID, or per-person record can be entered. As everywhere here: <strong>no patient data, no clinical decisions, ever.</strong>
+    </div>
+
+    <div class="banner warn">
+      <strong>Observe mode only.</strong> This tool retrieves what you entered, aggregates it, and describes patterns (Directive §20 — Observe). It does not score, rank, predict, or recommend anything about any person or any action. It is not a workforce-management, performance, or surveillance instrument, and it must never be used to identify or evaluate an individual. Runs at EDENA <strong>Green</strong>: self-entered, unit-aggregate data only — no institutional timekeeping connector is part of this build.
+    </div>
+
+    <div class="card">
+      <h2>1 · Enter this week's unit aggregates</h2>
+      <p class="sub">Once a week, from your own timekeeping summary — totals for the whole unit, never a person. If your unit has fewer than <strong>5 staff</strong>, the dashboard will store entries but will not draw trends: below that threshold, "aggregate" numbers stop protecting individuals.</p>
+
+      <form id="entry-form" novalidate>
+        <div class="grid2">
+          <div>
+            <label for="week-of">Week starting (Monday)</label>
+            <input type="date" id="week-of" required>
+            <p class="help">Re-entering an existing week replaces that week's numbers.</p>
+          </div>
+          <div>
+            <label for="staff-count">Staff on the unit roster this week</label>
+            <input type="number" id="staff-count" min="1" max="500" step="1" inputmode="numeric" required>
+            <p class="help">Headcount, all roles you track. Used only as a denominator and as the minimum-aggregation check.</p>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>The three indicator categories (unit totals)</legend>
+          <div class="grid2">
+            <div>
+              <label for="shifts-worked">Shifts worked on the unit this week</label>
+              <input type="number" id="shifts-worked" min="1" max="5000" step="1" inputmode="numeric" required>
+              <p class="help">Denominator for the two shift-based rates below.</p>
+            </div>
+            <div>
+              <label for="late-departures">Late departures</label>
+              <input type="number" id="late-departures" min="0" max="5000" step="1" inputmode="numeric" required>
+              <p class="help">Shifts that ended 30&nbsp;minutes or more past scheduled end. Count of shifts, not of people.</p>
+            </div>
+            <div>
+              <label for="breaks-missed">Breaks skipped</label>
+              <input type="number" id="breaks-missed" min="0" max="5000" step="1" inputmode="numeric" required>
+              <p class="help">Shifts with a missed or interrupted meal break. Count of shifts, not of people.</p>
+            </div>
+            <div>
+              <label for="staff-no-pto">Staff with no PTO in the last 90 days</label>
+              <input type="number" id="staff-no-pto" min="0" max="500" step="1" inputmode="numeric" required>
+              <p class="help">How many of this week's roster took zero PTO days in the trailing 90 days. A count, never a list.</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="btnrow">
+          <button type="submit" class="btn">Save week</button>
+          <button type="button" class="btn secondary" id="load-example">Load synthetic example</button>
+          <button type="button" class="btn quiet" id="clear-all">Clear all data</button>
+        </div>
+        <p class="status" id="entry-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>2 · Weeks recorded</h2>
+      <p class="sub">This table is the dashboard's accessible source of truth — every chart below is drawn from exactly these numbers.</p>
+      <div class="table-wrap">
+        <table id="weeks-table">
+          <caption id="weeks-caption">Weekly unit aggregates, oldest first. Rates are computed, not entered.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Week of</th>
+              <th scope="col">Staff</th>
+              <th scope="col">Shifts</th>
+              <th scope="col">Late departures</th>
+              <th scope="col">Breaks skipped</th>
+              <th scope="col">No PTO (90d)</th>
+              <th scope="col">Late rate</th>
+              <th scope="col">Break-skip rate</th>
+              <th scope="col">PTO non-use</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="weeks-body"></tbody>
+        </table>
+      </div>
+      <p class="help" id="empty-note">No weeks recorded yet. Save a week above, or load the clearly-labeled synthetic example to see how the dashboard reads.</p>
+    </div>
+
+    <div class="card">
+      <h2>3 · Trends and flags</h2>
+      <p class="sub">Unit-aggregate trend lines with a plain-language reading beside each chart. A flag is a prompt to look, never a verdict — and never about a person.</p>
+      <div id="threshold-notice"></div>
+      <div id="trends" aria-live="polite"></div>
+    </div>
+
+    <div class="card">
+      <h2>4 · How to read a flag (interpretation rules)</h2>
+      <p class="sub">Reused from the Directive's §21A interpretation rules for aggregate wellbeing indicators. These rules are part of the tool, not fine print.</p>
+      <ol class="rules">
+        <li><strong>Patterns, not people.</strong> Every number here is a unit-level workload pattern. Nothing on this page supports a conclusion about any individual, and the tool refuses to draw trends below the minimum staff count for exactly that reason.</li>
+        <li><strong>A rising indicator is a prompt to look, not a verdict.</strong> It says "the workload pattern changed" — it does not say why, and it does not say what to do.</li>
+        <li><strong>A falling indicator is an ambiguous signal, not automatically a success.</strong> Check for underreporting first: staff who stop logging missed breaks are not staff who started taking them. Read a fall as "verify," never as "celebrate."</li>
+        <li><strong>The tool describes; the manager interprets.</strong> It never recommends an action. What, if anything, to do next is your judgment, taken through your normal leadership and HR channels — outside this tool.</li>
+        <li><strong>Association is not prediction.</strong> These indicators are associated with burnout-driven turnover in published research; they do not predict or diagnose it for your unit, and this dashboard is explicitly not a predictive or diagnostic instrument.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>5 · Evidence basis</h2>
+      <p class="evidence">The three indicator categories — <strong>late departures</strong> (working past scheduled shift end), <strong>break-skipping</strong> (missed or interrupted meal breaks), and <strong>PTO non-use</strong> — follow the nurse-manager workload indicator set described by <strong>Laudio Insights with the American Organization for Nursing Leadership (AONL)</strong> in their joint report series on nurse manager leadership and span of control, which links these workload patterns and manager span of control to burnout-driven turnover risk. That research is an <strong>association, not a causal or predictive claim</strong>, and this tracker inherits that limit. Any local association between these indicators and later turnover on your unit should be reviewed quarterly as a non-causal observation — success here is measured by whether managers find the view useful, not by prediction accuracy.</p>
+    </div>
+
+    <div class="card">
+      <h2>6 · Export and portability</h2>
+      <p class="sub">Your data, your workspace. Exports are files your browser downloads to you — nothing is sent anywhere.</p>
+      <div class="btnrow">
+        <button type="button" class="btn" id="export-summary">Export Mission Control dashboard-summary draft</button>
+        <button type="button" class="btn secondary" id="export-json">Export data (JSON)</button>
+        <input type="file" id="import-json" accept="application/json,.json" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">
+        <label class="btn secondary" style="margin:0;" for="import-json">Import data (JSON)</label>
+      </div>
+      <p class="help">The dashboard-summary export follows the Mission Control leader packet template (<em>Measures included · What changed · Limitations · Suggested attention</em>) and is born a <strong>draft with a mandatory review banner</strong> — a named, accountable human must review and approve it before it is used anywhere.</p>
+      <p class="status" id="export-status" role="status" aria-live="polite"></p>
+    </div>
+
+    <noscript>
+      <div class="banner warn"><strong>This dashboard needs JavaScript</strong> to store and chart your entries in your browser. Without it, nothing breaks and nothing is collected — you can keep the same weekly log on paper using the table structure above (week of, staff count, shifts worked, and the three unit totals).</div>
+    </noscript>
+
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:robert@nurse-ai-os.org">Contact</a>
+    </div>
+    <p>© 2026 Robert Domondon · Nurse AI OS · Core setup and self-customization are free forever.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   Span-of-Control & Burnout Signal Dashboard — client-side only.
+   Observe mode (Directive §20): retrieve, aggregate, describe.
+   Never scores, ranks, predicts, or recommends. Aggregate-only
+   by design (D1): unit counts, no free text, no individuals.
+   Everything runs in your browser. Nothing is uploaded.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'naio-burnout-signal-v1';
+  /* Below this roster size, "aggregate" stops protecting individuals,
+     so trends are withheld entirely. */
+  var MIN_STAFF_FOR_TRENDS = 5;
+  /* A directional flag needs this many consecutive recorded weeks
+     moving the same way. */
+  var CONSECUTIVE_WEEKS_FOR_FLAG = 3;
+
+  var INDICATORS = [
+    {
+      key: 'lateRate',
+      name: 'Late departures',
+      definition: 'shifts ending 30 minutes or more past scheduled end, as a share of shifts worked',
+      numerator: 'lateDepartures',
+      denominator: 'shiftsWorked',
+      color: '#0f766e'
+    },
+    {
+      key: 'breakRate',
+      name: 'Break-skipping',
+      definition: 'shifts with a missed or interrupted meal break, as a share of shifts worked',
+      numerator: 'breaksMissed',
+      denominator: 'shiftsWorked',
+      color: '#b45309'
+    },
+    {
+      key: 'ptoRate',
+      name: 'PTO non-use',
+      definition: 'staff with zero PTO days taken in the trailing 90 days, as a share of the roster',
+      numerator: 'staffNoRecentPto',
+      denominator: 'staffCount',
+      color: '#1e3a5f'
+    }
+  ];
+
+  /* The only fields a stored week may carry. Imported or hand-edited data
+     is rebuilt from this allowlist so an unrecognized field — the one place
+     individual data could hide — never enters the workspace. */
+  var WEEK_COUNT_FIELDS = ['staffCount', 'shiftsWorked', 'lateDepartures', 'breaksMissed', 'staffNoRecentPto'];
+
+  var form = document.getElementById('entry-form');
+  var entryStatus = document.getElementById('entry-status');
+  var exportStatus = document.getElementById('export-status');
+  var weeksBody = document.getElementById('weeks-body');
+  var emptyNote = document.getElementById('empty-note');
+  var trendsRoot = document.getElementById('trends');
+  var thresholdNotice = document.getElementById('threshold-notice');
+
+  /* ---------- storage (this browser only) ---------- */
+
+  function loadState() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { weeks: [] };
+      var parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.weeks)) return { weeks: [] };
+      var state = { weeks: parsed.weeks.filter(isValidWeek).map(sanitizeWeek) };
+      /* Scrub, don't just filter: data written by an older version may carry
+         fields outside the allowlist, so the sanitized state is persisted
+         back immediately rather than lingering until the next save. The write
+         is best-effort — a full or read-only store must not cost the manager
+         read access to the sanitized data. */
+      var cleaned = JSON.stringify(state);
+      if (cleaned !== raw) {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, cleaned);
+        } catch (writeError) {}
+      }
+      return state;
+    } catch (err) {
+      return { weeks: [] };
+    }
+  }
+
+  function saveState(state) {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function isValidWeek(week) {
+    if (!week || typeof week !== 'object') return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(week.weekOf || ''))) return false;
+    for (var i = 0; i < WEEK_COUNT_FIELDS.length; i++) {
+      var value = week[WEEK_COUNT_FIELDS[i]];
+      if (typeof value !== 'number' || !isFinite(value) || value < 0 || value !== Math.floor(value)) return false;
+    }
+    if (week.staffCount < 1 || week.shiftsWorked < 1) return false;
+    if (week.lateDepartures > week.shiftsWorked) return false;
+    if (week.breaksMissed > week.shiftsWorked) return false;
+    if (week.staffNoRecentPto > week.staffCount) return false;
+    return true;
+  }
+
+  function sanitizeWeek(week) {
+    var clean = { weekOf: String(week.weekOf) };
+    WEEK_COUNT_FIELDS.forEach(function (field) { clean[field] = week[field]; });
+    if (week.source === 'synthetic-example') clean.source = week.source;
+    return clean;
+  }
+
+  var state = loadState();
+
+  /* ---------- derived values ---------- */
+
+  function sortedWeeks() {
+    return state.weeks.slice().sort(function (a, b) {
+      return a.weekOf < b.weekOf ? -1 : a.weekOf > b.weekOf ? 1 : 0;
+    });
+  }
+
+  function rate(week, indicator) {
+    return week[indicator.numerator] / week[indicator.denominator];
+  }
+
+  function pct(value) {
+    return (100 * value).toFixed(0) + '%';
+  }
+
+  function eligibleWeeks() {
+    return sortedWeeks().filter(function (w) { return w.staffCount >= MIN_STAFF_FOR_TRENDS; });
+  }
+
+  /* Direction of the last CONSECUTIVE_WEEKS_FOR_FLAG recorded weeks:
+     'rising' | 'falling' | 'mixed' | null (not enough weeks). */
+  function tailDirection(series) {
+    if (series.length < CONSECUTIVE_WEEKS_FOR_FLAG) return null;
+    var tail = series.slice(-CONSECUTIVE_WEEKS_FOR_FLAG);
+    var rising = true, falling = true;
+    for (var i = 1; i < tail.length; i++) {
+      if (tail[i] <= tail[i - 1]) rising = false;
+      if (tail[i] >= tail[i - 1]) falling = false;
+    }
+    if (rising) return 'rising';
+    if (falling) return 'falling';
+    return 'mixed';
+  }
+
+  /* Plain-language pattern description. Descriptive only — this function
+     must never produce advice, and its ambiguity note for falling
+     indicators is required by interpretation rule 3. */
+  function describe(indicator, weeks) {
+    var series = weeks.map(function (w) { return rate(w, indicator); });
+    var latest = series[series.length - 1];
+    var direction = tailDirection(series);
+    var name = indicator.name;
+    var text;
+    if (direction === 'rising') {
+      text = name + ' rate has risen across the last ' + CONSECUTIVE_WEEKS_FOR_FLAG +
+        ' recorded weeks, reaching ' + pct(latest) + ' (' + pct(series[series.length - CONSECUTIVE_WEEKS_FOR_FLAG]) +
+        ' → ' + pct(latest) + '). This is a workload pattern worth a human look; it is not a conclusion about anyone.';
+    } else if (direction === 'falling') {
+      text = name + ' rate has fallen across the last ' + CONSECUTIVE_WEEKS_FOR_FLAG +
+        ' recorded weeks, now ' + pct(latest) + '. A falling indicator is an ambiguous signal, not automatically a success — check for underreporting before reading it as improvement.';
+    } else if (direction === 'mixed') {
+      text = name + ' rate shows no consistent ' + CONSECUTIVE_WEEKS_FOR_FLAG +
+        '-week direction; the latest recorded week is ' + pct(latest) + '.';
+    } else {
+      text = 'Fewer than ' + CONSECUTIVE_WEEKS_FOR_FLAG + ' eligible weeks recorded — not enough to describe a ' + name.toLowerCase() + ' trend yet.';
+    }
+    return { direction: direction, latest: latest, series: series, text: text };
+  }
+
+  /* ---------- rendering ---------- */
+
+  function renderTable() {
+    var weeks = sortedWeeks();
+    weeksBody.textContent = '';
+    emptyNote.style.display = weeks.length ? 'none' : '';
+    weeks.forEach(function (week) {
+      var tr = document.createElement('tr');
+      var head = document.createElement('th');
+      head.scope = 'row';
+      head.textContent = week.weekOf + (week.source === 'synthetic-example' ? ' (synthetic)' : '');
+      tr.appendChild(head);
+      [week.staffCount, week.shiftsWorked, week.lateDepartures, week.breaksMissed, week.staffNoRecentPto]
+        .forEach(function (value) {
+          var td = document.createElement('td');
+          td.textContent = String(value);
+          tr.appendChild(td);
+        });
+      INDICATORS.forEach(function (indicator) {
+        var td = document.createElement('td');
+        td.textContent = week.staffCount >= MIN_STAFF_FOR_TRENDS ? pct(rate(week, indicator)) : 'withheld';
+        tr.appendChild(td);
+      });
+      var actions = document.createElement('td');
+      actions.className = 'rowactions';
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.textContent = 'Delete';
+      del.setAttribute('aria-label', 'Delete week of ' + week.weekOf);
+      del.addEventListener('click', function () {
+        state.weeks = state.weeks.filter(function (w) { return w.weekOf !== week.weekOf; });
+        saveState(state);
+        renderAll();
+        entryStatus.textContent = 'Deleted week of ' + week.weekOf + '.';
+      });
+      actions.appendChild(del);
+      tr.appendChild(actions);
+      weeksBody.appendChild(tr);
+    });
+  }
+
+  function chartSvg(indicator, weeks) {
+    var series = weeks.map(function (w) { return rate(w, indicator); });
+    var w = 640, h = 180, padX = 34, padY = 18;
+    var maxY = Math.max(0.1, Math.max.apply(null, series));
+    var stepX = series.length > 1 ? (w - 2 * padX) / (series.length - 1) : 0;
+    var points = series.map(function (value, i) {
+      var x = padX + i * stepX;
+      var y = h - padY - (value / maxY) * (h - 2 * padY);
+      return [x, y];
+    });
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', indicator.name + ' rate by week: ' +
+      weeks.map(function (wk, i) { return wk.weekOf + ' ' + pct(series[i]); }).join(', ') +
+      '. The full data is in the weeks-recorded table above.');
+    var baseline = document.createElementNS(svgNS, 'line');
+    baseline.setAttribute('x1', padX); baseline.setAttribute('y1', h - padY);
+    baseline.setAttribute('x2', w - padX); baseline.setAttribute('y2', h - padY);
+    baseline.setAttribute('stroke', '#d8d0c0');
+    svg.appendChild(baseline);
+    if (points.length > 1) {
+      var line = document.createElementNS(svgNS, 'polyline');
+      line.setAttribute('points', points.map(function (p) { return p[0] + ',' + p[1]; }).join(' '));
+      line.setAttribute('fill', 'none');
+      line.setAttribute('stroke', indicator.color);
+      line.setAttribute('stroke-width', '3');
+      line.setAttribute('stroke-linecap', 'round');
+      line.setAttribute('stroke-linejoin', 'round');
+      svg.appendChild(line);
+    }
+    points.forEach(function (p) {
+      var dot = document.createElementNS(svgNS, 'circle');
+      dot.setAttribute('cx', p[0]); dot.setAttribute('cy', p[1]); dot.setAttribute('r', '4.5');
+      dot.setAttribute('fill', indicator.color);
+      svg.appendChild(dot);
+    });
+    return svg;
+  }
+
+  function renderTrends() {
+    var all = sortedWeeks();
+    var weeks = eligibleWeeks();
+    var excluded = all.length - weeks.length;
+    trendsRoot.textContent = '';
+    thresholdNotice.textContent = '';
+
+    if (excluded > 0) {
+      var note = document.createElement('div');
+      note.className = 'banner warn';
+      var noteLabel = document.createElement('strong');
+      noteLabel.textContent = 'Minimum aggregation threshold.';
+      note.appendChild(noteLabel);
+      note.appendChild(document.createTextNode(' ' + excluded +
+        ' recorded week' + (excluded === 1 ? '' : 's') + ' with fewer than ' + MIN_STAFF_FOR_TRENDS +
+        ' staff ' + (excluded === 1 ? 'is' : 'are') + ' excluded from every trend and rate below. On a unit that small, an "aggregate" number can point at a person — so the dashboard withholds it.'));
+      thresholdNotice.appendChild(note);
+    }
+
+    if (!weeks.length) {
+      var p = document.createElement('p');
+      p.className = 'help';
+      p.textContent = 'No eligible weeks to chart yet.';
+      trendsRoot.appendChild(p);
+      return;
+    }
+
+    INDICATORS.forEach(function (indicator) {
+      var block = document.createElement('div');
+      block.className = 'chart-block';
+      var heading = document.createElement('h3');
+      heading.textContent = indicator.name;
+      block.appendChild(heading);
+      var def = document.createElement('p');
+      def.className = 'help';
+      def.textContent = 'Definition: ' + indicator.definition + '.';
+      block.appendChild(def);
+      block.appendChild(chartSvg(indicator, weeks));
+      var reading = describe(indicator, weeks);
+      var flag = document.createElement('p');
+      flag.className = 'flag ' + (reading.direction === 'rising' ? '' : reading.direction === 'falling' ? 'ambiguous' : 'steady');
+      flag.textContent = reading.text;
+      block.appendChild(flag);
+      trendsRoot.appendChild(block);
+    });
+  }
+
+  function renderAll() {
+    renderTable();
+    renderTrends();
+  }
+
+  /* ---------- entry form ---------- */
+
+  /* Strict parse: empty and fractional entries surface as invalid instead
+     of being silently coerced into a plausible-looking count. */
+  function readCount(id) {
+    var raw = document.getElementById(id).value.trim();
+    return raw === '' ? NaN : Number(raw);
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var week = {
+      weekOf: document.getElementById('week-of').value,
+      staffCount: readCount('staff-count'),
+      shiftsWorked: readCount('shifts-worked'),
+      lateDepartures: readCount('late-departures'),
+      breaksMissed: readCount('breaks-missed'),
+      staffNoRecentPto: readCount('staff-no-pto')
+    };
+    if (!isValidWeek(week)) {
+      entryStatus.textContent = 'Please check the numbers: every field is required, counts must be whole numbers, counts cannot exceed their denominators (late departures and skipped breaks ≤ shifts worked; no-PTO staff ≤ roster), and staff and shifts must be at least 1.';
+      return;
+    }
+    state.weeks = state.weeks.filter(function (w) { return w.weekOf !== week.weekOf; });
+    state.weeks.push(week);
+    saveState(state);
+    renderAll();
+    entryStatus.textContent = 'Saved week of ' + week.weekOf +
+      (week.staffCount < MIN_STAFF_FOR_TRENDS
+        ? ' — stored, but excluded from trends (fewer than ' + MIN_STAFF_FOR_TRENDS + ' staff).'
+        : '.');
+    form.reset();
+  });
+
+  /* ---------- synthetic example ---------- */
+
+  document.getElementById('load-example').addEventListener('click', function () {
+    /* Clearly-labeled synthetic data, invented for demonstration only.
+       It replaces nothing: real weeks you entered are kept. */
+    var example = [
+      { weekOf: '2026-06-01', staffCount: 14, shiftsWorked: 70, lateDepartures: 8, breaksMissed: 12, staffNoRecentPto: 3 },
+      { weekOf: '2026-06-08', staffCount: 14, shiftsWorked: 68, lateDepartures: 9, breaksMissed: 13, staffNoRecentPto: 3 },
+      { weekOf: '2026-06-15', staffCount: 13, shiftsWorked: 66, lateDepartures: 11, breaksMissed: 16, staffNoRecentPto: 4 },
+      { weekOf: '2026-06-22', staffCount: 13, shiftsWorked: 65, lateDepartures: 13, breaksMissed: 19, staffNoRecentPto: 5 },
+      { weekOf: '2026-06-29', staffCount: 13, shiftsWorked: 64, lateDepartures: 15, breaksMissed: 22, staffNoRecentPto: 6 }
+    ];
+    example.forEach(function (week) {
+      week.source = 'synthetic-example';
+      if (!state.weeks.some(function (w) { return w.weekOf === week.weekOf; })) {
+        state.weeks.push(week);
+      }
+    });
+    saveState(state);
+    renderAll();
+    entryStatus.textContent = 'Loaded ';
+    var syntheticNote = document.createElement('span');
+    syntheticNote.className = 'synthetic-note';
+    syntheticNote.textContent = 'synthetic example';
+    entryStatus.appendChild(syntheticNote);
+    entryStatus.appendChild(document.createTextNode(' weeks (marked in the table). Delete them before tracking your real unit.'));
+  });
+
+  document.getElementById('clear-all').addEventListener('click', function () {
+    if (!state.weeks.length) { entryStatus.textContent = 'Nothing to clear.'; return; }
+    if (!window.confirm('Delete all ' + state.weeks.length + ' recorded weeks from this browser? This cannot be undone.')) return;
+    state = { weeks: [] };
+    window.localStorage.removeItem(STORAGE_KEY);
+    renderAll();
+    entryStatus.textContent = 'All data cleared from this browser.';
+  });
+
+  /* ---------- exports ---------- */
+
+  function download(name, content, mime) {
+    var blob = new Blob([content], { type: mime || 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('export-json').addEventListener('click', function () {
+    download('burnout-signal-data.json', JSON.stringify({
+      tool: 'span-of-control-burnout-signal-dashboard',
+      version: 1,
+      aggregateOnly: true,
+      weeks: sortedWeeks()
+    }, null, 2), 'application/json');
+    exportStatus.textContent = 'Data exported as JSON (downloaded to you — nothing was sent anywhere).';
+  });
+
+  document.getElementById('import-json').addEventListener('change', function (event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var parsed = JSON.parse(String(reader.result));
+        var incoming = (parsed && Array.isArray(parsed.weeks) ? parsed.weeks : []).filter(isValidWeek).map(sanitizeWeek);
+        if (!incoming.length) {
+          exportStatus.textContent = 'No valid aggregate weeks found in that file. Only unit-aggregate exports from this tool can be imported.';
+          return;
+        }
+        incoming.forEach(function (week) {
+          state.weeks = state.weeks.filter(function (w) { return w.weekOf !== week.weekOf; });
+          state.weeks.push(week);
+        });
+        saveState(state);
+        renderAll();
+        exportStatus.textContent = 'Imported ' + incoming.length + ' week(s).';
+      } catch (err) {
+        exportStatus.textContent = 'That file could not be read as JSON.';
+      }
+      event.target.value = '';
+    };
+    reader.onerror = function () {
+      exportStatus.textContent = 'That file could not be read.';
+      event.target.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  /* Mission Control leader-packet dashboard-summary draft.
+     Same section structure as
+     mission-control/packets/leader/templates/dashboard-summary.md,
+     and the same rule: born a draft, mandatory banner, only a named
+     human review makes it anything else. */
+  document.getElementById('export-summary').addEventListener('click', function () {
+    var weeks = eligibleWeeks();
+    var all = sortedWeeks();
+    if (!all.length) {
+      exportStatus.textContent = 'Record at least one week before exporting a summary.';
+      return;
+    }
+    var hasSynthetic = all.some(function (w) { return w.source === 'synthetic-example'; });
+    var excluded = all.length - weeks.length;
+    var lines = [];
+    lines.push('# Dashboard Summary — Span-of-Control & Burnout Signals');
+    lines.push('');
+    lines.push('> **DRAFT — tool-generated scaffold.** Not final and not approved. A named, accountable human must review, edit, and approve this content before it is used anywhere. Generation alone never makes content final.');
+    lines.push('');
+    lines.push('**Generated from workspace sources:** manager-entered unit aggregates in the browser-local Span-of-Control & Burnout Signal Dashboard — ' +
+      all.length + ' week(s), week of ' + all[0].weekOf + ' through week of ' + all[all.length - 1].weekOf + '. No individual-level data exists in this workspace.');
+    if (hasSynthetic) {
+      lines.push('');
+      lines.push('**⚠ Contains synthetic example data.** This draft includes clearly-labeled synthetic demonstration weeks and must not be used for any real unit.');
+    }
+    lines.push('');
+    lines.push('## Measures included');
+    lines.push('');
+    INDICATORS.forEach(function (indicator) {
+      lines.push('- **' + indicator.name + ':** ' + indicator.definition +
+        '. Source: manager-entered weekly unit totals. Denominator: ' +
+        (indicator.denominator === 'staffCount' ? 'unit roster headcount' : 'shifts worked that week') +
+        '. Freshness: latest recorded week is ' + all[all.length - 1].weekOf + '.');
+    });
+    lines.push('- Indicator set: Laudio Insights / AONL nurse manager span-of-control and workload research (association with burnout-driven turnover; not causal, not predictive).');
+    lines.push('');
+    lines.push('## What changed');
+    lines.push('');
+    if (!weeks.length) {
+      lines.push('No weeks meet the minimum aggregation threshold (' + MIN_STAFF_FOR_TRENDS + ' staff), so no trend can be described.');
+    } else {
+      INDICATORS.forEach(function (indicator) {
+        lines.push('- ' + describe(indicator, weeks).text);
+      });
+    }
+    lines.push('');
+    lines.push('_Add known operational context (census surges, vacancies, orientation cohorts) before this draft goes anywhere — the numbers cannot supply it._');
+    lines.push('');
+    lines.push('## Limitations');
+    lines.push('');
+    lines.push('- Self-entered, unit-aggregate data only; accuracy depends on the manager\'s weekly entry.');
+    lines.push('- Aggregate association, not causation or prediction; not a diagnostic or workforce-evaluation instrument, and never about an individual.');
+    lines.push('- Falling indicators are ambiguous: underreporting must be ruled out before any fall is read as improvement.');
+    if (excluded > 0) {
+      lines.push('- ' + excluded + ' recorded week(s) below the ' + MIN_STAFF_FOR_TRENDS + '-staff aggregation threshold are excluded from every figure above.');
+    }
+    lines.push('');
+    lines.push('## Suggested attention');
+    lines.push('');
+    lines.push('_Where a human should look next — suggestions to look, not conclusions and not recommended actions._');
+    lines.push('');
+    var risingCount = 0;
+    if (weeks.length) {
+      INDICATORS.forEach(function (indicator) {
+        var reading = describe(indicator, weeks);
+        if (reading.direction === 'rising') {
+          risingCount++;
+          lines.push('- ' + indicator.name + ' has a sustained rise worth a closer human look at unit workload patterns.');
+        } else if (reading.direction === 'falling') {
+          lines.push('- ' + indicator.name + ' is falling — verify reporting practices before treating the fall as real.');
+        }
+      });
+    }
+    if (!risingCount) {
+      lines.push('- No sustained rises this period. Continue the weekly entry habit so the baseline stays honest.');
+    }
+    lines.push('');
+    lines.push('---');
+    lines.push('Observe-mode tool: it retrieved, aggregated, and described. Interpretation and any next step belong to the reviewing human, through normal channels.');
+    lines.push('');
+    download('dashboard-summary-draft.md', lines.join('\n'), 'text/markdown');
+    exportStatus.textContent = 'Dashboard-summary draft exported (Markdown, mandatory review banner included).';
+  });
+
+  renderAll();
+}());
+</script>
+
+<script src="assets/site-shell.js" defer></script>
+</body>
+</html>

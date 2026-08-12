@@ -5,6 +5,14 @@ import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 
+// A webfont CDN being unreachable is not a defect in the page under test: the
+// stylesheet is loaded with display=swap and every one of these pages renders
+// its fallback face when it never arrives. A CI runner that cannot reach
+// fonts.googleapis.com was failing this assertion with ten identical resource
+// errors that say nothing about the code. test_switchboard_browser.mjs already
+// treated these as optional for one of its pages; this is the same rule.
+const isOptionalExternal = (url) => /^https:\/\/fonts\.(googleapis|gstatic)\.com\//.test(url || '');
+
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const mime = {
   '.css': 'text/css; charset=utf-8',
@@ -74,9 +82,11 @@ try {
   for (const width of [320, 390, 768, 1024, 1280]) {
     const page = await browser.newPage({ viewport: { width, height: 1000 } });
     const errors = [];
-    page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
+    page.on('console', (message) => {
+      if (message.type() === 'error' && !isOptionalExternal(message.location()?.url)) errors.push(message.text());
+    });
     page.on('pageerror', (error) => errors.push(error.message));
-    page.on('response', (response) => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
+    page.on('response', (response) => { if (response.status() >= 400 && !isOptionalExternal(response.url())) errors.push(`${response.status()} ${response.url()}`); });
     const response = await page.goto(`http://127.0.0.1:${port}/soul-quiz.html`);
     assert.equal(response?.status(), 200, `SOUL Quiz must return HTTP 200 at ${width}px`);
     await completeSafety(page);
@@ -194,7 +204,9 @@ try {
 
   const staffPage = await browser.newPage({ viewport: { width: 390, height: 1000 } });
   const staffErrors = [];
-  staffPage.on('console', (message) => { if (message.type() === 'error') staffErrors.push(message.text()); });
+  staffPage.on('console', (message) => {
+    if (message.type() === 'error' && !isOptionalExternal(message.location()?.url)) staffErrors.push(message.text());
+  });
   staffPage.on('pageerror', (error) => staffErrors.push(error.message));
   await staffPage.goto(`http://127.0.0.1:${port}/soul-quiz.html`);
   await completeSafety(staffPage, 'Alex');

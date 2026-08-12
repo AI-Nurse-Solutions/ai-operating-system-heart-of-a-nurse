@@ -1,0 +1,314 @@
+{
+  "label": "Nursing student",
+  "values": [
+    "Do the reading",
+    "Ask the stupid question",
+    "No shortcuts on the ones that count",
+    "Graduate whole"
+  ],
+  "mission": "Finish strong, pass NCLEX on the first attempt, and start this career without the debt and the fear running the show.",
+  "sub": "Amara Osei, SN · final-semester BSN · 240 clinical hours to go · NCLEX in the spring · working weekends to stay afloat.",
+  "season": "Final semester",
+  "seasonBody": "Everything is subordinate to graduating and passing. You wrote that down in March precisely so that saying no in October would be easier.",
+  "seasonMeta": "Week 9 of 15 · 240 clinical hours remaining · NCLEX window opens 12 March",
+  "actions": [
+    {
+      "domain": "Learning & Mastery",
+      "title": "Do the 25 questions you skipped on Tuesday",
+      "why": "Reading rationales is where your score actually moves, and Scholar queued these from your own misses rather than a generic bank.",
+      "cost": "30 minutes · rationales included",
+      "cta": "Start the set"
+    },
+    {
+      "domain": "Finances",
+      "title": "Certify your aid paperwork before the 31st",
+      "why": "Dated, and missing it costs a semester of eligibility. This is the single highest-consequence form on your list and it takes minutes.",
+      "cost": "15 minutes · waits at a human gate",
+      "cta": "Open the form"
+    },
+    {
+      "domain": "Health & Energy",
+      "title": "Put one full day off on the calendar",
+      "why": "You have worked or been in clinical eleven days straight. Nobody passes NCLEX on a deficit, and the calendar is the only place this becomes real.",
+      "cost": "2 minutes to block",
+      "cta": "Block a day"
+    }
+  ],
+  "domains": {
+    "health": {
+      "share": 8,
+      "state": "attention",
+      "dir": "down",
+      "signal": "Eleven days straight between shifts and clinical rotations.",
+      "detail": "You are the only person who can protect this one. <b>Florence will not schedule around it for you</b> — but she will keep showing you the count until it changes."
+    },
+    "family": {
+      "share": 12,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Sunday calls home held six weeks running.",
+      "detail": "The one thing you have not let the semester take. <b>It costs forty minutes and it is doing more than you think.</b>"
+    },
+    "career": {
+      "share": 9,
+      "state": "steady",
+      "dir": "up",
+      "signal": "Two residency applications drafted. One reference secured, one asked.",
+      "detail": "New-grad residency deadlines cluster in January. <b>Your second reference has been pending three weeks</b> — a nudge is not a burden to the person who offered."
+    },
+    "learning": {
+      "share": 34,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "NCLEX readiness 58% and climbing. Pharm and prioritization are the gaps.",
+      "detail": "Your practice scores have risen every fortnight since August. <b>Prioritization questions are where you lose the most</b>, and they are the most teachable."
+    },
+    "finance": {
+      "share": 14,
+      "state": "attention",
+      "dir": "flat",
+      "signal": "Aid certification due 31 August. Two scholarship deadlines in October.",
+      "detail": "Money is taking a large share of your attention because it is unresolved, not because you are careless. <b>Three dated forms would take most of this off the board.</b>"
+    },
+    "creative": {
+      "share": 6,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Four study aids you made yourself; two classmates now use them.",
+      "detail": "You have quietly built teaching materials all semester. <b>That is a portfolio, not a study habit.</b>"
+    },
+    "service": {
+      "share": 10,
+      "state": "steady",
+      "dir": "up",
+      "signal": "Peer tutoring twice a week since September.",
+      "detail": "Teaching is the reason your own retention is climbing. <b>The tutoring is study time</b>, and it should be counted as such."
+    },
+    "business": {
+      "share": 7,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Weekend job held at 16 hours — capped by you until NCLEX.",
+      "detail": "You set the cap in March and have not broken it once. <b>Holding a line under pressure is the whole skill</b>, and you already have it."
+    }
+  },
+  "momentum": {
+    "hero": "19",
+    "unit": "hours",
+    "label": "returned to you this month — mostly study planning, references, and paperwork you no longer redo from scratch.",
+    "note": "Estimated from your own logged times. It is deliberately conservative: only tasks you timed both before and after.",
+    "kpis": [
+      [
+        "Question streak",
+        "21",
+        "days",
+        "longest yet"
+      ],
+      [
+        "Commitments honored",
+        "29",
+        "/34",
+        "+7 vs July"
+      ],
+      [
+        "Study aids made",
+        "4",
+        "",
+        "+2 this month"
+      ]
+    ],
+    "weekly": [
+      2,
+      2,
+      3,
+      4,
+      4,
+      5,
+      5,
+      6,
+      6,
+      7,
+      7,
+      8
+    ],
+    "caption": "the habit stuck in week 4",
+    "evidence": [
+      [
+        4,
+        2,
+        1
+      ],
+      [
+        5,
+        3,
+        1
+      ],
+      [
+        6,
+        3,
+        2
+      ],
+      [
+        7,
+        4,
+        2
+      ],
+      [
+        8,
+        4,
+        3
+      ],
+      [
+        9,
+        5,
+        3
+      ]
+    ]
+  },
+  "license": {
+    "days": 41,
+    "gates": 23,
+    "currency": [
+      {
+        "name": "Program standing",
+        "meta": "Good standing · GPA 3.4 · no remediation open",
+        "state": "flourishing"
+      },
+      {
+        "name": "Clinical packet",
+        "meta": "Immunizations, titers, TB current to 1 June 2027",
+        "state": "flourishing"
+      },
+      {
+        "name": "BLS",
+        "meta": "Renews 8 February 2027 · 6 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "Background check",
+        "meta": "Program cycle · re-screen due before spring placement",
+        "state": "steady"
+      },
+      {
+        "name": "NCLEX eligibility",
+        "meta": "Application opens 12 March · transcript release needed",
+        "state": "steady"
+      }
+    ],
+    "reputation": [
+      {
+        "name": "Published",
+        "meta": "Nothing carries your name yet — and that is fine",
+        "state": "flourishing"
+      },
+      {
+        "name": "References",
+        "meta": "2 secured · 1 asked and pending three weeks",
+        "state": "attention"
+      },
+      {
+        "name": "Clinical posts",
+        "meta": "None. No unit, no patient, no shift story — anywhere.",
+        "state": "flourishing"
+      }
+    ],
+    "risks": [
+      {
+        "what": "A clinical story told with too much detail",
+        "guard": "Import refuses on PHI indicators and a nightly lint sweeps what is already stored. <b>The system catches it.</b>"
+      },
+      {
+        "what": "AI-written work submitted as your own",
+        "guard": "Your program’s integrity policy governs this, and no software can enforce it for you. NAIO drafts, coaches, and quizzes; it never submits. <b>This one is yours to keep — and it is the one that ends careers before they start.</b>"
+      },
+      {
+        "what": "Reaching for an ungoverned window instead",
+        "guard": "No governed system can reach a chat window it does not run. <b>This one is yours to keep</b> — it is the reason the rails are worth having."
+      }
+    ],
+    "scopeNote": "<b>You do not have a license yet. That is exactly why this panel exists.</b> Everything here is the habit that will protect the license you are about to earn — the boundary you keep now is the one you will still be keeping at year eleven."
+  },
+  "signals": [
+    {
+      "state": "attention",
+      "title": "Aid certification is due on 31 August",
+      "body": "The highest-consequence item on your board, and it takes fifteen minutes. Nothing else here has a cliff behind it.",
+      "action": "Open the form"
+    },
+    {
+      "state": "attention",
+      "title": "Your second reference has waited three weeks",
+      "body": "She offered. Following up is not a burden — it is the part of the ask you have not finished.",
+      "action": "Draft the nudge"
+    },
+    {
+      "state": "steady",
+      "title": "Prioritization is your widest NCLEX gap",
+      "body": "It is also the most teachable one, and it responds fastest to rationale reading.",
+      "action": "Queue a focused set"
+    },
+    {
+      "state": "steady",
+      "title": "Eleven days worked or in clinical, straight",
+      "body": "Noticed, not judged. One full day off is the cheapest intervention available to you right now.",
+      "action": "Block a day"
+    }
+  ],
+  "opps": [
+    {
+      "kind": "Residency",
+      "title": "New-grad residency applications open",
+      "body": "Cardiac and ICU tracks both open in January; two of your rotations map directly.",
+      "when": "Applications open 6 January"
+    },
+    {
+      "kind": "Scholarship",
+      "title": "Two deadlines you already qualify for",
+      "body": "Both need an essay you have effectively already written across your reflections.",
+      "when": "Closes 14 and 28 October"
+    },
+    {
+      "kind": "Relationship",
+      "title": "Your Tuesday preceptor offered a reference",
+      "body": "Unprompted, six weeks ago. Your notes say you meant to take her up on it.",
+      "when": "Still open — ask"
+    },
+    {
+      "kind": "Idea",
+      "title": "Your study aids are good enough to share",
+      "body": "Two classmates already use them. Sanitized, they would help a whole cohort.",
+      "when": "After finals"
+    }
+  ],
+  "agents": [
+    {
+      "initials": "FL",
+      "name": "Florence",
+      "role": "Generalist · your preceptor",
+      "tier": "Green",
+      "tierCls": "tier-green",
+      "scope": "All spheres, read-only outside Health. Drafts freely; sends nothing.",
+      "await": null
+    },
+    {
+      "initials": "SC",
+      "name": "Scholar",
+      "role": "NCLEX & coursework",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Learning sphere only. Builds sets from your misses; never writes graded work.",
+      "await": "Wants to add 3 prioritization sets"
+    },
+    {
+      "initials": "SB",
+      "name": "Scribe",
+      "role": "Applications & admin",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Career and Finance spheres. No outbound send, ever.",
+      "await": "Drafted your clinical reflection — your program requires your own words"
+    }
+  ],
+  "sample": true,
+  "role_id": "student"
+}

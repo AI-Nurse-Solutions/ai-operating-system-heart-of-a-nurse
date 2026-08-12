@@ -1,0 +1,475 @@
+#!/usr/bin/env python3
+"""
+naio-soul-import — the personalization bridge.
+
+Turns the nurse's own `naio-soul.json` (exported by the SOUL Quiz, in her browser,
+never uploaded anywhere) into real content for Mission Control, replacing the
+sample files.
+
+    ./bin/naio-soul-import ~/Downloads/naio-soul.json            # dry run, default
+    ./bin/naio-soul-import ~/Downloads/naio-soul.json --apply
+
+What it refuses, before anything else:
+
+  * a soul file that does not confirm BOTH hard boundaries — no PHI, and no
+    patient-specific clinical reasoning. The quiz will not export one; if you
+    hand-edited it, this refuses it.
+  * a soul file containing anything PHI-shaped in any free-text field.
+
+What it deliberately does NOT do:
+
+  * invent numbers. A soul file says who you are; it does not say where your
+    attention went last month or what your credentials expire. Those come from
+    collectors and from you. Anything not yet measured is written as measured:false
+    and the screen says so, rather than showing you a plausible fiction.
+  * put tier ceilings in a role preset. Your ceilings are YOUR logged decision;
+    they go to governance/tier-ceilings.json. A preset carrying the key is
+    rejected outright (Rail 3).
+
+Agents propose. Humans judge. Nurses steward.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent.parent
+SCHEMA_PATH = HERE / "schema" / "naio-soul.schema.json"
+CONTENT_DIR = HERE / "content"
+ROLES_DIR = HERE / "roles"
+GOV_DIR = HERE / "governance"
+
+# From schema 1.1.0 the quiz speaks the same eight ids the presets use, so this
+# is mostly an identity map. The legacy entries below keep older files working.
+ROLE_MAP = {
+    # schema 1.1.0 — the quiz emits preset ids directly. No mapping, no guessing.
+    "student": ("student", None),
+    "bedside": ("bedside", None),
+    "charge": ("charge", None),
+    "educator": ("educator", None),
+    "leader": ("leader", None),
+    "np": ("np", None),
+    "resident": ("resident", None),
+    "entrepreneur": ("entrepreneur", None),
+    "other": ("bedside",
+              "You chose 'something else'. Defaulted to 'bedside' — pick your real "
+              "role in the selector, or re-run with --role, and the preset follows."),
+    # schema 1.0.0 — retired spelling, still accepted
+    "staff": ("bedside",
+              "'staff' is the retired 1.0.0 spelling of 'bedside'. Mapped. Re-take the "
+              "first quiz step to emit the current vocabulary."),
+}
+
+# From schema 2.0.0 the quiz exports a role CONSTELLATION, and identity.role is
+# only the legacy value it collapses that constellation to: soul-quiz-model.mjs
+# maps all six direct-care and advanced-practice roles to 'staff', every
+# education, management, administration and quality role to 'leader', and the
+# remaining seventeen — residents, researchers, informaticists, entrepreneurs,
+# community and wellness roles — to 'other'. Reading identity.role for a 2.x
+# file therefore sends a nurse practitioner to the bedside preset and a resident
+# or an entrepreneur to the same place, and makes five of the eight presets
+# unreachable from a live quiz export. The authoritative answer is the primary
+# constellation role, so that is what this maps.
+#
+# Where a quiz role has no preset of its own the nearest one is used and a
+# caveat is printed — a lossy map that says so beats a silent default.
+CONSTELLATION_ROLE_MAP: dict[str, tuple[str, str | None]] = {
+    "prelicensure-nursing-student": ("student", None),
+    "nursing-assistant-pct": ("bedside",
+                              "There is no assistant/CNA preset yet — 'bedside' is the "
+                              "closest. Re-run with --role to choose another."),
+    "newly-licensed-clinician": ("bedside", None),
+    "bedside-nurse": ("bedside", None),
+    "allied-health-clinician": ("bedside",
+                                "Allied health has no preset of its own yet — 'bedside' "
+                                "is the closest direct-care one."),
+    "advanced-practice-clinician": ("np", None),
+    "nurse-practitioner": ("np", None),
+    "clinical-nurse-specialist": ("np", None),
+    "medical-resident-fellow": ("resident", None),
+    "physician": ("resident",
+                  "There is no attending-physician preset — 'resident' is the closest. "
+                  "Re-run with --role to choose another."),
+    "clinical-preceptor": ("educator", None),
+    "nurse-educator": ("educator", None),
+    "faculty-instructor": ("educator", None),
+    "simulation-facilitator": ("educator", None),
+    "charge-nurse-team-lead": ("charge", None),
+    "nurse-manager": ("leader", None),
+    "healthcare-leader": ("leader", None),
+    "hospital-administrator": ("leader", None),
+    "clinic-manager": ("leader", None),
+    "operations-program-manager": ("leader", None),
+    "quality-improvement-specialist": ("leader", None),
+    "patient-safety-governance-specialist": ("leader", None),
+    "nurse-researcher": ("educator",
+                         "Research has no preset of its own yet — 'educator' carries the "
+                         "closest scholarship framing."),
+    "evidence-practice-specialist": ("educator",
+                                     "Evidence-based practice has no preset of its own yet "
+                                     "— 'educator' is the closest."),
+    "nurse-informaticist": ("entrepreneur",
+                            "Informatics has no preset of its own yet — 'entrepreneur' "
+                            "carries the closest build-and-ship framing."),
+    "ai-innovator": ("entrepreneur", None),
+    "health-technology-specialist": ("entrepreneur", None),
+    "clinical-product-developer": ("entrepreneur", None),
+    "nurse-entrepreneur": ("entrepreneur", None),
+    "healthcare-business-owner": ("entrepreneur", None),
+    "community-population-health-professional": ("leader",
+                                                 "Community and population health has no "
+                                                 "preset yet — 'leader' is the closest."),
+    "community-organizer": ("leader",
+                            "Community organizing has no preset yet — 'leader' is the "
+                            "closest."),
+    "professional-advocate-steward": ("leader",
+                                      "Advocacy and stewardship has no preset yet — "
+                                      "'leader' is the closest."),
+    "wellness-manager": ("leader",
+                         "Wellness has no preset yet — 'leader' is the closest."),
+    "wellness-coach-advocate": ("entrepreneur",
+                                "Coaching has no preset yet — 'entrepreneur' is the "
+                                "closest practice-building one."),
+    "family-caregiver": ("bedside",
+                         "Family caregiving has no preset yet — 'bedside' is the closest "
+                         "care-giving one."),
+}
+
+
+def primary_constellation_role(soul: dict) -> str | None:
+    """The role_id the nurse marked primary, if this is a 2.x constellation export."""
+    constellation = soul.get("role_constellation")
+    if not isinstance(constellation, dict):
+        return None
+    primary = constellation.get("primary")
+    if not isinstance(primary, list):
+        return None
+    for entry in primary:
+        if isinstance(entry, dict) and isinstance(entry.get("role_id"), str):
+            role_id = entry["role_id"].strip()
+            if role_id:
+                return role_id
+    return None
+
+
+def map_role(soul: dict) -> tuple[str, str | None, str, str]:
+    """
+    (preset_id, caveat, source_field, source_value).
+
+    Prefers the constellation's primary role; falls back to the legacy
+    identity.role for 1.x files, for a constellation this map has not caught up
+    with, and for the quiz's own local-role-* custom entries.
+    """
+    legacy_role = str(soul.get("identity", {}).get("role", ""))
+    legacy_preset, legacy_caveat = ROLE_MAP.get(legacy_role, ("bedside", "unknown quiz role"))
+
+    primary = primary_constellation_role(soul)
+    if primary is None:
+        return legacy_preset, legacy_caveat, "identity.role", legacy_role
+
+    mapped = CONSTELLATION_ROLE_MAP.get(primary)
+    if mapped is None:
+        caveat = (f"primary role {primary!r} has no preset mapping yet — fell back to "
+                  f"identity.role {legacy_role!r} → {legacy_preset!r}. Re-run with --role "
+                  f"to choose, and please report the role id so the map catches up.")
+        return legacy_preset, caveat, "identity.role (constellation role unmapped)", legacy_role
+
+    preset, caveat = mapped
+    return preset, caveat, "role_constellation.primary[0].role_id", primary
+
+SPHERE_TO_DOMAIN = {
+    "personal": ["health", "family", "finance"],
+    "professional": ["career", "learning"],
+    "community": ["service"],
+    "sidegig": ["business"],
+    "interest": ["creative"],
+}
+
+DOMAIN_LABELS = [
+    ("health", "Health & Energy"), ("family", "Family & Relationships"),
+    ("career", "Career & Practice"), ("learning", "Learning & Mastery"),
+    ("finance", "Finances"), ("creative", "Creativity & Ideas"),
+    ("service", "Service & Community"), ("business", "Business & Ventures"),
+]
+
+sys.path.insert(0, str(HERE))
+from adapters.phi import PHI_PATTERNS  # noqa: E402
+
+
+def fail(msg: str, code: int = 2) -> "NoReturn":       # noqa: F821
+    print(f"\n  \033[31mREFUSED\033[0m  {msg}\n", file=sys.stderr)
+    sys.exit(code)
+
+
+def ok(msg: str) -> None:
+    print(f"  \033[32m✓\033[0m {msg}")
+
+
+def warn(msg: str) -> None:
+    print(f"  \033[33m!\033[0m {msg}")
+
+
+# --------------------------------------------------------------------------
+# A small stdlib validator. Enough for this schema; no dependency to install.
+# --------------------------------------------------------------------------
+
+def validate(data, schema, path="$") -> list[str]:
+    errs: list[str] = []
+    t = schema.get("type")
+    if t == "object":
+        if not isinstance(data, dict):
+            return [f"{path}: expected object"]
+        for key in schema.get("required", []):
+            if key not in data:
+                errs.append(f"{path}.{key}: required")
+        for key, sub in (schema.get("properties") or {}).items():
+            if key in data:
+                errs += validate(data[key], sub, f"{path}.{key}")
+        extra = schema.get("additionalProperties")
+        if isinstance(extra, dict):
+            known = set(schema.get("properties") or {})
+            for key, val in data.items():
+                if key not in known:
+                    errs += validate(val, extra, f"{path}.{key}")
+    elif t == "array":
+        if not isinstance(data, list):
+            return [f"{path}: expected array"]
+        if "items" in schema:
+            for i, item in enumerate(data):
+                errs += validate(item, schema["items"], f"{path}[{i}]")
+    elif t == "string":
+        if not isinstance(data, str):
+            errs.append(f"{path}: expected string")
+        elif schema.get("pattern") and not re.match(schema["pattern"], data):
+            errs.append(f"{path}: does not match {schema['pattern']}")
+    if "enum" in schema and data not in schema["enum"]:
+        errs.append(f"{path}: {data!r} not one of {schema['enum']}")
+    if "const" in schema:
+        const = schema["const"]
+        # `1 != True` is False in Python, so a boundary written as 1 satisfied
+        # "const": true and the schema error the nurse should have seen never
+        # fired. (The boundary re-check below still refused the file, so the
+        # refusal was right and the reason was wrong.)
+        if data != const or isinstance(data, bool) != isinstance(const, bool):
+            errs.append(f"{path}: must be {const!r}, found {data!r}")
+    return errs
+
+
+def walk_strings(node, trail="$"):
+    if isinstance(node, str):
+        yield trail, node
+    elif isinstance(node, dict):
+        for k, v in node.items():
+            yield from walk_strings(v, f"{trail}.{k}")
+    elif isinstance(node, list):
+        for i, v in enumerate(node):
+            yield from walk_strings(v, f"{trail}[{i}]")
+
+
+# --------------------------------------------------------------------------
+# Content generation — honest about what a soul file can and cannot say
+# --------------------------------------------------------------------------
+
+def build_content(soul: dict, role_id: str) -> dict:
+    ident = soul.get("identity", {})
+    name = ident.get("name") or "you"
+    label = ident.get("role_label") or role_id
+    spheres = soul.get("spheres", [])
+
+    active_domains = {d for s in spheres for d in SPHERE_TO_DOMAIN.get(s, [])}
+
+    domains = {}
+    for did, _label in DOMAIN_LABELS:
+        active = did in active_domains
+        domains[did] = {
+            "share": None,
+            "measured": False,
+            "state": "steady" if active else "resting",
+            "dir": "flat",
+            "signal": ("Not measured yet — attention share needs a few weeks of "
+                       "your own calendar and honored commitments."
+                       if active else
+                       "Not one of the spheres you chose. Nothing here is neglected; "
+                       "it simply is not yours to tend right now."),
+            "detail": ("This domain is in scope because you chose the matching sphere "
+                       "in the SOUL Quiz. <b>The number will appear once there is "
+                       "something real to count</b> — it will not be estimated."
+                       if active else
+                       "<b>Out of scope by your own choice.</b> Add the sphere in the "
+                       "quiz and re-import if that changes."),
+        }
+
+    return {
+        "role_id": role_id,
+        "sample": False,
+        "measured": False,
+        "source": {
+            "generator": soul.get("generator", "unknown"),
+            "generated_at": soul.get("generated_at"),
+            "imported_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "schema_version": soul.get("schema_version"),
+        },
+        "label": label,
+        "mission": ident.get("one_liner") or "",
+        "sub": f"{name} · {label}" + (f" · {ident['always_remember']}"
+                                      if ident.get("always_remember") else ""),
+        "values": soul.get("values", []),
+        "season": "",
+        "seasonBody": "",
+        "seasonMeta": "",
+        "actions": [],
+        "domains": domains,
+        "momentum": {
+            "hero": None, "unit": "hours",
+            "label": "Nothing measured yet. This fills in from your own logged times, "
+                     "not from an estimate we made up.",
+            "note": "", "kpis": [], "weekly": [], "caption": "", "evidence": [],
+        },
+        "license": {
+            "days": None, "gates": None,
+            "currency": [], "reputation": [], "risks": [],
+            "scopeNote": "",
+        },
+        "signals": [],
+        "opps": [],
+        "agents": [],
+        "boundaries": soul.get("boundaries", {}),
+        "voice": soul.get("voice", {}),
+        "needs": [
+            "season — set the chapter you are in; nothing else can be sequenced without it",
+            "credentials — add what could lapse, so License & standing has rows to keep current",
+            "attention — a few weeks of collector data before any domain share is honest",
+            "agents — start Florence, and the agent team fills from the activity log",
+        ],
+    }
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Import naio-soul.json into Mission Control")
+    ap.add_argument("soul_file")
+    ap.add_argument("--apply", action="store_true",
+                    help="write the files; without it this is a dry run")
+    ap.add_argument("--role", help="override the mapped role_id")
+    args = ap.parse_args()
+
+    print("\nnaio-soul-import\n")
+
+    path = Path(args.soul_file).expanduser()
+    if not path.is_file():
+        fail(f"no such file: {path}")
+    try:
+        soul = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        fail(f"{path.name} is not valid JSON — {exc}")
+
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    errs = validate(soul, schema)
+    if errs:
+        for e in errs[:12]:
+            print(f"    {e}", file=sys.stderr)
+        fail(f"{path.name} does not match naio-soul.schema.json ({len(errs)} problem(s))")
+    ok(f"{path.name} matches schema {soul.get('schema_version')}")
+
+    # -- the two refusals, before anything is read for content ---------------
+    b = soul.get("boundaries", {})
+    if b.get("no_phi_confirmed") is not True or b.get("no_clinical_decisions_confirmed") is not True:
+        fail("this soul file does not confirm both hard boundaries (no PHI, no "
+             "patient-specific clinical reasoning). The quiz will not export one that "
+             "does not. Re-take the Core SOUL step rather than editing the file.")
+    ok("both hard boundaries confirmed in the file")
+
+    hits = []
+    for trail, text in walk_strings(soul):
+        for pattern, kind in PHI_PATTERNS:
+            if re.search(pattern, text, re.IGNORECASE):
+                hits.append((trail, kind))
+    if hits:
+        for trail, kind in hits[:8]:
+            print(f"    {trail}: {kind}", file=sys.stderr)
+        fail(f"PHI-shaped content found in {len(hits)} field(s). Nothing was written. "
+             f"Remove it at the source — this file is meant to contain none.")
+    ok("no PHI-shaped content anywhere in the file")
+
+    # -- role mapping --------------------------------------------------------
+    quiz_role = soul["identity"]["role"]
+    mapped, caveat, role_source, source_value = map_role(soul)
+    role_id = args.role or mapped
+    preset = ROLES_DIR / f"{role_id}.json"
+    if not preset.is_file():
+        fail(f"no preset for role {role_id!r}. Available: "
+             f"{', '.join(sorted(p.stem for p in ROLES_DIR.glob('*.json')))}")
+    ok(f"quiz role {source_value!r} (from {role_source}) → preset {role_id!r}")
+    if role_source.startswith("role_constellation") and quiz_role != source_value:
+        ok(f"read the primary constellation role, not identity.role {quiz_role!r} — that "
+           f"field is the legacy value the 2.x quiz collapses every role to")
+    if caveat and not args.role:
+        warn(caveat)
+
+    # -- tier ceilings go to governance, never to a preset -------------------
+    ceilings = soul.get("tier_ceilings") or {}
+    if ceilings:
+        ok(f"tier ceilings found for {len(ceilings)} sphere(s) — routing to governance, "
+           f"NOT into the preset (Rail 3)")
+
+    content = build_content(soul, role_id)
+    unmeasured = sum(1 for d in content["domains"].values() if not d["measured"])
+
+    print()
+    ok(f"content built for {role_id}: mission {'set' if content['mission'] else 'empty'}, "
+       f"{len(content['values'])} values, {len(soul.get('spheres', []))} spheres")
+    warn(f"{unmeasured} of 8 domains have no measured share yet — they will render as "
+         f"'not measured', never as a number we invented")
+    for need in content["needs"]:
+        print(f"      still needed: {need}")
+
+    if not args.apply:
+        print(f"\n  Dry run. Nothing written. Re-run with --apply to write:\n"
+              f"      content/{role_id}.json\n"
+              f"      governance/tier-ceilings.json\n"
+              f"      governance/soul-import-record.json\n")
+        return 0
+
+    CONTENT_DIR.mkdir(exist_ok=True)
+    GOV_DIR.mkdir(exist_ok=True)
+    (CONTENT_DIR / f"{role_id}.json").write_text(
+        json.dumps(content, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    (GOV_DIR / "tier-ceilings.json").write_text(json.dumps({
+        "_note": "Your own logged autonomy decision, per sphere, from the SOUL Quiz. "
+                 "This lives here and never in a role preset — a preset carrying "
+                 "'tier_ceilings' is rejected by the loader (Rail 3). Changing a "
+                 "ceiling is a decision you make and log, not a setting a preset ships.",
+        "source": "naio-soul.json",
+        "imported_at": content["source"]["imported_at"],
+        "ceilings": ceilings,
+    }, indent=2) + "\n", encoding="utf-8")
+    (GOV_DIR / "soul-import-record.json").write_text(json.dumps({
+        "imported_at": content["source"]["imported_at"],
+        "source_file": path.name,
+        "schema_version": soul.get("schema_version"),
+        "generator": soul.get("generator"),
+        "quiz_role": quiz_role,
+        "constellation_role": primary_constellation_role(soul),
+        "role_source": role_source,
+        "mapped_role": role_id,
+        "role_mapping_caveat": caveat,
+        "boundaries_confirmed": True,
+        "phi_scan": "clean",
+        "domains_measured": 8 - unmeasured,
+        "still_needed": content["needs"],
+    }, indent=2) + "\n", encoding="utf-8")
+
+    print()
+    ok(f"wrote content/{role_id}.json — the sample banner is now gone for this role")
+    ok("wrote governance/tier-ceilings.json")
+    ok("wrote governance/soul-import-record.json")
+    print("\n  Restart Mission Control (or just reload) to see it.")
+    print("  Agents propose. Humans judge. Nurses steward.\n")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,314 @@
+{
+  "label": "Nurse manager / Leader",
+  "values": [
+    "The unit before the metric",
+    "Say no in public",
+    "Nobody finds out from a rumor",
+    "Stay when it is hard"
+  ],
+  "mission": "Run a unit people want to stay on — and be the one who brings AI in with governance, instead of letting it arrive without.",
+  "sub": "Ken Adeyemi, MSN, RN, NEA-BC · manager, 46-bed cardiac step-down · 62 direct reports · four vacancies open.",
+  "season": "Retention year",
+  "seasonBody": "Budget and staffing are the loud things. Retention is the one that quietly decides both, so you made it the through-line and stopped chasing the noise.",
+  "seasonMeta": "Q3 · 62 direct reports · 4 vacancies · turnover 14.2% and falling · review 30 September",
+  "actions": [
+    {
+      "domain": "Service & Community",
+      "title": "Finish the four stay interviews you scheduled",
+      "why": "Three of the four are your highest flight risks by tenure and shift pattern. You have moved them twice, and both times the reason was something less consequential.",
+      "cost": "25 minutes each · your notes, not a form",
+      "cta": "Open the first"
+    },
+    {
+      "domain": "Career & Practice",
+      "title": "Read the AI-policy draft before Thursday",
+      "why": "Your own council votes on it, and you are the only person in the room running a governed system already. An abstention here is a decision.",
+      "cost": "20 minutes · Scholar has it summarized",
+      "cta": "Open the summary"
+    },
+    {
+      "domain": "Health & Energy",
+      "title": "Take the two days you have banked",
+      "why": "You are at 31 accrued days and the policy caps at 30 next month. You will lose them by arithmetic, not by choice.",
+      "cost": "5 minutes to request",
+      "cta": "Block the days"
+    }
+  ],
+  "domains": {
+    "health": {
+      "share": 7,
+      "state": "attention",
+      "dir": "down",
+      "signal": "31 days accrued against a 30-day cap. Losing time by arithmetic.",
+      "detail": "You are the only person on this unit whose time off nobody else is watching. <b>The cap does not care that the unit is short</b> — it will take the days back in September."
+    },
+    "family": {
+      "share": 16,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Friday dinners held nine of eleven weeks.",
+      "detail": "Two misses, both during the vacancy push. <b>Nine out of eleven under those conditions is holding, not slipping.</b>"
+    },
+    "career": {
+      "share": 31,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Turnover 14.2% and falling. Two of four vacancies filled this quarter.",
+      "detail": "The season’s actual scoreboard. <b>Turnover has fallen every month since you made retention the through-line</b> — that is causation you can defend."
+    },
+    "learning": {
+      "share": 9,
+      "state": "steady",
+      "dir": "up",
+      "signal": "NEA-BC renewal hours 41 of 75. Governance reading current.",
+      "detail": "On pace, with the harder half still ahead. <b>Nothing dated is at risk this cycle.</b>"
+    },
+    "finance": {
+      "share": 8,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Unit budget variance −1.2%. Nothing personal outstanding.",
+      "detail": "The unit’s numbers are not in this system and never will be. <b>This line is your own money only</b>, and it is clean."
+    },
+    "creative": {
+      "share": 6,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Three process drafts written. One adopted by a peer unit.",
+      "detail": "Your assignment-fairness draft is now running on another floor. <b>That is influence without a title change.</b>"
+    },
+    "service": {
+      "share": 18,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Stay interviews, council seat, two formal mentees.",
+      "detail": "The highest-leverage domain in your season and it is fully tended. <b>Stay interviews are the intervention with the best evidence behind it</b>, and you are actually doing them."
+    },
+    "business": {
+      "share": 5,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Speaking and consulting paused until the vacancies close.",
+      "detail": "Logged 12 June with an end date. <b>It will not compete for attention until the fourth vacancy is filled.</b>"
+    }
+  },
+  "momentum": {
+    "hero": "38",
+    "unit": "hours",
+    "label": "returned to you this quarter — schedules, meeting prep, policy summaries, and the drafts you no longer start from nothing.",
+    "note": "Estimated from your own logged times. Nothing here is read from a staffing system, and nothing is reported to one.",
+    "kpis": [
+      [
+        "Stay interviews done",
+        "14",
+        "/18",
+        "+6 vs Q2"
+      ],
+      [
+        "Commitments honored",
+        "58",
+        "/64",
+        "+9 vs Q2"
+      ],
+      [
+        "Policies drafted",
+        "5",
+        "",
+        "2 adopted"
+      ]
+    ],
+    "weekly": [
+      5,
+      5,
+      6,
+      7,
+      7,
+      8,
+      8,
+      9,
+      10,
+      10,
+      11,
+      12
+    ],
+    "caption": "meeting prep stopped eating Sundays in week 6",
+    "evidence": [
+      [
+        4,
+        7,
+        3
+      ],
+      [
+        5,
+        8,
+        4
+      ],
+      [
+        5,
+        9,
+        4
+      ],
+      [
+        6,
+        10,
+        6
+      ],
+      [
+        7,
+        11,
+        6
+      ],
+      [
+        8,
+        12,
+        7
+      ]
+    ]
+  },
+  "license": {
+    "days": 73,
+    "gates": 52,
+    "currency": [
+      {
+        "name": "RN license",
+        "meta": "Renews 28 February 2028 · 30 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "NEA-BC",
+        "meta": "Renews 1 July 2027 · 41 of 75 hours logged",
+        "state": "flourishing"
+      },
+      {
+        "name": "BLS",
+        "meta": "Renews 19 November 2026 · 100 days out",
+        "state": "steady"
+      },
+      {
+        "name": "Manager training",
+        "meta": "Annual compliance module · due 15 September",
+        "state": "attention"
+      },
+      {
+        "name": "State CE",
+        "meta": "22 of 30 hours · cycle closes February 2027",
+        "state": "steady"
+      }
+    ],
+    "reputation": [
+      {
+        "name": "Published",
+        "meta": "3 pieces carry your name · 3 reviewed by you · 0 auto-sent",
+        "state": "flourishing"
+      },
+      {
+        "name": "Sent to staff",
+        "meta": "0 messages to 62 people have left this system unreviewed",
+        "state": "flourishing"
+      },
+      {
+        "name": "Awaiting you",
+        "meta": "2 drafts pending · one is a unit-wide note, so read it twice",
+        "state": "attention"
+      }
+    ],
+    "risks": [
+      {
+        "what": "A performance conversation typed into a prompt",
+        "guard": "Personnel content is not PHI, and it is not one bit less sensitive. Import refuses on identifier patterns and the nightly lint sweeps what is stored. <b>The system catches it.</b>"
+      },
+      {
+        "what": "An AI draft becoming a personnel decision",
+        "guard": "Nothing produced here is an HR action, an evaluation, or a basis for one. The draft is a draft until a human with authority makes it otherwise. <b>This one is yours to keep.</b>"
+      },
+      {
+        "what": "Reaching for an ungoverned window instead",
+        "guard": "No governed system can reach a chat window it does not run. <b>This one is yours to keep</b> — it is the reason the rails are worth having."
+      }
+    ],
+    "scopeNote": "<b>Nothing in this system is an HR record, and no output of it is a personnel action.</b> You hold authority over 62 people; the agent holds none, and its tier ceiling does not rise because yours did. Positional authority is not a governance credential — if anything it is the argument for keeping the gates exactly where they are."
+  },
+  "signals": [
+    {
+      "state": "attention",
+      "title": "You will lose banked days to the cap in September",
+      "body": "31 accrued against a 30-day ceiling. This is arithmetic, not a judgment about the unit.",
+      "action": "Block two days"
+    },
+    {
+      "state": "attention",
+      "title": "The compliance module is due 15 September",
+      "body": "The only dated item on your standing without a plan. Everything else is current.",
+      "action": "Schedule it"
+    },
+    {
+      "state": "attention",
+      "title": "Three stay interviews have moved twice",
+      "body": "All three are high flight-risk by tenure and shift pattern. Moving them again has a cost you can name.",
+      "action": "Open the first"
+    },
+    {
+      "state": "flourishing",
+      "title": "Turnover has fallen every month this year",
+      "body": "14.2% and still going. Worth logging before the quarter closes and it becomes background.",
+      "action": "Log it in the ledger"
+    }
+  ],
+  "opps": [
+    {
+      "kind": "Governance",
+      "title": "The AI-policy seat is still unclaimed",
+      "body": "You are the only manager in the system running a governed setup. That is the qualification.",
+      "when": "Council votes Thursday"
+    },
+    {
+      "kind": "Pilot",
+      "title": "A non-clinical pilot would fit your unit",
+      "body": "The Institutional Pilot Pack scopes a 30–90 day learning pilot — no patient care, no deployment claim.",
+      "when": "Ready when you are"
+    },
+    {
+      "kind": "Relationship",
+      "title": "The peer unit adopted your fairness draft",
+      "body": "Their manager asked to co-write the next version. Your notes say you meant to reply.",
+      "when": "Four weeks cold"
+    },
+    {
+      "kind": "Publication",
+      "title": "Your retention numbers are a case study",
+      "body": "Twelve months of falling turnover with a named intervention is publishable as written.",
+      "when": "Abstracts open in January"
+    }
+  ],
+  "agents": [
+    {
+      "initials": "FL",
+      "name": "Florence",
+      "role": "Generalist · your preceptor",
+      "tier": "Green",
+      "tierCls": "tier-green",
+      "scope": "All spheres, read-only outside Health. Drafts freely; sends nothing.",
+      "await": null
+    },
+    {
+      "initials": "SC",
+      "name": "Scholar",
+      "role": "Policy & evidence",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Learning and Career spheres. Reads public policy and literature; never personnel files.",
+      "await": "Wants to add the AI-policy summary"
+    },
+    {
+      "initials": "SB",
+      "name": "Scribe",
+      "role": "Writing & briefs",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Creativity sphere. No staffing system, no roster, no outbound send.",
+      "await": "2 drafts pending — one goes to 62 people"
+    }
+  ],
+  "sample": true,
+  "role_id": "leader"
+}

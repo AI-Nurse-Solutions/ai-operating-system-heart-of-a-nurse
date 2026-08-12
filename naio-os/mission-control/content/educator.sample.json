@@ -1,0 +1,314 @@
+{
+  "label": "Educator / Faculty",
+  "values": [
+    "Teach the why",
+    "Nothing that dies with me",
+    "Students are colleagues early",
+    "Say the hard thing kindly"
+  ],
+  "mission": "Build the orientation I wish I had been given — and make it outlive my assignment.",
+  "sub": "Joanne Whitfield, MSN, RN, CNE · nursing faculty · two clinical groups · nineteen years at the bedside before this.",
+  "season": "Curriculum rebuild",
+  "seasonBody": "You are converting nineteen years of instinct into things other people can run. Everything you write this term outlives your contract — that is the point of the term.",
+  "seasonMeta": "Week 9 of 16 · cohort week 3 of 6 · two clinical groups · curriculum review 4 December",
+  "actions": [
+    {
+      "domain": "Service & Community",
+      "title": "Close the loop on Tuesday’s near-miss",
+      "why": "You logged it as a lesson but never debriefed it with the student. The debrief is where learning lands, and it is the one you keep deferring.",
+      "cost": "15 minutes · no PHI in the note, as always",
+      "cta": "Open the debrief guide"
+    },
+    {
+      "domain": "Creativity & Ideas",
+      "title": "Build the handoff-script module you keep re-noting",
+      "why": "The same idea has surfaced in your capture inbox four times since May. That is the system telling you it wants to exist.",
+      "cost": "25 minutes · Florence drafts, you correct",
+      "cta": "Draft the module"
+    },
+    {
+      "domain": "Career & Practice",
+      "title": "Prep your two minutes for faculty senate",
+      "why": "The AI-in-coursework policy is on Thursday’s agenda and you are the only person in the room who has actually used one under governance.",
+      "cost": "8 minutes · waits at a human gate",
+      "cta": "Review the brief"
+    }
+  ],
+  "domains": {
+    "health": {
+      "share": 10,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Walks held four mornings a week since August.",
+      "detail": "The most boring line on this screen and the reason the rest of it works. <b>Nothing to fix.</b>"
+    },
+    "family": {
+      "share": 18,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Grading moved off Sunday. Nine weeks and it has held.",
+      "detail": "You moved grading to Thursday evenings in July to get Sundays back. <b>It worked, and it is the change most worth protecting.</b>"
+    },
+    "career": {
+      "share": 22,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Faculty senate seat active. Two clinical groups, no coverage gaps.",
+      "detail": "Steady is the correct reading in a rebuild term. <b>Your credential currency is held separately, above</b> — it is not a share of your week."
+    },
+    "learning": {
+      "share": 12,
+      "state": "steady",
+      "dir": "up",
+      "signal": "CNE renewal hours 34 of 50. Two conference sessions logged.",
+      "detail": "On pace without effort, which is where you want a renewal cycle to sit. <b>Nothing dated is at risk here.</b>"
+    },
+    "finance": {
+      "share": 7,
+      "state": "steady",
+      "dir": "flat",
+      "signal": "Conference travel reimbursed. Nothing outstanding.",
+      "detail": "Clean. <b>Nothing here is waiting on you</b> — filing the same week is why."
+    },
+    "creative": {
+      "share": 14,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Six modules drafted this term. Two now run without you in the room.",
+      "detail": "This is the domain where your season actually lives. <b>Two modules taught by someone else is the definition of outliving the assignment.</b>"
+    },
+    "service": {
+      "share": 15,
+      "state": "flourishing",
+      "dir": "up",
+      "signal": "Two clinical groups, weekly office hours, three mentees.",
+      "detail": "Your office hours have not been cancelled once this term. <b>Students notice that far more than the syllabus.</b>"
+    },
+    "business": {
+      "share": 2,
+      "state": "resting",
+      "dir": "down",
+      "signal": "Consulting paused until the curriculum review clears in December.",
+      "detail": "Logged with an end date on 12 June. <b>It will not be surfaced as a signal until 4 December</b>, so it stops competing."
+    }
+  },
+  "momentum": {
+    "hero": "27",
+    "unit": "hours",
+    "label": "returned to you this term by drafting, grading scaffolds, and module scaffolding you now reuse.",
+    "note": "Estimated from your own logged times before and after each skill file. Conservative by design — teaching time is never counted as saved.",
+    "kpis": [
+      [
+        "Office hours held",
+        "12",
+        "/12",
+        "never cancelled"
+      ],
+      [
+        "Commitments honored",
+        "44",
+        "/49",
+        "+5 vs July"
+      ],
+      [
+        "Modules that run without you",
+        "2",
+        "",
+        "+1 this term"
+      ]
+    ],
+    "weekly": [
+      4,
+      4,
+      5,
+      6,
+      6,
+      7,
+      7,
+      8,
+      8,
+      9,
+      9,
+      10
+    ],
+    "caption": "the modules started compounding in week 6",
+    "evidence": [
+      [
+        5,
+        6,
+        3
+      ],
+      [
+        6,
+        6,
+        4
+      ],
+      [
+        6,
+        7,
+        5
+      ],
+      [
+        7,
+        8,
+        5
+      ],
+      [
+        8,
+        8,
+        7
+      ],
+      [
+        9,
+        9,
+        8
+      ]
+    ]
+  },
+  "license": {
+    "days": 88,
+    "gates": 36,
+    "currency": [
+      {
+        "name": "RN license",
+        "meta": "Renews 31 January 2028 · 29 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "CNE",
+        "meta": "Renews 1 October 2028 · 34 of 50 hours logged",
+        "state": "flourishing"
+      },
+      {
+        "name": "Faculty appointment",
+        "meta": "Reviewed annually · next review 4 December 2026",
+        "state": "steady"
+      },
+      {
+        "name": "BLS",
+        "meta": "Renews 3 May 2027 · 9 months out",
+        "state": "flourishing"
+      },
+      {
+        "name": "State CE",
+        "meta": "26 of 30 hours · cycle closes March 2027",
+        "state": "flourishing"
+      }
+    ],
+    "reputation": [
+      {
+        "name": "Published",
+        "meta": "11 pieces carry your name · 11 reviewed by you · 0 auto-sent",
+        "state": "flourishing"
+      },
+      {
+        "name": "Course materials",
+        "meta": "6 modules attributed to you · 2 now taught by others",
+        "state": "flourishing"
+      },
+      {
+        "name": "Awaiting you",
+        "meta": "1 conference abstract drafted, unsent · deadline 30 August",
+        "state": "attention"
+      }
+    ],
+    "risks": [
+      {
+        "what": "A student’s identifiable performance data",
+        "guard": "Names, grades, remediation notes and evaluations are education records — FERPA-governed, not HIPAA, and no less protected. Import refuses on identifier patterns. <b>The system catches it.</b>"
+      },
+      {
+        "what": "A clinical story carried out of a rotation",
+        "guard": "Refused at every tier, in every sphere. A teaching anecdote is still a patient. <b>The system catches it.</b>"
+      },
+      {
+        "what": "Reaching for an ungoverned window instead",
+        "guard": "No governed system can reach a chat window it does not run. <b>This one is yours to keep</b> — it is the reason the rails are worth having."
+      }
+    ],
+    "scopeNote": "<b>Two privacy regimes meet in your role, not one.</b> Patient information is HIPAA’s; student records are FERPA’s. This system refuses both by the same mechanism and makes no distinction between them — because from where you sit, neither belongs here."
+  },
+  "signals": [
+    {
+      "state": "attention",
+      "title": "A conference abstract is drafted and unsent",
+      "body": "Deadline 30 August. It has been ready for nine days and needs your read, not more work.",
+      "action": "Review and send"
+    },
+    {
+      "state": "attention",
+      "title": "Tuesday’s near-miss has no debrief attached",
+      "body": "You logged the lesson. The student has not heard it yet, and that is where it becomes teaching.",
+      "action": "Open the debrief guide"
+    },
+    {
+      "state": "flourishing",
+      "title": "Two modules now run without you in the room",
+      "body": "That is the season’s stated goal, already met at week nine. Worth noticing before you set the next one.",
+      "action": "Log it in the ledger"
+    },
+    {
+      "state": "steady",
+      "title": "Nine library pages predate the curriculum change",
+      "body": "Stale teaching material is worse than none — it is confidently out of date.",
+      "action": "Run the hygiene pass"
+    }
+  ],
+  "opps": [
+    {
+      "kind": "Publication",
+      "title": "Your handoff module is a paper",
+      "body": "Six months of iteration and two independent instructors already running it. That is a methods section.",
+      "when": "Abstract deadlines cluster in January"
+    },
+    {
+      "kind": "Cohort",
+      "title": "A second cohort has asked for your slot",
+      "body": "Same six-week format, different program. Nothing new to build.",
+      "when": "Spring term"
+    },
+    {
+      "kind": "Relationship",
+      "title": "Your former preceptee is now charge",
+      "body": "She asked about co-teaching in June. Your notes say you meant to reply.",
+      "when": "Ten weeks cold — still warm"
+    },
+    {
+      "kind": "Contribution",
+      "title": "Two modules would sanitize in one pass",
+      "body": "No student data, no patient stories, no employer content. Clean as written.",
+      "when": "NIN contribution flow is open"
+    }
+  ],
+  "agents": [
+    {
+      "initials": "FL",
+      "name": "Florence",
+      "role": "Generalist · your preceptor",
+      "tier": "Green",
+      "tierCls": "tier-green",
+      "scope": "All spheres, read-only outside Health. Drafts freely; sends nothing.",
+      "await": null
+    },
+    {
+      "initials": "SC",
+      "name": "Scholar",
+      "role": "Curriculum & evidence",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Learning sphere. Reads your module drafts and the public literature; never student records.",
+      "await": null
+    },
+    {
+      "initials": "SB",
+      "name": "Scribe",
+      "role": "Writing & abstracts",
+      "tier": "Yellow",
+      "tierCls": "tier-yellow",
+      "scope": "Creativity sphere. No calendar, no gradebook, no outbound send.",
+      "await": "Drafted the conference abstract — unsent"
+    }
+  ],
+  "sample": true,
+  "role_id": "educator"
+}

@@ -120,12 +120,17 @@ Deno.serve(async (req) => {
       .limit(12),
   ]);
 
+  // Scoped to the conversation's own workspace. The database refuses a
+  // cross-workspace related_id (conversations_guard_relation), and this query
+  // refuses to read one anyway: it runs with the admin's authority, so a row
+  // predating that constraint would otherwise reach the prompt.
   let relatedAction = null;
   if (conversation.related_id) {
     const { data } = await supabase
       .from("action_items")
       .select("title, instructions, category, status, due_date")
       .eq("id", conversation.related_id)
+      .eq("client_id", conversation.client_id)
       .maybeSingle();
     relatedAction = data;
   }

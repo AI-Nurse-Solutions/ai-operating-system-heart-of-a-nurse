@@ -210,6 +210,38 @@ class RowLevelSecurityTests(unittest.TestCase):
         self.assertIn("select p.id, p.name", directory)
         self.assertNotIn("email", directory)
 
+    def test_related_action_cannot_cross_workspaces(self):
+        # The insert policy checks who is opening the thread and for which
+        # client, never that related_id belongs to that client. A database
+        # guard has to, or tenant isolation rests on UUIDs being unguessable.
+        self.assertIn("portal_guard_conversation_relation", migration())
+        self.assertIn("Related action must belong to the same workspace", migration())
+        guard = migration().split(
+            "create or replace function public.portal_guard_conversation_relation", 1
+        )[1].split("$$;", 1)[0]
+        self.assertRegex(guard, r"a\.id = new\.related_id and a\.client_id = new\.client_id")
+        # Insert alone is not enough — client_id and related_id are both
+        # rewritable, so the trigger has to cover updates to either.
+        trigger = migration().split("create trigger conversations_guard_relation", 1)[1].split(";", 1)[0]
+        self.assertIn("before insert or update of related_id, client_id", trigger)
+        # And the drafting function, which reads with the admin's authority,
+        # scopes the lookup itself for rows predating the constraint.
+        lookup = edge_fn().split('.from("action_items")', 1)[1].split("maybeSingle", 1)[0]
+        self.assertIn("client_id", lookup, "draft-with-ai reads a related action unscoped")
+
+    def test_client_follow_up_reopens_an_answered_thread(self):
+        # Clients cannot update conversations under RLS, so the transition has
+        # to be server-side; without it the reply never reaches the admin's
+        # open-question count, which excludes 'answered'.
+        touch = migration().split(
+            "create or replace function public.portal_touch_conversation", 1
+        )[1].split("$$;", 1)[0]
+        self.assertIn("not public.portal_is_admin()", touch)
+        self.assertRegex(touch, r"set status = 'in-review'\s+where id = new\.conversation_id and status = 'answered'")
+        # Demo mode already did this; the two stores must agree, or the
+        # sandbox reviewers sign off on is not the product they get.
+        self.assertRegex(data(), r"status === 'answered' \? 'in-review'")
+
     def test_schema_holds_no_patient_fields(self):
         # Comments may (and do) talk about the no-PHI rule; the DDL itself
         # must never define patient-shaped columns.

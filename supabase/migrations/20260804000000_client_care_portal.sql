@@ -177,12 +177,22 @@ create trigger actions_touch before update on public.action_items
 create trigger conversations_touch before update on public.conversations
   for each row execute function public.portal_touch_updated_at();
 
--- A new message bumps its conversation (SECURITY DEFINER: clients cannot
--- update conversations directly, and should not need to).
+-- A new message bumps its conversation, and a client's follow-up reopens an
+-- already-answered thread. Both need SECURITY DEFINER: clients cannot update
+-- conversations directly, and the reopen has to happen server-side for that
+-- reason. Without it the follow-up is effectively lost — openConversations()
+-- and client_overview both exclude 'answered', so a question asked after an
+-- answer would never appear in the admin's queue or open-question count.
+-- The second statement is separate, and matches on status, so the activity
+-- log records a reopen only when one actually happened.
 create or replace function public.portal_touch_conversation()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
   update public.conversations set updated_at = now() where id = new.conversation_id;
+  if not public.portal_is_admin() then
+    update public.conversations set status = 'in-review'
+      where id = new.conversation_id and status = 'answered';
+  end if;
   return new;
 end;
 $$;
@@ -215,6 +225,31 @@ $$;
 
 create trigger actions_guard_client_update before update on public.action_items
   for each row execute function public.portal_guard_client_action_update();
+
+-- A conversation's related action must live in the same workspace. The insert
+-- policy checks only who is opening the thread and for which client, so
+-- without this a client could name another workspace's action UUID — and
+-- draft-with-ai, which reads with the admin's authority, would then fetch that
+-- action and put its title and instructions into the prompt. Tenant isolation
+-- must not rest on UUIDs being unguessable. SECURITY DEFINER so the check sees
+-- the whole table and answers "different workspace" rather than "not found".
+create or replace function public.portal_guard_conversation_relation()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if new.related_id is not null
+     and not exists (
+       select 1 from public.action_items a
+       where a.id = new.related_id and a.client_id = new.client_id
+     ) then
+    raise exception 'Related action must belong to the same workspace';
+  end if;
+  return new;
+end;
+$$;
+
+create trigger conversations_guard_relation
+  before insert or update of related_id, client_id on public.conversations
+  for each row execute function public.portal_guard_conversation_relation();
 
 -- Audit trail: written by triggers only, with server timestamps.
 create or replace function public.portal_log_activity()

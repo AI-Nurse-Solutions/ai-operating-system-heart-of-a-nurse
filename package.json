@@ -2,7 +2,9 @@
   "name": "nurse-ai-os-static-site-tests",
   "private": true,
   "scripts": {
-    "test": "npm run test:switchboard-schema && npm run test:switchboard-browser && npm run test:leader-home-browser && npm run test:lm-studio-bionic-guide-browser && npm run test:soul-quiz-five-door-browser && npm run test:student-nurse-browser && npm run test:nurse-practitioner-browser && npm run test:staff-nurse-browser && npm run test:medical-resident-browser && npm run test:burnout-signal-browser && python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "test": "npm run test:switchboard-schema && npm run test:portal-model && npm run test:switchboard-browser && npm run test:portal-browser && npm run test:leader-home-browser && npm run test:lm-studio-bionic-guide-browser && npm run test:soul-quiz-five-door-browser && npm run test:student-nurse-browser && npm run test:nurse-practitioner-browser && npm run test:staff-nurse-browser && npm run test:medical-resident-browser && npm run test:burnout-signal-browser && python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "test:portal-model": "node tests/test_portal_model.mjs",
+    "test:portal-browser": "node tests/test_portal_browser.mjs",
     "test:switchboard-browser": "node tests/test_switchboard_browser.mjs",
     "test:switchboard-schema": "node tests/test_switchboard_schema.mjs",
     "test:leader-home-browser": "node tests/test_leader_home_browser.mjs",

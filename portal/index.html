@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nurse AI OS Client Care Portal</title>
+<meta name="description" content="Private client portal for Nurse AI OS setup progress, maintenance plans, and support conversations. Sign in with a secure email link.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://nurse-ai-os.org/portal/">
+<link rel="icon" type="image/svg+xml" href="../assets/img/favicon-lamp.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<link rel="stylesheet" href="portal.css">
+</head>
+<body class="portal-body">
+<a class="skip-link" href="#portal-main">Skip to portal content</a>
+
+<header class="portal-topbar">
+  <div class="portal-topbar-inner">
+    <a class="brand" href="../index.html"><span class="lamp" aria-hidden="true">🕯️</span> Nurse AI OS <span class="portal-wordmark">Care Portal</span></a>
+    <nav id="portal-nav" class="portal-nav" aria-label="Portal navigation"></nav>
+  </div>
+</header>
+
+<div class="portal-boundary" role="note">
+  <strong>For Nurse AI OS setup, education, maintenance, and improvement support only.</strong>
+  Do not enter patient information or use this portal for urgent clinical or operational matters.
+</div>
+
+<main id="portal-main" class="portal-main" tabindex="-1">
+  <noscript>
+    <div class="portal-card">
+      <h1>JavaScript required</h1>
+      <p>The Client Care Portal is an interactive app and needs JavaScript enabled. Nothing on this page works without it, and no data is loaded until after you sign in.</p>
+    </div>
+  </noscript>
+  <div id="portal-app"></div>
+</main>
+
+<footer class="portal-footer">
+  <div class="portal-footer-inner">
+    <p><strong>No PHI, ever.</strong> This portal is a client-success and system-maintenance tool — not a clinical system, diagnostic tool, or patient-care application.</p>
+    <p>
+      <a href="../privacy.html">Privacy</a> ·
+      <a href="../terms.html">Terms</a> ·
+      <a href="../directive.html">Governance</a> ·
+      <a href="../index.html">nurse-ai-os.org</a>
+    </p>
+  </div>
+</footer>
+
+<script type="module" src="portal.mjs"></script>
+</body>
+</html>

@@ -1015,6 +1015,35 @@ def main() -> int:
             check("a failed signing leaves no stale signature behind",
                   not (stage / "manifest.sig").is_file())
 
+            # The archive's checksum goes into naio-os's SIGNED manifest, so it
+            # has to be a function of the source rather than of the clock. It
+            # was not: plain ZipFile.write() stamps each entry's mtime, and
+            # manifest.json carried a wall-clock built_at, so two builds of one
+            # tree signed two different numbers.
+            zips = []
+            for n in (1, 2):
+                out = keydir / f"repro-{n}.zip"
+                subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
+                                "--skip-tests", "--zip", str(out)],
+                               capture_output=True, text=True, cwd=str(stage),
+                               timeout=180, env={**os.environ,
+                                                 "SOURCE_DATE_EPOCH": "1785024000"})
+                zips.append(hashlib.sha256(out.read_bytes()).hexdigest() if out.is_file() else None)
+            check("two builds of one tree produce a byte-identical archive",
+                  zips[0] is not None and zips[0] == zips[1],
+                  f"{(zips[0] or 'missing')[:16]} vs {(zips[1] or 'missing')[:16]}")
+
+            # ...and the pin is what stops the clock being pinned by accident.
+            drift = subprocess.run([sys.executable, str(stage / "tools" / "release.py"),
+                                    "--skip-tests", "--zip", str(keydir / "drift.zip")],
+                                   capture_output=True, text=True, cwd=str(stage),
+                                   timeout=180, env={**os.environ,
+                                                     "SOURCE_DATE_EPOCH": "not-a-number"})
+            check("a malformed SOURCE_DATE_EPOCH is refused, not silently ignored",
+                  drift.returncode != 0
+                  and "SOURCE_DATE_EPOCH" in (drift.stdout + drift.stderr),
+                  (drift.stdout + drift.stderr).strip().replace("\n", " | ")[-160:])
+
             # Restore the real pin so nothing downstream runs against a test key.
             staged_cli.write_text(cli_src, encoding="utf-8")
             shutil.rmtree(stage / "config", ignore_errors=True)

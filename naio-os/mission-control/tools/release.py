@@ -25,10 +25,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
+import tempfile
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -41,6 +44,9 @@ MANIFEST = HERE / "manifest.json"
 SIG_NAME = "manifest.sig"
 SIG_ALGORITHM = "RSA-SHA256"
 KEY_ID = "naio-os-release-key-2026-06"
+# The epoch every published archive is stamped with, shared with
+# tools/build-starter-kit.py so both reproduce the same way.
+FIXED_TIME = (2026, 7, 25, 0, 0, 0)
 PUBLIC_KEY_REL = "../config/naio-os-release-public.pem"
 MANIFEST_SIG = HERE / SIG_NAME
 
@@ -69,6 +75,28 @@ def tracked_files() -> list[Path]:
             continue
         out.append(rel)
     return out
+
+
+def build_time() -> datetime:
+    """
+    When this build says it was built.
+
+    Normally now. But `built_at` lands inside manifest.json, manifest.json lands
+    inside the release archive, and that archive's checksum becomes a claim in a
+    signed document — so a wall clock in there means two builds of identical
+    source produce different digests, and even the key holder cannot rebuild the
+    release to check the number they signed. SOURCE_DATE_EPOCH is the
+    reproducible-builds convention for exactly this; scripts/sign-mission-control.py
+    sets it from the commit being released, so cutting that commit twice gives
+    the same bytes both times.
+    """
+    epoch = os.environ.get("SOURCE_DATE_EPOCH")
+    if epoch:
+        try:
+            return datetime.fromtimestamp(int(epoch), timezone.utc)
+        except (ValueError, OverflowError, OSError):
+            raise SystemExit(f"release: SOURCE_DATE_EPOCH={epoch!r} is not a unix timestamp")
+    return datetime.now(timezone.utc)
 
 
 def sha256(path: Path) -> str:
@@ -131,7 +159,7 @@ def build_manifest(passed: int, failed: int) -> dict:
                     f"{PUBLIC_KEY_REL} -signature {SIG_NAME} manifest.json",
         },
         "version": version(),
-        "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "built_at": build_time().isoformat(timespec="seconds"),
         "self_test": {"passed": passed, "failed": failed},
         "file_count": len(files),
         "files": files,
@@ -238,6 +266,51 @@ def chain_entry() -> dict:
     }
 
 
+def write_reproducible_zip(out: Path, members: list[tuple[str, Path]]) -> str:
+    """
+    Write `members` to `out` as a byte-for-byte reproducible archive, and return
+    its sha256.
+
+    The digest is the point. Once this archive is what `manifest.yaml` covers,
+    its checksum is a claim in a signed document, and that claim should be a
+    function of the source rather than of when someone happened to run a build.
+    A plain `ZipFile.write()` stamps each entry with the file's mtime, so two
+    builds of an identical tree minutes apart produced different archives and
+    therefore different digests — the recorded number was then unreproducible
+    even by the person who recorded it. Fixing the timestamp, permissions,
+    order and compression level removes that noise.
+
+    What this does and does not buy. Cutting the same commit with the same key
+    twice now yields byte-identical archives, so a release can be rebuilt and
+    checked rather than taken on faith. It does not let a stranger rebuild the
+    archive from source alone: a signed archive contains manifest.sig, which
+    only the key holder can produce. A stranger verifies the published archive
+    the stronger way instead — check the enclosed signature against the pinned
+    public key, then every unpacked file against manifest.json.
+
+    Same approach, and the same FIXED_TIME, as tools/build-starter-kit.py — the
+    other artifact in this repository whose checksum is published.
+    """
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(prefix=f".{out.name}.", dir=out.parent)
+    os.close(fd)
+    tmp = Path(tmp_name)
+    try:
+        with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+            for arcname, src in sorted(members, key=lambda m: m[0]):
+                info = zipfile.ZipInfo(arcname, FIXED_TIME)
+                info.create_system = 3
+                info.external_attr = (stat.S_IFREG | 0o644) << 16
+                info.compress_type = zipfile.ZIP_DEFLATED
+                z.writestr(info, src.read_bytes(),
+                           compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+        os.replace(tmp, out)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+    return sha256(out)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Build the manifest and stamp the claims")
     ap.add_argument("--zip", help="also write a zip of the tree to this path")
@@ -316,28 +389,26 @@ def main() -> int:
 
     if args.zip:
         out = Path(args.zip).expanduser().resolve()
-        out.parent.mkdir(parents=True, exist_ok=True)
-        with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
-            z.write(MANIFEST, f"{HERE.name}/manifest.json")
-            if MANIFEST_SIG.is_file():
-                z.write(MANIFEST_SIG, f"{HERE.name}/{SIG_NAME}")
-                # A signature is useless without the key, and this archive is
-                # routinely unpacked outside a naio-os tree where `../config/`
-                # does not exist. Ship the PUBLIC half at the layout the
-                # verifier's standalone candidate looks for. Safe to bundle
-                # only because naio-mc pins the key's fingerprint in code: an
-                # attacker who swaps this file is refused, not believed.
-                key = (HERE / PUBLIC_KEY_REL).resolve()
-                if key.is_file():
-                    z.write(key, f"{HERE.name}/config/{key.name}")
-                    print(f"  ✓ bundled the release public key for standalone "
-                          f"verification")
-                else:
-                    print(f"  ! signed, but {PUBLIC_KEY_REL} is missing — this "
-                          f"zip cannot be verified where it lands")
-            for rel in tracked_files():
-                z.write(HERE / rel, f"{HERE.name}/{rel}")
-        print(f"  ✓ {out} ({out.stat().st_size // 1024} KB)")
+        members: list[tuple[str, Path]] = [(f"{HERE.name}/manifest.json", MANIFEST)]
+        if MANIFEST_SIG.is_file():
+            members.append((f"{HERE.name}/{SIG_NAME}", MANIFEST_SIG))
+            # A signature is useless without the key, and this archive is
+            # routinely unpacked outside a naio-os tree where `../config/`
+            # does not exist. Ship the PUBLIC half at the layout the
+            # verifier's standalone candidate looks for. Safe to bundle
+            # only because naio-mc pins the key's fingerprint in code: an
+            # attacker who swaps this file is refused, not believed.
+            key = (HERE / PUBLIC_KEY_REL).resolve()
+            if key.is_file():
+                members.append((f"{HERE.name}/config/{key.name}", key))
+                print(f"  ✓ bundled the release public key for standalone "
+                      f"verification")
+            else:
+                print(f"  ! signed, but {PUBLIC_KEY_REL} is missing — this "
+                      f"zip cannot be verified where it lands")
+        members.extend((f"{HERE.name}/{rel}", HERE / rel) for rel in tracked_files())
+        digest = write_reproducible_zip(out, members)
+        print(f"  ✓ {out} ({out.stat().st_size // 1024} KB, sha256 {digest[:12]}…)")
 
     print("\n  Agents propose. Humans judge. Nurses steward.\n")
     return 0

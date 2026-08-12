@@ -502,35 +502,56 @@ honest ways are:
    directly. Straightforward, and it reintroduces exactly the churn the two-level
    chain exists to avoid.
 
-Option 1 is the intended one. Until either is done, the chain entry is a
-*signature* improvement and not a *distribution* one, and this section says so
-rather than leaving a key-holder to discover it after cutting a release.
+Option 1 is the intended one, and it is what the signing script below does —
+both entries go in together, because either alone is a half-measure that reads
+as done.
 
-**The procedure.** With the private half of `naio-os-release-key-2026-06`:
-
-```bash
-cd naio-os/mission-control
-python3 tools/release.py --sign /path/to/naio-os-release-private.pem
-```
-
-That runs the self-test, rebuilds `manifest.json`, writes `manifest.sig`, and
-then *verifies its own output* against `config/naio-os-release-public.pem` —
-a key that produces an unverifiable signature fails there, leaving nothing
-behind, rather than shipping. It then prints the entry for the next step.
+**The procedure.** One command, from `naio-os/`:
 
 ```bash
-cd ../..                      # repo root
-# add the printed entry to naio-os/manifest.yaml under `contents:`
-naio-os/scripts/compute-checksums.sh
-openssl dgst -sha256 -sign /path/to/naio-os-release-private.pem \
-  -out naio-os/manifest.sig naio-os/manifest.yaml
-sha256sum naio-os/manifest.yaml | awk '{print $1"  manifest.yaml"}' \
-  > naio-os/manifest.sha256
-# update release.json's manifest.sha256 to match, then:
-python3 naio-os/scripts/verify-release.py
+scripts/sign-mission-control.py --key /path/to/naio-os-release-private.pem
 ```
 
-`python3 tools/release.py --chain-entry` prints the entry on its own at any time.
+It runs Mission Control's self-test, rebuilds `manifest.json`, signs it, builds
+a reproducible `assets/mission-control.zip`, writes all three entries into
+`manifest.yaml` (the nested manifest, the archive, and the signing script
+itself), recomputes the content checksums, refreshes `manifest.sha256` and
+`release.json`'s digest, signs `manifest.yaml`, and runs `verify-release.py`.
+
+Everything happens in a staging copy. The repository is written to only after
+verification passes there, so a run that fails at any step leaves a tree that
+still verifies. That property is the reason this is a script rather than a
+checklist: the steps have an order that is not self-evident —
+`compute-checksums.sh` *rewrites* `manifest.yaml`, so hashing or signing before
+it runs produces a signature for a file that no longer exists, and the mistake
+surfaces days later as a verifier refusing a published release.
+
+**Rehearsing it without the key.** Anyone can run:
+
+```bash
+scripts/sign-mission-control.py --rehearse
+```
+
+which does the identical sequence against a throwaway keypair in a scratch
+copy, verifies the result, and writes nothing. `tests/test_mission_control_signing.py`
+runs it in CI, so a change that would break release day fails on the PR that
+makes it. A rehearsal cannot produce anything shippable even by accident:
+`naio-mc verify` pins the release key's fingerprint, so it reports a
+rehearsal-signed tree as a compromised source rather than a signed one.
+
+`python3 tools/release.py --chain-entry` still prints the nested-manifest entry
+on its own at any time, for inspection.
+
+**Why the archive is reproducible.** Its checksum becomes a claim inside a
+signed document, so it should depend on the source and not on the clock.
+`--zip` writes fixed timestamps, permissions, order and compression level, and
+`built_at` honours `SOURCE_DATE_EPOCH`, which the signing script pins to the
+commit being released. Cutting the same commit with the same key twice yields
+byte-identical archives. It does not let a stranger rebuild the archive from
+source — a signed archive contains `manifest.sig`, which only the key holder
+can produce — so a stranger verifies the published archive the stronger way:
+check the enclosed signature against the pinned public key, then every unpacked
+file against `manifest.json`.
 
 **Why this is not done here.** Editing `manifest.yaml` invalidates `manifest.sig`,
 and `verify-release.py` is fail-closed by design — it refuses a release whose
@@ -539,6 +560,13 @@ manifest without re-signing it would take release verification from passing to
 failing for everyone, and there is no way to re-sign without the key. So the
 mechanism ships and the manifest is left alone. That is the correct trade, not a
 shortcut: a chain you cannot verify is worse than an honest gap you can see.
+
+The same rule runs one level down and is easier to trip over: every file listed
+in `manifest.yaml` has its sha256 recorded there, so editing one — `scripts/self-test.py`
+and `scripts/verify-release.py` included — takes `install.sh --apply` from
+passing to refusing until the manifest is recomputed and re-signed. That is why
+the rehearsal's CI coverage lives in `tests/` at the repository root instead of
+being added to the bundle's own self-test.
 
 **What a nurse sees in the meantime.** `naio-mc verify` reports the build as
 unsigned, in those words, and still passes — the checksums are true and are

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Care Workforce Surge — Doctrine, Strategy, Implementation, Playbook</title>
+<meta name="description" content="Caregiving adds more jobs than any occupation in the economy and loses nearly as many workers as it gains. The binding constraint is not labor supply — it is supervision. A validated projection, doctrine, strategy, implementation plan, and playbook for a Nurse AI OS built as a supervision multiplier." />
+<meta name="author" content="Robert Domondon" />
+<link rel="canonical" href="https://nurse-ai-os.org/care-workforce-surge/" />
+
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Nurse AI OS · NAIO and Nurse Intelligence Network projects" />
+<meta property="og:title" content="The Care Workforce Surge: supervision is the scarce resource" />
+<meta property="og:description" content="9.7 million projected direct-care openings. 39.9 percent of nurses intending to leave within five years. The constraint is not labor — it is supervisory capacity. Doctrine, strategy, implementation plan, and playbook." />
+<meta property="og:url" content="https://nurse-ai-os.org/care-workforce-surge/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="The Care Workforce Surge: supervision is the scarce resource" />
+<meta name="twitter:description" content="A validated projection and a governed design record for a Nurse AI OS built to multiply supervision, not simulate it." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --navy:#142a44; --navy-2:#1d3a5c; --ink:#1b2733; --accent:#2e5a88;
+    --gold:#bd8a2c; --gold-soft:#e7cf94; --bg:#fbfaf6; --panel:#ffffff;
+    --muted:#586675; --line:#e7e2d6; --warn:#8a5514; --warn-bg:#fdf6e7;
+    --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --wrap:1060px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.2;color:var(--navy);letter-spacing:-.01em}
+  h2{font-size:clamp(1.5rem,3.2vw,2.05rem);margin:0 0 .5em}
+  h3{font-size:1.16rem;margin:1.9em 0 .4em}
+  a{color:var(--accent);text-underline-offset:3px}
+  a:focus-visible{outline:3px solid var(--gold-soft);outline-offset:2px;border-radius:4px}
+  .eyebrow{font-weight:600;font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(20,42,68,.97);backdrop-filter:saturate(140%) blur(6px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:58px;flex-wrap:wrap}
+  .topbar a{color:#dce6f1;text-decoration:none;font-size:.88rem}
+  .topbar a:hover{color:#fff}
+  .topbar .brand{color:#fff;font-weight:600;font-size:.95rem}
+  .topbar nav a{margin-left:20px}
+
+  .hero{background:radial-gradient(1100px 460px at 78% -12%, rgba(189,138,44,.20), transparent 60%),linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#eaf1f8;padding:64px 0 56px;border-bottom:3px solid var(--gold)}
+  .hero h1{color:#fff;font-size:clamp(2.15rem,5.4vw,3.5rem);margin:.3em 0 .25em;letter-spacing:-.02em;max-width:20ch}
+  .hero .sub{font-family:var(--serif);font-size:clamp(1.1rem,2.3vw,1.4rem);color:#cfe0f0;max-width:44ch;margin:0}
+  .hero .thesis{max-width:62ch;margin:26px 0 0;font-size:1.08rem;color:#eef4fa;border-left:3px solid var(--gold);padding-left:18px}
+  .hero .meta{margin-top:26px;font-size:.9rem;color:#a9bdd2}
+
+  .status{background:var(--warn-bg);border-bottom:1px solid var(--line);color:var(--warn)}
+  .status .wrap{padding:14px 24px;font-size:.9rem}
+  .status strong{color:#6d420e}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  p{max-width:70ch}
+  ul,ol{max-width:70ch}
+  li{margin:.35em 0}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:26px 0 8px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .stat .n{font-family:var(--serif);font-size:1.85rem;font-weight:700;color:var(--navy);line-height:1.05}
+  .stat .l{font-size:.86rem;color:var(--muted);margin-top:8px}
+  .stat .s{font-size:.74rem;color:#8b96a3;margin-top:8px}
+
+  blockquote{margin:26px 0;padding:20px 24px;background:var(--panel);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;font-family:var(--serif);font-size:1.15rem;color:var(--navy)}
+  blockquote p{margin:0;max-width:60ch}
+
+  .tablewrap{overflow-x:auto;margin:22px 0;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:.92rem}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f4f1e8;font-weight:600;color:var(--navy);font-size:.82rem;letter-spacing:.02em}
+  tr:last-child td{border-bottom:none}
+
+  .verdict{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+  .v-yes{background:#e3efe6;color:#2f6b45}
+  .v-part{background:#faead3;color:#8a5514}
+  .v-no{background:#f8dede;color:#8d2929}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:26px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{margin:0 0 .35em;font-size:1.05rem}
+  .card p{font-size:.93rem;color:var(--muted);margin:0 0 14px}
+  .card a{font-weight:600;font-size:.92rem;text-decoration:none}
+  .card a:hover{text-decoration:underline}
+
+  .ladder{counter-reset:rung;list-style:none;padding:0;margin:22px 0}
+  .ladder li{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:0 12px 12px 0;padding:14px 18px;margin:10px 0;max-width:70ch}
+  .ladder li b{color:var(--navy)}
+  .ladder li:last-child{border-left-color:#a43d3d}
+
+  .refuse{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:22px}
+  .refuse ul{margin:.5em 0 0;padding-left:20px}
+
+  .phases{margin:24px 0;padding:0;list-style:none;counter-reset:phase}
+  .phases li{position:relative;padding:0 0 22px 34px;border-left:2px solid var(--line);margin-left:10px}
+  .phases li:last-child{border-left-color:transparent;padding-bottom:0}
+  .phases li::before{counter-increment:phase;content:counter(phase);position:absolute;left:-15px;top:0;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .phases b{color:var(--navy)}
+  .phases .gate{display:block;font-size:.88rem;color:var(--muted);margin-top:5px}
+
+  footer{background:var(--navy);color:rgba(255,255,255,.72);padding:34px 0;font-size:.88rem}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  footer strong{color:#fff}
+  footer a{color:var(--gold-soft)}
+
+  @media(max-width:640px){
+    body{font-size:16px}
+    .hero{padding:44px 0 40px}
+    .topbar nav a{margin-left:14px;font-size:.82rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <a class="brand" href="../index.html">Nurse AI OS</a>
+  <nav>
+    <a href="#verdict">Verdict</a>
+    <a href="#evidence">Evidence</a>
+    <a href="#doctrine">Doctrine</a>
+    <a href="#plan">Plan</a>
+    <a href="#documents">Documents</a>
+  </nav>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Design record · Version 0.1 · 19 August 2026</div>
+  <h1>The care workforce surge</h1>
+  <p class="sub">Caregiving is adding more jobs than any occupation in the economy — and losing nearly as many workers as it gains.</p>
+  <p class="thesis">The projection said healthcare would face an influx of workers moving into caregiving, and that a Nurse AI OS would be critical infrastructure to upskill and coordinate them. The evidence supports the flow and corrects its shape: what arrives is not tenure, it is churn. <strong>The binding constraint is not labor supply. It is supervisory capacity per experienced nurse.</strong></p>
+  <p class="meta">Validation record · doctrine · strategy · implementation plan · operational playbook</p>
+</div></header>
+
+<div class="status"><div class="wrap">
+  <strong>Status:</strong> proposed doctrine, strategy, plan, and playbook, version 0.1. These documents specify a direction and a set of boundaries. They do not establish a product, curriculum, training program, competency framework, credential, pilot, partnership, institutional authorization, clinical validation, or permission to process patient data.
+</div></div>
+
+<section id="verdict"><div class="wrap">
+  <div class="eyebrow">What was tested</div>
+  <h2>Three claims, graded separately</h2>
+  <p>The projection contains three claims that do not stand or fall together. Each was checked against primary sources; the full working is in the <a href="VALIDATION.md">Validation Record</a>.</p>
+
+  <div class="tablewrap"><table>
+    <thead><tr><th style="width:26%">Claim</th><th style="width:14%">Verdict</th><th>What the evidence actually says</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>An influx of workers is coming into caregiving</b></td>
+        <td><span class="verdict v-yes">Supported</span></td>
+        <td>But the mechanism is demographic demand, not AI displacement — and no study measured a displaced-worker-to-caregiving migration. The flow is real; it arrives as churn rather than accumulated tenure.</td>
+      </tr>
+      <tr>
+        <td><b>A Nurse AI OS will be critical infrastructure to upskill, manage, and coordinate them</b></td>
+        <td><span class="verdict v-part">Qualified</span></td>
+        <td>The coordination need is real. The status is not: nothing here is critical infrastructure, and saying so would be a fabricated status claim. &ldquo;Manage&rdquo; must narrow — workforce determinations are employment decisions, and a growing set of state laws bar software from holding or implying licensed clinician status.</td>
+      </tr>
+      <tr>
+        <td><b>It must be a co-pilot for newer care workers, not only veterans</b></td>
+        <td><span class="verdict v-yes">Supported</span></td>
+        <td>The strongest of the three — and the naive version is contradicted by evidence. Build novice-first, but not answer-first.</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <blockquote><p>Healthcare is not receiving a wave of new caregivers who stay. It is settling into a permanent high-volume, low-tenure workforce — and the people expected to orient, delegate to, verify, and rescue every entrant are themselves leaving.</p></blockquote>
+</div></section>
+
+<section id="evidence"><div class="wrap">
+  <div class="eyebrow">The numbers</div>
+  <h2>Why the constraint is supervision</h2>
+
+  <div class="stats">
+    <div class="stat"><div class="n">+739,800</div><div class="l">Jobs added by home health and personal care aides, 2024&ndash;34 — the most of any of 832 occupations, roughly 1 of every 7 jobs added economy-wide</div><div class="s">BLS, Monthly Labor Review</div></div>
+    <div class="stat"><div class="n">9.7 million</div><div class="l">Total projected direct-care job openings 2024&ndash;34 once exits and transfers are counted</div><div class="s">PHI, Key Facts 2025</div></div>
+    <div class="stat"><div class="n">+680,500</div><div class="l">Health care and social assistance jobs added March 2025 &rarr; March 2026, in a year when total nonfarm payrolls &ldquo;changed little on net&rdquo;</div><div class="s">BLS, The Economics Daily</div></div>
+    <div class="stat"><div class="n">~75%</div><div class="l">Annual turnover in home care (2024); historically near 100% for nursing-home aides</div><div class="s">PHI</div></div>
+    <div class="stat"><div class="n">$17.36</div><div class="l">Median hourly wage for direct care workers, 2024 — median annual earnings under $26,000</div><div class="s">PHI, Key Facts 2025</div></div>
+    <div class="stat"><div class="n">39.9%</div><div class="l">Of registered nurses report intent to leave the workforce or retire within five years; median age 50</div><div class="s">NCSBN 2024 workforce survey</div></div>
+    <div class="stat"><div class="n">93,176</div><div class="l">Qualified nursing-school applications turned away in 2025&ndash;26; 8.8% faculty vacancy; over 60% of programs blocked on clinical placements</div><div class="s">AACN survey data</div></div>
+    <div class="stat"><div class="n">75 hours</div><div class="l">Federal minimum nurse aide training, including 16 supervised — a floor roughly 20 states have not revisited in nearly 30 years</div><div class="s">42 CFR 483.152; PHI</div></div>
+  </div>
+
+  <p>Read together: millions of entries, near-equal exits, a training floor that varies by state, and a shrinking pool of experienced nurses expected to supervise all of it. Every entrant consumes the one input that is not growing.</p>
+
+  <h3>And why the obvious co-pilot is the wrong one</h3>
+  <p>The case for building novice-first is strong. In a study of 5,172 customer-support agents, AI assistance raised resolved issues per hour by 15 percent on average — with gains concentrated among <em>less-experienced</em> workers, alongside improved retention, while the most experienced saw small quality declines <span style="color:var(--muted)">(Brynjolfsson, Li &amp; Raymond, <i>QJE</i>, 2025)</span>.</p>
+  <p>The case against the obvious implementation is just as strong, and it is specific to health:</p>
+  <ul>
+    <li><b>Capability does not survive the handoff.</b> In a randomized trial with 1,298 participants, the models alone identified relevant conditions in 94.9 percent of cases. The same models, used by the participants, produced under 34.5 percent — <em>no better than the control group</em> using ordinary methods <span style="color:var(--muted)">(Bean, Payne et al., <i>Nature Medicine</i>, February 2026)</span>. Benchmarks measured the model. The trial measured the pair. The pair failed.</li>
+    <li><b>Assistance erodes unassisted skill.</b> After AI was introduced across four endoscopy centres, adenoma detection on colonoscopies performed <em>without</em> AI fell from 28.4 to 22.4 percent <span style="color:var(--muted)">(<i>Lancet Gastroenterology &amp; Hepatology</i>, August 2025)</span>. That happened to experienced clinicians. A workforce whose skill is still forming is more exposed, not less.</li>
+    <li><b>Confident wrong output flips right answers.</b> Participants given incorrect decision support made 51.7 to 65.8 percent more commission errors than with no support at all <span style="color:var(--muted)">(Lyell et al., 2017)</span>.</li>
+  </ul>
+  <blockquote><p>Build novice-first — but the novice-facing product is not an answer engine. Orient. Make the user commit. Then compare. Then escalate.</p></blockquote>
+</div></section>
+
+<section id="doctrine"><div class="wrap">
+  <div class="eyebrow">Doctrine</div>
+  <h2>Supervision is the scarce resource</h2>
+  <p>Thirteen principles govern this work. Six carry the most weight:</p>
+  <ol>
+    <li><b>Supervision is the scarce resource.</b> Optimize safe supervisory throughput per experienced nurse. A feature whose metric is &ldquo;fewer questions reached a nurse&rdquo; must prove the suppressed questions were ones a nurse did not need to see.</li>
+    <li><b>Never the last check.</b> Every consequential output ends at a named human with the license and authority to act.</li>
+    <li><b>Scope is enforced, not inferred.</b> Outside a user's declared role, setting, and jurisdiction, the answer is a person — never a hedged partial answer.</li>
+    <li><b>The system never wears a license.</b> No nurse title, no clinician persona, no implication that a licensed person authored the output. Doctrine here, and law in Delaware, Oregon, California, and Washington.</li>
+    <li><b>Deskilling is a tracked harm.</b> Unassisted practice is measured on a schedule. If unassisted performance declines, the response is <em>less</em> assistance, not more.</li>
+    <li><b>No alibi for understaffing.</b> If a deployment coincides with less supervision, less orientation, or fewer staff, the deployment is out of doctrine and support is withdrawn.</li>
+  </ol>
+
+  <h3>The Ask Ladder</h3>
+  <p>The single habit the whole first release exists to install:</p>
+  <ol class="ladder">
+    <li><b>Look.</b> It is on the care plan, the assignment sheet, the label, the posted policy.</li>
+    <li><b>Ask the system.</b> Your role, your scope, your process, your words, your rehearsal.</li>
+    <li><b>Ask a person.</b> Anything about this person's condition, care, or any judgment call. The system helps form the question; it does not answer instead.</li>
+    <li><b>Escalate now.</b> Never gated behind a form, a login, or &ldquo;let me help you word that.&rdquo; Latency measured in seconds.</li>
+  </ol>
+  <p><b>When in doubt, go up a rung.</b> Ambiguity resolves upward, always.</p>
+
+  <div class="refuse">
+    <h3 style="margin-top:0">What this refuses to become</h3>
+    <ul>
+      <li>A triage assistant for unlicensed workers</li>
+      <li>A symptom checker with a caregiver skin</li>
+      <li>A competency-scoring or credential-gating engine</li>
+      <li>A staffing product sold on labor savings</li>
+      <li>A productivity monitor pointed at the lowest-paid workers in healthcare</li>
+      <li>An &ldquo;AI nurse&rdquo; of any description</li>
+    </ul>
+  </div>
+</div></section>
+
+<section id="plan"><div class="wrap">
+  <div class="eyebrow">Strategy and plan</div>
+  <h2>Person, then dyad, then unit, then institution</h2>
+  <p>The wedge is narrow enough to state in one sentence: <b>a browser-only, no-install, no-patient-data orientation pack that teaches one thing well — what is mine to do, and how do I raise a hand.</b> Each stage must produce its evidence before the next begins. Adoption is not evidence; satisfaction is not safety.</p>
+
+  <ol class="phases">
+    <li><b>Instrument before building.</b> Metric definitions, an adversarial refusal test bundle, consent language, synthetic scenarios.
+      <span class="gate">Gate: every refusal class has a test that fails against a deliberately weakened prompt — proving the tests detect, rather than passing vacuously.</span></li>
+    <li><b>Entrant Orientation Pack.</b> Scope Card, Escalation Card, the Ask Ladder, commit-then-compare rehearsal, the unassisted check, localized boundary text.
+      <span class="gate">Gate: out-of-scope attempts fall and appropriate escalation rises against each user's own baseline — or the negative result is published. Any clinical-answering leak is a hard fail.</span></li>
+    <li><b>The preceptor loop.</b> Two consenting people, one shared record, questions shaped before they arrive — with urgent signals bypassing shaping entirely.
+      <span class="gate">Gate: fewer low-value interruptions <em>with no increase in missed or delayed escalations</em>. Both halves required.</span></li>
+    <li><b>Unit visibility, non-evaluative.</b> Where escalations cluster; where entrants work without a supervisor. Aggregate only, never a per-person score.
+      <span class="gate">Gate: a hostile reviewer cannot re-identify an individual's performance, and a leader names a supervision decision they changed.</span></li>
+    <li><b>Institutional pilot, separately authorized.</b> Named owners, written scope, data agreement, local review, stop switch, pre-registered outcomes.
+      <span class="gate">Gate: negative results published, with that commitment made before the pilot starts.</span></li>
+  </ol>
+
+  <h3>Stated in advance: what would falsify this</h3>
+  <ul>
+    <li>Health-care job growth falling below the all-industry average across two projection rounds.</li>
+    <li>Direct-care turnover falling durably below about 30 percent — which would mean this was a pay problem, not a software one.</li>
+    <li>Experienced-nurse intent-to-leave dropping while faculty and clinical-placement capacity expand.</li>
+    <li>A trial of a scoped, escalation-first assistant showing worse unassisted performance, worse escalation timeliness, or more scope violations than an unassisted control.</li>
+    <li>Regulation classifying scope guidance to unlicensed workers as clinical decision support requiring authorization this project does not hold.</li>
+  </ul>
+  <p>The failure mode to avoid is not being wrong. It is being unfalsifiable.</p>
+</div></section>
+
+<section id="documents"><div class="wrap">
+  <div class="eyebrow">Read the record</div>
+  <h2>The five documents</h2>
+  <div class="cards">
+    <div class="card"><h3>Validation Record</h3><p>Three claims graded separately, every figure sourced, the restated projection, and the falsifiers stated in advance.</p><a href="VALIDATION.md">Read the validation &rarr;</a></div>
+    <div class="card"><h3>Doctrine</h3><p>Thirteen principles, the six populations served, the refusal catalog, and what this work refuses to become.</p><a href="DOCTRINE.md">Read the doctrine &rarr;</a></div>
+    <div class="card"><h3>Strategy</h3><p>The supervision-multiplier position, the wedge, the landscape, the bets with confidence levels, and the stop conditions.</p><a href="STRATEGY.md">Read the strategy &rarr;</a></div>
+    <div class="card"><h3>Implementation Plan</h3><p>Five phases, each with artifacts, non-goals, an evidence gate, and the conditions under which it stops.</p><a href="IMPLEMENTATION.md">Read the plan &rarr;</a></div>
+    <div class="card"><h3>Operational Playbook</h3><p>The Ask Ladder, Day One, the commit-then-compare drill, the weekly preceptor ritual, the monthly unassisted check, incidents, localization, metrics.</p><a href="PLAYBOOK.md">Read the playbook &rarr;</a></div>
+    <div class="card"><h3>Index and boundaries</h3><p>How this inherits from EDENA, Nurse Formation, and the Knowledge Commons — and what is deliberately absent.</p><a href="README.md">Read the overview &rarr;</a></div>
+  </div>
+
+  <h3>Related records in this repository</h3>
+  <ul>
+    <li><a href="../nurse-formation/">Nurse Formation doctrine and playbook</a> — the learning method this inherits: commit-then-compare, human evaluative authority, AI never grading alone.</li>
+    <li><a href="../knowledge-commons/">NIN Knowledge Commons</a> — the distribution contract: versioned, reviewed, provenance-bearing Knowledge Packs.</li>
+    <li><a href="../directive.html">The Directive</a> and <a href="../governed-harness.html">the governed harness</a> — the risk, data, and action dimensions this plan sits inside.</li>
+  </ul>
+</div></section>
+
+<footer><div class="wrap">
+  <div><strong>Agents propose. Humans judge. Nurses steward.</strong><br>Supervision is the scarce resource. Multiply it; never simulate it.</div>
+  <div>No patient data · No clinical decisions · No competency scoring<br><a href="../index.html">Nurse AI OS</a> · <a href="../about.html">About</a> · <a href="../privacy.html">Privacy</a></div>
+</div></footer>
+
+</body>
+</html>

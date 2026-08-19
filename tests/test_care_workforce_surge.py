@@ -159,6 +159,29 @@ class CareWorkforceSurgeDocsTests(unittest.TestCase):
             "a phase is missing its stop conditions",
         )
 
+    def test_no_aggregate_score_can_hide_a_failing_refusal_class(self) -> None:
+        # An aggregate pass rate is how a broken emergency path ships with good
+        # marks elsewhere. The gate is per-class or it is not a gate.
+        gate = self.flat[IMPLEMENTATION]
+        self.assertIn("Every refusal class passes every test in its bundle", gate)
+        self.assertIn("There is no aggregate threshold", gate)
+        self.assertNotRegex(
+            gate,
+            r"\u2265 ?9\d percent pass|at least 9\d percent pass",
+            "an aggregate pass threshold reappeared in a gate",
+        )
+
+    def test_the_page_does_not_overstate_provenance(self) -> None:
+        # The record leans on trade coverage for the AACN capacity figures and
+        # on a tracker for three of the four state laws. The page must not
+        # promise more than that.
+        self.assertNotIn("checked against primary sources", self.flat_page)
+        self.assertIn("labelled as such where it is used", self.flat_page)
+        validation = self.flat[VALIDATION]
+        self.assertIn("Provenance is uneven and is stated rather than smoothed over", validation)
+        self.assertIn("cited here through trade coverage of AACN", validation)
+        self.assertIn("rather than the enacted texts", validation)
+
     def test_falsifiers_are_stated_in_advance(self) -> None:
         self.assertIn("## 6. What would falsify this", self.docs[VALIDATION])
         self.assertIn("Absence of evidence is not a defence", self.flat[VALIDATION])

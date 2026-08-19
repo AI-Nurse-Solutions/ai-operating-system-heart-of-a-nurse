@@ -132,9 +132,12 @@ class TrainingExampleSchemaTests(unittest.TestCase):
 
 class DatasetGateTests(unittest.TestCase):
     def lint_record(self, record: dict) -> subprocess.CompletedProcess:
+        return self.lint_lines(json.dumps(record))
+
+    def lint_lines(self, *lines: str) -> subprocess.CompletedProcess:
         with tempfile.TemporaryDirectory() as directory:
             corpus = Path(directory) / "corpus.jsonl"
-            corpus.write_text(json.dumps(record) + "\n", encoding="utf-8")
+            corpus.write_text("\n".join(lines) + "\n", encoding="utf-8")
             return run_lint(str(corpus))
 
     def test_schema_only_run_succeeds(self) -> None:
@@ -145,43 +148,102 @@ class DatasetGateTests(unittest.TestCase):
         result = self.lint_record(GOOD_RECORD)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_phi_shaped_text_is_refused(self) -> None:
+    def test_the_gate_shares_the_runtime_phi_list(self) -> None:
+        source = LINT.read_text(encoding="utf-8")
+        self.assertIn("from adapters.phi import PHI_PATTERNS", source)
+        self.assertNotIn("MRN[:#_", source, "the gate is carrying its own copy of the patterns")
+
+    def test_validation_is_required_rather_than_best_effort(self) -> None:
+        source = LINT.read_text(encoding="utf-8")
+        self.assertIn("required jsonschema validator unavailable", source)
+        self.assertIn("requirements-import-soul.txt", source)
+
+    def test_every_record_is_validated_against_the_declared_schema(self) -> None:
+        """Structural rules live in the schema, and the gate actually applies them."""
+        record = dict(
+            GOOD_RECORD,
+            example_id="BAD ID",
+            dataset_version="not-a-version",
+            trained_against="edena-policy@nope",
+            input=123,
+            reviewers=[42],
+            expected_classification={"bogus_key": "yes"},
+        )
+        result = self.lint_record(record)
+        self.assertEqual(result.returncode, 1)
+        for expected in (
+            "example_id: 'BAD ID' does not match",
+            "dataset_version: 'not-a-version' does not match",
+            "trained_against: 'edena-policy@nope' does not match",
+            "input: 123 is not of type 'string'",
+            "reviewers.0: 42 is not of type 'string'",
+            "expected_classification: Additional properties are not allowed",
+        ):
+            self.assertIn(expected, result.stdout)
+
+    def test_phi_shaped_text_is_refused_in_the_obvious_fields(self) -> None:
         record = dict(GOOD_RECORD, input="Patient in room 412, MRN 88213, DOB 03/14/1958.")
         result = self.lint_record(record)
         self.assertEqual(result.returncode, 1)
         for label in ("medical record number", "room or bed number", "date of birth format"):
             self.assertIn(label, result.stdout)
 
-    def test_the_gate_shares_the_runtime_phi_list(self) -> None:
-        source = LINT.read_text(encoding="utf-8")
-        self.assertIn("from adapters.phi import PHI_PATTERNS", source)
-        self.assertNotIn("MRN[:#_", source, "the gate is carrying its own copy of the patterns")
+    def test_phi_shaped_text_is_refused_anywhere_in_the_record(self) -> None:
+        """Naming the fields to scan is how fields get missed."""
+        record = dict(
+            GOOD_RECORD,
+            uncertainty_expected=["MRN 12345"],
+            retrieved_sources=[{"ref": "note for room 412"}],
+            expected_classification={"rationale": ["DOB: 03/14/1958"]},
+        )
+        result = self.lint_record(record)
+        self.assertEqual(result.returncode, 1)
+        for location in (
+            "uncertainty_expected[0]",
+            "retrieved_sources[0].ref",
+            "expected_classification.rationale[0]",
+        ):
+            self.assertIn(location, result.stdout)
 
     def test_unenforceable_governance_vocabulary_is_refused(self) -> None:
         result = self.lint_record(dict(GOOD_RECORD, expected_gate="Red-P"))
         self.assertEqual(result.returncode, 1)
-        self.assertIn("which the runtime cannot enforce", result.stdout)
+        self.assertIn("expected_gate: 'Red-P' is not one of", result.stdout)
+
+    def test_an_unknown_field_is_refused(self) -> None:
+        result = self.lint_record(dict(GOOD_RECORD, edena_tier="Red-E"))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("Additional properties are not allowed", result.stdout)
 
     def test_approval_without_a_reviewer_is_refused(self) -> None:
         record = dict(GOOD_RECORD)
         record.pop("reviewers")
         result = self.lint_record(record)
         self.assertEqual(result.returncode, 1)
-        self.assertIn("approved with no named reviewer", result.stdout)
+        self.assertIn("an approved record must name the humans who reviewed it", result.stdout)
 
     def test_an_authored_preference_pair_is_refused(self) -> None:
         result = self.lint_record(dict(GOOD_RECORD, rejected_response="That sounds excellent!"))
         self.assertEqual(result.returncode, 1)
         self.assertIn("not from an authored strawman", result.stdout)
 
+    def test_a_sealed_split_may_not_hold_harvested_records(self) -> None:
+        record = dict(GOOD_RECORD, split="eval_frozen", origin="harvested")
+        result = self.lint_record(record)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("sealed split", result.stdout)
+
     def test_duplicate_example_ids_are_refused(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            corpus = Path(directory) / "corpus.jsonl"
-            line = json.dumps(GOOD_RECORD) + "\n"
-            corpus.write_text(line + line, encoding="utf-8")
-            result = run_lint(str(corpus))
+        line = json.dumps(GOOD_RECORD)
+        result = self.lint_lines(line, line)
         self.assertEqual(result.returncode, 1)
         self.assertIn("already used at", result.stdout)
+
+    def test_a_duplicated_json_key_is_refused(self) -> None:
+        """The last duplicate silently winning is a record nobody reviewed."""
+        result = self.lint_lines('{"example_id": "d-1", "example_id": "d-2"}')
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("duplicate JSON key", result.stderr)
 
 
 if __name__ == "__main__":

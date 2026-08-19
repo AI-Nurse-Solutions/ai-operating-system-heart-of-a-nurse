@@ -33,18 +33,42 @@
       "description": "The policy version this record's governance fields were written against. A record outliving its policy version is stale, not wrong-by-default, and is re-reviewed rather than silently reused."
     },
     "task": {
-      "enum": ["workflow_spec", "triage_justification", "critique", "refusal_redirect"]
+      "enum": [
+        "workflow_spec",
+        "triage_justification",
+        "critique",
+        "refusal_redirect"
+      ]
     },
     "origin": {
-      "enum": ["nurse_authored", "synthetic", "harvested"],
+      "enum": [
+        "nurse_authored",
+        "synthetic",
+        "harvested"
+      ],
       "description": "harvested = sampled from a prior checkpoint for preference ranking."
     },
     "role_id": {
-      "enum": ["bedside", "charge", "student", "educator", "leader", "np", "resident", "entrepreneur"],
+      "enum": [
+        "bedside",
+        "charge",
+        "student",
+        "educator",
+        "leader",
+        "np",
+        "resident",
+        "entrepreneur"
+      ],
       "description": "Matches naio-os/mission-control/roles/. Informational: it never raises a ceiling."
     },
     "sphere": {
-      "enum": ["personal", "professional", "community", "sidegig", "interest"]
+      "enum": [
+        "personal",
+        "professional",
+        "community",
+        "sidegig",
+        "interest"
+      ]
     },
     "input": {
       "type": "string",
@@ -55,11 +79,20 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["ref"],
+        "required": [
+          "ref"
+        ],
         "properties": {
-          "ref": { "type": "string" },
-          "version": { "type": "string" },
-          "effective_date": { "type": "string", "format": "date" }
+          "ref": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "effective_date": {
+            "type": "string",
+            "format": "date"
+          }
         }
       },
       "description": "Provenance for any grounded claim the ideal response makes. florence-x requires every retrieved fact to carry its source."
@@ -91,7 +124,11 @@
           }
         },
         "reversibility": {
-          "enum": ["reversible", "recoverable", "irreversible"]
+          "enum": [
+            "reversible",
+            "recoverable",
+            "irreversible"
+          ]
         },
         "hard_boundaries_implicated": {
           "type": "array",
@@ -123,7 +160,9 @@
         },
         "rationale": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Each entry cites the policy clause it rests on."
         }
       }
@@ -140,32 +179,76 @@
     },
     "uncertainty_expected": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "What a correct response must admit it does not know."
     },
     "reviewers": {
       "type": "array",
       "minItems": 1,
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Identifiers of the humans who reviewed this record. An approved record with no reviewer is rejected."
     },
     "review_status": {
-      "enum": ["draft", "reviewed", "approved"]
+      "enum": [
+        "draft",
+        "reviewed",
+        "approved"
+      ]
     },
     "split": {
-      "enum": ["train", "eval_frozen", "injection_suite"],
+      "enum": [
+        "train",
+        "eval_frozen",
+        "injection_suite"
+      ],
       "description": "eval_frozen and injection_suite records are sealed before training and never trained on."
     },
-    "notes": { "type": "string" }
+    "notes": {
+      "type": "string"
+    }
   },
   "allOf": [
     {
-      "if": { "properties": { "review_status": { "const": "approved" } }, "required": ["review_status"] },
-      "then": { "required": ["reviewers"] }
+      "if": {
+        "properties": {
+          "review_status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "review_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "reviewers"
+        ],
+        "title": "an approved record must name the humans who reviewed it"
+      }
     },
     {
-      "if": { "properties": { "rejected_response": { "type": "string" } }, "required": ["rejected_response"] },
-      "then": { "properties": { "origin": { "const": "harvested" } } }
+      "if": {
+        "properties": {
+          "rejected_response": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "rejected_response"
+        ]
+      },
+      "then": {
+        "properties": {
+          "origin": {
+            "const": "harvested",
+            "title": "preference pairs come from a checkpoint, not from an authored strawman"
+          }
+        }
+      }
     }
   ]
 }

@@ -156,11 +156,16 @@ Rules on the corpus:
 - Non-PHI only, enforced mechanically. `naio-os/models/lint_dataset.py` imports
   `PHI_PATTERNS` from `naio-os/mission-control/adapters/phi.py` — the same list
   the server lint, the SOUL importer, and `naio-mc configure` use — so the
-  dataset gate cannot drift from the runtime gate. It is detection, not proof;
-  it never substitutes for the reviewer's read.
-- Every record carries governance metadata and validates against
+  dataset gate cannot drift from the runtime gate. It scans every string in the
+  record, not a named list of fields, because naming the fields to scan is how
+  fields get missed. It is detection, not proof; it never substitutes for the
+  reviewer's read.
+- Every record carries governance metadata and is validated against
   `schema/training-example.schema.json`, whose enums are drawn from
-  `edena-policy.yaml` rather than invented.
+  `edena-policy.yaml` rather than invented. The gate validates against that
+  schema rather than re-implementing it, so a record cannot satisfy the gate
+  while violating the format the plan requires. Missing `jsonschema` refuses the
+  run instead of degrading to a weaker check.
 - Synthetic examples are permitted and labelled `synthetic`; unreviewed
   synthetic examples are not.
 - The evaluation set is authored first and sealed. No-peek is a process rule

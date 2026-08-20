@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robert Domondon | Personal AI Systems</title>
+<meta name="description" content="Robert Domondon — Personal AI Systems for Healthcare Professionals and Students.">
+<link rel="canonical" href="https://nurse-ai-os.org/robert-domondon/">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light; }
+  body.business-card-page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 2rem 1rem;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(236, 200, 127, .18), transparent 24rem),
+      radial-gradient(circle at 90% 90%, rgba(29, 156, 153, .12), transparent 28rem),
+      var(--linen-50);
+  }
+  .business-card-shell {
+    width: min(100%, 960px);
+    overflow: hidden;
+    border: 1px solid rgba(14, 31, 51, .12);
+    border-radius: 22px;
+    background: var(--white);
+    box-shadow: 0 18px 60px rgba(14, 31, 51, .16);
+  }
+  .business-card-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 2rem;
+    align-items: center;
+    padding: clamp(2rem, 6vw, 4.5rem);
+    color: var(--white);
+    background:
+      radial-gradient(circle at 78% 20%, rgba(236, 200, 127, .18), transparent 18rem),
+      linear-gradient(135deg, var(--navy-900), var(--navy-800) 62%, #0b6f73);
+  }
+  .business-card-kicker {
+    margin: 0 0 .65rem;
+    color: var(--gold-300);
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .business-card-hero h1 {
+    margin: 0;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    line-height: 1.02;
+  }
+  .business-card-city {
+    margin: .8rem 0 0;
+    color: #d7e2eb;
+    font-size: 1.1rem;
+  }
+  .business-card-portrait {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center top;
+    border: 5px solid rgba(236, 200, 127, .78);
+    border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .22);
+  }
+  .business-card-body {
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
+  }
+  .business-card-tagline {
+    margin: 0;
+    color: var(--navy-900);
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 3.4vw, 2.2rem);
+    line-height: 1.2;
+  }
+  .business-card-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .85rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .business-card-links a {
+    display: flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .8rem 1rem;
+    border: 1px solid rgba(23, 128, 126, .24);
+    border-radius: 12px;
+    color: var(--navy-900);
+    background: var(--linen-50);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .business-card-links a:hover,
+  .business-card-links a:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--teal-600);
+    background: var(--teal-100);
+  }
+  .business-card-links .link-detail {
+    overflow-wrap: anywhere;
+    color: var(--ink-600);
+    font-size: .92rem;
+    font-weight: 600;
+    text-align: right;
+  }
+  .business-card-boundary {
+    margin: 0;
+    padding: 1rem 1.15rem;
+    border-left: 4px solid var(--gold-500);
+    color: var(--ink-600);
+    background: var(--gold-100);
+  }
+  .business-card-footer {
+    padding: 1.2rem clamp(1.5rem, 5vw, 3.5rem);
+    color: #b9c8d5;
+    background: var(--navy-900);
+    font-size: .95rem;
+  }
+  .business-card-footer a { color: var(--gold-300); }
+  @media (max-width: 680px) {
+    body.business-card-page { padding: .75rem; }
+    .business-card-hero { grid-template-columns: 1fr; gap: 1.5rem; }
+    .business-card-portrait { width: min(100%, 240px); margin: 0 auto; }
+    .business-card-links { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .business-card-links a { transition: none; }
+  }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Robert Domondon",
+    "address": { "@type": "PostalAddress", "addressLocality": "San Francisco" },
+    "image": "https://nurse-ai-os.org/assets/robert-domondon-founder.jpg",
+    "url": "https://nurse-ai-os.org/robert-domondon/",
+    "sameAs": [
+      "https://www.linkedin.com/in/robert-domondon/",
+      "https://nurse-ai-os.org/",
+      "https://www.nurseintelligence.com/"
+    ],
+    "email": "robert_domondon@outlook.com"
+  }
+}
+</script>
+</head>
+<body class="business-card-page">
+  <main class="business-card-shell" aria-labelledby="business-card-name">
+    <section class="business-card-hero">
+      <div>
+        <p class="business-card-kicker">Personal AI Systems</p>
+        <h1 id="business-card-name">Robert Domondon</h1>
+        <p class="business-card-city">San Francisco</p>
+      </div>
+      <img class="business-card-portrait" src="../assets/robert-domondon-founder.jpg" alt="Robert Domondon" width="720" height="900">
+    </section>
+
+    <section class="business-card-body" aria-label="Contact and professional links">
+      <p class="business-card-tagline">Personal AI Systems for Healthcare Professionals and Students</p>
+      <ul class="business-card-links">
+        <li><a href="https://www.linkedin.com/in/robert-domondon/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><span class="link-detail">Connect ↗</span></a></li>
+        <li><a href="https://nurse-ai-os.org/" target="_blank" rel="noopener noreferrer"><span>Nurse AI OS</span><span class="link-detail">Visit ↗</span></a></li>
+        <li><a href="https://www.nurseintelligence.com/" target="_blank" rel="noopener noreferrer"><span>Nurse Intelligence</span><span class="link-detail">Visit ↗</span></a></li>
+        <li><a href="mailto:robert_domondon@outlook.com"><span>Email</span><span class="link-detail">robert_domondon@outlook.com</span></a></li>
+        <li><a href="https://t.me/FlowandForm" target="_blank" rel="noopener noreferrer"><span>Telegram</span><span class="link-detail">@FlowandForm ↗</span></a></li>
+      </ul>
+      <p class="business-card-boundary">Nurse-centered, human-governed, and designed for professional learning and non-clinical workflow support.</p>
+    </section>
+
+    <footer class="business-card-footer">
+      <span>Agents propose. Humans judge. Nurses steward.</span>
+    </footer>
+  </main>
+</body>
+</html>

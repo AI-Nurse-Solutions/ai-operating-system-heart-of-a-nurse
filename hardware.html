@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suggested Hardware &amp; Honest Costs — Nurse AI OS</title>
+<meta name="description" content="Practical Mac and Windows hardware tiers for the optional Hermes desktop path, plus an honest guide to model, electricity, cloud, and hardware costs.">
+<link rel="canonical" href="https://nurse-ai-os.org/hardware.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nurse-ai.css">
+<style>
+  .hardware-tier-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:1.2rem; }
+  .hardware-tier { display:flex; min-width:0; flex-direction:column; padding:1.35rem; border:1px solid rgba(14,31,51,.12); border-top:4px solid var(--teal-600); border-radius:var(--radius); background:var(--white); box-shadow:var(--shadow-sm); }
+  .hardware-tier.recommended { border-top-color:var(--gold-500); background:linear-gradient(160deg,var(--gold-100),var(--white) 42%); }
+  .hardware-tier.optional { border-top-color:var(--navy-700); }
+  .hardware-tier h3 { margin:.65rem 0 .4rem; }
+  .hardware-tier ul { margin:.6rem 0 1rem; padding-left:1.2rem; }
+  .hardware-tier .tier-use { margin-top:auto; color:var(--ink-600); font-size:.98rem; }
+  .hardware-label { display:inline-block; width:auto; max-width:100%; overflow-wrap:anywhere; padding:.25rem .6rem; border-radius:999px; color:var(--navy-900); background:var(--teal-100); font-size:.8rem; font-weight:700; letter-spacing:.03em; }
+  .hardware-tier.recommended .hardware-label { background:var(--gold-500); }
+  .hardware-tier.optional .hardware-label { color:var(--white); background:var(--navy-800); }
+  .hardware-table-wrap { max-width:100%; overflow:auto; margin:1.4rem 0; border:1px solid rgba(14,31,51,.12); border-radius:var(--radius); background:var(--white); box-shadow:var(--shadow-sm); }
+  .hardware-table { width:100%; min-width:680px; border-collapse:collapse; }
+  .hardware-table th, .hardware-table td { padding:.9rem 1rem; border-bottom:1px solid var(--linen-100); vertical-align:top; text-align:left; }
+  .hardware-table th { color:var(--white); background:var(--navy-900); font-family:var(--font-display); font-size:1.05rem; }
+  .hardware-table tr:last-child td { border-bottom:0; }
+  .hardware-table td:first-child { width:22%; color:var(--navy-900); font-weight:700; }
+  .cost-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:1rem; }
+  .cost-card { padding:1.2rem; border-left:4px solid var(--gold-500); border-radius:0 var(--radius) var(--radius) 0; background:var(--gold-100); }
+  .cost-card h3 { margin-top:0; }
+  .faq-list { display:grid; gap:1rem; }
+  .faq-item { padding:1.15rem 1.25rem; border-radius:var(--radius); background:var(--white); box-shadow:var(--shadow-sm); }
+  .faq-item h3 { margin:.05rem 0 .35rem; font-size:1.12rem; }
+  .faq-item p { margin:.25rem 0 0; }
+  .source-note { color:var(--ink-600); font-size:.94rem; }
+  @media (max-width:900px) { .hardware-tier-grid { grid-template-columns:1fr; } }
+  @media (max-width:680px) { .cost-grid { grid-template-columns:1fr; } }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Suggested Hardware and Honest Costs for Nurse AI OS",
+  "description": "Practical hardware tiers for the optional Hermes desktop path and a transparent guide to model, electricity, cloud, and hardware costs.",
+  "url": "https://nurse-ai-os.org/hardware.html",
+  "about": ["Nurse AI OS", "Hermes Agent", "local AI hardware"],
+  "author": { "@type": "Organization", "name": "Nurse AI OS" }
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html" class="active">Resources</a>
+      <a href="about.html">About</a>
+      <a class="nav-cta" href="soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+  <section class="hero" style="padding:3.2rem 0;">
+    <div class="container narrow">
+      <p class="kicker">Start with the machine you have</p>
+      <h1>Suggested hardware for Nurse AI OS</h1>
+      <p class="lede">The browser-first Nurse AI OS path does not require a new computer. This page covers the optional Hermes desktop path, local folders, and local-model experimentation—so you can choose a tier based on the work you actually intend to do.</p>
+      <p style="margin-top:1.2rem;"><a class="btn btn-primary" href="setup.html">See the two setup doors →</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="boundary">
+        <strong>No hardware purchase is required to begin.</strong> Start with the browser AI and device you already use. Upgrade only when a specific workflow—local models, sustained multitasking, or parallel agents—earns the cost.
+      </div>
+
+      <div class="hardware-tier-grid" style="margin-top:1.8rem;">
+        <article class="hardware-tier">
+          <span class="hardware-label">Minimum · light desktop use</span>
+          <h3>Enough to begin</h3>
+          <p>Suitable for browser AI, cloud/API model routes, local Nurse AI OS files, and a light Hermes session.</p>
+          <ul>
+            <li><strong>Mac:</strong> Apple Silicon M1 or newer (including current M1–M5 Macs) with 8&nbsp;GB unified memory. The 8&nbsp;GB MacBook Neo uses an A18 Pro chip and fits this minimum/light-use tier.</li>
+            <li><strong>Windows:</strong> a dual-core 64-bit processor, 8&nbsp;GB RAM, and a Windows&nbsp;11-compatible system.</li>
+            <li><strong>Storage:</strong> an SSD is strongly preferred.</li>
+          </ul>
+          <p class="tier-use"><strong>Not the local-model tier:</strong> 8&nbsp;GB systems have little headroom for large models, many browser tabs, or parallel agents.</p>
+        </article>
+
+        <article class="hardware-tier recommended">
+          <span class="hardware-label">Recommended · everyday flexibility</span>
+          <h3>Comfortable for most people</h3>
+          <p>The practical target for a personal Hermes workspace that can multitask without making memory the constant bottleneck.</p>
+          <ul>
+            <li><strong>Mac:</strong> Apple Silicon M1 or newer with 16&nbsp;GB unified memory. Current M-series Macs may be M1–M5; memory remains the more important planning choice.</li>
+            <li><strong>Windows:</strong> a recent multi-core processor, 16&nbsp;GB RAM, and Windows&nbsp;11.</li>
+            <li><strong>Storage:</strong> 512&nbsp;GB SSD is a comfortable starting point if you expect local models or several project folders.</li>
+          </ul>
+          <p class="tier-use"><strong>Best default:</strong> choose this tier if you are buying new and want room to learn before deciding whether local models are worth it.</p>
+        </article>
+
+        <article class="hardware-tier optional">
+          <span class="hardware-label">Optional · local models and parallel work</span>
+          <h3>Buy for a specific workload</h3>
+          <p>Local inference and parallel agents are memory- and storage-hungry. The exact model size matters more than a generic “AI computer” label.</p>
+          <ul>
+            <li><strong>Memory:</strong> 16&nbsp;GB is a practical floor; 24–32&nbsp;GB is more comfortable for multiple local models or heavier multitasking.</li>
+            <li><strong>Storage:</strong> 512&nbsp;GB or more of fast SSD space leaves room for model files and updates.</li>
+            <li><strong>Compute:</strong> a stronger CPU/GPU can help, but only buy for a named model or workflow that needs it.</li>
+          </ul>
+          <p class="tier-use"><strong>Privacy note:</strong> local hardware does not automatically make every workflow private. Provider processing, tools, permissions, and the data you enter remain separate decisions.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container narrow">
+      <p class="eyebrow">Mac and Windows, plainly</p>
+      <h2>What to look for</h2>
+      <div class="hardware-table-wrap">
+        <table class="hardware-table">
+          <thead>
+            <tr><th>Component</th><th>Minimum practical tier</th><th>Recommended starting point</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Mac processor</td><td>Apple Silicon M1 or newer; the MacBook Neo is a separate A18 Pro option</td><td>Apple Silicon M1 or newer, including current M1–M5 Macs. Newer generations may improve efficiency, but the memory tier matters more than the number alone.</td></tr>
+            <tr><td>Mac memory</td><td>8&nbsp;GB unified memory</td><td>16&nbsp;GB unified memory. An 8&nbsp;GB A18 Pro MacBook Neo can serve as a minimum/light-use machine; it is not the sensible choice for heavy local-model work.</td></tr>
+            <tr><td>Mac operating system</td><td>macOS 12 or newer as a planning floor</td><td>Use a current supported macOS release when possible. Confirm the current Hermes support matrix before installing on an older system.</td></tr>
+            <tr><td>Windows processor</td><td>Recent dual-core 64-bit processor</td><td>Recent multi-core processor for multitasking, local tools, and longer sessions.</td></tr>
+            <tr><td>Windows memory</td><td>8&nbsp;GB RAM</td><td>16&nbsp;GB RAM; more if you plan local models or parallel work.</td></tr>
+            <tr><td>Windows operating system</td><td>Windows&nbsp;11-compatible system</td><td>Keep Windows and device drivers current enough for the applications and model tools you choose.</td></tr>
+            <tr><td>Storage</td><td>SSD preferred; keep free space</td><td>512&nbsp;GB SSD if local models are part of the plan. Check each model’s listed download size first.</td></tr>
+            <tr><td>Internet</td><td>Ordinary broadband</td><td>Stable broadband or Wi-Fi. Bandwidth matters most when downloading local models or updates.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="source-note">These are practical planning tiers, not a guarantee that every Hermes feature, model, connector, or local runtime will work on every machine. <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener noreferrer">Check the official Hermes documentation ↗</a> before installation. For the 8&nbsp;GB MacBook Neo reference, see <a href="https://www.apple.com/macbook-neo/specs/" target="_blank" rel="noopener noreferrer">Apple’s technical specifications ↗</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <p class="eyebrow">The honest cost model</p>
+      <h2>The honest cost of running Hermes with Nurse AI OS</h2>
+      <p class="section-intro"><strong>Hermes is free and open-source.</strong> Nurse AI OS can begin browser-first without a hardware purchase or a required subscription. The real costs come from what you choose around the system—and each one is optional.</p>
+      <div class="cost-grid">
+        <article class="cost-card"><h3>1. Model or API usage</h3><p>Paid model providers may charge per token, request, or subscription. A free provider route, an existing authorized subscription, or a local model can keep the model bill at zero—but free routes may have limits, changing terms, or weaker capability.</p></article>
+        <article class="cost-card"><h3>2. Electricity</h3><p>Cloud and API use add little to the wall-power bill of your laptop. Local models can keep the CPU or GPU working harder, so sustained local inference may use noticeably more electricity.</p></article>
+        <article class="cost-card"><h3>3. Cloud time</h3><p>If you choose a cloud runtime, VM, or hosted agent, read its billing policy. Some services meter active work; others also charge for uptime, storage, networking, or reserved capacity. An idle agent is not automatically free.</p></article>
+        <article class="cost-card"><h3>4. Hardware</h3><p>Hardware costs money only when you buy or upgrade it. Most people should not upgrade first. Let a specific job—local models, large files, sustained multitasking, or parallel agents—justify the purchase.</p></article>
+      </div>
+      <div class="boundary" style="margin-top:1.5rem;">
+        <strong>Honest summary:</strong> a careful browser-first or cloud/API setup can have zero new marginal cost. Costs appear when you deliberately choose paid models, metered cloud resources, higher electricity use, or new hardware.
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container narrow">
+      <p class="eyebrow">Questions before you buy</p>
+      <h2>Practical answers</h2>
+      <div class="faq-list">
+        <article class="faq-item"><h3>Does disk speed matter?</h3><p>For cloud and API use, barely. For local models, yes: models are large files, and an SSD makes downloads, loading, updates, and workspace searches much more pleasant than an old spinning drive.</p></article>
+        <article class="faq-item"><h3>How much disk space do local models need?</h3><p>They are multi-gigabyte downloads, and sizes vary widely. Check the model’s listed size before downloading it. Keep comfortable headroom if you plan to try several models, retain project files, or keep room for updates.</p></article>
+        <article class="faq-item"><h3>Does my internet connection matter?</h3><p>Ordinary broadband is fine for typical API requests, which exchange relatively small amounts of text. The bandwidth-heavy moment is downloading a local model or a large update, usually once per model.</p></article>
+        <article class="faq-item"><h3>Is 8&nbsp;GB enough?</h3><p>It can be enough for browser-first use, cloud/API routes, local files, and light Hermes work. It is not a comfortable target for local models, many browser tabs, or parallel agents. If you are buying new and can choose, 16&nbsp;GB is the better default.</p></article>
+        <article class="faq-item"><h3>Can I start on a phone, tablet, or Chromebook?</h3><p>Yes, for the browser-first Nurse AI OS experience. A supported Mac or Windows desktop or laptop is needed only when you choose the optional Hermes desktop/local-runtime path.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <div class="boundary">
+        <strong>Requirements follow ambition.</strong> Start at the minimum tier and lose nothing in the browser-first path. Move up only when local models, privacy preferences, or parallel agents earn their keep. The machine should support the work—not become the excuse to postpone it.
+      </div>
+      <p class="source-note" style="margin-top:1.2rem;">Hardware guidance is informational and changes as operating systems, Hermes releases, model sizes, and providers change. This page is not a clinical, institutional, security, or compatibility certification. Keep all Nurse AI OS and Hermes work no-PHI unless an explicitly authorized environment and accountable governance say otherwise.</p>
+      <p style="margin-top:1.2rem;"><a class="btn btn-primary" href="start-here.html">Start with the setup guide →</a> <a class="btn btn-quiet" href="resources.html">Return to Resources</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="start-here.html">Start Here</a>
+      <a href="pathways.html">Pathways</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:robert@nurse-ai-os.org">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Core setup and self-customization are free forever.</p>
+  </div>
+</footer>
+<script src="assets/site-shell.js" defer></script>
+</body>
+</html>

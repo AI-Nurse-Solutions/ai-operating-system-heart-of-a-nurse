@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Three Lanes — Manager, Learner, Builder–Organizer: the Nurse AI OS build order</title>
+<meta name="description" content="Nurse AI OS has architecture and little evidence. Three user archetypes — the Manager, the Learner, and the Nurse Builder–Organizer — turned into proof one lane per 90-day cycle, in an order chosen for what each can prove. Segmentation, strategy, implementation plan, evidence gates, and playbook." />
+<meta name="author" content="Robert Domondon" />
+<link rel="canonical" href="https://nurse-ai-os.org/three-lanes/" />
+
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Nurse AI OS · NAIO and Nurse Intelligence Network projects" />
+<meta property="og:title" content="Three lanes of listening. One lane of building." />
+<meta property="og:description" content="Manager, then certification learner, then builder–organizer. One artifact per 90-day cycle, gated on whether a reviewer accepts it and whether anyone returns with a second problem." />
+<meta property="og:url" content="https://nurse-ai-os.org/three-lanes/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Three lanes of listening. One lane of building." />
+<meta name="twitter:description" content="A build order for Nurse AI OS: three user archetypes, one lane per cycle, evidence gates stated before the work starts." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --navy:#142a44; --navy-2:#1d3a5c; --ink:#1b2733; --accent:#2e5a88;
+    --gold:#bd8a2c; --gold-soft:#e7cf94; --bg:#fbfaf6; --panel:#ffffff;
+    --muted:#586675; --line:#e7e2d6; --warn:#8a5514; --warn-bg:#fdf6e7;
+    --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --wrap:1060px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.2;color:var(--navy);letter-spacing:-.01em}
+  h2{font-size:clamp(1.5rem,3.2vw,2.05rem);margin:0 0 .5em}
+  h3{font-size:1.16rem;margin:1.9em 0 .4em}
+  a{color:var(--accent);text-underline-offset:3px}
+  a:focus-visible{outline:3px solid var(--gold-soft);outline-offset:2px;border-radius:4px}
+  .eyebrow{font-weight:600;font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(20,42,68,.97);backdrop-filter:saturate(140%) blur(6px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:58px;flex-wrap:wrap}
+  .topbar a{color:#dce6f1;text-decoration:none;font-size:.88rem}
+  .topbar a:hover{color:#fff}
+  .topbar .brand{color:#fff;font-weight:600;font-size:.95rem}
+  .topbar nav a{margin-left:20px}
+
+  .hero{background:radial-gradient(1100px 460px at 78% -12%, rgba(189,138,44,.20), transparent 60%),linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#eaf1f8;padding:64px 0 56px;border-bottom:3px solid var(--gold)}
+  .hero h1{color:#fff;font-size:clamp(2.15rem,5.4vw,3.5rem);margin:.3em 0 .25em;letter-spacing:-.02em;max-width:20ch}
+  .hero .sub{font-family:var(--serif);font-size:clamp(1.1rem,2.3vw,1.4rem);color:#cfe0f0;max-width:44ch;margin:0}
+  .hero .thesis{max-width:62ch;margin:26px 0 0;font-size:1.08rem;color:#eef4fa;border-left:3px solid var(--gold);padding-left:18px}
+  .hero .meta{margin-top:26px;font-size:.9rem;color:#a9bdd2}
+
+  .status{background:var(--warn-bg);border-bottom:1px solid var(--line);color:var(--warn)}
+  .status .wrap{padding:14px 24px;font-size:.9rem}
+  .status strong{color:#6d420e}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  p{max-width:70ch}
+  ul,ol{max-width:70ch}
+  li{margin:.35em 0}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:26px 0 8px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .stat .n{font-family:var(--serif);font-size:1.85rem;font-weight:700;color:var(--navy);line-height:1.05}
+  .stat .l{font-size:.86rem;color:var(--muted);margin-top:8px}
+  .stat .s{font-size:.74rem;color:#8b96a3;margin-top:8px}
+
+  blockquote{margin:26px 0;padding:20px 24px;background:var(--panel);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;font-family:var(--serif);font-size:1.15rem;color:var(--navy)}
+  blockquote p{margin:0;max-width:60ch}
+
+  .tablewrap{overflow-x:auto;margin:22px 0;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:.92rem}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f4f1e8;font-weight:600;color:var(--navy);font-size:.82rem;letter-spacing:.02em}
+  tr:last-child td{border-bottom:none}
+
+  .verdict{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+  .v-yes{background:#e3efe6;color:#2f6b45}
+  .v-part{background:#faead3;color:#8a5514}
+  .v-no{background:#f8dede;color:#8d2929}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:26px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{margin:0 0 .35em;font-size:1.05rem}
+  .card p{font-size:.93rem;color:var(--muted);margin:0 0 14px}
+  .card a{font-weight:600;font-size:.92rem;text-decoration:none}
+  .card a:hover{text-decoration:underline}
+
+  .ladder{counter-reset:rung;list-style:none;padding:0;margin:22px 0}
+  .ladder li{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:0 12px 12px 0;padding:14px 18px;margin:10px 0;max-width:70ch}
+  .ladder li b{color:var(--navy)}
+  .ladder li:last-child{border-left-color:#a43d3d}
+
+  .refuse{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:22px}
+  .refuse ul{margin:.5em 0 0;padding-left:20px}
+
+  .phases{margin:24px 0;padding:0;list-style:none;counter-reset:phase}
+  .phases li{position:relative;padding:0 0 22px 34px;border-left:2px solid var(--line);margin-left:10px}
+  .phases li:last-child{border-left-color:transparent;padding-bottom:0}
+  .phases li::before{counter-increment:phase;content:counter(phase);position:absolute;left:-15px;top:0;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .phases b{color:var(--navy)}
+  .phases .gate{display:block;font-size:.88rem;color:var(--muted);margin-top:5px}
+
+  footer{background:var(--navy);color:rgba(255,255,255,.72);padding:34px 0;font-size:.88rem}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  footer strong{color:#fff}
+  footer a{color:var(--gold-soft)}
+
+  @media(max-width:640px){
+    body{font-size:16px}
+    .hero{padding:44px 0 40px}
+    .topbar nav a{margin-left:14px;font-size:.82rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <a class="brand" href="../index.html">Nurse AI OS</a>
+  <nav>
+    <a href="#decision">Decision</a>
+    <a href="#lanes">Lanes</a>
+    <a href="#order">Build order</a>
+    <a href="#cycle1">Cycle 1</a>
+    <a href="#gates">Gates</a>
+    <a href="#documents">Documents</a>
+  </nav>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Design record · Version 0.1 · 23 August 2026</div>
+  <h1>Three lanes of listening. One lane of building.</h1>
+  <p class="sub">Nurse AI OS has a coherent architecture and almost no evidence that anyone will repeatedly use it or pay for it.</p>
+  <p class="thesis">Three user archetypes carry the long-term product map — the Learner, the Manager, and the Nurse Builder–Organizer. They are sound as a portfolio of learning loops and dangerous as a quarterly plan. <strong>Interview all three continuously. Build exactly one lane per 90-day cycle.</strong></p>
+  <p class="meta">Segmentation · strategy · implementation plan · evidence gates · operating playbook</p>
+</div></header>
+
+<div class="status"><div class="wrap">
+  <strong>Status:</strong> proposed segmentation, strategy, implementation plan, measurement plan, and playbook, version 0.1. These documents specify a direction, a build order, and a set of boundaries. They do not establish a product, cohort, curriculum, pricing, pilot, partnership, institutional authorization, clinical validation, or permission to process patient data. No date in the plan commits any person to perform work.
+</div></div>
+
+<section id="decision"><div class="wrap">
+  <div class="eyebrow">The decision</div>
+  <h2>A portfolio of learning loops, not three products</h2>
+  <p>The three-group structure gives Nurse AI OS a coherent progression — <b>learn, lead, build</b> — where each group tests something the others cannot. The Learner tests whether the system improves individual capability and earns repeated use. The Manager tests whether it improves consequential professional work and creates institutional value. The Builder–Organizer tests whether users can create reusable capabilities rather than only consume them.</p>
+  <p>Treating them as three simultaneous products is how the project arrives at one more broad platform before any single job is proven. Each archetype asks for a different system: the Learner wants study, explanation, memory and progress; the Manager wants planning, policy, governance, communication and measurement; the Builder wants projects, content, collaboration, distribution and intellectual property.</p>
+  <blockquote><p>Discovery is cheap and parallel. Construction is expensive and serial. The rule separates them.</p></blockquote>
+</div></section>
+
+<section id="lanes"><div class="wrap">
+  <div class="eyebrow">Who each lane serves</div>
+  <h2>The Learner is two markets, not one</h2>
+  <p>The most consequential correction to the three-group model: a prelicensure student and a licensed nurse pursuing certification share a verb and nothing else that matters. The certification learner has a dated personal goal, full agency, a recurring cycle, and their own money. The prelicensure student is bounded by faculty, program and accreditation, and cannot be served without an institutional partner. One is a buildable lane; the other is a research subgroup, developed only with an educator or program partner.</p>
+
+  <div class="tablewrap"><table>
+    <thead><tr><th style="width:20%">Segment</th><th style="width:16%">User</th><th style="width:18%">Buyer</th><th style="width:22%">Approver</th><th>Steward</th></tr></thead>
+    <tbody>
+      <tr><td><b>Manager</b></td><td>Nurse manager, QI, informatics, educator with program responsibility</td><td>Department or institution</td><td>Authorized leader or local governance</td><td>QI, staff nurses, policy and safety reviewers</td></tr>
+      <tr><td><b>Certification learner</b></td><td>Nurse</td><td>Nurse, or employer if sponsored</td><td>The nurse; employer if work-sponsored</td><td>Educator or content steward</td></tr>
+      <tr><td><b>Builder–Organizer</b></td><td>Nurse builder</td><td>Self, sponsor, or organization</td><td>Community or organizational authority</td><td>Affected community, rights and governance reviewers</td></tr>
+      <tr><td><b>Prelicensure learner</b><br><span style="color:var(--muted);font-size:.86rem">research only</span></td><td>Student</td><td>Student or school</td><td>Faculty and program</td><td>Faculty, student, accessibility and integrity reviewers</td></tr>
+    </tbody>
+  </table></div>
+
+  <blockquote><p>The person who loves the product is rarely the person who pays for it, and almost never the person who may authorize it.</p></blockquote>
+
+  <h3>Three groups that matter enormously and are not lanes</h3>
+  <ul>
+    <li><b>Educator or program leader — user and channel.</b> Governs prelicensure use, brings cohorts, defines academic-integrity boundaries, and can become an institutional buyer. This is how the Learner lane reaches institutions.</li>
+    <li><b>QI, safety, or clinical informatics nurse — advanced design partner.</b> The most important bridge group, and the users most likely to engage the governance architecture on its merits. They belong inside the Manager cohort as an advanced subtype, not in a separate lane.</li>
+    <li><b>Direct-care and charge nurses — workflow truth.</b> The only people who can say what creates burden, where policy diverges from practice, what a tired nurse at 03:00 will misread, and what disappears at handoff. Required in every cycle, compensated, and never recruited as though they were the first payer segment.</li>
+  </ul>
+  <p>Executive sponsors — CNO, CNIO, quality and AI-governance leaders — are buyers and approvers, not daily users. Their questions are different in kind, and the packet is what crosses that gap.</p>
+</div></section>
+
+<section id="order"><div class="wrap">
+  <div class="eyebrow">Build order</div>
+  <h2>Manager first. Then the certification learner. Then the builder.</h2>
+
+  <div class="tablewrap"><table>
+    <thead><tr><th style="width:22%">Cycle</th><th style="width:34%">What it is chosen to prove</th><th>Why here</th></tr></thead>
+    <tbody>
+      <tr><td><b>1 · Manager</b></td><td>That governance improves consequential work, survives a reviewer, and someone pays for a bounded outcome</td><td>Closest to the differentiated asset; least contested by general-purpose assistants; the only lane with institutional budget within reach, and none of it needs patient data</td></tr>
+      <tr><td><b>2 · Certification learner</b></td><td>Frequency, retention, personalization, longitudinal value, direct individual payment</td><td>Tests what Cycle 1 cannot: whether value accrues over months rather than in one artifact. Retention experiments need something to retain around</td></tr>
+      <tr><td><b>3 · Builder–Organizer</b></td><td>Extensibility, contribution, reusability, rights-aware distribution, network effects</td><td>Requires a workflow already proven worth reusing. Packaging nothing is how marketplaces die</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Why this does not mean three separate builds</h3>
+  <p>Roughly seventy percent of each lane is the same machinery. The spine is built in Cycle 1 with a single consumer, and each later lane becomes a schema plus a workflow on top of it: the intake contract, the refusal set, the source and rights ledger, the section engine, the provenance and uncertainty display, the human correction record, the session record, and the evaluation harness.</p>
+  <p>That is the difference between <i>&ldquo;we will get to the Learner in Cycle 2&rdquo;</i> and <i>&ldquo;the Learner lane is a schema, a workflow, and three refusals away.&rdquo;</i> If Cycle 2 costs as much to build as Cycle 1, the reuse thesis was false and the sequencing argument weakens with it — which is stated in advance as a falsifier.</p>
+</div></section>
+
+<section id="cycle1"><div class="wrap">
+  <div class="eyebrow">Cycle 1</div>
+  <h2>One segment, one artifact, ninety days</h2>
+  <blockquote><p>Turn one no-PHI unit, workforce, education, quality, or AI-adoption problem into a review-ready Governed Project Packet.</p></blockquote>
+
+  <p>Fifteen fixed sections. The schema does not grow mid-cycle. The differentiating sections are the unglamorous ones that a general-purpose assistant will not produce unprompted and a reviewer notices first:</p>
+
+  <div class="cards">
+    <div class="card"><h3>What is unknown</h3><p>Baseline and missing information are <b>listed, not filled in</b>. An unanswered section stays visibly unanswered.</p></div>
+    <div class="card"><h3>Whose work increases</h3><p>Staff burden assessed in whose minutes, named by role — the question that decides whether an initiative survives contact with a unit.</p></div>
+    <div class="card"><h3>What would stop this</h3><p>Stop and escalation conditions, and who may invoke them. Two named humans own the decision and the action; never the system.</p></div>
+    <div class="card"><h3>What remains unresolved</h3><p>Dissent survives to the reviewer intact rather than being smoothed away in the draft.</p></div>
+  </div>
+
+  <h3>The increments</h3>
+  <ol class="phases">
+    <li><b>Weeks 1–2 · Intake contract and refusal set</b>, running end to end with no drafting at all.<span class="gate">Exit: every refusal fires on a crafted input and states its reason in the user's terms.</span></li>
+    <li><b>Weeks 3–4 · Section engine and packet schema</b>, browser-first, no installation.<span class="gate">Exit: a packet renders with every section either answered or explicitly marked missing.</span></li>
+    <li><b>Weeks 5–6 · Source and rights ledger; provenance and uncertainty display.</b><span class="gate">Exit: no claim renders without a source, an inference marker, or an unknown marker.</span></li>
+    <li><b>Weeks 7–8 · Guided workflow and correction capture</b>; ten supervised sessions.<span class="gate">Exit: ten packets exist, each from a real problem a partner brought.</span></li>
+    <li><b>Weeks 9–10 · Reviewer acceptance round</b> — partners submit to their actual approvers.<span class="gate">Exit: written reviewer feedback on at least six packets.</span></li>
+    <li><b>Week 11 · Evaluation harness seeded</b> from the cycle's own failures.<span class="gate">Exit: twenty stored cases run against the current model on demand.</span></li>
+    <li><b>Week 12 · Price test</b> — a Nurse-Led AI Governance Readiness Sprint.<span class="gate">Exit: a yes, a no, or a counter-offer from every partner asked.</span></li>
+  </ol>
+
+  <p><b>Governance disposition:</b> Yellow risk · D1 data · Recommend ceiling. Institution-specific work is Yellow <em>even with no patient data</em>, because it names real units, real staffing conditions and real local policy. Every packet carries a named human reviewer who approves the exact artifact rather than the workflow in general. The system drafts and recommends; the human submits, sends, schedules and decides.</p>
+</div></section>
+
+<section id="gates"><div class="wrap">
+  <div class="eyebrow">Evidence</div>
+  <h2>What would count as this working</h2>
+  <blockquote><p>They bring a second real problem without being asked. Everything else is instrumentation around that sentence.</p></blockquote>
+
+  <h3>Signals that are not evidence</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th style="width:44%">Not evidence</th><th>What it actually indicates</th></tr></thead>
+    <tbody>
+      <tr><td>Sign-ups</td><td>Curiosity, or a good headline</td></tr>
+      <tr><td>Positive reactions after a demonstration</td><td>Politeness, and the founder's credibility</td></tr>
+      <tr><td>&ldquo;I would definitely use this&rdquo;</td><td>A prediction people are reliably bad at making</td></tr>
+      <tr><td>A pilot discussed but unscheduled</td><td>A polite decline with a longer timeline</td></tr>
+      <tr><td>Founder-run sessions producing good artifacts</td><td>The founder's expertise, not the system's</td></tr>
+      <tr><td>Reviewer approval of an authoritative-looking packet</td><td>The most dangerous signal in the plan</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The planted-omission test</h3>
+  <p>A reviewer may accept a packet because it is complete, or because it reads like something that has already been approved. Twice per cycle, a packet is submitted with a <b>known material omission</b> — a genuinely missing piece of information or a genuinely unresolved concern. If reviewers accept it without noticing, the artifact is manufacturing confidence and the format is wrong regardless of every other number. The test is disclosed to design partners in advance, and never run on an artifact driving a real institutional decision.</p>
+
+  <h3>Gate 1, at day 90 — every condition, not most</h3>
+  <ul>
+    <li>Six packets from real problems partners brought; four submitted to actual approvers.</li>
+    <li>Three accepted with <b>less rework than that approver's status quo</b>, stated by the approver.</li>
+    <li>Three partners returned with a second real problem, unprompted.</li>
+    <li>One paid engagement or a signed pilot commitment with a date.</li>
+    <li>Governance sections <b>preserved</b> — they survived to the reviewer rather than being stripped before submission.</li>
+    <li>Fifteen stored evaluation cases derived from real failures, not authored as examples.</li>
+  </ul>
+
+  <div class="refuse">
+    <h3 style="margin-top:0">Stated in advance: what would make this plan wrong</h3>
+    <ul>
+      <li>Managers value the drafting and discard the governance sections — the differentiation is imaginary.</li>
+      <li>Approvers accept packets with planted omissions — the artifact manufactures confidence.</li>
+      <li>Learners return for streaks and reminders rather than for the plan — the value is habit design, available elsewhere.</li>
+      <li>Every paying customer is a personal contact of the founder at both gates — there is no acquisition path, only credibility.</li>
+      <li>Cycle 2 costs as much to build as Cycle 1 — the shared spine does not carry.</li>
+      <li>Capability packs are only ever authored by the founder — there is no platform, only a template library.</li>
+    </ul>
+  </div>
+</div></section>
+
+<section id="boundaries"><div class="wrap">
+  <div class="eyebrow">Boundaries</div>
+  <h2>What no lane does</h2>
+  <p>Every lane operates at or below the public ceiling: D0/D1 data, Green/Yellow risk, Observe/Draft/Recommend action, with Recommend beginning at Yellow. Three prohibitions hold across all three without exception — <b>no patient data, no employment or competency determination about a named person, and no clinical decision support.</b> A lane that needs one of these to be useful is not ready, and does not proceed by being useful anyway.</p>
+  <p>Also absent, deliberately: additional ecosystem names, generalized agents or swarms, EHR integration, a native model, a marketplace, certification or competence claims, exam-performance claims, and patient-outcome measurement — no lane here is positioned to affect a patient outcome, and measuring one would imply otherwise.</p>
+  <p>Where an employer sponsors a learner, the learner's reflections and self-identified weaknesses are closed to the sponsor by default and by data model, and stated to both parties at intake.</p>
+</div></section>
+
+<section id="documents"><div class="wrap">
+  <div class="eyebrow">The record</div>
+  <h2>Documents</h2>
+  <div class="cards">
+    <div class="card"><h3>Segments</h3><p>Who each lane serves, why the Learner is two markets, the five-role separation, and the cross-cutting roles that are not lanes.</p><a href="SEGMENTS.md">Read SEGMENTS.md →</a></div>
+    <div class="card"><h3>Strategy</h3><p>The one-lane-per-cycle rule, the sequencing argument, the shared spine, the commercial ladder, and the stop conditions.</p><a href="STRATEGY.md">Read STRATEGY.md →</a></div>
+    <div class="card"><h3>Implementation plan</h3><p>Cycle 0 through Cycle 3 — input contracts, artifact schemas, week-by-week increments, and founder-only versus delegable work.</p><a href="IMPLEMENTATION.md">Read IMPLEMENTATION.md →</a></div>
+    <div class="card"><h3>Evidence gates</h3><p>What counts as a lane working, the reliance and deskilling checks, the planted-omission test, and the falsifiers.</p><a href="EVIDENCE.md">Read EVIDENCE.md →</a></div>
+    <div class="card"><h3>Playbook</h3><p>Discovery conduct, session rules, onboarding, the refusal ritual, commit-then-compare, incidents, rights, and cadence.</p><a href="PLAYBOOK.md">Read PLAYBOOK.md →</a></div>
+    <div class="card"><h3>Directory index</h3><p>Status, governing maxims, the first cycle in one paragraph, and how this relates to the rest of Nurse AI OS.</p><a href="README.md">Read README.md →</a></div>
+  </div>
+  <p style="margin-top:26px">Related records: <a href="../governance-kit/">the governance kit</a> supplies the risk, data and action dimensions; <a href="../nurse-formation/">Nurse Formation</a> supplies Cycle 2's learning method; <a href="../knowledge-commons/">Knowledge Commons</a> supplies the distribution contract Cycle 3 depends on; <a href="../care-workforce-surge/">Care Workforce Surge</a> supplies the workforce context the Manager lane operates in.</p>
+</div></section>
+
+<footer><div class="wrap">
+  <div><strong>Agents propose. Humans judge. Nurses steward.</strong><br>Three lanes of listening. One lane of building.</div>
+  <div>No patient data · No clinical decisions · No competency scoring<br><a href="../index.html">Nurse AI OS</a> · <a href="../about.html">About</a> · <a href="../privacy.html">Privacy</a></div>
+</div></footer>
+
+</body>
+</html>

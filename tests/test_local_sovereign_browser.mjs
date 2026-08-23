@@ -70,7 +70,9 @@ try {
         h1Count: document.querySelectorAll('h1').length,
         mainCount: document.querySelectorAll('main').length,
         sourceCount: document.querySelectorAll('.source-list a').length,
-        loginLanguage: document.body.innerText.includes('ChatGPT sign-in')
+        loginLanguage: document.body.innerText.includes('ChatGPT sign-in'),
+        quietButtonColors: [...document.querySelectorAll('.btn-quiet')]
+          .map((button) => getComputedStyle(button).color)
       };
     });
 
@@ -79,6 +81,7 @@ try {
     assert.equal(geometry.mainCount, 1, `one main landmark required at ${width}px`);
     assert.equal(geometry.sourceCount, 4, `four evidence links required at ${width}px`);
     assert.equal(geometry.loginLanguage, false, `public guide must not require ChatGPT login at ${width}px`);
+    assert.ok(geometry.quietButtonColors.every((color) => color === 'rgb(14, 31, 51)'), `quiet CTAs need navy text contrast at ${width}px`);
     assert.ok(geometry.controlHeights.every((height) => height >= 44), `new controls must be at least 44px high at ${width}px`);
     assert.ok(geometry.controlWidths.every((controlWidth) => controlWidth >= 44), `new controls must be at least 44px wide at ${width}px`);
     assert.deepEqual(errors, [], `browser errors at ${width}px: ${errors.join('; ')}`);

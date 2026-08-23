@@ -11,6 +11,8 @@ WEB_CARD = ROOT / "robert-domondon" / "index.html"
 RESOURCES = ROOT / "resources.html"
 SITEMAP = ROOT / "sitemap.xml"
 PUBLIC_URL = "https://nurse-ai-os.org/local-sovereign-systems/"
+EQUIPMENT_ART = ROOT / "assets" / "img" / "local-sovereign-clinic-equipment.webp"
+EQUIPMENT_DETAIL = ROOT / "assets" / "img" / "local-sovereign-workstation-detail.webp"
 SOURCE_URLS = {
     "https://www.iea.org/reports/energy-and-ai/executive-summary",
     "https://www.eia.gov/todayinenergy/detail.php?id=66744",
@@ -67,6 +69,17 @@ class LocalSovereignSystemsTests(unittest.TestCase):
         self.assertIn("main-content", self.parser.ids)
         self.assertIn('class="skip-link"', self.html)
         self.assertIn(PUBLIC_URL, self.html)
+
+    def test_original_equipment_drawings_are_prominent_and_bounded(self):
+        self.assertTrue(EQUIPMENT_ART.is_file())
+        self.assertTrue(EQUIPMENT_DETAIL.is_file())
+        self.assertGreater(EQUIPMENT_ART.stat().st_size, 50_000)
+        self.assertGreater(EQUIPMENT_DETAIL.stat().st_size, 50_000)
+        self.assertIn("local-sovereign-clinic-equipment.webp", self.html)
+        self.assertIn("local-sovereign-workstation-detail.webp", self.html)
+        self.assertIn("Your original equipment concept drawing", self.html)
+        self.assertIn("Illustrative architecture—not evidence of an installed clinic system", self.html)
+        self.assertIn("Local edge equipment", self.html)
 
     def test_public_status_and_healthcare_boundaries_are_adjacent(self):
         required = (

@@ -54,6 +54,10 @@ try {
     const response = await page.goto(`http://127.0.0.1:${port}/local-sovereign-systems/`);
     assert.equal(response?.status(), 200, `guide must return HTTP 200 at ${width}px`);
     await page.locator('h1').waitFor();
+    await page.locator('.equipment-figure img').waitFor();
+    await page.evaluate(async () => Promise.all(
+      [...document.querySelectorAll('.equipment-showcase img')].map((image) => image.decode())
+    ));
 
     const geometry = await page.evaluate(() => {
       const visibleRects = (selector) => [...document.querySelectorAll(selector)]
@@ -72,7 +76,10 @@ try {
         sourceCount: document.querySelectorAll('.source-list a').length,
         loginLanguage: document.body.innerText.includes('ChatGPT sign-in'),
         quietButtonColors: [...document.querySelectorAll('.btn-quiet')]
-          .map((button) => getComputedStyle(button).color)
+          .map((button) => getComputedStyle(button).color),
+        equipmentImages: [...document.querySelectorAll('.equipment-showcase img')]
+          .map((image) => ({ naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight })),
+        equipmentKickerColor: getComputedStyle(document.querySelector('.equipment-showcase .kicker')).color
       };
     });
 
@@ -82,6 +89,9 @@ try {
     assert.equal(geometry.sourceCount, 4, `four evidence links required at ${width}px`);
     assert.equal(geometry.loginLanguage, false, `public guide must not require ChatGPT login at ${width}px`);
     assert.ok(geometry.quietButtonColors.every((color) => color === 'rgb(14, 31, 51)'), `quiet CTAs need navy text contrast at ${width}px`);
+    assert.equal(geometry.equipmentImages.length, 2, `two equipment drawings required at ${width}px`);
+    assert.ok(geometry.equipmentImages.every((image) => image.naturalWidth > 800 && image.naturalHeight > 700), `equipment drawings must decode at useful resolution at ${width}px`);
+    assert.equal(geometry.equipmentKickerColor, 'rgb(236, 200, 127)', `equipment kicker needs gold contrast at ${width}px`);
     assert.ok(geometry.controlHeights.every((height) => height >= 44), `new controls must be at least 44px high at ${width}px`);
     assert.ok(geometry.controlWidths.every((controlWidth) => controlWidth >= 44), `new controls must be at least 44px wide at ${width}px`);
     assert.deepEqual(errors, [], `browser errors at ${width}px: ${errors.join('; ')}`);

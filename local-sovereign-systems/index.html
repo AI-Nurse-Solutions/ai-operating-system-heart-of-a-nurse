@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why Local, Sovereign, and Personal AI — Nurse AI OS</title>
+<meta name="description" content="A public guide to local and sovereign personal AI: data control, outage resilience, environmental tradeoffs, practical requirements, and honest healthcare boundaries.">
+<link rel="canonical" href="https://nurse-ai-os.org/local-sovereign-systems/">
+<link rel="icon" href="../assets/img/favicon-lamp.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+  .sovereign-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(3.8rem, 9vw, 7rem) 0;
+    color: var(--white);
+    background:
+      radial-gradient(circle at 82% 18%, rgba(236, 200, 127, .20), transparent 22rem),
+      radial-gradient(circle at 12% 88%, rgba(29, 156, 153, .22), transparent 26rem),
+      linear-gradient(135deg, var(--navy-900), var(--navy-800) 58%, #0b6f73);
+  }
+  .sovereign-hero h1 { max-width: 840px; color: var(--white); font-size: clamp(2.5rem, 7vw, 5.5rem); line-height: 1.02; }
+  .sovereign-hero .lede { max-width: 760px; color: #d8e4ec; font-size: clamp(1.15rem, 2.4vw, 1.4rem); }
+  .sovereign-hero .btn-quiet, .section .btn-quiet { color: var(--navy-900); }
+  .status-strip { padding: 1rem 0; border-bottom: 1px solid rgba(14,31,51,.14); background: var(--gold-100); }
+  .status-strip p { margin: 0; color: var(--navy-900); font-weight: 700; }
+  .principle-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.15rem; }
+  .principle-card { min-width: 0; padding: 1.4rem; border: 1px solid rgba(14,31,51,.12); border-top: 4px solid var(--teal-600); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow-sm); }
+  .principle-card:nth-child(even) { border-top-color: var(--gold-500); }
+  .principle-card h3 { margin: 0 0 .55rem; }
+  .principle-card ul { margin: .55rem 0 0; padding-left: 1.25rem; }
+  .evidence-number { display: block; margin: .35rem 0; color: var(--navy-900); font-family: var(--font-display); font-size: clamp(2rem, 6vw, 3.7rem); font-weight: 700; line-height: 1; }
+  .evidence-label { display: block; color: var(--ink-600); font-size: .95rem; }
+  .requirements { display: grid; gap: .8rem; counter-reset: requirement; }
+  .requirement { position: relative; padding: 1rem 1rem 1rem 4rem; border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow-sm); }
+  .requirement::before { counter-increment: requirement; content: counter(requirement); position: absolute; left: 1rem; top: 1rem; display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; color: var(--white); background: var(--teal-600); font-weight: 800; }
+  .requirement h3 { margin: .05rem 0 .25rem; font-size: 1.1rem; }
+  .requirement p { margin: 0; color: var(--ink-600); }
+  .decision-table-wrap { max-width: 100%; overflow-x: auto; margin-top: 1.2rem; border: 1px solid rgba(14,31,51,.12); border-radius: var(--radius); background: var(--white); }
+  .decision-table { width: 100%; min-width: 680px; border-collapse: collapse; }
+  .decision-table th, .decision-table td { padding: .9rem 1rem; border-bottom: 1px solid var(--linen-100); vertical-align: top; text-align: left; }
+  .decision-table th { color: var(--white); background: var(--navy-900); }
+  .decision-table tr:last-child td { border-bottom: 0; }
+  .source-list { display: grid; gap: .65rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  .source-list a { display: flex; min-height: 48px; align-items: center; padding: .7rem .9rem; border: 1px solid rgba(23,128,126,.2); border-radius: 10px; background: var(--white); font-weight: 700; text-decoration: none; }
+  .source-list a:hover, .source-list a:focus-visible { border-color: var(--teal-600); background: var(--teal-100); }
+  .quiet-note { color: var(--ink-600); font-size: .94rem; }
+  .closing-line { margin: 0; color: var(--navy-900); font-family: var(--font-display); font-size: clamp(1.55rem, 4vw, 2.45rem); line-height: 1.25; text-align: center; }
+  @media (max-width: 760px) { .principle-grid { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Why Local, Sovereign, and Personal AI",
+  "description": "A public guide to data control, outage resilience, environmental tradeoffs, practical requirements, and healthcare boundaries for local personal AI.",
+  "url": "https://nurse-ai-os.org/local-sovereign-systems/",
+  "datePublished": "2026-08-23",
+  "dateModified": "2026-08-23",
+  "author": { "@type": "Person", "name": "Robert Domondon" },
+  "publisher": { "@type": "Organization", "name": "Nurse AI OS" },
+  "citation": [
+    "https://www.iea.org/reports/energy-and-ai/executive-summary",
+    "https://www.eia.gov/todayinenergy/detail.php?id=66744",
+    "https://blog.cloudflare.com/18-november-2025-outage/",
+    "https://www.eesi.org/articles/view/data-centers-and-water-consumption"
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="../index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html" class="active">Resources</a>
+      <a href="../about.html">About</a>
+      <a class="nav-cta" href="../soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+  <section class="sovereign-hero">
+    <div class="container">
+      <p class="kicker">Keep intelligence close to the person it serves</p>
+      <h1>Why local, sovereign, and personal?</h1>
+      <p class="lede">The case for running more of your personal AI on hardware you control—without pretending that “local” automatically means private, sustainable, resilient, or authorized.</p>
+      <p style="margin-top:1.4rem;"><a class="btn btn-primary" href="#principles">Explore the four advantages ↓</a> <a class="btn btn-quiet" href="../hardware.html">See practical hardware</a></p>
+    </div>
+  </section>
+
+  <div class="status-strip">
+    <div class="container">
+      <p>Public educational guide · No login · No PHI · No clinical or institutional authorization</p>
+    </div>
+  </div>
+
+  <section class="section" id="principles">
+    <div class="container">
+      <p class="eyebrow">Four connected advantages</p>
+      <h2>Sovereignty, sustainability, and uptime can reinforce one another</h2>
+      <p class="section-intro">The value of local AI is not that every task must run locally. The value is having a governed local path when privacy, continuity, cost control, or provider independence matters.</p>
+      <div class="principle-grid" style="margin-top:1.6rem;">
+        <article class="principle-card">
+          <h3>1. Data sovereignty</h3>
+          <p>When inference, memory, logs, and files remain local—and cloud fallback is disabled—sensitive personal material does not need to transit a third-party model provider.</p>
+          <ul>
+            <li>You control storage, retention, backup, and deletion.</li>
+            <li>Your personal context can remain outside provider training and retention paths.</li>
+            <li>Fewer processors can reduce the privacy and breach surface.</li>
+          </ul>
+          <p class="quiet-note"><strong>Boundary:</strong> hardware ownership alone is not enough. Browsers, telemetry, connectors, plugins, and fallback models may still transmit data.</p>
+        </article>
+
+        <article class="principle-card">
+          <h3>2. Environmental choice</h3>
+          <p>Right-sized local models on hardware already in use can avoid some marginal cloud demand for routine work. They can also make energy and hardware choices visible to the person using them.</p>
+          <span class="evidence-number">415 → 945 TWh</span>
+          <span class="evidence-label">IEA estimate for global data-centre electricity consumption from 2024 to 2030.</span>
+          <p class="quiet-note"><strong>Honest caveat:</strong> local is not automatically greener. Hyperscale systems may be more efficient per request because of batching and infrastructure efficiency. Compare the actual workload, hardware, energy mix, and equipment lifecycle.</p>
+        </article>
+
+        <article class="principle-card">
+          <h3>3. Provider-outage resilience</h3>
+          <p>A local model and local files can keep bounded workflows available when a model provider, API, identity service, CDN, or shared cloud dependency is unavailable.</p>
+          <ul>
+            <li>No provider rate limit for work that stays on-device.</li>
+            <li>Local workflows can survive model retirement or pricing changes.</li>
+            <li>You can preserve a known working model and workflow version.</li>
+          </ul>
+          <p class="quiet-note">A Cloudflare configuration failure in November 2025 caused widespread network and authentication failures—an example of how shared infrastructure can become a common point of failure.</p>
+        </article>
+
+        <article class="principle-card">
+          <h3>4. Grid and connectivity resilience</h3>
+          <p>Laptop-class systems can continue for a bounded period on battery and can be paired with a UPS or other backup power. A smaller local model may preserve essential personal workflows when cloud access is unavailable.</p>
+          <span class="evidence-number">11 hours</span>
+          <span class="evidence-label">Average U.S. customer electricity-interruption duration in 2024, with major events accounting for most of the total.</span>
+          <p class="quiet-note"><strong>Boundary:</strong> local AI is not an emergency or clinical continuity system. Battery duration, hardware reliability, backups, and recovery procedures still require testing.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container narrow">
+      <p class="eyebrow">The sovereignty test</p>
+      <h2>Local hardware is only the beginning</h2>
+      <p class="section-intro">A system is meaningfully sovereign only when the person can inspect and control the full path—not merely the location of the computer.</p>
+      <div class="requirements">
+        <article class="requirement"><h3>Local inference is explicit</h3><p>The selected model runs on the owned device, and any cloud fallback is visible, optional, and off by default.</p></article>
+        <article class="requirement"><h3>Memory and logs remain controlled</h3><p>Prompts, outputs, embeddings, logs, indexes, and backups have declared storage and deletion rules.</p></article>
+        <article class="requirement"><h3>Tools use least privilege</h3><p>Connectors and agents can reach only the files, applications, and actions explicitly approved for the workflow.</p></article>
+        <article class="requirement"><h3>Models and workflows are portable</h3><p>The person can export their files, configuration, evaluation records, and working state without depending on one vendor.</p></article>
+        <article class="requirement"><h3>Updates remain reviewable and reversible</h3><p>Model, prompt, tool, and policy changes are versioned, evaluated, and capable of rollback.</p></article>
+        <article class="requirement"><h3>Human accountability remains intact</h3><p>The system proposes and supports. It does not inherit licensure, professional authority, community mandate, or institutional permission.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <p class="eyebrow">Choose by workload, not ideology</p>
+      <h2>A hybrid design is often the honest answer</h2>
+      <div class="decision-table-wrap" role="region" aria-label="Local, cloud, and hybrid AI comparison" tabindex="0">
+        <table class="decision-table">
+          <thead><tr><th>Path</th><th>Strongest fit</th><th>Primary tradeoff</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Local</strong></td><td>Private files, persistent personal context, offline continuity, predictable bounded workloads.</td><td>Hardware limits, model quality, maintenance, energy use, and local security responsibility.</td></tr>
+            <tr><td><strong>Cloud</strong></td><td>Frontier capability, large context, multimodal work, rapid model upgrades, collaboration.</td><td>Provider dependence, policy changes, retention settings, connectivity, and recurring cost.</td></tr>
+            <tr><td><strong>Governed hybrid</strong></td><td>Local-first routine work with deliberate escalation to an approved cloud model for tasks that earn it.</td><td>More architecture and testing; routing must never silently expand data exposure or authority.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="boundary" style="margin-top:1.5rem;">
+        <strong>Nurse AI OS boundary:</strong> Community and Personal Edition remain no-PHI and nonclinical whether the model is local or cloud-hosted. Local deployment alone does not establish HIPAA compliance, clinical validity, institutional authorization, cybersecurity assurance, or professional scope.
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container narrow">
+      <p class="eyebrow">Environmental context</p>
+      <h2>Water and energy impacts depend on design and place</h2>
+      <p>Data-centre water demand varies significantly by cooling design, climate, location, power source, and workload. EESI reports that large facilities can consume up to five million gallons per day and cites an average water-usage-effectiveness figure of 1.9 litres per kWh across data centres.</p>
+      <p>Those figures should not be converted into a universal “water per AI prompt” claim. A responsible comparison asks what hardware already exists, how often it will run, how the grid is powered, how cooling works, whether equipment is being purchased unnecessarily, and whether a smaller model can perform the task.</p>
+      <p class="closing-line">The goal is not cloud rejection. It is the freedom to place each workload where its privacy, capability, resilience, and environmental requirements are best met.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <p class="eyebrow">Practical next step</p>
+      <h2>Start with one local-safe workflow</h2>
+      <p>Do not buy hardware first. Choose one no-PHI workflow—personal learning notes, a private project ledger, or a local document search—and prove that local operation adds enough privacy, continuity, or control to justify the added setup.</p>
+      <p><a class="btn btn-primary" href="../hardware.html">Review hardware and honest costs →</a> <a class="btn btn-quiet" href="../guides/nurse-ai-os-lm-studio-bionic/">Explore the local-model guide</a></p>
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="source-heading">
+    <div class="container narrow">
+      <p class="eyebrow">Evidence ledger</p>
+      <h2 id="source-heading">Sources and limitations</h2>
+      <p class="quiet-note">These sources support the public figures and incident examples on this page. They do not establish that every local system is private, sustainable, resilient, secure, compliant, or suitable for healthcare.</p>
+      <ul class="source-list">
+        <li><a href="https://www.iea.org/reports/energy-and-ai/executive-summary" target="_blank" rel="noopener noreferrer">International Energy Agency — Energy and AI, executive summary ↗</a></li>
+        <li><a href="https://www.eia.gov/todayinenergy/detail.php?id=66744" target="_blank" rel="noopener noreferrer">U.S. Energy Information Administration — 2024 electricity interruptions ↗</a></li>
+        <li><a href="https://blog.cloudflare.com/18-november-2025-outage/" target="_blank" rel="noopener noreferrer">Cloudflare — November 18, 2025 outage report ↗</a></li>
+        <li><a href="https://www.eesi.org/articles/view/data-centers-and-water-consumption" target="_blank" rel="noopener noreferrer">Environmental and Energy Study Institute — Data centers and water consumption ↗</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="../index.html">Home</a>
+      <a href="../start-here.html">Start Here</a>
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../about.html">About</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="mailto:robert@nurse-ai-os.org">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Public educational guide, not clinical or institutional authorization.</p>
+  </div>
+</footer>
+<script src="../assets/site-shell.js" defer></script>
+</body>
+</html>

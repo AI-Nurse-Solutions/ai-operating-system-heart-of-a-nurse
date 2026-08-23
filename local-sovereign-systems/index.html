@@ -27,6 +27,16 @@
   .sovereign-hero .btn-quiet, .section .btn-quiet { color: var(--navy-900); }
   .status-strip { padding: 1rem 0; border-bottom: 1px solid rgba(14,31,51,.14); background: var(--gold-100); }
   .status-strip p { margin: 0; color: var(--navy-900); font-weight: 700; }
+  .equipment-showcase { padding: clamp(2rem, 6vw, 4.5rem) 0; background: var(--navy-900); }
+  .equipment-showcase h2, .equipment-showcase h3 { color: var(--white); }
+  .equipment-showcase .kicker { color: var(--gold-300); }
+  .equipment-showcase .section-intro, .equipment-showcase .quiet-note { color: #cddbe8; }
+  .equipment-figure { margin: 1.5rem 0 0; }
+  .equipment-figure img { display: block; width: 100%; border: 1px solid rgba(236,200,127,.48); border-radius: 18px; box-shadow: 0 18px 48px rgba(0,0,0,.28); }
+  .equipment-figure figcaption { margin-top: .7rem; color: #cddbe8; font-size: .94rem; }
+  .equipment-detail-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); gap: 1.4rem; align-items: center; margin-top: 1.5rem; }
+  .equipment-detail-grid img { display: block; width: 100%; border: 1px solid rgba(236,200,127,.4); border-radius: 16px; }
+  .equipment-detail-grid ul { margin: .8rem 0 0; padding-left: 1.25rem; color: #e2eaf0; }
   .principle-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.15rem; }
   .principle-card { min-width: 0; padding: 1.4rem; border: 1px solid rgba(14,31,51,.12); border-top: 4px solid var(--teal-600); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow-sm); }
   .principle-card:nth-child(even) { border-top-color: var(--gold-500); }
@@ -49,7 +59,7 @@
   .source-list a:hover, .source-list a:focus-visible { border-color: var(--teal-600); background: var(--teal-100); }
   .quiet-note { color: var(--ink-600); font-size: .94rem; }
   .closing-line { margin: 0; color: var(--navy-900); font-family: var(--font-display); font-size: clamp(1.55rem, 4vw, 2.45rem); line-height: 1.25; text-align: center; }
-  @media (max-width: 760px) { .principle-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .principle-grid, .equipment-detail-grid { grid-template-columns: 1fr; } }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 <script type="application/ld+json">
@@ -101,6 +111,31 @@
       <p>Public educational guide · No login · No PHI · No clinical or institutional authorization</p>
     </div>
   </div>
+
+  <section class="equipment-showcase" aria-labelledby="equipment-heading">
+    <div class="container">
+      <p class="kicker">The equipment concept</p>
+      <h2 id="equipment-heading">A local AI workstation inside a governed boundary</h2>
+      <p class="section-intro">This is the architecture drawing at the center of the idea: nurse-facing equipment close to the work, with local compute, explicit domain connections, and cloud access kept optional rather than assumed.</p>
+      <figure class="equipment-figure">
+        <img src="../assets/img/local-sovereign-clinic-equipment.webp" alt="Concept drawing of a local sovereign AI installation for a clinic: a nurse and physician use a laptop positioned on a local edge server, linked inside a glowing boundary to the nurses' station, exam room, policy knowledge, education, and operations, with an optional cloud outside the clinic." width="1600" height="900" loading="eager">
+        <figcaption><strong>Your original equipment concept drawing.</strong> Illustrative architecture—not evidence of an installed clinic system, clinical validation, PHI authorization, or institutional deployment.</figcaption>
+      </figure>
+      <div class="equipment-detail-grid">
+        <img src="../assets/img/local-sovereign-workstation-detail.webp" alt="Detail of the concept equipment: laptop on a compact local AI server used by a nurse and physician, connected to nurses' station, exam room, policy knowledge, education, and operations inside a bounded clinic network." width="952" height="810" loading="lazy">
+        <div>
+          <h3>What the drawing is showing</h3>
+          <ul>
+            <li><strong>Local edge equipment:</strong> a compact server or workstation beneath the laptop.</li>
+            <li><strong>Human control:</strong> a nurse and physician remain at the point of review.</li>
+            <li><strong>Bounded connections:</strong> nursing station, exam room, policy, education, and operations are visible domains—not automatic permissions.</li>
+            <li><strong>Optional cloud:</strong> outside the local boundary and used only through a deliberate governed path.</li>
+          </ul>
+          <p class="quiet-note"><strong>Important:</strong> the image is conceptual. Real equipment selection, network design, privacy, security, clinical use, and institutional integration require separate engineering and authorization.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="section" id="principles">
     <div class="container">

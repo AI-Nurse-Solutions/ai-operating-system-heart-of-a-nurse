@@ -7,8 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WEB_CARD = ROOT / "robert-domondon" / "index.html"
 LOCAL_SOVEREIGN_URL = (
-    "https://nurse-ai-os-local-sovereign.robert981594.chatgpt.site/"
-    "local-sovereign-systems"
+    "https://nurse-ai-os.org/local-sovereign-systems/"
 )
 
 
@@ -48,7 +47,7 @@ class RobertWebCardTests(unittest.TestCase):
         cls.parser = WebCardParser()
         cls.parser.feed(cls.html)
 
-    def test_local_sovereign_link_is_visible_and_safe(self):
+    def test_local_sovereign_link_is_visible_and_public(self):
         matches = [
             anchor
             for anchor in self.parser.anchors
@@ -56,13 +55,11 @@ class RobertWebCardTests(unittest.TestCase):
         ]
         self.assertEqual(len(matches), 1)
         anchor = matches[0]
-        self.assertEqual(anchor.get("target"), "_blank")
-        self.assertEqual(anchor.get("rel"), "noopener noreferrer")
+        self.assertIsNone(anchor.get("target"))
         self.assertIn("Local & Sovereign Systems", "".join(anchor["text"]))
-        self.assertIn("ChatGPT sign-in", "".join(anchor["text"]))
-        self.assertIn("sign-in required", anchor.get("aria-label", ""))
+        self.assertIn("Read", "".join(anchor["text"]))
 
-    def test_authenticated_destination_is_not_claimed_as_public_same_as_metadata(self):
+    def test_article_destination_is_not_claimed_as_person_same_as_metadata(self):
         metadata = json.loads("".join(self.parser.json_ld_text))
         self.assertNotIn(LOCAL_SOVEREIGN_URL, metadata["mainEntity"]["sameAs"])
 

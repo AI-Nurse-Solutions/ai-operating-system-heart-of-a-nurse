@@ -59,10 +59,12 @@ class RobertWebCardTests(unittest.TestCase):
         self.assertEqual(anchor.get("target"), "_blank")
         self.assertEqual(anchor.get("rel"), "noopener noreferrer")
         self.assertIn("Local & Sovereign Systems", "".join(anchor["text"]))
+        self.assertIn("ChatGPT sign-in", "".join(anchor["text"]))
+        self.assertIn("sign-in required", anchor.get("aria-label", ""))
 
-    def test_local_sovereign_link_is_in_profile_metadata(self):
+    def test_authenticated_destination_is_not_claimed_as_public_same_as_metadata(self):
         metadata = json.loads("".join(self.parser.json_ld_text))
-        self.assertIn(LOCAL_SOVEREIGN_URL, metadata["mainEntity"]["sameAs"])
+        self.assertNotIn(LOCAL_SOVEREIGN_URL, metadata["mainEntity"]["sameAs"])
 
 
 if __name__ == "__main__":

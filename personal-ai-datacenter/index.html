@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal AI Datacenter Concept Gallery — Nurse AI OS</title>
+<meta name="description" content="Five illustrated personal AI datacenter concepts from two RTX 5090 GPUs to an eight-GPU rack build, with draft specifications and explicit engineering boundaries.">
+<link rel="canonical" href="https://nurse-ai-os.org/personal-ai-datacenter/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Personal AI Datacenter Concept Gallery">
+<meta property="og:description" content="Five illustrated RTX-based local AI hardware concepts, from desk-sized systems to an eight-GPU rack design.">
+<meta property="og:url" content="https://nurse-ai-os.org/personal-ai-datacenter/">
+<meta property="og:image" content="https://nurse-ai-os.org/assets/img/personal-ai-datacenter/8x-rtx5090-rack.webp">
+<link rel="icon" href="../assets/img/favicon-lamp.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+  .datacenter-hero {
+    padding: clamp(3.8rem, 9vw, 7rem) 0;
+    color: var(--white);
+    background:
+      radial-gradient(circle at 85% 22%, rgba(236,200,127,.18), transparent 24rem),
+      radial-gradient(circle at 12% 90%, rgba(29,156,153,.24), transparent 26rem),
+      linear-gradient(135deg, var(--navy-900), #132f4a 58%, #0a676c);
+  }
+  .datacenter-hero h1 { max-width: 920px; color: var(--white); font-size: clamp(2.45rem, 7vw, 5.3rem); line-height: 1.02; }
+  .datacenter-hero .lede { max-width: 800px; color: #d8e4ec; font-size: clamp(1.12rem,2.2vw,1.4rem); }
+  .datacenter-status { padding: 1rem 0; border-bottom: 1px solid rgba(14,31,51,.14); background: var(--gold-100); }
+  .datacenter-status p { margin: 0; color: var(--navy-900); font-weight: 800; }
+  .build-list { display: grid; gap: 1.5rem; }
+  .build-card { overflow: hidden; border: 1px solid rgba(14,31,51,.13); border-radius: 18px; background: var(--white); box-shadow: var(--shadow-sm); }
+  .build-images { display: grid; grid-template-columns: repeat(var(--image-count,1),minmax(0,1fr)); gap: 2px; background: var(--navy-900); }
+  .build-images img { display: block; width: 100%; height: clamp(250px,38vw,460px); object-fit: cover; border-radius: 0; }
+  .build-content { padding: clamp(1.2rem,3vw,2rem); }
+  .build-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .build-heading h2 { margin: 0; }
+  .build-badge { display: inline-flex; align-items: center; min-height: 32px; padding: .25rem .7rem; border-radius: 999px; color: var(--navy-900); background: var(--teal-100); font-size: .8rem; font-weight: 800; }
+  .spec-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .75rem; margin: 1.2rem 0 0; }
+  .spec { min-width: 0; padding: .85rem; border-radius: 11px; background: var(--linen-50); }
+  .spec dt { color: var(--ink-600); font-size: .78rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+  .spec dd { margin: .2rem 0 0; color: var(--navy-900); font-weight: 700; overflow-wrap: anywhere; }
+  .build-note { margin: 1rem 0 0; color: var(--ink-600); font-size: .93rem; }
+  .validation-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; }
+  .validation-card { padding: 1.1rem 1.2rem; border-left: 4px solid var(--teal-600); border-radius: 0 var(--radius) var(--radius) 0; background: var(--white); box-shadow: var(--shadow-sm); }
+  .validation-card h3 { margin: 0 0 .3rem; }
+  .source-links { display: grid; gap: .7rem; margin-top: 1rem; }
+  .source-links a { display: flex; min-height: 48px; align-items: center; padding: .7rem .9rem; border: 1px solid rgba(23,128,126,.25); border-radius: 10px; background: var(--white); font-weight: 800; text-decoration: none; }
+  .source-links a:hover, .source-links a:focus-visible { border-color: var(--teal-600); background: var(--teal-100); }
+  .section .btn-quiet { color: var(--navy-900); }
+  .quiet-note { color: var(--ink-600); font-size: .94rem; }
+  @media (max-width: 760px) {
+    .build-images, .spec-grid, .validation-grid { grid-template-columns: 1fr; }
+    .build-images img { height: auto; aspect-ratio: 16 / 10; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Personal AI Datacenter Concept Gallery",
+  "description": "Five illustrated RTX-based local AI hardware concepts with draft specifications and engineering boundaries.",
+  "url": "https://nurse-ai-os.org/personal-ai-datacenter/",
+  "datePublished": "2026-08-23",
+  "dateModified": "2026-08-23",
+  "author": { "@type": "Person", "name": "Robert Domondon" },
+  "publisher": { "@type": "Organization", "name": "Nurse AI OS" }
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="../index.html"><span class="lamp">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html" class="active">Resources</a>
+      <a href="../about.html">About</a>
+      <a class="nav-cta" href="../soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+  <section class="datacenter-hero">
+    <div class="container">
+      <p class="kicker">Own your compute. Keep the engineering honest.</p>
+      <h1>Your personal AI datacenter</h1>
+      <p class="lede">Five illustrated hardware concepts—from a desk-sized dual-GPU workstation to an eight-GPU rack node—recovered from Robert Domondon’s original design portfolio.</p>
+      <p style="margin-top:1.4rem;"><a class="btn btn-primary" href="#builds">See the five concepts ↓</a> <a class="btn btn-secondary" href="../local-sovereign-systems/">Why local and sovereign?</a></p>
+    </div>
+  </section>
+
+  <div class="datacenter-status">
+    <div class="container">
+      <p>Concept portfolio · No login · Draft specifications · Not a validated BOM, build guide, or purchase recommendation</p>
+    </div>
+  </div>
+
+  <section class="section" id="builds">
+    <div class="container">
+      <p class="eyebrow">The recovered design set</p>
+      <h2>Five scales of local AI compute</h2>
+      <p class="section-intro">The numbers below are transcribed and normalized from the original concept sheet. GPU memory and bandwidth use current NVIDIA per-card figures, multiplied only to describe installed capacity—not a single pooled memory space or guaranteed linear performance.</p>
+
+      <div class="boundary" style="margin:1.4rem 0 1.7rem;">
+        <strong>Do not build from this page alone.</strong> Chassis, lane topology, cooling, transient power, connector limits, circuit capacity, noise, structural load, drivers, model compatibility, and safety have not been independently engineered or validated.
+      </div>
+
+      <div class="build-list">
+        <article class="build-card" id="dual-rtx5090">
+          <div class="build-images" style="--image-count:1;">
+            <img src="../assets/img/personal-ai-datacenter/2x-rtx5090-open.webp" alt="Open-frame concept computer with two vertically mounted NVIDIA GeForce RTX 5090-class graphics cards, compact motherboard, power supply, and top-mounted fans." width="1600" height="901" loading="eager">
+          </div>
+          <div class="build-content">
+            <div class="build-heading"><h2>2× NVIDIA GeForce RTX 5090</h2><span class="build-badge">Personal concept</span></div>
+            <p>Desk-sized local inference for quantized open models, private development, and sustained personal-agent workflows.</p>
+            <dl class="spec-grid">
+              <div class="spec"><dt>Installed GPU memory</dt><dd>64 GB GDDR7</dd></div>
+              <div class="spec"><dt>Nominal aggregate bandwidth</dt><dd>3,584 GB/s</dd></div>
+              <div class="spec"><dt>Draft host</dt><dd>Intel Xeon W5 · ASUS W790 ACE</dd></div>
+              <div class="spec"><dt>System memory / storage</dt><dd>96 GB RAM · 1 TB NVMe</dd></div>
+              <div class="spec"><dt>Draft networking</dt><dd>10 GbE + 2.5 GbE</dd></div>
+              <div class="spec"><dt>Concept envelope</dt><dd>1,550 W · 12.5 × 12.5 × 16 in · 33 lb</dd></div>
+            </dl>
+            <p class="build-note">Each RTX 5090 is specified by NVIDIA with 32 GB GDDR7 and 1,792 GB/s bandwidth. Multi-GPU model support, memory sharding, power, and thermal behavior depend on the software and final engineering.</p>
+          </div>
+        </article>
+
+        <article class="build-card" id="dual-rtxpro6000">
+          <div class="build-images" style="--image-count:2;">
+            <img src="../assets/img/personal-ai-datacenter/2x-rtxpro6000-open.webp" alt="Open dual-GPU professional workstation concept with two large vertically mounted cards, central cooling fan, motherboard ports, and a compact power supply." width="1600" height="1175" loading="lazy">
+            <img src="../assets/img/personal-ai-datacenter/2x-rtxpro6000-enclosed.webp" alt="Enclosed black cube concept for the dual NVIDIA RTX PRO 6000 workstation, with geometric ventilation panels." width="1600" height="901" loading="lazy">
+          </div>
+          <div class="build-content">
+            <div class="build-heading"><h2>2× NVIDIA RTX PRO 6000 Blackwell</h2><span class="build-badge">High-memory personal concept</span></div>
+            <p>The same desk-oriented idea with ECC GPU memory for larger local models and professional workloads.</p>
+            <dl class="spec-grid">
+              <div class="spec"><dt>Installed GPU memory</dt><dd>192 GB GDDR7 ECC</dd></div>
+              <div class="spec"><dt>Nominal aggregate bandwidth</dt><dd>About 3.6 TB/s</dd></div>
+              <div class="spec"><dt>Draft host</dt><dd>Intel Xeon W5 · ASUS W790 ACE</dd></div>
+              <div class="spec"><dt>System memory / storage</dt><dd>96 GB RAM · 1 TB NVMe</dd></div>
+              <div class="spec"><dt>Draft networking</dt><dd>10 GbE + 2.5 GbE</dd></div>
+              <div class="spec"><dt>Concept envelope</dt><dd>1,600 W · 12.5 × 12.5 × 16 in · 33 lb</dd></div>
+            </dl>
+            <p class="build-note">NVIDIA specifies 96 GB GDDR7 ECC and approximately 1.8 TB/s bandwidth per RTX PRO 6000 Blackwell Workstation Edition. The exact card edition, cooling design, slot spacing, and power limits must be fixed before engineering the enclosure.</p>
+          </div>
+        </article>
+
+        <article class="build-card" id="quad-rtx5090">
+          <div class="build-images" style="--image-count:1;">
+            <img src="../assets/img/personal-ai-datacenter/4x-rtx5090-enclosed.webp" alt="Enclosed tower concept for a four-GPU RTX 5090 local AI system, showing two large vertical intake fans, rear I/O, power supply, drive bays, and ventilated side panels." width="1600" height="1270" loading="lazy">
+          </div>
+          <div class="build-content">
+            <div class="build-heading"><h2>4× NVIDIA GeForce RTX 5090</h2><span class="build-badge">Team concept</span></div>
+            <p>A larger local node for a small team developing and serving open models without making a cloud API the only path.</p>
+            <dl class="spec-grid">
+              <div class="spec"><dt>Installed GPU memory</dt><dd>128 GB GDDR7</dd></div>
+              <div class="spec"><dt>Nominal aggregate bandwidth</dt><dd>7,168 GB/s</dd></div>
+              <div class="spec"><dt>Draft host</dt><dd>AMD Ryzen Threadripper Pro</dd></div>
+              <div class="spec"><dt>System memory / storage</dt><dd>96 GB RAM · 1 TB NVMe</dd></div>
+              <div class="spec"><dt>Draft networking</dt><dd>2× 10 GbE · BMC</dd></div>
+              <div class="spec"><dt>Concept envelope</dt><dd>2,750 W · 20 × 20 × 24 in · 66 lb</dd></div>
+            </dl>
+            <p class="build-note">Four physical RTX 5090 cards create major lane, clearance, cooling, connector, and transient-load constraints. The drawing is an enclosure concept—not proof that reference cards fit or operate safely in this geometry.</p>
+          </div>
+        </article>
+
+        <article class="build-card" id="quad-rtxpro6000">
+          <div class="build-images" style="--image-count:2;">
+            <img src="../assets/img/personal-ai-datacenter/4x-rtxpro6000-open.webp" alt="Open-frame four-GPU professional AI workstation concept with stacked graphics cards, exposed motherboard, and a lower cooling plenum with three fans." width="1600" height="900" loading="lazy">
+            <img src="../assets/img/personal-ai-datacenter/4x-rtxpro6000-enclosed.webp" alt="Enclosed black cube concept for the four-GPU professional AI workstation, with triangular ventilation openings." width="1600" height="901" loading="lazy">
+          </div>
+          <div class="build-content">
+            <div class="build-heading"><h2>4× NVIDIA RTX PRO 6000 Blackwell</h2><span class="build-badge">ECC team concept</span></div>
+            <p>A high-memory team node intended for larger models, fine-tuning experiments, and shared professional workloads.</p>
+            <dl class="spec-grid">
+              <div class="spec"><dt>Installed GPU memory</dt><dd>384 GB GDDR7 ECC</dd></div>
+              <div class="spec"><dt>Nominal aggregate bandwidth</dt><dd>About 7.2 TB/s</dd></div>
+              <div class="spec"><dt>Draft host</dt><dd>Xeon W5-3423 · ASUS Pro WS W790E-SAGE SE</dd></div>
+              <div class="spec"><dt>System memory / storage</dt><dd>192 GB DDR5 ECC · 2 TB NVMe</dd></div>
+              <div class="spec"><dt>Draft power</dt><dd>2× 2,000 W · 240 V concept</dd></div>
+              <div class="spec"><dt>Concept envelope</dt><dd>19.8 × 19.8 × 24.2 in · 66 lb</dd></div>
+            </dl>
+            <p class="build-note">The original sheet proposes seven-slot PCIe lane availability and native 12V-2×6 power. A licensed electrical professional and qualified system engineer must validate the final power, cabling, heat rejection, and circuit design.</p>
+          </div>
+        </article>
+
+        <article class="build-card" id="eight-rtx5090">
+          <div class="build-images" style="--image-count:2;">
+            <img src="../assets/img/personal-ai-datacenter/8x-rtx5090-open.webp" alt="Open-frame concept for an eight-GPU RTX 5090 personal AI datacenter, with vertically arranged graphics cards and a lower cooling plenum." width="1600" height="900" loading="lazy">
+            <img src="../assets/img/personal-ai-datacenter/8x-rtx5090-rack.webp" alt="Open five-rack-unit concept chassis containing two banks of four GPUs and central high-speed interconnect cabling." width="1600" height="901" loading="lazy">
+          </div>
+          <div class="build-content">
+            <div class="build-heading"><h2>8× NVIDIA GeForce RTX 5090</h2><span class="build-badge">Rack / on-prem concept</span></div>
+            <p>The largest design in the original set: a proposed on-premises node for developing, serving, and experimenting with open models.</p>
+            <dl class="spec-grid">
+              <div class="spec"><dt>Installed GPU memory</dt><dd>256 GB GDDR7</dd></div>
+              <div class="spec"><dt>Nominal aggregate bandwidth</dt><dd>14,336 GB/s</dd></div>
+              <div class="spec"><dt>Draft host</dt><dd>2× AMD EPYC 9004 · ASRock Rack GENOA2D24G-2L+</dd></div>
+              <div class="spec"><dt>System memory / storage</dt><dd>192 GB RAM · 1 TB NVMe</dd></div>
+              <div class="spec"><dt>Draft fabric</dt><dd>PCIe Gen 5 via MCIO · BMC</dd></div>
+              <div class="spec"><dt>Concept envelope</dt><dd>5U · 5,100 W estimated draw · 8,000 W PSU concept</dd></div>
+            </dl>
+            <p class="build-note">This is a datacenter-class engineering problem despite the “personal” ownership thesis. Rack, power distribution, cooling, fire safety, acoustic load, networking, maintainability, and component certification require professional design.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container narrow">
+      <p class="eyebrow">Before any purchase or build</p>
+      <h2>Turn the concept into an engineered bill of materials</h2>
+      <div class="validation-grid">
+        <article class="validation-card"><h3>1. Workload and model fit</h3><p>Name the models, quantization, context, concurrency, latency, and fine-tuning requirements. More GPUs are not automatically useful.</p></article>
+        <article class="validation-card"><h3>2. GPU edition and topology</h3><p>Fix the exact card, cooling edition, slot width, PCIe lane map, riser/MCIO design, and software’s multi-GPU behavior.</p></article>
+        <article class="validation-card"><h3>3. Power and electrical safety</h3><p>Engineer sustained and transient load, PSU derating, connectors, branch circuits, PDU, grounding, UPS, and emergency shutdown.</p></article>
+        <article class="validation-card"><h3>4. Thermal and acoustic design</h3><p>Model airflow, heat rejection, ambient limits, recirculation, fan curves, noise, dust, maintenance access, and component temperatures.</p></article>
+        <article class="validation-card"><h3>5. Chassis and structural design</h3><p>Validate clearances, brackets, cable bend radius, rack loading, center of gravity, vibration, serviceability, and fire-safe materials.</p></article>
+        <article class="validation-card"><h3>6. Governance and data boundary</h3><p>Local ownership does not automatically create privacy, security, clinical validity, HIPAA compliance, or institutional authorization. Personal and Community Nurse AI OS remain no-PHI and nonclinical.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <p class="eyebrow">Manufacturer references</p>
+      <h2>Verify the cards before engineering around them</h2>
+      <p class="quiet-note">The concept drawings are Robert Domondon’s design portfolio. Manufacturer pages are linked only to verify current GPU-level specifications; they do not validate these multi-GPU systems.</p>
+      <div class="source-links">
+        <a href="https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/" target="_blank" rel="noopener noreferrer">NVIDIA — GeForce RTX 5090 specifications ↗</a>
+        <a href="https://www.nvidia.com/en-us/products/workstations/professional-desktop-gpus/rtx-pro-6000-family/" target="_blank" rel="noopener noreferrer">NVIDIA — RTX PRO 6000 Blackwell family ↗</a>
+        <a href="https://docs.nvidia.com/enterprise-reference-architectures/rtx-pro-ai-factory/latest/components.html" target="_blank" rel="noopener noreferrer">NVIDIA — RTX PRO AI Factory reference architecture ↗</a>
+      </div>
+      <p style="margin-top:1.4rem;"><a class="btn btn-primary" href="../hardware.html">Review practical hardware tiers →</a> <a class="btn btn-quiet" href="../local-sovereign-systems/">Return to Local &amp; Sovereign Systems</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="../index.html">Home</a>
+      <a href="../start-here.html">Start Here</a>
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../about.html">About</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="mailto:robert@nurse-ai-os.org">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Concept portfolio, not a validated BOM or purchase recommendation.</p>
+  </div>
+</footer>
+<script src="../assets/site-shell.js" defer></script>
+</body>
+</html>

@@ -9,6 +9,7 @@ WEB_CARD = ROOT / "robert-domondon" / "index.html"
 LOCAL_SOVEREIGN_URL = (
     "https://nurse-ai-os.org/local-sovereign-systems/"
 )
+PERSONAL_DATACENTER_URL = "https://nurse-ai-os.org/personal-ai-datacenter/"
 
 
 class WebCardParser(HTMLParser):
@@ -62,6 +63,20 @@ class RobertWebCardTests(unittest.TestCase):
     def test_article_destination_is_not_claimed_as_person_same_as_metadata(self):
         metadata = json.loads("".join(self.parser.json_ld_text))
         self.assertNotIn(LOCAL_SOVEREIGN_URL, metadata["mainEntity"]["sameAs"])
+        self.assertNotIn(PERSONAL_DATACENTER_URL, metadata["mainEntity"]["sameAs"])
+
+    def test_personal_datacenter_gallery_is_linked(self):
+        matches = [
+            anchor
+            for anchor in self.parser.anchors
+            if anchor.get("href") == PERSONAL_DATACENTER_URL
+        ]
+        self.assertEqual(len(matches), 1)
+        anchor = matches[0]
+        self.assertIsNone(anchor.get("target"))
+        text = "".join(anchor["text"])
+        self.assertIn("Personal AI Datacenter Designs", text)
+        self.assertIn("View", text)
 
 
 if __name__ == "__main__":

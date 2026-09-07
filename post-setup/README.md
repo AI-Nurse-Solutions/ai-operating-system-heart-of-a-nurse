@@ -15,6 +15,8 @@ These are separate post-setup downloads for users who have already completed the
 
 Optional, separately governed MCP profile companions are published at `../hermes-role-profiles/downloads/` for FUTURE (`study-coach`), LEAD (`manager-lead`), and WINGS (`clinician-np`). They are not part of the immutable build-kit ZIPs. Downloading or unzipping changes nothing; every MCP remains disabled with zero tools, profile installation requires its own exact card, and each connector requires a second separate activation card and fresh approval.
 
+Non-nurse technologists and technical founders can use the separate browser-local Technical Ally SOUL Quiz at `../technical-ally-soul-quiz/`. It generates a self-reported Technical Ally SOUL, manager–ally collaboration charter, JSON profile, checksums, and static dashboard in one personalized ZIP. That ZIP is not a Hermes build kit, does not modify the immutable LEAD package, and grants no nursing, managerial, institutional, connector, deployment, or execution authority.
+
 ## What downloading does
 
 Nothing is installed or activated. Every package declares:

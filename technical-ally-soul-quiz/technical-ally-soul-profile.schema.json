@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.org/technical-ally-soul-quiz/technical-ally-soul-profile.schema.json",
+  "title": "Nurse AI OS Technical Ally SOUL Profile",
+  "description": "Structural shape for a self-reported, no-authority Technical Ally SOUL Quiz export. Schema validity does not authorize import, installation, deployment, or institutional use.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "schema_url", "profile_type", "generated_at", "self_reported", "import_authorized", "stewardship_confirmations", "identity", "collaboration", "venture", "result", "authority", "governance_posture"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "schema_url": { "const": "https://nurse-ai-os.org/technical-ally-soul-quiz/technical-ally-soul-profile.schema.json" },
+    "profile_type": { "const": "nurse-connected-technical-ally" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "self_reported": { "const": true },
+    "import_authorized": { "const": false },
+    "stewardship_confirmations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["noPhi", "noNursingAuthority", "nursesDecide", "noInstitutionalAuthority", "noUnapprovedAction"],
+      "properties": {
+        "noPhi": { "const": true },
+        "noNursingAuthority": { "const": true },
+        "nursesDecide": { "const": true },
+        "noInstitutionalAuthority": { "const": true },
+        "noUnapprovedAction": { "const": true }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["displayName", "backgrounds", "experience", "relationship"],
+      "properties": {
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "backgrounds": {
+          "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true,
+          "items": { "enum": ["software-engineering", "data-ai", "cybersecurity-privacy", "infrastructure-reliability", "automation-integrations", "product-ux-accessibility", "analytics-evaluation", "technical-business"] }
+        },
+        "experience": { "enum": ["learning", "practitioner", "senior", "founder"] },
+        "relationship": { "enum": ["invited-by-nurse", "existing-partner", "independent-builder", "technical-team-member", "learning-first"] }
+      }
+    },
+    "collaboration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contributionAreas", "managerNeeds", "firstOutcome", "outcomeDetail", "allyResponsibility", "nurseDecisionRights", "reviewCadence", "successSignal", "stopConditions"],
+      "properties": {
+        "contributionAreas": {
+          "type": "array", "minItems": 1, "maxItems": 9, "uniqueItems": true,
+          "items": { "enum": ["workflow-mapping", "prototype-building", "source-provenance", "model-evaluation", "security-boundaries", "reliability-operations", "product-experience", "business-validation", "training-facilitation"] }
+        },
+        "managerNeeds": {
+          "type": "array", "minItems": 1, "maxItems": 7, "uniqueItems": true,
+          "items": { "enum": ["meeting-action", "evidence-brief", "workflow-spec", "ai-governance", "evaluation", "implementation-plan", "technical-literacy"] }
+        },
+        "firstOutcome": { "enum": ["meeting-to-action", "evidence-to-brief", "workflow-map", "model-evaluation", "permission-boundary", "prototype-review", "venture-offer"] },
+        "outcomeDetail": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "allyResponsibility": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "nurseDecisionRights": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "reviewCadence": { "enum": ["weekly", "biweekly", "milestone"] },
+        "successSignal": { "type": "string", "minLength": 1, "maxLength": 360 },
+        "stopConditions": {
+          "type": "array", "minItems": 3, "maxItems": 7, "uniqueItems": true,
+          "items": { "enum": ["phi-sensitive-data", "authority-expansion", "nurse-disagreement", "unexpected-permission", "source-failure", "unsafe-unreliable", "uncompensated-extraction"] }
+        }
+      }
+    },
+    "venture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["businessStage", "businessModel", "businessBoundary", "nurseParticipation", "attributionCompensation", "evidenceBeforeClaims", "conflictDisclosure"],
+      "properties": {
+        "businessStage": { "enum": ["not-building", "exploring", "customer-discovery", "prototype", "repeat-use", "paid"] },
+        "businessModel": { "enum": ["not-sure-or-not-building", "professional-service", "workflow-product", "infrastructure-security", "education-facilitation", "open-source-support"] },
+        "businessBoundary": { "type": "string", "maxLength": 500 },
+        "nurseParticipation": { "const": true },
+        "attributionCompensation": { "const": true },
+        "evidenceBeforeClaims": { "const": true },
+        "conflictDisclosure": { "const": true }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_orientation", "primary_label", "supporting_orientations", "first_outcome", "first_move"],
+      "properties": {
+        "primary_orientation": { "$ref": "#/$defs/orientation" },
+        "primary_label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "supporting_orientations": { "type": "array", "maxItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/orientation" } },
+        "first_outcome": { "enum": ["meeting-to-action", "evidence-to-brief", "workflow-map", "model-evaluation", "permission-boundary", "prototype-review", "venture-offer"] },
+        "first_move": { "type": "string", "minLength": 1, "maxLength": 300 }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nursing_identity_verified", "nursing_authority_granted", "clinical_authority_granted", "managerial_authority_granted", "institutional_authority_granted", "deployment_authority_granted"],
+      "properties": {
+        "nursing_identity_verified": { "const": false },
+        "nursing_authority_granted": { "const": false },
+        "clinical_authority_granted": { "const": false },
+        "managerial_authority_granted": { "const": false },
+        "institutional_authority_granted": { "const": false },
+        "deployment_authority_granted": { "const": false }
+      }
+    },
+    "governance_posture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["edena", "autonomy", "execution", "connectors", "external_actions", "persistent_memory", "data"],
+      "properties": {
+        "edena": { "const": "not-evaluated" },
+        "autonomy": { "const": "A0-no-action" },
+        "execution": { "const": "draft-only" },
+        "connectors": { "const": "off" },
+        "external_actions": { "const": "off" },
+        "persistent_memory": { "const": "off" },
+        "data": { "const": "no-PHI; no patient, learner, workforce, credential, secret, or restricted institutional records" }
+      }
+    }
+  },
+  "$defs": {
+    "orientation": { "enum": ["workflow-engineer", "model-evidence-evaluator", "security-reliability-steward", "product-experience-builder", "technical-founder-operator"] }
+  }
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Technical Ally SOUL Quiz — Nurse AI OS</title>
+  <meta name="description" content="A focused, browser-local SOUL Quiz for non-nurse technologists who want to support nurse managers, build responsible products, and preserve nurse-led decision rights.">
+  <link rel="canonical" href="https://nurse-ai-os.org/technical-ally-soul-quiz/">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon-lamp.svg">
+  <link rel="stylesheet" href="../assets/nurse-ai.css">
+  <link rel="stylesheet" href="ally-quiz.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Technical Ally SOUL Quiz",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any modern browser",
+    "url": "https://nurse-ai-os.org/technical-ally-soul-quiz/",
+    "description": "A browser-local quiz and collaboration-dashboard generator for non-nurse technical allies supporting nurse managers.",
+    "author": { "@type": "Person", "name": "Robert Domondon" },
+    "publisher": { "@type": "Organization", "name": "Nurse AI OS" }
+  }
+  </script>
+</head>
+<body>
+<a class="skip-link" href="#quiz-app">Skip to the quiz</a>
+<header class="ally-hero">
+  <div class="container">
+    <a class="ally-brand" href="../index.html">🕯️ Nurse AI OS</a>
+    <p class="kicker">For non-nurse technologists who choose to stand beside nurses</p>
+    <h1>Technical skill in service of nurse-led work</h1>
+    <p class="lede">Build your Technical Ally SOUL, define what you can contribute, preserve what nurses must decide, and download a personalized collaboration dashboard you can review with a nurse manager.</p>
+    <ul class="hero-pills" aria-label="Quiz characteristics">
+      <li>Separate from the nurse SOUL Quiz</li>
+      <li>Browser-local</li>
+      <li>No account or upload</li>
+      <li>No PHI</li>
+      <li>Results + dashboard ZIP</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <section class="ally-boundary-strip">
+    <div class="container">
+      <strong>Technical access is not nursing authority.</strong> This quiz records a self-reported collaboration orientation. It verifies no credentials, competence, partnership, appointment, employment, endorsement, institutional permission, or right to represent nurses.
+    </div>
+  </section>
+
+  <section class="section quiz-section">
+    <div class="container quiz-container">
+      <div class="quiz-toolbar">
+        <div>
+          <strong>Your local working draft</strong>
+          <p id="quiz-status" aria-live="polite">Nothing is sent to Nurse AI OS.</p>
+        </div>
+        <button id="reset-quiz" class="btn btn-quiet" type="button">Reset this tab</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-meta"><strong id="quiz-progress-label">Step 1 of 6</strong><span>Focused collaboration before capability expansion.</span></div>
+        <div class="progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="17"><div id="quiz-progress"></div></div>
+      </div>
+      <div id="quiz-app" class="quiz-app" tabindex="-1">
+        <noscript><div class="boundary"><strong>JavaScript is required.</strong> It runs locally to build and download your files; this page does not submit your answers.</div></noscript>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt guidance-section">
+    <div class="container">
+      <p class="eyebrow">The collaboration doctrine</p>
+      <h2>Allies extend technical capacity without inheriting nursing authority</h2>
+      <div class="guidance-grid">
+        <article class="guidance-card"><h3>The ally contributes</h3><p>Engineering, data, security, infrastructure, automation, product, accessibility, evaluation, teaching, or business-building capability.</p></article>
+        <article class="guidance-card"><h3>The nurse defines</h3><p>Nursing meaning, professional priorities, workflow reality, acceptable burden, escalation needs, and the consequences for nurses and care.</p></article>
+        <article class="guidance-card"><h3>Authorized humans decide</h3><p>Clinical, staffing, employment, procurement, compliance, financial, legal, and institutional decisions remain with properly authorized people and organizations.</p></article>
+        <article class="guidance-card"><h3>The venture earns legitimacy</h3><p>Nurse participation must materially change the product. Attribution, ownership, compensation, dissent, and withdrawal terms are agreed before commercialization.</p></article>
+      </div>
+      <div class="boundary" style="margin-top:1.4rem;"><strong>Not a build kit.</strong> The generated ZIP contains your local quiz results, a collaboration charter, checksums, and a static manager-facing dashboard. Opening it does not install Hermes, activate agents, connect services, or authorize institutional use.</div>
+      <p class="source-note"><a href="technical-ally-soul-profile.schema.json">Inspect the structural JSON profile schema →</a> Schema validity does not authorize import, installation, deployment, or institutional use.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <p class="eyebrow">Already operating as a nurse manager?</p>
+      <h2>Keep the manager and technical-ally roles separate</h2>
+      <p>This quiz is for the non-nurse technical collaborator. The nurse manager retains a separate SOUL, role package, decision rights, and institutional context. The generated dashboard is a shared review artifact—not a merged identity or shared authority envelope.</p>
+      <p><a class="btn btn-primary" href="../post-setup/#choose-role">Open Nurse Manager downloads →</a> <a class="btn btn-quiet" href="../soul-quiz.html">Open the nursing SOUL Quiz</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <div class="footer-links">
+      <a href="../index.html">Home</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../post-setup/">Role packages</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="mailto:robert@nurse-ai-os.org">Contact</a>
+    </div>
+    <p>© 2026 Nurse AI OS · Browser-local, no-PHI technical-ally orientation.</p>
+  </div>
+</footer>
+<script type="module" src="ally-quiz-app.mjs"></script>
+</body>
+</html>

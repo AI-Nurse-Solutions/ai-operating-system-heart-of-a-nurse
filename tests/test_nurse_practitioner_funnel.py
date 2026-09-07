@@ -207,7 +207,7 @@ class NursePractitionerFunnelTests(unittest.TestCase):
         self.assertIn("If you send an optional field note", privacy)
         self.assertIn("testimonial use, publication, or research use", privacy)
         self.assertIn("separate, specific consent", privacy)
-        self.assertIn("Effective date: July 26, 2026", privacy)
+        self.assertIn("Effective date: September 5, 2026", privacy)
 
     def test_research_note_is_qualified_and_linked_to_current_sources(self) -> None:
         for url in (

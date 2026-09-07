@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import base64
+from datetime import datetime
 import hashlib
 import json
 import subprocess
@@ -37,6 +38,60 @@ def node_eval(source: str) -> Any:
     if completed.returncode != 0:
         raise AssertionError(f"node_eval failed ({completed.returncode}):\n{completed.stderr}")
     return json.loads(completed.stdout)
+
+
+def validate_schema_subset(instance: Any, schema: dict[str, Any], root: dict[str, Any] | None = None, path: str = "$") -> list[str]:
+    """Validate the closed keywords used by this profile schema without third-party packages."""
+    root = root or schema
+    if "$ref" in schema:
+        target: Any = root
+        for part in schema["$ref"].removeprefix("#/").split("/"):
+            target = target[part]
+        return validate_schema_subset(instance, target, root, path)
+    errors: list[str] = []
+    if "const" in schema and instance != schema["const"]:
+        errors.append(f"{path}: expected const {schema['const']!r}")
+    if "enum" in schema and instance not in schema["enum"]:
+        errors.append(f"{path}: value is outside enum")
+    expected_type = schema.get("type")
+    type_ok = {
+        "object": isinstance(instance, dict),
+        "array": isinstance(instance, list),
+        "string": isinstance(instance, str),
+        "boolean": isinstance(instance, bool),
+    }.get(expected_type, True)
+    if not type_ok:
+        return errors + [f"{path}: expected {expected_type}"]
+    if isinstance(instance, dict):
+        required = set(schema.get("required", []))
+        errors.extend(f"{path}: missing {key}" for key in sorted(required - set(instance)))
+        properties = schema.get("properties", {})
+        if schema.get("additionalProperties") is False:
+            errors.extend(f"{path}: unknown {key}" for key in sorted(set(instance) - set(properties)))
+        for key, value in instance.items():
+            if key in properties:
+                errors.extend(validate_schema_subset(value, properties[key], root, f"{path}.{key}"))
+    if isinstance(instance, list):
+        if len(instance) < schema.get("minItems", 0):
+            errors.append(f"{path}: too few items")
+        if "maxItems" in schema and len(instance) > schema["maxItems"]:
+            errors.append(f"{path}: too many items")
+        if schema.get("uniqueItems") and len({json.dumps(item, sort_keys=True) for item in instance}) != len(instance):
+            errors.append(f"{path}: duplicate items")
+        if "items" in schema:
+            for index, value in enumerate(instance):
+                errors.extend(validate_schema_subset(value, schema["items"], root, f"{path}[{index}]"))
+    if isinstance(instance, str):
+        if len(instance) < schema.get("minLength", 0):
+            errors.append(f"{path}: string too short")
+        if "maxLength" in schema and len(instance) > schema["maxLength"]:
+            errors.append(f"{path}: string too long")
+        if schema.get("format") == "date-time":
+            try:
+                datetime.fromisoformat(instance.replace("Z", "+00:00"))
+            except ValueError:
+                errors.append(f"{path}: invalid date-time")
+    return errors
 
 
 def valid_state_js() -> str:
@@ -164,37 +219,33 @@ class TechnicalAllySoulQuizTests(unittest.TestCase):
         self.assertEqual(result["crc"], "cbf43926")
 
     def test_export_passes_closed_structural_schema_and_rejects_authority_escalation(self) -> None:
-        result = node_eval(f"""
-          import fs from 'node:fs';
-          import Ajv from 'ajv/dist/2020.js';
+        profile = node_eval(f"""
           import {{createInitialState,buildProfile}} from './technical-ally-soul-quiz/ally-quiz-model.mjs';
           {valid_state_js()}
-          const schema=JSON.parse(fs.readFileSync('./technical-ally-soul-quiz/technical-ally-soul-profile.schema.json','utf8'));
-          const ajv=new Ajv({{strict:false,formats:{{'date-time':true}}}}); const validate=ajv.compile(schema);
           const profile=buildProfile(state,'2026-09-05T00:00:00.000Z');
-          const valid=validate(profile); const elevated=JSON.parse(JSON.stringify(profile)); elevated.authority.managerial_authority_granted=true;
-          const elevatedValid=validate(elevated); const unknown=JSON.parse(JSON.stringify(profile)); unknown.extra='unsafe'; const unknownValid=validate(unknown);
-          console.log(JSON.stringify({{valid,errors:validate.errors,elevatedValid,unknownValid}}));
+          console.log(JSON.stringify(profile));
         """)
-        self.assertTrue(result["valid"])
-        self.assertFalse(result["elevatedValid"])
-        self.assertFalse(result["unknownValid"])
+        schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+        self.assertEqual(validate_schema_subset(profile, schema), [])
+        elevated = json.loads(json.dumps(profile))
+        elevated["authority"]["managerial_authority_granted"] = True
+        self.assertTrue(validate_schema_subset(elevated, schema))
+        unknown = json.loads(json.dumps(profile))
+        unknown["extra"] = "unsafe"
+        self.assertTrue(validate_schema_subset(unknown, schema))
 
     def test_semantic_validator_rejects_schema_valid_derived_result_contradictions(self) -> None:
         result = node_eval(f"""
-          import fs from 'node:fs';
-          import Ajv from 'ajv/dist/2020.js';
           import {{createInitialState,buildProfile,validateProfileSemantics}} from './technical-ally-soul-quiz/ally-quiz-model.mjs';
           {valid_state_js()}
-          const schema=JSON.parse(fs.readFileSync('./technical-ally-soul-quiz/technical-ally-soul-profile.schema.json','utf8'));
-          const ajv=new Ajv({{strict:false,formats:{{'date-time':true}}}}); const validate=ajv.compile(schema);
           const profile=buildProfile(state,'2026-09-05T00:00:00.000Z');
           profile.result.primary_orientation='model-evidence-evaluator';
           profile.result.primary_label='Model and Evidence Evaluator';
           profile.result.first_move='Run one source-linked local-versus-frontier comparison in shadow mode.';
-          console.log(JSON.stringify({{schemaValid:validate(profile),semantic:validateProfileSemantics(profile)}}));
+          console.log(JSON.stringify({{profile,semantic:validateProfileSemantics(profile)}}));
         """)
-        self.assertTrue(result["schemaValid"], "portable schema intentionally cannot derive scoring results")
+        schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+        self.assertEqual(validate_schema_subset(result["profile"], schema), [], "portable schema intentionally cannot derive scoring results")
         self.assertFalse(result["semantic"]["valid"])
         self.assertTrue(any("orientation" in error.casefold() for error in result["semantic"]["errors"]))
 

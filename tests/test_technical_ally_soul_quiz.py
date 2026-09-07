@@ -25,6 +25,7 @@ POST_SETUP = ROOT / "post-setup" / "index.html"
 NURSE_QUIZ = ROOT / "soul-quiz.html"
 PRIVACY = ROOT / "privacy.html"
 TERMS = ROOT / "terms.html"
+WEBSITE_WORKFLOW = ROOT / ".github" / "workflows" / "website-alignment.yml"
 PUBLIC_URL = "https://nurse-ai-os.org/technical-ally-soul-quiz/"
 
 
@@ -333,6 +334,15 @@ class TechnicalAllySoulQuizTests(unittest.TestCase):
         self.assertIn("Completing a Technical Ally profile", terms)
         self.assertIn("does not verify technical competence", terms)
         self.assertIn("planning draft, not a contract", terms)
+
+    def test_website_alignment_runs_for_technical_ally_sources_and_tests(self) -> None:
+        workflow = WEBSITE_WORKFLOW.read_text(encoding="utf-8")
+        for path in (
+            '"technical-ally-soul-quiz/**"',
+            '"tests/test_technical_ally_soul_quiz.py"',
+            '"tests/test_technical_ally_soul_quiz_browser.mjs"',
+        ):
+            self.assertEqual(workflow.count(path), 2, f"{path} must trigger pull_request and main push verification")
 
     def test_quiz_has_no_submission_or_network_execution_path(self) -> None:
         combined = PAGE.read_text(encoding="utf-8") + APP.read_text(encoding="utf-8") + MODEL.read_text(encoding="utf-8")

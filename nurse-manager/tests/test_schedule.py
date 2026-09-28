@@ -328,6 +328,37 @@ class RetryTests(_Case):
         self.assertEqual((result["outcome"], result["week_of"]), ("failed", "2026-10-05"))
         self.assertEqual(self.revisions(), [])
 
+    def test_an_ended_carried_retry_is_not_revived_by_moving_the_hour_later(self):
+        self.turn_on(weekday=0, hour=7)
+        self.clock.set(MONDAY + timedelta(days=6, hours=23, minutes=50))  # late catch-up
+        with self.fail_drafting(1):
+            self.assertEqual(self.schedule().run_due()["outcome"], "failed")
+        # Closed until after the new week's time: that week drafts, and last
+        # week's retry is ended for good.
+        self.clock.set(MONDAY + timedelta(days=7, hours=9))
+        self.assertEqual(self.schedule().run_due()["week_of"], "2026-10-05")
+        old = self.ws.store.conn.execute(
+            "SELECT * FROM brief_runs WHERE week_of = '2026-09-28'").fetchone()
+        self.assertIsNone(old["next_attempt_at"])
+        self.assertIn("The week ended before it could be tried again.", old["reason"])
+        # Moving this week's hour later cannot bring the old retry back.
+        self.turn_on(weekday=0, hour=21)
+        self.assertEqual(self.schedule().run_due()["outcome"], "not_due")
+        self.assertEqual(self.schedule().view()["next_at"], "2026-10-12T21:00:00+00:00")
+        self.assertEqual(self.revisions("2026-09-28"), [])
+
+    def test_no_carried_retry_once_this_week_has_its_own_run(self):
+        self.turn_on(weekday=0, hour=7)
+        self.clock.set(MONDAY + timedelta(days=6, hours=23, minutes=50))
+        with self.fail_drafting(99):
+            self.schedule().run_due()  # last week: failed, retry pending
+            self.clock.set(MONDAY + timedelta(days=7, hours=9))
+            self.assertEqual(self.schedule().run_due()["week_of"], "2026-10-05")  # fails too
+        self.turn_on(weekday=0, hour=21)  # later again: this week has a run
+        self.clock.set(MONDAY + timedelta(days=7, hours=10))
+        self.assertEqual(self.schedule().run_due()["outcome"], "not_due")
+        self.assertEqual(self.revisions("2026-09-28"), [])
+
     def test_the_next_time_shown_is_the_retry_then_next_week_after_giving_up(self):
         self.turn_on()
         start = MONDAY + timedelta(hours=8)

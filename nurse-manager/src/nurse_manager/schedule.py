@@ -99,7 +99,7 @@ class BriefSchedule:
             at = self.due_at(week, settings["weekday"], settings["hour"])
             run = self._run(week.isoformat())
             carried = self._run((week - timedelta(days=7)).isoformat())
-            if now < at and _retry_pending(carried):
+            if now < at and run is None and _retry_pending(carried):
                 # Last week's retry still runs, until this week's own time.
                 at = datetime.fromisoformat(carried["next_attempt_at"]).astimezone(at.tzinfo)
             elif run is not None and run["status"] == "failed" and run["next_attempt_at"]:
@@ -146,14 +146,19 @@ class BriefSchedule:
                 week = monday_of(now.date())
                 week_of = week.isoformat()
                 stamp = _utc(now)
+                carried_over = (week - timedelta(days=7)).isoformat()
                 if now < self.due_at(week, settings["weekday"], settings["hour"]):
                     # Before this week's time, a retry still pending from last
-                    # week (a late-Sunday failure, say) gets its turn; this
-                    # week's own time ends it, so a draft is never days late.
-                    carried_over = (week - timedelta(days=7)).isoformat()
-                    if not _retry_pending(self._run(carried_over)):
+                    # week (a late-Sunday failure, say) gets its turn, but only
+                    # while this week has no run of its own.
+                    if (self._run(week_of) is not None
+                            or not _retry_pending(self._run(carried_over))):
                         return _result("not_due", week_of)
                     week_of = carried_over
+                else:
+                    # This week's time has come: last week's pending retry ends
+                    # here, for good, so moving the hour later cannot revive it.
+                    self._end_carried_retry(db, carried_over, stamp)
                 run = self._run(week_of)
                 if run is not None:
                     if run["status"] != "failed":
@@ -177,6 +182,17 @@ class BriefSchedule:
                 return _result(status, week_of, self._run(week_of))
         except Exception as exc:  # noqa: BLE001 - any failure is recorded and retried
             return self._failed(week_of, now, exc)
+
+    def _end_carried_retry(self, db, week_of: str, stamp: str) -> None:
+        run = self._run(week_of)
+        if _retry_pending(run):
+            db.execute(
+                "UPDATE brief_runs SET next_attempt_at = NULL, reason = ?, updated_at = ?"
+                " WHERE workspace_id = ? AND week_of = ? AND status = 'failed'",
+                (run["reason"] + " The week ended before it could be tried again.", stamp,
+                 self.ws.info.id, week_of),
+            )
+            self.ws.store.log("scheduler", "expired", "brief_run", week_of)
 
     def _failed(self, week_of: str, now: datetime, exc: Exception) -> dict[str, Any]:
         stamp = _utc(now)

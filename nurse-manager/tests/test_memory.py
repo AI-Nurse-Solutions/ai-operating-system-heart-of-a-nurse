@@ -62,6 +62,10 @@ class ContractTests(_Case):
         self.assertEqual(self.mem.recall(self.ws.info.id, "viewer", "Held back"), ())
         self.assertNotIn("Held back", compose_project_context(self.ws, self.huddle, TODAY)[0])
         stored = self.mem.remember(record, "remember")
+        # What remember() returns is exactly what was stored (and recalled).
+        (recalled,) = self.mem.recall(self.ws.info.id, "any", "Keep it short.")
+        self.assertEqual(stored, recalled)
+        self.assertNotEqual(stored.created_at, "x")
         self.assertEqual((stored.content, stored.quarantined), ("Keep it short.", False))
         self.assertEqual(self.mem.recall("ws-000000000000", "any", ""), ())
         self.assertIn("Keep it short.", [r.content for r in self.mem.recall(

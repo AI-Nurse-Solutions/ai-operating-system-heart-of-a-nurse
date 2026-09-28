@@ -23,7 +23,6 @@ The Personal Manager profile adds its own:
 
 from __future__ import annotations
 
-from dataclasses import replace
 from typing import Any
 
 from ._naio import VALID_CONSENT, MemoryInterface, MemoryRecord
@@ -119,7 +118,10 @@ class WorkspaceMemory(MemoryInterface):
                  record.provenance, status, expires, now, now),
             )
             self.ws.store.log(self.ws.info.owner, "create", "memory", record.memory_id)
-        return replace(record, content=content, expires_at=expires)
+        # Return what was stored, not what was asked for: the workspace clock is
+        # the authority for when a memory was stored, and the text and expiry
+        # are normalized, so the result always matches a later recall().
+        return _record(self._require(record.memory_id))
 
     def recall(self, tenant: str, role: str, query: str) -> tuple[MemoryRecord, ...]:
         """Active, unexpired memories whose text contains ``query``.

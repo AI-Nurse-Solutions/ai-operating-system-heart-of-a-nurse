@@ -466,6 +466,9 @@ class AssistantService:
         records changed since, nothing is sent and nothing is drafted.
         """
         self._owner(requested_by)
+        # The request begins now: a stop from here on abandons it, even if
+        # assistants are let work again before it reaches the model.
+        started = self.control.state()["generation"]
         prep = self._prepare(week_of, today)
         body, refs, settings, provider = prep.body, prep.refs, prep.settings, prep.provider
         if (reviewed_prompt_sha256 is not None and provider is not None
@@ -482,7 +485,7 @@ class AssistantService:
 
         request_id, text, failure, cost, generation = self._send(
             provider, SYSTEM_PROMPT, prompt, prompt_sha, estimate, refs, requested_by,
-            "weekly_brief", "The AI draft was not saved")
+            "weekly_brief", "The AI draft was not saved", started)
         if failure:
             return self._fallback(week_of, body, refs, requested_by, settings, failure[0],
                                   failure[1], provider=provider, request_id=request_id,
@@ -512,24 +515,26 @@ class AssistantService:
 
     def _send(self, provider: Provider, system: str, prompt: str, prompt_sha: str,
               estimate: int, refs: list[str], by: str, task: str, refused: str,
-              ) -> tuple[str, str, tuple[str, str] | None, int | None, int]:
+              started: int) -> tuple[str, str, tuple[str, str] | None, int | None, int]:
         """Call the provider once and check what comes back.
 
-        Returns (request id, checked text, failure, cost, stop generation).
+        ``started`` is the stop generation when the request began, before it
+        was prepared. Returns (request id, checked text, failure, cost, stop
+        generation).
         The request is recorded before the call, so an interrupted one still
         counts, and it is left unfinished while it runs, which is how
         "Assistants at work" shows it. The caller saves a result only if
         ``_stopped_since(generation)`` is false inside its write.
         """
+        generation = started
         with self.ws.store.transaction():
-            # A stop saved after the preview but before this is honoured here.
-            control = self.control.state()
-            if control["stopped"]:
+            # A stop saved since the request began (while it was prepared, even
+            # if assistants were let work again since) is honoured here.
+            if self._stopped_since(generation):
                 return (self._record(provider, prompt_sha, *STOPPED_BEFORE, 0, by, task),
-                        "", STOPPED_BEFORE, 0, control["generation"])
+                        "", STOPPED_BEFORE, 0, generation)
             request_id = self._record(provider, prompt_sha, "provider_failed",
                                       "interrupted before the model replied", estimate, by, task)
-        generation = control["generation"]
 
         # The provider is called on its own thread, so a stop is noticed while
         # it works: the request is abandoned at once and its reply discarded.
@@ -626,6 +631,7 @@ class AssistantService:
         bound to the preview the manager reviewed.
         """
         self._owner(requested_by)
+        started = self.control.state()["generation"]  # as for the brief
         prep = self._prepare_project(project_id, question, today)
         provider = prep.provider
 
@@ -656,7 +662,7 @@ class AssistantService:
             return result(outcome, reason, request_id)
         request_id, text, failure, cost, generation = self._send(
             provider, PROJECT_SYSTEM_PROMPT, prep.prompt, prep.prompt_sha, prep.estimate,
-            prep.refs, requested_by, "project_question", "The AI answer was not shown")
+            prep.refs, requested_by, "project_question", "The AI answer was not shown", started)
         if failure:
             self._finish(request_id, failure[0], failure[1], cost, None)
             return result(failure[0], failure[1], request_id)

@@ -283,6 +283,29 @@ class StoppedBeforeSendingTests(_Case):
         self.assertEqual(result["outcome"], "refused_stopped")
         self.assertEqual(model.calls, 0)
 
+    def test_a_stop_and_restart_while_the_request_is_prepared_still_refuses_it(self):
+        # The request began before the stop, so it stays abandoned even though
+        # assistants were let work again before it reached the model.
+        model = HeldModel(cited_lines, during=lambda: None)
+        service = self.service(model)
+        project_id = self.ws.store.conn.execute("SELECT id FROM projects LIMIT 1").fetchone()[0]
+        gates = AssistantService._gates
+
+        def stop_and_restart_during_the_gates(self_, *args, **kwargs):
+            AssistantControl(self_.ws).stop(OWNER)
+            AssistantControl(self_.ws).resume(OWNER)
+            return gates(self_, *args, **kwargs)
+
+        with mock.patch.object(AssistantService, "_gates", stop_and_restart_during_the_gates):
+            brief = service.draft_weekly_brief(WEEK, TODAY, OWNER)
+            answer = service.answer_project_question(project_id, "Next?", TODAY, OWNER)
+        self.assertEqual((brief["outcome"], answer["outcome"]),
+                         ("refused_stopped", "refused_stopped"))
+        self.assertEqual((answer["answer"], model.calls), ("", 0))
+        self.assertEqual(self.model_drafts(), [])
+        # Asked again after the restart, it goes ahead.
+        self.assertEqual(service.draft_weekly_brief(WEEK, TODAY, OWNER)["outcome"], "drafted")
+
     def test_letting_assistants_work_again_is_explicit_and_owner_only(self):
         with self.assertRaises(ManagerError):
             self.control.stop("Someone Else")

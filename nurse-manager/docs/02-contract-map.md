@@ -45,7 +45,34 @@ authorship: Substantially AI-generated (Claude Code) with human review pending
 | red-e | red | Red | unreachable |
 | red-p | red_blocked | Red | blocked |
 
-## 4. Record-writer register
+## 4. Florence-X adapter (build step 2.11)
+
+`src/nurse_manager/florence_adapter.py` turns a manager action into
+Florence-X `CandidateAction` and `EDENADecision` dicts. It is a one-way
+projection; Florence-X types are never written back into manager tables.
+
+| Manager field | Florence-X field | Rule |
+|---|---|---|
+| `actions.id` | `action_id` | unchanged |
+| workspace + artifact | `workflow_run_id` | `nurse-manager:<workspace>:<artifact>` |
+| `origin`/`proposed_by` | `agent_id` | human → `human:workspace-owner:<workspace>`; assistant → `assistant:<role>`. **Names never cross.** |
+| — | `requester_role` | `nurse_manager` |
+| `effect` | `action_type`, `reversible`, `external_boundary_crossed` | `export_markdown` → `write_record`, reversible, internal; send/post → `send_message`, irreversible, external; publish/upload/delete → `call_api`. Unknown effects raise. |
+| `destination` | `intended_target` | `workspace-exports:<file>` |
+| workspace profile | `data_classification` | `internal` (D0/D1 mix; the conservative choice) |
+| `payload_sha256` | `proposed_payload_hash` | `sha256:<full hex>`; content never crosses |
+| revision + `source_refs` | `evidence_refs` | revision id first, then cited record ids |
+| `tier` | `risk_hint` / `risk_tier` | green→green, yellow→yellow, red→**red_blocked** |
+| `policy_decision` | `decision` | allow→allow, require_approval→require_human, deny→deny |
+| `policy_reasons` | `rationale` | reason codes, verbatim |
+| profile (+ gateway) version | `policy_pack_version` | `nurse-manager-personal-profile@v`, plus `+edena-gateway-policy@v` for assistants |
+
+The contract is enforced two ways:
+
+- `contracts/florence-x/` holds unmodified copies of Florence-X's JSON Schemas, pinned by commit and hash. Every test run validates against them.
+- The CI job `florence-x-contract` installs Florence-X at the same commit, validates against its Pydantic models (`extra="forbid"`), and checks the pinned copies byte-for-byte.
+
+## 5. Record-writer register
 
 One logical writer per record type. Views never write.
 

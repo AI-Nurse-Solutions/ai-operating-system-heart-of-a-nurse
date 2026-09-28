@@ -56,7 +56,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 2.8 | Backup and restore never silently discard newer records | ✅ | `test_restore_refuses_to_discard_newer_work` |
 | 2.9 | Create → review → save → close → reopen → export | ✅ | `test_create_review_save_close_reopen`, `CliJourneyTests` |
 | 2.10 | Concern, containment, and preservation-hold records carried over from the prior plan | ⬜ | Needs the prior plan's definitions (S1 was not available here) |
-| 2.11 | Align action records to Florence-X `CandidateAction`/`EDENADecision` via an adapter | ⬜ | Round-trip test against `florence-x` schemas |
+| 2.11 | Align action records to Florence-X `CandidateAction`/`EDENADecision` via an adapter | ✅ | `test_florence_adapter.py`: pinned JSON Schemas always, Florence-X Pydantic models in the `florence-x-contract` CI job |
+| 2.12 | Map receipts and the event log to Florence-X `EvidenceBundle` | ⬜ | Florence-X publishes no JSON Schema for it yet; needs its model or a published schema |
 
 ## G3 — Unified manager views (NM-002, NM-007)
 

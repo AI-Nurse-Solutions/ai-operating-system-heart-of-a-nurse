@@ -54,6 +54,8 @@ the desktop host calls. Each command reopens the workspace from disk.
 | `src/nurse_manager/views.py` | Mission Control, board, and table read models over the same ids |
 | `src/nurse_manager/brief.py` | Deterministic weekly brief; revisions; acceptance bound to text hash |
 | `src/nurse_manager/actions.py` | Governed action boundary: propose → evaluate → approve → recheck → execute → receipt |
+| `src/nurse_manager/florence_adapter.py` | Projects actions onto Florence-X `CandidateAction` / `EDENADecision` (no names, hash not content) |
+| `contracts/florence-x/` | Pinned, unmodified Florence-X JSON Schemas with provenance |
 | `config/manager-profile-policy.json` | Personal Manager effect table (narrows only; see ADR 0002) |
 | `design/tokens.json` | Design tokens with contrast requirements enforced by tests |
 | `samples/synthetic-week.json` | Synthetic sample manager week |

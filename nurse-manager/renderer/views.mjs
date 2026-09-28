@@ -1340,6 +1340,7 @@ export function renderLearning(doc, data, options) {
  * @property {Notice} [notice]
  * @property {string | null} [verifying] the draft whose evidence form is open
  * @property {ContributionTyped} [typed] what the manager has typed and not saved, kept across re-renders
+ * @property {'add' | string} [saving] the form whose save is in flight ('add', or a contribution id); it is read-only until the save finishes
  * @property {(fields: Record<string, string>) => void} onAdd
  * @property {(id: string) => void} onOpenVerify
  * @property {() => void} onCancelVerify
@@ -1420,6 +1421,7 @@ export function renderContributions(doc, data, options) {
         id: `evidence-${item.id}`, rows: '2', required: '', maxlength: '1000',
       }));
       evidence.value = typed.evidence[item.id] ?? '';
+      evidence.readOnly = busy && options.saving === item.id;
       const done = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Verify']));
       done.disabled = busy;
       const form = h(doc, 'form', { class: 'onboarding-form' }, [
@@ -1484,6 +1486,13 @@ export function renderContributions(doc, data, options) {
   project.value = adding.project_id ?? '';
   const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Save as draft']));
   submit.disabled = busy;
+  // The submitted form is read-only while its own save is in flight, so what was
+  // saved is exactly what is shown; the other form stays open for typing.
+  if (busy && options.saving === 'add') {
+    for (const control of [title, occurred, myPart, shared]) control.readOnly = true;
+    kind.disabled = true;
+    project.disabled = true;
+  }
   /** @param {string} id @param {string} label @param {HTMLElement} control @param {string} [hint] */
   const field = (id, label, control, hint) => h(doc, 'p', { class: 'field' }, [
     h(doc, 'label', { for: id }, [label]),

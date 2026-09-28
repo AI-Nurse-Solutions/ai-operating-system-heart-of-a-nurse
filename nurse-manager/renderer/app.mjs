@@ -626,9 +626,10 @@ export function start(doc, source) {
      */
     const act = async (command, body, done) => {
       const before = typedNow();
-      main.replaceChildren(renderContributions(doc, data, { ...options, ...state, typed: before, busy: true }));
-      // The fields stay editable while the request is in flight, so read them
-      // again from the busy view afterwards: nothing typed meanwhile is lost.
+      const saving = command === 'contribution-add' ? 'add' : body.contribution_id;
+      main.replaceChildren(renderContributions(doc, data, { ...options, ...state, typed: before, busy: true, saving }));
+      // The submitted form is read-only while it saves; the other stays editable,
+      // so read the view again afterwards: nothing typed meanwhile is lost.
       const latest = () => typedContributions(main, before);
       const { failure } = await write(command, body);
       if (mine !== generation) return;

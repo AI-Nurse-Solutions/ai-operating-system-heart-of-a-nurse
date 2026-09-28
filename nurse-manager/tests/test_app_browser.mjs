@@ -211,8 +211,19 @@ try {
   assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Drafted the template and tested it at two meetings.');
   assert.equal(await samplePage.getByLabel('Kind').inputValue(), 'committee');
   await samplePage.getByLabel('Who shares the credit').fill('Unit Based Council members');
+  // While its own save is in flight, the submitted form is read-only.
+  let releaseAdd = () => {};
+  const addHeld = new Promise((resolve) => { releaseAdd = resolve; });
+  await samplePage.route('**/ipc/contribution-add', async (route) => { await addHeld; await route.continue(); });
   await samplePage.getByRole('button', { name: 'Save as draft' }).click();
+  await samplePage.waitForSelector('#contribution-title[readonly]');
+  for (const label of ['What was the contribution?', 'Your part', 'Who shares the credit', 'Kind']) {
+    assert.equal(await samplePage.getByLabel(label).isEditable(), false, `${label} is read-only while saving`);
+  }
+  releaseAdd();
   await samplePage.waitForFunction(() => /Saved “Rewrote the council agenda/.test(document.activeElement?.textContent ?? ''));
+  await samplePage.unroute('**/ipc/contribution-add');
+  assert.equal(await samplePage.getByLabel('What was the contribution?').isEditable(), true);
   const draft = samplePage.getByRole('region', { name: 'Drafts awaiting evidence (2)' }).getByRole('listitem').filter({ hasText: 'Rewrote the council agenda' });
   assert.match(await draft.textContent(), /Project: Unit Based Council charter refresh.*Shared credit: Unit Based Council members/s);
   // Evidence typed for one draft survives switching to another draft and back.

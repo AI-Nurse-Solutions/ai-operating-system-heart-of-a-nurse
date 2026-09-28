@@ -215,6 +215,15 @@ try {
   await samplePage.waitForFunction(() => /Saved “Rewrote the council agenda/.test(document.activeElement?.textContent ?? ''));
   const draft = samplePage.getByRole('region', { name: 'Drafts awaiting evidence (2)' }).getByRole('listitem').filter({ hasText: 'Rewrote the council agenda' });
   assert.match(await draft.textContent(), /Project: Unit Based Council charter refresh.*Shared credit: Unit Based Council members/s);
+  // Evidence typed for one draft survives switching to another draft and back.
+  await sampleDraft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await samplePage.keyboard.type('Huddle notes from week one (synthetic).');
+  await draft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await sampleDraft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  assert.equal(await samplePage.getByLabel('What shows it happened?').inputValue(), 'Huddle notes from week one (synthetic).');
   await draft.getByRole('button', { name: 'Verify with evidence…' }).click();
   await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
   await samplePage.keyboard.type('Template adopted in the council minutes (synthetic). Ask manager@example.org');

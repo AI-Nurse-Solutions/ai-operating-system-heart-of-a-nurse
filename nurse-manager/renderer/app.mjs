@@ -615,13 +615,17 @@ export function start(doc, source) {
    */
   const showContributions = (data, state, moveFocus, focusSelector) => {
     const mine = generation;
+    // What is typed but unsaved, including evidence for drafts whose form is closed.
+    const typedNow = () => typedContributions(main, state.typed);
+    /** @param {Record<string, string>} evidence @param {string} id */
+    const without = (evidence, id) => Object.fromEntries(Object.entries(evidence).filter(([key]) => key !== id));
     /**
      * @param {WriteCommand} command
      * @param {Record<string, string>} body
      * @param {string} done
      */
     const act = async (command, body, done) => {
-      const typed = typedContributions(main);
+      const typed = typedNow();
       main.replaceChildren(renderContributions(doc, data, { ...options, ...state, typed, busy: true }));
       const { failure } = await write(command, body);
       if (mine !== generation) return;
@@ -631,19 +635,24 @@ export function start(doc, source) {
       }
       const fresh = await reload('contributions', mine);
       // Re-render from the fresh records, so every button acts on them. The saved
-      // form starts empty; the other form keeps what was typed in it.
+      // form starts empty; everything else keeps what was typed in it.
       if (!fresh) return;
       const next = command === 'contribution-add'
         ? { verifying: state.verifying, typed: { add: {}, evidence: typed.evidence } }
-        : { typed: { add: typed.add, evidence: null } };
+        : { typed: { add: typed.add, evidence: without(typed.evidence, body.contribution_id) } };
       showContributions(/** @type {import('./views.mjs').Contributions} */ (fresh), { ...next, notice: { kind: 'ok', text: done } }, true);
     };
     /** @type {import('./views.mjs').ContributionsOptions} */
     const options = {
       writable,
       onAdd: (fields) => act('contribution-add', fields, `Saved “${fields.title}” as a draft. Verify it with evidence when you have it.`),
-      onOpenVerify: (id) => showContributions(data, { verifying: id, typed: { add: typedContributions(main).add, evidence: null } }, true, `#evidence-${id}`),
-      onCancelVerify: () => showContributions(data, { typed: { add: typedContributions(main).add, evidence: null } }, true),
+      // Switching to another draft keeps the first draft's evidence for when it is reopened.
+      onOpenVerify: (id) => showContributions(data, { verifying: id, typed: typedNow() }, true, `#evidence-${id}`),
+      // Cancel discards that draft's evidence, as asked; the add form keeps its text.
+      onCancelVerify: () => {
+        const typed = typedNow();
+        showContributions(data, { typed: { add: typed.add, evidence: state.verifying ? without(typed.evidence, state.verifying) : typed.evidence } }, true);
+      },
       onVerify: (id, fields) => act('contribution-verify', { contribution_id: id, ...fields }, 'Verified, with your evidence.'),
     };
     const view = renderContributions(doc, data, { ...options, ...state });

@@ -1347,17 +1347,19 @@ export function renderLearning(doc, data, options) {
  */
 
 /**
- * Unsaved text on the Contributions screen: the add form, and the one open evidence form.
- * @typedef {{ add: Record<string, string>, evidence: { id: string, text: string } | null }} ContributionTyped
+ * Unsaved text on the Contributions screen: the add form, and evidence by contribution id.
+ * @typedef {{ add: Record<string, string>, evidence: Record<string, string> }} ContributionTyped
  */
 
 /**
  * Read what the manager has typed on a rendered Contributions view, so the next
  * render (opening a form, cancelling, a refused save) does not throw it away.
+ * Evidence typed earlier for a draft whose form is now closed is carried in `previous`.
  * @param {ParentNode} root
+ * @param {ContributionTyped} [previous]
  * @returns {ContributionTyped}
  */
-export function typedContributions(root) {
+export function typedContributions(root, previous) {
   /** @type {Record<string, string>} */
   const add = {};
   for (const [key, id] of [['title', 'contribution-title'], ['kind', 'contribution-kind'],
@@ -1366,8 +1368,11 @@ export function typedContributions(root) {
     const control = /** @type {HTMLInputElement | null} */ (root.querySelector(`#${id}`));
     if (control) add[key] = control.value;
   }
-  const open = /** @type {HTMLTextAreaElement | null} */ (root.querySelector('textarea[id^="evidence-"]'));
-  return { add, evidence: open ? { id: open.id.slice('evidence-'.length), text: open.value } : null };
+  const evidence = { ...(previous?.evidence ?? {}) };
+  for (const open of /** @type {NodeListOf<HTMLTextAreaElement>} */ (root.querySelectorAll('textarea[id^="evidence-"]'))) {
+    evidence[open.id.slice('evidence-'.length)] = open.value;
+  }
+  return { add, evidence };
 }
 
 const CONTRIBUTION_KINDS = {
@@ -1384,7 +1389,7 @@ const CONTRIBUTION_KINDS = {
  */
 export function renderContributions(doc, data, options) {
   const busy = Boolean(options.busy);
-  const typed = options.typed ?? { add: {}, evidence: null };
+  const typed = options.typed ?? { add: {}, evidence: {} };
   const root = h(doc, 'div', { class: 'view view--contributions' });
   root.append(viewHeading(doc, 'Contributions',
     'What you contributed, who shares the credit, and the evidence that shows it. Credit goes to teams, groups or roles, never a ranking of colleagues.'));
@@ -1414,7 +1419,7 @@ export function renderContributions(doc, data, options) {
       const evidence = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
         id: `evidence-${item.id}`, rows: '2', required: '', maxlength: '1000',
       }));
-      evidence.value = typed.evidence?.id === item.id ? typed.evidence.text : '';
+      evidence.value = typed.evidence[item.id] ?? '';
       const done = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Verify']));
       done.disabled = busy;
       const form = h(doc, 'form', { class: 'onboarding-form' }, [

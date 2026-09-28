@@ -9,11 +9,9 @@ is what the real command surface prints, not a hand-written sample.
 
 from __future__ import annotations
 
-import io
 import json
 import sys
 import tempfile
-from contextlib import redirect_stdout
 from pathlib import Path
 
 SRC = Path(__file__).resolve().parents[1] / "src"
@@ -27,10 +25,7 @@ WEEK, TODAY = "2026-09-28", "2026-09-30"
 
 
 def _run(*argv) -> tuple[int, dict]:
-    buf = io.StringIO()
-    with redirect_stdout(buf):
-        code = cli.main([str(a) for a in argv])
-    return code, json.loads(buf.getvalue())
+    return cli.run([str(a) for a in argv])
 
 
 def collect(workdir: Path) -> dict[str, dict]:

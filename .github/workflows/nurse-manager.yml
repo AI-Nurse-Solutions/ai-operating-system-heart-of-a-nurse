@@ -47,6 +47,7 @@ jobs:
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/samples --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/docs --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/contracts --label NURSE-MANAGER
+          python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/renderer --label NURSE-MANAGER
 
   florence-x-contract:
     # Build step 2.11: adapter output must satisfy Florence-X's own Pydantic
@@ -96,7 +97,37 @@ jobs:
           cache: npm
       - name: Install Node dependencies
         run: npm ci --ignore-scripts
-      - name: Generated TypeScript is current
-        run: python3 nurse-manager/tools/gen_ipc_types.py --check
+      - name: Generated TypeScript and token CSS are current
+        run: |
+          python3 nurse-manager/tools/gen_ipc_types.py --check
+          python3 nurse-manager/tools/gen_tokens_css.py --check
       - name: Validate envelopes with ajv and tsc
         run: npm run test:nurse-manager-ipc
+
+  renderer:
+    # Build step 3.5: Mission Control, board, and table in a real browser:
+    # keyboard journey, accessible names, same ids across views, honest
+    # empty and error states, injected markup stays text, 320px reflow,
+    # Night Studio, reduced motion, and no console or CSP errors.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+      - name: Check renderer syntax
+        run: |
+          node --check nurse-manager/renderer/app.mjs
+          node --check nurse-manager/renderer/views.mjs
+          node --check nurse-manager/tests/test_renderer_browser.mjs
+      - name: Run the browser journey
+        run: npm run test:nurse-manager-renderer

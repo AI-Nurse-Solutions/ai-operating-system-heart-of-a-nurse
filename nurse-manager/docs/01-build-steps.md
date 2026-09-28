@@ -67,7 +67,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 3.2 | Honest empty, sample, and unavailable states | ✅ | `test_empty_workspace_states_are_honest` |
 | 3.3 | Design tokens with enforced contrast; text-safe orange | ✅ | `test_design_tokens.py` |
 | 3.4 | Weekly brief journey spec and synthetic sample week | ✅ | `03-weekly-brief-journey.md`, `samples/synthetic-week.json` |
-| 3.5 | Renderer: Mission Control, project dashboard, board, and table pages | ⬜ | Keyboard journey plus screen-reader names (Playwright) |
+| 3.5 | Renderer: Mission Control, board, and table pages over the IPC contract | ✅ | `renderer/`; `test_renderer_browser.mjs` (keyboard journey, accessible names, same ids across views, empty and error states, injected markup stays text, 320px reflow, Night Studio, reduced motion, no console or CSP errors); renderer typechecks against the contract |
+| 3.5b | Project dashboard page (purpose, owner, milestone, readiness, tasks, resources, decisions, evidence) | ⬜ | Needs a `project` IPC command; next renderer step |
 | 3.6 | Library, Learning and Growth, and Contribution views | ⬜ | |
 | 3.7 | "Think with this project" composer that shows the context it will send | ⬜ | Depends on G4 |
 

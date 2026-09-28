@@ -88,63 +88,78 @@ def commands() -> tuple[str, ...]:
     return tuple(sub.choices)
 
 
-def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
-
-    def ok(data: Any) -> int:
-        _emit({"contract": CONTRACT, "command": args.command, "ok": True, "data": data})
-        return 0
-
-    def fail(exc: Exception, code: int) -> int:
-        _emit({"contract": CONTRACT, "command": args.command, "ok": False,
-               "error": {"type": type(exc).__name__, "message": str(exc)}})
-        return code
-
+def _dispatch(args: argparse.Namespace) -> Any:
+    """Run one parsed command and return its data. The workspace is always closed."""
+    if args.command == "sample":
+        ws, data = load_sample(args.workspace)
+        try:
+            return {"workspace": ws.info.__dict__, "week_of": data["week_of"], "today": data["today"]}
+        finally:
+            ws.close()
+    ws = ManagerWorkspace(args.workspace)
     try:
-        if args.command == "sample":
-            ws, data = load_sample(args.workspace)
-            return ok({"workspace": ws.info.__dict__, "week_of": data["week_of"],
-                       "today": data["today"]})
-        ws = ManagerWorkspace(args.workspace)
         if args.command == "init":
-            return ok(ws.create(args.name, args.owner).__dict__)
+            return ws.create(args.name, args.owner).__dict__
         if args.command == "mission":
-            return ok(mission_control(ws, today=args.today, week_of=args.week))
+            return mission_control(ws, today=args.today, week_of=args.week)
         if args.command == "board":
-            return ok(board(ws))
+            return board(ws)
         if args.command == "table":
-            return ok(table(ws))
+            return table(ws)
         briefs = BriefService(ws)
         if args.command == "brief":
-            return ok(briefs.as_dict(briefs.draft_weekly_brief(args.week, args.today)))
+            return briefs.as_dict(briefs.draft_weekly_brief(args.week, args.today))
         if args.command == "show":
             revision = briefs.revision(args.revision)
-            return ok({"revision": briefs.as_dict(revision), "markdown": briefs.render(revision)})
+            return {"revision": briefs.as_dict(revision), "markdown": briefs.render(revision)}
         if args.command == "accept":
-            return ok(briefs.as_dict(briefs.accept(args.revision, args.reviewer, args.sha)))
+            return briefs.as_dict(briefs.accept(args.revision, args.reviewer, args.sha))
         boundary = ActionBoundary(ws)
         if args.command == "export":
-            return ok(boundary.propose(
+            return boundary.propose(
                 "export_markdown", revision_id=args.revision, destination=args.file,
                 purpose="Save the accepted weekly brief as a Markdown file", proposed_by=args.by,
-            ).__dict__)
+            ).__dict__
         if args.command == "approve":
-            return ok(boundary.approve(
+            return boundary.approve(
                 args.action, args.approver, seen_sha256=args.sha,
                 seen_destination=args.destination,
-            ).__dict__)
+            ).__dict__
         if args.command == "run":
-            return ok(boundary.execute(args.action, args.actor))
+            return boundary.execute(args.action, args.actor)
         if args.command == "backup":
-            return ok({"backup": str(ws.store.backup(args.dest))})
+            return {"backup": str(ws.store.backup(args.dest))}
         if args.command == "restore":
             safety = ws.store.restore(args.src, allow_discarding_newer=args.discard_newer)
-            return ok({"restored_from": str(args.src), "pre_restore_backup": str(safety)})
+            return {"restored_from": str(args.src), "pre_restore_backup": str(safety)}
         raise AssertionError(f"unhandled command {args.command}")  # pragma: no cover
-    except ManagerError as exc:
-        return fail(exc, 2)
+    finally:
+        ws.close()
+
+
+def run(argv: list[str]) -> tuple[int, dict[str, Any]]:
+    """Run one command and return (exit code, envelope) without printing.
+
+    The in-process entry point for hosts (the dev host, tests): no global
+    stdout redirection, so it is safe to call from several threads.
+    """
+    args = build_parser().parse_args(argv)
+    base = {"contract": CONTRACT, "command": args.command}
+    try:
+        # Round-trip through JSON so in-process callers receive exactly the
+        # types the printed envelope carries (lists, not tuples).
+        data = json.loads(json.dumps(_dispatch(args)))
+        return 0, {**base, "ok": True, "data": data}
     except Exception as exc:  # noqa: BLE001 — surface a truthful state, never a traceback
-        return fail(exc, 1)
+        code = 2 if isinstance(exc, ManagerError) else 1
+        return code, {**base, "ok": False,
+                      "error": {"type": type(exc).__name__, "message": str(exc)}}
+
+
+def main(argv: list[str] | None = None) -> int:
+    code, envelope = run(sys.argv[1:] if argv is None else argv)
+    _emit(envelope)
+    return code
 
 
 if __name__ == "__main__":  # pragma: no cover

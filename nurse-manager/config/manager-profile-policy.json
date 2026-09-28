@@ -1,0 +1,39 @@
+{
+  "policy_id": "nurse-manager-personal-profile",
+  "version": "0.1.0",
+  "status": "proposed — pending steward decision (docs/adr/0002-local-effects-and-edena.md)",
+  "profile": "personal_manager",
+  "authoritative_policy": "naio-integrations/config/edena-gateway-policy.json",
+  "note": "This table only narrows. It admits the local effects a Personal Manager workspace may perform after human approval, and blocks everything else. Assistant-originated proposals are additionally evaluated by the authoritative EDENA gateway policy, which remains authoritative wherever the two differ.",
+  "presentation": {
+    "green": "Green — admitted low-risk local operation",
+    "yellow": "Yellow — needs your review before it happens",
+    "red": "Red — blocked in this workspace"
+  },
+  "effects": {
+    "export_markdown": {
+      "tier": "yellow",
+      "description": "Write an accepted brief to a Markdown file in this workspace's exports folder.",
+      "allowed_origins": ["human", "assistant"],
+      "requires_accepted_revision": true,
+      "requires_approval": true,
+      "requires_independent_review": false,
+      "destination_scope": "workspace_exports",
+      "destination_suffix": ".md"
+    }
+  },
+  "blocked_effects": {
+    "send_email": "Drafting a message never sends it; sending is not available in the Personal Manager profile.",
+    "post_message": "Posting to Teams, Slack, or any channel is not available in the Personal Manager profile.",
+    "publish": "Publishing is not available in the Personal Manager profile.",
+    "upload": "Uploading to an external service is not available in the Personal Manager profile.",
+    "delete_external": "Deleting anything outside this workspace is not available."
+  },
+  "assistant_evaluation": {
+    "role": "agent",
+    "risk_tier": "yellow",
+    "data_class": "D1",
+    "action_mode": "recommend",
+    "data_zone": "shared_professional"
+  }
+}

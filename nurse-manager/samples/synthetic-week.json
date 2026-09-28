@@ -1,0 +1,55 @@
+{
+  "synthetic": true,
+  "label": "SYNTHETIC EXAMPLE — every person, unit, and detail is fictional teaching material. No patient, colleague, or institution is described.",
+  "workspace": {
+    "name": "Sample manager workspace (synthetic)",
+    "owner": "Sample Manager"
+  },
+  "week_of": "2026-09-28",
+  "today": "2026-09-30",
+  "projects": [
+    {
+      "key": "ubc",
+      "title": "Unit Based Council charter refresh",
+      "purpose": "Give the council a current charter so members know their scope, cadence, and decision rights.",
+      "owner": "Sample Manager",
+      "next_milestone": "Charter draft to council on 2026-10-07"
+    },
+    {
+      "key": "edu",
+      "title": "Fall education calendar",
+      "purpose": "Publish one calendar of required and optional education so staff can plan around it.",
+      "owner": "Sample Educator",
+      "next_milestone": "Calendar review with educator on 2026-10-02"
+    },
+    {
+      "key": "huddle",
+      "title": "Huddle format pilot",
+      "purpose": "Test a five-minute huddle structure (Wins, Changes, Watch-fors, Asks, Dates) for four weeks.",
+      "owner": "Sample Manager",
+      "next_milestone": "Week-two check-in on 2026-10-05"
+    }
+  ],
+  "tasks": [
+    {"project": "ubc", "title": "Collect council feedback on draft scope section", "owner": "Sample Council Chair", "due_date": "2026-10-01", "status": "in_progress", "next_action": "Send the scope section to members for comment"},
+    {"project": "ubc", "title": "Decide council meeting cadence", "owner": "Sample Manager", "due_date": "2026-10-02", "status": "needs_judgment", "reviewer": "Sample Manager"},
+    {"project": "ubc", "title": "Book room for charter review meeting", "owner": "Sample Unit Coordinator", "due_date": "2026-10-03", "status": "ready", "blocked_reason": "Waiting for the cadence decision"},
+    {"project": "edu", "title": "List required annual education modules", "owner": "Sample Educator", "due_date": "2026-09-29", "status": "completed", "evidence": "Module list saved in the education project folder (synthetic)"},
+    {"project": "edu", "title": "Draft calendar layout", "owner": "Sample Educator", "due_date": "2026-10-02", "status": "in_progress", "next_action": "Share layout for manager review"},
+    {"project": "edu", "title": "Confirm vendor webinar dates", "owner": "Sample Educator", "due_date": "2026-09-26", "status": "ready"},
+    {"project": "huddle", "title": "Collect week-one huddle feedback", "owner": "Sample Charge Nurse", "due_date": "2026-10-05", "status": "ready"},
+    {"project": "huddle", "title": "Idea: rotate huddle facilitator weekly", "owner": "Sample Manager", "status": "idea"}
+  ],
+  "decisions": [
+    {"project": "huddle", "question": "Which huddle format do we pilot?", "decision": "Wins / Changes / Watch-fors / Asks / Dates, five minutes, start of shift", "decided_by": "Sample Manager", "decided_on": "2026-09-29", "rationale": "Short, predictable, and leaves room for questions."}
+  ],
+  "sources": [
+    {"project": "huddle", "title": "Huddle format one-pager (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/huddle-format-one-pager", "data_class": "D0", "review_date": "2027-03-31"},
+    {"project": "ubc", "title": "Council charter template (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/council-charter-template", "data_class": "D0", "review_date": "2026-09-01"}
+  ],
+  "priorities": [
+    {"text": "Settle council cadence so the charter can move", "project": "ubc"},
+    {"text": "Get the education calendar into review", "project": "edu"},
+    {"text": "Keep the huddle pilot on track through week two", "project": "huddle"}
+  ]
+}

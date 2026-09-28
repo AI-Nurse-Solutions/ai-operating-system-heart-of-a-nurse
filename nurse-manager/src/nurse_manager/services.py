@@ -1,0 +1,318 @@
+"""Manager domain services (NM-005): the one writer for workspace records.
+
+Views (Mission Control, board, table, brief) read through ``views``; they
+never write. Every write here passes the Personal Manager profile's data
+rules first:
+
+* Only public, synthetic, and explicitly permitted personal material
+  (data classes D0 and D1). Patient information, employee performance
+  records, and confidential employer material are outside this profile,
+  and choosing a role or acknowledging a warning cannot change that.
+* Free text is run through the existing privacy screen at capture. A
+  finding refuses the capture — identifiers are not stored "redacted" in
+  a personal workspace, they are simply not stored. The screen reduces
+  risk; it does not detect names and never certifies content as clean.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Callable
+
+from ._naio import PrivacyScreen
+from .store import Store, new_id, utc_now
+
+TASK_STATUSES = ("idea", "ready", "in_progress", "needs_judgment", "completed")
+SOURCE_KINDS = ("public", "synthetic", "personal_permitted")
+PERMITTED_DATA_CLASSES = ("D0", "D1")
+
+
+class ManagerError(ValueError):
+    pass
+
+
+class CaptureRefused(ManagerError):
+    """Content failed the active profile's data rules and was not stored."""
+
+
+@dataclass(frozen=True)
+class WorkspaceInfo:
+    id: str
+    name: str
+    profile: str
+    owner: str
+    sample: bool
+
+
+class ManagerWorkspace:
+    """Domain commands over one local workspace database."""
+
+    def __init__(
+        self,
+        root: Path,
+        clock: Callable[[], str] = utc_now,
+        privacy: PrivacyScreen | None = None,
+    ):
+        self.root = Path(root)
+        self.store = Store(self.root / "workspace.sqlite", clock=clock)
+        self.clock = clock
+        self.privacy = privacy or PrivacyScreen()
+
+    # -- workspace --------------------------------------------------------
+
+    def create(self, name: str, owner: str, *, sample: bool = False) -> WorkspaceInfo:
+        if self._workspace_row() is not None:
+            raise ManagerError("this directory already holds a workspace")
+        self._screen(name=name, owner=owner)
+        ws_id = new_id("ws")
+        with self.store.transaction() as db:
+            db.execute(
+                "INSERT INTO workspaces (id, name, profile, owner, sample, created_at)"
+                " VALUES (?, ?, 'personal_manager', ?, ?, ?)",
+                (ws_id, name.strip(), owner.strip(), int(sample), self.clock()),
+            )
+            self.store.log(owner, "create", "workspace", ws_id)
+        return self.info
+
+    @property
+    def info(self) -> WorkspaceInfo:
+        row = self._workspace_row()
+        if row is None:
+            raise ManagerError("no workspace has been created here yet")
+        return WorkspaceInfo(
+            id=row["id"],
+            name=row["name"],
+            profile=row["profile"],
+            owner=row["owner"],
+            sample=bool(row["sample"]),
+        )
+
+    def _workspace_row(self):
+        return self.store.conn.execute("SELECT * FROM workspaces").fetchone()
+
+    # -- capture rules ----------------------------------------------------
+
+    def _screen(self, **fields: Any) -> None:
+        flagged: dict[str, list[str]] = {}
+        for key, value in fields.items():
+            if value is None:
+                continue
+            findings = self.privacy.analyze(str(value))
+            if findings:
+                flagged[key] = sorted({f.entity_type for f in findings})
+        if flagged:
+            detail = "; ".join(f"{k}: {', '.join(v)}" for k, v in sorted(flagged.items()))
+            raise CaptureRefused(
+                "not stored — the Personal Manager profile does not keep identifying"
+                f" details ({detail}). Remove them and try again."
+            )
+
+    def _require(self, value: str, label: str) -> str:
+        if not value or not value.strip():
+            raise ManagerError(f"{label} is required")
+        return value.strip()
+
+    def _require_row(self, table: str, record_id: str | None):
+        if record_id is None:
+            return None
+        row = self.store.conn.execute(
+            f"SELECT * FROM {table} WHERE id = ? AND workspace_id = ?",  # noqa: S608
+            (record_id, self.info.id),
+        ).fetchone()
+        if row is None:
+            raise ManagerError(f"{table[:-1]} {record_id} is not in this workspace")
+        return row
+
+    # -- projects ---------------------------------------------------------
+
+    def add_project(
+        self, title: str, purpose: str, owner: str, next_milestone: str = ""
+    ) -> str:
+        title = self._require(title, "project title")
+        purpose = self._require(purpose, "project purpose")
+        owner = self._require(owner, "accountable owner")
+        self._screen(title=title, purpose=purpose, owner=owner, next_milestone=next_milestone)
+        project_id = new_id("prj")
+        now = self.clock()
+        with self.store.transaction() as db:
+            db.execute(
+                "INSERT INTO projects (id, workspace_id, title, purpose, owner,"
+                " next_milestone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (project_id, self.info.id, title, purpose, owner, next_milestone, now, now),
+            )
+            self.store.log(self.info.owner, "create", "project", project_id)
+        return project_id
+
+    # -- tasks ------------------------------------------------------------
+
+    def add_task(
+        self,
+        title: str,
+        owner: str,
+        *,
+        project_id: str | None = None,
+        due_date: str | None = None,
+        status: str = "idea",
+        reviewer: str = "",
+        next_action: str = "",
+    ) -> str:
+        title = self._require(title, "task title")
+        owner = self._require(owner, "task owner")
+        if status == "completed":
+            raise ManagerError("a new task cannot start completed; use complete_task")
+        if status not in TASK_STATUSES:
+            raise ManagerError(f"unknown task status: {status}")
+        self._require_row("projects", project_id)
+        self._screen(title=title, owner=owner, reviewer=reviewer, next_action=next_action)
+        task_id = new_id("tsk")
+        now = self.clock()
+        with self.store.transaction() as db:
+            db.execute(
+                "INSERT INTO tasks (id, workspace_id, project_id, title, owner, due_date,"
+                " status, reviewer, next_action, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (task_id, self.info.id, project_id, title, owner, due_date, status,
+                 reviewer, next_action, now, now),
+            )
+            self.store.log(self.info.owner, "create", "task", task_id)
+        return task_id
+
+    def move_task(self, task_id: str, status: str) -> None:
+        """Board moves. Dragging a card can never complete it."""
+        if status == "completed":
+            raise ManagerError(
+                "moving a card cannot complete it; completion needs recorded evidence"
+                " (use complete_task)"
+            )
+        if status not in TASK_STATUSES:
+            raise ManagerError(f"unknown task status: {status}")
+        self._require_row("tasks", task_id)
+        self._update_task(task_id, "move", status=status)
+
+    def set_blocked(self, task_id: str, blocked: bool, reason: str = "") -> None:
+        self._require_row("tasks", task_id)
+        if blocked:
+            reason = self._require(reason, "blocked reason")
+            self._screen(reason=reason)
+        self._update_task(task_id, "block" if blocked else "unblock",
+                          blocked=int(blocked), blocked_reason=reason if blocked else "")
+
+    def set_paused(self, task_id: str, paused: bool) -> None:
+        self._require_row("tasks", task_id)
+        self._update_task(task_id, "pause" if paused else "resume", paused=int(paused))
+
+    def complete_task(self, task_id: str, evidence: str) -> None:
+        evidence = self._require(evidence, "completion evidence")
+        self._screen(evidence=evidence)
+        self._require_row("tasks", task_id)
+        self._update_task(task_id, "complete", status="completed",
+                          completion_evidence=evidence, blocked=0, blocked_reason="")
+
+    def _update_task(self, task_id: str, kind: str, **fields: Any) -> None:
+        assignments = ", ".join(f"{column} = ?" for column in fields)
+        with self.store.transaction() as db:
+            db.execute(
+                f"UPDATE tasks SET {assignments}, updated_at = ? WHERE id = ?",  # noqa: S608
+                (*fields.values(), self.clock(), task_id),
+            )
+            self.store.log(self.info.owner, kind, "task", task_id)
+
+    # -- sources, decisions, priorities -----------------------------------
+
+    def add_source(
+        self,
+        title: str,
+        kind: str,
+        reference: str,
+        *,
+        data_class: str = "D0",
+        project_id: str | None = None,
+        review_date: str | None = None,
+    ) -> str:
+        title = self._require(title, "source title")
+        reference = self._require(reference, "source reference")
+        if kind not in SOURCE_KINDS:
+            raise CaptureRefused(
+                f"source kind '{kind}' is outside the Personal Manager profile"
+                " (public, synthetic, or explicitly permitted personal material only)"
+            )
+        if data_class not in PERMITTED_DATA_CLASSES:
+            raise CaptureRefused(
+                f"data class {data_class} is outside the Personal Manager profile;"
+                " confidential employer, workforce, or patient material needs an"
+                " administrator-provisioned organization workspace"
+            )
+        self._require_row("projects", project_id)
+        self._screen(title=title, reference=reference)
+        source_id = new_id("src")
+        with self.store.transaction() as db:
+            db.execute(
+                "INSERT INTO sources (id, workspace_id, project_id, title, kind, reference,"
+                " data_class, review_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (source_id, self.info.id, project_id, title, kind, reference, data_class,
+                 review_date, self.clock()),
+            )
+            self.store.log(self.info.owner, "create", "source", source_id)
+        return source_id
+
+    def record_decision(
+        self,
+        question: str,
+        decision: str,
+        decided_by: str,
+        decided_on: str,
+        *,
+        rationale: str = "",
+        project_id: str | None = None,
+    ) -> str:
+        question = self._require(question, "decision question")
+        decision = self._require(decision, "decision")
+        decided_by = self._require(decided_by, "decision owner")
+        decided_on = self._require(decided_on, "decision date")
+        self._require_row("projects", project_id)
+        self._screen(question=question, decision=decision, decided_by=decided_by,
+                     rationale=rationale)
+        decision_id = new_id("dec")
+        with self.store.transaction() as db:
+            db.execute(
+                "INSERT INTO decisions (id, workspace_id, project_id, question, decision,"
+                " decided_by, decided_on, rationale, created_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (decision_id, self.info.id, project_id, question, decision, decided_by,
+                 decided_on, rationale, self.clock()),
+            )
+            self.store.log(self.info.owner, "create", "decision", decision_id)
+        return decision_id
+
+    def set_priorities(
+        self, week_of: str, items: list[str], project_ids: list[str | None] | None = None
+    ) -> None:
+        """Today's (this week's) three priorities — never more than three."""
+        items = [item.strip() for item in items if item and item.strip()]
+        if not items:
+            raise ManagerError("name at least one priority")
+        if len(items) > 3:
+            raise ManagerError("choose at most three priorities; the rest can wait")
+        project_ids = list(project_ids or [None] * len(items))
+        if len(project_ids) != len(items):
+            raise ManagerError("project links must match priorities one-to-one")
+        for project_id in project_ids:
+            self._require_row("projects", project_id)
+        self._screen(**{f"priority_{i + 1}": text for i, text in enumerate(items)})
+        with self.store.transaction() as db:
+            db.execute(
+                "DELETE FROM priorities WHERE workspace_id = ? AND week_of = ?",
+                (self.info.id, week_of),
+            )
+            for rank, (text, project_id) in enumerate(zip(items, project_ids), start=1):
+                pid = new_id("pri")
+                db.execute(
+                    "INSERT INTO priorities (id, workspace_id, week_of, rank, text, project_id)"
+                    " VALUES (?, ?, ?, ?, ?, ?)",
+                    (pid, self.info.id, week_of, rank, text, project_id),
+                )
+            self.store.log(self.info.owner, "set", "priorities", week_of)
+
+    def close(self) -> None:
+        self.store.close()

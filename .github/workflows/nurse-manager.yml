@@ -1,0 +1,44 @@
+name: Nurse Manager core
+
+on:
+  pull_request:
+    paths:
+      - "nurse-manager/**"
+      - "naio-integrations/src/**"
+      - "naio-integrations/config/**"
+      - ".github/workflows/nurse-manager.yml"
+  push:
+    branches: [main]
+    paths:
+      - "nurse-manager/**"
+      - "naio-integrations/src/**"
+      - "naio-integrations/config/**"
+      - ".github/workflows/nurse-manager.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Verify Python syntax
+        run: python3 -m py_compile nurse-manager/src/nurse_manager/*.py nurse-manager/tests/*.py
+      - name: Run manager core suite
+        run: python3 -m unittest discover -s nurse-manager/tests -p 'test_*.py' -v
+      - name: Refuse accidental secrets or PHI examples in shipped artifacts
+        run: |
+          python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/src --label NURSE-MANAGER
+          python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/config --label NURSE-MANAGER
+          python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/samples --label NURSE-MANAGER
+          python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/docs --label NURSE-MANAGER

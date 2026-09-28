@@ -1,0 +1,65 @@
+# Nurse AI OS — Manager Edition core
+
+> Install Nurse AI OS, choose Nurse Manager, and begin organizing
+> meaningful work in one workspace.
+
+This directory is the local, no-model core of the Manager Edition: the
+records, rules, and weekly-brief workflow that the desktop app will sit
+on. It needs no model, no network, and no API key. It is standard-library
+Python (3.11+) and reuses the EDENA policy engine and privacy screen from
+`../naio-integrations`.
+
+## Status
+
+Build stage G2 (durable manager mission) on the no-model path. **Not** an
+application, installer, or pilot release. It is also not authorized for
+patient, employee-performance, or confidential employer information:
+
+- The Personal Manager profile accepts public, synthetic, and explicitly
+  permitted personal material only.
+- The privacy screen reduces risk. It does not detect names, and it never
+  certifies content as clean.
+
+## Start here
+
+- [`docs/00-validation-report.md`](docs/00-validation-report.md): the build plan checked against the code and upstream sources, with nine corrections.
+- [`docs/01-build-steps.md`](docs/01-build-steps.md): the plan divided into steps, with status.
+- [`docs/02-contract-map.md`](docs/02-contract-map.md): Florence-X ↔ Integration Contract ↔ manager records, and the record-writer register.
+- [`docs/03-weekly-brief-journey.md`](docs/03-weekly-brief-journey.md): the first workflow, including its states and failure states.
+- [`docs/adr/`](docs/adr/): proposed decisions awaiting the steward.
+
+## Try it
+
+```bash
+export PYTHONPATH=nurse-manager/src
+python3 -m nurse_manager sample /tmp/mgr
+python3 -m nurse_manager mission /tmp/mgr --today 2026-09-30 --week 2026-09-28
+python3 -m nurse_manager brief   /tmp/mgr --week 2026-09-28 --today 2026-09-30   # prints id + sha256
+python3 -m nurse_manager show    /tmp/mgr --revision <id>
+python3 -m nurse_manager accept  /tmp/mgr --revision <id> --reviewer "Sample Manager" --sha <sha256>
+python3 -m nurse_manager export  /tmp/mgr --revision <id> --file week.md --by "Sample Manager"
+python3 -m nurse_manager approve /tmp/mgr --action <act-id> --approver "Sample Manager" --sha <payload_sha256> --destination week.md
+python3 -m nurse_manager run     /tmp/mgr --action <act-id> --actor "Sample Manager"
+```
+
+Managers will never type these commands. This is the headless surface
+the desktop host calls. Each command reopens the workspace from disk.
+
+## Layout
+
+| Path | What |
+|---|---|
+| `src/nurse_manager/store.py` | SQLite store: migrations, transactions, audit log, backup, and a restore that refuses to lose newer work |
+| `src/nurse_manager/services.py` | The one writer for projects, tasks, sources, decisions, and priorities; capture-time data rules |
+| `src/nurse_manager/views.py` | Mission Control, board, and table read models over the same ids |
+| `src/nurse_manager/brief.py` | Deterministic weekly brief; revisions; acceptance bound to text hash |
+| `src/nurse_manager/actions.py` | Governed action boundary: propose → evaluate → approve → recheck → execute → receipt |
+| `config/manager-profile-policy.json` | Personal Manager effect table (narrows only; see ADR 0002) |
+| `design/tokens.json` | Design tokens with contrast requirements enforced by tests |
+| `samples/synthetic-week.json` | Synthetic sample manager week |
+
+## Tests
+
+```bash
+python3 -m unittest discover -s nurse-manager/tests -p 'test_*.py' -v
+```

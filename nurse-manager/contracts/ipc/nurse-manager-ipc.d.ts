@@ -177,10 +177,10 @@ export interface Contributions {
   /** @minimum 0 */
   readonly verified: number;
   /**
-   * Verified and happened in the calendar year of today.
+   * Verified contributions that happened in the calendar year of today, whenever they were verified.
    * @minimum 0
    */
-  readonly verified_this_year: number;
+  readonly this_year_verified: number;
   /** Projects a new contribution can be linked to. */
   readonly projects: readonly {
     readonly id: RecordId;

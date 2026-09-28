@@ -156,7 +156,7 @@ try {
   const drafts = page.getByRole('region', { name: 'Drafts awaiting evidence (1)' });
   assert.match(await drafts.textContent(), /Designed the five-part huddle format.*Project: Huddle format pilot.*Shared credit: Night charge nurse group/s);
   assert.match(await page.getByRole('region', { name: 'Verified (1)' }).textContent(), /Evidence.*Session outline and sign-in count/s);
-  assert.match(await page.getByRole('list', { name: 'Facts' }).textContent(), /1 contribution verified this year/);
+  assert.match(await page.getByRole('list', { name: 'Facts' }).textContent(), /1 contribution from this year verified/);
   await drafts.getByRole('link', { name: 'Huddle format pilot' }).waitFor();
   assert.equal(await page.locator('.view--contributions button').count(), 0, 'no contribution writes on the dev host');
   assert.equal(await page.locator('main').locator('text=/\\d+\\s?%/').count(), 0, 'no percentages');

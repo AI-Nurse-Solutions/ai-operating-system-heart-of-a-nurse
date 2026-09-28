@@ -323,7 +323,7 @@
         "items": {"type": "array", "items": {"$ref": "#/$defs/ContributionItem"}},
         "drafts": {"type": "integer", "minimum": 0},
         "verified": {"type": "integer", "minimum": 0},
-        "verified_this_year": {"type": "integer", "minimum": 0, "description": "Verified and happened in the calendar year of today."},
+        "this_year_verified": {"type": "integer", "minimum": 0, "description": "Verified contributions that happened in the calendar year of today, whenever they were verified."},
         "projects": {
           "description": "Projects a new contribution can be linked to.",
           "type": "array",
@@ -335,7 +335,7 @@
           }
         }
       },
-      "required": ["sample", "today", "items", "drafts", "verified", "verified_this_year", "projects"],
+      "required": ["sample", "today", "items", "drafts", "verified", "this_year_verified", "projects"],
       "additionalProperties": false
     },
     "ContributionResult": {

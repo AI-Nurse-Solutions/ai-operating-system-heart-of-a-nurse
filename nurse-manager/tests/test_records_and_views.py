@@ -349,13 +349,23 @@ class ContributionTests(_TempCase):
         view = contributions(ws, today=TODAY)
         self.assertEqual([(i["status"], i["occurred_on"]) for i in view["items"]],
                          [("draft", "2026-09-15"), ("verified", "2026-06-12")])
-        self.assertEqual((view["drafts"], view["verified"], view["verified_this_year"]),
+        self.assertEqual((view["drafts"], view["verified"], view["this_year_verified"]),
                          (1, 1, 1))
         draft = view["items"][0]
         self.assertEqual(draft["project_title"], "Huddle format pilot")
         self.assertEqual(draft["shared_credit"], "Night charge nurse group; unit educator")
         self.assertEqual(len(view["projects"]), 3)
-        self.assertEqual(contributions(ws, today="2027-01-04")["verified_this_year"], 0)
+        self.assertEqual(contributions(ws, today="2027-01-04")["this_year_verified"], 0)
+
+    def test_this_years_count_is_by_when_it_happened_not_when_it_was_verified(self):
+        ws = self.sample()
+        last_year = ws.add_contribution("Poster from last year (synthetic)", "presentation",
+                                        "2025-11-20", "Made the poster.", "Quality council")
+        ws.verify_contribution(last_year, "Poster accepted (synthetic).")
+        view = contributions(ws, today=TODAY)
+        self.assertEqual(next(i for i in view["items"] if i["id"] == last_year)["verified_on"],
+                         TODAY)
+        self.assertEqual((view["verified"], view["this_year_verified"]), (2, 1))
 
     def test_verifying_needs_written_evidence_even_in_the_database(self):
         ws = self.sample()

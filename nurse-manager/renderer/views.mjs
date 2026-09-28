@@ -1392,7 +1392,7 @@ export function renderContributions(doc, data, options) {
   if (notice) root.append(notice);
   root.append(h(doc, 'ul', { class: 'item-list', 'aria-label': 'Facts' }, [
     h(doc, 'li', {}, [`${data.verified} verified · ${count(data.drafts, 'draft awaits', 'drafts await')} evidence`]),
-    h(doc, 'li', {}, [`${count(data.verified_this_year, 'contribution', 'contributions')} verified this year`]),
+    h(doc, 'li', {}, [`${count(data.this_year_verified, 'contribution', 'contributions')} from this year verified`]),
   ]));
 
   /** @param {ContributionItem} item */

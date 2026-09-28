@@ -480,6 +480,8 @@ def contributions(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
         "items": drafts + verified,
         "drafts": len(drafts),
         "verified": len(verified),
-        "verified_this_year": sum(1 for r in verified if r["occurred_on"].startswith(year)),
+        # By when it happened, not when it was verified: a year's portfolio
+        # holds that year's work, even if the evidence was written later.
+        "this_year_verified": sum(1 for r in verified if r["occurred_on"].startswith(year)),
         "projects": _project_choices(ws),
     }

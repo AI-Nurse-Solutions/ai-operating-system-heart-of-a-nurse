@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mission Control — Nurse AI OS</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="renderer.css">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="app-header">
+    <div class="app-header__row">
+      <p class="app-name">Nurse AI OS <span class="app-name__edition">Manager</span></p>
+      <p class="workspace-name" id="workspace-name"></p>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">Night Studio</button>
+    </div>
+    <p class="sample-banner" id="sample-banner" role="note" hidden>
+      <span aria-hidden="true">◆</span> Sample workspace. Every person, project, and date here is synthetic.
+    </p>
+    <nav class="app-nav" aria-label="Primary">
+      <ul>
+        <li><a href="#/mission" data-route="mission">Mission Control</a></li>
+        <li><a href="#/board" data-route="board">Board</a></li>
+        <li><a href="#/table" data-route="table">Table</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main" class="app-main" tabindex="-1" aria-busy="true">
+    <p class="loading">Loading your workspace…</p>
+  </main>
+  <p class="visually-hidden" id="announcer" role="status" aria-live="polite"></p>
+  <noscript><p class="app-main">Nurse AI OS needs JavaScript enabled to show your workspace.</p></noscript>
+</body>
+</html>

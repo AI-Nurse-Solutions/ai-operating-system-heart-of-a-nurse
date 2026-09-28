@@ -1,10 +1,15 @@
 """Design tokens meet their declared contrast minimums (NM-002)."""
 
 import json
+import re
+import sys
 import unittest
 from pathlib import Path
 
-TOKENS = Path(__file__).resolve().parents[1] / "design" / "tokens.json"
+ROOT = Path(__file__).resolve().parents[1]
+TOKENS = ROOT / "design" / "tokens.json"
+sys.path.insert(0, str(ROOT / "tools"))
+import gen_tokens_css  # noqa: E402
 
 
 def _luminance(hex_color: str) -> float:
@@ -43,6 +48,13 @@ class DesignTokenTests(unittest.TestCase):
                     self.assertIn("non-text", req["use"])
         day = self.tokens["themes"]["day"]
         self.assertLess(contrast(day["accent-review"], day["canvas"]), 4.5)
+
+    def test_renderer_uses_the_generated_tokens_only(self):
+        self.assertEqual((ROOT / "renderer" / "tokens.css").read_text(encoding="utf-8"),
+                         gen_tokens_css.generate(), "run: python3 nurse-manager/tools/gen_tokens_css.py")
+        css = (ROOT / "renderer" / "renderer.css").read_text(encoding="utf-8")
+        self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", css), [], "raw colors bypass the tested tokens")
+        self.assertNotRegex(css, r"rgba?\(|hsla?\(", "raw colors bypass the tested tokens")
 
     def test_spacing_is_on_the_eight_pixel_grid(self):
         self.assertTrue(all(v % 8 == 0 for v in self.tokens["spacing"]["scale"]))

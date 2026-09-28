@@ -1,0 +1,256 @@
+/* Nurse AI OS Manager screens. Colors come only from tokens.css (generated
+   from the contrast-tested design/tokens.json); no raw colors appear here.
+   System fonts only: the app must work offline and send nothing anywhere. */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  background: var(--nm-canvas);
+  color: var(--nm-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 100%;
+  line-height: var(--nm-line-height-body);
+}
+
+body { margin: 0; font-size: var(--nm-font-size-body); }
+
+h1, h2, h3 {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  color: var(--nm-primary);
+  line-height: 1.25;
+  margin: 0 0 var(--nm-space-1);
+}
+h1 { font-size: 2rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.0625rem; }
+
+a { color: var(--nm-primary); }
+
+:focus-visible {
+  outline: 3px solid var(--nm-focus-ring);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--nm-space-2);
+  top: -100px;
+  background: var(--nm-primary);
+  color: var(--nm-on-primary);
+  padding: var(--nm-space-1) var(--nm-space-2);
+  border-radius: var(--nm-radius-badge);
+  z-index: 10;
+}
+.skip-link:focus { top: var(--nm-space-1); }
+
+/* Header and navigation */
+.app-header {
+  background: var(--nm-sage);
+  padding: var(--nm-space-2) var(--nm-space-3) 0;
+}
+.app-header__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nm-space-1) var(--nm-space-3);
+}
+.app-name {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: 1.25rem;
+  color: var(--nm-primary);
+  font-weight: 700;
+}
+.app-name__edition { font-weight: 400; }
+.workspace-name { margin: 0; flex: 1 1 12rem; }
+.theme-toggle {
+  font: inherit;
+  color: var(--nm-primary);
+  background: var(--nm-surface);
+  border: 2px solid var(--nm-primary);
+  border-radius: var(--nm-radius-badge);
+  padding: 4px var(--nm-space-2);
+  cursor: pointer;
+}
+.theme-toggle[aria-pressed="true"] {
+  background: var(--nm-primary);
+  color: var(--nm-on-primary);
+}
+.sample-banner {
+  margin: var(--nm-space-1) 0 0;
+  padding: var(--nm-space-1) var(--nm-space-2);
+  border-left: 4px solid var(--nm-accent-review);
+  background: var(--nm-surface);
+  color: var(--nm-text);
+  border-radius: var(--nm-radius-badge);
+}
+.app-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nm-space-1);
+  list-style: none;
+  margin: var(--nm-space-2) 0 0;
+  padding: 0;
+}
+.app-nav a {
+  display: inline-block;
+  padding: var(--nm-space-1) var(--nm-space-2);
+  border-radius: var(--nm-radius-badge) var(--nm-radius-badge) 0 0;
+  text-decoration: none;
+  color: var(--nm-primary);
+  font-weight: 600;
+}
+.app-nav a[aria-current="page"] {
+  background: var(--nm-canvas);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+/* Main area */
+.app-main {
+  padding: var(--nm-space-3);
+  max-width: 80rem;
+  margin: 0 auto;
+}
+.app-main:focus { outline: none; }
+.view-heading { margin-bottom: var(--nm-space-3); }
+.view-title:focus { outline: none; }
+.view-title:focus-visible { outline: 3px solid var(--nm-focus-ring); }
+.view-subtitle { margin: 0; }
+.loading { font-style: italic; }
+
+/* Mission Control */
+.mc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--nm-space-3);
+  align-items: start;
+}
+.mc-section,
+.card {
+  background: var(--nm-surface);
+  border: 1px solid var(--nm-sage);
+  border-radius: var(--nm-radius-card-large);
+  padding: var(--nm-space-2) var(--nm-space-3);
+  min-width: 0;
+}
+.mc-counts { margin-top: var(--nm-space-3); }
+.section-state { margin: 0; }
+.section-state--empty { font-style: italic; }
+.priority-list,
+.item-list,
+.card-list { margin: 0; padding-left: var(--nm-space-3); }
+.card-list { list-style: none; padding: 0; display: grid; gap: var(--nm-space-2); }
+.item-list li,
+.priority-list li { margin-bottom: var(--nm-space-1); overflow-wrap: anywhere; }
+.item-meta { opacity: 1; }
+.count-list {
+  display: grid;
+  grid-template-columns: max-content auto;
+  gap: 4px var(--nm-space-2);
+  margin: 0;
+}
+.count-list dt { font-weight: 600; }
+.count-list dd { margin: 0; }
+
+/* Cards and badges */
+.card { border-radius: var(--nm-radius-card); padding: var(--nm-space-2); overflow-wrap: anywhere; }
+/* A card inside a section sits on the canvas color so it stays distinct in both themes. */
+.mc-section .card { background: var(--nm-canvas); }
+.card__title { margin-bottom: 4px; }
+.card__meta,
+.card__counts,
+.card__badges { margin: 4px 0 0; }
+.badge {
+  display: inline-block;
+  border-radius: var(--nm-radius-badge);
+  border: 2px solid currentColor;
+  padding: 0 var(--nm-space-1);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: normal;
+}
+.badge--blocked,
+.badge--overdue,
+.badge--review,
+.badge--error { color: var(--nm-accent-review-text); border-color: var(--nm-accent-review); }
+.badge--judgment,
+.badge--accepted,
+.badge--paused,
+.badge--unavailable { color: var(--nm-primary); }
+
+/* Board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--nm-space-2);
+  align-items: start;
+}
+.board__column {
+  background: var(--nm-sage);
+  border-radius: var(--nm-radius-card-large);
+  padding: var(--nm-space-2);
+  min-width: 0;
+}
+.board__count { font-family: system-ui, sans-serif; font-size: 0.9375rem; font-weight: 400; }
+.board__cards { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--nm-space-1); }
+
+/* Table */
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.task-table {
+  border-collapse: collapse;
+  width: 100%;
+  background: var(--nm-surface);
+}
+.task-table caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: var(--nm-space-1);
+}
+.task-table th,
+.task-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--nm-space-1);
+  border-bottom: 1px solid var(--nm-sage);
+}
+.task-table th { background: var(--nm-sage); }
+.task-table .cell--date { white-space: nowrap; }
+.sort-button {
+  font: inherit;
+  font-weight: 700;
+  color: var(--nm-primary);
+  background: none;
+  border: 0;
+  padding: 4px;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* Errors */
+.error-message { font-weight: 600; }
+
+/* Motion only for people who have not asked for less. */
+@media (prefers-reduced-motion: no-preference) {
+  .card,
+  .app-nav a,
+  .theme-toggle { transition: background-color 150ms ease, box-shadow 150ms ease; }
+  .card:hover { box-shadow: 0 2px 8px color-mix(in srgb, var(--nm-primary) 20%, transparent); }
+}
+
+@media (max-width: 30rem) {
+  .app-header { padding: var(--nm-space-2) var(--nm-space-2) 0; }
+  .app-main { padding: var(--nm-space-2); }
+  h1 { font-size: 1.625rem; }
+}

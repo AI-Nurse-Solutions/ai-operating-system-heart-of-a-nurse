@@ -5,6 +5,8 @@
 // 3. The TypeScript compiler (strict) typechecks every envelope as
 //    Envelope<command> against the generated nurse-manager-ipc.d.ts,
 //    and confirms that deliberate misuses do not compile.
+// 4. The renderer's JavaScript (checkJs, strict) typechecks against the same
+//    contract, so a contract change cannot silently break a screen.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -85,7 +87,19 @@ try {
     .map((d) => ts.flattenDiagnosticMessageText(d.messageText, '\n'));
   assert.deepEqual(diagnostics, [], diagnostics.join('\n'));
 
-  console.log(`nurse-manager IPC contract: ${Object.keys(fixtures).length} envelopes pass ajv and tsc`);
+  // --- renderer consumes the contract --------------------------------------
+  const renderer = ['views.mjs', 'app.mjs'].map((f) => here(`../renderer/${f}`));
+  const rendererProgram = ts.createProgram(renderer, {
+    allowJs: true, checkJs: true, noEmit: true, strict: true,
+    target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'],
+  });
+  const rendererDiagnostics = ts.getPreEmitDiagnostics(rendererProgram).map((d) =>
+    `${d.file?.fileName ?? ''}: ${ts.flattenDiagnosticMessageText(d.messageText, ' ')}`);
+  assert.deepEqual(rendererDiagnostics, [], rendererDiagnostics.join('\n'));
+
+  console.log(`nurse-manager IPC contract: ${Object.keys(fixtures).length} envelopes pass ajv and tsc; renderer typechecks`);
 } finally {
   rmSync(work, { recursive: true, force: true });
 }

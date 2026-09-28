@@ -347,7 +347,17 @@ class FallbackTests(_Case):
         server = self.server(one_good_line_then_claims)
         result = self.draft(self.connect(server))
         self.assert_records_only(result, "output_refused", "1 line(s) had no citation")
-        self.assertIn("Morale on the unit", result["reason"])
+        # Rejected text is never stored in the ledger or shown in the reason.
+        self.assertNotIn("Morale", result["reason"])
+        self.assertNotIn("Morale", " ".join(str(v) for v in tuple(self.ledger()[-1])))
+
+    def test_an_invented_heading_is_not_exempt(self):
+        def invented_heading(body):
+            kept = [line for line in body["prompt"].splitlines()
+                    if line.startswith("#") or "`" in line]
+            return "\n".join(["## Morale is at an all-time low", *kept])
+        result = self.draft(self.connect(self.server(invented_heading)))
+        self.assert_records_only(result, "output_refused", "1 line(s) had no citation")
 
     def test_empty_output_is_not_saved(self):
         self.assert_records_only(self.draft(self.connect(self.server("  "))),

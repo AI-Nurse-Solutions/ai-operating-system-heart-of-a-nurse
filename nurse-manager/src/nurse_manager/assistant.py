@@ -612,16 +612,18 @@ class AssistantService:
         if text.strip() == NO_ANSWER:
             return None
         sent_lines = {line.strip() for line in sent.splitlines() if line.strip()}
+        # Headings get no exemption: only a heading that was sent word for
+        # word passes without a citation, so an invented heading is refused.
         uncited = [
-            line.strip() for line in text.splitlines()
+            line for line in text.splitlines()
             if line.strip()
-            and not line.lstrip().startswith("#")
             and not CITATION.search(line)
             and line.strip() not in sent_lines
         ]
         if uncited:
+            # Report the count only: rejected text is never stored or shown.
             return (f"{len(uncited)} line(s) had no citation, so they could not be checked"
-                    f" against your records (the first: \"{uncited[0][:80]}\")")
+                    " against your records")
         return None
 
     def _edena_decide(self, provider: Provider, intent: str, content: str):

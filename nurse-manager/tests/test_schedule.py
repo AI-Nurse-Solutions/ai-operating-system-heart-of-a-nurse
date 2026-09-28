@@ -151,6 +151,34 @@ class DedupTests(_Case):
         self.assertEqual(len(self.revisions()), 1)
 
 
+    def test_a_manual_draft_racing_the_scheduler_joins_the_same_week(self):
+        import threading
+
+        errors = []
+
+        def manual_draft():  # the manager's request, from its own connection
+            other = ManagerWorkspace(self.root, clock=self.clock)
+            try:
+                BriefService(other).add_weekly_draft("2026-09-28", "Manual draft.", [], OWNER)
+            except Exception as exc:  # noqa: BLE001 - reported below
+                errors.append(exc)
+            finally:
+                other.close()
+
+        with self.ws.store.transaction():
+            # The scheduler holds the write lock and has written this week's draft...
+            BriefService(self.ws).add_weekly_draft("2026-09-28", "Scheduled draft.", [], OWNER)
+            # ...when the manager asks for a draft.
+            manual = threading.Thread(target=manual_draft)
+            manual.start()
+            time.sleep(0.3)
+        manual.join(10)
+        self.assertEqual(errors, [])
+        artifacts = self.ws.store.conn.execute(
+            "SELECT count(*) FROM artifacts WHERE week_of = '2026-09-28'").fetchone()[0]
+        self.assertEqual((artifacts, len(self.revisions())), (1, 2))
+
+
 class RestartTests(_Case):
     def test_settings_and_runs_survive_a_restart(self):
         self.turn_on(weekday=2, hour=6)

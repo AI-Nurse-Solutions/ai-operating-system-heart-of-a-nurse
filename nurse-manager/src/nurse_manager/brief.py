@@ -222,12 +222,15 @@ class BriefService:
         """Save a draft of this week's brief. ``author`` is who wrote the text:
         the owner for the records-only draft, ``assistant:<provider>`` for a
         model's. Either way it is a draft until the manager accepts it."""
-        artifact = self.ws.store.conn.execute(
-            "SELECT * FROM artifacts WHERE workspace_id = ? AND kind = 'weekly_brief'"
-            " AND week_of = ?",
-            (self.ws.info.id, week_of),
-        ).fetchone()
         with self.ws.store.transaction() as db:
+            # Looked up inside the write lock: another writer (the recurring
+            # brief, a second window) may have created this week's artifact
+            # since, and a week has exactly one.
+            artifact = db.execute(
+                "SELECT * FROM artifacts WHERE workspace_id = ? AND kind = 'weekly_brief'"
+                " AND week_of = ?",
+                (self.ws.info.id, week_of),
+            ).fetchone()
             if artifact is None:
                 artifact_id = new_id("art")
                 db.execute(

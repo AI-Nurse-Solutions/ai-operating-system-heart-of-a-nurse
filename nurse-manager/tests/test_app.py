@@ -182,6 +182,35 @@ class WorkspaceWriteTests(_AppCase):
         view = self.envelope("/ipc/learning?today=2026-09-30")["data"]
         self.assertIn(lid, [i["id"] for i in view["items"]])
 
+    def test_contributions_from_the_screens(self):
+        view = self.envelope("/ipc/contributions?today=2026-09-30")["data"]
+        project = view["projects"][0]["id"]
+        added = self.envelope("/ipc/contribution-add", "POST", {
+            "title": "Charter template (synthetic)", "kind": "committee",
+            "occurred_on": "2026-09-27", "my_part": "Drafted it.",
+            "shared_credit": "Unit Based Council members", "project_id": project,
+        })["data"]["item"]
+        self.assertEqual((added["status"], added["project_id"]), ("draft", project))
+        cid = added["id"]
+        empty = self.envelope("/ipc/contribution-verify", "POST",
+                              {"contribution_id": cid, "evidence": " "})
+        self.assertFalse(empty["ok"])
+        done = self.envelope("/ipc/contribution-verify", "POST", {
+            "contribution_id": cid, "evidence": "Adopted in the minutes (synthetic)."})
+        self.assertEqual(done["data"]["item"]["status"], "verified")
+        base = {"title": "T", "kind": "teaching", "my_part": "Taught.", "shared_credit": "Council"}
+        for command, body in (("contribution-add", {**base, "kind": "award"}),
+                              ("contribution-add", {**base, "occurred_on": "x"}),
+                              ("contribution-add", {**base, "project_id": "nope"}),
+                              ("contribution-add", {"title": "T", "kind": "teaching"}),
+                              ("contribution-verify", {"contribution_id": "nope",
+                                                       "evidence": "e"}),
+                              ("contribution-verify", {"contribution_id": cid})):
+            with self.subTest(command=command, body=body):
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", body)[0], 400)
+        view = self.envelope("/ipc/contributions?today=2026-09-30")["data"]
+        self.assertIn(cid, [i["id"] for i in view["items"]])
+
     def test_sources_from_the_screens(self):
         lib = self.envelope("/ipc/library?today=2026-09-30")["data"]
         self.assertEqual(len(lib["items"]), 3)

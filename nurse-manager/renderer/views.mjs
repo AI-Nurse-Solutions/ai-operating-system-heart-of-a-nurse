@@ -1330,3 +1330,199 @@ export function renderLearning(doc, data, options) {
   ]));
   return root;
 }
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').Contributions} Contributions */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ContributionItem} ContributionItem */
+/**
+ * @typedef {object} ContributionsOptions
+ * @property {boolean} writable
+ * @property {boolean} [busy]
+ * @property {Notice} [notice]
+ * @property {string | null} [verifying] the draft whose evidence form is open
+ * @property {ContributionTyped} [typed] what the manager has typed and not saved, kept across re-renders
+ * @property {'add' | string} [saving] the form whose save is in flight ('add', or a contribution id); it is read-only until the save finishes
+ * @property {(fields: Record<string, string>) => void} onAdd
+ * @property {(id: string) => void} onOpenVerify
+ * @property {() => void} onCancelVerify
+ * @property {(id: string, fields: Record<string, string>) => void} onVerify
+ */
+
+/**
+ * Unsaved text on the Contributions screen: the add form, and evidence by contribution id.
+ * @typedef {{ add: Record<string, string>, evidence: Record<string, string> }} ContributionTyped
+ */
+
+/**
+ * Read what the manager has typed on a rendered Contributions view, so the next
+ * render (opening a form, cancelling, a refused save) does not throw it away.
+ * Evidence typed earlier for a draft whose form is now closed is carried in `previous`.
+ * @param {ParentNode} root
+ * @param {ContributionTyped} [previous]
+ * @returns {ContributionTyped}
+ */
+export function typedContributions(root, previous) {
+  /** @type {Record<string, string>} */
+  const add = {};
+  for (const [key, id] of [['title', 'contribution-title'], ['kind', 'contribution-kind'],
+    ['occurred_on', 'contribution-occurred'], ['my_part', 'contribution-my-part'],
+    ['shared_credit', 'contribution-shared'], ['project_id', 'contribution-project']]) {
+    const control = /** @type {HTMLInputElement | null} */ (root.querySelector(`#${id}`));
+    if (control) add[key] = control.value;
+  }
+  const evidence = { ...(previous?.evidence ?? {}) };
+  for (const open of /** @type {NodeListOf<HTMLTextAreaElement>} */ (root.querySelectorAll('textarea[id^="evidence-"]'))) {
+    evidence[open.id.slice('evidence-'.length)] = open.value;
+  }
+  return { add, evidence };
+}
+
+const CONTRIBUTION_KINDS = {
+  improvement: 'Improvement', teaching: 'Teaching', committee: 'Committee',
+  presentation: 'Presentation', publication: 'Publication',
+};
+
+/**
+ * Contributions: what the manager did, who shares the credit, and the evidence.
+ * Stated facts, never a score or a ranking of anyone.
+ * @param {Document} doc
+ * @param {Contributions} data
+ * @param {ContributionsOptions} options
+ */
+export function renderContributions(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const typed = options.typed ?? { add: {}, evidence: {} };
+  const root = h(doc, 'div', { class: 'view view--contributions' });
+  root.append(viewHeading(doc, 'Contributions',
+    'What you contributed, who shares the credit, and the evidence that shows it. Credit goes to teams, groups or roles, never a ranking of colleagues.'));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+  root.append(h(doc, 'ul', { class: 'item-list', 'aria-label': 'Facts' }, [
+    h(doc, 'li', {}, [`${data.verified} verified · ${count(data.drafts, 'draft awaits', 'drafts await')} evidence`]),
+    h(doc, 'li', {}, [`${count(data.this_year_verified, 'contribution', 'contributions')} from this year verified`]),
+  ]));
+
+  /** @param {ContributionItem} item */
+  const card = (item) => {
+    const el = h(doc, 'li', { class: 'card', 'data-record-id': item.id }, [
+      h(doc, 'p', { class: 'card__title' }, [item.title]),
+      h(doc, 'p', { class: 'card__meta' }, [`${CONTRIBUTION_KINDS[item.kind]} · ${item.occurred_on}`]),
+      item.project_id
+        ? h(doc, 'p', { class: 'card__meta' }, ['Project: ',
+          h(doc, 'a', { href: `#/project/${encodeURIComponent(item.project_id)}` }, [item.project_title ?? item.project_id])])
+        : null,
+      h(doc, 'p', {}, [h(doc, 'strong', {}, ['My part: ']), item.my_part]),
+      h(doc, 'p', {}, [h(doc, 'strong', {}, ['Shared credit: ']), item.shared_credit]),
+    ]);
+    if (item.status === 'verified') {
+      el.append(h(doc, 'p', {}, [badge(doc, 'accepted', '✓', 'Evidence'), ' ', item.evidence,
+        ` (verified ${item.verified_on})`]));
+    } else if (options.writable && options.verifying === item.id) {
+      const evidence = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+        id: `evidence-${item.id}`, rows: '2', required: '', maxlength: '1000',
+      }));
+      evidence.value = typed.evidence[item.id] ?? '';
+      evidence.readOnly = busy && options.saving === item.id;
+      const done = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Verify']));
+      done.disabled = busy;
+      const form = h(doc, 'form', { class: 'onboarding-form' }, [
+        h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: `evidence-${item.id}` }, ['What shows it happened?']), evidence]),
+        h(doc, 'p', { class: 'button-row' }, [done, button(doc, 'Cancel', busy, options.onCancelVerify, 'secondary-button')]),
+      ]);
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        options.onVerify(item.id, { evidence: evidence.value.trim() });
+      });
+      el.append(form);
+    } else if (options.writable) {
+      el.append(h(doc, 'p', { class: 'button-row' }, [
+        button(doc, 'Verify with evidence…', busy, () => options.onOpenVerify(item.id), 'secondary-button'),
+      ]));
+    }
+    return el;
+  };
+
+  for (const [status, title, empty] of /** @type {const} */ ([
+    ['draft', 'Drafts awaiting evidence', 'No drafts.'],
+    ['verified', 'Verified', 'Nothing verified yet.'],
+  ])) {
+    const items = data.items.filter((i) => i.status === status);
+    const headingId = `contributions-${status}-heading`;
+    root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': headingId }, [
+      h(doc, 'h2', { id: headingId, tabindex: '-1' }, [`${title} (${items.length})`]),
+      items.length
+        ? h(doc, 'ul', { class: 'card-list' }, items.map(card))
+        : h(doc, 'p', { class: 'section-state section-state--empty' }, [empty]),
+    ]));
+  }
+
+  if (!options.writable) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Recording contributions is available in the Nurse AI OS app.',
+    ]));
+    return root;
+  }
+  /** @param {string} id @param {Record<string, string>} choices @param {string} [first] */
+  const select = (id, choices, first) => /** @type {HTMLSelectElement} */ (h(doc, 'select', { id }, [
+    first !== undefined ? h(doc, 'option', { value: '' }, [first]) : null,
+    ...Object.entries(choices).map(([value, label]) => h(doc, 'option', { value }, [label])),
+  ]));
+  const title = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'contribution-title', type: 'text', required: '', maxlength: '200', autocomplete: 'off' }));
+  const kind = select('contribution-kind', CONTRIBUTION_KINDS);
+  const occurred = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'contribution-occurred', type: 'date', required: '', max: data.today }));
+  const myPart = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', { id: 'contribution-my-part', rows: '2', required: '', maxlength: '1000' }));
+  const shared = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+    id: 'contribution-shared', type: 'text', required: '', maxlength: '200', autocomplete: 'off',
+    'aria-describedby': 'contribution-shared-hint',
+  }));
+  const project = select('contribution-project',
+    Object.fromEntries(data.projects.map((p) => [p.id, p.title])), 'No project');
+  // Unsaved text survives every re-render, so a refused save means fixing one field, not six.
+  const adding = typed.add;
+  title.value = adding.title ?? '';
+  kind.value = adding.kind ?? kind.value;
+  occurred.value = adding.occurred_on ?? data.today;
+  myPart.value = adding.my_part ?? '';
+  shared.value = adding.shared_credit ?? '';
+  project.value = adding.project_id ?? '';
+  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Save as draft']));
+  submit.disabled = busy;
+  // The submitted form is read-only while its own save is in flight, so what was
+  // saved is exactly what is shown; the other form stays open for typing.
+  if (busy && options.saving === 'add') {
+    for (const control of [title, occurred, myPart, shared]) control.readOnly = true;
+    kind.disabled = true;
+    project.disabled = true;
+  }
+  /** @param {string} id @param {string} label @param {HTMLElement} control @param {string} [hint] */
+  const field = (id, label, control, hint) => h(doc, 'p', { class: 'field' }, [
+    h(doc, 'label', { for: id }, [label]),
+    hint ? h(doc, 'span', { class: 'field-hint', id: `${id}-hint` }, [hint]) : null,
+    control,
+  ]);
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'contribution-add-heading' }, [
+    field('contribution-title', 'What was the contribution?', title),
+    field('contribution-kind', 'Kind', kind),
+    field('contribution-occurred', 'When', occurred),
+    field('contribution-my-part', 'Your part', myPart),
+    field('contribution-shared', 'Who shares the credit', shared, 'Teams, groups or roles, like “night charge nurses”. Not named colleagues.'),
+    field('contribution-project', 'Project (optional)', project),
+    submit,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    options.onAdd({
+      title: title.value.trim(), kind: kind.value, occurred_on: occurred.value,
+      my_part: myPart.value.trim(), shared_credit: shared.value.trim(), project_id: project.value,
+    });
+  });
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'contribution-add-heading' }, [
+    h(doc, 'h2', { id: 'contribution-add-heading' }, ['Record a contribution']),
+    h(doc, 'p', { class: 'onboarding-rules', role: 'note' }, [
+      badge(doc, 'review', '!', 'Data rules'), ' ',
+      'Your own work only. Keep patient information, staff performance, and named colleagues out. ',
+      'It counts once you verify it with evidence.',
+    ]),
+    form,
+  ]));
+  return root;
+}

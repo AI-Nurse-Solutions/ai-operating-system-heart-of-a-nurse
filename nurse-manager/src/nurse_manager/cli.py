@@ -26,6 +26,8 @@ from .sample import load_sample
 from .services import ManagerError, ManagerWorkspace, _iso_date
 from .views import (
     board,
+    contribution_item,
+    contributions,
     feedback_item,
     learning,
     learning_item,
@@ -80,6 +82,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--takeaway", required=True)
     p.add_argument("--completed", required=True, help="YYYY-MM-DD")
     p.add_argument("--hours")
+    p = ws_cmd("contributions", "your contributions: drafts awaiting evidence, then verified")
+    p.add_argument("--today", required=True)
+    p = ws_cmd("contribution-add", "record a contribution as a draft, with who shares the credit")
+    p.add_argument("--title", required=True)
+    p.add_argument("--kind", required=True,
+                   choices=("improvement", "teaching", "committee", "presentation", "publication"))
+    p.add_argument("--occurred", required=True, help="YYYY-MM-DD")
+    p.add_argument("--my-part", required=True, dest="my_part")
+    p.add_argument("--shared-credit", required=True, dest="shared_credit",
+                   help="teams, groups or roles; never named colleagues")
+    p.add_argument("--project")
+    p = ws_cmd("contribution-verify", "verify a draft with the evidence that shows it happened")
+    p.add_argument("--id", required=True)
+    p.add_argument("--evidence", required=True)
     p = ws_cmd("library", "every source in the workspace; overdue reviews first")
     p.add_argument("--today", required=True)
     p = ws_cmd("source-add", "add a source (public, synthetic, or permitted personal material)")
@@ -209,6 +225,15 @@ def _dispatch(args: argparse.Namespace) -> Any:
         if args.command == "learning-complete":
             ws.complete_learning(args.id, args.takeaway, args.completed, hours=args.hours)
             return {"item": learning_item(ws, args.id)}
+        if args.command == "contributions":
+            return contributions(ws, today=args.today)
+        if args.command == "contribution-add":
+            item_id = ws.add_contribution(args.title, args.kind, args.occurred, args.my_part,
+                                          args.shared_credit, project_id=args.project)
+            return {"item": contribution_item(ws, item_id)}
+        if args.command == "contribution-verify":
+            ws.verify_contribution(args.id, args.evidence)
+            return {"item": contribution_item(ws, args.id)}
         if args.command == "source-add":
             source_id = ws.add_source(args.title, args.kind, args.reference,
                                       data_class=args.data_class, project_id=args.project,

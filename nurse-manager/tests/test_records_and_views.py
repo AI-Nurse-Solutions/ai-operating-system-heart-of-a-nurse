@@ -14,6 +14,7 @@ from nurse_manager.services import CaptureRefused, ManagerError, ManagerWorkspac
 from nurse_manager.store import MIGRATIONS_DIR, RestoreRefused, Store, StoreError
 from nurse_manager.views import (
     board,
+    contributions,
     learning,
     library,
     mission_control,
@@ -338,6 +339,102 @@ class LearningTests(_TempCase):
         ws.complete_learning(lid, "Bring one idea back to the council.", TODAY)
         kinds = [e["kind"] for e in ws.store.events() if e["record_id"] == lid]
         self.assertEqual(kinds, ["create", "start", "complete"])
+
+
+class ContributionTests(_TempCase):
+    """Contributions (3.6c): what the manager did, shared credit, verified with evidence."""
+
+    def test_drafts_then_verified_newest_first_with_facts_not_scores(self):
+        ws = self.sample()
+        view = contributions(ws, today=TODAY)
+        self.assertEqual([(i["status"], i["occurred_on"]) for i in view["items"]],
+                         [("draft", "2026-09-15"), ("verified", "2026-06-12")])
+        self.assertEqual((view["drafts"], view["verified"], view["this_year_verified"]),
+                         (1, 1, 1))
+        draft = view["items"][0]
+        self.assertEqual(draft["project_title"], "Huddle format pilot")
+        self.assertEqual(draft["shared_credit"], "Night charge nurse group; unit educator")
+        self.assertEqual(len(view["projects"]), 3)
+        self.assertEqual(contributions(ws, today="2027-01-04")["this_year_verified"], 0)
+
+    def test_this_years_count_is_by_when_it_happened_not_when_it_was_verified(self):
+        ws = self.sample()
+        last_year = ws.add_contribution("Poster from last year (synthetic)", "presentation",
+                                        "2025-11-20", "Made the poster.", "Quality council")
+        ws.verify_contribution(last_year, "Poster accepted (synthetic).")
+        view = contributions(ws, today=TODAY)
+        self.assertEqual(next(i for i in view["items"] if i["id"] == last_year)["verified_on"],
+                         TODAY)
+        self.assertEqual((view["verified"], view["this_year_verified"]), (2, 1))
+
+    def test_verifying_needs_written_evidence_even_in_the_database(self):
+        ws = self.sample()
+        cid = ws.add_contribution("Charter template (synthetic)", "committee", TODAY,
+                                  "Drafted it.", "Unit Based Council members")
+        with self.assertRaises(ManagerError):
+            ws.verify_contribution(cid, " ")
+        with self.assertRaises(sqlite3.IntegrityError):
+            ws.store.conn.execute(
+                "UPDATE contributions SET status = 'verified' WHERE id = ?", (cid,))
+        ws.verify_contribution(cid, "Adopted in the council minutes (synthetic).")
+        item = next(i for i in contributions(ws, today=TODAY)["items"] if i["id"] == cid)
+        self.assertEqual((item["status"], item["verified_on"]), ("verified", TODAY))
+        with self.assertRaises(ManagerError):
+            ws.verify_contribution(cid, "Again.")
+
+    def test_my_part_and_shared_credit_are_required_even_in_the_database(self):
+        ws = self.sample()
+        for my_part, shared in ((" ", "Council"), ("Drafted it.", "")):
+            with self.subTest(my_part=my_part, shared=shared), self.assertRaises(ManagerError):
+                ws.add_contribution("Template", "committee", TODAY, my_part, shared)
+        with self.assertRaises(sqlite3.IntegrityError):
+            ws.store.conn.execute(
+                "INSERT INTO contributions (id, workspace_id, title, kind, occurred_on, my_part,"
+                " shared_credit, created_at, updated_at)"
+                " VALUES ('ctb-000000000000', ?, 'T', 'teaching', ?, 'Taught.', ' ', ?, ?)",
+                (ws.info.id, TODAY, TODAY, TODAY))
+
+    def test_a_verification_is_decided_inside_the_write(self):
+        from unittest import mock
+
+        ws = self.sample()
+        cid = ws.add_contribution("Poster (synthetic)", "presentation", TODAY,
+                                  "Made the poster.", "Quality council")
+        stale = dict(ws._require_row("contributions", cid))
+        ws.verify_contribution(cid, "Poster accepted (synthetic).")
+        with mock.patch.object(ws, "_require_row", return_value=stale), \
+                self.assertRaises(ManagerError):
+            ws.verify_contribution(cid, "Second evidence.")
+        self.assertEqual(ws._require_row("contributions", cid)["evidence"],
+                         "Poster accepted (synthetic).")
+
+    def test_capture_rules_apply(self):
+        ws = self.sample()
+        with self.assertRaises(CaptureRefused):
+            ws.add_contribution("Talk", "presentation", TODAY, "Gave it.",
+                                "Thanks to jane.doe@example.org")
+        with self.assertRaises(CaptureRefused):
+            ws.add_contribution("Talk", "presentation", TODAY, "Call 555-867-5309", "Council")
+        cid = ws.add_contribution("Talk (synthetic)", "presentation", TODAY, "Gave it.", "Council")
+        with self.assertRaises(CaptureRefused):
+            ws.verify_contribution(cid, "Email jane.doe@example.org for the slides")
+        for kwargs in ({"kind": "award"}, {"occurred_on": "soon"},
+                       {"occurred_on": "2030-01-01"}, {"title": ""}, {"title": "x" * 201},
+                       {"shared_credit": "x" * 201}, {"my_part": "x" * 1001},
+                       {"project_id": "prj-000000000000"}):
+            args = {"title": "Talk", "kind": "presentation", "occurred_on": TODAY,
+                    "my_part": "Gave it.", "shared_credit": "Council", **kwargs}
+            project_id = args.pop("project_id", None)
+            with self.subTest(kwargs=kwargs), self.assertRaises(ManagerError):
+                ws.add_contribution(**args, project_id=project_id)
+
+    def test_changes_are_audited(self):
+        ws = self.sample()
+        cid = ws.add_contribution("Article (synthetic)", "publication", TODAY,
+                                  "Wrote the first draft.", "Co-authors from the council")
+        ws.verify_contribution(cid, "Accepted by the newsletter (synthetic).")
+        kinds = [e["kind"] for e in ws.store.events() if e["record_id"] == cid]
+        self.assertEqual(kinds, ["create", "verify"])
 
 
 class LibraryTests(_TempCase):

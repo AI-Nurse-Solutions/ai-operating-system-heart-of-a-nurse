@@ -186,6 +186,94 @@ try {
     /Budget basics.*4 h.*Takeaway.*Read the variance report/s);
   assert.match(await samplePage.getByRole('list', { name: 'This year' }).textContent(), /2 items completed this year \(7 hours\)/);
 
+  // --- Contributions: a draft, refused identifiers, verified with evidence
+  await samplePage.getByRole('link', { name: 'Contributions' }).click();
+  await samplePage.waitForSelector('.view--contributions');
+  // Half-typed text survives opening and cancelling another draft's evidence form.
+  await samplePage.getByLabel('What was the contribution?').fill('Rewrote the council agenda template (synthetic)');
+  await samplePage.getByLabel('Your part').fill('Drafted the template and tested it at two meetings.');
+  const sampleDraft = samplePage.getByRole('listitem').filter({ hasText: 'Designed the five-part huddle format' });
+  await sampleDraft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  assert.equal(await samplePage.getByLabel('What was the contribution?').inputValue(), 'Rewrote the council agenda template (synthetic)');
+  await sampleDraft.getByRole('button', { name: 'Cancel' }).click();
+  await samplePage.waitForSelector('.view--contributions textarea[id^="evidence-"]', { state: 'detached' });
+  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Drafted the template and tested it at two meetings.');
+
+  await samplePage.getByLabel('Kind').selectOption('committee');
+  await samplePage.getByLabel('Your part').fill('Drafted the template and tested it at two meetings.');
+  await samplePage.getByLabel('Who shares the credit').fill('Thanks to jane.doe@example.org');
+  await samplePage.getByLabel('Project (optional)').selectOption({ label: 'Unit Based Council charter refresh' });
+  await samplePage.getByRole('button', { name: 'Save as draft' }).click();
+  await samplePage.waitForSelector('.view--contributions .notice[role="alert"]');
+  assert.match(await samplePage.locator('.notice').textContent(), /not stored.*EMAIL_ADDRESS/s);
+  // The refusal keeps what was typed; only the refused field needs fixing.
+  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Drafted the template and tested it at two meetings.');
+  assert.equal(await samplePage.getByLabel('Kind').inputValue(), 'committee');
+  await samplePage.getByLabel('Who shares the credit').fill('Unit Based Council members');
+  // While its own save is in flight, the submitted form is read-only.
+  let releaseAdd = () => {};
+  const addHeld = new Promise((resolve) => { releaseAdd = resolve; });
+  await samplePage.route('**/ipc/contribution-add', async (route) => { await addHeld; await route.continue(); });
+  await samplePage.getByRole('button', { name: 'Save as draft' }).click();
+  await samplePage.waitForSelector('#contribution-title[readonly]');
+  for (const label of ['What was the contribution?', 'Your part', 'Who shares the credit', 'Kind']) {
+    assert.equal(await samplePage.getByLabel(label).isEditable(), false, `${label} is read-only while saving`);
+  }
+  releaseAdd();
+  await samplePage.waitForFunction(() => /Saved “Rewrote the council agenda/.test(document.activeElement?.textContent ?? ''));
+  await samplePage.unroute('**/ipc/contribution-add');
+  assert.equal(await samplePage.getByLabel('What was the contribution?').isEditable(), true);
+  const draft = samplePage.getByRole('region', { name: 'Drafts awaiting evidence (2)' }).getByRole('listitem').filter({ hasText: 'Rewrote the council agenda' });
+  assert.match(await draft.textContent(), /Project: Unit Based Council charter refresh.*Shared credit: Unit Based Council members/s);
+  // Evidence typed for one draft survives switching to another draft and back.
+  await sampleDraft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await samplePage.keyboard.type('Huddle notes from week one (synthetic).');
+  await draft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await sampleDraft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  assert.equal(await samplePage.getByLabel('What shows it happened?').inputValue(), 'Huddle notes from week one (synthetic).');
+  await draft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await samplePage.keyboard.type('Template adopted in the council minutes (synthetic). Ask manager@example.org');
+  await samplePage.getByRole('button', { name: 'Verify', exact: true }).click();
+  await samplePage.waitForSelector('.view--contributions .notice[role="alert"]');
+  const evidence = samplePage.getByLabel('What shows it happened?');
+  assert.match(await evidence.inputValue(), /Template adopted.*manager@example\.org/);
+  await evidence.fill('Template adopted in the council minutes (synthetic).');
+  // A slow save: text typed into the add form while it is in flight is kept.
+  let releaseVerify = () => {};
+  const verifyHeld = new Promise((resolve) => { releaseVerify = resolve; });
+  await samplePage.route('**/ipc/contribution-verify', async (route) => { await verifyHeld; await route.continue(); });
+  await samplePage.getByRole('button', { name: 'Verify', exact: true }).click();
+  await samplePage.getByLabel('What was the contribution?').fill('Typed while saving (synthetic)');
+  releaseVerify();
+  await samplePage.waitForFunction(() => /Verified, with your evidence/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await samplePage.getByRole('region', { name: 'Verified (2)' }).textContent(),
+    /Rewrote the council agenda.*Evidence.*Template adopted in the council minutes/s);
+  assert.match(await samplePage.getByRole('list', { name: 'Facts' }).textContent(), /2 verified · 1 draft awaits evidence/);
+  assert.equal(await samplePage.getByLabel('What was the contribution?').inputValue(), 'Typed while saving (synthetic)');
+  await samplePage.unroute('**/ipc/contribution-verify');
+  // A save that works but whose refresh fails keeps the screen and the unsaved text.
+  await samplePage.getByLabel('Your part').fill('Typed before a failed refresh.');
+  await samplePage.getByRole('listitem').filter({ hasText: 'Designed the five-part huddle format' })
+    .getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await samplePage.keyboard.type('Huddle notes from week one (synthetic).');
+  const listRefresh = (/** @type {URL} */ url) => url.pathname === '/ipc/contributions';
+  await samplePage.route(listRefresh, (route) => route.fulfill({
+    contentType: 'application/json',
+    body: JSON.stringify({ contract: 'nurse-manager-ipc@1', command: 'contributions', ok: false,
+      error: { type: 'Unavailable', message: 'the workspace is busy' } }),
+  }));
+  await samplePage.getByRole('button', { name: 'Verify', exact: true }).click();
+  await samplePage.waitForFunction(() => /could not be refreshed/.test(document.activeElement?.textContent ?? ''));
+  await samplePage.unroute(listRefresh);
+  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Typed before a failed refresh.');
+  assert.equal(await samplePage.getByLabel('What was the contribution?').inputValue(), 'Typed while saving (synthetic)');
+
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];
   const model = createServer((req, res) => {
@@ -320,7 +408,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

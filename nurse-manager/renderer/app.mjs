@@ -467,10 +467,12 @@ export function start(doc, source) {
   /**
    * Stop every assistant from where the work is waiting. The request that is
    * waiting returns by itself, within a second, saying it was stopped.
+   * @returns {Promise<boolean>} whether the stop was saved
    */
   const stopAssistants = async () => {
     const { failure } = await write('assistants-stop', {});
-    announce(failure ? `Not stopped: ${failure.text}` : 'Stopped. Nothing more is sent, and its reply will be discarded.');
+    announce(failure ? `Not stopped: ${failure.text}. Try again.` : 'Stopped. Nothing more is sent, and its reply will be discarded.');
+    return !failure;
   };
 
   /**

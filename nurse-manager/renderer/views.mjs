@@ -182,13 +182,17 @@ function assistantsSection(doc, section, options) {
 /**
  * Shown while a request waits for the AI model: the way to stop it, right there.
  * @param {Document} doc
- * @param {() => void} onStop
+ * @param {() => Promise<boolean>} onStop resolves false if the stop was not saved
  */
 function workingBlock(doc, onStop) {
-  const stop = button(doc, 'Stop assistants', false, () => {
+  const stop = button(doc, 'Stop assistants', false, async () => {
     stop.disabled = true;
     stop.textContent = 'Stopping…';
-    onStop();
+    // Not stopped (the request failed): offer it again, since the model is still working.
+    if (!(await onStop())) {
+      stop.disabled = false;
+      stop.textContent = 'Stop assistants';
+    }
   }, 'secondary-button');
   stop.setAttribute('aria-describedby', 'working-hint');
   return h(doc, 'div', { class: 'working', id: 'working' }, [
@@ -857,7 +861,7 @@ export function renderOnboarding(doc, handlers, state = {}) {
  * @property {(question: string) => void} [onEdit] the question changed after a preview
  * @property {() => void} [onKeep] keep the shown answer as a project note
  * @property {boolean} [sending] a question is waiting for the AI model
- * @property {() => void} [onStop] stop assistants while it waits
+ * @property {() => Promise<boolean>} [onStop] stop assistants while it waits; false if not stopped
  */
 /**
  * @typedef {object} FeedbackOptions
@@ -1024,7 +1028,7 @@ function previewPanel(doc, preview, busy, handlers, layout = {}) {
  * @param {WeeklyBrief} data
  * @param {{
  *   writable: boolean, busy?: boolean, notice?: Notice, preview?: AssistantPreview | null,
- *   scheduleDraft?: ScheduleFields | null, sending?: boolean, onStop?: () => void,
+ *   scheduleDraft?: ScheduleFields | null, sending?: boolean, onStop?: () => Promise<boolean>,
  *   onRecords: () => void, onPreview: () => void, onSend: (sha: string) => void,
  *   onCancel: () => void, onAccept: (revision: Revision) => void,
  *   onSchedule: (fields: ScheduleFields) => void,

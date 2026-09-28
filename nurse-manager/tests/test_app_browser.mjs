@@ -492,6 +492,18 @@ try {
     }
     assert.equal(held.length, 1, 'the model received the request');
     const sentWhileHeld = modelRequests.length;
+    // The first stop fails on its way: the button comes back so it can be tried again.
+    const stopFails = (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify({
+      contract: 'nurse-manager-ipc@1', command: 'assistants-stop', ok: false,
+      error: { type: 'ManagerError', message: 'the workspace is busy' } }) });
+    await samplePage.route('**/ipc/assistants-stop', stopFails);
+    await stopNow.click();
+    await samplePage.waitForFunction(() => {
+      const button = [...document.querySelectorAll('#working button')][0];
+      return button && !button.disabled && button.textContent === 'Stop assistants';
+    }, null, { timeout: 5000 });
+    await samplePage.unroute('**/ipc/assistants-stop', stopFails);
+    assert.equal(held.length, 1, 'the model is still working after the failed stop');
     await stopNow.click();
     // The request returns at once, though the model has not answered.
     await samplePage.waitForFunction(() => /You stopped assistants while the model was working/.test(document.activeElement?.textContent ?? ''),

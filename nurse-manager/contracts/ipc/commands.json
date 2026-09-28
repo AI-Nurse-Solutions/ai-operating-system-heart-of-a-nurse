@@ -32,6 +32,9 @@
     "learning": "Learning",
     "learning-add": "LearningResult",
     "learning-start": "LearningResult",
-    "learning-complete": "LearningResult"
+    "learning-complete": "LearningResult",
+    "contributions": "Contributions",
+    "contribution-add": "ContributionResult",
+    "contribution-verify": "ContributionResult"
   }
 }

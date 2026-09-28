@@ -186,6 +186,39 @@ try {
     /Budget basics.*4 h.*Takeaway.*Read the variance report/s);
   assert.match(await samplePage.getByRole('list', { name: 'This year' }).textContent(), /2 items completed this year \(7 hours\)/);
 
+  // --- Contributions: a draft, refused identifiers, verified with evidence
+  await samplePage.getByRole('link', { name: 'Contributions' }).click();
+  await samplePage.waitForSelector('.view--contributions');
+  await samplePage.getByLabel('What was the contribution?').fill('Rewrote the council agenda template (synthetic)');
+  await samplePage.getByLabel('Kind').selectOption('committee');
+  await samplePage.getByLabel('Your part').fill('Drafted the template and tested it at two meetings.');
+  await samplePage.getByLabel('Who shares the credit').fill('Thanks to jane.doe@example.org');
+  await samplePage.getByLabel('Project (optional)').selectOption({ label: 'Unit Based Council charter refresh' });
+  await samplePage.getByRole('button', { name: 'Save as draft' }).click();
+  await samplePage.waitForSelector('.view--contributions .notice[role="alert"]');
+  assert.match(await samplePage.locator('.notice').textContent(), /not stored.*EMAIL_ADDRESS/s);
+  // The refusal keeps what was typed; only the refused field needs fixing.
+  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Drafted the template and tested it at two meetings.');
+  assert.equal(await samplePage.getByLabel('Kind').inputValue(), 'committee');
+  await samplePage.getByLabel('Who shares the credit').fill('Unit Based Council members');
+  await samplePage.getByRole('button', { name: 'Save as draft' }).click();
+  await samplePage.waitForFunction(() => /Saved “Rewrote the council agenda/.test(document.activeElement?.textContent ?? ''));
+  const draft = samplePage.getByRole('region', { name: 'Drafts awaiting evidence (2)' }).getByRole('listitem').filter({ hasText: 'Rewrote the council agenda' });
+  assert.match(await draft.textContent(), /Project: Unit Based Council charter refresh.*Shared credit: Unit Based Council members/s);
+  await draft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await samplePage.keyboard.type('Template adopted in the council minutes (synthetic). Ask manager@example.org');
+  await samplePage.getByRole('button', { name: 'Verify', exact: true }).click();
+  await samplePage.waitForSelector('.view--contributions .notice[role="alert"]');
+  const evidence = samplePage.getByLabel('What shows it happened?');
+  assert.match(await evidence.inputValue(), /Template adopted.*manager@example\.org/);
+  await evidence.fill('Template adopted in the council minutes (synthetic).');
+  await samplePage.getByRole('button', { name: 'Verify', exact: true }).click();
+  await samplePage.waitForFunction(() => /Verified, with your evidence/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await samplePage.getByRole('region', { name: 'Verified (2)' }).textContent(),
+    /Rewrote the council agenda.*Evidence.*Template adopted in the council minutes/s);
+  assert.match(await samplePage.getByRole('list', { name: 'Facts' }).textContent(), /2 verified · 1 draft awaits evidence/);
+
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];
   const model = createServer((req, res) => {
@@ -320,7 +353,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

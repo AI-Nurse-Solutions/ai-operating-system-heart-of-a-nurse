@@ -62,6 +62,12 @@ def load_sample(
             ws.start_learning(item_id)
         if item["status"] == "completed":
             ws.complete_learning(item_id, item["takeaway"], item["completed_on"])
+    for item in data.get("contributions", []):
+        item_id = ws.add_contribution(item["title"], item["kind"], item["occurred_on"],
+                                      item["my_part"], item["shared_credit"],
+                                      project_id=projects.get(item.get("project")))
+        if item.get("evidence"):
+            ws.verify_contribution(item_id, item["evidence"])
     for s in data.get("library", []):  # sources not tied to one project
         ws.add_source(s["title"], s["kind"], s["reference"], data_class=s["data_class"],
                       review_date=s.get("review_date"))

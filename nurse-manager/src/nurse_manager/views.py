@@ -374,13 +374,18 @@ def library(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
         "today": today,
         "items": items,
         "review_overdue": sum(1 for i in items if i["review_overdue"]),
-        "projects": [
-            {"id": p["id"], "title": p["title"]}
-            for p in ws.store.conn.execute(
-                "SELECT id, title FROM projects WHERE workspace_id = ? ORDER BY title, id",
-                (ws.info.id,))
-        ],
+        "projects": _project_choices(ws),
     }
+
+
+def _project_choices(ws: ManagerWorkspace) -> list[dict[str, str]]:
+    """Projects a new record can be linked to, by title."""
+    return [
+        {"id": p["id"], "title": p["title"]}
+        for p in ws.store.conn.execute(
+            "SELECT id, title FROM projects WHERE workspace_id = ? ORDER BY title, id",
+            (ws.info.id,))
+    ]
 
 
 def _learning(row) -> dict[str, Any]:
@@ -428,4 +433,53 @@ def learning(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
         "hours_this_year": round(sum(r["hours"] or 0 for r in done_this_year), 1),
         "past_target": sum(1 for r in rows if r["status"] != "completed"
                            and r["target_date"] and r["target_date"] < today),
+    }
+
+
+def _contribution(row) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "kind": row["kind"],
+        "occurred_on": row["occurred_on"],
+        "my_part": row["my_part"],
+        "shared_credit": row["shared_credit"],
+        "project_id": row["project_id"],
+        "project_title": row["project_title"],
+        "status": row["status"],
+        "evidence": row["evidence"],
+        "verified_on": row["verified_on"],
+    }
+
+
+_CONTRIBUTIONS = (
+    "SELECT c.*, p.title AS project_title FROM contributions c"
+    " LEFT JOIN projects p ON p.id = c.project_id WHERE c.workspace_id = ?"
+)
+
+
+def contribution_item(ws: ManagerWorkspace, contribution_id: str) -> dict[str, Any]:
+    ws._require_row("contributions", contribution_id)
+    return _contribution(ws.store.conn.execute(
+        _CONTRIBUTIONS + " AND c.id = ?", (ws.info.id, contribution_id)).fetchone())
+
+
+def contributions(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
+    """The manager's contributions: drafts awaiting evidence, then verified.
+
+    Stated facts only: counts, never a score or a ranking of anyone.
+    """
+    rows = [_contribution(r) for r in ws.store.conn.execute(_CONTRIBUTIONS, (ws.info.id,))]
+    newest = lambda r: (r["occurred_on"], r["id"])  # noqa: E731
+    drafts = sorted((r for r in rows if r["status"] == "draft"), key=newest, reverse=True)
+    verified = sorted((r for r in rows if r["status"] == "verified"), key=newest, reverse=True)
+    year = today[:4]
+    return {
+        "sample": ws.info.sample,
+        "today": today,
+        "items": drafts + verified,
+        "drafts": len(drafts),
+        "verified": len(verified),
+        "verified_this_year": sum(1 for r in verified if r["occurred_on"].startswith(year)),
+        "projects": _project_choices(ws),
     }

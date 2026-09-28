@@ -6,7 +6,7 @@
 // its own validated IPC without touching any view.
 
 import {
-  renderAssistant, renderBoard, renderBrief, renderError, renderLearning, renderLibrary, renderMission, renderOnboarding,
+  renderAssistant, renderBoard, renderBrief, renderContributions, renderError, renderLearning, renderLibrary, renderMission, renderOnboarding,
   renderProject, renderTable,
 } from './views.mjs';
 
@@ -105,9 +105,9 @@ export function httpSource(token = '') {
   };
 }
 
-/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning'} ReadCommand */
+/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions'} ReadCommand */
 /** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'
- *   | 'learning-add' | 'learning-start' | 'learning-complete'} WriteCommand */
+ *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -118,6 +118,7 @@ const ROUTES = {
   brief: { title: 'Weekly brief', command: 'weekly' },
   library: { title: 'Library', command: 'library' },
   learning: { title: 'Learning and Growth', command: 'learning' },
+  contributions: { title: 'Contributions', command: 'contributions' },
   assistant: { title: 'AI assistance', command: 'assistant' },
 };
 
@@ -367,6 +368,9 @@ export function start(doc, source) {
     } else if (envelope.command === 'learning') {
       showLearning(/** @type {import('./views.mjs').Learning} */ (data), {}, moveFocus);
       announce('Learning and Growth loaded.');
+    } else if (envelope.command === 'contributions') {
+      showContributions(/** @type {import('./views.mjs').Contributions} */ (data), {}, moveFocus);
+      announce('Contributions loaded.');
     } else if (envelope.command === 'library') {
       showLibrary(/** @type {import('./views.mjs').Library} */ (data), {}, moveFocus);
       announce('Library loaded.');
@@ -422,7 +426,7 @@ export function start(doc, source) {
 
   /**
    * Reload a view's data after an action, unless the manager has navigated away.
-   * @param {'weekly' | 'assistant' | 'library' | 'learning'} command
+   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions'} command
    * @param {number} mine
    * @param {Record<string, string>} [params]
    */
@@ -431,7 +435,7 @@ export function start(doc, source) {
       const envelope = await source.call(command, params);
       if (mine !== generation) return null;
       if (!envelope.ok) {
-        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning' }[command];
+        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions' }[command];
         show(renderError(doc, ROUTES[view].title, envelope.error), true);
         return null;
       }
@@ -599,6 +603,44 @@ export function start(doc, source) {
       onComplete: (id, fields) => act('learning-complete', { learning_id: id, ...fields }, 'Marked completed, with your takeaway.'),
     };
     const view = renderLearning(doc, data, { ...options, ...state });
+    if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
+    else show(view, moveFocus);
+  };
+
+  /**
+   * @param {import('./views.mjs').Contributions} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, verifying?: string | null, draft?: Record<string, string> }} state
+   * @param {boolean} moveFocus
+   * @param {string} [focusSelector]
+   */
+  const showContributions = (data, state, moveFocus, focusSelector) => {
+    const mine = generation;
+    /**
+     * @param {WriteCommand} command
+     * @param {Record<string, string>} body
+     * @param {string} done
+     */
+    const act = async (command, body, done) => {
+      main.replaceChildren(renderContributions(doc, data, { ...options, ...state, busy: true }));
+      const { failure } = await write(command, body);
+      if (mine !== generation) return;
+      if (failure) {
+        showContributions(data, { verifying: state.verifying, notice: failure, draft: body }, true);
+        return;
+      }
+      const fresh = await reload('contributions', mine);
+      // Re-render from the fresh records, so every button acts on them.
+      if (fresh) showContributions(/** @type {import('./views.mjs').Contributions} */ (fresh), { notice: { kind: 'ok', text: done } }, true);
+    };
+    /** @type {import('./views.mjs').ContributionsOptions} */
+    const options = {
+      writable,
+      onAdd: (fields) => act('contribution-add', fields, `Saved “${fields.title}” as a draft. Verify it with evidence when you have it.`),
+      onOpenVerify: (id) => showContributions(data, { verifying: id }, true, `#evidence-${id}`),
+      onCancelVerify: () => showContributions(data, {}, true),
+      onVerify: (id, fields) => act('contribution-verify', { contribution_id: id, ...fields }, 'Verified, with your evidence.'),
+    };
+    const view = renderContributions(doc, data, { ...options, ...state });
     if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
     else show(view, moveFocus);
   };

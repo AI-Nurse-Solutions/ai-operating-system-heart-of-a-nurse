@@ -31,6 +31,9 @@ FEEDBACK_KINDS = ("worked", "change", "question")
 MAX_FEEDBACK_FROM = 80
 MAX_FEEDBACK_TEXT = 1000
 LEARNING_KINDS = ("course", "reading", "conference", "certification", "mentoring")
+CONTRIBUTION_KINDS = ("improvement", "teaching", "committee", "presentation", "publication")
+MAX_SHARED_CREDIT = 200
+MAX_CONTRIBUTION_TEXT = 1000
 
 
 class ManagerError(ValueError):
@@ -452,6 +455,65 @@ class ManagerWorkspace:
             if changed != 1:
                 raise ManagerError("this learning is already completed")
             self.store.log(self.info.owner, "complete", "learning", learning_id)
+
+    # -- contributions ----------------------------------------------------
+
+    def add_contribution(self, title: str, kind: str, occurred_on: str, my_part: str,
+                         shared_credit: str, *, project_id: str | None = None) -> str:
+        """Record a contribution as a draft: what you did, and who shares the credit.
+
+        Credit goes to a team, group or role. This is never a ranking of named
+        colleagues; the privacy screen cannot detect names, so the screens say
+        the rule plainly. A draft counts only once it is verified with evidence.
+        """
+        self._require_row("projects", project_id or None)
+        title = self._require(title, "what the contribution was")
+        my_part = self._require(my_part, "your part in it")
+        shared_credit = self._require(shared_credit, "who shares the credit")
+        if kind not in CONTRIBUTION_KINDS:
+            raise ManagerError(f"unknown contribution kind: {kind}")
+        if len(title) > 200:
+            raise ManagerError("keep the title under 200 characters")
+        if len(my_part) > MAX_CONTRIBUTION_TEXT:
+            raise ManagerError(f"keep your part under {MAX_CONTRIBUTION_TEXT} characters")
+        if len(shared_credit) > MAX_SHARED_CREDIT:
+            raise ManagerError(
+                f"keep shared credit to teams, groups or roles, under {MAX_SHARED_CREDIT}"
+                " characters")
+        occurred_on = _iso_date(occurred_on, "the date it happened")
+        if occurred_on > self.local_today():
+            raise ManagerError("a contribution cannot happen in the future")
+        self._screen(title=title, my_part=my_part, shared_credit=shared_credit)
+        contribution_id = new_id("ctb")
+        now = self.clock()
+        with self.store.transaction() as db:
+            db.execute(
+                "INSERT INTO contributions (id, workspace_id, project_id, title, kind,"
+                " occurred_on, my_part, shared_credit, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (contribution_id, self.info.id, project_id or None, title, kind, occurred_on,
+                 my_part, shared_credit, now, now),
+            )
+            self.store.log(self.info.owner, "create", "contribution", contribution_id)
+        return contribution_id
+
+    def verify_contribution(self, contribution_id: str, evidence: str) -> None:
+        """Verify a draft with the evidence that shows it happened, like a task's evidence."""
+        self._require_row("contributions", contribution_id)
+        evidence = self._require(evidence, "the evidence that shows it happened")
+        if len(evidence) > MAX_CONTRIBUTION_TEXT:
+            raise ManagerError(f"keep the evidence under {MAX_CONTRIBUTION_TEXT} characters")
+        self._screen(evidence=evidence)
+        with self.store.transaction() as db:
+            # Decided inside the write, so two requests cannot both verify it.
+            changed = db.execute(
+                "UPDATE contributions SET status = 'verified', evidence = ?, verified_on = ?,"
+                " updated_at = ? WHERE id = ? AND status = 'draft'",
+                (evidence, self.local_today(), self.clock(), contribution_id),
+            ).rowcount
+            if changed != 1:
+                raise ManagerError("this contribution is already verified")
+            self.store.log(self.info.owner, "verify", "contribution", contribution_id)
 
     def close(self) -> None:
         self.store.close()

@@ -103,6 +103,16 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("learning-complete", "learning-complete", ws, "--id", planned["item"]["id"],
          "--takeaway", "Read the variance report before the meeting, not during it.",
          "--completed", "2026-09-27")
+    keep("contributions", "contributions", ws, "--today", TODAY)
+    keep("contributions-empty", "contributions", empty, "--today", TODAY)
+    drafted = keep("contribution-add", "contribution-add", ws, "--title",
+                   "Rewrote the council agenda template (synthetic)", "--kind", "committee",
+                   "--occurred", "2026-09-21", "--my-part", "Drafted the template.",
+                   "--shared-credit", "Unit Based Council members", "--project", huddle)
+    keep("error-contribution-verify-no-evidence", "contribution-verify", ws, "--id",
+         drafted["item"]["id"], "--evidence", " ")
+    keep("contribution-verify", "contribution-verify", ws, "--id", drafted["item"]["id"],
+         "--evidence", "Template adopted in the council minutes (synthetic).")
     keep("library", "library", ws, "--today", TODAY)
     keep("source-add", "source-add", ws, "--title", "Huddle evaluation questions (synthetic)",
          "--kind", "synthetic", "--reference", "synthetic://samples/huddle-evaluation",

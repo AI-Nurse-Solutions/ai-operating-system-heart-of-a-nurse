@@ -147,6 +147,47 @@ export interface BoardColumn {
 
 export type Contract = "nurse-manager-ipc@1";
 
+/** One of the manager's contributions and who shares the credit. Verified means the manager wrote the evidence that shows it happened. */
+export interface ContributionItem {
+  readonly id: RecordId;
+  readonly title: string;
+  readonly kind: "improvement" | "teaching" | "committee" | "presentation" | "publication";
+  readonly occurred_on: IsoDate;
+  readonly my_part: string;
+  /** Teams, groups or roles; never a ranking of named colleagues. */
+  readonly shared_credit: string;
+  readonly project_id: RecordId | null;
+  readonly project_title: string | null;
+  readonly status: "draft" | "verified";
+  readonly evidence: string;
+  readonly verified_on: IsoDate | null;
+}
+
+export interface ContributionResult {
+  readonly item: ContributionItem;
+}
+
+/** Contributions: drafts awaiting evidence, then verified, newest first. Stated facts, never a score or a ranking. */
+export interface Contributions {
+  readonly sample: boolean;
+  readonly today: IsoDate;
+  readonly items: readonly ContributionItem[];
+  /** @minimum 0 */
+  readonly drafts: number;
+  /** @minimum 0 */
+  readonly verified: number;
+  /**
+   * Verified and happened in the calendar year of today.
+   * @minimum 0
+   */
+  readonly verified_this_year: number;
+  /** Projects a new contribution can be linked to. */
+  readonly projects: readonly {
+    readonly id: RecordId;
+    readonly title: string;
+  }[];
+}
+
 export interface Decision {
   readonly id: RecordId;
   readonly question: string;
@@ -445,7 +486,7 @@ export interface Receipt {
   readonly recorded_at: IsoDateTime;
 }
 
-/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn)-[0-9a-f]{12}$ */
+/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
 export interface Resource {
@@ -583,6 +624,9 @@ export interface CommandData {
   readonly "learning-add": LearningResult;
   readonly "learning-start": LearningResult;
   readonly "learning-complete": LearningResult;
+  readonly contributions: Contributions;
+  readonly "contribution-add": ContributionResult;
+  readonly "contribution-verify": ContributionResult;
 }
 
 export type Command = keyof CommandData;

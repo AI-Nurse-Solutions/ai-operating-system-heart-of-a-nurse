@@ -59,12 +59,14 @@ LOCK_NAME = "app.lock.json"
 # computer, and the launch token proves the request came from its page.
 WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief",
                   "assistant-project", "note-keep", "feedback-add", "feedback-address",
-                  "source-add", "learning-add", "learning-start", "learning-complete")
+                  "source-add", "learning-add", "learning-start", "learning-complete",
+                  "contribution-add", "contribution-verify")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
 _FEEDBACK_ID = re.compile(r"^fbk-[0-9a-f]{12}$")
 _LEARNING_ID = re.compile(r"^lrn-[0-9a-f]{12}$")
+_CONTRIBUTION_ID = re.compile(r"^ctb-[0-9a-f]{12}$")
 _HOURS = re.compile(r"^\d{1,3}(\.\d{1,2})?$")
 
 
@@ -405,6 +407,26 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         argv = ["learning-complete", ws, "--id", learning_id, "--takeaway", takeaway,
                 "--completed", completed]
         return argv + (["--hours", hours] if hours else [])
+    if command == "contribution-add":
+        title, kind = text("title", 400), text("kind", 40)
+        my_part, shared = text("my_part", 2000), text("shared_credit", 400)
+        project_id = text("project_id", 64, required=False)
+        occurred = body.get("occurred_on", today)
+        if (title is None or my_part is None or shared is None
+                or kind not in ("improvement", "teaching", "committee", "presentation",
+                                "publication")
+                or project_id is None or (project_id and not _PROJECT_ID.match(project_id))
+                or not isinstance(occurred, str) or not _valid_date(occurred)):
+            return ("title, kind, my_part, shared_credit, and an occurred_on date are required;"
+                    " project_id is optional")
+        argv = ["contribution-add", ws, "--title", title, "--kind", kind, "--occurred", occurred,
+                "--my-part", my_part, "--shared-credit", shared]
+        return argv + (["--project", project_id] if project_id else [])
+    if command == "contribution-verify":
+        contribution_id, evidence = text("contribution_id", 64), text("evidence", 2000)
+        if not contribution_id or not _CONTRIBUTION_ID.match(contribution_id) or evidence is None:
+            return "contribution_id and evidence are required"
+        return ["contribution-verify", ws, "--id", contribution_id, "--evidence", evidence]
     if command == "source-add":
         title, kind, reference = text("title", 400), text("kind", 40), text("reference", 1000)
         data_class, project_id = text("data_class", 4, required=False), text("project_id", 64, required=False)

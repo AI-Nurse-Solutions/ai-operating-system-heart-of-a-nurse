@@ -70,6 +70,24 @@
       "takeaway": "Open each meeting with its decision, not its agenda."
     }
   ],
+  "contributions": [
+    {
+      "project": "huddle",
+      "title": "Designed the five-part huddle format (synthetic)",
+      "kind": "improvement",
+      "occurred_on": "2026-09-15",
+      "my_part": "Drafted the format and ran the first two huddles.",
+      "shared_credit": "Night charge nurse group; unit educator"
+    },
+    {
+      "title": "Taught delegation basics to new charge nurses (synthetic)",
+      "kind": "teaching",
+      "occurred_on": "2026-06-12",
+      "my_part": "Wrote and taught the one-hour session.",
+      "shared_credit": "Unit educator co-taught the practice cases",
+      "evidence": "Session outline and sign-in count in my teaching folder (synthetic)."
+    }
+  ],
   "library": [
     {
       "title": "Meeting facilitation checklist (synthetic)",

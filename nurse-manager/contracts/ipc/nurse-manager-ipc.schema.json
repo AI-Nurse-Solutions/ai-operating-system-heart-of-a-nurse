@@ -1,0 +1,366 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nurse-ai-os.local/contracts/nurse-manager-ipc@1.schema.json",
+  "title": "Nurse Manager IPC contract, version 1",
+  "description": "Every message the manager core sends to the desktop host. Each CLI command prints one Envelope; commands.json names the data type for each command. TypeScript types in nurse-manager-ipc.d.ts are generated from this file.",
+  "$defs": {
+    "Contract": {"const": "nurse-manager-ipc@1"},
+    "IsoDate": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "IsoDateTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)$"},
+    "Sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act)-[0-9a-f]{12}$"},
+    "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed"]},
+    "SectionState": {"enum": ["ok", "empty"]},
+
+    "OkEnvelope": {
+      "type": "object",
+      "properties": {
+        "contract": {"$ref": "#/$defs/Contract"},
+        "command": {"type": "string"},
+        "ok": {"const": true},
+        "data": {"type": "object"}
+      },
+      "required": ["contract", "command", "ok", "data"],
+      "additionalProperties": false
+    },
+    "ErrorEnvelope": {
+      "type": "object",
+      "properties": {
+        "contract": {"$ref": "#/$defs/Contract"},
+        "command": {"type": "string"},
+        "ok": {"const": false},
+        "error": {"$ref": "#/$defs/IpcError"}
+      },
+      "required": ["contract", "command", "ok", "error"],
+      "additionalProperties": false
+    },
+    "IpcError": {
+      "description": "A truthful failure. The message is written for the manager; type names the error class.",
+      "type": "object",
+      "properties": {"type": {"type": "string"}, "message": {"type": "string"}},
+      "required": ["type", "message"],
+      "additionalProperties": false
+    },
+
+    "Workspace": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "name": {"type": "string"},
+        "owner": {"type": "string"},
+        "profile": {"const": "personal_manager"},
+        "sample": {"type": "boolean", "description": "True for the synthetic sample workspace; every view must say so."}
+      },
+      "required": ["id", "name", "owner", "profile", "sample"],
+      "additionalProperties": false
+    },
+    "SampleResult": {
+      "type": "object",
+      "properties": {
+        "workspace": {"$ref": "#/$defs/Workspace"},
+        "week_of": {"$ref": "#/$defs/IsoDate"},
+        "today": {"$ref": "#/$defs/IsoDate"}
+      },
+      "required": ["workspace", "week_of", "today"],
+      "additionalProperties": false
+    },
+
+    "Priority": {
+      "type": "object",
+      "properties": {
+        "rank": {"type": "integer", "minimum": 1, "maximum": 3},
+        "text": {"type": "string"},
+        "project_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"type": "null"}]}
+      },
+      "required": ["rank", "text", "project_id"],
+      "additionalProperties": false
+    },
+    "JudgmentItem": {
+      "type": "object",
+      "properties": {
+        "kind": {"enum": ["task", "draft", "action"]},
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "owner": {"type": "string", "description": "Present for tasks only."}
+      },
+      "required": ["kind", "id", "title"],
+      "additionalProperties": false
+    },
+    "ProjectSummary": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "owner": {"type": "string"},
+        "next_milestone": {"type": "string"},
+        "open_tasks": {"type": "integer", "minimum": 0},
+        "completed_tasks": {"type": "integer", "minimum": 0},
+        "blocked_tasks": {"type": "integer", "minimum": 0}
+      },
+      "required": ["id", "title", "owner", "next_milestone", "open_tasks", "completed_tasks", "blocked_tasks"],
+      "additionalProperties": false
+    },
+    "FollowUp": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "owner": {"type": "string"},
+        "due_date": {"$ref": "#/$defs/IsoDate"},
+        "overdue": {"type": "boolean"}
+      },
+      "required": ["id", "title", "owner", "due_date", "overdue"],
+      "additionalProperties": false
+    },
+    "AcceptedOutput": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "accepted_by": {"type": "string"},
+        "accepted_at": {"$ref": "#/$defs/IsoDateTime"}
+      },
+      "required": ["id", "title", "accepted_by", "accepted_at"],
+      "additionalProperties": false
+    },
+    "PrioritiesSection": {
+      "type": "object",
+      "properties": {
+        "state": {"$ref": "#/$defs/SectionState"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/Priority"}, "maxItems": 3},
+        "empty_message": {"type": "string"}
+      },
+      "required": ["state", "items", "empty_message"],
+      "additionalProperties": false
+    },
+    "JudgmentSection": {
+      "type": "object",
+      "properties": {
+        "state": {"$ref": "#/$defs/SectionState"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/JudgmentItem"}},
+        "empty_message": {"type": "string"}
+      },
+      "required": ["state", "items", "empty_message"],
+      "additionalProperties": false
+    },
+    "ProjectsSection": {
+      "type": "object",
+      "properties": {
+        "state": {"$ref": "#/$defs/SectionState"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/ProjectSummary"}},
+        "empty_message": {"type": "string"}
+      },
+      "required": ["state", "items", "empty_message"],
+      "additionalProperties": false
+    },
+    "FollowUpsSection": {
+      "type": "object",
+      "properties": {
+        "state": {"$ref": "#/$defs/SectionState"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/FollowUp"}},
+        "empty_message": {"type": "string"}
+      },
+      "required": ["state", "items", "empty_message"],
+      "additionalProperties": false
+    },
+    "AcceptedOutputsSection": {
+      "type": "object",
+      "properties": {
+        "state": {"$ref": "#/$defs/SectionState"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/AcceptedOutput"}, "maxItems": 5},
+        "empty_message": {"type": "string"}
+      },
+      "required": ["state", "items", "empty_message"],
+      "additionalProperties": false
+    },
+    "AssistantsSection": {
+      "description": "No assistant runtime exists yet; the section is honestly unavailable.",
+      "type": "object",
+      "properties": {
+        "state": {"const": "unavailable"},
+        "items": {"type": "array", "maxItems": 0},
+        "empty_message": {"type": "string"}
+      },
+      "required": ["state", "items", "empty_message"],
+      "additionalProperties": false
+    },
+    "TaskCounts": {
+      "type": "object",
+      "properties": {
+        "idea": {"type": "integer", "minimum": 0},
+        "ready": {"type": "integer", "minimum": 0},
+        "in_progress": {"type": "integer", "minimum": 0},
+        "needs_judgment": {"type": "integer", "minimum": 0},
+        "completed": {"type": "integer", "minimum": 0}
+      },
+      "required": ["idea", "ready", "in_progress", "needs_judgment", "completed"],
+      "additionalProperties": false
+    },
+    "MissionControl": {
+      "description": "What needs my attention? Every section reads the same records as the board and table.",
+      "type": "object",
+      "properties": {
+        "workspace": {"type": "string"},
+        "sample": {"type": "boolean"},
+        "today": {"$ref": "#/$defs/IsoDate"},
+        "week_of": {"$ref": "#/$defs/IsoDate"},
+        "priorities": {"$ref": "#/$defs/PrioritiesSection"},
+        "needs_my_judgment": {"$ref": "#/$defs/JudgmentSection"},
+        "projects_in_motion": {"$ref": "#/$defs/ProjectsSection"},
+        "follow_ups": {"$ref": "#/$defs/FollowUpsSection"},
+        "assistants_at_work": {"$ref": "#/$defs/AssistantsSection"},
+        "recent_accepted_outputs": {"$ref": "#/$defs/AcceptedOutputsSection"},
+        "task_counts": {"$ref": "#/$defs/TaskCounts"}
+      },
+      "required": ["workspace", "sample", "today", "week_of", "priorities", "needs_my_judgment",
+                   "projects_in_motion", "follow_ups", "assistants_at_work",
+                   "recent_accepted_outputs", "task_counts"],
+      "additionalProperties": false
+    },
+
+    "BoardCard": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "owner": {"type": "string"},
+        "due_date": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "project": {"type": ["string", "null"]},
+        "blocked": {"type": "boolean"},
+        "blocked_reason": {"type": "string"},
+        "paused": {"type": "boolean"}
+      },
+      "required": ["id", "title", "owner", "due_date", "project", "blocked", "blocked_reason", "paused"],
+      "additionalProperties": false
+    },
+    "BoardColumn": {
+      "type": "object",
+      "properties": {
+        "status": {"$ref": "#/$defs/TaskStatus"},
+        "label": {"type": "string"},
+        "count": {"type": "integer", "minimum": 0},
+        "cards": {"type": "array", "items": {"$ref": "#/$defs/BoardCard"}}
+      },
+      "required": ["status", "label", "count", "cards"],
+      "additionalProperties": false
+    },
+    "Board": {
+      "type": "object",
+      "properties": {
+        "sample": {"type": "boolean"},
+        "columns": {"type": "array", "items": {"$ref": "#/$defs/BoardColumn"}, "minItems": 5, "maxItems": 5}
+      },
+      "required": ["sample", "columns"],
+      "additionalProperties": false
+    },
+    "TableRow": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "task": {"type": "string"},
+        "project": {"type": ["string", "null"]},
+        "owner": {"type": "string"},
+        "due_date": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "status": {"$ref": "#/$defs/TaskStatus"},
+        "blocked": {"type": "boolean"},
+        "paused": {"type": "boolean"},
+        "reviewer": {"type": "string"},
+        "evidence": {"type": "string"},
+        "next_action": {"type": "string"}
+      },
+      "required": ["id", "task", "project", "owner", "due_date", "status", "blocked", "paused",
+                   "reviewer", "evidence", "next_action"],
+      "additionalProperties": false
+    },
+    "Table": {
+      "type": "object",
+      "properties": {
+        "sample": {"type": "boolean"},
+        "columns": {
+          "type": "array",
+          "items": {"enum": ["task", "project", "owner", "due_date", "status", "reviewer", "evidence", "next_action"]}
+        },
+        "rows": {"type": "array", "items": {"$ref": "#/$defs/TableRow"}}
+      },
+      "required": ["sample", "columns", "rows"],
+      "additionalProperties": false
+    },
+
+    "Revision": {
+      "description": "One revision of a brief. Accepted means a human accepted exactly this text (sha256).",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "artifact_id": {"$ref": "#/$defs/RecordId"},
+        "revision_no": {"type": "integer", "minimum": 1},
+        "status": {"enum": ["draft", "accepted", "superseded"]},
+        "sha256": {"$ref": "#/$defs/Sha256"},
+        "source_refs": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}},
+        "accepted_by": {"type": ["string", "null"]},
+        "accepted_at": {"anyOf": [{"$ref": "#/$defs/IsoDateTime"}, {"type": "null"}]}
+      },
+      "required": ["id", "artifact_id", "revision_no", "status", "sha256", "source_refs", "accepted_by", "accepted_at"],
+      "additionalProperties": false
+    },
+    "ShownRevision": {
+      "type": "object",
+      "properties": {
+        "revision": {"$ref": "#/$defs/Revision"},
+        "markdown": {"type": "string", "description": "The only rendering; it always carries its status banner."}
+      },
+      "required": ["revision", "markdown"],
+      "additionalProperties": false
+    },
+
+    "Action": {
+      "description": "A governed action. Draft ready, accepted, exported, and sent are distinct states.",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "origin": {"enum": ["human", "assistant"]},
+        "proposed_by": {"type": "string"},
+        "effect": {"type": "string"},
+        "purpose": {"type": "string"},
+        "artifact_revision_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"type": "null"}]},
+        "payload_sha256": {"type": "string", "pattern": "^([0-9a-f]{64})?$"},
+        "destination": {"type": "string"},
+        "cost_limit_cents": {"type": "integer", "minimum": 0},
+        "expected_effect": {"type": "string"},
+        "tier": {"enum": ["green", "yellow", "red"]},
+        "policy_decision": {"enum": ["allow", "require_approval", "deny"]},
+        "policy_reasons": {"type": "array", "items": {"type": "string"}},
+        "status": {"enum": ["denied", "awaiting_approval", "approved", "executing", "succeeded", "failed", "effect_unknown", "stale"]}
+      },
+      "required": ["id", "origin", "proposed_by", "effect", "purpose", "artifact_revision_id", "payload_sha256",
+                   "destination", "cost_limit_cents", "expected_effect", "tier", "policy_decision",
+                   "policy_reasons", "status"],
+      "additionalProperties": false
+    },
+    "Receipt": {
+      "type": "object",
+      "properties": {
+        "action_id": {"$ref": "#/$defs/RecordId"},
+        "outcome": {"enum": ["succeeded", "failed", "effect_unknown"]},
+        "detail": {"type": "string"},
+        "recorded_at": {"$ref": "#/$defs/IsoDateTime"}
+      },
+      "required": ["action_id", "outcome", "detail", "recorded_at"],
+      "additionalProperties": false
+    },
+    "BackupResult": {
+      "type": "object",
+      "properties": {"backup": {"type": "string"}},
+      "required": ["backup"],
+      "additionalProperties": false
+    },
+    "RestoreResult": {
+      "type": "object",
+      "properties": {
+        "restored_from": {"type": "string"},
+        "pre_restore_backup": {"type": "string", "description": "Always taken, so even an accepted discard is recoverable."}
+      },
+      "required": ["restored_from", "pre_restore_backup"],
+      "additionalProperties": false
+    }
+  }
+}

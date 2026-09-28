@@ -1,0 +1,19 @@
+{
+  "contract": "nurse-manager-ipc@1",
+  "description": "The data type each command returns inside an OkEnvelope. Any command may instead return an ErrorEnvelope.",
+  "commands": {
+    "sample": "SampleResult",
+    "init": "Workspace",
+    "mission": "MissionControl",
+    "board": "Board",
+    "table": "Table",
+    "brief": "Revision",
+    "show": "ShownRevision",
+    "accept": "Revision",
+    "export": "Action",
+    "approve": "Action",
+    "run": "Receipt",
+    "backup": "BackupResult",
+    "restore": "RestoreResult"
+  }
+}

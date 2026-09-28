@@ -938,8 +938,10 @@ function previewPanel(doc, preview, busy, handlers, layout = {}) {
  * @param {WeeklyBrief} data
  * @param {{
  *   writable: boolean, busy?: boolean, notice?: Notice, preview?: AssistantPreview | null,
+ *   scheduleDraft?: ScheduleFields | null,
  *   onRecords: () => void, onPreview: () => void, onSend: (sha: string) => void,
  *   onCancel: () => void, onAccept: (revision: Revision) => void,
+ *   onSchedule: (fields: ScheduleFields) => void,
  * }} options
  */
 export function renderBrief(doc, data, options) {
@@ -991,7 +993,101 @@ export function renderBrief(doc, data, options) {
       `Version ${data.accepted.revision_no} is the accepted one until you accept a newer version.`,
     ]));
   }
+  root.append(scheduleSection(doc, data.schedule, busy, options));
   return root;
+}
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').BriefSchedule} BriefSchedule */
+/** @typedef {{ enabled: boolean, weekday: number, hour: number }} ScheduleFields */
+
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+/** @param {number} hour */
+const hourLabel = (hour) => `${String(hour).padStart(2, '0')}:00`;
+/** A moment in this computer's local time (the page and the app share its clock). @param {string} at */
+const localTime = (at) => {
+  const d = new Date(at);
+  const two = (/** @type {number} */ n) => String(n).padStart(2, '0');
+  return `${WEEKDAYS[(d.getDay() + 6) % 7]} ${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())} at ${two(d.getHours())}:${two(d.getMinutes())}`;
+};
+
+/**
+ * Read the "Every week" form as the manager has set it, so a re-render keeps it.
+ * @param {ParentNode} root
+ * @returns {ScheduleFields | null}
+ */
+export function typedSchedule(root) {
+  const enabled = /** @type {HTMLInputElement | null} */ (root.querySelector('#schedule-enabled'));
+  const weekday = /** @type {HTMLSelectElement | null} */ (root.querySelector('#schedule-weekday'));
+  const hour = /** @type {HTMLSelectElement | null} */ (root.querySelector('#schedule-hour'));
+  if (!enabled || !weekday || !hour) return null;
+  return { enabled: enabled.checked, weekday: Number(weekday.value), hour: Number(hour.value) };
+}
+
+/**
+ * The recurring weekly brief: records only, while the app runs on this computer.
+ * @param {Document} doc
+ * @param {BriefSchedule} schedule
+ * @param {boolean} busy
+ * @param {{ writable: boolean, scheduleDraft?: ScheduleFields | null, onSchedule: (fields: ScheduleFields) => void }} options
+ */
+function scheduleSection(doc, schedule, busy, options) {
+  const section = h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'schedule-heading' }, [
+    h(doc, 'h2', { id: 'schedule-heading', tabindex: '-1' }, ['Every week']),
+  ]);
+  if (!schedule.enabled) {
+    section.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Off'), ' Turn it on to have a draft from your records waiting each week.',
+    ]));
+  } else {
+    const next = schedule.next_at && Date.parse(schedule.next_at) <= Date.now()
+      ? 'Due now: it will be ready within a minute.'
+      : schedule.next_at ? `Next: ${localTime(schedule.next_at)}.` : '';
+    section.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'accepted', '✓', 'On'),
+      ` A draft from your records every ${WEEKDAYS[schedule.weekday]} at ${hourLabel(schedule.hour)}. ${next}`,
+    ]));
+  }
+  const run = schedule.last_run;
+  if (run) {
+    const text = run.status === 'drafted' ? `Week of ${run.week_of}: a draft was prepared. Review it above when that week is shown.`
+      : run.status === 'skipped' ? `Week of ${run.week_of}: skipped. ${run.reason}`
+        : run.next_attempt_at ? `Week of ${run.week_of}: could not prepare the draft (${run.reason}). It tries again ${localTime(run.next_attempt_at)}.`
+          : `Week of ${run.week_of}: could not prepare the draft (${run.reason})`;
+    section.append(h(doc, 'p', {}, [
+      run.status === 'failed' ? badge(doc, 'blocked', '✕', 'Last run') : badge(doc, 'accepted', '✓', 'Last run'), ' ', text,
+    ]));
+  }
+  section.append(h(doc, 'p', { class: 'field-hint', id: 'schedule-rules' }, [
+    'It runs only while Nurse AI OS is open on this computer. If the computer is off or asleep then, ',
+    'the draft is prepared the next time the app opens that week. It uses your records only, never an AI model, ',
+    'and never accepts anything for you.',
+  ]));
+  if (!options.writable) return section;
+
+  const typed = options.scheduleDraft ?? schedule;
+  const enabled = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'schedule-enabled', type: 'checkbox', 'aria-describedby': 'schedule-rules' }));
+  enabled.checked = typed.enabled;
+  const weekday = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id: 'schedule-weekday' },
+    WEEKDAYS.map((day, i) => h(doc, 'option', { value: String(i) }, [day]))));
+  weekday.value = String(typed.weekday);
+  const hour = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id: 'schedule-hour' },
+    Array.from({ length: 24 }, (_, i) => h(doc, 'option', { value: String(i) }, [hourLabel(i)]))));
+  hour.value = String(typed.hour);
+  const save = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'secondary-button' }, ['Save']));
+  // The form's own save is in flight: nothing here can change until it finishes.
+  for (const control of [enabled, weekday, hour, save]) control.disabled = busy;
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'schedule-heading' }, [
+    h(doc, 'p', { class: 'field' }, [enabled, ' ', h(doc, 'label', { for: 'schedule-enabled' }, ['Prepare a draft every week'])]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'schedule-weekday' }, ['Day']), weekday]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'schedule-hour' }, ['Time (this computer)']), hour]),
+    save,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    options.onSchedule({ enabled: enabled.checked, weekday: Number(weekday.value), hour: Number(hour.value) });
+  });
+  section.append(form);
+  return section;
 }
 
 /**

@@ -96,7 +96,7 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 
 | # | Step | Status | Exit check |
 |---|---|---|---|
-| 5.1 | Recurring local brief ("runs when this device is awake") | ⬜ | Restart, retry, and dedup tests |
+| 5.1 | Recurring local brief ("runs when this device is awake"): off by default; a records-only draft at the manager's local weekday and hour while the app runs, caught up at the next launch that week; never a model, never accepted for the manager | ✅ | Migration `0008` (`brief_schedule`; `brief_runs` keyed by week, a drafted run needs its revision); `test_schedule.py`: restart (settings and runs survive; a crash mid-run leaves nothing half done), retry (after 5 then 30 minutes, gives up after 3 attempts and says so), dedup (asking again, two processes, the manager's own brief wins); `RecurringBriefAppTests` (the app's own thread drafts once); browser journeys (off by default, choices kept through a refused save, read-only on the dev host) |
 | 5.2 | Scoped memory: inspect, correct, exclude, delete | ⬜ | Reuse `GovernedMemory` |
 | 5.3 | "Assistants at work" with stop control | ⬜ | Stop-control test |
 | 5.4 | Education, committee, and communication packs | ⬜ | Pack manifests with maintainer and review date |

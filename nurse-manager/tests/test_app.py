@@ -9,19 +9,24 @@ import tempfile
 import threading
 import time
 import unittest
+from datetime import date, timedelta
 from pathlib import Path
 
 import _bootstrap  # noqa: F401
 
 from nurse_manager import app as local_app
 from nurse_manager import resources
+from nurse_manager.services import ManagerWorkspace
 
 
 class _AppCase(unittest.TestCase):
+    schedule_interval = 60.0
+
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
         self.home = Path(self._tmp.name)
-        self.app = local_app.LocalApp(self.home, idle_timeout=120)
+        self.app = local_app.LocalApp(self.home, idle_timeout=120,
+                                      schedule_interval=self.schedule_interval)
         self.thread = threading.Thread(target=self.app.serve, daemon=True)
         self.thread.start()
         self.assertTrue(self.app.ready.wait(10), "the app did not start")
@@ -403,3 +408,53 @@ class SingleInstanceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RecurringBriefAppTests(_AppCase):
+    """The running app prepares the recurring draft itself (5.1); the page only sets it."""
+
+    schedule_interval = 0.2
+
+    def setUp(self):
+        super().setUp()
+        self.assertTrue(self.envelope("/ipc/sample", "POST", {})["ok"])
+        self.week = (date.today() - timedelta(days=date.today().weekday())).isoformat()
+
+    def weekly(self):
+        return self.envelope(f"/ipc/weekly?week={self.week}")["data"]
+
+    def test_the_app_drafts_the_week_once_after_it_is_turned_on(self):
+        self.assertEqual(self.weekly()["schedule"]["enabled"], False)
+        time.sleep(0.5)  # several scheduler ticks while off: nothing happens
+        self.assertIsNone(self.weekly()["schedule"]["last_run"])
+        view = self.envelope("/ipc/brief-schedule-set", "POST",
+                             {"enabled": True, "weekday": 0, "hour": 0})["data"]
+        self.assertEqual((view["enabled"], view["weekday"], view["hour"]), (True, 0, 0))
+        deadline = time.monotonic() + 10
+        while self.weekly()["schedule"]["last_run"] is None and time.monotonic() < deadline:
+            time.sleep(0.1)
+        weekly = self.weekly()
+        run = weekly["schedule"]["last_run"]
+        self.assertEqual((run["week_of"], run["status"]), (self.week, "drafted"))
+        self.assertEqual(weekly["current"]["revision"]["id"], run["revision_id"])
+        self.assertEqual(weekly["current"]["revision"]["status"], "draft")
+        time.sleep(0.6)  # more ticks: still one draft
+        workspace = ManagerWorkspace(self.home / "workspace")
+        try:
+            count = workspace.store.conn.execute(
+                "SELECT count(*) FROM artifact_revisions r JOIN artifacts a"
+                " ON a.id = r.artifact_id WHERE a.week_of = ?", (self.week,)).fetchone()[0]
+        finally:
+            workspace.close()
+        self.assertEqual(count, 1)
+
+    def test_settings_are_checked_and_running_it_is_not_a_page_command(self):
+        for body in ({"enabled": "yes", "weekday": 0, "hour": 7},
+                     {"enabled": True, "weekday": 7, "hour": 7},
+                     {"enabled": True, "weekday": 0, "hour": 24},
+                     {"enabled": True, "weekday": "0", "hour": 7},
+                     {"enabled": True, "weekday": True, "hour": 7},
+                     {"enabled": True}):
+            with self.subTest(body=body):
+                self.assertEqual(self.request("/ipc/brief-schedule-set", "POST", body)[0], 400)
+        self.assertNotEqual(self.request("/ipc/brief-run-due", "POST", {})[0], 200)

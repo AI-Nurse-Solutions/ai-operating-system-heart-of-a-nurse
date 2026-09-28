@@ -20,6 +20,7 @@ It runs entirely without a model, a network, or an API key.
 | 5 | Reads, edits | Each edit is a new draft revision; history is kept | `BriefService.revise` |
 | 6 | Accepts | Acceptance binds to the text hash the manager saw; a stale view cannot be accepted | `BriefService.accept` |
 | 7 | Closes the app, reopens it | The accepted revision renders byte-identically | `test_create_review_save_close_reopen` |
+| 7b | Turns on "Every week" (weekday and hour, local time) | While the app runs, prepares a records-only **draft** at that time, once per week; if the computer was off or asleep, at the next launch that week. Never a model, never accepted for the manager; a week that already has a brief is skipped | `BriefSchedule.run_due` / `brief-run-due` |
 | 8 | Exports | Proposal (Yellow) → manager approves exact file and content → recheck → write → receipt | `ActionBoundary` |
 
 ## Distinct states
@@ -45,6 +46,8 @@ The UI must never merge these states:
 | Export approved, then the brief re-accepted | The approval is **stale**; nothing is written |
 | File already exists with different content | Export **failed**; earlier file untouched |
 | Crash mid-export | On restart: **succeeded** only if the file's hash matches, else **effect unknown**, and never re-run automatically |
+| Recurring draft fails (for example, the workspace is busy) | Retried after 5, then 30 minutes; after 3 attempts it stops and says "draft this week's brief by hand". A retry still pending when the week ends runs until the new week's own time |
+| App closed or computer asleep at the chosen time | The draft is prepared the next time the app opens that week; earlier weeks are never backfilled |
 | Restore from an older backup | Refused if it would discard newer changes; explicit discard keeps a pre-restore copy |
 | Empty workspace | Each Mission Control section states that it is empty, and why |
 

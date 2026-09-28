@@ -145,6 +145,47 @@ export interface BoardColumn {
   readonly cards: readonly BoardCard[];
 }
 
+/** The one scheduled run for a week. Drafted: a draft is waiting for review. Skipped: the week already had a brief. Failed: retried up to three attempts in all. */
+export interface BriefRun {
+  readonly week_of: IsoDate;
+  readonly status: "drafted" | "skipped" | "failed";
+  /**
+   * @minimum 1
+   * @maximum 3
+   */
+  readonly attempts: number;
+  readonly revision_id: RecordId | null;
+  readonly reason: string;
+  readonly next_attempt_at: IsoDateTime | null;
+  readonly at: IsoDateTime;
+}
+
+/** What one check of the recurring brief did. */
+export interface BriefRunResult {
+  readonly outcome: "off" | "not_due" | "done" | "waiting" | "gave_up" | "drafted" | "skipped" | "failed";
+  readonly week_of: IsoDate | null;
+  readonly run: BriefRun | null;
+}
+
+/** The recurring weekly brief: a records-only draft prepared at the chosen local weekday and hour while the app runs on this computer. Off by default. */
+export interface BriefSchedule {
+  readonly enabled: boolean;
+  /**
+   * 0 is Monday.
+   * @minimum 0
+   * @maximum 6
+   */
+  readonly weekday: number;
+  /**
+   * @minimum 0
+   * @maximum 23
+   */
+  readonly hour: number;
+  /** When the next draft is due, in local time; null when off. A past time means it runs within a minute. */
+  readonly next_at: IsoDateTime | null;
+  readonly last_run: BriefRun | null;
+}
+
 export type Contract = "nurse-manager-ipc@1";
 
 /** One of the manager's contributions and who shares the credit. Verified means the manager wrote the evidence that shows it happened. */
@@ -580,6 +621,7 @@ export interface WeeklyBrief {
   readonly week_of: IsoDate;
   readonly current: ShownRevision | null;
   readonly accepted: Revision | null;
+  readonly schedule: BriefSchedule;
 }
 
 export interface Workspace {
@@ -627,6 +669,8 @@ export interface CommandData {
   readonly contributions: Contributions;
   readonly "contribution-add": ContributionResult;
   readonly "contribution-verify": ContributionResult;
+  readonly "brief-schedule-set": BriefSchedule;
+  readonly "brief-run-due": BriefRunResult;
 }
 
 export type Command = keyof CommandData;

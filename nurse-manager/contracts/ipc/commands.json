@@ -35,6 +35,8 @@
     "learning-complete": "LearningResult",
     "contributions": "Contributions",
     "contribution-add": "ContributionResult",
-    "contribution-verify": "ContributionResult"
+    "contribution-verify": "ContributionResult",
+    "brief-schedule-set": "BriefSchedule",
+    "brief-run-due": "BriefRunResult"
   }
 }

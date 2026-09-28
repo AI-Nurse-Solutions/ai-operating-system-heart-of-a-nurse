@@ -148,6 +148,34 @@ try {
   await samplePage.waitForFunction(() => /Version 1 is accepted/.test(document.activeElement?.textContent ?? ''));
   assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by Sample Manager/);
 
+  // --- Every week: off by default; choices kept through a refused save --
+  const everyWeek = samplePage.getByRole('region', { name: 'Every week' });
+  assert.match(await everyWeek.textContent(), /Off.*runs only while Nurse AI OS is open on this computer/s);
+  await samplePage.getByLabel('Prepare a draft every week').check();
+  await samplePage.getByLabel('Day').selectOption('Wednesday');
+  await samplePage.getByLabel('Time (this computer)').selectOption('06:00');
+  let releaseSchedule = () => {};
+  const scheduleHeld = new Promise((resolve) => { releaseSchedule = resolve; });
+  await samplePage.route('**/ipc/brief-schedule-set', async (route) => {
+    await scheduleHeld;
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify({
+      contract: 'nurse-manager-ipc@1', command: 'brief-schedule-set', ok: false,
+      error: { type: 'ManagerError', message: 'the workspace is busy' } }) });
+  });
+  await everyWeek.getByRole('button', { name: 'Save' }).click();
+  await samplePage.waitForSelector('#schedule-enabled[disabled]');
+  assert.equal(await samplePage.getByLabel('Day').isEnabled(), false, 'the form is locked while it saves');
+  releaseSchedule();
+  await samplePage.waitForSelector('.view--brief .notice[role="alert"]');
+  await samplePage.unroute('**/ipc/brief-schedule-set');
+  assert.equal(await samplePage.getByLabel('Prepare a draft every week').isChecked(), true);
+  assert.equal(await samplePage.getByLabel('Day').inputValue(), '2');
+  assert.equal(await samplePage.getByLabel('Time (this computer)').inputValue(), '6');
+  await samplePage.getByRole('region', { name: 'Every week' }).getByRole('button', { name: 'Save' }).click();
+  await samplePage.waitForFunction(() => /Saved\. A draft from your records/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await samplePage.getByRole('region', { name: 'Every week' }).textContent(),
+    /On.*every Wednesday at 06:00\. (Next: Wednesday \d{4}-\d{2}-\d{2} at 06:00|Due now)/s);
+
   // --- Library: add a source through the capture rules ------------------
   await samplePage.getByRole('link', { name: 'Library' }).click();
   await samplePage.waitForSelector('.view--library');
@@ -408,7 +436,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

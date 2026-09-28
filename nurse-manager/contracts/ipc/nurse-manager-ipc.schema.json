@@ -546,9 +546,49 @@
       "properties": {
         "week_of": {"$ref": "#/$defs/IsoDate"},
         "current": {"anyOf": [{"$ref": "#/$defs/ShownRevision"}, {"type": "null"}]},
-        "accepted": {"anyOf": [{"$ref": "#/$defs/Revision"}, {"type": "null"}]}
+        "accepted": {"anyOf": [{"$ref": "#/$defs/Revision"}, {"type": "null"}]},
+        "schedule": {"$ref": "#/$defs/BriefSchedule"}
       },
-      "required": ["week_of", "current", "accepted"],
+      "required": ["week_of", "current", "accepted", "schedule"],
+      "additionalProperties": false
+    },
+    "BriefSchedule": {
+      "description": "The recurring weekly brief: a records-only draft prepared at the chosen local weekday and hour while the app runs on this computer. Off by default.",
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "weekday": {"type": "integer", "minimum": 0, "maximum": 6, "description": "0 is Monday."},
+        "hour": {"type": "integer", "minimum": 0, "maximum": 23},
+        "next_at": {"anyOf": [{"$ref": "#/$defs/IsoDateTime"}, {"type": "null"}], "description": "When the next draft is due, in local time; null when off. A past time means it runs within a minute."},
+        "last_run": {"anyOf": [{"$ref": "#/$defs/BriefRun"}, {"type": "null"}]}
+      },
+      "required": ["enabled", "weekday", "hour", "next_at", "last_run"],
+      "additionalProperties": false
+    },
+    "BriefRun": {
+      "description": "The one scheduled run for a week. Drafted: a draft is waiting for review. Skipped: the week already had a brief. Failed: retried up to three attempts in all.",
+      "type": "object",
+      "properties": {
+        "week_of": {"$ref": "#/$defs/IsoDate"},
+        "status": {"enum": ["drafted", "skipped", "failed"]},
+        "attempts": {"type": "integer", "minimum": 1, "maximum": 3},
+        "revision_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"type": "null"}]},
+        "reason": {"type": "string"},
+        "next_attempt_at": {"anyOf": [{"$ref": "#/$defs/IsoDateTime"}, {"type": "null"}]},
+        "at": {"$ref": "#/$defs/IsoDateTime"}
+      },
+      "required": ["week_of", "status", "attempts", "revision_id", "reason", "next_attempt_at", "at"],
+      "additionalProperties": false
+    },
+    "BriefRunResult": {
+      "description": "What one check of the recurring brief did.",
+      "type": "object",
+      "properties": {
+        "outcome": {"enum": ["off", "not_due", "done", "waiting", "gave_up", "drafted", "skipped", "failed"]},
+        "week_of": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "run": {"anyOf": [{"$ref": "#/$defs/BriefRun"}, {"type": "null"}]}
+      },
+      "required": ["outcome", "week_of", "run"],
       "additionalProperties": false
     },
     "ShownRevision": {

@@ -23,6 +23,7 @@ from .actions import ActionBoundary
 from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
 from .sample import load_sample
+from .schedule import BriefSchedule
 from .services import ManagerError, ManagerWorkspace, _iso_date
 from .views import (
     board,
@@ -117,6 +118,13 @@ def build_parser() -> argparse.ArgumentParser:
     p = ws_cmd("brief", "draft this week's brief from records (no model)")
     p.add_argument("--week", required=True)
     p.add_argument("--today", required=True)
+    p = ws_cmd("brief-schedule-set", "turn the recurring weekly brief on or off (records only)")
+    p.add_argument("--enabled", required=True, choices=("yes", "no"))
+    p.add_argument("--weekday", required=True, type=int, choices=range(7),
+                   help="0 (Monday) to 6 (Sunday), local time")
+    p.add_argument("--hour", required=True, type=int, choices=range(24), help="0 to 23, local time")
+    p.add_argument("--by", required=True)
+    ws_cmd("brief-run-due", "prepare this week's recurring draft if it is due (safe to repeat)")
     p = ws_cmd("show", "render one revision")
     p.add_argument("--revision", required=True)
     p = ws_cmd("accept", "accept exactly the revision you reviewed")
@@ -274,7 +282,14 @@ def _dispatch(args: argparse.Namespace) -> Any:
         if args.command == "brief":
             return briefs.as_dict(briefs.draft_weekly_brief(args.week, args.today))
         if args.command == "weekly":
-            return briefs.weekly(args.week)
+            return {**briefs.weekly(args.week), "schedule": BriefSchedule(ws).view()}
+        if args.command == "brief-schedule-set":
+            schedule = BriefSchedule(ws)
+            schedule.configure(enabled=args.enabled == "yes", weekday=args.weekday,
+                               hour=args.hour, by=args.by)
+            return schedule.view()
+        if args.command == "brief-run-due":
+            return BriefSchedule(ws).run_due()
         if args.command == "show":
             revision = briefs.revision(args.revision)
             return {"revision": briefs.as_dict(revision), "markdown": briefs.render(revision)}

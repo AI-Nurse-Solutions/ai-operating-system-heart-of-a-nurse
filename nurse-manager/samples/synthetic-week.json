@@ -47,6 +47,29 @@
     {"project": "huddle", "title": "Huddle format one-pager (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/huddle-format-one-pager", "data_class": "D0", "review_date": "2027-03-31"},
     {"project": "ubc", "title": "Council charter template (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/council-charter-template", "data_class": "D0", "review_date": "2026-09-01"}
   ],
+  "learning": [
+    {
+      "title": "Leading change on a unit (synthetic course)",
+      "kind": "course",
+      "status": "in_progress",
+      "target_date": "2026-10-31",
+      "hours": 6
+    },
+    {
+      "title": "Shared governance reading list (synthetic)",
+      "kind": "reading",
+      "status": "planned",
+      "target_date": "2026-12-15"
+    },
+    {
+      "title": "Facilitation skills workshop (synthetic)",
+      "kind": "course",
+      "status": "completed",
+      "hours": 3,
+      "completed_on": "2026-09-10",
+      "takeaway": "Open each meeting with its decision, not its agenda."
+    }
+  ],
   "library": [
     {
       "title": "Meeting facilitation checklist (synthetic)",

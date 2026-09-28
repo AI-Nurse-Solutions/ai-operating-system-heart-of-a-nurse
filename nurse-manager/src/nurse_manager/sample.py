@@ -55,6 +55,13 @@ def load_sample(
             s["title"], s["kind"], s["reference"], data_class=s["data_class"],
             project_id=projects.get(s.get("project")), review_date=s.get("review_date"),
         )
+    for item in data.get("learning", []):
+        item_id = ws.add_learning(item["title"], item["kind"],
+                                  target_date=item.get("target_date"), hours=item.get("hours"))
+        if item["status"] in ("in_progress", "completed"):
+            ws.start_learning(item_id)
+        if item["status"] == "completed":
+            ws.complete_learning(item_id, item["takeaway"], item["completed_on"])
     for s in data.get("library", []):  # sources not tied to one project
         ws.add_source(s["title"], s["kind"], s["reference"], data_class=s["data_class"],
                       review_date=s.get("review_date"))

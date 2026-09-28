@@ -218,6 +218,46 @@ export interface JudgmentSection {
   readonly empty_message: string;
 }
 
+/** Learning and Growth: in progress, planned, then completed. Stated facts, never a score. */
+export interface Learning {
+  readonly sample: boolean;
+  readonly today: IsoDate;
+  readonly items: readonly LearningItem[];
+  /** @minimum 0 */
+  readonly in_progress: number;
+  /** @minimum 0 */
+  readonly planned: number;
+  /** @minimum 0 */
+  readonly completed_this_year: number;
+  /** @minimum 0 */
+  readonly hours_this_year: number;
+  /**
+   * Not completed and past its target date.
+   * @minimum 0
+   */
+  readonly past_target: number;
+}
+
+/** One piece of the manager's own professional learning. Completed means a takeaway and a date were written. */
+export interface LearningItem {
+  readonly id: RecordId;
+  readonly title: string;
+  readonly kind: "course" | "reading" | "conference" | "certification" | "mentoring";
+  readonly status: "planned" | "in_progress" | "completed";
+  readonly target_date: IsoDate | null;
+  /**
+   * @minimum 0
+   * @maximum 500
+   */
+  readonly hours: number | null;
+  readonly takeaway: string;
+  readonly completed_on: IsoDate | null;
+}
+
+export interface LearningResult {
+  readonly item: LearningItem;
+}
+
 /** Every source in the workspace, overdue reviews first. */
 export interface Library {
   readonly sample: boolean;
@@ -405,7 +445,7 @@ export interface Receipt {
   readonly recorded_at: IsoDateTime;
 }
 
-/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk)-[0-9a-f]{12}$ */
+/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
 export interface Resource {
@@ -539,6 +579,10 @@ export interface CommandData {
   readonly "feedback-address": FeedbackResult;
   readonly library: Library;
   readonly "source-add": SourceResult;
+  readonly learning: Learning;
+  readonly "learning-add": LearningResult;
+  readonly "learning-start": LearningResult;
+  readonly "learning-complete": LearningResult;
 }
 
 export type Command = keyof CommandData;

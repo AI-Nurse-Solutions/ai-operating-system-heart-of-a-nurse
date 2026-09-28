@@ -28,6 +28,10 @@
     "feedback-add": "FeedbackResult",
     "feedback-address": "FeedbackResult",
     "library": "Library",
-    "source-add": "SourceResult"
+    "source-add": "SourceResult",
+    "learning": "Learning",
+    "learning-add": "LearningResult",
+    "learning-start": "LearningResult",
+    "learning-complete": "LearningResult"
   }
 }

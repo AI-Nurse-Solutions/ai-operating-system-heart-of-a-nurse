@@ -381,3 +381,51 @@ def library(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
                 (ws.info.id,))
         ],
     }
+
+
+def _learning(row) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "kind": row["kind"],
+        "status": row["status"],
+        "target_date": row["target_date"],
+        "hours": row["hours"],
+        "takeaway": row["takeaway"],
+        "completed_on": row["completed_on"],
+    }
+
+
+def learning_item(ws: ManagerWorkspace, learning_id: str) -> dict[str, Any]:
+    return _learning(ws._require_row("learning_items", learning_id))
+
+
+def learning(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
+    """The manager's own learning: in progress, planned, then completed.
+
+    Stated facts only: counts and completed hours this year, never a score.
+    """
+    rows = [_learning(r) for r in ws.store.conn.execute(
+        "SELECT * FROM learning_items WHERE workspace_id = ?", (ws.info.id,))]
+    def by_target(r):  # soonest target first, undated last
+        return (r["target_date"] or "9999-12-31", r["title"].lower(), r["id"])
+
+    completed = sorted((r for r in rows if r["status"] == "completed"),
+                       key=lambda r: (r["completed_on"], r["id"]), reverse=True)
+    rows = (sorted((r for r in rows if r["status"] == "in_progress"), key=by_target)
+            + sorted((r for r in rows if r["status"] == "planned"), key=by_target)
+            + completed)
+    year = today[:4]
+    done_this_year = [r for r in rows if r["status"] == "completed"
+                      and (r["completed_on"] or "").startswith(year)]
+    return {
+        "sample": ws.info.sample,
+        "today": today,
+        "items": rows,
+        "in_progress": sum(1 for r in rows if r["status"] == "in_progress"),
+        "planned": sum(1 for r in rows if r["status"] == "planned"),
+        "completed_this_year": len(done_this_year),
+        "hours_this_year": round(sum(r["hours"] or 0 for r in done_this_year), 1),
+        "past_target": sum(1 for r in rows if r["status"] != "completed"
+                           and r["target_date"] and r["target_date"] < today),
+    }

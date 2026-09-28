@@ -89,6 +89,7 @@ One logical writer per record type. Views never write.
 | AI settings | `assistant_settings` | `AssistantService.connect_local/disconnect` (the workspace owner only) | views, assistant |
 | AI request ledger (hashes and outcomes, never text; weekly briefs and project questions) | `assistant_requests` | `AssistantService` | assistant (budget, note binding) |
 | Project feedback (about the work, from a group or role) | `project_feedback` | `ManagerWorkspace.add_feedback/address_feedback` | project dashboard, assistant (project context) |
+| Learning item (the manager's own professional learning) | `learning_items` | `ManagerWorkspace.add_learning/start_learning/complete_learning` | Learning and Growth |
 | Project note (an AI answer the manager kept, exactly as given) | `project_notes` | `AssistantService.keep_project_note` (the workspace owner only) | project dashboard |
 | Audit stream | `event_log` | every writer, via `Store.log`, inside the same transaction | backup/restore |
 | Schema | `schema_migrations` | `Store._migrate` | restore |

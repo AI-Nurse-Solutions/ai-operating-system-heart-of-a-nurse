@@ -117,6 +117,8 @@ try {
   const sampleErrors = [];
   samplePage.on('console', (m) => { if (m.type() === 'error') sampleErrors.push(m.text()); });
   samplePage.on('pageerror', (e) => sampleErrors.push(e.message));
+  const ipcCalls = [];
+  samplePage.on('request', (r) => { if (r.url().includes('/ipc/')) ipcCalls.push({ url: r.url(), body: r.postData() }); });
   await samplePage.goto(sample.url);
   await samplePage.waitForSelector('.view--onboarding');
   await samplePage.getByRole('button', { name: 'Explore the sample workspace' }).click();
@@ -154,7 +156,9 @@ try {
     req.on('end', () => {
       const body = JSON.parse(raw);
       modelRequests.push(body);
-      const out = JSON.stringify({ response: `A clearer week.\n\n${body.prompt}`, done: true });
+      // A well-behaved model: keeps the headings and the cited lines.
+      const kept = body.prompt.split('\n').filter((line) => line.startsWith('#') || line.includes('`'));
+      const out = JSON.stringify({ response: kept.join('\n'), done: true });
       res.writeHead(200, { 'content-type': 'application/json' });
       res.end(out);
     });
@@ -189,6 +193,14 @@ try {
     assert.equal(modelRequests[0].system, shownSystem);
     assert.match(await samplePage.locator('.brief-text').textContent(), /AI DRAFT — written by an AI model/);
     assert.match(await samplePage.getByRole('region', { name: 'Current version' }).textContent(), /AI draft — review it/);
+    // Every brief action names the week on screen, so a page left open over a Monday stays on its week.
+    const shownWeek = (await samplePage.locator('.view--brief .view-subtitle').textContent()).match(/\d{4}-\d{2}-\d{2}/)[0];
+    const briefCalls = ipcCalls.filter((c) => /\/ipc\/(assistant-preview|brief|assistant-brief)(\?|$)/.test(c.url));
+    assert.ok(briefCalls.length >= 3, 'preview, records draft, and AI draft were all called');
+    for (const call of briefCalls) {
+      assert.ok(call.url.includes(`week=${shownWeek}`) || (call.body ?? '').includes(`"week":"${shownWeek}"`),
+        `${call.url} names the displayed week`);
+    }
     assert.match(await samplePage.locator('.view--brief').textContent(), /Version 1 is the accepted one/);
 
     // Reflow at 320px with the long brief text.
@@ -209,6 +221,12 @@ try {
     await think.getByLabel('What do you want to think through?').fill('What should I do first?');
     await think.getByRole('button', { name: 'Preview what will be sent' }).click();
     await samplePage.waitForFunction(() => document.activeElement?.id === 'think-preview-heading');
+    // Editing the question withdraws the preview: the old question cannot be sent.
+    await think.getByLabel('What do you want to think through?').fill('What should I do first?!');
+    assert.equal(await think.getByRole('button', { name: 'Send to llama3.2' }).count(), 0, 'no Send after an edit');
+    await think.getByLabel('What do you want to think through?').fill('What should I do first?');
+    await think.getByRole('button', { name: 'Preview what will be sent' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'think-preview-heading');
     const thinkPrompt = await samplePage.getByLabel("Your question and this project's records").textContent();
     assert.match(thinkPrompt, /^## Question\n\nWhat should I do first\?/);
     const sentBefore = modelRequests.length;
@@ -217,7 +235,7 @@ try {
     assert.equal(modelRequests.length, sentBefore + 1);
     assert.equal(modelRequests.at(-1).prompt, thinkPrompt, 'what was sent is what was shown');
     const suggestion = samplePage.getByRole('document', { name: 'AI suggestion' });
-    assert.match(await suggestion.textContent(), /A clearer week\./);
+    assert.match(await suggestion.textContent(), /Title: .+prj-[0-9a-f]{12}/);
     assert.match(await think.textContent(), /Not saved/);
     assert.equal(await think.getByLabel('What do you want to think through?').inputValue(), 'What should I do first?');
 

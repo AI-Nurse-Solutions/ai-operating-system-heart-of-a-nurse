@@ -222,6 +222,61 @@ class LifetimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             self.assertEqual(local_app.self_test(Path(tmp)), 0)
 
+    def test_self_test_passes_without_a_console(self):
+        # A windowed Windows build has no stdout; the exit code still reports.
+        from unittest import mock
+
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(sys, "stdout", None):
+            self.assertEqual(local_app.self_test(Path(tmp)), 0)
+
+
+class SingleInstanceTests(unittest.TestCase):
+    def test_a_second_instance_cannot_take_the_same_data_folder(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            first = local_app.LocalApp(Path(tmp), idle_timeout=60)
+            thread = threading.Thread(target=first.serve, daemon=True)
+            thread.start()
+            self.assertTrue(first.ready.wait(10))
+            with self.assertRaises(local_app.AlreadyRunning):
+                local_app.LocalApp(Path(tmp), idle_timeout=60)
+            first.stop()
+            thread.join(timeout=10)
+            # Released on stop (and by the OS on a crash): the next launch works.
+            again = local_app.LocalApp(Path(tmp), idle_timeout=60)
+            again.instance.release()
+            again.server.server_close()
+
+    def test_two_launches_at_once_leave_exactly_one_instance(self):
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env = {**os.environ, "PYTHONPATH": str(Path(local_app.__file__).resolve().parents[1])}
+            args = [sys.executable, "-m", "nurse_manager.app", "--no-browser", "--print-url",
+                    "--idle-timeout", "60", "--home", tmp]
+            launches = [subprocess.Popen(args, stdout=subprocess.PIPE, text=True, env=env)
+                        for _ in range(2)]
+            try:
+                urls = [p.stdout.readline().strip() for p in launches]
+                self.assertEqual(urls[0], urls[1], "both launches lead to the same instance")
+                time.sleep(1.0)
+                running = [p for p in launches if p.poll() is None]
+                self.assertEqual(len(running), 1, "exactly one instance keeps running")
+                exited = [p for p in launches if p.poll() is not None]
+                self.assertEqual(exited[0].returncode, 0)
+                port, token = urls[0].split(":")[2].split("/")[0], urls[0].split("token=")[1]
+                conn = http.client.HTTPConnection("127.0.0.1", int(port), timeout=10)
+                conn.request("POST", "/app/quit", body="{}", headers={
+                    "Host": f"127.0.0.1:{port}", "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json"})
+                self.assertEqual(conn.getresponse().status, 200)
+                conn.close()
+                self.assertEqual(running[0].wait(timeout=10), 0)
+            finally:
+                for p in launches:
+                    if p.poll() is None:
+                        p.kill()
+                    p.stdout.close()
+
     def test_user_data_lives_outside_the_app_and_can_be_redirected(self):
         previous = os.environ.get("NURSE_AI_OS_HOME")
         try:

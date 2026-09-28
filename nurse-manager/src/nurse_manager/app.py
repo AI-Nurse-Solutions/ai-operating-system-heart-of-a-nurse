@@ -63,6 +63,57 @@ _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
+INSTANCE_NAME = "app.instance"
+
+
+class AlreadyRunning(RuntimeError):
+    """Another Nurse AI OS instance already holds this user's data folder."""
+
+
+class InstanceLock:
+    """One instance per data folder, enforced by the operating system.
+
+    The lock is an exclusive, non-blocking lock on a file, not the file's
+    existence: taking it is atomic, so two launches that start together
+    cannot both win, and the operating system releases it if the app
+    crashes, so a stale lock never blocks the next launch.
+    """
+
+    def __init__(self, home: Path):
+        self.path = Path(home) / INSTANCE_NAME
+        fd = os.open(self.path, os.O_RDWR | os.O_CREAT, 0o600)
+        try:
+            if os.name == "nt":  # pragma: no cover - exercised on the Windows build
+                import msvcrt
+
+                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as exc:
+            os.close(fd)
+            raise AlreadyRunning("Nurse AI OS is already running for this user") from exc
+        self.fd: int | None = fd
+
+    def release(self) -> None:
+        if self.fd is not None:
+            os.close(self.fd)  # closing the descriptor releases the lock
+            self.fd = None
+
+
+def _say(text: str) -> None:
+    """Print if there is somewhere to print. A windowed build has no console."""
+    stream = sys.stdout
+    if stream is None:
+        return
+    try:
+        stream.write(text + "\n")
+        stream.flush()
+    except (OSError, ValueError):
+        pass
+
+
 def _launch_token() -> str:
     """A fresh random secret for this launch only. It is never stored in the repo."""
     return secrets.token_urlsafe(32)
@@ -74,13 +125,19 @@ class LocalApp:
     def __init__(self, home: Path, *, port: int = 0, idle_timeout: float = DEFAULT_IDLE_TIMEOUT):
         self.home = Path(home)
         self.home.mkdir(parents=True, exist_ok=True)
+        # Taken before anything else, so a second launch changes nothing.
+        self.instance = InstanceLock(self.home)
         self.workspace = self.home / "workspace"
         self.token = _launch_token()
         self.idle_timeout = idle_timeout
         self.last_seen = time.monotonic()
         self.stopping = threading.Event()
         self.ready = threading.Event()  # set once the lock file names this instance
-        self.server = ThreadingHTTPServer(("127.0.0.1", port), self._handler())
+        try:
+            self.server = ThreadingHTTPServer(("127.0.0.1", port), self._handler())
+        except OSError:
+            self.instance.release()
+            raise
         self.port = self.server.server_address[1]
 
     # -- lifetime ---------------------------------------------------------
@@ -136,6 +193,7 @@ class LocalApp:
         finally:
             self.server.server_close()
             self.remove_lock()
+            self.instance.release()
 
     def stop(self) -> None:
         if not self.stopping.is_set():
@@ -383,7 +441,7 @@ def self_test(home: Path) -> int:
     thread.join(timeout=10)
     checks.append(("quit stops the app", not thread.is_alive()))
     for label, passed in checks:
-        print(f"{'PASS' if passed else 'FAIL'} {label}")
+        _say(f"{'PASS' if passed else 'FAIL'} {label}")
     return 0 if all(passed for _, passed in checks) else 1
 
 
@@ -407,17 +465,28 @@ def main(argv: list[str] | None = None) -> int:
             return self_test(Path(tmp))
 
     home = args.home or resources.user_data_dir()
-    existing = _running_instance(home)
-    if existing:
+    try:
+        app = LocalApp(home, port=args.port, idle_timeout=args.idle_timeout)
+    except AlreadyRunning:
+        # The running instance may still be starting: give it a moment to answer.
+        existing = None
+        for _ in range(20):
+            existing = _running_instance(home)
+            if existing:
+                break
+            time.sleep(0.25)
+        if existing is None:
+            _say("Nurse AI OS is already running for this user but is not answering yet."
+                 " Try again in a moment.")
+            return 1
         if args.print_url:
-            print(existing, flush=True)
+            _say(existing)
         if not args.no_browser:
             webbrowser.open(existing)
         return 0
 
-    app = LocalApp(home, port=args.port, idle_timeout=args.idle_timeout)
     if args.print_url:
-        print(app.url, flush=True)
+        _say(app.url)
     if not args.no_browser:
         threading.Timer(0.3, webbrowser.open, args=(app.url,)).start()
     try:

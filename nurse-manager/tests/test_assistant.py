@@ -88,8 +88,9 @@ class FakeModelServer:
 
 
 def echo_rewrite(body):
-    """A well-behaved model: keeps the facts and the citations."""
-    return "Summary of the week.\n\n" + body["prompt"]
+    """A well-behaved model: keeps the headings and the cited lines, drops the rest."""
+    return "\n".join(line for line in body["prompt"].splitlines()
+                     if line.startswith("#") or "`" in line)
 
 
 class _Case(unittest.TestCase):
@@ -149,6 +150,12 @@ class DefaultPostureTests(_Case):
                                           "OPENAI_API_KEY": "x", "ANTHROPIC_API_KEY": "x"}):
             self.assertEqual(self.service().status()["provider"], "none")
             self.assertEqual(self.draft(self.service())["outcome"], "no_model")
+
+    def test_the_stated_gates_are_true_for_briefs_and_project_answers(self):
+        gates = " ".join(self.service().status()["gates"])
+        self.assertIn("a brief becomes a draft only you can accept", gates)
+        self.assertIn("answer about a project is shown to you and not saved", gates)
+        self.assertNotIn("What the model writes is saved as a draft", gates)
 
     def test_mission_control_is_honest_about_assistants(self):
         mc = mission_control(self.ws, today=TODAY, week_of=WEEK)
@@ -331,7 +338,32 @@ class FallbackTests(_Case):
     def test_output_that_drops_every_citation_is_not_saved(self):
         server = self.server(lambda body: "A tidy summary with nothing to check it against.")
         self.assert_records_only(self.draft(self.connect(server)),
-                                 "output_refused", "cited none of your records")
+                                 "output_refused", "had no citation")
+
+    def test_one_valid_citation_does_not_vouch_for_other_lines(self):
+        def one_good_line_then_claims(body):
+            cited = next(line for line in body["prompt"].splitlines() if "`" in line)
+            return cited + "\nMorale on the unit is the lowest it has been in a year."
+        server = self.server(one_good_line_then_claims)
+        result = self.draft(self.connect(server))
+        self.assert_records_only(result, "output_refused", "1 line(s) had no citation")
+        # Rejected text is never stored in the ledger or shown in the reason.
+        self.assertNotIn("Morale", result["reason"])
+        self.assertNotIn("Morale", " ".join(str(v) for v in tuple(self.ledger()[-1])))
+
+    def test_a_brief_cannot_be_replaced_by_the_no_answer_sentence(self):
+        from nurse_manager.assistant import NO_ANSWER
+
+        result = self.draft(self.connect(self.server(NO_ANSWER)))
+        self.assert_records_only(result, "output_refused", "1 line(s) had no citation")
+
+    def test_an_invented_heading_is_not_exempt(self):
+        def invented_heading(body):
+            kept = [line for line in body["prompt"].splitlines()
+                    if line.startswith("#") or "`" in line]
+            return "\n".join(["## Morale is at an all-time low", *kept])
+        result = self.draft(self.connect(self.server(invented_heading)))
+        self.assert_records_only(result, "output_refused", "1 line(s) had no citation")
 
     def test_empty_output_is_not_saved(self):
         self.assert_records_only(self.draft(self.connect(self.server("  "))),
@@ -548,6 +580,27 @@ class ProjectQuestionTests(_Case):
         with self.assertRaises(AssistantError):
             self.service().answer_project_question(self.project_id, self.QUESTION, TODAY,
                                                    "Someone Else")
+
+    def test_the_model_may_say_the_records_do_not_answer(self):
+        from nurse_manager.assistant import NO_ANSWER
+
+        result = self.ask(self.connect(self.server(NO_ANSWER)))
+        self.assertEqual((result["outcome"], result["answer"]), ("answered", NO_ANSWER))
+
+    def test_a_preview_is_bound_to_the_model_it_named(self):
+        first, second = self.server(), self.server()
+        assistant = self.connect(first)
+        preview = assistant.preview_project_question(self.project_id, self.QUESTION, TODAY)
+        # Another tab switches the model's address after the manager reviewed the preview.
+        assistant.connect_local(OWNER, "llama3.2", endpoint=second.endpoint)
+        with self.assertRaises(AssistantError):
+            self.ask(assistant, reviewed_prompt_sha256=preview["prompt_sha256"])
+        brief_preview = self.connect(first).preview_weekly_brief(WEEK, TODAY)
+        assistant.connect_local(OWNER, "mistral", endpoint=first.endpoint)
+        with self.assertRaises(AssistantError):
+            assistant.draft_weekly_brief(WEEK, TODAY, OWNER,
+                                         reviewed_prompt_sha256=brief_preview["prompt_sha256"])
+        self.assertEqual((first.requests, second.requests), ([], []))
 
     def test_an_answer_citing_other_records_is_not_shown(self):
         server = self.server(lambda body: "See `tsk-0123456789ab`.")

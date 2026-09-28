@@ -23,6 +23,7 @@
     "weekly": "WeeklyBrief",
     "assistant-preview": "AssistantPreview",
     "assistant-project-preview": "ProjectQuestionPreview",
-    "assistant-project": "ProjectAnswer"
+    "assistant-project": "ProjectAnswer",
+    "note-keep": "ProjectNote"
   }
 }

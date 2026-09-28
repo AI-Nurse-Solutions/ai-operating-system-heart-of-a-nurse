@@ -154,7 +154,7 @@ class DefaultPostureTests(_Case):
     def test_the_stated_gates_are_true_for_briefs_and_project_answers(self):
         gates = " ".join(self.service().status()["gates"])
         self.assertIn("a brief becomes a draft only you can accept", gates)
-        self.assertIn("answer about a project is shown to you and not saved", gates)
+        self.assertIn("answer about a project is shown to you and saved only if you keep it", gates)
         self.assertNotIn("What the model writes is saved as a draft", gates)
 
     def test_mission_control_is_honest_about_assistants(self):
@@ -614,6 +614,79 @@ class ProjectQuestionTests(_Case):
         self.assertEqual(self.draft(assistant)["outcome"], "drafted")
         self.assertEqual(self.ask(assistant)["outcome"], "refused_budget")
         self.assertEqual(len(server.requests), 1)
+
+
+class ProjectNoteTests(_Case):
+    QUESTION = "What should I do first?"
+
+    def setUp(self):
+        super().setUp()
+        self.project_id = mission_control(self.ws, today=TODAY, week_of=WEEK)[
+            "projects_in_motion"]["items"][0]["id"]
+        self.assistant = self.connect(self.server(echo_rewrite))
+        self.answer = self.assistant.answer_project_question(
+            self.project_id, "  What should I do   first? ", TODAY, OWNER)
+        self.assertEqual(self.answer["outcome"], "answered", self.answer["reason"])
+
+    def keep(self, **changes):
+        args = {"request_id": self.answer["request_id"], "project_id": self.project_id,
+                "question": self.answer["question"], "answer": self.answer["answer"],
+                "kept_by": OWNER, **changes}
+        return self.assistant.keep_project_note(**args)
+
+    def notes(self):
+        from nurse_manager.views import project_dashboard
+
+        return project_dashboard(self.ws, self.project_id, today=TODAY)["notes"]
+
+    def test_nothing_is_saved_until_the_manager_keeps_it(self):
+        self.assertEqual(self.notes(), [])
+        (row,) = [r for r in self.ledger() if r["task"] == "project_question"]
+        self.assertRegex(row["output_sha256"], r"^[0-9a-f]{64}$")
+        self.assertNotIn(self.answer["answer"][:40], " ".join(str(v) for v in tuple(row)))
+
+    def test_keeping_the_answer_as_given_saves_it_with_its_origin(self):
+        self.assertEqual(self.answer["question"], self.QUESTION, "the question is normalized")
+        note = self.keep()
+        self.assertEqual(self.notes(), [note])
+        self.assertEqual((note["written_by"], note["model"], note["kept_by"]),
+                         ("assistant:local", "llama3.2", OWNER))
+        self.assertEqual(note["body_markdown"], self.answer["answer"])
+        self.assertEqual(note["source_refs"], self.answer["source_refs"])
+        kinds = [(e["kind"], e["record_type"]) for e in self.ws.store.events()]
+        self.assertIn(("keep", "project_note"), kinds)
+
+    def test_only_the_exact_answer_to_that_question_about_that_project_can_be_kept(self):
+        other = mission_control(self.ws, today=TODAY, week_of=WEEK)[
+            "projects_in_motion"]["items"][1]["id"]
+        for label, changes in (
+            ("edited answer", {"answer": self.answer["answer"] + "\nAn added line."}),
+            ("invented answer", {"answer": "Everything is fine."}),
+            ("other question", {"question": "What is blocking this?"}),
+            ("other project", {"project_id": other}),
+        ):
+            with self.subTest(label), self.assertRaises(AssistantError):
+                self.keep(**changes)
+        self.assertEqual(self.notes(), [])
+
+    def test_a_note_is_kept_once_by_the_owner_only(self):
+        with self.assertRaises(AssistantError):
+            self.keep(kept_by="Someone Else")
+        self.keep()
+        with self.assertRaises(AssistantError):
+            self.keep()
+
+    def test_requests_without_an_answer_cannot_be_kept(self):
+        brief = self.draft(self.assistant)
+        with self.assertRaises(AssistantError):
+            self.keep(request_id=brief["request_id"])
+        with self.assertRaises(AssistantError):
+            self.keep(request_id="air-000000000000")
+        self.assistant.disconnect(OWNER)
+        unanswered = self.assistant.answer_project_question(self.project_id, self.QUESTION,
+                                                            TODAY, OWNER)
+        with self.assertRaises(AssistantError):
+            self.keep(request_id=unanswered["request_id"], answer="")
 
 
 class LocalAdapterTests(unittest.TestCase):

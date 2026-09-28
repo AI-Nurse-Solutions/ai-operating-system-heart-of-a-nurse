@@ -50,7 +50,7 @@ from ._naio import (
 from .actions import DEFAULT_PROFILE_POLICY
 from .brief import ASSISTANT_PREFIX, BriefService, compose_weekly_brief, sha256_text
 from .services import ManagerError, ManagerWorkspace
-from .views import project_dashboard
+from .views import note_dict, project_dashboard
 from .store import new_id
 
 DEFAULT_LOCAL_ENDPOINT = "http://127.0.0.1:11434"
@@ -72,7 +72,7 @@ GATES = (
     "The EDENA policy decides whether an assistant may draft this; assistants only recommend.",
     "A daily request limit and a monthly cost budget are checked before anything is sent.",
     "What the model writes is never final: a brief becomes a draft only you can accept, and an"
-    " answer about a project is shown to you and not saved.",
+    " answer about a project is shown to you and saved only if you keep it as a project note.",
     "If the model is unavailable, nothing goes anywhere else, and you are told why. A brief is"
     " drafted from your records instead.",
 )
@@ -519,13 +519,13 @@ class AssistantService:
         if provider is None:
             return _Prepared(settings, context, refs, None, "", "", [],
                              ("no_model", "No AI model is connected. The project dashboard"
-                              " shows everything the records say."))
+                              " shows everything the records say."), 0, question)
         checks, blocked, estimate = self._gates(provider, settings, PROJECT_SYSTEM_PROMPT,
                                                 prompt, "answer_project_question",
                                                 "answer this")
         return _Prepared(settings, context, refs, provider, prompt,
                          _binding(provider, PROJECT_SYSTEM_PROMPT, prompt), checks,
-                         blocked, estimate)
+                         blocked, estimate, question)
 
     def preview_project_question(self, project_id: str, question: str,
                                  today: str) -> dict[str, Any]:
@@ -567,6 +567,7 @@ class AssistantService:
                 "model": provider.model if provider else "",
                 "request_id": request_id,
                 "project_id": project_id,
+                "question": prep.question,
                 "answer": answer,
                 "source_refs": list(dict.fromkeys(CITATION.findall(answer))),
             }
@@ -589,7 +590,52 @@ class AssistantService:
             self._finish(request_id, failure[0], failure[1], cost, None)
             return result(failure[0], failure[1], request_id)
         self._finish(request_id, "answered", "", cost, None)
+        # Only a hash is kept: the answer itself is saved only if the manager keeps it.
+        with self.ws.store.transaction() as db:
+            db.execute("UPDATE assistant_requests SET output_sha256 = ? WHERE id = ?",
+                       (_answer_binding(project_id, prep.question, text), request_id))
         return result("answered", "", request_id, text)
+
+    def keep_project_note(self, request_id: str, project_id: str, question: str, answer: str,
+                          kept_by: str) -> dict[str, Any]:
+        """Keep an AI answer as a project note. Keeping it is the manager's acceptance.
+
+        The text must be exactly what the model answered to this question
+        about this project, proven by the hash the ledger recorded when it
+        answered. Edited, swapped, or invented text is refused.
+        """
+        self._owner(kept_by)
+        self.ws._require_row("projects", project_id)
+        row = self.ws.store.conn.execute(
+            "SELECT * FROM assistant_requests WHERE id = ? AND workspace_id = ?",
+            (request_id, self.ws.info.id),
+        ).fetchone()
+        if row is None or row["task"] != "project_question" or row["outcome"] != "answered":
+            raise AssistantError("that request has no AI answer to keep")
+        question = " ".join(question.split())
+        answer = answer.strip()
+        if row["output_sha256"] != _answer_binding(project_id, question, answer):
+            raise AssistantError(
+                "this is not the answer the AI model gave to that question; nothing was saved"
+            )
+        exists = self.ws.store.conn.execute(
+            "SELECT id FROM project_notes WHERE request_id = ?", (request_id,)).fetchone()
+        if exists is not None:
+            raise AssistantError("this answer is already kept as a project note")
+        self.ws._screen(question=question, note=answer)  # the capture rules, again
+        note_id = new_id("note")
+        refs = list(dict.fromkeys(CITATION.findall(answer)))
+        with self.ws.store.transaction() as db:
+            db.execute(
+                "INSERT INTO project_notes (id, workspace_id, project_id, request_id, question,"
+                " body_markdown, body_sha256, source_refs, written_by, model, kept_by, kept_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (note_id, self.ws.info.id, project_id, request_id, question, answer,
+                 sha256_text(answer), json.dumps(refs), f"{ASSISTANT_PREFIX}{row['provider']}",
+                 row["model"], kept_by.strip(), self.ws.clock()),
+            )
+            self.ws.store.log(kept_by.strip(), "keep", "project_note", note_id)
+        return project_note(self.ws, note_id)
 
     def _check_output(self, text: str, refs: list[str], sent: str, *,
                       allow_no_answer: bool = False) -> str | None:
@@ -707,6 +753,7 @@ class _Prepared:
     checks: list[dict[str, Any]]
     blocked: tuple[str, str] | None
     estimate: int = 0
+    question: str = ""
 
 
 def _split_brief(body: str) -> tuple[str, str]:
@@ -789,3 +836,15 @@ def _binding(provider: Provider, system: str, prompt: str) -> str:
     """
     where = getattr(provider, "endpoint", "")
     return sha256_text(f"{provider.kind}\n{provider.model}\n{where}\n\n{system}\n\n{prompt}")
+
+
+def _answer_binding(project_id: str, question: str, answer: str) -> str:
+    """The hash the ledger keeps for an answer: which project, which question, what text."""
+    return sha256_text(json.dumps([project_id, question, answer.strip()]))
+
+
+def project_note(ws: ManagerWorkspace, note_id: str) -> dict[str, Any]:
+    row = ws.store.conn.execute(
+        "SELECT * FROM project_notes WHERE id = ? AND workspace_id = ?", (note_id, ws.info.id)
+    ).fetchone()
+    return note_dict(row)

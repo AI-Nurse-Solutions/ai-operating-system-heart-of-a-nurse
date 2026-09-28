@@ -87,7 +87,8 @@ One logical writer per record type. Views never write.
 | Artifact + revisions | `artifacts`, `artifact_revisions` | `BriefService` | views, actions |
 | Action, approval, receipt | `actions`, `approvals`, `receipts` | `ActionBoundary` | views |
 | AI settings | `assistant_settings` | `AssistantService.connect_local/disconnect` (the workspace owner only) | views, assistant |
-| AI request ledger (hashes and outcomes, never text; weekly briefs and project questions) | `assistant_requests` | `AssistantService` | assistant (budget) |
+| AI request ledger (hashes and outcomes, never text; weekly briefs and project questions) | `assistant_requests` | `AssistantService` | assistant (budget, note binding) |
+| Project note (an AI answer the manager kept, exactly as given) | `project_notes` | `AssistantService.keep_project_note` (the workspace owner only) | project dashboard |
 | Audit stream | `event_log` | every writer, via `Store.log`, inside the same transaction | backup/restore |
 | Schema | `schema_migrations` | `Store._migrate` | restore |
 

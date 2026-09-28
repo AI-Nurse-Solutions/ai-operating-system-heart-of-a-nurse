@@ -67,8 +67,9 @@ until the steward chooses one.
 
 In the app, **AI assistance** connects or disconnects the model,
 **Weekly brief** offers "Draft with AI…", and each project dashboard offers
-**Think with this project**, whose answers are suggestions and are never
-saved. Before anything is sent, the
+**Think with this project**, whose answers are suggestions. An answer is
+saved only if the manager keeps it as a project note, and only exactly as
+the model gave it. Before anything is sent, the
 manager sees exactly what will be sent and each check's verdict. The
 request is bound to that preview: if the records change in between,
 nothing is sent. The same commands, for the headless surface:

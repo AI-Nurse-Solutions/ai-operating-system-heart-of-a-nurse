@@ -51,16 +51,17 @@ from .devhost import (
 from .services import ManagerWorkspace
 
 DEFAULT_IDLE_TIMEOUT = 15 * 60
-MAX_BODY = 16 * 1024
+MAX_BODY = 64 * 1024  # room for an AI answer being kept as a note
 LOCK_NAME = "app.lock.json"
 
 # The only writes the screens can ask for once a workspace exists. Each one
 # acts as the workspace's owner: the app runs for one person on their own
 # computer, and the launch token proves the request came from its page.
 WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief",
-                  "assistant-project")
+                  "assistant-project", "note-keep")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
+_REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
 
 
 INSTANCE_NAME = "app.instance"
@@ -374,6 +375,14 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         return argv + ["--endpoint", endpoint] if endpoint.strip() else argv
     if command == "assistant-off":
         return ["assistant-off", ws, "--by", owner]
+    if command == "note-keep":
+        request_id, project_id = text("request_id", 64), text("project_id", 64)
+        question, answer = text("question", 2000), text("answer", 40000)
+        if (not request_id or not _REQUEST_ID.match(request_id) or not project_id
+                or not _PROJECT_ID.match(project_id) or question is None or answer is None):
+            return "request_id, project_id, question, and answer are required"
+        return ["note-keep", ws, "--request", request_id, "--project", project_id,
+                "--question", question, "--answer", answer, "--by", owner]
     # AI requests are always bound to the preview the manager reviewed.
     sha = text("prompt_sha256", 64)
     if sha is None or not (sha == "" or _SHA256.match(sha)):

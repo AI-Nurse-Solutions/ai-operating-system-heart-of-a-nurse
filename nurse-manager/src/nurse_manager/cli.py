@@ -105,6 +105,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--id", required=True)
     p.add_argument("--today", required=True)
     p.add_argument("--question", required=True)
+    p = ws_cmd("note-keep", "keep an AI answer as a project note, exactly as the model gave it")
+    p.add_argument("--request", required=True)
+    p.add_argument("--project", required=True)
+    p.add_argument("--question", required=True)
+    p.add_argument("--answer", required=True)
+    p.add_argument("--by", required=True)
     p = ws_cmd("assistant-project", "ask the connected model about one project; nothing is saved")
     p.add_argument("--id", required=True)
     p.add_argument("--today", required=True)
@@ -141,7 +147,7 @@ def _dispatch(args: argparse.Namespace) -> Any:
             return board(ws)
         if args.command == "table":
             return table(ws)
-        if args.command.startswith("assistant"):
+        if args.command.startswith("assistant") or args.command == "note-keep":
             assistant = AssistantService(ws)
             if args.command == "assistant":
                 return assistant.status()
@@ -152,6 +158,9 @@ def _dispatch(args: argparse.Namespace) -> Any:
                 return assistant.disconnect(args.by)
             if args.command == "assistant-preview":
                 return assistant.preview_weekly_brief(args.week, args.today)
+            if args.command == "note-keep":
+                return assistant.keep_project_note(args.request, args.project, args.question,
+                                                   args.answer, args.by)
             if args.command == "assistant-project-preview":
                 return assistant.preview_project_question(args.id, args.question, args.today)
             if args.command == "assistant-project":

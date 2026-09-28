@@ -71,8 +71,10 @@ GATES = (
     "Only material your workspace's data rules admit is sent, and it is checked again first.",
     "The EDENA policy decides whether an assistant may draft this; assistants only recommend.",
     "A daily request limit and a monthly cost budget are checked before anything is sent.",
-    "What the model writes is saved as a draft. Only you can accept it.",
-    "If the model is unavailable, you get the draft composed from your records, and the reason.",
+    "What the model writes is never final: a brief becomes a draft only you can accept, and an"
+    " answer about a project is shown to you and not saved.",
+    "If the model is unavailable, nothing goes anywhere else, and you are told why. A brief is"
+    " drafted from your records instead.",
 )
 
 SYSTEM_PROMPT = (

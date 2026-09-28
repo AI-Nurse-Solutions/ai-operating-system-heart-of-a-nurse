@@ -468,6 +468,15 @@ function thinkSection(doc, think) {
     'aria-describedby': 'think-question-hint',
   }));
   questionInput.value = think.question ?? '';
+  // A preview is only for the question it showed: editing withdraws it, so
+  // nothing can be sent until the new question is previewed.
+  questionInput.addEventListener('input', () => {
+    const panel = section.querySelector('#think-ai-preview');
+    if (panel) {
+      panel.remove();
+      think.onEdit?.(questionInput.value);
+    }
+  });
   const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' },
     ['Preview what will be sent']));
   submit.disabled = busy;
@@ -610,6 +619,7 @@ export function renderOnboarding(doc, handlers, state = {}) {
  * @property {(question: string) => void} onPreview
  * @property {(sha: string) => void} onSend
  * @property {() => void} onCancel
+ * @property {(question: string) => void} [onEdit] the question changed after a preview
  */
 
 /**

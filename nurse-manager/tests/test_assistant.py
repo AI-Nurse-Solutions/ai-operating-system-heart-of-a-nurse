@@ -151,6 +151,12 @@ class DefaultPostureTests(_Case):
             self.assertEqual(self.service().status()["provider"], "none")
             self.assertEqual(self.draft(self.service())["outcome"], "no_model")
 
+    def test_the_stated_gates_are_true_for_briefs_and_project_answers(self):
+        gates = " ".join(self.service().status()["gates"])
+        self.assertIn("a brief becomes a draft only you can accept", gates)
+        self.assertIn("answer about a project is shown to you and not saved", gates)
+        self.assertNotIn("What the model writes is saved as a draft", gates)
+
     def test_mission_control_is_honest_about_assistants(self):
         mc = mission_control(self.ws, today=TODAY, week_of=WEEK)
         self.assertEqual(mc["assistants_at_work"]["state"], "unavailable")

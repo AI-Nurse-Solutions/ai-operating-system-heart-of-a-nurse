@@ -268,6 +268,10 @@ export function start(doc, source) {
             : { notice: { kind: 'unanswered', text: answer.reason } };
         }),
         onCancel: () => { think = { question: think.question }; redraw('#think-question'); },
+        onEdit: (/** @type {string} */ question) => {
+          think = { question };
+          announce('The question changed. Preview it again before sending.');
+        },
       };
       const build = (/** @type {{ column: TableColumn, direction: SortDirection }} */ sort, /** @type {(column: TableColumn) => void} */ onSort) =>
         renderProject(doc, dashboard, sort, onSort, { ...think, ...thinkHandlers, writable });

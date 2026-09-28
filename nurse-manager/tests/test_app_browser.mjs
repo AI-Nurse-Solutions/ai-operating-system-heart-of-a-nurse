@@ -221,6 +221,12 @@ try {
     await think.getByLabel('What do you want to think through?').fill('What should I do first?');
     await think.getByRole('button', { name: 'Preview what will be sent' }).click();
     await samplePage.waitForFunction(() => document.activeElement?.id === 'think-preview-heading');
+    // Editing the question withdraws the preview: the old question cannot be sent.
+    await think.getByLabel('What do you want to think through?').fill('What should I do first?!');
+    assert.equal(await think.getByRole('button', { name: 'Send to llama3.2' }).count(), 0, 'no Send after an edit');
+    await think.getByLabel('What do you want to think through?').fill('What should I do first?');
+    await think.getByRole('button', { name: 'Preview what will be sent' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'think-preview-heading');
     const thinkPrompt = await samplePage.getByLabel("Your question and this project's records").textContent();
     assert.match(thinkPrompt, /^## Question\n\nWhat should I do first\?/);
     const sentBefore = modelRequests.length;

@@ -103,6 +103,20 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("learning-complete", "learning-complete", ws, "--id", planned["item"]["id"],
          "--takeaway", "Read the variance report before the meeting, not during it.",
          "--completed", "2026-09-27")
+    keep("memory", "memory", ws, "--today", TODAY)
+    keep("memory-empty", "memory", empty, "--today", TODAY)
+    kept = keep("memory-add", "memory-add", ws, "--content",
+                "Council agendas go out two days ahead (synthetic).", "--project", huddle,
+                "--expires", "2027-06-30", "--today", TODAY)["item"]["id"]
+    keep("error-memory-add-identifier", "memory-add", ws, "--content",
+         "Email the educator at educator@example.org", "--today", TODAY)
+    keep("memory-correct", "memory-correct", ws, "--id", kept, "--content",
+         "Council agendas go out three days ahead (synthetic).", "--today", TODAY)
+    keep("memory-exclude", "memory-exclude", ws, "--id", kept, "--today", TODAY)
+    keep("error-memory-exclude-again", "memory-exclude", ws, "--id", kept, "--today", TODAY)
+    keep("memory-include", "memory-include", ws, "--id", kept, "--today", TODAY)
+    keep("memory-delete", "memory-delete", ws, "--id", kept)
+    keep("error-memory-delete-again", "memory-delete", ws, "--id", kept)
     keep("contributions", "contributions", ws, "--today", TODAY)
     keep("contributions-empty", "contributions", empty, "--today", TODAY)
     drafted = keep("contribution-add", "contribution-add", ws, "--title",

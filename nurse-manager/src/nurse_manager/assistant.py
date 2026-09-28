@@ -49,6 +49,7 @@ from ._naio import (
 )
 from .actions import DEFAULT_PROFILE_POLICY
 from .brief import ASSISTANT_PREFIX, BriefService, compose_weekly_brief, sha256_text
+from .memory import WorkspaceMemory
 from .services import ManagerError, ManagerWorkspace
 from .views import note_dict, project_dashboard
 from .store import new_id
@@ -92,6 +93,7 @@ PROJECT_SYSTEM_PROMPT = (
     " came from exactly as written, in backticks; every line must cite a record. If the"
     ' records do not answer the question, reply with exactly: "The records do not answer this."'
     " Offer options and considerations; the manager decides."
+    " Follow what the manager asked you to remember, and cite it like any record."
     " Never add names, numbers, dates, or events that are not in the records. Write short"
     " Markdown with no preamble."
 )
@@ -832,6 +834,15 @@ def compose_project_context(ws: ManagerWorkspace, project_id: str,
     for r in data["resources"]:
         lines.append(f"- {r['title']} ({r['kind']}) {cite(r['id'])}")
     if not data["resources"]:
+        lines.append("- none")
+    # Only what the manager wrote and still uses: excluded or expired
+    # memories are never sent (step 5.2).
+    lines += ["", "## What the manager asked you to remember", ""]
+    remembered = WorkspaceMemory(ws).for_project(project_id)
+    for m in remembered:
+        where = "this project" if m["project_id"] else "all work"
+        lines.append(f"- ({where}) {m['content']} {cite(m['id'])}")
+    if not remembered:
         lines.append("- none")
     return "\n".join(lines) + "\n", refs
 

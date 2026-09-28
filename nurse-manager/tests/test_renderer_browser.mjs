@@ -161,6 +161,14 @@ try {
   assert.equal(await page.locator('.view--contributions button').count(), 0, 'no contribution writes on the dev host');
   assert.equal(await page.locator('main').locator('text=/\\d+\\s?%/').count(), 0, 'no percentages');
 
+  // Memory: in use, expired, excluded, with who wrote it; read-only here.
+  await page.getByRole('link', { name: 'Memory' }).click();
+  await page.waitForSelector('.view--memory');
+  assert.equal(await page.title(), 'Memory — Nurse AI OS');
+  assert.match(await page.getByRole('region', { name: 'In use (2)' }).textContent(), /Lead with the decisions.*All work.*Written by Sample Manager.*Huddles stay at five minutes.*Project: Huddle format pilot/s);
+  assert.match(await page.getByRole('region', { name: 'Excluded (1)' }).textContent(), /budget talks/);
+  assert.equal(await page.locator('.view--memory button').count(), 0, 'no memory changes on the dev host');
+
   // The Library: every source, overdue reviews first, read-only here.
   await page.getByRole('link', { name: 'Library' }).click();
   await page.waitForSelector('.view--library');

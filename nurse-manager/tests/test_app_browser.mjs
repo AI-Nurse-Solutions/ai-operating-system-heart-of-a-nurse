@@ -302,6 +302,45 @@ try {
   assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Typed before a failed refresh.');
   assert.equal(await samplePage.getByLabel('What was the contribution?').inputValue(), 'Typed while saving (synthetic)');
 
+  // --- Memory: add, correct, exclude, delete; refusals keep the text ---
+  await samplePage.getByRole('link', { name: 'Memory' }).click();
+  await samplePage.waitForSelector('.view--memory');
+  assert.match(await samplePage.getByRole('list', { name: 'Facts' }).textContent(), /2 in use · 0 expired · 1 excluded/);
+  await samplePage.getByLabel('What should the assistant remember?').fill('Send council agendas to jane.doe@example.org two days ahead.');
+  await samplePage.getByLabel('For', { exact: true }).selectOption({ label: 'Unit Based Council charter refresh' });
+  await samplePage.getByRole('button', { name: 'Remember this' }).click();
+  await samplePage.waitForSelector('.view--memory .notice[role="alert"]');
+  assert.match(await samplePage.locator('.notice').textContent(), /not stored.*EMAIL_ADDRESS/s);
+  assert.equal(await samplePage.getByLabel('For', { exact: true }).inputValue() !== '', true, 'the scope is kept');
+  await samplePage.getByLabel('What should the assistant remember?').fill('Council agendas go out two days ahead (synthetic).');
+  await samplePage.getByRole('button', { name: 'Remember this' }).click();
+  await samplePage.waitForFunction(() => /Remembered\./.test(document.activeElement?.textContent ?? ''));
+  const inUse = samplePage.getByRole('region', { name: 'In use (3)' });
+  const mine = inUse.getByRole('listitem').filter({ hasText: 'Council agendas go out two days ahead' });
+  assert.match(await mine.textContent(), /Project: Unit Based Council charter refresh.*Written by Sample Manager on/s);
+  await mine.getByRole('button', { name: 'Correct…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await samplePage.getByLabel('Corrected wording').fill('Council agendas go out three days ahead (synthetic).');
+  await samplePage.getByRole('button', { name: 'Save correction' }).click();
+  await samplePage.waitForFunction(() => /Corrected\./.test(document.activeElement?.textContent ?? ''));
+  const corrected = samplePage.getByRole('listitem').filter({ hasText: 'three days ahead' });
+  assert.match(await corrected.textContent(), /Corrected by Sample Manager on/);
+  await corrected.getByRole('button', { name: 'Exclude' }).click();
+  await samplePage.waitForFunction(() => /Excluded\./.test(document.activeElement?.textContent ?? ''));
+  assert.match(await samplePage.getByRole('region', { name: 'Excluded (2)' }).textContent(), /three days ahead/);
+  await samplePage.getByRole('listitem').filter({ hasText: 'three days ahead' }).getByRole('button', { name: 'Use again' }).click();
+  await samplePage.waitForFunction(() => /In use again\./.test(document.activeElement?.textContent ?? ''));
+  const again = samplePage.getByRole('listitem').filter({ hasText: 'three days ahead' });
+  await again.getByRole('button', { name: 'Delete…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.textContent === 'Delete for good');
+  await samplePage.getByRole('listitem').filter({ hasText: 'three days ahead' }).getByRole('button', { name: 'Keep it' }).click();
+  await samplePage.getByRole('listitem').filter({ hasText: 'three days ahead' }).getByRole('button', { name: 'Delete…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.textContent === 'Delete for good');
+  await samplePage.keyboard.press('Enter');
+  await samplePage.waitForFunction(() => /Deleted for good\./.test(document.activeElement?.textContent ?? ''));
+  assert.equal(await samplePage.getByText('three days ahead').count(), 0);
+  assert.match(await samplePage.getByRole('list', { name: 'Facts' }).textContent(), /2 in use · 0 expired · 1 excluded/);
+
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];
   const model = createServer((req, res) => {
@@ -383,6 +422,9 @@ try {
     await samplePage.waitForFunction(() => document.activeElement?.id === 'think-preview-heading');
     const thinkPrompt = await samplePage.getByLabel("Your question and this project's records").textContent();
     assert.match(thinkPrompt, /^## Question\n\nWhat should I do first\?/);
+    // Memory in use is part of what is shown and sent; excluded memory never is.
+    assert.match(thinkPrompt, /## What the manager asked you to remember\n\n- \(all work\) Lead with the decisions I need to make/);
+    assert.doesNotMatch(thinkPrompt, /budget talks/);
     const sentBefore = modelRequests.length;
     await think.getByRole('button', { name: 'Send to llama3.2' }).click();
     await samplePage.waitForFunction(() => /The AI model answered/.test(document.activeElement?.textContent ?? ''), null, { timeout: 20000 });
@@ -436,7 +478,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

@@ -62,12 +62,15 @@ LOCK_NAME = "app.lock.json"
 WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief",
                   "assistant-project", "note-keep", "feedback-add", "feedback-address",
                   "source-add", "learning-add", "learning-start", "learning-complete",
-                  "contribution-add", "contribution-verify", "brief-schedule-set")
+                  "contribution-add", "contribution-verify", "brief-schedule-set",
+                  "memory-add", "memory-correct", "memory-exclude", "memory-include",
+                  "memory-delete")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
 _FEEDBACK_ID = re.compile(r"^fbk-[0-9a-f]{12}$")
 _LEARNING_ID = re.compile(r"^lrn-[0-9a-f]{12}$")
+_MEMORY_ID = re.compile(r"^mem-[0-9a-f]{12}$")
 _CONTRIBUTION_ID = re.compile(r"^ctb-[0-9a-f]{12}$")
 _HOURS = re.compile(r"^\d{1,3}(\.\d{1,2})?$")
 
@@ -425,6 +428,27 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         argv = ["learning-complete", ws, "--id", learning_id, "--takeaway", takeaway,
                 "--completed", completed]
         return argv + (["--hours", hours] if hours else [])
+    if command == "memory-add":
+        content, project_id = text("content", 1000), text("project_id", 64, required=False)
+        expires = text("expires_on", 20, required=False)
+        if (content is None or project_id is None
+                or (project_id and not _PROJECT_ID.match(project_id))
+                or expires is None or (expires and not _valid_date(expires))):
+            return "content is required; project_id and expires_on (YYYY-MM-DD) are optional"
+        argv = ["memory-add", ws, "--content", content, "--today", today]
+        argv += ["--project", project_id] if project_id else []
+        return argv + (["--expires", expires] if expires else [])
+    if command in ("memory-correct", "memory-exclude", "memory-include", "memory-delete"):
+        memory_id = text("memory_id", 64)
+        if not memory_id or not _MEMORY_ID.match(memory_id):
+            return "memory_id is required"
+        argv = [command, ws, "--id", memory_id]
+        if command == "memory-correct":
+            content = text("content", 1000)
+            if content is None:
+                return "content is required"
+            argv += ["--content", content]
+        return argv if command == "memory-delete" else argv + ["--today", today]
     if command == "brief-schedule-set":
         enabled, weekday, hour = body.get("enabled"), body.get("weekday"), body.get("hour")
         if (not isinstance(enabled, bool) or type(weekday) is not int or not 0 <= weekday <= 6

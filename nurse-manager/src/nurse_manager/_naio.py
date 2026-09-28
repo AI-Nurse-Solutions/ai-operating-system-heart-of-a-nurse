@@ -26,10 +26,13 @@ from naio_integrations.contract import (  # noqa: E402
     DataZone,
     Decision,
     GatewayRequest,
+    MemoryInterface,
+    MemoryRecord,
     PolicyDecision,
     RiskTier,
 )
 from naio_integrations.deliverables import SYNTHETIC_BANNER  # noqa: E402
+from naio_integrations.memory import VALID_CONSENT  # noqa: E402
 from naio_integrations.policy import EdenaPolicyEngine  # noqa: E402
 from naio_integrations.privacy import PrivacyScreen  # noqa: E402
 
@@ -54,10 +57,13 @@ __all__ = [
     "Decision",
     "EdenaPolicyEngine",
     "GatewayRequest",
+    "MemoryInterface",
+    "MemoryRecord",
     "PolicyDecision",
     "PrivacyScreen",
     "RiskTier",
     "SYNTHETIC_BANNER",
+    "VALID_CONSENT",
     "edena_engine",
     "privacy_screen",
 ]

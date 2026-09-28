@@ -37,6 +37,12 @@
     "contribution-add": "ContributionResult",
     "contribution-verify": "ContributionResult",
     "brief-schedule-set": "BriefSchedule",
-    "brief-run-due": "BriefRunResult"
+    "brief-run-due": "BriefRunResult",
+    "memory": "Memory",
+    "memory-add": "MemoryResult",
+    "memory-correct": "MemoryResult",
+    "memory-exclude": "MemoryResult",
+    "memory-include": "MemoryResult",
+    "memory-delete": "MemoryDeleted"
   }
 }

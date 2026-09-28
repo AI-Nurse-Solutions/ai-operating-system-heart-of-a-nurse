@@ -187,6 +187,36 @@ class WorkspaceWriteTests(_AppCase):
         view = self.envelope("/ipc/learning?today=2026-09-30")["data"]
         self.assertIn(lid, [i["id"] for i in view["items"]])
 
+    def test_memory_from_the_screens(self):
+        view = self.envelope("/ipc/memory?today=2026-09-30")["data"]
+        self.assertEqual((view["in_use"], view["excluded"]), (2, 1))
+        project = view["projects"][0]["id"]
+        added = self.envelope("/ipc/memory-add", "POST", {
+            "content": "Council agendas two days ahead (synthetic).", "project_id": project,
+            "expires_on": "2027-06-30"})["data"]["item"]
+        mid = added["id"]
+        self.assertEqual((added["status"], added["project_id"]), ("active", project))
+        refused = self.envelope("/ipc/memory-add", "POST", {"content": "Mail x@example.org"})
+        self.assertFalse(refused["ok"])
+        corrected = self.envelope("/ipc/memory-correct", "POST", {
+            "memory_id": mid, "content": "Council agendas three days ahead (synthetic)."})
+        self.assertIn("three days", corrected["data"]["item"]["content"])
+        self.assertEqual(self.envelope("/ipc/memory-exclude", "POST",
+                                       {"memory_id": mid})["data"]["item"]["status"], "excluded")
+        self.assertEqual(self.envelope("/ipc/memory-include", "POST",
+                                       {"memory_id": mid})["data"]["item"]["status"], "active")
+        self.assertEqual(self.envelope("/ipc/memory-delete", "POST",
+                                       {"memory_id": mid})["data"], {"deleted": mid})
+        self.assertFalse(self.envelope("/ipc/memory-delete", "POST", {"memory_id": mid})["ok"])
+        for command, body in (("memory-add", {}),
+                              ("memory-add", {"content": "x", "project_id": "nope"}),
+                              ("memory-add", {"content": "x", "expires_on": "soon"}),
+                              ("memory-correct", {"memory_id": mid}),
+                              ("memory-exclude", {"memory_id": "nope"}),
+                              ("memory-delete", {})):
+            with self.subTest(command=command, body=body):
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", body)[0], 400)
+
     def test_contributions_from_the_screens(self):
         view = self.envelope("/ipc/contributions?today=2026-09-30")["data"]
         project = view["projects"][0]["id"]

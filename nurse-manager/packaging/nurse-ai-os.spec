@@ -30,7 +30,8 @@ a = Analysis(  # noqa: F821
     pathex=[str(MANAGER / "src"), str(NAIO / "src")],
     datas=datas,
     hiddenimports=["naio_integrations.contract", "naio_integrations.policy",
-                   "naio_integrations.privacy", "naio_integrations.deliverables"],
+                   "naio_integrations.privacy", "naio_integrations.deliverables",
+                   "naio_integrations.memory"],
     excludes=["tkinter", "unittest", "pydoc", "test"],
     noarchive=False,
 )

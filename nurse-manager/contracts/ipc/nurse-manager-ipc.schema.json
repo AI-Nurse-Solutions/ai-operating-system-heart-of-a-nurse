@@ -8,7 +8,7 @@
     "IsoDate": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
     "IsoDateTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)$"},
     "Sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb)-[0-9a-f]{12}$"},
+    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem)-[0-9a-f]{12}$"},
     "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed"]},
     "SectionState": {"enum": ["ok", "empty"]},
 
@@ -293,6 +293,59 @@
         "review_overdue": {"type": "boolean"}
       },
       "required": ["id", "title", "kind", "reference", "review_date", "review_overdue"],
+      "additionalProperties": false
+    },
+    "MemoryItem": {
+      "description": "One thing the manager asked the assistant to remember, in their own words. Excluded or expired memories are kept but never sent.",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "content": {"type": "string"},
+        "project_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"type": "null"}], "description": "Null means all work."},
+        "project_title": {"type": ["string", "null"]},
+        "status": {"enum": ["active", "excluded"]},
+        "provenance": {"type": "string", "description": "Who wrote or last corrected it, and when."},
+        "expires_on": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "expired": {"type": "boolean"}
+      },
+      "required": ["id", "content", "project_id", "project_title", "status", "provenance", "expires_on", "expired"],
+      "additionalProperties": false
+    },
+    "Memory": {
+      "description": "Scoped memory: in use first, then expired, then excluded. Only memories in use are ever sent, and only to Think with this project.",
+      "type": "object",
+      "properties": {
+        "sample": {"type": "boolean"},
+        "today": {"$ref": "#/$defs/IsoDate"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/MemoryItem"}},
+        "in_use": {"type": "integer", "minimum": 0},
+        "excluded": {"type": "integer", "minimum": 0},
+        "expired": {"type": "integer", "minimum": 0},
+        "projects": {
+          "description": "Projects a new memory can be scoped to.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {"id": {"$ref": "#/$defs/RecordId"}, "title": {"type": "string"}},
+            "required": ["id", "title"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["sample", "today", "items", "in_use", "excluded", "expired", "projects"],
+      "additionalProperties": false
+    },
+    "MemoryResult": {
+      "type": "object",
+      "properties": {"item": {"$ref": "#/$defs/MemoryItem"}},
+      "required": ["item"],
+      "additionalProperties": false
+    },
+    "MemoryDeleted": {
+      "description": "The memory is gone; only its id remains, in the audit log.",
+      "type": "object",
+      "properties": {"deleted": {"$ref": "#/$defs/RecordId"}},
+      "required": ["deleted"],
       "additionalProperties": false
     },
     "ContributionItem": {

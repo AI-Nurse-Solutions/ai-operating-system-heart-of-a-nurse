@@ -23,6 +23,7 @@ from .actions import ActionBoundary
 from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
 from .sample import load_sample
+from .memory import WorkspaceMemory
 from .schedule import BriefSchedule
 from .services import ManagerError, ManagerWorkspace, _iso_date
 from .views import (
@@ -32,6 +33,8 @@ from .views import (
     feedback_item,
     learning,
     learning_item,
+    memory,
+    memory_item,
     library,
     mission_control,
     project_dashboard,
@@ -97,6 +100,23 @@ def build_parser() -> argparse.ArgumentParser:
     p = ws_cmd("contribution-verify", "verify a draft with the evidence that shows it happened")
     p.add_argument("--id", required=True)
     p.add_argument("--evidence", required=True)
+    p = ws_cmd("memory", "what the assistant is asked to remember, and what it is sent")
+    p.add_argument("--today", required=True)
+    p = ws_cmd("memory-add", "remember something you wrote, for all work or one project")
+    p.add_argument("--content", required=True)
+    p.add_argument("--project")
+    p.add_argument("--expires", help="YYYY-MM-DD; after it, the memory is not sent")
+    p.add_argument("--today", required=True)
+    for name, help_text in (("memory-correct", "correct a memory's text"),
+                            ("memory-exclude", "keep a memory but never send it"),
+                            ("memory-include", "use an excluded memory again"),
+                            ("memory-delete", "delete a memory for good")):
+        p = ws_cmd(name, help_text)
+        p.add_argument("--id", required=True)
+        if name == "memory-correct":
+            p.add_argument("--content", required=True)
+        if name != "memory-delete":
+            p.add_argument("--today", required=True)
     p = ws_cmd("library", "every source in the workspace; overdue reviews first")
     p.add_argument("--today", required=True)
     p = ws_cmd("source-add", "add a source (public, synthetic, or permitted personal material)")
@@ -233,6 +253,21 @@ def _dispatch(args: argparse.Namespace) -> Any:
         if args.command == "learning-complete":
             ws.complete_learning(args.id, args.takeaway, args.completed, hours=args.hours)
             return {"item": learning_item(ws, args.id)}
+        if args.command == "memory":
+            return memory(ws, today=args.today)
+        if args.command.startswith("memory-"):
+            memories = WorkspaceMemory(ws)
+            if args.command == "memory-add":
+                item_id = memories.add(args.content, project_id=args.project,
+                                       expires_on=args.expires)
+                return {"item": memory_item(ws, item_id, today=args.today)}
+            if args.command == "memory-delete":
+                memories.delete(args.id)
+                return {"deleted": args.id}
+            {"memory-correct": lambda: memories.correct_text(args.id, args.content),
+             "memory-exclude": lambda: memories.exclude(args.id),
+             "memory-include": lambda: memories.include(args.id)}[args.command]()
+            return {"item": memory_item(ws, args.id, today=args.today)}
         if args.command == "contributions":
             return contributions(ws, today=args.today)
         if args.command == "contribution-add":

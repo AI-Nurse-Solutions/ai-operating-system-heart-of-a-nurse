@@ -625,18 +625,22 @@ export function start(doc, source) {
      * @param {string} done
      */
     const act = async (command, body, done) => {
-      const typed = typedNow();
-      main.replaceChildren(renderContributions(doc, data, { ...options, ...state, typed, busy: true }));
+      const before = typedNow();
+      main.replaceChildren(renderContributions(doc, data, { ...options, ...state, typed: before, busy: true }));
+      // The fields stay editable while the request is in flight, so read them
+      // again from the busy view afterwards: nothing typed meanwhile is lost.
+      const latest = () => typedContributions(main, before);
       const { failure } = await write(command, body);
       if (mine !== generation) return;
       if (failure) {
-        showContributions(data, { verifying: state.verifying, notice: failure, typed }, true);
+        showContributions(data, { verifying: state.verifying, notice: failure, typed: latest() }, true);
         return;
       }
       const fresh = await reload('contributions', mine);
       // Re-render from the fresh records, so every button acts on them. The saved
       // form starts empty; everything else keeps what was typed in it.
       if (!fresh) return;
+      const typed = latest();
       const next = command === 'contribution-add'
         ? { verifying: state.verifying, typed: { add: {}, evidence: typed.evidence } }
         : { typed: { add: typed.add, evidence: without(typed.evidence, body.contribution_id) } };

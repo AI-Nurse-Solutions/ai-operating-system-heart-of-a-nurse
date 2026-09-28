@@ -232,11 +232,19 @@ try {
   const evidence = samplePage.getByLabel('What shows it happened?');
   assert.match(await evidence.inputValue(), /Template adopted.*manager@example\.org/);
   await evidence.fill('Template adopted in the council minutes (synthetic).');
+  // A slow save: text typed into the add form while it is in flight is kept.
+  let releaseVerify = () => {};
+  const verifyHeld = new Promise((resolve) => { releaseVerify = resolve; });
+  await samplePage.route('**/ipc/contribution-verify', async (route) => { await verifyHeld; await route.continue(); });
   await samplePage.getByRole('button', { name: 'Verify', exact: true }).click();
+  await samplePage.getByLabel('What was the contribution?').fill('Typed while saving (synthetic)');
+  releaseVerify();
   await samplePage.waitForFunction(() => /Verified, with your evidence/.test(document.activeElement?.textContent ?? ''));
   assert.match(await samplePage.getByRole('region', { name: 'Verified (2)' }).textContent(),
     /Rewrote the council agenda.*Evidence.*Template adopted in the council minutes/s);
   assert.match(await samplePage.getByRole('list', { name: 'Facts' }).textContent(), /2 verified · 1 draft awaits evidence/);
+  assert.equal(await samplePage.getByLabel('What was the contribution?').inputValue(), 'Typed while saving (synthetic)');
+  await samplePage.unroute('**/ipc/contribution-verify');
 
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];

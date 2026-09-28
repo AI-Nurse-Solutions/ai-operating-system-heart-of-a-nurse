@@ -8,7 +8,7 @@
     "IsoDate": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
     "IsoDateTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)$"},
     "Sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk)-[0-9a-f]{12}$"},
+    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn)-[0-9a-f]{12}$"},
     "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed"]},
     "SectionState": {"enum": ["ok", "empty"]},
 
@@ -293,6 +293,44 @@
         "review_overdue": {"type": "boolean"}
       },
       "required": ["id", "title", "kind", "reference", "review_date", "review_overdue"],
+      "additionalProperties": false
+    },
+    "LearningItem": {
+      "description": "One piece of the manager's own professional learning. Completed means a takeaway and a date were written.",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "kind": {"enum": ["course", "reading", "conference", "certification", "mentoring"]},
+        "status": {"enum": ["planned", "in_progress", "completed"]},
+        "target_date": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "hours": {"type": ["number", "null"], "minimum": 0, "maximum": 500},
+        "takeaway": {"type": "string"},
+        "completed_on": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]}
+      },
+      "required": ["id", "title", "kind", "status", "target_date", "hours", "takeaway", "completed_on"],
+      "additionalProperties": false
+    },
+    "Learning": {
+      "description": "Learning and Growth: in progress, planned, then completed. Stated facts, never a score.",
+      "type": "object",
+      "properties": {
+        "sample": {"type": "boolean"},
+        "today": {"$ref": "#/$defs/IsoDate"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/LearningItem"}},
+        "in_progress": {"type": "integer", "minimum": 0},
+        "planned": {"type": "integer", "minimum": 0},
+        "completed_this_year": {"type": "integer", "minimum": 0},
+        "hours_this_year": {"type": "number", "minimum": 0},
+        "past_target": {"type": "integer", "minimum": 0, "description": "Not completed and past its target date."}
+      },
+      "required": ["sample", "today", "items", "in_progress", "planned", "completed_this_year", "hours_this_year", "past_target"],
+      "additionalProperties": false
+    },
+    "LearningResult": {
+      "type": "object",
+      "properties": {"item": {"$ref": "#/$defs/LearningItem"}},
+      "required": ["item"],
       "additionalProperties": false
     },
     "LibraryItem": {

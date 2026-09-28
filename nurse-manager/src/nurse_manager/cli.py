@@ -23,8 +23,17 @@ from .actions import ActionBoundary
 from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
 from .sample import load_sample
-from .services import ManagerError, ManagerWorkspace
-from .views import board, feedback_item, library, mission_control, project_dashboard, table
+from .services import ManagerError, ManagerWorkspace, _iso_date
+from .views import (
+    board,
+    feedback_item,
+    learning,
+    learning_item,
+    library,
+    mission_control,
+    project_dashboard,
+    table,
+)
 
 
 CONTRACT = "nurse-manager-ipc@1"
@@ -56,6 +65,21 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--today", required=True)
     ws_cmd("board", "task board")
     ws_cmd("table", "task table")
+    p = ws_cmd("learning", "your own learning: in progress, planned, completed")
+    p.add_argument("--today", required=True)
+    p = ws_cmd("learning-add", "plan a piece of your own professional learning")
+    p.add_argument("--title", required=True)
+    p.add_argument("--kind", required=True,
+                   choices=("course", "reading", "conference", "certification", "mentoring"))
+    p.add_argument("--target", help="YYYY-MM-DD")
+    p.add_argument("--hours", help="continuing-education hours, if any")
+    p = ws_cmd("learning-start", "start planned learning")
+    p.add_argument("--id", required=True)
+    p = ws_cmd("learning-complete", "complete learning, with what you took away")
+    p.add_argument("--id", required=True)
+    p.add_argument("--takeaway", required=True)
+    p.add_argument("--completed", required=True, help="YYYY-MM-DD")
+    p.add_argument("--hours")
     p = ws_cmd("library", "every source in the workspace; overdue reviews first")
     p.add_argument("--today", required=True)
     p = ws_cmd("source-add", "add a source (public, synthetic, or permitted personal material)")
@@ -147,6 +171,12 @@ def commands() -> tuple[str, ...]:
 
 def _dispatch(args: argparse.Namespace) -> Any:
     """Run one parsed command and return its data. The workspace is always closed."""
+    # Every "today" and "week" is a real YYYY-MM-DD date before any view uses it:
+    # the envelope promises IsoDate, and views derive years and windows from it.
+    for name in ("today", "week"):
+        value = getattr(args, name, None)
+        if value is not None:
+            setattr(args, name, _iso_date(value, f"--{name}"))
     if args.command == "sample":
         ws, data = load_sample(args.workspace)
         try:
@@ -167,6 +197,18 @@ def _dispatch(args: argparse.Namespace) -> Any:
             return table(ws)
         if args.command == "library":
             return library(ws, today=args.today)
+        if args.command == "learning":
+            return learning(ws, today=args.today)
+        if args.command == "learning-add":
+            item_id = ws.add_learning(args.title, args.kind, target_date=args.target,
+                                      hours=args.hours)
+            return {"item": learning_item(ws, item_id)}
+        if args.command == "learning-start":
+            ws.start_learning(args.id)
+            return {"item": learning_item(ws, args.id)}
+        if args.command == "learning-complete":
+            ws.complete_learning(args.id, args.takeaway, args.completed, hours=args.hours)
+            return {"item": learning_item(ws, args.id)}
         if args.command == "source-add":
             source_id = ws.add_source(args.title, args.kind, args.reference,
                                       data_class=args.data_class, project_id=args.project,

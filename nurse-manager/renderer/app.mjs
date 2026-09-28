@@ -6,8 +6,8 @@
 // its own validated IPC without touching any view.
 
 import {
-  renderAssistant, renderBoard, renderBrief, renderError, renderLibrary, renderMission, renderOnboarding, renderProject,
-  renderTable,
+  renderAssistant, renderBoard, renderBrief, renderError, renderLearning, renderLibrary, renderMission, renderOnboarding,
+  renderProject, renderTable,
 } from './views.mjs';
 
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Command} Command */
@@ -105,8 +105,9 @@ export function httpSource(token = '') {
   };
 }
 
-/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library'} ReadCommand */
-/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'} WriteCommand */
+/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning'} ReadCommand */
+/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'
+ *   | 'learning-add' | 'learning-start' | 'learning-complete'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -116,6 +117,7 @@ const ROUTES = {
   table: { title: 'Tasks', command: 'table' },
   brief: { title: 'Weekly brief', command: 'weekly' },
   library: { title: 'Library', command: 'library' },
+  learning: { title: 'Learning and Growth', command: 'learning' },
   assistant: { title: 'AI assistance', command: 'assistant' },
 };
 
@@ -362,6 +364,9 @@ export function start(doc, source) {
     } else if (envelope.command === 'weekly') {
       showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (data), {}, moveFocus);
       announce('Weekly brief loaded.');
+    } else if (envelope.command === 'learning') {
+      showLearning(/** @type {import('./views.mjs').Learning} */ (data), {}, moveFocus);
+      announce('Learning and Growth loaded.');
     } else if (envelope.command === 'library') {
       showLibrary(/** @type {import('./views.mjs').Library} */ (data), {}, moveFocus);
       announce('Library loaded.');
@@ -417,7 +422,7 @@ export function start(doc, source) {
 
   /**
    * Reload a view's data after an action, unless the manager has navigated away.
-   * @param {'weekly' | 'assistant' | 'library'} command
+   * @param {'weekly' | 'assistant' | 'library' | 'learning'} command
    * @param {number} mine
    * @param {Record<string, string>} [params]
    */
@@ -426,7 +431,7 @@ export function start(doc, source) {
       const envelope = await source.call(command, params);
       if (mine !== generation) return null;
       if (!envelope.ok) {
-        const view = { weekly: 'brief', assistant: 'assistant', library: 'library' }[command];
+        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning' }[command];
         show(renderError(doc, ROUTES[view].title, envelope.error), true);
         return null;
       }
@@ -543,16 +548,59 @@ export function start(doc, source) {
         const { failure } = await write('source-add', fields);
         if (mine !== generation) return;
         if (failure) {
-          showAfterAction(renderLibrary(doc, data, { ...options, notice: failure }), failure);
+          showLibrary(data, { notice: failure }, true);
           return;
         }
         const fresh = await reload('library', mine);
-        if (!fresh) return;
-        const notice = /** @type {import('./views.mjs').Notice} */ ({ kind: 'ok', text: `Added “${fields.title}” to the library.` });
-        showAfterAction(renderLibrary(doc, /** @type {import('./views.mjs').Library} */ (fresh), { ...options, notice }), notice);
+        // Re-render from the fresh records, so the next action starts from them.
+        if (fresh) {
+          showLibrary(/** @type {import('./views.mjs').Library} */ (fresh),
+            { notice: { kind: 'ok', text: `Added “${fields.title}” to the library.` } }, true);
+        }
       },
     };
-    show(renderLibrary(doc, data, { ...options, ...state }), moveFocus);
+    const view = renderLibrary(doc, data, { ...options, ...state });
+    if (state.notice) showAfterAction(view, state.notice);
+    else show(view, moveFocus);
+  };
+
+  /**
+   * @param {import('./views.mjs').Learning} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, completing?: string | null }} state
+   * @param {boolean} moveFocus
+   * @param {string} [focusSelector]
+   */
+  const showLearning = (data, state, moveFocus, focusSelector) => {
+    const mine = generation;
+    /**
+     * @param {WriteCommand} command
+     * @param {Record<string, string>} body
+     * @param {string} done
+     */
+    const act = async (command, body, done) => {
+      main.replaceChildren(renderLearning(doc, data, { ...options, ...state, busy: true }));
+      const { failure } = await write(command, body);
+      if (mine !== generation) return;
+      if (failure) {
+        showLearning(data, { completing: state.completing, notice: failure }, true);
+        return;
+      }
+      const fresh = await reload('learning', mine);
+      // Re-render from the fresh records, so every button acts on them.
+      if (fresh) showLearning(/** @type {import('./views.mjs').Learning} */ (fresh), { notice: { kind: 'ok', text: done } }, true);
+    };
+    /** @type {import('./views.mjs').LearningOptions} */
+    const options = {
+      writable,
+      onAdd: (fields) => act('learning-add', fields, `Added “${fields.title}” to your plan.`),
+      onStart: (id) => act('learning-start', { learning_id: id }, 'Started.'),
+      onOpenComplete: (id) => showLearning(data, { completing: id }, true, `#takeaway-${id}`),
+      onCancelComplete: () => showLearning(data, {}, true),
+      onComplete: (id, fields) => act('learning-complete', { learning_id: id, ...fields }, 'Marked completed, with your takeaway.'),
+    };
+    const view = renderLearning(doc, data, { ...options, ...state });
+    if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
+    else show(view, moveFocus);
   };
 
   const themeToggle = /** @type {HTMLButtonElement} */ (doc.getElementById('theme-toggle'));

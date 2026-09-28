@@ -166,6 +166,26 @@ try {
   assert.equal(await samplePage.locator('.view--library tbody tr').count(), 4);
   assert.match(await samplePage.locator('.view--library tbody').textContent(), /Huddle evaluation questions.*Huddle format pilot/s);
 
+  // --- Learning and Growth: plan, start, complete with a takeaway -------
+  await samplePage.getByRole('link', { name: 'Learning and Growth' }).click();
+  await samplePage.waitForSelector('.view--learning');
+  await samplePage.getByLabel('What will you learn?').fill('Budget basics for new managers (synthetic)');
+  await samplePage.getByLabel('Continuing-education hours (optional)').fill('4');
+  await samplePage.getByRole('button', { name: 'Add to my plan' }).click();
+  await samplePage.waitForFunction(() => /Added “Budget basics/.test(document.activeElement?.textContent ?? ''));
+  const planned = samplePage.getByRole('region', { name: 'Planned (2)' }).getByRole('listitem').filter({ hasText: 'Budget basics' });
+  await planned.getByRole('button', { name: 'Start' }).click();
+  await samplePage.waitForFunction(() => /Started\./.test(document.activeElement?.textContent ?? ''));
+  const started = samplePage.getByRole('region', { name: 'In progress (2)' }).getByRole('listitem').filter({ hasText: 'Budget basics' });
+  await started.getByRole('button', { name: 'Mark completed…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await samplePage.keyboard.type('Read the variance report before the meeting.');
+  await samplePage.getByRole('button', { name: 'Mark completed', exact: true }).click();
+  await samplePage.waitForFunction(() => /Marked completed/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await samplePage.getByRole('region', { name: 'Completed (2)' }).textContent(),
+    /Budget basics.*4 h.*Takeaway.*Read the variance report/s);
+  assert.match(await samplePage.getByRole('list', { name: 'This year' }).textContent(), /2 items completed this year \(7 hours\)/);
+
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];
   const model = createServer((req, res) => {
@@ -300,7 +320,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

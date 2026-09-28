@@ -137,6 +137,18 @@ try {
   assert.equal(await page.evaluate(() => window.__injected), undefined, 'markup in a title never executes');
   assert.equal(await page.locator('.task-card img').count(), 0);
 
+  // Learning and Growth: facts, not scores; read-only here.
+  await page.getByRole('link', { name: 'Learning and Growth' }).click();
+  await page.waitForSelector('.view--learning');
+  assert.equal(await page.title(), 'Learning and Growth — Nurse AI OS');
+  for (const name of ['In progress (1)', 'Planned (1)', 'Completed (1)']) {
+    assert.ok(await page.getByRole('region', { name }).isVisible(), `${name} section`);
+  }
+  assert.match(await page.getByRole('list', { name: 'This year' }).textContent(), /1 item completed this year \(3 hours\)/);
+  assert.match(await page.getByRole('region', { name: 'Completed (1)' }).textContent(), /Takeaway.*Open each meeting with its decision/s);
+  assert.equal(await page.locator('.view--learning button').count(), 0, 'no learning writes on the dev host');
+  assert.equal(await page.locator('main').locator('text=/\\d+\\s?%/').count(), 0, 'no percentages');
+
   // The Library: every source, overdue reviews first, read-only here.
   await page.getByRole('link', { name: 'Library' }).click();
   await page.waitForSelector('.view--library');

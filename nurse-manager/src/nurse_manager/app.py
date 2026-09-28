@@ -59,11 +59,13 @@ LOCK_NAME = "app.lock.json"
 # computer, and the launch token proves the request came from its page.
 WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief",
                   "assistant-project", "note-keep", "feedback-add", "feedback-address",
-                  "source-add")
+                  "source-add", "learning-add", "learning-start", "learning-complete")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
 _FEEDBACK_ID = re.compile(r"^fbk-[0-9a-f]{12}$")
+_LEARNING_ID = re.compile(r"^lrn-[0-9a-f]{12}$")
+_HOURS = re.compile(r"^\d{1,3}(\.\d{1,2})?$")
 
 
 INSTANCE_NAME = "app.instance"
@@ -377,6 +379,32 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         return argv + ["--endpoint", endpoint] if endpoint.strip() else argv
     if command == "assistant-off":
         return ["assistant-off", ws, "--by", owner]
+    if command in ("learning-add", "learning-start", "learning-complete"):
+        hours = text("hours", 10, required=False)
+        if hours is None or (hours and not _HOURS.match(hours)):
+            return "hours must be a number, like 1.5"
+        if command == "learning-add":
+            title, kind = text("title", 400), text("kind", 40)
+            target = text("target_date", 20, required=False)
+            if (title is None or kind not in ("course", "reading", "conference", "certification",
+                                               "mentoring")
+                    or target is None or (target and not _valid_date(target))):
+                return "title and kind are required; target_date is YYYY-MM-DD"
+            argv = ["learning-add", ws, "--title", title, "--kind", kind]
+            argv += ["--target", target] if target else []
+            return argv + (["--hours", hours] if hours else [])
+        learning_id = text("learning_id", 64)
+        if not learning_id or not _LEARNING_ID.match(learning_id):
+            return "learning_id is required"
+        if command == "learning-start":
+            return ["learning-start", ws, "--id", learning_id]
+        takeaway = text("takeaway", 2000)
+        completed = body.get("completed_on", today)
+        if takeaway is None or not isinstance(completed, str) or not _valid_date(completed):
+            return "takeaway and a completed_on date are required"
+        argv = ["learning-complete", ws, "--id", learning_id, "--takeaway", takeaway,
+                "--completed", completed]
+        return argv + (["--hours", hours] if hours else [])
     if command == "source-add":
         title, kind, reference = text("title", 400), text("kind", 40), text("reference", 1000)
         data_class, project_id = text("data_class", 4, required=False), text("project_id", 64, required=False)

@@ -30,6 +30,7 @@ PERMITTED_DATA_CLASSES = ("D0", "D1")
 FEEDBACK_KINDS = ("worked", "change", "question")
 MAX_FEEDBACK_FROM = 80
 MAX_FEEDBACK_TEXT = 1000
+LEARNING_KINDS = ("course", "reading", "conference", "certification", "mentoring")
 
 
 class ManagerError(ValueError):
@@ -391,8 +392,81 @@ class ManagerWorkspace:
                 raise ManagerError("this feedback is already addressed")
             self.store.log(self.info.owner, "address", "feedback", feedback_id)
 
+    # -- learning and growth ----------------------------------------------
+
+    def add_learning(self, title: str, kind: str, *, target_date: str | None = None,
+                     hours: float | None = None) -> str:
+        """Plan a piece of the manager's own professional learning."""
+        title = self._require(title, "what you plan to learn")
+        if kind not in LEARNING_KINDS:
+            raise ManagerError(f"unknown learning kind: {kind}")
+        if len(title) > 200:
+            raise ManagerError("keep the title under 200 characters")
+        if target_date:
+            target_date = _iso_date(target_date, "the target date")
+        hours = _hours(hours)
+        self._screen(title=title)
+        learning_id = new_id("lrn")
+        now = self.clock()
+        with self.store.transaction() as db:
+            db.execute(
+                "INSERT INTO learning_items (id, workspace_id, title, kind, target_date, hours,"
+                " created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (learning_id, self.info.id, title, kind, target_date or None, hours, now, now),
+            )
+            self.store.log(self.info.owner, "create", "learning", learning_id)
+        return learning_id
+
+    def start_learning(self, learning_id: str) -> None:
+        self._require_row("learning_items", learning_id)
+        with self.store.transaction() as db:
+            changed = db.execute(
+                "UPDATE learning_items SET status = 'in_progress', updated_at = ?"
+                " WHERE id = ? AND status = 'planned'",
+                (self.clock(), learning_id),
+            ).rowcount
+            if changed != 1:
+                raise ManagerError("only planned learning can be started")
+            self.store.log(self.info.owner, "start", "learning", learning_id)
+
+    def complete_learning(self, learning_id: str, takeaway: str, completed_on: str, *,
+                          hours: float | None = None) -> None:
+        """Completion needs what you took away and when, like a task needs evidence."""
+        self._require_row("learning_items", learning_id)
+        takeaway = self._require(takeaway, "what you took away")
+        if len(takeaway) > 1000:
+            raise ManagerError("keep the takeaway under 1000 characters")
+        completed_on = _iso_date(completed_on, "the completion date")
+        if completed_on > self.local_today():
+            raise ManagerError("learning cannot be completed in the future")
+        hours = _hours(hours)
+        self._screen(takeaway=takeaway)
+        with self.store.transaction() as db:
+            # Decided inside the write, so two requests cannot both complete it.
+            changed = db.execute(
+                "UPDATE learning_items SET status = 'completed', takeaway = ?,"
+                " completed_on = ?, hours = coalesce(?, hours), updated_at = ?"
+                " WHERE id = ? AND status != 'completed'",
+                (takeaway, completed_on, hours, self.clock(), learning_id),
+            ).rowcount
+            if changed != 1:
+                raise ManagerError("this learning is already completed")
+            self.store.log(self.info.owner, "complete", "learning", learning_id)
+
     def close(self) -> None:
         self.store.close()
+
+
+def _hours(value) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        hours = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ManagerError("hours must be a number") from exc
+    if not 0 <= hours <= 500:
+        raise ManagerError("hours must be between 0 and 500")
+    return hours
 
 
 def _iso_date(value: str, label: str) -> str:

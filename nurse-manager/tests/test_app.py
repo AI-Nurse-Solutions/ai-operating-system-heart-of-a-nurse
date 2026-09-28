@@ -156,6 +156,32 @@ class WorkspaceWriteTests(_AppCase):
             "revision": draft["id"], "sha256": draft["sha256"], "reviewer": "Someone Else"})
         self.assertEqual(accepted["data"]["accepted_by"], "Sample Manager")
 
+    def test_learning_from_the_screens(self):
+        added = self.envelope("/ipc/learning-add", "POST", {
+            "title": "Budget basics (synthetic)", "kind": "course",
+            "target_date": "2026-11-30", "hours": "4"})["data"]["item"]
+        self.assertEqual((added["status"], added["hours"]), ("planned", 4.0))
+        lid = added["id"]
+        self.assertEqual(self.envelope("/ipc/learning-start", "POST",
+                                       {"learning_id": lid})["data"]["item"]["status"], "in_progress")
+        empty = self.envelope("/ipc/learning-complete", "POST",
+                              {"learning_id": lid, "takeaway": " ", "completed_on": "2026-09-27"})
+        self.assertFalse(empty["ok"])
+        done = self.envelope("/ipc/learning-complete", "POST", {
+            "learning_id": lid, "takeaway": "Read variances first.",
+            "completed_on": "2026-09-27"})["data"]["item"]
+        self.assertEqual(done["status"], "completed")
+        for command, body in (("learning-add", {"title": "T", "kind": "webinar"}),
+                              ("learning-add", {"title": "T", "kind": "course", "hours": "many"}),
+                              ("learning-add", {"title": "T", "kind": "course", "target_date": "x"}),
+                              ("learning-start", {"learning_id": "nope"}),
+                              ("learning-complete", {"learning_id": lid, "completed_on": "x",
+                                                     "takeaway": "t"})):
+            with self.subTest(command=command, body=body):
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", body)[0], 400)
+        view = self.envelope("/ipc/learning?today=2026-09-30")["data"]
+        self.assertIn(lid, [i["id"] for i in view["items"]])
+
     def test_sources_from_the_screens(self):
         lib = self.envelope("/ipc/library?today=2026-09-30")["data"]
         self.assertEqual(len(lib["items"]), 3)

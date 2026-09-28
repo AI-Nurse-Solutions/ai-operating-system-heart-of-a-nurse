@@ -1195,3 +1195,138 @@ export function renderLibrary(doc, data, options) {
   ]));
   return root;
 }
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').Learning} Learning */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').LearningItem} LearningItem */
+/**
+ * @typedef {object} LearningOptions
+ * @property {boolean} writable
+ * @property {boolean} [busy]
+ * @property {Notice} [notice]
+ * @property {string | null} [completing] the item whose completion form is open
+ * @property {(fields: Record<string, string>) => void} onAdd
+ * @property {(id: string) => void} onStart
+ * @property {(id: string) => void} onOpenComplete
+ * @property {() => void} onCancelComplete
+ * @property {(id: string, fields: Record<string, string>) => void} onComplete
+ */
+
+const LEARNING_KINDS = {
+  course: 'Course', reading: 'Reading', conference: 'Conference',
+  certification: 'Certification', mentoring: 'Mentoring',
+};
+
+/**
+ * Learning and Growth: the manager's own learning. Stated facts, never a score.
+ * @param {Document} doc
+ * @param {Learning} data
+ * @param {LearningOptions} options
+ */
+export function renderLearning(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const root = h(doc, 'div', { class: 'view view--learning' });
+  root.append(viewHeading(doc, 'Learning and Growth',
+    'Your own professional learning. Keep patient and colleague details out.'));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+  const hoursText = data.hours_this_year === 1 ? '1 hour' : `${data.hours_this_year} hours`;
+  root.append(h(doc, 'ul', { class: 'item-list', 'aria-label': 'This year' }, [
+    h(doc, 'li', {}, [`${data.in_progress} in progress · ${data.planned} planned`]),
+    h(doc, 'li', {}, [`${count(data.completed_this_year, 'item', 'items')} completed this year (${hoursText})`]),
+    data.past_target
+      ? h(doc, 'li', {}, [badge(doc, 'overdue', '!', count(data.past_target, 'item is', 'items are')), ' past its target date.'])
+      : null,
+  ]));
+
+  /** @param {LearningItem} item */
+  const card = (item) => {
+    const meta = [LEARNING_KINDS[item.kind]];
+    if (item.status !== 'completed' && item.target_date) meta.push(`target ${item.target_date}`);
+    if (item.hours !== null) meta.push(`${item.hours} h`);
+    if (item.status === 'completed') meta.push(`completed ${item.completed_on}`);
+    const el = h(doc, 'li', { class: 'card', 'data-record-id': item.id }, [
+      h(doc, 'p', { class: 'card__title' }, [item.title]),
+      h(doc, 'p', { class: 'card__meta' }, [meta.join(' · ')]),
+    ]);
+    if (item.status === 'completed') {
+      el.append(h(doc, 'p', {}, [badge(doc, 'accepted', '✓', 'Takeaway'), ' ', item.takeaway]));
+    } else if (options.writable && options.completing === item.id) {
+      const takeaway = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+        id: `takeaway-${item.id}`, rows: '2', required: '', maxlength: '1000',
+      }));
+      const date = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+        id: `completed-${item.id}`, type: 'date', required: '', max: data.today,
+      }));
+      date.value = data.today;
+      const hoursInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+        id: `hours-${item.id}`, type: 'text', inputmode: 'decimal', maxlength: '6',
+      }));
+      hoursInput.value = item.hours === null ? '' : String(item.hours);
+      const done = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Mark completed']));
+      done.disabled = busy;
+      const form = h(doc, 'form', { class: 'onboarding-form' }, [
+        h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: `takeaway-${item.id}` }, ['What did you take away?']), takeaway]),
+        h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: `completed-${item.id}` }, ['Completed on']), date]),
+        h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: `hours-${item.id}` }, ['Hours (optional)']), hoursInput]),
+        h(doc, 'p', { class: 'button-row' }, [done, button(doc, 'Cancel', busy, options.onCancelComplete, 'secondary-button')]),
+      ]);
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        options.onComplete(item.id, {
+          takeaway: takeaway.value.trim(), completed_on: date.value, hours: hoursInput.value.trim(),
+        });
+      });
+      el.append(form);
+    } else if (options.writable) {
+      el.append(h(doc, 'p', { class: 'button-row' }, [
+        item.status === 'planned' ? button(doc, 'Start', busy, () => options.onStart(item.id), 'secondary-button') : null,
+        button(doc, 'Mark completed…', busy, () => options.onOpenComplete(item.id), 'secondary-button'),
+      ]));
+    }
+    return el;
+  };
+
+  for (const [status, title, empty] of /** @type {const} */ ([
+    ['in_progress', 'In progress', 'Nothing in progress.'],
+    ['planned', 'Planned', 'Nothing planned yet.'],
+    ['completed', 'Completed', 'Nothing completed yet.'],
+  ])) {
+    const items = data.items.filter((i) => i.status === status);
+    const headingId = `learning-${status}-heading`;
+    root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': headingId }, [
+      h(doc, 'h2', { id: headingId, tabindex: '-1' }, [`${title} (${items.length})`]),
+      items.length
+        ? h(doc, 'ul', { class: 'card-list' }, items.map(card))
+        : h(doc, 'p', { class: 'section-state section-state--empty' }, [empty]),
+    ]));
+  }
+
+  if (!options.writable) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Planning learning is available in the Nurse AI OS app.',
+    ]));
+    return root;
+  }
+  const title = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'learning-title', type: 'text', required: '', maxlength: '200', autocomplete: 'off' }));
+  const kind = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id: 'learning-kind' },
+    Object.entries(LEARNING_KINDS).map(([value, label]) => h(doc, 'option', { value }, [label]))));
+  const target = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'learning-target', type: 'date' }));
+  const hours = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'learning-hours', type: 'text', inputmode: 'decimal', maxlength: '6' }));
+  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Add to my plan']));
+  submit.disabled = busy;
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'learning-add-heading' }, [
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'learning-title' }, ['What will you learn?']), title]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'learning-kind' }, ['Kind']), kind]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'learning-target' }, ['Target date (optional)']), target]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'learning-hours' }, ['Continuing-education hours (optional)']), hours]),
+    submit,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    options.onAdd({ title: title.value.trim(), kind: kind.value, target_date: target.value, hours: hours.value.trim() });
+  });
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'learning-add-heading' }, [
+    h(doc, 'h2', { id: 'learning-add-heading' }, ['Plan something new']), form,
+  ]));
+  return root;
+}

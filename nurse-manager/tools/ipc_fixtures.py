@@ -92,6 +92,17 @@ def collect(workdir: Path) -> dict[str, dict]:
          "--response", "Yes: Dates now covers two weeks.")
     keep("error-feedback-address-again", "feedback-address", ws, "--id",
          added["feedback"]["id"], "--response", " ")
+    keep("learning", "learning", ws, "--today", TODAY)
+    keep("learning-empty", "learning", empty, "--today", TODAY)
+    planned = keep("learning-add", "learning-add", ws, "--title",
+                   "Budget basics for new managers (synthetic)", "--kind", "course",
+                   "--target", "2026-11-30", "--hours", "4")
+    keep("learning-start", "learning-start", ws, "--id", planned["item"]["id"])
+    keep("error-learning-complete-no-takeaway", "learning-complete", ws, "--id",
+         planned["item"]["id"], "--takeaway", " ", "--completed", "2026-09-27")
+    keep("learning-complete", "learning-complete", ws, "--id", planned["item"]["id"],
+         "--takeaway", "Read the variance report before the meeting, not during it.",
+         "--completed", "2026-09-27")
     keep("library", "library", ws, "--today", TODAY)
     keep("source-add", "source-add", ws, "--title", "Huddle evaluation questions (synthetic)",
          "--kind", "synthetic", "--reference", "synthetic://samples/huddle-evaluation",

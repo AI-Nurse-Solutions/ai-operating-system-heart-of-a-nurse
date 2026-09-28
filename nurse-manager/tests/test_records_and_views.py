@@ -12,7 +12,14 @@ from _bootstrap import fixed_clock
 from nurse_manager.sample import SAMPLE_PATH, load_sample
 from nurse_manager.services import CaptureRefused, ManagerError, ManagerWorkspace
 from nurse_manager.store import MIGRATIONS_DIR, RestoreRefused, Store, StoreError
-from nurse_manager.views import board, library, mission_control, project_dashboard, table
+from nurse_manager.views import (
+    board,
+    learning,
+    library,
+    mission_control,
+    project_dashboard,
+    table,
+)
 
 WEEK = "2026-09-28"
 TODAY = "2026-09-30"
@@ -83,13 +90,21 @@ class StoreTests(_TempCase):
     def test_a_backup_from_an_earlier_release_is_brought_up_to_date_on_restore(self):
         ws = self.sample()
         backup = ws.store.backup(self.tmp / "backups" / "b1.sqlite")
+        # Make the backup look like one from the first release: drop every
+        # table a later migration added, and forget those migrations.
+        import re
+
+        first = set(re.findall(r"CREATE TABLE (\w+)",
+                               (MIGRATIONS_DIR / "0001_initial.sql").read_text()))
         old = sqlite3.connect(str(backup))
-        old.executescript(
-            "DROP TABLE project_feedback; DROP TABLE project_notes;"
-            " DROP TABLE assistant_requests;"
-            " DROP TABLE assistant_settings;"
-            " DELETE FROM schema_migrations WHERE version != '0001_initial';"
-        )
+        later = [name for (name,) in old.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table'")
+            if name not in first | {"schema_migrations", "sqlite_sequence"}]
+        self.assertIn("assistant_settings", later)
+        for name in later:
+            old.execute(f"DROP TABLE {name}")
+        old.execute("DELETE FROM schema_migrations WHERE version != '0001_initial'")
+        old.commit()
         old.close()
         ws.store.restore(backup)
         tables = {r[0] for r in ws.store.conn.execute(
@@ -254,6 +269,75 @@ class ViewTests(_TempCase):
         self.assertEqual(board(ws, show_paused=False)["columns"][1]["count"], 0)
         mc = mission_control(ws, today=TODAY, week_of=WEEK)
         self.assertEqual(mc["follow_ups"]["state"], "empty")
+
+
+class LearningTests(_TempCase):
+    """Learning and Growth (3.6b): the manager's own learning, completed with a takeaway."""
+
+    def test_in_progress_then_planned_then_completed_with_facts_not_scores(self):
+        ws = self.sample()
+        view = learning(ws, today=TODAY)
+        self.assertEqual([i["status"] for i in view["items"]],
+                         ["in_progress", "planned", "completed"])
+        self.assertEqual((view["in_progress"], view["planned"], view["completed_this_year"],
+                          view["hours_this_year"], view["past_target"]), (1, 1, 1, 3.0, 0))
+        self.assertEqual(view["items"][2]["takeaway"],
+                         "Open each meeting with its decision, not its agenda.")
+
+    def test_completing_needs_a_takeaway_and_a_date_even_in_the_database(self):
+        ws = self.sample()
+        lid = ws.add_learning("Budget basics (synthetic)", "course", target_date="2026-09-01")
+        self.assertEqual(learning(ws, today=TODAY)["past_target"], 1)
+        with self.assertRaises(ManagerError):
+            ws.complete_learning(lid, " ", TODAY)
+        with self.assertRaises(ManagerError):
+            ws.complete_learning(lid, "Read variances first.", "2030-01-01")
+        with self.assertRaises(sqlite3.IntegrityError):
+            ws.store.conn.execute(
+                "UPDATE learning_items SET status = 'completed' WHERE id = ?", (lid,))
+        ws.complete_learning(lid, "Read variances first.", TODAY, hours=2.5)
+        item = next(i for i in learning(ws, today=TODAY)["items"] if i["id"] == lid)
+        self.assertEqual((item["status"], item["hours"], item["completed_on"]),
+                         ("completed", 2.5, TODAY))
+        with self.assertRaises(ManagerError):
+            ws.complete_learning(lid, "Again.", TODAY)
+        with self.assertRaises(ManagerError):
+            ws.start_learning(lid)
+
+    def test_a_status_change_is_decided_inside_the_write(self):
+        from unittest import mock
+
+        ws = self.sample()
+        lid = ws.add_learning("Mentoring circle (synthetic)", "mentoring")
+        stale = dict(ws._require_row("learning_items", lid))
+        ws.complete_learning(lid, "Ask before advising.", TODAY)
+        with mock.patch.object(ws, "_require_row", return_value=stale), \
+                self.assertRaises(ManagerError):
+            ws.complete_learning(lid, "Second takeaway.", TODAY)
+        self.assertEqual(ws._require_row("learning_items", lid)["takeaway"],
+                         "Ask before advising.")
+
+    def test_capture_rules_apply(self):
+        ws = self.sample()
+        with self.assertRaises(CaptureRefused):
+            ws.add_learning("Course with jane.doe@example.org", "course")
+        lid = ws.add_learning("Reading (synthetic)", "reading")
+        with self.assertRaises(CaptureRefused):
+            ws.complete_learning(lid, "Call 555-867-5309 to follow up", TODAY)
+        for kwargs in ({"kind": "webinar"}, {"target_date": "soon"}, {"hours": -1},
+                       {"hours": 501}, {"hours": "lots"}, {"title": ""}, {"title": "x" * 201}):
+            args = {"title": "Reading", "kind": "reading", **kwargs}
+            title, kind = args.pop("title"), args.pop("kind")
+            with self.subTest(kwargs=kwargs), self.assertRaises(ManagerError):
+                ws.add_learning(title, kind, **args)
+
+    def test_changes_are_audited(self):
+        ws = self.sample()
+        lid = ws.add_learning("Conference (synthetic)", "conference")
+        ws.start_learning(lid)
+        ws.complete_learning(lid, "Bring one idea back to the council.", TODAY)
+        kinds = [e["kind"] for e in ws.store.events() if e["record_id"] == lid]
+        self.assertEqual(kinds, ["create", "start", "complete"])
 
 
 class LibraryTests(_TempCase):

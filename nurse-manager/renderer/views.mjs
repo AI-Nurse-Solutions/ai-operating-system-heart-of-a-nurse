@@ -1729,11 +1729,15 @@ export function renderMemory(doc, data, options) {
         ]),
       );
     } else {
+      if (item.status === 'excluded' && item.expired) {
+        el.append(h(doc, 'p', { class: 'field-hint' }, ['Expired, so it cannot be used again. Remember it again if it still applies.']));
+      }
       el.append(h(doc, 'p', { class: 'button-row' }, [
         button(doc, 'Correct…', busy, () => options.onOpenCorrect(item.id), 'secondary-button'),
         item.status === 'active'
           ? button(doc, 'Exclude', busy, () => options.onExclude(item.id), 'secondary-button')
-          : button(doc, 'Use again', busy, () => options.onInclude(item.id), 'secondary-button'),
+          // An expired memory would never be sent again, so it is not offered.
+          : item.expired ? null : button(doc, 'Use again', busy, () => options.onInclude(item.id), 'secondary-button'),
         button(doc, 'Delete…', busy, () => options.onOpenDelete(item.id), 'secondary-button'),
       ]));
     }

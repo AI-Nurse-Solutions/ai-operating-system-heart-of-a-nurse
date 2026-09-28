@@ -52,6 +52,12 @@ class ContractTests(_Case):
             self.mem.remember(replace(record, provenance=" "), "remember")
         with self.assertRaises(MemoryRefused):
             self.mem.remember(replace(record, tenant="ws-000000000000"), "remember")
+        # Every stored field a caller controls passes the capture rules.
+        with self.assertRaises(CaptureRefused):
+            self.mem.remember(replace(record, provenance="Written by jane.doe@example.org"),
+                              "remember")
+        with self.assertRaises(MemoryRefused):
+            self.mem.remember(replace(record, memory_id="jane.doe@example.org"), "remember")
         # Governance fields are kept or refused, never broadened.
         with self.assertRaises(MemoryRefused):
             self.mem.remember(replace(record, role_scope="admin"), "remember")
@@ -137,6 +143,23 @@ class CorrectExcludeDeleteTests(_Case):
         self.assertIn(self.mid, compose_project_context(self.ws, self.huddle, TODAY)[1])
         with self.assertRaises(MemoryRefused):
             self.mem.include(self.mid)
+
+    def test_a_correction_through_the_contract_screens_its_provenance(self):
+        with self.assertRaises(CaptureRefused):
+            self.mem.correct(self.ws.info.id, self.mid, "New wording.",
+                             "Corrected by jane.doe@example.org")
+        with self.assertRaises(MemoryRefused):
+            self.mem.correct(self.ws.info.id, self.mid, "New wording.", " ")
+        self.assertIn("two days ahead", self.item(self.mid)["content"])
+
+    def test_an_expired_excluded_memory_cannot_be_used_again(self):
+        self.mem.exclude(self.mid)
+        self.ws.store.conn.execute("UPDATE memories SET expires_on = '2026-09-01' WHERE id = ?",
+                                   (self.mid,))
+        with self.assertRaises(MemoryRefused) as refused:
+            self.mem.include(self.mid)
+        self.assertIn("expired", str(refused.exception))
+        self.assertEqual(self.item(self.mid)["status"], "excluded")
 
     def test_a_status_change_is_decided_inside_the_write(self):
         stale = dict(self.ws._require_row("memories", self.mid))

@@ -23,6 +23,7 @@ The Personal Manager profile adds its own:
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from ._naio import VALID_CONSENT, MemoryInterface, MemoryRecord
@@ -30,6 +31,7 @@ from .services import ManagerError, ManagerWorkspace, _iso_date
 from .store import new_id
 
 MAX_MEMORY_CHARS = 500
+MEMORY_ID = re.compile(r"^mem-[0-9a-f]{12}$")
 
 
 class MemoryRefused(ManagerError):
@@ -70,12 +72,19 @@ class WorkspaceMemory(MemoryInterface):
     def include(self, memory_id: str) -> None:
         self._require(memory_id)
         with self.ws.store.transaction() as db:
+            # An expired memory would never be sent again, so "use again" would
+            # do nothing: refused, decided inside the write like the rest.
             changed = db.execute(
                 "UPDATE memories SET status = 'active', updated_at = ?"
-                " WHERE id = ? AND workspace_id = ? AND status = 'excluded'",
-                (self.ws.clock(), memory_id, self.ws.info.id),
+                " WHERE id = ? AND workspace_id = ? AND status = 'excluded'"
+                " AND (expires_on IS NULL OR expires_on >= ?)",
+                (self.ws.clock(), memory_id, self.ws.info.id, self.ws.local_today()),
             ).rowcount
             if changed != 1:
+                row = self._require(memory_id)
+                if row["status"] == "excluded":
+                    raise MemoryRefused("this memory has expired, so it would never be sent;"
+                                        " remember it again if it still applies")
                 raise MemoryRefused("only an excluded memory can be used again")
             self.ws.store.log(self.ws.info.owner, "include", "memory", memory_id)
 
@@ -93,6 +102,8 @@ class WorkspaceMemory(MemoryInterface):
             raise MemoryRefused("nothing is remembered without the manager's say-so")
         if record.tenant != self.ws.info.id:
             raise MemoryRefused("a memory belongs to this workspace only")
+        if not MEMORY_ID.match(record.memory_id or ""):
+            raise MemoryRefused("a memory id looks like mem- and 12 hex digits")
         if not record.provenance.strip():
             raise MemoryRefused("a memory without provenance is not stored")
         # Governance fields are kept or refused, never silently broadened: a
@@ -107,7 +118,8 @@ class WorkspaceMemory(MemoryInterface):
         expires = _iso_date(record.expires_at, "the expiry date") if record.expires_at else None
         if expires is not None and expires < self.ws.local_today():
             raise MemoryRefused("the expiry date has already passed")
-        self.ws._screen(memory=content)
+        # Every stored field a caller controls passes the capture rules.
+        self.ws._screen(memory=content, provenance=record.provenance)
         now = self.ws.clock()
         with self.ws.store.transaction() as db:
             db.execute(
@@ -156,7 +168,9 @@ class WorkspaceMemory(MemoryInterface):
             raise MemoryRefused("a memory belongs to this workspace only")
         self._require(memory_id)
         content = self._content(content)
-        self.ws._screen(memory=content)
+        if not provenance or not provenance.strip():
+            raise MemoryRefused("a correction without provenance is not stored")
+        self.ws._screen(memory=content, provenance=provenance)
         with self.ws.store.transaction() as db:
             changed = db.execute(
                 "UPDATE memories SET content = ?, provenance = ?, updated_at = ?"

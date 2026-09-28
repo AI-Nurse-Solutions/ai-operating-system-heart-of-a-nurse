@@ -198,8 +198,12 @@ class WorkspaceMemory(MemoryInterface):
 
     # -- what the assistant may see -------------------------------------------
 
-    def for_project(self, project_id: str) -> list[dict[str, Any]]:
-        """Active, unexpired memories for the whole workspace and for this project."""
+    def for_project(self, project_id: str, *, today: str) -> list[dict[str, Any]]:
+        """Active memories, unexpired on ``today``, for the whole workspace and this project.
+
+        ``today`` is the day the request is for, the same day the rest of the
+        context and the Memory view use, so all three agree on what expired.
+        """
         return [m for m in (memory_dict(r) for r in self.ws.store.conn.execute(
             "SELECT m.*, p.title AS project_title FROM memories m"
             " LEFT JOIN projects p ON p.id = m.project_id"
@@ -207,7 +211,7 @@ class WorkspaceMemory(MemoryInterface):
             " AND (m.project_id IS NULL OR m.project_id = ?)"
             " ORDER BY m.project_id IS NOT NULL, m.created_at, m.id",
             (self.ws.info.id, project_id)))
-            if not _expired(m, self.ws.local_today())]
+            if not _expired(m, today)]
 
     # -- helpers ----------------------------------------------------------------
 

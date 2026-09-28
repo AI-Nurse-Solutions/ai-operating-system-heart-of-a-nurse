@@ -838,7 +838,7 @@ def compose_project_context(ws: ManagerWorkspace, project_id: str,
     # Only what the manager wrote and still uses: excluded or expired
     # memories are never sent (step 5.2).
     lines += ["", "## What the manager asked you to remember", ""]
-    remembered = WorkspaceMemory(ws).for_project(project_id)
+    remembered = WorkspaceMemory(ws).for_project(project_id, today=today)
     for m in remembered:
         where = "this project" if m["project_id"] else "all work"
         lines.append(f"- ({where}) {m['content']} {cite(m['id'])}")

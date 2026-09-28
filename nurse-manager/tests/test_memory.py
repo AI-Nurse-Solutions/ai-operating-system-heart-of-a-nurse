@@ -201,6 +201,14 @@ class CorrectExcludeDeleteTests(_Case):
 
 
 class WhatIsSentTests(_Case):
+    def test_expiry_is_judged_on_the_requested_day_like_the_rest_of_the_context(self):
+        mid = self.mem.add("Only until the end of September (synthetic).", expires_on=TODAY)
+        self.assertIn(mid, compose_project_context(self.ws, self.huddle, "2026-09-30")[1])
+        refs = compose_project_context(self.ws, self.huddle, "2026-10-01")[1]
+        self.assertNotIn(mid, refs)
+        view = memory(self.ws, today="2026-10-01")
+        self.assertTrue(next(i for i in view["items"] if i["id"] == mid)["expired"])
+
     def test_only_memories_in_use_for_all_work_or_this_project_are_sent(self):
         for_council = self.mem.add("Council prefers written options (synthetic).",
                                    project_id=self.council)

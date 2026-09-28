@@ -96,6 +96,13 @@ class WorkspaceMemory(MemoryInterface):
             raise MemoryRefused("a memory belongs to this workspace only")
         if not record.provenance.strip():
             raise MemoryRefused("a memory without provenance is not stored")
+        # Governance fields are kept or refused, never silently broadened: a
+        # Personal workspace has one person, so a narrower role cannot be
+        # enforced here, and a quarantined record stays out of use.
+        if record.role_scope != "any":
+            raise MemoryRefused("a Personal workspace has one person: a memory is for any role"
+                                f" here, so a {record.role_scope!r}-only memory is not stored")
+        status = "excluded" if record.quarantined else "active"
         content = self._content(record.content)
         self.ws._require_row("projects", record.project_scope)
         expires = _iso_date(record.expires_at, "the expiry date") if record.expires_at else None
@@ -107,15 +114,19 @@ class WorkspaceMemory(MemoryInterface):
             db.execute(
                 "INSERT INTO memories (id, workspace_id, project_id, content, provenance,"
                 " status, expires_on, created_at, updated_at)"
-                " VALUES (?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (record.memory_id, self.ws.info.id, record.project_scope, content,
-                 record.provenance, expires, now, now),
+                 record.provenance, status, expires, now, now),
             )
             self.ws.store.log(self.ws.info.owner, "create", "memory", record.memory_id)
-        return replace(record, content=content, expires_at=expires, quarantined=False)
+        return replace(record, content=content, expires_at=expires)
 
     def recall(self, tenant: str, role: str, query: str) -> tuple[MemoryRecord, ...]:
-        """Active, unexpired memories whose text contains ``query``."""
+        """Active, unexpired memories whose text contains ``query``.
+
+        Every stored memory is for any role (``remember`` refuses a narrower
+        one), so ``role`` cannot narrow the result further here.
+        """
         if tenant != self.ws.info.id:
             return ()
         today = self.ws.local_today()

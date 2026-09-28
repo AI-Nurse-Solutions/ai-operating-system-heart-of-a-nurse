@@ -52,6 +52,15 @@ class ContractTests(_Case):
             self.mem.remember(replace(record, provenance=" "), "remember")
         with self.assertRaises(MemoryRefused):
             self.mem.remember(replace(record, tenant="ws-000000000000"), "remember")
+        # Governance fields are kept or refused, never broadened.
+        with self.assertRaises(MemoryRefused):
+            self.mem.remember(replace(record, role_scope="admin"), "remember")
+        held = self.mem.remember(replace(record, memory_id="mem-000000000002",
+                                         content="Held back.", quarantined=True), "remember")
+        self.assertTrue(held.quarantined)
+        self.assertEqual(self.item("mem-000000000002")["status"], "excluded")
+        self.assertEqual(self.mem.recall(self.ws.info.id, "viewer", "Held back"), ())
+        self.assertNotIn("Held back", compose_project_context(self.ws, self.huddle, TODAY)[0])
         stored = self.mem.remember(record, "remember")
         self.assertEqual((stored.content, stored.quarantined), ("Keep it short.", False))
         self.assertEqual(self.mem.recall("ws-000000000000", "any", ""), ())

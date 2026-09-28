@@ -100,7 +100,9 @@ class BriefSchedule:
             run = self._run(week.isoformat())
             if run is not None and run["status"] == "failed" and run["next_attempt_at"]:
                 at = datetime.fromisoformat(run["next_attempt_at"]).astimezone(at.tzinfo)
-            elif at <= now and run is not None:  # done, skipped, or given up this week
+            elif run is not None:
+                # This week is done (drafted, skipped, or given up), whatever
+                # hour is chosen now: the next run is next week's.
                 at = self.due_at(week + timedelta(days=7), settings["weekday"], settings["hour"])
             next_at = at.replace(microsecond=0).isoformat()
         last = self.ws.store.conn.execute(
@@ -124,18 +126,24 @@ class BriefSchedule:
         drafted or skipped this week), ``waiting`` (a retry is not due yet),
         ``gave_up``, or the new run's status.
         """
-        settings = self.settings()
-        if not settings["enabled"]:
-            return _result("off")
+        if not self.settings()["enabled"]:
+            return _result("off")  # the common case, answered without taking the lock
         now = self._now()
-        week = monday_of(now.date())
-        if now < self.due_at(week, settings["weekday"], settings["hour"]):
-            return _result("not_due", week.isoformat())
-        week_of = week.isoformat()
-        stamp = _utc(now)
+        week_of = monday_of(now.date()).isoformat()
         try:
             # Claim, draft, and record in one transaction: all of it or none.
+            # Everything that decides the run is read inside the write lock, so
+            # a settings change saved while this waited for it governs the run.
             with self.ws.store.transaction() as db:
+                settings = self.settings()
+                if not settings["enabled"]:
+                    return _result("off")
+                now = self._now()
+                week = monday_of(now.date())
+                week_of = week.isoformat()
+                if now < self.due_at(week, settings["weekday"], settings["hour"]):
+                    return _result("not_due", week_of)
+                stamp = _utc(now)
                 run = self._run(week_of)
                 if run is not None:
                     if run["status"] != "failed":
@@ -164,6 +172,8 @@ class BriefSchedule:
         stamp = _utc(now)
         reason = f"{type(exc).__name__}: {exc}"[:300]
         with self.ws.store.transaction() as db:
+            if not self.settings()["enabled"]:
+                return _result("off")  # turned off meanwhile: nothing to retry
             run = self._run(week_of)
             if run is not None and run["status"] != "failed":
                 # Another process finished the week meanwhile; its result stands.

@@ -96,6 +96,13 @@ class DefaultAndTimingTests(_Case):
             "SELECT count(*) FROM assistant_requests").fetchone()[0], 0)
         self.assertEqual(self.schedule().view()["next_at"], "2026-10-05T07:00:00+00:00")
 
+    def test_a_week_already_done_shows_next_week_even_if_the_hour_moves_later(self):
+        self.turn_on(hour=7)
+        self.clock.set(MONDAY + timedelta(hours=8))
+        self.assertEqual(self.schedule().run_due()["outcome"], "drafted")
+        self.turn_on(hour=21)
+        self.assertEqual(self.schedule().view()["next_at"], "2026-10-05T21:00:00+00:00")
+
     def test_a_time_slept_through_is_caught_up_but_earlier_weeks_are_not_backfilled(self):
         self.turn_on(weekday=0, hour=7)
         # Off or asleep for two whole weeks; first awake on a Thursday.
@@ -179,6 +186,31 @@ class DedupTests(_Case):
         self.assertEqual((artifacts, len(self.revisions())), (1, 2))
 
 
+    def test_turning_it_off_while_a_run_waits_for_the_lock_stops_that_run(self):
+        import threading
+
+        self.turn_on()
+        self.clock.set(MONDAY + timedelta(hours=8))
+        results = []
+
+        def scheduler():  # the app's thread, on its own connection
+            other = ManagerWorkspace(self.root, clock=self.clock)
+            try:
+                results.append(BriefSchedule(other, tz=UTC).run_due()["outcome"])
+            finally:
+                other.close()
+
+        with self.ws.store.transaction():
+            # The manager is saving "off" when the scheduler, which read "on", asks.
+            self.schedule().configure(enabled=False, weekday=0, hour=7, by=OWNER)
+            thread = threading.Thread(target=scheduler)
+            thread.start()
+            time.sleep(0.3)
+        thread.join(10)
+        self.assertEqual(results, ["off"])
+        self.assertEqual((self.revisions(), self.runs()), ([], []))
+
+
 class RestartTests(_Case):
     def test_settings_and_runs_survive_a_restart(self):
         self.turn_on(weekday=2, hour=6)
@@ -233,8 +265,8 @@ class RetryTests(_Case):
             failed = self.schedule().run_due()
             self.assertEqual((failed["outcome"], failed["run"]["attempts"]), ("failed", 1))
             self.assertIn("database is locked", failed["run"]["reason"])
-            self.assertEqual(failed["run"]["next_attempt_at"],
-                             (start + timedelta(minutes=5, seconds=1)).isoformat())
+            self.assertEqual(datetime.fromisoformat(failed["run"]["next_attempt_at"])
+                             - datetime.fromisoformat(failed["run"]["at"]), timedelta(minutes=5))
             self.assertEqual(self.schedule().run_due()["outcome"], "waiting")
             self.clock.set(start + timedelta(minutes=6))
             done = self.schedule().run_due()

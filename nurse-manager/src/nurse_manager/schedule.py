@@ -109,22 +109,20 @@ class BriefSchedule:
     def view(self) -> dict[str, Any]:
         """The schedule as the brief screen shows it: settings, next time, last run."""
         settings = self.settings()
-        now = self._now()
-        week = monday_of(now.date())
         next_at = None
         if settings["enabled"]:
-            at = self.due_at(week, settings["weekday"], settings["hour"])
-            run = self._run(week.isoformat())
-            carried = self._run((week - timedelta(days=7)).isoformat())
-            if now < at and run is None and _retry_pending(carried):
-                # Last week's retry still runs, until this week's own time.
-                at = datetime.fromisoformat(carried["next_attempt_at"]).astimezone(at.tzinfo)
-            elif run is not None and run["status"] == "failed" and run["next_attempt_at"]:
-                at = datetime.fromisoformat(run["next_attempt_at"]).astimezone(at.tzinfo)
-            elif run is not None:
-                # This week is done (drafted, skipped, or given up), whatever
-                # hour is chosen now: the next run is next week's.
+            now = self._now()
+            _week_of, run, state, due = self._choose(settings, now)
+            if state in ("waiting", "attempt") and run is not None and run["next_attempt_at"]:
+                at = datetime.fromisoformat(run["next_attempt_at"]).astimezone(due.tzinfo)
+            elif state == "attempt" and run is not None:
+                at = now  # turned back on after a failure: at the next check
+            elif state in ("done", "gave_up"):
+                # This week is finished, whatever hour is chosen now.
+                week = monday_of(now.date())
                 at = self.due_at(week + timedelta(days=7), settings["weekday"], settings["hour"])
+            else:  # not due yet, or due now
+                at = due
             next_at = at.replace(microsecond=0).isoformat()
         last = self.ws.store.conn.execute(
             "SELECT * FROM brief_runs WHERE workspace_id = ? ORDER BY week_of DESC LIMIT 1",
@@ -160,31 +158,17 @@ class BriefSchedule:
                 if not settings["enabled"]:
                     return _result("off")
                 now = self._now()
-                week = monday_of(now.date())
-                week_of = week.isoformat()
                 stamp = _utc(now)
-                carried_over = (week - timedelta(days=7)).isoformat()
-                if now < self.due_at(week, settings["weekday"], settings["hour"]):
-                    # Before this week's time, a retry still pending from last
-                    # week (a late-Sunday failure, say) gets its turn, but only
-                    # while this week has no run of its own.
-                    if (self._run(week_of) is not None
-                            or not _retry_pending(self._run(carried_over))):
-                        return _result("not_due", week_of)
-                    week_of = carried_over
-                else:
-                    # This week's time has come: last week's pending retry ends
+                week = monday_of(now.date())
+                last_week = (week - timedelta(days=7)).isoformat()
+                if (now >= self.due_at(week, settings["weekday"], settings["hour"])
+                        or self._run(week.isoformat()) is not None):
+                    # This week's turn has come: last week's pending retry ends
                     # here, for good, so moving the hour later cannot revive it.
-                    self._end_carried_retry(db, carried_over, stamp)
-                run = self._run(week_of)
-                if run is not None:
-                    if run["status"] != "failed":
-                        return _result("done", week_of, run)
-                    if run["attempts"] >= MAX_ATTEMPTS:
-                        return _result("gave_up", week_of, run)
-                    if (run["next_attempt_at"]
-                            and datetime.fromisoformat(run["next_attempt_at"]) > now):
-                        return _result("waiting", week_of, run)
+                    self._end_carried_retry(db, last_week, stamp)
+                week_of, run, state, _due = self._choose(settings, now)
+                if state != "attempt":
+                    return _result(state, week_of, run)
                 attempts = (run["attempts"] if run else 0) + 1
                 existing = BriefService(self.ws).weekly(week_of)["current"]
                 if existing is not None:
@@ -199,6 +183,33 @@ class BriefSchedule:
                 return _result(status, week_of, self._run(week_of))
         except Exception as exc:  # noqa: BLE001 - any failure is recorded and retried
             return self._failed(week_of, now, exc)
+
+    def _choose(self, settings: dict[str, Any], now: datetime):
+        """Which week a check acts on, and what to do: one set of rules for
+        ``run_due`` and for the next time shown.
+
+        1. This week has a run: its own retry times govern, not the chosen
+           hour (a failure at 08:00 retries at 08:05 even if the hour moves
+           to 21:00). A finished week is done.
+        2. No run yet and this week's time has come: run this week.
+        3. Not yet: a retry still pending from last week gets its turn;
+           otherwise nothing is due.
+
+        Returns ``(week_of, run, state, due)``; state is ``attempt``,
+        ``waiting``, ``done``, ``gave_up``, or ``not_due``.
+        """
+        week = monday_of(now.date())
+        due = self.due_at(week, settings["weekday"], settings["hour"])
+        run = self._run(week.isoformat())
+        if run is not None:
+            return week.isoformat(), run, _state(run, now), due
+        if now >= due:
+            return week.isoformat(), None, "attempt", due
+        last_week = (week - timedelta(days=7)).isoformat()
+        carried = self._run(last_week)
+        if _retry_pending(carried):
+            return last_week, carried, _state(carried, now), due
+        return week.isoformat(), None, "not_due", due
 
     def _end_carried_retry(self, db, week_of: str, stamp: str,
                            why: str = "The week ended before it could be tried again.") -> None:
@@ -239,6 +250,18 @@ class BriefSchedule:
             " updated_at = excluded.updated_at",
             (self.ws.info.id, week_of, status, attempts, revision_id, reason, retry_at, stamp),
         )
+
+
+def _state(run, now: datetime) -> str:
+    """What an existing run needs: nothing (done), nothing more (gave up), a
+    wait for its retry time, or an attempt now."""
+    if run["status"] != "failed":
+        return "done"
+    if run["attempts"] >= MAX_ATTEMPTS:
+        return "gave_up"
+    if run["next_attempt_at"] and datetime.fromisoformat(run["next_attempt_at"]) > now:
+        return "waiting"
+    return "attempt"
 
 
 def _retry_pending(run) -> bool:

@@ -17,7 +17,7 @@ from nurse_manager import app as local_app
 from nurse_manager import resources
 
 
-class LocalAppTests(unittest.TestCase):
+class _AppCase(unittest.TestCase):
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
         self.home = Path(self._tmp.name)
@@ -55,6 +55,8 @@ class LocalAppTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         return json.loads(payload)
 
+
+class LocalAppTests(_AppCase):
     def test_binds_loopback_only(self):
         self.assertEqual(self.app.server.server_address[0], "127.0.0.1")
 
@@ -74,11 +76,19 @@ class LocalAppTests(unittest.TestCase):
         self.assertEqual(self.request("/ipc/init", "POST", {"name": "a", "owner": "b"},
                                       headers={"Origin": "https://evil.example"})[0], 403)
 
-    def test_only_onboarding_writes_are_reachable(self):
-        for command in ("brief", "accept", "export", "approve", "run", "backup", "restore", "show"):
+    def test_only_the_listed_writes_are_reachable(self):
+        for command in ("export", "approve", "run", "backup", "restore", "show", "mission"):
             with self.subTest(command=command):
                 self.assertEqual(self.request(f"/ipc/{command}", "POST", {})[0], 404)
+        for command in ("export", "approve", "run", "backup", "restore", "show", "brief",
+                        "accept", "assistant-local", "assistant-off", "assistant-brief"):
+            with self.subTest(command=command):
                 self.assertEqual(self.request(f"/ipc/{command}")[0], 404)
+        for command in local_app.WRITE_COMMANDS:
+            with self.subTest(command=command):
+                refused = self.envelope(f"/ipc/{command}", "POST", {})
+                self.assertFalse(refused["ok"])
+                self.assertIn("workspace first", refused["error"]["message"])
 
     def test_onboarding_creates_one_workspace_and_never_replaces_it(self):
         self.assertFalse(self.envelope("/app/status")["has_workspace"])
@@ -123,6 +133,64 @@ class LocalAppTests(unittest.TestCase):
         self.assertFalse(self.thread.is_alive())
         self.assertFalse((self.home / local_app.LOCK_NAME).exists())
         self.assertIsNone(local_app._running_instance(self.home))
+
+
+class WorkspaceWriteTests(_AppCase):
+    """Reviewing the brief and using AI from the screens, once a workspace exists."""
+
+    def setUp(self):
+        super().setUp()
+        self.assertTrue(self.envelope("/ipc/sample", "POST", {})["ok"])
+        self.body = {"week": "2026-09-28", "today": "2026-09-30"}
+
+    def test_draft_review_and_accept_as_the_workspace_owner(self):
+        self.assertIsNone(self.envelope("/ipc/weekly?week=2026-09-28")["data"]["current"])
+        draft = self.envelope("/ipc/brief", "POST", self.body)["data"]
+        weekly = self.envelope("/ipc/weekly?week=2026-09-28")["data"]
+        self.assertEqual(weekly["current"]["revision"]["id"], draft["id"])
+        self.assertIn("DRAFT", weekly["current"]["markdown"])
+        stale = self.envelope("/ipc/accept", "POST", {"revision": draft["id"], "sha256": "0" * 64})
+        self.assertFalse(stale["ok"])
+        # A reviewer in the body is ignored: the app accepts as the owner only.
+        accepted = self.envelope("/ipc/accept", "POST", {
+            "revision": draft["id"], "sha256": draft["sha256"], "reviewer": "Someone Else"})
+        self.assertEqual(accepted["data"]["accepted_by"], "Sample Manager")
+
+    def test_write_bodies_are_checked(self):
+        for command, body in (("accept", {"revision": "x", "sha256": "y"}),
+                              ("accept", {"revision": "rev-000000000000"}),
+                              ("brief", {"week": "last week"}),
+                              ("assistant-local", {"model": 3}),
+                              ("assistant-brief", {}),
+                              ("assistant-brief", {"prompt_sha256": "abc"})):
+            with self.subTest(command=command, body=body):
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", body)[0], 400)
+
+    def test_ai_from_the_screens_is_bound_to_the_reviewed_preview(self):
+        from test_assistant import FakeModelServer, echo_rewrite
+
+        server = FakeModelServer(echo_rewrite)
+        self.addCleanup(server.close)
+        preview = self.envelope("/ipc/assistant-preview?week=2026-09-28&today=2026-09-30")["data"]
+        self.assertFalse(preview["will_send"])
+        refused = self.envelope("/ipc/assistant-local", "POST",
+                                {"model": "llama3.2", "endpoint": "http://example.com:11434"})
+        self.assertFalse(refused["ok"])
+        status = self.envelope("/ipc/assistant-local", "POST",
+                               {"model": "llama3.2", "endpoint": server.endpoint})["data"]
+        self.assertEqual(status["provider"], "local")
+        preview = self.envelope("/ipc/assistant-preview?week=2026-09-28&today=2026-09-30")["data"]
+        self.assertTrue(preview["will_send"])
+        stale = self.envelope("/ipc/assistant-brief", "POST", {**self.body, "prompt_sha256": ""})
+        self.assertFalse(stale["ok"])
+        self.assertIn("review it again", stale["error"]["message"])
+        self.assertEqual(server.requests, [])
+        drafted = self.envelope("/ipc/assistant-brief", "POST",
+                                {**self.body, "prompt_sha256": preview["prompt_sha256"]})["data"]
+        self.assertEqual(drafted["outcome"], "drafted")
+        self.assertEqual(server.requests[0]["body"]["prompt"], preview["prompt"])
+        self.assertEqual(server.requests[0]["body"]["system"], preview["system"])
+        self.assertEqual(self.envelope("/ipc/assistant-off", "POST", {})["data"]["provider"], "none")
 
 
 class LifetimeTests(unittest.TestCase):

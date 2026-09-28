@@ -85,7 +85,9 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("mission-empty", "mission", empty, "--today", TODAY, "--week", WEEK)
     keep("board", "board", ws)
     keep("table", "table", ws)
+    keep("weekly-empty", "weekly", ws, "--week", WEEK)
     draft = keep("brief", "brief", ws, "--week", WEEK, "--today", TODAY)
+    keep("weekly-draft", "weekly", ws, "--week", WEEK)
     keep("show-draft", "show", ws, "--revision", draft["id"])
     keep("accept", "accept", ws, "--revision", draft["id"], "--reviewer", OWNER,
          "--sha", draft["sha256"])
@@ -107,6 +109,7 @@ def collect(workdir: Path) -> dict[str, dict]:
 
     # Bounded assistance (ADR 0004): no model by default, then a local model.
     keep("assistant", "assistant", ws)
+    keep("assistant-preview-no-model", "assistant-preview", ws, "--week", WEEK, "--today", TODAY)
     keep("assistant-brief-no-model", "assistant-brief", ws, "--week", WEEK, "--today", TODAY,
          "--by", OWNER)
     keep("error-assistant-not-owner", "assistant-local", ws, "--model", "llama3.2",
@@ -118,8 +121,13 @@ def collect(workdir: Path) -> dict[str, dict]:
     with _stand_in_model() as endpoint:
         keep("assistant-local", "assistant-local", ws, "--model", "llama3.2", "--by", OWNER,
              "--endpoint", endpoint)
+        preview = keep("assistant-preview", "assistant-preview", ws, "--week", WEEK,
+                       "--today", TODAY)
+        keep("error-assistant-brief-stale-preview", "assistant-brief", ws, "--week", WEEK,
+             "--today", TODAY, "--by", OWNER, "--reviewed-sha", "0" * 64)
         keep("assistant-brief-drafted", "assistant-brief", ws, "--week", WEEK, "--today", TODAY,
-             "--by", OWNER)
+             "--by", OWNER, "--reviewed-sha", preview["prompt_sha256"])
+        keep("weekly-ai-draft", "weekly", ws, "--week", WEEK)
     keep("mission-assistant-connected", "mission", ws, "--today", TODAY, "--week", WEEK)
     keep("assistant-off", "assistant-off", ws, "--by", OWNER)
     return out

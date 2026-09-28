@@ -74,7 +74,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 3.5b | Project dashboard page (purpose, owner, milestone, readiness, tasks, resources, decisions, evidence) | ✅ | `project` IPC command and `ProjectDashboard` contract type; `ProjectDashboardTests`; browser journey from Mission Control, by keyboard and back. Readiness is stated facts, never a score or percentage |
 | 3.5c | Project feedback on the dashboard | ⬜ | No feedback record exists yet; needs a record type and capture rules first (the plan lists feedback, so it is not faked as an empty section) |
 | 3.6 | Library, Learning and Growth, and Contribution views | ⬜ | |
-| 3.7 | "Think with this project" composer that shows the context it will send | ⬜ | The G4 gates exist (4.2–4.4); the screens for AI settings and AI drafts come with this step |
+| 3.7 | Weekly brief and AI assistance screens: draft from records or with AI, a preview of exactly what will be sent before anything is, review, and accept | ✅ | `assistant-preview` and `weekly` IPC commands; the request is bound to the reviewed preview (`PreviewTests`, `WorkspaceWriteTests`); `test_app_browser.mjs` (no model by default, connect a model on this computer, preview equals what the stand-in model received, AI draft waits for acceptance, 320px reflow); `test_renderer_browser.mjs` (read-only on the dev host, brief text never becomes markup) |
+| 3.7b | "Think with this project" composer on the project dashboard | ⬜ | Reuses the preview and gates from 3.7; needs a project-scoped AI task |
 
 ## G4 — Bounded assistance (NM-009, NM-010)
 

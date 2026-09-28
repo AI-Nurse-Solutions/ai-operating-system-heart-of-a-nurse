@@ -383,6 +383,17 @@
       "required": ["id", "artifact_id", "revision_no", "status", "sha256", "source_refs", "created_by", "accepted_by", "accepted_at"],
       "additionalProperties": false
     },
+    "WeeklyBrief": {
+      "description": "One week's brief: the newest revision, rendered with its status banner, and the accepted revision if there is one.",
+      "type": "object",
+      "properties": {
+        "week_of": {"$ref": "#/$defs/IsoDate"},
+        "current": {"anyOf": [{"$ref": "#/$defs/ShownRevision"}, {"type": "null"}]},
+        "accepted": {"anyOf": [{"$ref": "#/$defs/Revision"}, {"type": "null"}]}
+      },
+      "required": ["week_of", "current", "accepted"],
+      "additionalProperties": false
+    },
     "ShownRevision": {
       "type": "object",
       "properties": {
@@ -469,6 +480,35 @@
         "gates": {"type": "array", "items": {"type": "string"}, "minItems": 1}
       },
       "required": ["provider", "model", "endpoint", "runs_on", "monthly_budget_cents", "daily_request_limit", "requests_today", "spent_this_month_cents", "cloud", "gates"],
+      "additionalProperties": false
+    },
+    "AssistantCheck": {
+      "description": "One gate that runs before anything is sent.",
+      "type": "object",
+      "properties": {
+        "gate": {"enum": ["data_rules", "edena", "budget"]},
+        "passed": {"type": "boolean"},
+        "detail": {"type": "string", "description": "Written for the manager."}
+      },
+      "required": ["gate", "passed", "detail"],
+      "additionalProperties": false
+    },
+    "AssistantPreview": {
+      "description": "Exactly what asking the model would send, and the gates' verdicts. Nothing is sent to produce it. With no model connected, system and prompt are empty and will_send is false.",
+      "type": "object",
+      "properties": {
+        "week_of": {"$ref": "#/$defs/IsoDate"},
+        "provider": {"$ref": "#/$defs/AssistantProvider"},
+        "model": {"type": "string"},
+        "runs_on": {"type": "string"},
+        "system": {"type": "string", "description": "The instructions sent to the model."},
+        "prompt": {"type": "string", "description": "The record text sent to the model."},
+        "prompt_sha256": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"const": ""}], "description": "Send it back with assistant-brief; a change since the preview refuses the request."},
+        "checks": {"type": "array", "items": {"$ref": "#/$defs/AssistantCheck"}},
+        "will_send": {"type": "boolean"},
+        "reason": {"type": "string", "description": "Why nothing would be sent. Empty when will_send is true."}
+      },
+      "required": ["week_of", "provider", "model", "runs_on", "system", "prompt", "prompt_sha256", "checks", "will_send", "reason"],
       "additionalProperties": false
     },
     "AssistantOutcome": {

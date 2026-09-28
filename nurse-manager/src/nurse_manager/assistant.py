@@ -339,44 +339,99 @@ class AssistantService:
 
     # -- drafting ---------------------------------------------------------
 
-    def draft_weekly_brief(self, week_of: str, today: str, requested_by: str) -> dict[str, Any]:
-        """Draft this week's brief with the connected model, or honestly without one."""
-        self._owner(requested_by)
+    def _prepare(self, week_of: str, today: str) -> "_Prepared":
+        """Build exactly what would be sent, and run every gate that comes
+        before sending. Writes nothing. The preview and the real request
+        both use this, so what the manager sees is what is sent."""
         settings = self.settings()
         body, refs = compose_weekly_brief(self.ws, week_of, today)
         provider = self.provider_factory(settings)
         if provider is None:
-            return self._fallback(
-                week_of, body, refs, requested_by, settings, "no_model",
-                "No AI model is connected. This draft was composed from your records.",
-            )
-
-        title, sections = _split_brief(body)
-        prompt = sections
+            return _Prepared(settings, body, refs, None, "", "", [],
+                             ("no_model", "No AI model is connected. This draft was"
+                              " composed from your records."))
+        _title, prompt = _split_brief(body)
         prompt_sha = sha256_text(SYSTEM_PROMPT + "\n\n" + prompt)
+        checks: list[dict[str, Any]] = []
+        blocked: tuple[str, str] | None = None
+
         findings = self.ws.privacy.analyze(prompt)
+        kinds = ", ".join(sorted({f.entity_type for f in findings}))
+        checks.append({
+            "gate": "data_rules", "passed": not findings,
+            "detail": "No identifying details were found. The check cannot detect names,"
+                      " so read the text yourself." if not findings else
+                      f"The records include details the data rules keep on this computer"
+                      f" ({kinds}).",
+        })
         if findings:
-            kinds = ", ".join(sorted({f.entity_type for f in findings}))
-            return self._fallback(
-                week_of, body, refs, requested_by, settings, "refused_data_rules",
-                f"Nothing was sent: the records include details the data rules keep"
-                f" on this computer ({kinds}).", provider=provider, prompt_sha=prompt_sha,
-            )
+            blocked = ("refused_data_rules", f"Nothing was sent: the records include details"
+                       f" the data rules keep on this computer ({kinds}).")
+
         decision = self._edena_decide(provider, "draft_weekly_brief", prompt)
-        if decision.decision is not Decision.ALLOW:
-            return self._fallback(
-                week_of, body, refs, requested_by, settings, "refused_policy",
-                "Nothing was sent: the EDENA policy did not allow an assistant to draft"
-                f" this ({', '.join(decision.reason_codes)}).",
-                provider=provider, prompt_sha=prompt_sha,
-            )
+        allowed = decision.decision is Decision.ALLOW
+        codes = ", ".join(decision.reason_codes)
+        checks.append({
+            "gate": "edena", "passed": allowed,
+            "detail": "The EDENA policy allows an assistant to recommend a draft." if allowed
+                      else f"The EDENA policy did not allow an assistant to draft this ({codes}).",
+        })
+        if not allowed and blocked is None:
+            blocked = ("refused_policy", "Nothing was sent: the EDENA policy did not allow an"
+                       f" assistant to draft this ({codes}).")
+
         estimate = provider.estimate_cents(SYSTEM_PROMPT, prompt, MAX_OUTPUT_TOKENS)
         refusal = self._budget_refusal(settings, estimate)
-        if refusal:
-            return self._fallback(
-                week_of, body, refs, requested_by, settings, "refused_budget",
-                f"Nothing was sent: {refusal}.", provider=provider, prompt_sha=prompt_sha,
+        checks.append({
+            "gate": "budget", "passed": refusal is None,
+            "detail": f"Within today's limit ({self._sent_since(self.ws.clock()[:10])} of"
+                      f" {settings['daily_request_limit']} requests used)."
+                      if refusal is None else refusal[:1].upper() + refusal[1:] + ".",
+        })
+        if refusal and blocked is None:
+            blocked = ("refused_budget", f"Nothing was sent: {refusal}.")
+        return _Prepared(settings, body, refs, provider, prompt, prompt_sha, checks, blocked,
+                         estimate)
+
+    def preview_weekly_brief(self, week_of: str, today: str) -> dict[str, Any]:
+        """Exactly what asking the model would send, and whether it would be sent."""
+        prep = self._prepare(week_of, today)
+        provider = prep.provider
+        return {
+            "week_of": week_of,
+            "provider": provider.kind if provider else "none",
+            "model": provider.model if provider else "",
+            "runs_on": provider.runs_on if provider else "nothing is connected",
+            "system": SYSTEM_PROMPT if provider else "",
+            "prompt": prep.prompt,
+            "prompt_sha256": prep.prompt_sha,
+            "checks": prep.checks,
+            "will_send": provider is not None and prep.blocked is None,
+            "reason": prep.blocked[1] if prep.blocked else "",
+        }
+
+    def draft_weekly_brief(self, week_of: str, today: str, requested_by: str, *,
+                           reviewed_prompt_sha256: str | None = None) -> dict[str, Any]:
+        """Draft this week's brief with the connected model, or honestly without one.
+
+        With ``reviewed_prompt_sha256`` (the app always sends it), the request
+        is bound to the text the manager reviewed in the preview: if the
+        records changed since, nothing is sent and nothing is drafted.
+        """
+        self._owner(requested_by)
+        prep = self._prepare(week_of, today)
+        body, refs, settings, provider = prep.body, prep.refs, prep.settings, prep.provider
+        if (reviewed_prompt_sha256 is not None and provider is not None
+                and reviewed_prompt_sha256 != prep.prompt_sha):
+            raise AssistantError(
+                "what would be sent changed after you reviewed it; review it again"
             )
+        if prep.blocked:
+            outcome, reason = prep.blocked
+            return self._fallback(week_of, body, refs, requested_by, settings, outcome, reason,
+                                  provider=provider, prompt_sha=prep.prompt_sha)
+        prompt, prompt_sha, estimate = prep.prompt, prep.prompt_sha, prep.estimate
+        title = body.split("\n", 1)[0]
 
         # Recorded before the call, so an interrupted request still counts.
         request_id = self._record(provider, prompt_sha, "provider_failed",
@@ -500,6 +555,19 @@ class AssistantService:
             "request_id": request_id,
             "revision": self.briefs.as_dict(revision),
         }
+
+
+@dataclass
+class _Prepared:
+    settings: dict[str, Any]
+    body: str
+    refs: list[str]
+    provider: Provider | None
+    prompt: str
+    prompt_sha: str
+    checks: list[dict[str, Any]]
+    blocked: tuple[str, str] | None
+    estimate: int = 0
 
 
 def _split_brief(body: str) -> tuple[str, str]:

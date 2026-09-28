@@ -526,3 +526,293 @@ export function renderOnboarding(doc, handlers, state = {}) {
   ]));
   return root;
 }
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').WeeklyBrief} WeeklyBrief */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').AssistantStatus} AssistantStatus */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').AssistantPreview} AssistantPreview */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').AssistantDraft} AssistantDraft */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').Revision} Revision */
+
+/**
+ * @typedef {object} Notice
+ * @property {'ok' | 'fallback' | 'error'} kind
+ * @property {string} text
+ */
+
+/** @param {Document} doc @param {Notice} [notice] */
+function noticeBlock(doc, notice) {
+  if (!notice) return null;
+  const icons = { ok: ['accepted', '✓', 'Done'], fallback: ['review', '!', 'Drafted from your records'], error: ['error', '✕', 'Not done'] };
+  const [kind, icon, label] = icons[notice.kind];
+  return h(doc, 'p', { class: 'notice', role: notice.kind === 'ok' ? 'status' : 'alert' }, [
+    badge(doc, kind, icon, label), ' ', notice.text,
+  ]);
+}
+
+/** @param {Document} doc @param {string} label @param {boolean} disabled @param {() => void} onClick @param {string} [kind] */
+function button(doc, label, disabled, onClick, kind = 'primary-button') {
+  const el = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'button', class: kind }, [label]));
+  el.disabled = disabled;
+  el.addEventListener('click', () => onClick());
+  return el;
+}
+
+/**
+ * Inline Markdown: **bold**, `code`, and _emphasis_, as elements with text
+ * children only. Anything else stays literal text.
+ * @param {Document} doc
+ * @param {string} text
+ * @returns {Array<Node | string>}
+ */
+function inline(doc, text) {
+  /** @type {Array<Node | string>} */
+  const out = [];
+  const pattern = /\*\*([^*]+)\*\*|`([^`]+)`|(?<![A-Za-z0-9])_([^_]+)_(?![A-Za-z0-9])/g;
+  let last = 0;
+  for (const match of text.matchAll(pattern)) {
+    const at = match.index ?? 0;
+    if (at > last) out.push(text.slice(last, at));
+    if (match[1] !== undefined) out.push(h(doc, 'strong', {}, [match[1]]));
+    else if (match[2] !== undefined) out.push(h(doc, 'code', {}, [match[2]]));
+    else out.push(h(doc, 'em', {}, [match[3]]));
+    last = at + match[0].length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
+
+/**
+ * The small Markdown the brief uses — headings, quotes, lists, paragraphs —
+ * rendered as elements with text children only. There is no HTML parsing,
+ * so record text can never become markup.
+ * @param {Document} doc
+ * @param {string} markdown
+ * @param {string} label
+ */
+export function markdownBlock(doc, markdown, label) {
+  const root = h(doc, 'div', { class: 'brief-text', role: 'document', tabindex: '0', 'aria-label': label });
+  /** @type {HTMLElement | null} */
+  let list = null;
+  for (const line of markdown.split('\n')) {
+    const heading = /^(#{1,3}) (.*)$/.exec(line);
+    const bullet = /^- (.*)$/.exec(line);
+    const numbered = /^\d+\. (.*)$/.exec(line);
+    if (bullet || numbered) {
+      const tag = bullet ? 'ul' : 'ol';
+      if (!list || list.tagName.toLowerCase() !== tag) {
+        list = h(doc, tag, {});
+        root.append(list);
+      }
+      list.append(h(doc, 'li', {}, inline(doc, (bullet || numbered || [])[1] ?? '')));
+      continue;
+    }
+    list = null;
+    if (!line.trim()) continue;
+    if (heading) root.append(h(doc, `h${heading[1].length + 2}`, {}, inline(doc, heading[2])));
+    else if (line.startsWith('> ')) root.append(h(doc, 'blockquote', {}, [h(doc, 'p', {}, inline(doc, line.slice(2)))]));
+    else root.append(h(doc, 'p', {}, inline(doc, line)));
+  }
+  return root;
+}
+
+const GATE_LABELS = { data_rules: 'Data rules', edena: 'EDENA policy', budget: 'Budget' };
+
+/**
+ * The preview: exactly what asking the model would send, before anything is sent.
+ * @param {Document} doc
+ * @param {AssistantPreview} preview
+ * @param {boolean} busy
+ * @param {{ onSend: (sha: string) => void, onCancel: () => void, onRecords: () => void }} handlers
+ */
+function previewPanel(doc, preview, busy, handlers) {
+  const panel = h(doc, 'section', { class: 'mc-section preview-panel', id: 'ai-preview', 'aria-labelledby': 'preview-heading' }, [
+    h(doc, 'h2', { id: 'preview-heading', tabindex: '-1' }, ['Before anything is sent']),
+  ]);
+  if (preview.provider === 'none') {
+    panel.append(
+      h(doc, 'p', { class: 'section-state' }, [badge(doc, 'unavailable', '○', 'No AI model'), ' ', preview.reason]),
+      h(doc, 'p', {}, [h(doc, 'a', { href: '#/assistant' }, ['Set up AI assistance']), ' to connect a model on this computer.']),
+      h(doc, 'p', { class: 'button-row' }, [
+        button(doc, 'Draft from my records', busy, handlers.onRecords),
+        button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button'),
+      ]),
+    );
+    return panel;
+  }
+  panel.append(h(doc, 'p', {}, [
+    `This is exactly what will be sent to the AI model “${preview.model}” on ${preview.runs_on}. Nothing has been sent yet.`,
+  ]));
+  panel.append(h(doc, 'ul', { class: 'check-list', 'aria-label': 'Checks before sending' }, preview.checks.map((check) =>
+    h(doc, 'li', {}, [
+      check.passed ? badge(doc, 'accepted', '✓', `${GATE_LABELS[check.gate]}: passed`)
+        : badge(doc, 'blocked', '✕', `${GATE_LABELS[check.gate]}: stopped`),
+      ' ', check.detail,
+    ]))));
+  panel.append(
+    h(doc, 'h3', {}, ['Instructions to the model']),
+    h(doc, 'pre', { class: 'sent-text', tabindex: '0', 'aria-label': 'Instructions to the model' }, [preview.system]),
+    h(doc, 'h3', {}, ['Text from your records']),
+    h(doc, 'pre', { class: 'sent-text', tabindex: '0', 'aria-label': 'Text from your records' }, [preview.prompt]),
+  );
+  if (preview.will_send) {
+    panel.append(h(doc, 'p', { class: 'button-row' }, [
+      button(doc, `Send to ${preview.model}`, busy, () => handlers.onSend(preview.prompt_sha256)),
+      button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button'),
+    ]));
+  } else {
+    panel.append(
+      h(doc, 'p', { class: 'error-message' }, [badge(doc, 'blocked', '✕', 'Will not be sent'), ' ', preview.reason]),
+      h(doc, 'p', { class: 'button-row' }, [
+        button(doc, 'Draft from my records', busy, handlers.onRecords),
+        button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button'),
+      ]),
+    );
+  }
+  return panel;
+}
+
+/**
+ * The weekly brief: draft it (from records, or with AI after a preview), review it, accept it.
+ * @param {Document} doc
+ * @param {WeeklyBrief} data
+ * @param {{
+ *   writable: boolean, busy?: boolean, notice?: Notice, preview?: AssistantPreview | null,
+ *   onRecords: () => void, onPreview: () => void, onSend: (sha: string) => void,
+ *   onCancel: () => void, onAccept: (revision: Revision) => void,
+ * }} options
+ */
+export function renderBrief(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const root = h(doc, 'div', { class: 'view view--brief' });
+  root.append(viewHeading(doc, 'Weekly brief', `Week of ${data.week_of}. Drafts are never final until you accept them.`));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+
+  if (options.writable) {
+    root.append(h(doc, 'p', { class: 'button-row' }, [
+      button(doc, 'Draft from my records', busy, options.onRecords),
+      button(doc, 'Draft with AI…', busy, options.onPreview, 'secondary-button'),
+    ]));
+  } else {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Drafting and accepting are available in the Nurse AI OS app.',
+    ]));
+  }
+  if (options.preview) root.append(previewPanel(doc, options.preview, busy, options));
+
+  const current = data.current;
+  const section = h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'current-heading' }, [
+    h(doc, 'h2', { id: 'current-heading' }, ['Current version']),
+  ]);
+  if (!current) {
+    section.append(h(doc, 'p', { class: 'section-state section-state--empty' }, [
+      'No brief for this week yet. Draft one from your records to start.',
+    ]));
+  } else {
+    const rev = current.revision;
+    const byAI = rev.created_by.startsWith('assistant:');
+    const status = rev.status === 'accepted' ? badge(doc, 'accepted', '✓', 'Accepted')
+      : rev.status === 'draft' ? badge(doc, 'review', '!', byAI ? 'AI draft — review it' : 'Draft — review it')
+        : badge(doc, 'paused', '○', 'Superseded');
+    section.append(
+      h(doc, 'p', { class: 'card__badges' }, [status, ` Version ${rev.revision_no}.`]),
+      markdownBlock(doc, current.markdown, `Weekly brief, version ${rev.revision_no}`),
+    );
+    if (options.writable && rev.status === 'draft') {
+      section.append(h(doc, 'p', { class: 'button-row' }, [
+        button(doc, 'I have reviewed it — accept this version', busy, () => options.onAccept(rev)),
+      ]));
+    }
+  }
+  root.append(section);
+  if (data.accepted && current && data.accepted.id !== current.revision.id) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      `Version ${data.accepted.revision_no} is the accepted one until you accept a newer version.`,
+    ]));
+  }
+  return root;
+}
+
+/**
+ * AI assistance: off by default; a model on this computer if the manager connects one.
+ * @param {Document} doc
+ * @param {AssistantStatus} data
+ * @param {{
+ *   writable: boolean, busy?: boolean, notice?: Notice,
+ *   onConnect: (model: string, endpoint: string) => void, onDisconnect: () => void,
+ * }} options
+ */
+export function renderAssistant(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const root = h(doc, 'div', { class: 'view view--assistant' });
+  root.append(viewHeading(doc, 'AI assistance', 'Optional. Everything in Nurse AI OS works without it.'));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+
+  const connected = data.provider !== 'none';
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'now-heading' }, [
+    h(doc, 'h2', { id: 'now-heading' }, ['Right now']),
+    h(doc, 'p', { class: 'section-state' }, connected
+      ? [badge(doc, 'accepted', '✓', 'Connected'), ` The AI model “${data.model}” on ${data.runs_on}. Text never leaves this computer.`]
+      : [badge(doc, 'unavailable', '○', 'No AI model'), ' Nothing is connected, so nothing is ever sent anywhere.']),
+    h(doc, 'p', {}, [`AI requests today: ${data.requests_today} of ${data.daily_request_limit}.`]),
+    options.writable && connected
+      ? h(doc, 'p', {}, [button(doc, 'Disconnect the AI model', busy, options.onDisconnect, 'secondary-button')])
+      : null,
+  ]));
+
+  if (options.writable) {
+    const modelInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+      id: 'ai-model', name: 'model', type: 'text', required: '', maxlength: '100', autocomplete: 'off',
+      'aria-describedby': 'ai-model-hint',
+    }));
+    modelInput.value = data.model;
+    const endpointInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+      id: 'ai-endpoint', name: 'endpoint', type: 'text', maxlength: '200', autocomplete: 'off',
+      'aria-describedby': 'ai-endpoint-hint',
+    }));
+    endpointInput.value = data.endpoint || 'http://127.0.0.1:11434';
+    const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' },
+      [connected ? 'Save' : 'Connect']));
+    submit.disabled = busy;
+    const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'local-heading' }, [
+      h(doc, 'p', { class: 'field' }, [
+        h(doc, 'label', { for: 'ai-model' }, ['Model name']),
+        h(doc, 'span', { class: 'field-hint', id: 'ai-model-hint' }, ['As your model server lists it, for example llama3.2.']),
+        modelInput,
+      ]),
+      h(doc, 'p', { class: 'field' }, [
+        h(doc, 'label', { for: 'ai-endpoint' }, ['Model server address']),
+        h(doc, 'span', { class: 'field-hint', id: 'ai-endpoint-hint' }, ['Must be on this computer. Most people keep the default.']),
+        endpointInput,
+      ]),
+      submit,
+    ]);
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      options.onConnect(modelInput.value.trim(), endpointInput.value.trim());
+    });
+    root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'local-heading' }, [
+      h(doc, 'h2', { id: 'local-heading' }, ['A model on this computer']),
+      h(doc, 'p', {}, [
+        'For privacy, Nurse AI OS can use an AI model that runs on your own computer, through a local model server such as Ollama. ',
+        'How well it works depends on your computer.',
+      ]),
+      form,
+    ]));
+  } else {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Settings can be changed in the Nurse AI OS app.',
+    ]));
+  }
+
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'cloud-heading' }, [
+    h(doc, 'h2', { id: 'cloud-heading' }, ['Cloud AI service']),
+    h(doc, 'p', { class: 'section-state' }, [badge(doc, 'unavailable', '○', 'Not available'), ' ', data.cloud.reason]),
+  ]));
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'gates-heading' }, [
+    h(doc, 'h2', { id: 'gates-heading' }, ['What every AI model must pass']),
+    h(doc, 'ol', { class: 'item-list' }, data.gates.map((gate) => h(doc, 'li', {}, [gate]))),
+  ]));
+  return root;
+}

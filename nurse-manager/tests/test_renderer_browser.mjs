@@ -52,6 +52,7 @@ try {
     'ws.add_task(sys.argv[2], "Sample Manager", status="ready", due_date="2026-10-04")',
     'ws.close()',
   ].join('\n'), sample, INJECTED]);
+  python(['-m', 'nurse_manager', 'brief', sample, '--week', '2026-09-28', '--today', TODAY]);
   const empty = join(work, 'empty');
   python(['-m', 'nurse_manager', 'init', empty, '--name', 'Empty workspace', '--owner', 'Test Manager']);
 
@@ -133,6 +134,24 @@ try {
   assert.ok(await page.getByRole('article', { name: INJECTED }).isVisible(), 'markup in a title is shown as text');
   assert.equal(await page.evaluate(() => window.__injected), undefined, 'markup in a title never executes');
   assert.equal(await page.locator('.task-card img').count(), 0);
+
+  // The weekly brief is read-only here, and its record text stays text.
+  await page.getByRole('link', { name: 'Weekly brief' }).click();
+  await page.waitForSelector('.view--brief');
+  assert.equal(await page.title(), 'Weekly brief — Nurse AI OS');
+  assert.match(await page.locator('.view--brief').textContent(), /Read-only.*available in the Nurse AI OS app/s);
+  assert.equal(await page.getByRole('button', { name: 'Draft from my records' }).count(), 0, 'no writes on the dev host');
+  const briefDoc = page.getByRole('document', { name: 'Weekly brief, version 1' });
+  assert.match(await briefDoc.textContent(), /<img src=x onerror="window\.__injected=1">Agenda/);
+  assert.equal(await briefDoc.locator('img').count(), 0);
+  assert.ok(await briefDoc.getByRole('heading', { name: "This week's priorities" }).isVisible(), 'Markdown headings render as headings');
+  assert.equal(await page.evaluate(() => window.__injected), undefined, 'markup in the brief never executes');
+  await page.getByRole('link', { name: 'AI assistance' }).click();
+  await page.waitForSelector('.view--assistant');
+  assert.equal(await page.getByLabel('Model name').count(), 0, 'no AI settings form on the dev host');
+  assert.match(await page.getByRole('region', { name: 'Right now' }).textContent(), /No AI model/);
+  await page.getByRole('link', { name: 'Board', exact: true }).click();
+  await page.waitForSelector('.view--board');
 
   await page.getByRole('link', { name: 'Table', exact: true }).click();
   await page.waitForSelector('.view--table');

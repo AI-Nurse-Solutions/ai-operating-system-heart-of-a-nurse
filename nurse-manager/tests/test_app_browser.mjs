@@ -10,11 +10,16 @@
 //   is not connected
 // - the sample path works
 // - Quit really stops the process
+// - the weekly brief is drafted, reviewed, and accepted from the screens
+// - AI assistance: off by default; a model on this computer is connected
+//   explicitly; the preview shows exactly what is sent before anything is,
+//   and the model's draft waits for the manager's acceptance
 //
 // CHROME_PATH=/path/to/chrome overrides the system Chrome channel (local runs).
 // NURSE_AI_OS_BIN=/path/to/nurse-ai-os runs it against a packaged build.
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { createServer } from 'node:http';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -109,16 +114,106 @@ try {
   // --- First run: explore the sample -------------------------------------
   const sample = await launch(join(work, 'sample')); apps.push(sample);
   const samplePage = await (await browser.newContext({ viewport: { width: 1280, height: 900 } })).newPage();
+  const sampleErrors = [];
+  samplePage.on('console', (m) => { if (m.type() === 'error') sampleErrors.push(m.text()); });
+  samplePage.on('pageerror', (e) => sampleErrors.push(e.message));
   await samplePage.goto(sample.url);
   await samplePage.waitForSelector('.view--onboarding');
   await samplePage.getByRole('button', { name: 'Explore the sample workspace' }).click();
   await samplePage.waitForSelector('.view--mission');
   assert.ok(await samplePage.locator('#sample-banner').isVisible(), 'the sample is labeled synthetic');
   assert.equal(await samplePage.getByRole('region', { name: "This week's priorities" }).getByRole('listitem').count(), 3);
+
+  // --- The weekly brief, from the screens ------------------------------
+  const focusedText = () => samplePage.evaluate(() => document.activeElement?.textContent ?? '');
+  await samplePage.getByRole('link', { name: 'Weekly brief' }).click();
+  await samplePage.waitForSelector('.view--brief');
+  assert.match(await samplePage.getByRole('region', { name: 'Current version' }).textContent(), /No brief for this week yet/);
+
+  // With no model, "Draft with AI" says so and sends nothing.
+  await samplePage.getByRole('button', { name: 'Draft with AI…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.id === 'preview-heading');
+  const noModel = samplePage.getByRole('region', { name: 'Before anything is sent' });
+  assert.match(await noModel.textContent(), /No AI model is connected/);
+  await noModel.getByRole('button', { name: 'Draft from my records' }).click();
+  await samplePage.waitForSelector('.notice[role="status"]');
+  assert.match(await focusedText(), /composed from your records/);
+  assert.match(await samplePage.locator('.brief-text').textContent(), /DRAFT — composed from your workspace records/);
+
+  // Accept by keyboard; the acceptance is bound to the text on screen.
+  await samplePage.getByRole('button', { name: /accept this version/ }).focus();
+  await samplePage.keyboard.press('Enter');
+  await samplePage.waitForFunction(() => /Version 1 is accepted/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by Sample Manager/);
+
+  // --- AI assistance: connect a model on this computer ------------------
+  const modelRequests = [];
+  const model = createServer((req, res) => {
+    let raw = '';
+    req.on('data', (chunk) => { raw += chunk; });
+    req.on('end', () => {
+      const body = JSON.parse(raw);
+      modelRequests.push(body);
+      const out = JSON.stringify({ response: `A clearer week.\n\n${body.prompt}`, done: true });
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end(out);
+    });
+  });
+  await new Promise((done) => model.listen(0, '127.0.0.1', done));
+  try {
+    await samplePage.getByRole('link', { name: 'AI assistance' }).click();
+    await samplePage.waitForSelector('.view--assistant');
+    assert.match(await samplePage.getByRole('region', { name: 'Right now' }).textContent(), /No AI model.*nothing is ever sent/s);
+    assert.match(await samplePage.getByRole('region', { name: 'Cloud AI service' }).textContent(), /No cloud AI service has been chosen/);
+    await samplePage.getByLabel('Model name').fill('llama3.2');
+    await samplePage.getByLabel('Model server address').fill(`http://127.0.0.1:${model.address().port}`);
+    await samplePage.getByLabel('Model server address').press('Enter');
+    await samplePage.waitForFunction(() => /Connected to the AI model/.test(document.activeElement?.textContent ?? ''));
+    assert.match(await samplePage.getByRole('region', { name: 'Right now' }).textContent(), /Connected.*llama3\.2.*this computer/s);
+
+    // The preview shows exactly what will be sent; nothing is sent until Send.
+    await samplePage.getByRole('link', { name: 'Weekly brief' }).click();
+    await samplePage.waitForSelector('.view--brief');
+    await samplePage.getByRole('button', { name: 'Draft with AI…' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'preview-heading');
+    const panel = samplePage.getByRole('region', { name: 'Before anything is sent' });
+    assert.match(await panel.textContent(), /exactly what will be sent to the AI model “llama3\.2” on this computer/);
+    assert.equal(await panel.getByRole('listitem').count(), 3, 'three checks are shown');
+    const shownPrompt = await samplePage.getByLabel('Text from your records').textContent();
+    const shownSystem = await samplePage.getByLabel('Instructions to the model').textContent();
+    assert.equal(modelRequests.length, 0, 'nothing is sent by the preview');
+    await panel.getByRole('button', { name: 'Send to llama3.2' }).click();
+    await samplePage.waitForFunction(() => /The AI model drafted a new version/.test(document.activeElement?.textContent ?? ''), null, { timeout: 20000 });
+    assert.equal(modelRequests.length, 1);
+    assert.equal(modelRequests[0].prompt, shownPrompt, 'what was sent is what was shown');
+    assert.equal(modelRequests[0].system, shownSystem);
+    assert.match(await samplePage.locator('.brief-text').textContent(), /AI DRAFT — written by an AI model/);
+    assert.match(await samplePage.getByRole('region', { name: 'Current version' }).textContent(), /AI draft — review it/);
+    assert.match(await samplePage.locator('.view--brief').textContent(), /Version 1 is the accepted one/);
+
+    // Reflow at 320px with the long brief text.
+    await samplePage.setViewportSize({ width: 320, height: 800 });
+    const briefOverflow = await samplePage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    assert.ok(briefOverflow <= 0, `the brief reflows at 320px (overflow ${briefOverflow}px)`);
+    await samplePage.setViewportSize({ width: 1280, height: 900 });
+
+    await samplePage.getByRole('button', { name: /accept this version/ }).click();
+    await samplePage.waitForFunction(() => /Version 2 is accepted/.test(document.activeElement?.textContent ?? ''));
+
+    // Disconnect: back to no model.
+    await samplePage.getByRole('link', { name: 'AI assistance' }).click();
+    await samplePage.waitForSelector('.view--assistant');
+    await samplePage.getByRole('button', { name: 'Disconnect the AI model' }).click();
+    await samplePage.waitForFunction(() => /disconnected/.test(document.activeElement?.textContent ?? ''));
+  } finally {
+    model.close();
+  }
+  assert.deepEqual(sampleErrors, [], 'no console errors on the sample page');
+
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

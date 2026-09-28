@@ -19,6 +19,8 @@
     "assistant": "AssistantStatus",
     "assistant-local": "AssistantStatus",
     "assistant-off": "AssistantStatus",
-    "assistant-brief": "AssistantDraft"
+    "assistant-brief": "AssistantDraft",
+    "weekly": "WeeklyBrief",
+    "assistant-preview": "AssistantPreview"
   }
 }

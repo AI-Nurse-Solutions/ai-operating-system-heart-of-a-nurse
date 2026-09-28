@@ -38,6 +38,14 @@ export interface Action {
   readonly status: "denied" | "awaiting_approval" | "approved" | "executing" | "succeeded" | "failed" | "effect_unknown" | "stale";
 }
 
+/** One gate that runs before anything is sent. */
+export interface AssistantCheck {
+  readonly gate: "data_rules" | "edena" | "budget";
+  readonly passed: boolean;
+  /** Written for the manager. */
+  readonly detail: string;
+}
+
 /** The answer to asking for an AI draft of the weekly brief. The revision is always a draft; drafted_by_model says whether a model wrote it. */
 export interface AssistantDraft {
   readonly outcome: AssistantOutcome;
@@ -52,6 +60,24 @@ export interface AssistantDraft {
 
 /** What happened to one request. Every outcome except 'drafted' returns the draft composed from records. */
 export type AssistantOutcome = "drafted" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "provider_failed" | "output_refused";
+
+/** Exactly what asking the model would send, and the gates' verdicts. Nothing is sent to produce it. With no model connected, system and prompt are empty and will_send is false. */
+export interface AssistantPreview {
+  readonly week_of: IsoDate;
+  readonly provider: AssistantProvider;
+  readonly model: string;
+  readonly runs_on: string;
+  /** The instructions sent to the model. */
+  readonly system: string;
+  /** The record text sent to the model. */
+  readonly prompt: string;
+  /** Send it back with assistant-brief; a change since the preview refuses the request. */
+  readonly prompt_sha256: Sha256 | "";
+  readonly checks: readonly AssistantCheck[];
+  readonly will_send: boolean;
+  /** Why nothing would be sent. Empty when will_send is true. */
+  readonly reason: string;
+}
 
 /** The connected AI provider. 'none' is the default (ADR 0004). There is no cloud value until a cloud service is chosen. */
 export type AssistantProvider = "none" | "local";
@@ -361,6 +387,13 @@ export interface TaskCounts {
 
 export type TaskStatus = "idea" | "ready" | "in_progress" | "needs_judgment" | "completed";
 
+/** One week's brief: the newest revision, rendered with its status banner, and the accepted revision if there is one. */
+export interface WeeklyBrief {
+  readonly week_of: IsoDate;
+  readonly current: ShownRevision | null;
+  readonly accepted: Revision | null;
+}
+
 export interface Workspace {
   readonly id: RecordId;
   readonly name: string;
@@ -390,6 +423,8 @@ export interface CommandData {
   readonly "assistant-local": AssistantStatus;
   readonly "assistant-off": AssistantStatus;
   readonly "assistant-brief": AssistantDraft;
+  readonly weekly: WeeklyBrief;
+  readonly "assistant-preview": AssistantPreview;
 }
 
 export type Command = keyof CommandData;

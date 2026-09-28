@@ -162,6 +162,22 @@ export interface EvidenceItem {
   readonly evidence: string;
 }
 
+/** Feedback about a project's work, from a group or role. Never about a named person or anyone's performance. Addressed means a response was written. */
+export interface Feedback {
+  readonly id: RecordId;
+  readonly from_group: string;
+  readonly kind: "worked" | "change" | "question";
+  readonly summary: string;
+  readonly received_on: IsoDate;
+  readonly status: "open" | "addressed";
+  readonly response: string;
+  readonly addressed_on: IsoDate | null;
+}
+
+export interface FeedbackResult {
+  readonly feedback: Feedback;
+}
+
 export interface FollowUp {
   readonly id: RecordId;
   readonly title: string;
@@ -200,6 +216,33 @@ export interface JudgmentSection {
   readonly state: SectionState;
   readonly items: readonly JudgmentItem[];
   readonly empty_message: string;
+}
+
+/** Every source in the workspace, overdue reviews first. */
+export interface Library {
+  readonly sample: boolean;
+  readonly today: IsoDate;
+  readonly items: readonly LibraryItem[];
+  /** @minimum 0 */
+  readonly review_overdue: number;
+  /** Projects a new source can belong to. */
+  readonly projects: readonly {
+    readonly id: RecordId;
+    readonly title: string;
+  }[];
+}
+
+/** One source in the workspace. The reference is shown as text, never opened by the app. */
+export interface LibraryItem {
+  readonly id: RecordId;
+  readonly title: string;
+  readonly kind: "public" | "synthetic" | "personal_permitted";
+  readonly reference: string;
+  readonly data_class: "D0" | "D1";
+  readonly project_id: RecordId | null;
+  readonly project: string | null;
+  readonly review_date: IsoDate | null;
+  readonly review_overdue: boolean;
 }
 
 /** What needs my attention? Every section reads the same records as the board and table. */
@@ -261,6 +304,8 @@ export interface ProjectDashboard {
   readonly decisions: readonly Decision[];
   readonly resources: readonly Resource[];
   readonly evidence: readonly EvidenceItem[];
+  /** Open feedback first, then addressed; newest first within each. */
+  readonly feedback: readonly Feedback[];
   /** AI answers the manager chose to keep, newest first. */
   readonly notes: readonly ProjectNote[];
 }
@@ -346,6 +391,11 @@ export interface Readiness {
    * @minimum 0
    */
   readonly tasks_without_next_action: number;
+  /**
+   * Feedback not yet addressed.
+   * @minimum 0
+   */
+  readonly open_feedback: number;
 }
 
 export interface Receipt {
@@ -355,7 +405,7 @@ export interface Receipt {
   readonly recorded_at: IsoDateTime;
 }
 
-/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note)-[0-9a-f]{12}$ */
+/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
 export interface Resource {
@@ -403,6 +453,10 @@ export interface ShownRevision {
   readonly revision: Revision;
   /** The only rendering; it always carries its status banner. */
   readonly markdown: string;
+}
+
+export interface SourceResult {
+  readonly source: LibraryItem;
 }
 
 export interface Table {
@@ -481,6 +535,10 @@ export interface CommandData {
   readonly "assistant-project-preview": ProjectQuestionPreview;
   readonly "assistant-project": ProjectAnswer;
   readonly "note-keep": ProjectNote;
+  readonly "feedback-add": FeedbackResult;
+  readonly "feedback-address": FeedbackResult;
+  readonly library: Library;
+  readonly "source-add": SourceResult;
 }
 
 export type Command = keyof CommandData;

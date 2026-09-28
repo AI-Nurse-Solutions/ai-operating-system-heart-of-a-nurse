@@ -148,6 +148,24 @@ try {
   await samplePage.waitForFunction(() => /Version 1 is accepted/.test(document.activeElement?.textContent ?? ''));
   assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by Sample Manager/);
 
+  // --- Library: add a source through the capture rules ------------------
+  await samplePage.getByRole('link', { name: 'Library' }).click();
+  await samplePage.waitForSelector('.view--library');
+  assert.equal(await samplePage.locator('.view--library tbody tr').count(), 3);
+  await samplePage.getByLabel('Title').fill('Email me at manager@example.org');
+  await samplePage.getByLabel('Where it is').fill('synthetic://refused');
+  await samplePage.getByRole('button', { name: 'Add source' }).click();
+  await samplePage.waitForSelector('.view--library .notice[role="alert"]');
+  assert.match(await samplePage.locator('.notice').textContent(), /EMAIL_ADDRESS/);
+  await samplePage.getByLabel('Title').fill('Huddle evaluation questions (synthetic)');
+  await samplePage.getByLabel('Kind').selectOption('synthetic');
+  await samplePage.getByLabel('Where it is').fill('synthetic://samples/huddle-evaluation');
+  await samplePage.getByLabel('Project').selectOption({ label: 'Huddle format pilot' });
+  await samplePage.getByRole('button', { name: 'Add source' }).click();
+  await samplePage.waitForFunction(() => /Added “Huddle evaluation questions/.test(document.activeElement?.textContent ?? ''));
+  assert.equal(await samplePage.locator('.view--library tbody tr').count(), 4);
+  assert.match(await samplePage.locator('.view--library tbody').textContent(), /Huddle evaluation questions.*Huddle format pilot/s);
+
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];
   const model = createServer((req, res) => {
@@ -248,6 +266,27 @@ try {
     assert.match(await note.textContent(), /Kept.*Written by the AI model “llama3\.2”; kept by Sample Manager/s);
     assert.match(await note.getByRole('document').textContent(), /Title: .+prj-[0-9a-f]{12}/);
 
+    // Feedback: add it by keyboard, then close it with a written response.
+    const openCount = async () => Number((await samplePage.locator('#feedback-heading').textContent()).match(/\((\d+) open\)/)[1]);
+    const before = await openCount();
+    await samplePage.getByLabel('From (a group or role)').fill('Evening huddle (synthetic)');
+    await samplePage.getByLabel('Kind').selectOption('question');
+    await samplePage.getByLabel('What was said').fill('Can the Dates slot cover two weeks?');
+    await samplePage.getByRole('button', { name: 'Add feedback' }).focus();
+    await samplePage.keyboard.press('Enter');
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'feedback-heading');
+    assert.equal(await openCount(), before + 1);
+    const added = samplePage.getByRole('listitem').filter({ hasText: 'Can the Dates slot cover two weeks?' });
+    assert.match(await added.textContent(), /Question from Evening huddle \(synthetic\)/);
+    await added.getByRole('button', { name: 'Mark addressed…' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+    await samplePage.keyboard.type('Yes: Dates now covers two weeks.');
+    await samplePage.getByRole('button', { name: 'Mark addressed', exact: true }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'feedback-heading');
+    assert.equal(await openCount(), before);
+    assert.match(await samplePage.getByRole('listitem').filter({ hasText: 'Can the Dates slot cover two weeks?' }).textContent(),
+      /Addressed \d{4}-\d{2}-\d{2}.*Yes: Dates now covers two weeks\./s);
+
     // Disconnect: back to no model.
     await samplePage.getByRole('link', { name: 'AI assistance' }).click();
     await samplePage.waitForSelector('.view--assistant');
@@ -261,7 +300,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

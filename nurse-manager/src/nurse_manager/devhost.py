@@ -34,7 +34,7 @@ from . import cli, resources
 
 RENDERER = resources.manager_root() / "renderer"
 READ_ONLY_COMMANDS = ("mission", "project", "board", "table", "weekly", "assistant",
-                      "assistant-preview", "assistant-project-preview")
+                      "assistant-preview", "assistant-project-preview", "library")
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _PROJECT_ID = re.compile(r"^prj-[0-9a-f]{12}$")
 
@@ -67,7 +67,9 @@ def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
     week = (query.get("week") or [monday_of(date.fromisoformat(day)).isoformat()])[0]
     if not _valid_date(week):
         return "week must be a YYYY-MM-DD date"
-    if command in ("mission", "assistant-preview"):
+    if command == "library":
+        argv += ["--today", day]
+    elif command in ("mission", "assistant-preview"):
         argv += ["--today", day, "--week", week]
     elif command == "weekly":
         argv += ["--week", week]

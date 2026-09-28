@@ -50,6 +50,8 @@ try {
     'import sys; from nurse_manager.services import ManagerWorkspace',
     'ws = ManagerWorkspace(sys.argv[1])',
     'ws.add_task(sys.argv[2], "Sample Manager", status="ready", due_date="2026-10-04")',
+    'ubc = ws.store.conn.execute("SELECT id FROM projects WHERE title LIKE ?", ("Unit%",)).fetchone()[0]',
+    'ws.add_feedback(ubc, "Council members", "question", sys.argv[2], "2026-09-27")',
     'ws.close()',
   ].join('\n'), sample, INJECTED]);
   python(['-m', 'nurse_manager', 'brief', sample, '--week', '2026-09-28', '--today', TODAY]);
@@ -135,6 +137,26 @@ try {
   assert.equal(await page.evaluate(() => window.__injected), undefined, 'markup in a title never executes');
   assert.equal(await page.locator('.task-card img').count(), 0);
 
+  // The Library: every source, overdue reviews first, read-only here.
+  await page.getByRole('link', { name: 'Library' }).click();
+  await page.waitForSelector('.view--library');
+  assert.equal(await page.title(), 'Library — Nurse AI OS');
+  const libraryRows = page.locator('.view--library tbody tr');
+  assert.equal(await libraryRows.count(), 3);
+  assert.match(await libraryRows.first().textContent(), /Council charter template.*Review overdue since 2026-09-01/s);
+  assert.match(await page.locator('.view--library').textContent(), /1 source is past its review date/);
+  assert.match(await page.locator('.view--library').textContent(), /Whole workspace/);
+  assert.equal(await page.getByLabel('Title').count(), 0, 'no add-source form on the dev host');
+  assert.equal(await page.locator('.view--library a[href^="http"], .view--library a[href^="synthetic"]').count(), 0,
+    'references are text, never links');
+  await page.setViewportSize({ width: 320, height: 800 });
+  const libraryOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  assert.ok(libraryOverflow <= 0, `library reflows at 320px (overflow ${libraryOverflow}px)`);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await libraryRows.first().getByRole('link').click();
+  await page.waitForSelector('.view--project');
+  assert.match(await page.locator('h1').textContent(), /Unit Based Council charter refresh/);
+
   // The weekly brief is read-only here, and its record text stays text.
   await page.getByRole('link', { name: 'Weekly brief' }).click();
   await page.waitForSelector('.view--brief');
@@ -208,6 +230,11 @@ try {
     /Read-only.*Asking is available in the Nurse AI OS app/s);
   assert.equal(await page.getByLabel('What do you want to think through?').count(), 0, 'no question box on the dev host');
   assert.match(await page.getByRole('region', { name: 'Notes (0)' }).textContent(), /No notes yet/);
+  const feedbackRegion = page.getByRole('region', { name: /^Feedback \(\d+ open\)$/ });
+  assert.match(await feedbackRegion.textContent(), /Council members.*<img src=x onerror/s, 'feedback text stays text');
+  assert.equal(await feedbackRegion.locator('img').count(), 0);
+  assert.equal(await feedbackRegion.getByRole('button').count(), 0, 'no feedback writes on the dev host');
+  assert.match(readiness, /feedback items? (is|are) still open/);
   const projectTable = page.getByRole('table', { name: /Unit Based Council charter refresh tasks, sorted by Due date, ascending/ });
   assert.ok(await projectTable.isVisible());
   await page.getByRole('button', { name: /^Task/ }).click();

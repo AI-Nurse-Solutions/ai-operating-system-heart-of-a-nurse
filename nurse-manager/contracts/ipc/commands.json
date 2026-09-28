@@ -24,6 +24,10 @@
     "assistant-preview": "AssistantPreview",
     "assistant-project-preview": "ProjectQuestionPreview",
     "assistant-project": "ProjectAnswer",
-    "note-keep": "ProjectNote"
+    "note-keep": "ProjectNote",
+    "feedback-add": "FeedbackResult",
+    "feedback-address": "FeedbackResult",
+    "library": "Library",
+    "source-add": "SourceResult"
   }
 }

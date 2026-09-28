@@ -137,6 +137,15 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
             (ws.info.id, project_id),
         )
     ]
+    feedback = [
+        _feedback(f)
+        # Open feedback first; newest first within each.
+        for f in db.execute(
+            "SELECT * FROM project_feedback WHERE workspace_id = ? AND project_id = ?"
+            " ORDER BY status = 'addressed', received_on DESC, id",
+            (ws.info.id, project_id),
+        )
+    ]
     evidence = [
         {"task_id": t["id"], "task": t["title"], "evidence": t["completion_evidence"]}
         for t in tasks
@@ -162,6 +171,7 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
             "overdue_tasks": sum(
                 1 for t in open_tasks if t["due_date"] and t["due_date"] < today and not t["paused"]
             ),
+            "open_feedback": sum(1 for f in feedback if f["status"] == "open"),
             "tasks_without_next_action": sum(
                 1 for t in open_tasks if t["status"] in ("ready", "in_progress") and not t["next_action"]
             ),
@@ -170,6 +180,7 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
         "decisions": decisions,
         "resources": resources,
         "evidence": evidence,
+        "feedback": feedback,
         # Kept AI answers, newest first. Each was kept by the manager on purpose.
         "notes": [
             note_dict(n)
@@ -312,4 +323,61 @@ def note_dict(row) -> dict[str, Any]:
         "model": row["model"],
         "kept_by": row["kept_by"],
         "kept_at": row["kept_at"],
+    }
+
+
+def _feedback(row) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "from_group": row["from_group"],
+        "kind": row["kind"],
+        "summary": row["summary"],
+        "received_on": row["received_on"],
+        "status": row["status"],
+        "response": row["response"],
+        "addressed_on": row["addressed_on"],
+    }
+
+
+def feedback_item(ws: ManagerWorkspace, feedback_id: str) -> dict[str, Any]:
+    return _feedback(ws._require_row("project_feedback", feedback_id))
+
+
+def library(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
+    """Every source in the workspace, whichever project it belongs to.
+
+    Sources whose review date has passed come first: an out-of-date source
+    should be checked before it is relied on again.
+    """
+    rows = ws.store.conn.execute(
+        "SELECT s.*, p.title AS project_title FROM sources s"
+        " LEFT JOIN projects p ON p.id = s.project_id WHERE s.workspace_id = ?",
+        (ws.info.id,),
+    ).fetchall()
+    items = [
+        {
+            "id": r["id"],
+            "title": r["title"],
+            "kind": r["kind"],
+            "reference": r["reference"],
+            "data_class": r["data_class"],
+            "project_id": r["project_id"],
+            "project": r["project_title"],
+            "review_date": r["review_date"],
+            "review_overdue": bool(r["review_date"] and r["review_date"] < today),
+        }
+        for r in rows
+    ]
+    items.sort(key=lambda i: (not i["review_overdue"], i["title"].lower(), i["id"]))
+    return {
+        "sample": ws.info.sample,
+        "today": today,
+        "items": items,
+        "review_overdue": sum(1 for i in items if i["review_overdue"]),
+        "projects": [
+            {"id": p["id"], "title": p["title"]}
+            for p in ws.store.conn.execute(
+                "SELECT id, title FROM projects WHERE workspace_id = ? ORDER BY title, id",
+                (ws.info.id,))
+        ],
     }

@@ -820,6 +820,14 @@ def compose_project_context(ws: ManagerWorkspace, project_id: str,
                      f" (by {d['decided_by']}) {cite(d['id'])}")
     if not data["decisions"]:
         lines.append("- none")
+    lines += ["", "## Feedback", ""]
+    kinds = {"worked": "What worked", "change": "Change asked for", "question": "Question"}
+    for f in data["feedback"]:
+        status = "open" if f["status"] == "open" else f"addressed: {f['response']}"
+        lines.append(f"- {kinds[f['kind']]} from {f['from_group']}, {f['received_on']}:"
+                     f" {f['summary']} ({status}) {cite(f['id'])}")
+    if not data["feedback"]:
+        lines.append("- none")
     lines += ["", "## Resources", ""]
     for r in data["resources"]:
         lines.append(f"- {r['title']} ({r['kind']}) {cite(r['id'])}")

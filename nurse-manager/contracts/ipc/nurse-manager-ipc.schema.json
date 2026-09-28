@@ -8,7 +8,7 @@
     "IsoDate": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
     "IsoDateTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)$"},
     "Sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note)-[0-9a-f]{12}$"},
+    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk)-[0-9a-f]{12}$"},
     "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed"]},
     "SectionState": {"enum": ["ok", "empty"]},
 
@@ -241,9 +241,32 @@
         "blocked_tasks": {"type": "integer", "minimum": 0},
         "needs_judgment": {"type": "integer", "minimum": 0},
         "overdue_tasks": {"type": "integer", "minimum": 0},
-        "tasks_without_next_action": {"type": "integer", "minimum": 0, "description": "Ready or in-progress tasks with no next action written down."}
+        "tasks_without_next_action": {"type": "integer", "minimum": 0, "description": "Ready or in-progress tasks with no next action written down."},
+        "open_feedback": {"type": "integer", "minimum": 0, "description": "Feedback not yet addressed."}
       },
-      "required": ["has_next_milestone", "open_tasks", "completed_tasks", "blocked_tasks", "needs_judgment", "overdue_tasks", "tasks_without_next_action"],
+      "required": ["has_next_milestone", "open_tasks", "completed_tasks", "blocked_tasks", "needs_judgment", "overdue_tasks", "tasks_without_next_action", "open_feedback"],
+      "additionalProperties": false
+    },
+    "Feedback": {
+      "description": "Feedback about a project's work, from a group or role. Never about a named person or anyone's performance. Addressed means a response was written.",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "from_group": {"type": "string"},
+        "kind": {"enum": ["worked", "change", "question"]},
+        "summary": {"type": "string"},
+        "received_on": {"$ref": "#/$defs/IsoDate"},
+        "status": {"enum": ["open", "addressed"]},
+        "response": {"type": "string"},
+        "addressed_on": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]}
+      },
+      "required": ["id", "from_group", "kind", "summary", "received_on", "status", "response", "addressed_on"],
+      "additionalProperties": false
+    },
+    "FeedbackResult": {
+      "type": "object",
+      "properties": {"feedback": {"$ref": "#/$defs/Feedback"}},
+      "required": ["feedback"],
       "additionalProperties": false
     },
     "Decision": {
@@ -272,6 +295,51 @@
       "required": ["id", "title", "kind", "reference", "review_date", "review_overdue"],
       "additionalProperties": false
     },
+    "LibraryItem": {
+      "description": "One source in the workspace. The reference is shown as text, never opened by the app.",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "kind": {"enum": ["public", "synthetic", "personal_permitted"]},
+        "reference": {"type": "string"},
+        "data_class": {"enum": ["D0", "D1"]},
+        "project_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"type": "null"}]},
+        "project": {"type": ["string", "null"]},
+        "review_date": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "review_overdue": {"type": "boolean"}
+      },
+      "required": ["id", "title", "kind", "reference", "data_class", "project_id", "project", "review_date", "review_overdue"],
+      "additionalProperties": false
+    },
+    "Library": {
+      "description": "Every source in the workspace, overdue reviews first.",
+      "type": "object",
+      "properties": {
+        "sample": {"type": "boolean"},
+        "today": {"$ref": "#/$defs/IsoDate"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/LibraryItem"}},
+        "review_overdue": {"type": "integer", "minimum": 0},
+        "projects": {
+          "description": "Projects a new source can belong to.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {"id": {"$ref": "#/$defs/RecordId"}, "title": {"type": "string"}},
+            "required": ["id", "title"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["sample", "today", "items", "review_overdue", "projects"],
+      "additionalProperties": false
+    },
+    "SourceResult": {
+      "type": "object",
+      "properties": {"source": {"$ref": "#/$defs/LibraryItem"}},
+      "required": ["source"],
+      "additionalProperties": false
+    },
     "EvidenceItem": {
       "type": "object",
       "properties": {
@@ -294,9 +362,10 @@
         "decisions": {"type": "array", "items": {"$ref": "#/$defs/Decision"}},
         "resources": {"type": "array", "items": {"$ref": "#/$defs/Resource"}},
         "evidence": {"type": "array", "items": {"$ref": "#/$defs/EvidenceItem"}},
+        "feedback": {"type": "array", "items": {"$ref": "#/$defs/Feedback"}, "description": "Open feedback first, then addressed; newest first within each."},
         "notes": {"type": "array", "items": {"$ref": "#/$defs/ProjectNote"}, "description": "AI answers the manager chose to keep, newest first."}
       },
-      "required": ["sample", "today", "project", "readiness", "tasks", "decisions", "resources", "evidence", "notes"],
+      "required": ["sample", "today", "project", "readiness", "tasks", "decisions", "resources", "evidence", "feedback", "notes"],
       "additionalProperties": false
     },
     "BoardCard": {

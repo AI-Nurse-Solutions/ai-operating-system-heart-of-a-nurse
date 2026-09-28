@@ -156,6 +156,50 @@ class WorkspaceWriteTests(_AppCase):
             "revision": draft["id"], "sha256": draft["sha256"], "reviewer": "Someone Else"})
         self.assertEqual(accepted["data"]["accepted_by"], "Sample Manager")
 
+    def test_sources_from_the_screens(self):
+        lib = self.envelope("/ipc/library?today=2026-09-30")["data"]
+        self.assertEqual(len(lib["items"]), 3)
+        added = self.envelope("/ipc/source-add", "POST", {
+            "title": "Huddle evaluation questions", "kind": "synthetic",
+            "reference": "synthetic://huddle-evaluation", "data_class": "D0",
+            "project_id": lib["projects"][0]["id"], "review_date": "2027-01-31"})["data"]
+        self.assertEqual(added["source"]["project_id"], lib["projects"][0]["id"])
+        for body in ({"title": "T", "kind": "internal", "reference": "r"},
+                     {"title": "T", "kind": "public", "reference": "r", "data_class": "D2"},
+                     {"title": "T", "kind": "public", "reference": "r", "review_date": "soon"},
+                     {"title": "T", "kind": "public", "reference": "r", "project_id": "nope"}):
+            with self.subTest(body=body):
+                self.assertEqual(self.request("/ipc/source-add", "POST", body)[0], 400)
+        refused = self.envelope("/ipc/source-add", "POST", {
+            "title": "Email jane.doe@example.org", "kind": "public", "reference": "r"})
+        self.assertEqual(refused["error"]["type"], "CaptureRefused")
+        self.assertEqual(len(self.envelope("/ipc/library")["data"]["items"]), 4)
+
+    def test_feedback_from_the_screens(self):
+        mission = self.envelope("/ipc/mission")["data"]
+        project_id = mission["projects_in_motion"]["items"][0]["id"]
+        added = self.envelope("/ipc/feedback-add", "POST", {
+            "project_id": project_id, "from_group": "Evening huddle", "kind": "question",
+            "summary": "Can Dates cover two weeks?", "received_on": "2026-09-27"})["data"]
+        feedback_id = added["feedback"]["id"]
+        refused = self.envelope("/ipc/feedback-add", "POST", {
+            "project_id": project_id, "from_group": "jane.doe@example.org", "kind": "worked",
+            "summary": "Good", "received_on": "2026-09-27"})
+        self.assertEqual(refused["error"]["type"], "CaptureRefused")
+        for body in ({"project_id": project_id, "from_group": "G", "kind": "praise",
+                      "summary": "Good"},
+                     {"project_id": "nope", "from_group": "G", "kind": "worked", "summary": "S"}):
+            with self.subTest(body=body):
+                self.assertEqual(self.request("/ipc/feedback-add", "POST", body)[0], 400)
+        empty = self.envelope("/ipc/feedback-address", "POST",
+                              {"feedback_id": feedback_id, "response": "  "})
+        self.assertFalse(empty["ok"])
+        done = self.envelope("/ipc/feedback-address", "POST",
+                             {"feedback_id": feedback_id, "response": "Yes, two weeks."})["data"]
+        self.assertEqual(done["feedback"]["status"], "addressed")
+        dashboard = self.envelope(f"/ipc/project?id={project_id}")["data"]
+        self.assertIn(feedback_id, [f["id"] for f in dashboard["feedback"]])
+
     def test_write_bodies_are_checked(self):
         for command, body in (("accept", {"revision": "x", "sha256": "y"}),
                               ("accept", {"revision": "rev-000000000000"}),

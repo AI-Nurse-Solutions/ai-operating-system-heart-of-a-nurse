@@ -12,7 +12,7 @@ from _bootstrap import fixed_clock
 from nurse_manager.sample import SAMPLE_PATH, load_sample
 from nurse_manager.services import CaptureRefused, ManagerError, ManagerWorkspace
 from nurse_manager.store import MIGRATIONS_DIR, RestoreRefused, Store, StoreError
-from nurse_manager.views import board, mission_control, project_dashboard, table
+from nurse_manager.views import board, library, mission_control, project_dashboard, table
 
 WEEK = "2026-09-28"
 TODAY = "2026-09-30"
@@ -85,7 +85,8 @@ class StoreTests(_TempCase):
         backup = ws.store.backup(self.tmp / "backups" / "b1.sqlite")
         old = sqlite3.connect(str(backup))
         old.executescript(
-            "DROP TABLE project_notes; DROP TABLE assistant_requests;"
+            "DROP TABLE project_feedback; DROP TABLE project_notes;"
+            " DROP TABLE assistant_requests;"
             " DROP TABLE assistant_settings;"
             " DELETE FROM schema_migrations WHERE version != '0001_initial';"
         )
@@ -255,6 +256,193 @@ class ViewTests(_TempCase):
         self.assertEqual(mc["follow_ups"]["state"], "empty")
 
 
+class LibraryTests(_TempCase):
+    """The Library (3.6a): every source, whichever project it belongs to."""
+
+    def test_every_source_overdue_reviews_first(self):
+        ws = self.sample()
+        lib = library(ws, today=TODAY)
+        titles = [i["title"] for i in lib["items"]]
+        self.assertEqual(len(titles), 3)
+        self.assertEqual(titles[0], "Council charter template (synthetic)")
+        self.assertTrue(lib["items"][0]["review_overdue"])
+        self.assertEqual(lib["review_overdue"], 1)
+        unattached = next(i for i in lib["items"] if i["project_id"] is None)
+        self.assertEqual(unattached["project"], None)
+        self.assertEqual(titles[1:], sorted(titles[1:], key=str.lower))
+        self.assertEqual({p["title"] for p in lib["projects"]},
+                         {r["title"] for r in ws.store.conn.execute("SELECT title FROM projects")})
+
+    def test_the_same_source_ids_as_the_project_dashboards(self):
+        ws = self.sample()
+        on_dashboards = set()
+        for (pid,) in ws.store.conn.execute("SELECT id FROM projects"):
+            on_dashboards |= {r["id"] for r in project_dashboard(ws, pid, today=TODAY)["resources"]}
+        in_library = {i["id"] for i in library(ws, today=TODAY)["items"] if i["project_id"]}
+        self.assertEqual(in_library, on_dashboards)
+
+    def test_adding_a_source_keeps_the_capture_rules(self):
+        ws = self.sample()
+        with self.assertRaises(CaptureRefused):
+            ws.add_source("Grid", "internal", "x://y")
+        with self.assertRaises(CaptureRefused):
+            ws.add_source("Grid", "public", "x://y", data_class="D2")
+        with self.assertRaises(CaptureRefused):
+            ws.add_source("Call 555-867-5309", "public", "x://y")
+        for kwargs in ({"review_date": "someday"}, {"project_id": "prj-000000000000"}):
+            with self.subTest(kwargs=kwargs), self.assertRaises(ManagerError):
+                ws.add_source("Guide", "public", "https://example.org/guide", **kwargs)
+        with self.assertRaises(ManagerError):
+            ws.add_source("x" * 201, "public", "https://example.org/guide")
+        sid = ws.add_source("Guide", "public", "https://example.org/guide", review_date="2027-01-05")
+        self.assertIn(sid, [i["id"] for i in library(ws, today=TODAY)["items"]])
+
+    @unittest.skipUnless(hasattr(__import__("time"), "tzset"), "needs a settable time zone")
+    def test_an_added_source_reads_the_same_as_the_library(self):
+        # In a time zone whose day differs from UTC's right now, the earlier of
+        # the two days is overdue by one reckoning and not the other, so the
+        # answer from adding the source must use the same (local) day as the Library.
+        import os
+        import time
+        from datetime import datetime, timedelta, timezone
+
+        from nurse_manager import cli
+
+        now = datetime.now(timezone.utc)
+        zone, offset = (("Etc/GMT-14", 14) if (now + timedelta(hours=14)).date() != now.date()
+                        else ("Etc/GMT+12", -12))
+        previous = os.environ.get("TZ")
+        os.environ["TZ"] = zone
+        time.tzset()
+        try:
+            local_today = (now + timedelta(hours=offset)).date().isoformat()
+            review = min(local_today, now.date().isoformat())
+            ws = str(self.tmp / "tz")
+            cli.run(["sample", ws])
+            code, env = cli.run(["source-add", ws, "--title", "Guide", "--kind", "public",
+                                 "--reference", "https://example.org/guide",
+                                 "--review", review])
+            self.assertEqual(code, 0, env)
+            self.assertEqual(env["data"]["source"]["review_overdue"], review < local_today)
+            _, lib = cli.run(["library", ws, "--today", local_today])
+            added = next(i for i in lib["data"]["items"] if i["title"] == "Guide")
+            self.assertEqual(added, env["data"]["source"])
+        finally:
+            if previous is None:
+                os.environ.pop("TZ", None)
+            else:
+                os.environ["TZ"] = previous
+            time.tzset()
+
+    def test_an_empty_workspace_has_an_empty_library(self):
+        ws = ManagerWorkspace(self.tmp / "empty", clock=fixed_clock())
+        self.addCleanup(ws.close)
+        ws.create("Empty", "Test Manager")
+        lib = library(ws, today=TODAY)
+        self.assertEqual((lib["items"], lib["review_overdue"], lib["projects"]), ([], 0, []))
+
+
+class FeedbackTests(_TempCase):
+    """Project feedback (3.5c): about the work, from a group or role, closed with a response."""
+
+    def project(self, ws, title_prefix):
+        return ws.store.conn.execute(
+            "SELECT id FROM projects WHERE title LIKE ?", (title_prefix + "%",)).fetchone()[0]
+
+    def test_feedback_shows_on_its_project_open_first(self):
+        ws = self.sample()
+        huddle = self.project(ws, "Huddle")
+        dash = project_dashboard(ws, huddle, today=TODAY)
+        self.assertEqual([f["kind"] for f in dash["feedback"]], ["change", "worked"])
+        self.assertEqual(dash["readiness"]["open_feedback"], 2)
+        ws.address_feedback(dash["feedback"][1]["id"], "Kept the Dates slot in week two.")
+        dash = project_dashboard(ws, huddle, today=TODAY)
+        self.assertEqual([f["status"] for f in dash["feedback"]], ["open", "addressed"])
+        self.assertEqual(dash["feedback"][1]["response"], "Kept the Dates slot in week two.")
+        self.assertEqual(dash["feedback"][1]["addressed_on"], TODAY)
+        self.assertEqual(dash["readiness"]["open_feedback"], 1)
+
+    def test_addressed_needs_a_written_response_even_in_the_database(self):
+        ws = self.sample()
+        fid = project_dashboard(ws, self.project(ws, "Huddle"), today=TODAY)["feedback"][0]["id"]
+        with self.assertRaises(ManagerError):
+            ws.address_feedback(fid, "   ")
+        with self.assertRaises(sqlite3.IntegrityError):
+            ws.store.conn.execute(
+                "UPDATE project_feedback SET status = 'addressed' WHERE id = ?", (fid,))
+        ws.address_feedback(fid, "Capped Asks at three.")
+        with self.assertRaises(ManagerError):
+            ws.address_feedback(fid, "Again.")
+
+    def test_capture_rules_apply(self):
+        ws = self.sample()
+        pid = self.project(ws, "Huddle")
+        with self.assertRaises(CaptureRefused):
+            ws.add_feedback(pid, "Night shift", "change", "Call 555-867-5309 about it", TODAY)
+        with self.assertRaises(CaptureRefused):
+            ws.add_feedback(pid, "jane.doe@example.org", "worked", "Good pilot", TODAY)
+        for args in (("", "worked", "Good", TODAY), ("Group", "praise", "Good", TODAY),
+                     ("Group", "worked", "", TODAY), ("Group", "worked", "Good", "last week"),
+                     ("Group", "worked", "Good", "2030-01-01"), ("x" * 81, "worked", "Good", TODAY),
+                     ("Group", "worked", "x" * 1001, TODAY)):
+            with self.subTest(args=args[:2]), self.assertRaises(ManagerError):
+                ws.add_feedback(pid, *args)
+        with self.assertRaises(ManagerError):
+            ws.add_feedback("prj-000000000000", "Group", "worked", "Good", TODAY)
+        with self.assertRaises(ManagerError):
+            ws.address_feedback("fbk-000000000000", "Done")
+
+    def test_addressing_is_decided_inside_the_write(self):
+        # Two requests that both read "open" before either writes: only one wins.
+        from unittest import mock
+
+        ws = self.sample()
+        fid = project_dashboard(ws, self.project(ws, "Huddle"), today=TODAY)["feedback"][0]["id"]
+        stale = dict(ws._require_row("project_feedback", fid))
+        ws.address_feedback(fid, "First response.")
+        with mock.patch.object(ws, "_require_row", return_value=stale), \
+                self.assertRaises(ManagerError):
+            ws.address_feedback(fid, "Second response.")
+        row = ws._require_row("project_feedback", fid)
+        self.assertEqual(row["response"], "First response.")
+        events = [e for e in ws.store.events() if e["record_id"] == fid and e["kind"] == "address"]
+        self.assertEqual(len(events), 1)
+
+    @unittest.skipUnless(hasattr(__import__("time"), "tzset"), "needs a settable time zone")
+    def test_feedback_dates_follow_the_local_calendar_day(self):
+        import os
+        import time
+
+        previous = os.environ.get("TZ")
+        os.environ["TZ"] = "Etc/GMT-10"  # UTC+10: local midnight comes first
+        time.tzset()
+        try:
+            # 15:00 UTC on 30 September is 01:00 on 1 October locally.
+            ws, _ = load_sample(self.tmp / "tz", clock=fixed_clock("2026-09-30T15:00:00+00:00"))
+            self.addCleanup(ws.close)
+            self.assertEqual(ws.local_today(), "2026-10-01")
+            fid = ws.add_feedback(self.project(ws, "Huddle"), "Night shift huddle", "worked",
+                                  "The Dates slot helped.", "2026-10-01")
+            ws.address_feedback(fid, "Kept it.")
+            self.assertEqual(ws._require_row("project_feedback", fid)["addressed_on"],
+                             "2026-10-01")
+        finally:
+            if previous is None:
+                os.environ.pop("TZ", None)
+            else:
+                os.environ["TZ"] = previous
+            time.tzset()
+
+    def test_feedback_is_audited(self):
+        ws = self.sample()
+        fid = ws.add_feedback(self.project(ws, "Unit"), "Council members", "worked",
+                              "The draft scope section was clear.", TODAY)
+        ws.address_feedback(fid, "Shared at the next meeting.")
+        kinds = [(e["kind"], e["record_type"], e["record_id"]) for e in ws.store.events()]
+        self.assertIn(("create", "feedback", fid), kinds)
+        self.assertIn(("address", "feedback", fid), kinds)
+
+
 class ProjectDashboardTests(_TempCase):
     def project(self, ws, title_prefix):
         return ws.store.conn.execute(
@@ -276,6 +464,7 @@ class ProjectDashboardTests(_TempCase):
             "has_next_milestone": True, "open_tasks": 3, "completed_tasks": 0,
             "blocked_tasks": 1, "needs_judgment": 1, "overdue_tasks": 0,
             "tasks_without_next_action": 1,
+            "open_feedback": 1,
         })
         self.assertTrue(ubc["resources"][0]["review_overdue"])
         edu = project_dashboard(ws, self.project(ws, "Fall education"), today=TODAY)

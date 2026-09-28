@@ -55,6 +55,12 @@ def load_sample(
             s["title"], s["kind"], s["reference"], data_class=s["data_class"],
             project_id=projects.get(s.get("project")), review_date=s.get("review_date"),
         )
+    for s in data.get("library", []):  # sources not tied to one project
+        ws.add_source(s["title"], s["kind"], s["reference"], data_class=s["data_class"],
+                      review_date=s.get("review_date"))
+    for f in data.get("feedback", []):
+        ws.add_feedback(projects[f["project"]], f["from"], f["kind"], f["summary"],
+                        f["received_on"])
     ws.set_priorities(
         data["week_of"],
         [p["text"] for p in data["priorities"]],

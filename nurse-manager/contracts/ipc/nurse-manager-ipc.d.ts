@@ -38,6 +38,17 @@ export interface Action {
   readonly status: "denied" | "awaiting_approval" | "approved" | "executing" | "succeeded" | "failed" | "effect_unknown" | "stale";
 }
 
+/** A request waiting for a model right now, or the recurring brief waiting for its time. */
+export interface AssistantAtWork {
+  /** The request's id, or brief-schedule. */
+  readonly id: RecordId | "brief-schedule";
+  readonly kind: "request" | "schedule";
+  readonly title: string;
+  readonly detail: string;
+  /** When a request began; null for the schedule. */
+  readonly since: IsoDateTime | null;
+}
+
 /** One gate that runs before anything is sent. */
 export interface AssistantCheck {
   readonly gate: "data_rules" | "edena" | "budget";
@@ -59,7 +70,7 @@ export interface AssistantDraft {
 }
 
 /** What happened to one request. Every outcome except 'drafted' returns the draft composed from records. */
-export type AssistantOutcome = "drafted" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "provider_failed" | "output_refused";
+export type AssistantOutcome = "drafted" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "refused_stopped" | "provider_failed" | "output_refused" | "stopped";
 
 /** Exactly what asking the model would send, and the gates' verdicts. Nothing is sent to produce it. With no model connected, system and prompt are empty and will_send is false. */
 export interface AssistantPreview {
@@ -105,12 +116,16 @@ export interface AssistantStatus {
   readonly gates: readonly string[];
 }
 
-/** No assistant runtime exists yet; the section is honestly unavailable. */
+/** Every assistant working or waiting to work, and the one switch that stops them all (step 5.3). Also the answer to assistants-stop and assistants-resume. */
 export interface AssistantsSection {
-  readonly state: "unavailable";
-  /** @maxItems 0 */
-  readonly items: readonly [];
+  readonly state: SectionState;
+  readonly items: readonly AssistantAtWork[];
   readonly empty_message: string;
+  /** While true, nothing is sent to a model, running requests are abandoned and their replies discarded, and the recurring brief waits. */
+  readonly stopped: boolean;
+  /** Who last stopped or restarted assistants; empty if nobody has. */
+  readonly changed_by: string;
+  readonly changed_at: IsoDateTime | null;
 }
 
 export interface BackupResult {
@@ -162,7 +177,7 @@ export interface BriefRun {
 
 /** What one check of the recurring brief did. */
 export interface BriefRunResult {
-  readonly outcome: "off" | "not_due" | "done" | "waiting" | "gave_up" | "drafted" | "skipped" | "failed";
+  readonly outcome: "off" | "stopped" | "not_due" | "done" | "waiting" | "gave_up" | "drafted" | "skipped" | "failed";
   readonly week_of: IsoDate | null;
   readonly run: BriefRun | null;
 }
@@ -184,6 +199,8 @@ export interface BriefSchedule {
   /** When the next draft is due, in local time; null when off. A past time means it runs within a minute. */
   readonly next_at: IsoDateTime | null;
   readonly last_run: BriefRun | null;
+  /** The manager has stopped assistants: nothing is prepared until they let them work again. */
+  readonly stopped: boolean;
 }
 
 export type Contract = "nurse-manager-ipc@1";
@@ -442,7 +459,7 @@ export interface Priority {
 
 /** The answer to a question about one project. It is a suggestion shown to the manager and is never saved; the ledger keeps only metadata. */
 export interface ProjectAnswer {
-  readonly outcome: "answered" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "provider_failed" | "output_refused";
+  readonly outcome: "answered" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "refused_stopped" | "provider_failed" | "output_refused" | "stopped";
   readonly answered_by_model: boolean;
   /** Written for the manager. Empty only when the model answered. */
   readonly reason: string;
@@ -693,6 +710,8 @@ export interface CommandData {
   readonly assistant: AssistantStatus;
   readonly "assistant-local": AssistantStatus;
   readonly "assistant-off": AssistantStatus;
+  readonly "assistants-stop": AssistantsSection;
+  readonly "assistants-resume": AssistantsSection;
   readonly "assistant-brief": AssistantDraft;
   readonly weekly: WeeklyBrief;
   readonly "assistant-preview": AssistantPreview;

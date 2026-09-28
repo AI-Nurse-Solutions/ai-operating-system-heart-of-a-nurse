@@ -343,6 +343,10 @@ try {
 
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];
+  // While holdModel is set, the model works until the test releases it.
+  let holdModel = false;
+  /** @type {Array<() => void>} */
+  const held = [];
   const model = createServer((req, res) => {
     let raw = '';
     req.on('data', (chunk) => { raw += chunk; });
@@ -352,8 +356,12 @@ try {
       // A well-behaved model: keeps the headings and the cited lines.
       const kept = body.prompt.split('\n').filter((line) => line.startsWith('#') || line.includes('`'));
       const out = JSON.stringify({ response: kept.join('\n'), done: true });
-      res.writeHead(200, { 'content-type': 'application/json' });
-      res.end(out);
+      const answer = () => {
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end(out);
+      };
+      if (holdModel) held.push(answer);
+      else answer();
     });
   });
   await new Promise((done) => model.listen(0, '127.0.0.1', done));
@@ -465,6 +473,87 @@ try {
     assert.match(await samplePage.getByRole('listitem').filter({ hasText: 'Can the Dates slot cover two weeks?' }).textContent(),
       /Addressed \d{4}-\d{2}-\d{2}.*Yes: Dates now covers two weeks\./s);
 
+    // --- Stop control (5.3): stop the model while it works ---------------
+    await samplePage.getByRole('link', { name: 'Weekly brief' }).click();
+    await samplePage.waitForSelector('.view--brief');
+    const versionsBefore = await samplePage.locator('.view--brief .card__badges').textContent();
+    await samplePage.getByRole('button', { name: 'Draft with AI…' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'preview-heading');
+    holdModel = true;
+    await samplePage.getByRole('region', { name: 'Before anything is sent' })
+      .getByRole('button', { name: 'Send to llama3.2' }).click();
+    const stopNow = samplePage.getByRole('button', { name: 'Stop assistants' });
+    await stopNow.waitFor();
+    assert.match(await samplePage.locator('#working').textContent(), /Waiting for the AI model/);
+    assert.equal(await stopNow.isEnabled(), true, 'Stop works while everything else waits');
+    // Stop only once the model has the request, so it is truly mid-work.
+    for (let waited = 0; held.length === 0 && waited < 100; waited += 1) {
+      await new Promise((done) => setTimeout(done, 100));
+    }
+    assert.equal(held.length, 1, 'the model received the request');
+    const sentWhileHeld = modelRequests.length;
+    await stopNow.click();
+    // The request returns at once, though the model has not answered.
+    await samplePage.waitForFunction(() => /You stopped assistants while the model was working/.test(document.activeElement?.textContent ?? ''),
+      null, { timeout: 5000 });
+    assert.equal(held.length, 1, 'the model is still working');
+    assert.match(await samplePage.getByRole('region', { name: 'Current version' }).textContent(), /Draft — review it/);
+    assert.doesNotMatch(await samplePage.locator('.brief-text').textContent(), /AI DRAFT/);
+    assert.notEqual(await samplePage.locator('.view--brief .card__badges').textContent(), versionsBefore);
+    holdModel = false;
+    held.shift()(); // the model answers after all: nothing it says is used
+    await new Promise((done) => setTimeout(done, 500));
+    await samplePage.reload();
+    await samplePage.waitForSelector('.view--brief');
+    assert.doesNotMatch(await samplePage.locator('.brief-text').textContent(), /AI DRAFT/, 'the late reply was discarded');
+    // While stopped, nothing is sent and the weekly draft waits.
+    assert.match(await samplePage.getByRole('region', { name: 'Every week' }).textContent(), /assistants are stopped, so nothing is prepared/);
+    await samplePage.getByRole('button', { name: 'Draft with AI…' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'preview-heading');
+    assert.match(await samplePage.getByRole('region', { name: 'Before anything is sent' }).textContent(),
+      /Will not be sent.*assistants are stopped/s);
+    assert.equal(modelRequests.length, sentWhileHeld, 'nothing more was sent');
+
+    // Mission Control says so, and only the manager lets them work again.
+    await samplePage.getByRole('link', { name: 'Let them work again from Mission Control' }).click();
+    await samplePage.waitForSelector('.view--mission');
+    const atWork = samplePage.getByRole('region', { name: 'Assistants at work' });
+    assert.match(await atWork.textContent(), /Stopped by Sample Manager.*Nothing is sent to an AI model/s);
+    assert.match(await atWork.textContent(), /Recurring weekly brief.*Waiting while assistants are stopped/s);
+    await atWork.getByRole('button', { name: 'Let assistants work again' }).focus();
+    await samplePage.keyboard.press('Enter');
+    await samplePage.waitForFunction(() => /Assistants can work again/.test(document.activeElement?.textContent ?? ''));
+    assert.match(await atWork.textContent(), /A draft from your records on Wednesdays at 06:00, while this app is open/);
+    await atWork.getByRole('button', { name: 'Stop all assistants' }).click();
+    await samplePage.waitForFunction(() => /Assistants are stopped\. Nothing is sent/.test(document.activeElement?.textContent ?? ''));
+    assert.ok(await atWork.getByRole('button', { name: 'Let assistants work again' }).isVisible());
+    await atWork.getByRole('button', { name: 'Let assistants work again' }).click();
+    await samplePage.waitForFunction(() => /Assistants can work again/.test(document.activeElement?.textContent ?? ''));
+
+    // The same stop works while a project question waits for the model.
+    await atWork.getByRole('button', { name: 'Stop all assistants' }).waitFor();
+    await samplePage.getByRole('region', { name: 'Projects in motion' }).getByRole('link').first().click();
+    await samplePage.waitForSelector('.view--project');
+    const asking = samplePage.getByRole('region', { name: 'Think with this project' });
+    await asking.getByLabel('What do you want to think through?').fill('What is at risk?');
+    await asking.getByRole('button', { name: 'Preview what will be sent' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'think-preview-heading');
+    holdModel = true;
+    await asking.getByRole('button', { name: 'Send to llama3.2' }).click();
+    for (let waited = 0; held.length === 0 && waited < 100; waited += 1) {
+      await new Promise((done) => setTimeout(done, 100));
+    }
+    await asking.getByRole('button', { name: 'Stop assistants' }).click();
+    await samplePage.waitForFunction(() => /You stopped assistants while the model was working/.test(document.activeElement?.textContent ?? ''),
+      null, { timeout: 5000 });
+    assert.equal(await samplePage.getByRole('document', { name: 'AI suggestion' }).count(), 0, 'no answer is shown');
+    holdModel = false;
+    held.shift()();
+    await samplePage.getByRole('link', { name: 'Mission Control', exact: true }).click();
+    await samplePage.waitForSelector('.view--mission');
+    await atWork.getByRole('button', { name: 'Let assistants work again' }).click();
+    await samplePage.waitForFunction(() => /Assistants can work again/.test(document.activeElement?.textContent ?? ''));
+
     // Disconnect: back to no model.
     await samplePage.getByRole('link', { name: 'AI assistance' }).click();
     await samplePage.waitForSelector('.view--assistant');
@@ -478,7 +567,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory, stop control pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

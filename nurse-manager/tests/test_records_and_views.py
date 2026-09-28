@@ -247,7 +247,8 @@ class ViewTests(_TempCase):
         )
         overdue = [f for f in mc["follow_ups"]["items"] if f["overdue"]]
         self.assertEqual([f["title"] for f in overdue], ["Confirm vendor webinar dates"])
-        self.assertEqual(mc["assistants_at_work"]["state"], "unavailable")
+        self.assertEqual(mc["assistants_at_work"]["state"], "empty")
+        self.assertFalse(mc["assistants_at_work"]["stopped"])
 
     def test_empty_workspace_states_are_honest(self):
         ws = self.empty()

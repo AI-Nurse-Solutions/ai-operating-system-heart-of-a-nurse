@@ -174,14 +174,30 @@
       "additionalProperties": false
     },
     "AssistantsSection": {
-      "description": "No assistant runtime exists yet; the section is honestly unavailable.",
+      "description": "Every assistant working or waiting to work, and the one switch that stops them all (step 5.3). Also the answer to assistants-stop and assistants-resume.",
       "type": "object",
       "properties": {
-        "state": {"const": "unavailable"},
-        "items": {"type": "array", "maxItems": 0},
-        "empty_message": {"type": "string"}
+        "state": {"$ref": "#/$defs/SectionState"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/AssistantAtWork"}},
+        "empty_message": {"type": "string"},
+        "stopped": {"type": "boolean", "description": "While true, nothing is sent to a model, running requests are abandoned and their replies discarded, and the recurring brief waits."},
+        "changed_by": {"type": "string", "description": "Who last stopped or restarted assistants; empty if nobody has."},
+        "changed_at": {"anyOf": [{"$ref": "#/$defs/IsoDateTime"}, {"type": "null"}]}
       },
-      "required": ["state", "items", "empty_message"],
+      "required": ["state", "items", "empty_message", "stopped", "changed_by", "changed_at"],
+      "additionalProperties": false
+    },
+    "AssistantAtWork": {
+      "description": "A request waiting for a model right now, or the recurring brief waiting for its time.",
+      "type": "object",
+      "properties": {
+        "id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"const": "brief-schedule"}], "description": "The request's id, or brief-schedule."},
+        "kind": {"enum": ["request", "schedule"]},
+        "title": {"type": "string"},
+        "detail": {"type": "string"},
+        "since": {"anyOf": [{"$ref": "#/$defs/IsoDateTime"}, {"type": "null"}], "description": "When a request began; null for the schedule."}
+      },
+      "required": ["id", "kind", "title", "detail", "since"],
       "additionalProperties": false
     },
     "TaskCounts": {
@@ -613,9 +629,10 @@
         "weekday": {"type": "integer", "minimum": 0, "maximum": 6, "description": "0 is Monday."},
         "hour": {"type": "integer", "minimum": 0, "maximum": 23},
         "next_at": {"anyOf": [{"$ref": "#/$defs/IsoDateTime"}, {"type": "null"}], "description": "When the next draft is due, in local time; null when off. A past time means it runs within a minute."},
-        "last_run": {"anyOf": [{"$ref": "#/$defs/BriefRun"}, {"type": "null"}]}
+        "last_run": {"anyOf": [{"$ref": "#/$defs/BriefRun"}, {"type": "null"}]},
+        "stopped": {"type": "boolean", "description": "The manager has stopped assistants: nothing is prepared until they let them work again."}
       },
-      "required": ["enabled", "weekday", "hour", "next_at", "last_run"],
+      "required": ["enabled", "weekday", "hour", "next_at", "last_run", "stopped"],
       "additionalProperties": false
     },
     "BriefRun": {
@@ -637,7 +654,7 @@
       "description": "What one check of the recurring brief did.",
       "type": "object",
       "properties": {
-        "outcome": {"enum": ["off", "not_due", "done", "waiting", "gave_up", "drafted", "skipped", "failed"]},
+        "outcome": {"enum": ["off", "stopped", "not_due", "done", "waiting", "gave_up", "drafted", "skipped", "failed"]},
         "week_of": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
         "run": {"anyOf": [{"$ref": "#/$defs/BriefRun"}, {"type": "null"}]}
       },
@@ -783,7 +800,7 @@
       "description": "The answer to a question about one project. It is a suggestion shown to the manager and is never saved; the ledger keeps only metadata.",
       "type": "object",
       "properties": {
-        "outcome": {"enum": ["answered", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "provider_failed", "output_refused"]},
+        "outcome": {"enum": ["answered", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "refused_stopped", "provider_failed", "output_refused", "stopped"]},
         "answered_by_model": {"type": "boolean"},
         "reason": {"type": "string", "description": "Written for the manager. Empty only when the model answered."},
         "provider": {"$ref": "#/$defs/AssistantProvider"},
@@ -818,7 +835,7 @@
     },
     "AssistantOutcome": {
       "description": "What happened to one request. Every outcome except 'drafted' returns the draft composed from records.",
-      "enum": ["drafted", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "provider_failed", "output_refused"]
+      "enum": ["drafted", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "refused_stopped", "provider_failed", "output_refused", "stopped"]
     },
     "AssistantDraft": {
       "description": "The answer to asking for an AI draft of the weekly brief. The revision is always a draft; drafted_by_model says whether a model wrote it.",

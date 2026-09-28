@@ -22,6 +22,7 @@ from typing import Any
 from .actions import ActionBoundary
 from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
+from .control import AssistantControl, assistants_at_work
 from .sample import load_sample
 from .memory import WorkspaceMemory
 from .schedule import BriefSchedule
@@ -178,6 +179,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--daily-limit", type=int)
     p = ws_cmd("assistant-off", "disconnect the AI model; back to no model")
     p.add_argument("--by", required=True)
+    p = ws_cmd("assistants-stop", "stop every assistant now: nothing is sent, running work is"
+                                  " abandoned, the recurring brief waits")
+    p.add_argument("--by", required=True)
+    p = ws_cmd("assistants-resume", "let assistants work again (nothing restarts by itself)")
+    p.add_argument("--by", required=True)
     p = ws_cmd("assistant-preview", "exactly what asking the model would send; sends nothing")
     p.add_argument("--week", required=True)
     p.add_argument("--today", required=True)
@@ -290,6 +296,13 @@ def _dispatch(args: argparse.Namespace) -> Any:
             else:
                 feedback_id = ws.address_feedback(args.id, args.response) or args.id
             return {"feedback": feedback_item(ws, feedback_id)}
+        if args.command in ("assistants-stop", "assistants-resume"):
+            control = AssistantControl(ws)
+            if args.command == "assistants-stop":
+                control.stop(args.by)
+            else:
+                control.resume(args.by)
+            return assistants_at_work(ws)
         if args.command.startswith("assistant") or args.command == "note-keep":
             assistant = AssistantService(ws)
             if args.command == "assistant":

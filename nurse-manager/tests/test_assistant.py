@@ -159,11 +159,11 @@ class DefaultPostureTests(_Case):
 
     def test_mission_control_is_honest_about_assistants(self):
         mc = mission_control(self.ws, today=TODAY, week_of=WEEK)
-        self.assertEqual(mc["assistants_at_work"]["state"], "unavailable")
+        self.assertEqual(mc["assistants_at_work"]["state"], "empty")
         self.assertIn("No assistant is connected", mc["assistants_at_work"]["empty_message"])
         self.connect(self.server())
         mc = mission_control(self.ws, today=TODAY, week_of=WEEK)
-        self.assertEqual(mc["assistants_at_work"]["state"], "unavailable")
+        self.assertEqual(mc["assistants_at_work"]["state"], "empty")
         self.assertIn("No assistant is running", mc["assistants_at_work"]["empty_message"])
 
 

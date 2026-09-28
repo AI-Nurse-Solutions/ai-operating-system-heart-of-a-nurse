@@ -15,6 +15,7 @@ import json
 from datetime import date, timedelta
 from typing import Any
 
+from .control import assistants_at_work
 from .services import TASK_STATUSES, ManagerWorkspace
 
 BOARD_COLUMNS = (
@@ -287,26 +288,11 @@ def mission_control(ws: ManagerWorkspace, *, today: str, week_of: str) -> dict[s
         "needs_my_judgment": _section(judgment, "Nothing is waiting on your judgment."),
         "projects_in_motion": _section(projects, "No active projects. Start one from an idea."),
         "follow_ups": _section(follow_ups, "No follow-ups due in the next seven days."),
-        "assistants_at_work": {
-            "state": "unavailable",
-            "items": [],
-            "empty_message": _assistants_message(ws),
-        },
+        "assistants_at_work": assistants_at_work(ws),
         "recent_accepted_outputs": _section(accepted, "No accepted outputs yet."),
         "task_counts": {status: sum(1 for t in tasks if t["status"] == status)
                         for status in TASK_STATUSES},
     }
-
-
-def _assistants_message(ws: ManagerWorkspace) -> str:
-    row = ws.store.conn.execute(
-        "SELECT provider FROM assistant_settings WHERE workspace_id = ?", (ws.info.id,)
-    ).fetchone()
-    if row is None or row["provider"] == "none":
-        return "No assistant is connected. Planning, briefs, and exports work without one."
-    # A model is connected, but nothing runs in the background (G5).
-    return ("No assistant is running. A model on this computer drafts only when you"
-            " ask it to.")
 
 
 def note_dict(row) -> dict[str, Any]:

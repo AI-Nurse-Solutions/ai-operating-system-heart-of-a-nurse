@@ -481,6 +481,30 @@ class RecurringBriefAppTests(_AppCase):
             workspace.close()
         self.assertEqual(count, 1)
 
+    def test_the_app_prepares_nothing_while_assistants_are_stopped(self):
+        stopped = self.envelope("/ipc/assistants-stop", "POST", {})["data"]
+        self.assertEqual((stopped["stopped"], stopped["changed_by"]), (True, "Sample Manager"))
+        self.envelope("/ipc/brief-schedule-set", "POST", {"enabled": True, "weekday": 0, "hour": 0})
+        time.sleep(0.8)  # several scheduler ticks while stopped: nothing happens
+        weekly = self.weekly()
+        self.assertTrue(weekly["schedule"]["stopped"])
+        self.assertIsNone(weekly["schedule"]["last_run"])
+        self.assertIsNone(weekly["current"])
+        mission = self.envelope(f"/ipc/mission?week={self.week}")["data"]["assistants_at_work"]
+        self.assertEqual(mission["items"][0]["id"], "brief-schedule")
+        self.assertIn("Waiting while assistants are stopped", mission["items"][0]["detail"])
+        # Stopping again is always allowed.
+        self.assertTrue(self.envelope("/ipc/assistants-stop", "POST", {})["data"]["stopped"])
+        resumed = self.envelope("/ipc/assistants-resume", "POST", {})["data"]
+        self.assertFalse(resumed["stopped"])
+        again = self.envelope("/ipc/assistants-resume", "POST", {})
+        self.assertEqual((again["ok"], again["error"]["message"]),
+                         (False, "assistants are not stopped"))
+        deadline = time.monotonic() + 10
+        while self.weekly()["schedule"]["last_run"] is None and time.monotonic() < deadline:
+            time.sleep(0.1)
+        self.assertEqual(self.weekly()["schedule"]["last_run"]["status"], "drafted")
+
     def test_settings_are_checked_and_running_it_is_not_a_page_command(self):
         for body in ({"enabled": "yes", "weekday": 0, "hour": 7},
                      {"enabled": True, "weekday": 7, "hour": 7},

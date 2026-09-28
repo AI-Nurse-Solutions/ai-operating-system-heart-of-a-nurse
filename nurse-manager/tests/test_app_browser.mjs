@@ -256,6 +256,23 @@ try {
   assert.match(await samplePage.getByRole('list', { name: 'Facts' }).textContent(), /2 verified · 1 draft awaits evidence/);
   assert.equal(await samplePage.getByLabel('What was the contribution?').inputValue(), 'Typed while saving (synthetic)');
   await samplePage.unroute('**/ipc/contribution-verify');
+  // A save that works but whose refresh fails keeps the screen and the unsaved text.
+  await samplePage.getByLabel('Your part').fill('Typed before a failed refresh.');
+  await samplePage.getByRole('listitem').filter({ hasText: 'Designed the five-part huddle format' })
+    .getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  await samplePage.keyboard.type('Huddle notes from week one (synthetic).');
+  const listRefresh = (/** @type {URL} */ url) => url.pathname === '/ipc/contributions';
+  await samplePage.route(listRefresh, (route) => route.fulfill({
+    contentType: 'application/json',
+    body: JSON.stringify({ contract: 'nurse-manager-ipc@1', command: 'contributions', ok: false,
+      error: { type: 'Unavailable', message: 'the workspace is busy' } }),
+  }));
+  await samplePage.getByRole('button', { name: 'Verify', exact: true }).click();
+  await samplePage.waitForFunction(() => /could not be refreshed/.test(document.activeElement?.textContent ?? ''));
+  await samplePage.unroute(listRefresh);
+  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Typed before a failed refresh.');
+  assert.equal(await samplePage.getByLabel('What was the contribution?').inputValue(), 'Typed while saving (synthetic)');
 
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];

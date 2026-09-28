@@ -429,11 +429,16 @@ export function start(doc, source) {
    * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions'} command
    * @param {number} mine
    * @param {Record<string, string>} [params]
+   * @param {(message: string) => void} [onFail] handle a failed reload instead of showing the error page
    */
-  const reload = async (command, mine, params = {}) => {
+  const reload = async (command, mine, params = {}, onFail) => {
     try {
       const envelope = await source.call(command, params);
       if (mine !== generation) return null;
+      if (!envelope.ok && onFail) {
+        onFail(envelope.error.message);
+        return null;
+      }
       if (!envelope.ok) {
         const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions' }[command];
         show(renderError(doc, ROUTES[view].title, envelope.error), true);
@@ -442,6 +447,10 @@ export function start(doc, source) {
       return envelope.data;
     } catch (error) {
       if (mine !== generation) return null;
+      if (onFail) {
+        onFail(error instanceof Error ? error.message : String(error));
+        return null;
+      }
       show(renderError(doc, 'this page', { type: 'Unavailable', message: error instanceof Error ? error.message : String(error) }), true);
       return null;
     }
@@ -637,15 +646,21 @@ export function start(doc, source) {
         showContributions(data, { verifying: state.verifying, notice: failure, typed: latest() }, true);
         return;
       }
-      const fresh = await reload('contributions', mine);
-      // Re-render from the fresh records, so every button acts on them. The saved
-      // form starts empty; everything else keeps what was typed in it.
+      // The saved form starts empty; everything else keeps what was typed in it.
+      const next = () => {
+        const typed = latest();
+        return command === 'contribution-add'
+          ? { verifying: state.verifying, typed: { add: {}, evidence: typed.evidence } }
+          : { typed: { add: typed.add, evidence: without(typed.evidence, body.contribution_id) } };
+      };
+      // If the save worked but the refresh fails, stay on this screen with the
+      // unsaved text, rather than replacing it with the error page.
+      const fresh = await reload('contributions', mine, {}, (message) => showContributions(data, {
+        ...next(), notice: { kind: 'error', text: `${done} The list could not be refreshed (${message}); open Contributions again to see it.` },
+      }, true));
+      // Re-render from the fresh records, so every button acts on them.
       if (!fresh) return;
-      const typed = latest();
-      const next = command === 'contribution-add'
-        ? { verifying: state.verifying, typed: { add: {}, evidence: typed.evidence } }
-        : { typed: { add: typed.add, evidence: without(typed.evidence, body.contribution_id) } };
-      showContributions(/** @type {import('./views.mjs').Contributions} */ (fresh), { ...next, notice: { kind: 'ok', text: done } }, true);
+      showContributions(/** @type {import('./views.mjs').Contributions} */ (fresh), { ...next(), notice: { kind: 'ok', text: done } }, true);
     };
     /** @type {import('./views.mjs').ContributionsOptions} */
     const options = {

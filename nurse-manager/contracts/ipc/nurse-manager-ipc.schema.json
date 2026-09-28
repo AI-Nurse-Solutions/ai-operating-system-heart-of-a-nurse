@@ -8,7 +8,7 @@
     "IsoDate": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
     "IsoDateTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)$"},
     "Sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air)-[0-9a-f]{12}$"},
+    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note)-[0-9a-f]{12}$"},
     "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed"]},
     "SectionState": {"enum": ["ok", "empty"]},
 
@@ -293,9 +293,10 @@
         "tasks": {"type": "array", "items": {"$ref": "#/$defs/TableRow"}},
         "decisions": {"type": "array", "items": {"$ref": "#/$defs/Decision"}},
         "resources": {"type": "array", "items": {"$ref": "#/$defs/Resource"}},
-        "evidence": {"type": "array", "items": {"$ref": "#/$defs/EvidenceItem"}}
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/EvidenceItem"}},
+        "notes": {"type": "array", "items": {"$ref": "#/$defs/ProjectNote"}, "description": "AI answers the manager chose to keep, newest first."}
       },
-      "required": ["sample", "today", "project", "readiness", "tasks", "decisions", "resources", "evidence"],
+      "required": ["sample", "today", "project", "readiness", "tasks", "decisions", "resources", "evidence", "notes"],
       "additionalProperties": false
     },
     "BoardCard": {
@@ -540,10 +541,30 @@
         "model": {"type": "string"},
         "request_id": {"$ref": "#/$defs/RecordId"},
         "project_id": {"$ref": "#/$defs/RecordId"},
+        "question": {"type": "string", "description": "The question as asked, whitespace normalized. Send it back with note-keep."},
         "answer": {"type": "string", "description": "Markdown with record citations; empty unless the model answered."},
         "source_refs": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}}
       },
-      "required": ["outcome", "answered_by_model", "reason", "provider", "model", "request_id", "project_id", "answer", "source_refs"],
+      "required": ["outcome", "answered_by_model", "reason", "provider", "model", "request_id", "project_id", "question", "answer", "source_refs"],
+      "additionalProperties": false
+    },
+    "ProjectNote": {
+      "description": "An AI answer the manager kept. Its text is exactly what the model answered (proven by the hash the request ledger recorded), and keeping it was the manager's acceptance.",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "project_id": {"$ref": "#/$defs/RecordId"},
+        "request_id": {"$ref": "#/$defs/RecordId"},
+        "question": {"type": "string"},
+        "body_markdown": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/Sha256"},
+        "source_refs": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}},
+        "written_by": {"type": "string", "description": "assistant:<provider>"},
+        "model": {"type": "string"},
+        "kept_by": {"type": "string"},
+        "kept_at": {"$ref": "#/$defs/IsoDateTime"}
+      },
+      "required": ["id", "project_id", "request_id", "question", "body_markdown", "sha256", "source_refs", "written_by", "model", "kept_by", "kept_at"],
       "additionalProperties": false
     },
     "AssistantOutcome": {

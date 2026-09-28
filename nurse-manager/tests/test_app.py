@@ -204,6 +204,16 @@ class WorkspaceWriteTests(_AppCase):
         self.assertEqual(server.requests[-1]["body"]["prompt"], asked["prompt"])
         self.assertEqual(self.request("/ipc/assistant-project", "POST",
                                       {"id": "nope", "question": question, "prompt_sha256": ""})[0], 400)
+        # Keeping the answer as a note: only the exact answer, and as the owner.
+        keep = {"request_id": answer["request_id"], "project_id": project_id,
+                "question": answer["question"], "answer": answer["answer"]}
+        edited = self.envelope("/ipc/note-keep", "POST", {**keep, "answer": "Edited."})
+        self.assertFalse(edited["ok"])
+        note = self.envelope("/ipc/note-keep", "POST", {**keep, "kept_by": "Someone Else"})["data"]
+        self.assertEqual(note["kept_by"], "Sample Manager")
+        dashboard = self.envelope(f"/ipc/project?id={project_id}")["data"]
+        self.assertEqual([n["id"] for n in dashboard["notes"]], [note["id"]])
+        self.assertEqual(self.request("/ipc/note-keep", "POST", {**keep, "request_id": "x"})[0], 400)
         self.assertEqual(self.envelope("/ipc/assistant-off", "POST", {})["data"]["provider"], "none")
 
 

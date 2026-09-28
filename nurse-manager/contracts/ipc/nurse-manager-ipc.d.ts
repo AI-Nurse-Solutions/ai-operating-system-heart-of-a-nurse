@@ -244,6 +244,8 @@ export interface ProjectAnswer {
   readonly model: string;
   readonly request_id: RecordId;
   readonly project_id: RecordId;
+  /** The question as asked, whitespace normalized. Send it back with note-keep. */
+  readonly question: string;
   /** Markdown with record citations; empty unless the model answered. */
   readonly answer: string;
   readonly source_refs: readonly RecordId[];
@@ -259,6 +261,24 @@ export interface ProjectDashboard {
   readonly decisions: readonly Decision[];
   readonly resources: readonly Resource[];
   readonly evidence: readonly EvidenceItem[];
+  /** AI answers the manager chose to keep, newest first. */
+  readonly notes: readonly ProjectNote[];
+}
+
+/** An AI answer the manager kept. Its text is exactly what the model answered (proven by the hash the request ledger recorded), and keeping it was the manager's acceptance. */
+export interface ProjectNote {
+  readonly id: RecordId;
+  readonly project_id: RecordId;
+  readonly request_id: RecordId;
+  readonly question: string;
+  readonly body_markdown: string;
+  readonly sha256: Sha256;
+  readonly source_refs: readonly RecordId[];
+  /** assistant:<provider> */
+  readonly written_by: string;
+  readonly model: string;
+  readonly kept_by: string;
+  readonly kept_at: IsoDateTime;
 }
 
 /** Exactly what asking the model about one project would send, and the gates' verdicts. Nothing is sent to produce it. With no model connected, system and prompt are empty and will_send is false. */
@@ -335,7 +355,7 @@ export interface Receipt {
   readonly recorded_at: IsoDateTime;
 }
 
-/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air)-[0-9a-f]{12}$ */
+/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
 export interface Resource {
@@ -460,6 +480,7 @@ export interface CommandData {
   readonly "assistant-preview": AssistantPreview;
   readonly "assistant-project-preview": ProjectQuestionPreview;
   readonly "assistant-project": ProjectAnswer;
+  readonly "note-keep": ProjectNote;
 }
 
 export type Command = keyof CommandData;

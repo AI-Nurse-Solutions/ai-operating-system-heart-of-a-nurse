@@ -105,7 +105,7 @@ export function httpSource(token = '') {
 }
 
 /** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant'} ReadCommand */
-/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project'} WriteCommand */
+/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -268,6 +268,28 @@ export function start(doc, source) {
             : { notice: { kind: 'unanswered', text: answer.reason } };
         }),
         onCancel: () => { think = { question: think.question }; redraw('#think-question'); },
+        onKeep: async () => {
+          const answer = think.answer;
+          if (!answer) return;
+          const mine2 = generation;
+          think = { ...think, busy: true };
+          redraw();
+          const { failure } = await write('note-keep', {
+            request_id: answer.request_id, project_id: dashboard.project.id,
+            question: answer.question, answer: answer.answer,
+          });
+          if (mine2 !== generation) return;
+          if (failure) {
+            think = { question: think.question, answer, notice: failure };
+            redraw('#think .notice');
+            announce(failure.text);
+            return;
+          }
+          await render(false); // reload the dashboard so the note shows from the records
+          const heading = doc.getElementById('notes-heading');
+          if (heading) heading.focus();
+          announce('Kept as a project note.');
+        },
         onEdit: (/** @type {string} */ question) => {
           think = { question };
           announce('The question changed. Preview it again before sending.');

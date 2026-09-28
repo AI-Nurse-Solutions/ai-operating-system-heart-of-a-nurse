@@ -239,6 +239,15 @@ try {
     assert.match(await think.textContent(), /Not saved/);
     assert.equal(await think.getByLabel('What do you want to think through?').inputValue(), 'What should I do first?');
 
+    // Keep the answer: it becomes a note on the dashboard, labeled with where it came from.
+    assert.match(await samplePage.getByRole('region', { name: /^Notes/ }).textContent(), /No notes yet/);
+    await think.getByRole('button', { name: 'Keep as a project note' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'notes-heading');
+    const notes = samplePage.getByRole('region', { name: 'Notes (1)' });
+    const note = notes.getByRole('article', { name: 'What should I do first?' });
+    assert.match(await note.textContent(), /Kept.*Written by the AI model “llama3\.2”; kept by Sample Manager/s);
+    assert.match(await note.getByRole('document').textContent(), /Title: .+prj-[0-9a-f]{12}/);
+
     // Disconnect: back to no model.
     await samplePage.getByRole('link', { name: 'AI assistance' }).click();
     await samplePage.waitForSelector('.view--assistant');

@@ -436,8 +436,37 @@ export function renderProject(doc, data, sort, onSort, think) {
       : taskTable(doc, data.tasks, ['task', 'owner', 'due_date', 'status', 'next_action', 'evidence'],
         sort, onSort, 'project-tasks-caption', `${project.title} tasks`),
   ]));
+  root.append(notesSection(doc, data.notes));
   if (think) root.append(thinkSection(doc, think));
   return root;
+}
+
+/**
+ * AI answers the manager chose to keep. Each says where it came from.
+ * @param {Document} doc
+ * @param {ProjectDashboard['notes']} notes
+ */
+function notesSection(doc, notes) {
+  const section = h(doc, 'section', { class: 'mc-section notes-section', id: 'notes', 'aria-labelledby': 'notes-heading' }, [
+    h(doc, 'h2', { id: 'notes-heading', tabindex: '-1' }, [`Notes (${notes.length})`]),
+  ]);
+  if (notes.length === 0) {
+    section.append(h(doc, 'p', { class: 'section-state section-state--empty' }, [
+      'No notes yet. Ask a question below and keep an answer you want to remember.',
+    ]));
+    return section;
+  }
+  for (const note of notes) {
+    section.append(h(doc, 'article', { class: 'note', 'data-record-id': note.id, 'aria-label': note.question }, [
+      h(doc, 'h3', {}, [note.question]),
+      h(doc, 'p', { class: 'card__meta' }, [
+        badge(doc, 'accepted', '✓', 'Kept'),
+        ` Written by the AI model “${note.model}”; kept by ${note.kept_by} on ${note.kept_at.slice(0, 10)}.`,
+      ]),
+      markdownBlock(doc, note.body_markdown, `Note: ${note.question}`),
+    ]));
+  }
+  return section;
 }
 
 /**
@@ -452,7 +481,7 @@ function thinkSection(doc, think) {
     h(doc, 'h2', { id: 'think-heading' }, ['Think with this project']),
     h(doc, 'p', {}, [
       'Ask the AI model a question about this project. You will see exactly what would be sent before anything is. ',
-      'Answers are suggestions, and they are not saved.',
+      'Answers are suggestions. Nothing is saved unless you keep an answer as a project note.',
     ]),
   ]);
   const notice = noticeBlock(doc, think.notice);
@@ -507,6 +536,11 @@ function thinkSection(doc, think) {
         ` From the AI model “${think.answer.model}”. Check it against the records it cites; you decide what to do.`,
       ]),
       markdownBlock(doc, think.answer.answer, 'AI suggestion'),
+      think.onKeep
+        ? h(doc, 'p', { class: 'button-row' }, [
+          button(doc, 'Keep as a project note', busy, think.onKeep, 'secondary-button'),
+        ])
+        : null,
     ]));
   }
   return section;
@@ -620,6 +654,7 @@ export function renderOnboarding(doc, handlers, state = {}) {
  * @property {(sha: string) => void} onSend
  * @property {() => void} onCancel
  * @property {(question: string) => void} [onEdit] the question changed after a preview
+ * @property {() => void} [onKeep] keep the shown answer as a project note
  */
 
 /**

@@ -11,6 +11,7 @@ shows a progress percentage without a defined denominator.
 
 from __future__ import annotations
 
+import json
 from datetime import date, timedelta
 from typing import Any
 
@@ -169,6 +170,15 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
         "decisions": decisions,
         "resources": resources,
         "evidence": evidence,
+        # Kept AI answers, newest first. Each was kept by the manager on purpose.
+        "notes": [
+            note_dict(n)
+            for n in db.execute(
+                "SELECT * FROM project_notes WHERE workspace_id = ? AND project_id = ?"
+                " ORDER BY kept_at DESC, id",
+                (ws.info.id, project_id),
+            )
+        ],
     }
 
 
@@ -286,3 +296,20 @@ def _assistants_message(ws: ManagerWorkspace) -> str:
     # A model is connected, but nothing runs in the background (G5).
     return ("No assistant is running. A model on this computer drafts only when you"
             " ask it to.")
+
+
+def note_dict(row) -> dict[str, Any]:
+    """A kept project note, in the contract's ProjectNote shape."""
+    return {
+        "id": row["id"],
+        "project_id": row["project_id"],
+        "request_id": row["request_id"],
+        "question": row["question"],
+        "body_markdown": row["body_markdown"],
+        "sha256": row["body_sha256"],
+        "source_refs": json.loads(row["source_refs"]),
+        "written_by": row["written_by"],
+        "model": row["model"],
+        "kept_by": row["kept_by"],
+        "kept_at": row["kept_at"],
+    }

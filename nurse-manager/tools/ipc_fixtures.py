@@ -135,8 +135,17 @@ def collect(workdir: Path) -> dict[str, dict]:
         question = "What should I do first?"
         asked = keep("assistant-project-preview", "assistant-project-preview", ws,
                      "--id", project_id, "--today", TODAY, "--question", question)
-        keep("assistant-project", "assistant-project", ws, "--id", project_id, "--today", TODAY,
-             "--question", question, "--by", OWNER, "--reviewed-sha", asked["prompt_sha256"])
+        answer = keep("assistant-project", "assistant-project", ws, "--id", project_id,
+                      "--today", TODAY, "--question", question, "--by", OWNER,
+                      "--reviewed-sha", asked["prompt_sha256"])
+        keep("error-note-keep-edited", "note-keep", ws, "--request", answer["request_id"],
+             "--project", project_id, "--question", question,
+             "--answer", answer["answer"] + "\nAn added line.", "--by", OWNER)
+        keep("note-keep", "note-keep", ws, "--request", answer["request_id"],
+             "--project", project_id, "--question", answer["question"],
+             "--answer", answer["answer"], "--by", OWNER)
+        keep(f"project-with-note-{project_id}", "project", ws, "--id", project_id,
+             "--today", TODAY)
     keep("error-assistant-project-empty-question", "assistant-project-preview", ws,
          "--id", project_id, "--today", TODAY, "--question", "  ")
     keep("mission-assistant-connected", "mission", ws, "--today", TODAY, "--week", WEEK)

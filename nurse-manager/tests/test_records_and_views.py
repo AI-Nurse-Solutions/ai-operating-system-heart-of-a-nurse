@@ -85,7 +85,8 @@ class StoreTests(_TempCase):
         backup = ws.store.backup(self.tmp / "backups" / "b1.sqlite")
         old = sqlite3.connect(str(backup))
         old.executescript(
-            "DROP TABLE assistant_requests; DROP TABLE assistant_settings;"
+            "DROP TABLE project_notes; DROP TABLE assistant_requests;"
+            " DROP TABLE assistant_settings;"
             " DELETE FROM schema_migrations WHERE version != '0001_initial';"
         )
         old.close()

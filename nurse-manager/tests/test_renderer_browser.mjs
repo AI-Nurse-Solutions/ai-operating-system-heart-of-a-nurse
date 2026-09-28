@@ -207,6 +207,7 @@ try {
   assert.match(await page.getByRole('region', { name: 'Think with this project' }).textContent(),
     /Read-only.*Asking is available in the Nurse AI OS app/s);
   assert.equal(await page.getByLabel('What do you want to think through?').count(), 0, 'no question box on the dev host');
+  assert.match(await page.getByRole('region', { name: 'Notes (0)' }).textContent(), /No notes yet/);
   const projectTable = page.getByRole('table', { name: /Unit Based Council charter refresh tasks, sorted by Due date, ascending/ });
   assert.ok(await projectTable.isVisible());
   await page.getByRole('button', { name: /^Task/ }).click();

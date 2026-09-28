@@ -187,6 +187,9 @@ try {
   assert.equal(await page.title(), 'Weekly brief — Nurse AI OS');
   assert.match(await page.locator('.view--brief').textContent(), /Read-only.*available in the Nurse AI OS app/s);
   assert.equal(await page.getByRole('button', { name: 'Draft from my records' }).count(), 0, 'no writes on the dev host');
+  assert.match(await page.getByRole('region', { name: 'Every week' }).textContent(),
+    /Off.*runs only while Nurse AI OS is open on this computer.*never an AI model/s);
+  assert.equal(await page.locator('#schedule-enabled').count(), 0, 'no schedule settings on the dev host');
   const briefDoc = page.getByRole('document', { name: 'Weekly brief, version 1' });
   assert.match(await briefDoc.textContent(), /<img src=x onerror="window\.__injected=1">Agenda/);
   assert.equal(await briefDoc.locator('img').count(), 0);

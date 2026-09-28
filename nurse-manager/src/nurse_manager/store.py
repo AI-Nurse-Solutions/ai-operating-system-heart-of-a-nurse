@@ -100,6 +100,12 @@ class Store:
             if version in applied:
                 continue
             with self.transaction():
+                # Checked again inside the write lock: another process opening
+                # the same workspace (the app's scheduler during onboarding, say)
+                # may have applied it since the read above.
+                if self.conn.execute("SELECT 1 FROM schema_migrations WHERE version = ?",
+                                     (version,)).fetchone():
+                    continue
                 for statement in _split_sql(sql):
                     self.conn.execute(statement)
                 self.conn.execute(

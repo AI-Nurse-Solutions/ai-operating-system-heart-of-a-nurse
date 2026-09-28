@@ -6,7 +6,7 @@
 // its own validated IPC without touching any view.
 
 import {
-  renderAssistant, renderBoard, renderBrief, renderContributions, renderError, typedContributions, renderLearning, renderLibrary, renderMission, renderOnboarding,
+  renderAssistant, renderBoard, renderBrief, renderContributions, renderError, typedContributions, typedSchedule, renderLearning, renderLibrary, renderMission, renderOnboarding,
   renderProject, renderTable,
 } from './views.mjs';
 
@@ -26,7 +26,7 @@ import {
  * @typedef {object} Source
  * @property {(command: ReadCommand | 'assistant-preview' | 'assistant-project-preview', params?: Record<string, string>) => Promise<Envelope>} call
  * @property {() => Promise<AppStatus | null>} [status] null means a read-only development host
- * @property {(command: WriteCommand, body: Record<string, string>) => Promise<Envelope>} [send]
+ * @property {(command: WriteCommand, body: WriteBody) => Promise<Envelope>} [send]
  * @property {() => Promise<void>} [heartbeat]
  * @property {() => Promise<void>} [quit]
  */
@@ -105,9 +105,10 @@ export function httpSource(token = '') {
   };
 }
 
+/** @typedef {Record<string, string | number | boolean>} WriteBody */
 /** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions'} ReadCommand */
 /** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'
- *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify'} WriteCommand */
+ *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify' | 'brief-schedule-set'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -410,7 +411,7 @@ export function start(doc, source) {
   /**
    * Send one write and return its envelope, or a notice describing the failure.
    * @param {WriteCommand} command
-   * @param {Record<string, string>} body
+   * @param {WriteBody} body
    * @returns {Promise<{ envelope?: Envelope, failure?: import('./views.mjs').Notice }>}
    */
   const write = async (command, body) => {
@@ -458,7 +459,7 @@ export function start(doc, source) {
 
   /**
    * @param {import('./views.mjs').WeeklyBrief} data
-   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, preview?: import('./views.mjs').AssistantPreview | null }} state
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, preview?: import('./views.mjs').AssistantPreview | null, scheduleDraft?: import('./views.mjs').ScheduleFields | null }} state
    * @param {boolean} moveFocus
    * @param {string} [focusSelector]
    */
@@ -466,13 +467,19 @@ export function start(doc, source) {
     const mine = generation;
     // Every action stays on the week the page shows, even across a Monday.
     const week = data.week_of;
-    /** @param {import('./views.mjs').Notice} [notice] */
-    const refresh = async (notice) => {
+    // Unsaved "Every week" choices survive every re-render of this page.
+    const scheduleDraft = () => typedSchedule(main) ?? state.scheduleDraft ?? null;
+    /**
+     * @param {import('./views.mjs').Notice} [notice]
+     * @param {import('./views.mjs').ScheduleFields | null} [kept]
+     */
+    const refresh = async (notice, kept = scheduleDraft()) => {
       const fresh = await reload('weekly', mine, { week });
-      if (fresh) showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (fresh), { notice }, true);
+      if (fresh) showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (fresh), { notice, scheduleDraft: kept }, true);
     };
     /** @param {Promise<void>} work */
     const busyWhile = (work) => {
+      state = { ...state, scheduleDraft: scheduleDraft() };
       main.replaceChildren(renderBrief(doc, data, { ...handlers, ...state, busy: true }));
       main.setAttribute('aria-busy', 'true');
       return work;
@@ -488,15 +495,15 @@ export function start(doc, source) {
           const envelope = await source.call('assistant-preview', { week });
           if (mine !== generation) return;
           if (!envelope.ok) {
-            showBrief(data, { notice: { kind: 'error', text: envelope.error.message } }, true);
+            showBrief(data, { notice: { kind: 'error', text: envelope.error.message }, scheduleDraft: state.scheduleDraft }, true);
             return;
           }
           const preview = /** @type {import('./views.mjs').AssistantPreview} */ (envelope.data);
-          showBrief(data, { preview }, true, '#preview-heading');
+          showBrief(data, { preview, scheduleDraft: state.scheduleDraft }, true, '#preview-heading');
           announce('Showing exactly what would be sent. Nothing has been sent yet.');
         } catch (error) {
           if (mine !== generation) return;
-          showBrief(data, { notice: { kind: 'error', text: error instanceof Error ? error.message : String(error) } }, true);
+          showBrief(data, { notice: { kind: 'error', text: error instanceof Error ? error.message : String(error) }, scheduleDraft: state.scheduleDraft }, true);
         }
       })()),
       onSend: (/** @type {string} */ sha) => busyWhile((async () => {
@@ -511,10 +518,17 @@ export function start(doc, source) {
           ? { kind: 'ok', text: 'The AI model drafted a new version. Check every line against your records before you accept it.' }
           : { kind: 'fallback', text: result.reason });
       })()),
-      onCancel: () => showBrief(data, {}, true),
+      onCancel: () => showBrief(data, { scheduleDraft: scheduleDraft() }, true),
       onAccept: (/** @type {import('./views.mjs').Revision} */ revision) => busyWhile((async () => {
         const { failure } = await write('accept', { revision: revision.id, sha256: revision.sha256 });
         await refresh(failure || { kind: 'ok', text: `Version ${revision.revision_no} is accepted.` });
+      })()),
+      onSchedule: (/** @type {import('./views.mjs').ScheduleFields} */ fields) => busyWhile((async () => {
+        const { failure } = await write('brief-schedule-set', fields);
+        // Saved: show what was saved. Refused: keep the choices to fix them.
+        await refresh(failure || { kind: 'ok', text: fields.enabled
+          ? 'Saved. A draft from your records will be prepared every week while the app is open.'
+          : 'Saved. The weekly draft is off.' }, failure ? fields : null);
       })()),
     };
     const view = renderBrief(doc, data, { ...handlers, ...state });

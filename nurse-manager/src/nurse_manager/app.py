@@ -51,6 +51,8 @@ from .devhost import (
 from .services import ManagerWorkspace
 
 DEFAULT_IDLE_TIMEOUT = 15 * 60
+# How often the running app asks whether the recurring brief is due (step 5.1).
+SCHEDULE_INTERVAL = 60.0
 MAX_BODY = 64 * 1024  # room for an AI answer being kept as a note
 LOCK_NAME = "app.lock.json"
 
@@ -60,7 +62,7 @@ LOCK_NAME = "app.lock.json"
 WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief",
                   "assistant-project", "note-keep", "feedback-add", "feedback-address",
                   "source-add", "learning-add", "learning-start", "learning-complete",
-                  "contribution-add", "contribution-verify")
+                  "contribution-add", "contribution-verify", "brief-schedule-set")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
@@ -129,7 +131,8 @@ def _launch_token() -> str:
 class LocalApp:
     """One running instance: its token, workspace, and lifetime."""
 
-    def __init__(self, home: Path, *, port: int = 0, idle_timeout: float = DEFAULT_IDLE_TIMEOUT):
+    def __init__(self, home: Path, *, port: int = 0, idle_timeout: float = DEFAULT_IDLE_TIMEOUT,
+                 schedule_interval: float = SCHEDULE_INTERVAL):
         self.home = Path(home)
         self.home.mkdir(parents=True, exist_ok=True)
         # Taken before anything else, so a second launch changes nothing.
@@ -137,6 +140,7 @@ class LocalApp:
         self.workspace = self.home / "workspace"
         self.token = _launch_token()
         self.idle_timeout = idle_timeout
+        self.schedule_interval = schedule_interval
         self.last_seen = time.monotonic()
         self.stopping = threading.Event()
         self.ready = threading.Event()  # set once the lock file names this instance
@@ -195,6 +199,7 @@ class LocalApp:
         self.ready.set()
         watchdog = threading.Thread(target=self._watch_idle, daemon=True)
         watchdog.start()
+        threading.Thread(target=self._run_schedule, daemon=True).start()
         try:
             self.server.serve_forever(poll_interval=0.25)
         finally:
@@ -211,6 +216,19 @@ class LocalApp:
         while not self.stopping.wait(1.0):
             if time.monotonic() - self.last_seen > self.idle_timeout:
                 self.stop()
+
+    def _run_schedule(self) -> None:
+        """The recurring weekly brief runs only while this app runs ("when this
+        device is awake"): once at start, so a time slept through is caught up,
+        then every interval. It is not activity, so it never keeps the app open."""
+        while True:
+            if (self.workspace / "workspace.sqlite").is_file():
+                try:
+                    cli.run(["brief-run-due", str(self.workspace)])
+                except Exception:  # noqa: BLE001 - a failure is recorded; try again later
+                    pass
+            if self.stopping.wait(self.schedule_interval):
+                return
 
     # -- HTTP -------------------------------------------------------------
 
@@ -407,6 +425,13 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         argv = ["learning-complete", ws, "--id", learning_id, "--takeaway", takeaway,
                 "--completed", completed]
         return argv + (["--hours", hours] if hours else [])
+    if command == "brief-schedule-set":
+        enabled, weekday, hour = body.get("enabled"), body.get("weekday"), body.get("hour")
+        if (not isinstance(enabled, bool) or type(weekday) is not int or not 0 <= weekday <= 6
+                or type(hour) is not int or not 0 <= hour <= 23):
+            return "enabled is true or false; weekday is 0 (Monday) to 6; hour is 0 to 23"
+        return ["brief-schedule-set", ws, "--enabled", "yes" if enabled else "no",
+                "--weekday", str(weekday), "--hour", str(hour), "--by", owner]
     if command == "contribution-add":
         title, kind = text("title", 400), text("kind", 40)
         my_part, shared = text("my_part", 2000), text("shared_credit", 400)

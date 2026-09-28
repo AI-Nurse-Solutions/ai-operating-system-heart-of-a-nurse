@@ -187,6 +187,18 @@ def collect(workdir: Path) -> dict[str, dict]:
          "--id", project_id, "--today", TODAY, "--question", "  ")
     keep("mission-assistant-connected", "mission", ws, "--today", TODAY, "--week", WEEK)
     keep("assistant-off", "assistant-off", ws, "--by", OWNER)
+    # The recurring brief runs on the real clock, so it gets a workspace of its
+    # own: whatever the date, it cannot change the fixtures above.
+    scheduled = workdir / "scheduled"
+    keep("sample-scheduled", "sample", scheduled)
+    keep("brief-run-due-off", "brief-run-due", scheduled)
+    keep("error-brief-schedule-set-not-owner", "brief-schedule-set", scheduled, "--enabled",
+         "yes", "--weekday", "0", "--hour", "0", "--by", "Someone Else")
+    keep("brief-schedule-set", "brief-schedule-set", scheduled, "--enabled", "yes",
+         "--weekday", "0", "--hour", "0", "--by", "Sample Manager")
+    keep("brief-run-due", "brief-run-due", scheduled)
+    keep("brief-run-due-again", "brief-run-due", scheduled)
+    keep("weekly-with-schedule", "weekly", scheduled, "--week", WEEK)
     return out
 
 

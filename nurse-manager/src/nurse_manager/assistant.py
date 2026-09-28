@@ -287,7 +287,7 @@ class AssistantService:
         """The manager explicitly connects a model on their own computer."""
         self._owner(by)
         model = model.strip()
-        if not MODEL_NAME.match(model):
+        if not MODEL_NAME.fullmatch(model):
             raise AssistantError(
                 "enter the local model's name as the model server lists it, e.g. llama3.2"
             )

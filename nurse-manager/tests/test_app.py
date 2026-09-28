@@ -213,7 +213,10 @@ class WorkspaceWriteTests(_AppCase):
                               ("memory-add", {"content": "x", "expires_on": "soon"}),
                               ("memory-correct", {"memory_id": mid}),
                               ("memory-exclude", {"memory_id": "nope"}),
-                              ("memory-delete", {})):
+                              ("memory-delete", {}),
+                              # A trailing newline is not part of an id.
+                              ("memory-exclude", {"memory_id": mid + "\n"}),
+                              ("memory-add", {"content": "x", "project_id": project + "\n"})):
             with self.subTest(command=command, body=body):
                 self.assertEqual(self.request(f"/ipc/{command}", "POST", body)[0], 400)
 

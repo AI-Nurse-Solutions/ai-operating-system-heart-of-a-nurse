@@ -102,7 +102,7 @@ class WorkspaceMemory(MemoryInterface):
             raise MemoryRefused("nothing is remembered without the manager's say-so")
         if record.tenant != self.ws.info.id:
             raise MemoryRefused("a memory belongs to this workspace only")
-        if not MEMORY_ID.match(record.memory_id or ""):
+        if not MEMORY_ID.fullmatch(record.memory_id or ""):
             raise MemoryRefused("a memory id looks like mem- and 12 hex digits")
         if not record.provenance.strip():
             raise MemoryRefused("a memory without provenance is not stored")

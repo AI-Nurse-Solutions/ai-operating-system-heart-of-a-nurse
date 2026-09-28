@@ -76,7 +76,7 @@ def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
         argv += ["--week", week]
     elif command in ("project", "assistant-project-preview"):
         project_id = (query.get("id") or [""])[0]
-        if not _PROJECT_ID.match(project_id):
+        if not _PROJECT_ID.fullmatch(project_id):
             return "id must be a project record id"
         argv += ["--id", project_id, "--today", day]
         if command == "assistant-project-preview":
@@ -88,7 +88,7 @@ def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
 
 
 def _valid_date(value: str) -> bool:
-    if not _DATE.match(value):
+    if not _DATE.fullmatch(value):
         return False
     try:
         date.fromisoformat(value)

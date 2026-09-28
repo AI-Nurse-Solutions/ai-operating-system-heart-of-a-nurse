@@ -56,8 +56,9 @@ class ContractTests(_Case):
         with self.assertRaises(CaptureRefused):
             self.mem.remember(replace(record, provenance="Written by jane.doe@example.org"),
                               "remember")
-        with self.assertRaises(MemoryRefused):
-            self.mem.remember(replace(record, memory_id="jane.doe@example.org"), "remember")
+        for bad_id in ("jane.doe@example.org", "mem-000000000001\n"):
+            with self.subTest(memory_id=bad_id), self.assertRaises(MemoryRefused):
+                self.mem.remember(replace(record, memory_id=bad_id), "remember")
         # Governance fields are kept or refused, never broadened.
         with self.assertRaises(MemoryRefused):
             self.mem.remember(replace(record, role_scope="admin"), "remember")

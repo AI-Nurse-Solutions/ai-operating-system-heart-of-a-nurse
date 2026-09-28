@@ -148,6 +148,24 @@ try {
   await samplePage.waitForFunction(() => /Version 1 is accepted/.test(document.activeElement?.textContent ?? ''));
   assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by Sample Manager/);
 
+  // --- Library: add a source through the capture rules ------------------
+  await samplePage.getByRole('link', { name: 'Library' }).click();
+  await samplePage.waitForSelector('.view--library');
+  assert.equal(await samplePage.locator('.view--library tbody tr').count(), 3);
+  await samplePage.getByLabel('Title').fill('Email me at manager@example.org');
+  await samplePage.getByLabel('Where it is').fill('synthetic://refused');
+  await samplePage.getByRole('button', { name: 'Add source' }).click();
+  await samplePage.waitForSelector('.view--library .notice[role="alert"]');
+  assert.match(await samplePage.locator('.notice').textContent(), /EMAIL_ADDRESS/);
+  await samplePage.getByLabel('Title').fill('Huddle evaluation questions (synthetic)');
+  await samplePage.getByLabel('Kind').selectOption('synthetic');
+  await samplePage.getByLabel('Where it is').fill('synthetic://samples/huddle-evaluation');
+  await samplePage.getByLabel('Project').selectOption({ label: 'Huddle format pilot' });
+  await samplePage.getByRole('button', { name: 'Add source' }).click();
+  await samplePage.waitForFunction(() => /Added “Huddle evaluation questions/.test(document.activeElement?.textContent ?? ''));
+  assert.equal(await samplePage.locator('.view--library tbody tr').count(), 4);
+  assert.match(await samplePage.locator('.view--library tbody').textContent(), /Huddle evaluation questions.*Huddle format pilot/s);
+
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];
   const model = createServer((req, res) => {
@@ -282,7 +300,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

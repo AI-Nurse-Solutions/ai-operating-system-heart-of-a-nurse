@@ -156,6 +156,25 @@ class WorkspaceWriteTests(_AppCase):
             "revision": draft["id"], "sha256": draft["sha256"], "reviewer": "Someone Else"})
         self.assertEqual(accepted["data"]["accepted_by"], "Sample Manager")
 
+    def test_sources_from_the_screens(self):
+        lib = self.envelope("/ipc/library?today=2026-09-30")["data"]
+        self.assertEqual(len(lib["items"]), 3)
+        added = self.envelope("/ipc/source-add", "POST", {
+            "title": "Huddle evaluation questions", "kind": "synthetic",
+            "reference": "synthetic://huddle-evaluation", "data_class": "D0",
+            "project_id": lib["projects"][0]["id"], "review_date": "2027-01-31"})["data"]
+        self.assertEqual(added["source"]["project_id"], lib["projects"][0]["id"])
+        for body in ({"title": "T", "kind": "internal", "reference": "r"},
+                     {"title": "T", "kind": "public", "reference": "r", "data_class": "D2"},
+                     {"title": "T", "kind": "public", "reference": "r", "review_date": "soon"},
+                     {"title": "T", "kind": "public", "reference": "r", "project_id": "nope"}):
+            with self.subTest(body=body):
+                self.assertEqual(self.request("/ipc/source-add", "POST", body)[0], 400)
+        refused = self.envelope("/ipc/source-add", "POST", {
+            "title": "Email jane.doe@example.org", "kind": "public", "reference": "r"})
+        self.assertEqual(refused["error"]["type"], "CaptureRefused")
+        self.assertEqual(len(self.envelope("/ipc/library")["data"]["items"]), 4)
+
     def test_feedback_from_the_screens(self):
         mission = self.envelope("/ipc/mission")["data"]
         project_id = mission["projects_in_motion"]["items"][0]["id"]

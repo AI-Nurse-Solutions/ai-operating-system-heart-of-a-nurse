@@ -24,7 +24,7 @@ from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
 from .sample import load_sample
 from .services import ManagerError, ManagerWorkspace
-from .views import board, feedback_item, mission_control, project_dashboard, table
+from .views import board, feedback_item, library, mission_control, project_dashboard, table
 
 
 CONTRACT = "nurse-manager-ipc@1"
@@ -56,6 +56,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--today", required=True)
     ws_cmd("board", "task board")
     ws_cmd("table", "task table")
+    p = ws_cmd("library", "every source in the workspace; overdue reviews first")
+    p.add_argument("--today", required=True)
+    p = ws_cmd("source-add", "add a source (public, synthetic, or permitted personal material)")
+    p.add_argument("--title", required=True)
+    p.add_argument("--kind", required=True, choices=("public", "synthetic", "personal_permitted"))
+    p.add_argument("--reference", required=True)
+    p.add_argument("--data-class", default="D0", choices=("D0", "D1"))
+    p.add_argument("--project")
+    p.add_argument("--review", help="YYYY-MM-DD: when to check it is still current")
     p = ws_cmd("feedback-add", "record feedback about a project's work (from a group or role)")
     p.add_argument("--project", required=True)
     p.add_argument("--from", dest="from_group", required=True)
@@ -156,6 +165,14 @@ def _dispatch(args: argparse.Namespace) -> Any:
             return board(ws)
         if args.command == "table":
             return table(ws)
+        if args.command == "library":
+            return library(ws, today=args.today)
+        if args.command == "source-add":
+            source_id = ws.add_source(args.title, args.kind, args.reference,
+                                      data_class=args.data_class, project_id=args.project,
+                                      review_date=args.review)
+            return {"source": next(i for i in library(ws, today=ws.clock()[:10])["items"]
+                                   if i["id"] == source_id)}
         if args.command in ("feedback-add", "feedback-address"):
             if args.command == "feedback-add":
                 feedback_id = ws.add_feedback(args.project, args.from_group, args.kind,

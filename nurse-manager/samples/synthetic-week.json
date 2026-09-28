@@ -47,6 +47,14 @@
     {"project": "huddle", "title": "Huddle format one-pager (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/huddle-format-one-pager", "data_class": "D0", "review_date": "2027-03-31"},
     {"project": "ubc", "title": "Council charter template (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/council-charter-template", "data_class": "D0", "review_date": "2026-09-01"}
   ],
+  "library": [
+    {
+      "title": "Meeting facilitation checklist (synthetic)",
+      "kind": "synthetic",
+      "reference": "synthetic://samples/meeting-facilitation-checklist",
+      "data_class": "D0"
+    }
+  ],
   "feedback": [
     {
       "project": "huddle",

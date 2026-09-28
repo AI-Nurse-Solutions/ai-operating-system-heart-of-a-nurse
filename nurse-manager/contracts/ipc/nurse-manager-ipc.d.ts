@@ -218,6 +218,33 @@ export interface JudgmentSection {
   readonly empty_message: string;
 }
 
+/** Every source in the workspace, overdue reviews first. */
+export interface Library {
+  readonly sample: boolean;
+  readonly today: IsoDate;
+  readonly items: readonly LibraryItem[];
+  /** @minimum 0 */
+  readonly review_overdue: number;
+  /** Projects a new source can belong to. */
+  readonly projects: readonly {
+    readonly id: RecordId;
+    readonly title: string;
+  }[];
+}
+
+/** One source in the workspace. The reference is shown as text, never opened by the app. */
+export interface LibraryItem {
+  readonly id: RecordId;
+  readonly title: string;
+  readonly kind: "public" | "synthetic" | "personal_permitted";
+  readonly reference: string;
+  readonly data_class: "D0" | "D1";
+  readonly project_id: RecordId | null;
+  readonly project: string | null;
+  readonly review_date: IsoDate | null;
+  readonly review_overdue: boolean;
+}
+
 /** What needs my attention? Every section reads the same records as the board and table. */
 export interface MissionControl {
   readonly workspace: string;
@@ -428,6 +455,10 @@ export interface ShownRevision {
   readonly markdown: string;
 }
 
+export interface SourceResult {
+  readonly source: LibraryItem;
+}
+
 export interface Table {
   readonly sample: boolean;
   readonly columns: ReadonlyArray<"task" | "project" | "owner" | "due_date" | "status" | "reviewer" | "evidence" | "next_action">;
@@ -506,6 +537,8 @@ export interface CommandData {
   readonly "note-keep": ProjectNote;
   readonly "feedback-add": FeedbackResult;
   readonly "feedback-address": FeedbackResult;
+  readonly library: Library;
+  readonly "source-add": SourceResult;
 }
 
 export type Command = keyof CommandData;

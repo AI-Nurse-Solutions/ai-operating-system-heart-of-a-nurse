@@ -6,7 +6,8 @@
 // its own validated IPC without touching any view.
 
 import {
-  renderAssistant, renderBoard, renderBrief, renderError, renderMission, renderOnboarding, renderProject, renderTable,
+  renderAssistant, renderBoard, renderBrief, renderError, renderLibrary, renderMission, renderOnboarding, renderProject,
+  renderTable,
 } from './views.mjs';
 
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Command} Command */
@@ -104,8 +105,8 @@ export function httpSource(token = '') {
   };
 }
 
-/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant'} ReadCommand */
-/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address'} WriteCommand */
+/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library'} ReadCommand */
+/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -114,6 +115,7 @@ const ROUTES = {
   board: { title: 'Board', command: 'board' },
   table: { title: 'Tasks', command: 'table' },
   brief: { title: 'Weekly brief', command: 'weekly' },
+  library: { title: 'Library', command: 'library' },
   assistant: { title: 'AI assistance', command: 'assistant' },
 };
 
@@ -360,6 +362,9 @@ export function start(doc, source) {
     } else if (envelope.command === 'weekly') {
       showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (data), {}, moveFocus);
       announce('Weekly brief loaded.');
+    } else if (envelope.command === 'library') {
+      showLibrary(/** @type {import('./views.mjs').Library} */ (data), {}, moveFocus);
+      announce('Library loaded.');
     } else if (envelope.command === 'assistant') {
       showAssistant(/** @type {import('./views.mjs').AssistantStatus} */ (data), {}, moveFocus);
       announce('AI assistance loaded.');
@@ -412,7 +417,7 @@ export function start(doc, source) {
 
   /**
    * Reload a view's data after an action, unless the manager has navigated away.
-   * @param {'weekly' | 'assistant'} command
+   * @param {'weekly' | 'assistant' | 'library'} command
    * @param {number} mine
    * @param {Record<string, string>} [params]
    */
@@ -421,7 +426,8 @@ export function start(doc, source) {
       const envelope = await source.call(command, params);
       if (mine !== generation) return null;
       if (!envelope.ok) {
-        show(renderError(doc, ROUTES[command === 'weekly' ? 'brief' : 'assistant'].title, envelope.error), true);
+        const view = { weekly: 'brief', assistant: 'assistant', library: 'library' }[command];
+        show(renderError(doc, ROUTES[view].title, envelope.error), true);
         return null;
       }
       return envelope.data;
@@ -521,6 +527,32 @@ export function start(doc, source) {
     const view = renderAssistant(doc, data, { ...options, ...state });
     if (state.notice) showAfterAction(view, state.notice);
     else show(view, moveFocus);
+  };
+
+  /**
+   * @param {import('./views.mjs').Library} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice }} state
+   * @param {boolean} moveFocus
+   */
+  const showLibrary = (data, state, moveFocus) => {
+    const mine = generation;
+    const options = {
+      writable,
+      onAdd: async (/** @type {Record<string, string>} */ fields) => {
+        main.replaceChildren(renderLibrary(doc, data, { ...options, busy: true }));
+        const { failure } = await write('source-add', fields);
+        if (mine !== generation) return;
+        if (failure) {
+          showAfterAction(renderLibrary(doc, data, { ...options, notice: failure }), failure);
+          return;
+        }
+        const fresh = await reload('library', mine);
+        if (!fresh) return;
+        const notice = /** @type {import('./views.mjs').Notice} */ ({ kind: 'ok', text: `Added “${fields.title}” to the library.` });
+        showAfterAction(renderLibrary(doc, /** @type {import('./views.mjs').Library} */ (fresh), { ...options, notice }), notice);
+      },
+    };
+    show(renderLibrary(doc, data, { ...options, ...state }), moveFocus);
   };
 
   const themeToggle = /** @type {HTMLButtonElement} */ (doc.getElementById('theme-toggle'));

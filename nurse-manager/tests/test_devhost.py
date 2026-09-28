@@ -67,6 +67,8 @@ class DevHostTests(unittest.TestCase):
                     argv += ["--today", TODAY, "--week", "2026-09-28"]
                 if command == "project":
                     argv += ["--id", self.project_id, "--today", TODAY]
+                if command == "library":
+                    argv += ["--today", TODAY]
                 if command == "weekly":
                     argv += ["--week", "2026-09-28"]
                 if command == "assistant-preview":

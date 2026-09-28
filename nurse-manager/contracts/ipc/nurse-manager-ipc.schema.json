@@ -295,6 +295,51 @@
       "required": ["id", "title", "kind", "reference", "review_date", "review_overdue"],
       "additionalProperties": false
     },
+    "LibraryItem": {
+      "description": "One source in the workspace. The reference is shown as text, never opened by the app.",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "kind": {"enum": ["public", "synthetic", "personal_permitted"]},
+        "reference": {"type": "string"},
+        "data_class": {"enum": ["D0", "D1"]},
+        "project_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"type": "null"}]},
+        "project": {"type": ["string", "null"]},
+        "review_date": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "review_overdue": {"type": "boolean"}
+      },
+      "required": ["id", "title", "kind", "reference", "data_class", "project_id", "project", "review_date", "review_overdue"],
+      "additionalProperties": false
+    },
+    "Library": {
+      "description": "Every source in the workspace, overdue reviews first.",
+      "type": "object",
+      "properties": {
+        "sample": {"type": "boolean"},
+        "today": {"$ref": "#/$defs/IsoDate"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/LibraryItem"}},
+        "review_overdue": {"type": "integer", "minimum": 0},
+        "projects": {
+          "description": "Projects a new source can belong to.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {"id": {"$ref": "#/$defs/RecordId"}, "title": {"type": "string"}},
+            "required": ["id", "title"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["sample", "today", "items", "review_overdue", "projects"],
+      "additionalProperties": false
+    },
+    "SourceResult": {
+      "type": "object",
+      "properties": {"source": {"$ref": "#/$defs/LibraryItem"}},
+      "required": ["source"],
+      "additionalProperties": false
+    },
     "EvidenceItem": {
       "type": "object",
       "properties": {

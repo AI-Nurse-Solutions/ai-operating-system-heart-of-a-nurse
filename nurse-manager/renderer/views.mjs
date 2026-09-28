@@ -1077,3 +1077,121 @@ export function renderAssistant(doc, data, options) {
   ]));
   return root;
 }
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').Library} Library */
+
+const SOURCE_KINDS = { public: 'Public', synthetic: 'Synthetic', personal_permitted: 'My own, permitted' };
+const DATA_CLASSES = { D0: 'D0 · public or synthetic', D1: 'D1 · my own professional material' };
+
+/**
+ * The Library: every source in the workspace, overdue reviews first.
+ * References are shown as text; the app never opens them.
+ * @param {Document} doc
+ * @param {Library} data
+ * @param {{ writable: boolean, busy?: boolean, notice?: Notice, onAdd: (fields: Record<string, string>) => void }} options
+ */
+export function renderLibrary(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const root = h(doc, 'div', { class: 'view view--library' });
+  root.append(viewHeading(doc, 'Library',
+    'Every source in this workspace, whichever project it belongs to. Sources due for review come first.'));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+
+  const section = h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'sources-heading' }, [
+    h(doc, 'h2', { id: 'sources-heading', tabindex: '-1' }, [`Sources (${data.items.length})`]),
+  ]);
+  if (data.items.length === 0) {
+    section.append(h(doc, 'p', { class: 'section-state section-state--empty' }, ['No sources yet.']));
+  } else {
+    const summary = data.review_overdue
+      ? `${count(data.review_overdue, 'source is', 'sources are')} past its review date.`
+      : 'Every source is within its review date.';
+    section.append(h(doc, 'p', { class: 'table-summary' }, [summary]));
+    const rows = data.items.map((item) => h(doc, 'tr', { 'data-record-id': item.id }, [
+      h(doc, 'th', { scope: 'row' }, [
+        h(doc, 'span', { class: 'cell-title' }, [item.title]),
+        h(doc, 'br'),
+        h(doc, 'code', { class: 'reference' }, [item.reference]),
+      ]),
+      h(doc, 'td', {}, [SOURCE_KINDS[item.kind]]),
+      h(doc, 'td', {}, [item.data_class]),
+      h(doc, 'td', {}, [item.project_id
+        ? h(doc, 'a', { href: `#/project/${encodeURIComponent(item.project_id)}` }, [item.project ?? item.project_id])
+        : 'Whole workspace']),
+      h(doc, 'td', { class: 'cell--date' }, [item.review_overdue
+        ? badge(doc, 'overdue', '!', `Review overdue since ${item.review_date}`)
+        : item.review_date ?? 'No review date']),
+    ]));
+    section.append(h(doc, 'div', { class: 'table-scroll' }, [
+      h(doc, 'table', { class: 'task-table' }, [
+        h(doc, 'caption', { class: 'visually-hidden' }, [`Library: ${data.items.length} sources`]),
+        h(doc, 'thead', {}, [h(doc, 'tr', {}, ['Source', 'Kind', 'Data class', 'Project', 'Review']
+          .map((label) => h(doc, 'th', { scope: 'col' }, [label])))]),
+        h(doc, 'tbody', {}, rows),
+      ]),
+    ]));
+  }
+  root.append(section);
+
+  if (!options.writable) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Adding sources is available in the Nurse AI OS app.',
+    ]));
+    return root;
+  }
+  /** @param {string} id @param {Record<string, string>} choices @param {string} [first] */
+  const select = (id, choices, first) => {
+    const el = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id }, [
+      first !== undefined ? h(doc, 'option', { value: '' }, [first]) : null,
+      ...Object.entries(choices).map(([value, label]) => h(doc, 'option', { value }, [label])),
+    ]));
+    return el;
+  };
+  const title = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'source-title', type: 'text', required: '', maxlength: '200', autocomplete: 'off' }));
+  const kind = select('source-kind', SOURCE_KINDS);
+  const reference = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+    id: 'source-reference', type: 'text', required: '', maxlength: '500', autocomplete: 'off',
+    'aria-describedby': 'source-reference-hint',
+  }));
+  const dataClass = select('source-class', DATA_CLASSES);
+  const project = select('source-project',
+    Object.fromEntries(data.projects.map((p) => [p.id, p.title])), 'Whole workspace');
+  const review = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+    id: 'source-review', type: 'date', min: data.today, 'aria-describedby': 'source-review-hint',
+  }));
+  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Add source']));
+  submit.disabled = busy;
+  /** @param {string} id @param {string} label @param {HTMLElement} control @param {string} [hint] */
+  const field = (id, label, control, hint) => h(doc, 'p', { class: 'field' }, [
+    h(doc, 'label', { for: id }, [label]),
+    hint ? h(doc, 'span', { class: 'field-hint', id: `${id}-hint` }, [hint]) : null,
+    control,
+  ]);
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'add-source-heading' }, [
+    field('source-title', 'Title', title),
+    field('source-kind', 'Kind', kind),
+    field('source-reference', 'Where it is', reference, 'A web address, a folder, or a book. It is kept as text.'),
+    field('source-class', 'Data class', dataClass),
+    field('source-project', 'Project', project),
+    field('source-review', 'Review by (optional)', review, 'When to check it is still current.'),
+    submit,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    options.onAdd({
+      title: title.value.trim(), kind: kind.value, reference: reference.value.trim(),
+      data_class: dataClass.value, project_id: project.value, review_date: review.value,
+    });
+  });
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'add-source-heading' }, [
+    h(doc, 'h2', { id: 'add-source-heading' }, ['Add a source']),
+    h(doc, 'p', { class: 'onboarding-rules', role: 'note' }, [
+      badge(doc, 'review', '!', 'Data rules'), ' ',
+      'Public, synthetic, or your own permitted material only. Keep patient information, staff performance, ',
+      'and confidential employer material out.',
+    ]),
+    form,
+  ]));
+  return root;
+}

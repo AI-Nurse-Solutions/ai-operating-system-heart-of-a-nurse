@@ -137,6 +137,26 @@ try {
   assert.equal(await page.evaluate(() => window.__injected), undefined, 'markup in a title never executes');
   assert.equal(await page.locator('.task-card img').count(), 0);
 
+  // The Library: every source, overdue reviews first, read-only here.
+  await page.getByRole('link', { name: 'Library' }).click();
+  await page.waitForSelector('.view--library');
+  assert.equal(await page.title(), 'Library — Nurse AI OS');
+  const libraryRows = page.locator('.view--library tbody tr');
+  assert.equal(await libraryRows.count(), 3);
+  assert.match(await libraryRows.first().textContent(), /Council charter template.*Review overdue since 2026-09-01/s);
+  assert.match(await page.locator('.view--library').textContent(), /1 source is past its review date/);
+  assert.match(await page.locator('.view--library').textContent(), /Whole workspace/);
+  assert.equal(await page.getByLabel('Title').count(), 0, 'no add-source form on the dev host');
+  assert.equal(await page.locator('.view--library a[href^="http"], .view--library a[href^="synthetic"]').count(), 0,
+    'references are text, never links');
+  await page.setViewportSize({ width: 320, height: 800 });
+  const libraryOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  assert.ok(libraryOverflow <= 0, `library reflows at 320px (overflow ${libraryOverflow}px)`);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await libraryRows.first().getByRole('link').click();
+  await page.waitForSelector('.view--project');
+  assert.match(await page.locator('h1').textContent(), /Unit Based Council charter refresh/);
+
   // The weekly brief is read-only here, and its record text stays text.
   await page.getByRole('link', { name: 'Weekly brief' }).click();
   await page.waitForSelector('.view--brief');

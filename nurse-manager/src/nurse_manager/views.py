@@ -341,3 +341,43 @@ def _feedback(row) -> dict[str, Any]:
 
 def feedback_item(ws: ManagerWorkspace, feedback_id: str) -> dict[str, Any]:
     return _feedback(ws._require_row("project_feedback", feedback_id))
+
+
+def library(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
+    """Every source in the workspace, whichever project it belongs to.
+
+    Sources whose review date has passed come first: an out-of-date source
+    should be checked before it is relied on again.
+    """
+    rows = ws.store.conn.execute(
+        "SELECT s.*, p.title AS project_title FROM sources s"
+        " LEFT JOIN projects p ON p.id = s.project_id WHERE s.workspace_id = ?",
+        (ws.info.id,),
+    ).fetchall()
+    items = [
+        {
+            "id": r["id"],
+            "title": r["title"],
+            "kind": r["kind"],
+            "reference": r["reference"],
+            "data_class": r["data_class"],
+            "project_id": r["project_id"],
+            "project": r["project_title"],
+            "review_date": r["review_date"],
+            "review_overdue": bool(r["review_date"] and r["review_date"] < today),
+        }
+        for r in rows
+    ]
+    items.sort(key=lambda i: (not i["review_overdue"], i["title"].lower(), i["id"]))
+    return {
+        "sample": ws.info.sample,
+        "today": today,
+        "items": items,
+        "review_overdue": sum(1 for i in items if i["review_overdue"]),
+        "projects": [
+            {"id": p["id"], "title": p["title"]}
+            for p in ws.store.conn.execute(
+                "SELECT id, title FROM projects WHERE workspace_id = ? ORDER BY title, id",
+                (ws.info.id,))
+        ],
+    }

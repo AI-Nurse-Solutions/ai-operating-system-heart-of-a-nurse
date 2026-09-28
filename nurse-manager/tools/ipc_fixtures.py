@@ -92,6 +92,13 @@ def collect(workdir: Path) -> dict[str, dict]:
          "--response", "Yes: Dates now covers two weeks.")
     keep("error-feedback-address-again", "feedback-address", ws, "--id",
          added["feedback"]["id"], "--response", " ")
+    keep("library", "library", ws, "--today", TODAY)
+    keep("source-add", "source-add", ws, "--title", "Huddle evaluation questions (synthetic)",
+         "--kind", "synthetic", "--reference", "synthetic://samples/huddle-evaluation",
+         "--project", huddle, "--review", "2027-01-31")
+    keep("error-source-add-d2", "source-add", ws, "--title", "Staffing grid", "--kind",
+         "public", "--reference", "internal://grid", "--review", "someday")
+    keep("library-empty", "library", empty, "--today", TODAY)
     keep("board", "board", ws)
     keep("table", "table", ws)
     keep("weekly-empty", "weekly", ws, "--week", WEEK)

@@ -12,7 +12,7 @@ from _bootstrap import fixed_clock
 from nurse_manager.sample import SAMPLE_PATH, load_sample
 from nurse_manager.services import CaptureRefused, ManagerError, ManagerWorkspace
 from nurse_manager.store import MIGRATIONS_DIR, RestoreRefused, Store, StoreError
-from nurse_manager.views import board, mission_control, project_dashboard, table
+from nurse_manager.views import board, library, mission_control, project_dashboard, table
 
 WEEK = "2026-09-28"
 TODAY = "2026-09-30"
@@ -254,6 +254,55 @@ class ViewTests(_TempCase):
         self.assertEqual(board(ws, show_paused=False)["columns"][1]["count"], 0)
         mc = mission_control(ws, today=TODAY, week_of=WEEK)
         self.assertEqual(mc["follow_ups"]["state"], "empty")
+
+
+class LibraryTests(_TempCase):
+    """The Library (3.6a): every source, whichever project it belongs to."""
+
+    def test_every_source_overdue_reviews_first(self):
+        ws = self.sample()
+        lib = library(ws, today=TODAY)
+        titles = [i["title"] for i in lib["items"]]
+        self.assertEqual(len(titles), 3)
+        self.assertEqual(titles[0], "Council charter template (synthetic)")
+        self.assertTrue(lib["items"][0]["review_overdue"])
+        self.assertEqual(lib["review_overdue"], 1)
+        unattached = next(i for i in lib["items"] if i["project_id"] is None)
+        self.assertEqual(unattached["project"], None)
+        self.assertEqual(titles[1:], sorted(titles[1:], key=str.lower))
+        self.assertEqual({p["title"] for p in lib["projects"]},
+                         {r["title"] for r in ws.store.conn.execute("SELECT title FROM projects")})
+
+    def test_the_same_source_ids_as_the_project_dashboards(self):
+        ws = self.sample()
+        on_dashboards = set()
+        for (pid,) in ws.store.conn.execute("SELECT id FROM projects"):
+            on_dashboards |= {r["id"] for r in project_dashboard(ws, pid, today=TODAY)["resources"]}
+        in_library = {i["id"] for i in library(ws, today=TODAY)["items"] if i["project_id"]}
+        self.assertEqual(in_library, on_dashboards)
+
+    def test_adding_a_source_keeps_the_capture_rules(self):
+        ws = self.sample()
+        with self.assertRaises(CaptureRefused):
+            ws.add_source("Grid", "internal", "x://y")
+        with self.assertRaises(CaptureRefused):
+            ws.add_source("Grid", "public", "x://y", data_class="D2")
+        with self.assertRaises(CaptureRefused):
+            ws.add_source("Call 555-867-5309", "public", "x://y")
+        for kwargs in ({"review_date": "someday"}, {"project_id": "prj-000000000000"}):
+            with self.subTest(kwargs=kwargs), self.assertRaises(ManagerError):
+                ws.add_source("Guide", "public", "https://example.org/guide", **kwargs)
+        with self.assertRaises(ManagerError):
+            ws.add_source("x" * 201, "public", "https://example.org/guide")
+        sid = ws.add_source("Guide", "public", "https://example.org/guide", review_date="2027-01-05")
+        self.assertIn(sid, [i["id"] for i in library(ws, today=TODAY)["items"]])
+
+    def test_an_empty_workspace_has_an_empty_library(self):
+        ws = ManagerWorkspace(self.tmp / "empty", clock=fixed_clock())
+        self.addCleanup(ws.close)
+        ws.create("Empty", "Test Manager")
+        lib = library(ws, today=TODAY)
+        self.assertEqual((lib["items"], lib["review_overdue"], lib["projects"]), ([], 0, []))
 
 
 class FeedbackTests(_TempCase):

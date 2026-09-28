@@ -247,6 +247,11 @@ class ManagerWorkspace:
                 " confidential employer, workforce, or patient material needs an"
                 " administrator-provisioned organization workspace"
             )
+        if len(title) > 200 or len(reference) > 500:
+            raise ManagerError("keep a source's title under 200 characters and its reference"
+                               " under 500")
+        if review_date:
+            review_date = _iso_date(review_date, "the review date")
         self._require_row("projects", project_id)
         self._screen(title=title, reference=reference)
         source_id = new_id("src")

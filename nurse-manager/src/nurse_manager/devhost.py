@@ -30,9 +30,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import cli
+from . import cli, resources
 
-RENDERER = Path(__file__).resolve().parents[2] / "renderer"
+RENDERER = resources.manager_root() / "renderer"
 READ_ONLY_COMMANDS = ("mission", "project", "board", "table")
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _PROJECT_ID = re.compile(r"^prj-[0-9a-f]{12}$")
@@ -62,6 +62,42 @@ def _valid_date(value: str) -> bool:
     return True
 
 
+def send(handler: BaseHTTPRequestHandler, status: int, body: bytes, content_type: str,
+         extra_headers: dict[str, str] | None = None) -> None:
+    """Every response from a local host carries the same security headers."""
+    handler.send_response(status)
+    handler.send_header("Content-Type", content_type)
+    handler.send_header("Content-Length", str(len(body)))
+    for name, value in {**SECURITY_HEADERS, **(extra_headers or {})}.items():
+        handler.send_header(name, value)
+    handler.end_headers()
+    if handler.command != "HEAD":
+        handler.wfile.write(body)
+
+
+_CONTENT_TYPES = {
+    ".mjs": "text/javascript; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".html": "text/html; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".svg": "image/svg+xml",
+}
+
+
+def serve_static(handler: BaseHTTPRequestHandler, path: str) -> None:
+    """Serve a renderer file. Paths cannot leave the renderer directory."""
+    if path in ("", "/"):
+        path = "/index.html"
+    base = RENDERER.resolve()
+    target = (base / path.lstrip("/")).resolve()
+    if base not in target.parents or not target.is_file():
+        return send(handler, 404, b"Not found", "text/plain; charset=utf-8")
+    content_type = _CONTENT_TYPES.get(
+        target.suffix, mimetypes.guess_type(target.name)[0] or "application/octet-stream")
+    send(handler, 200, target.read_bytes(), content_type)
+
+
 def make_handler(workspace: Path, today: str | None):
     class Handler(BaseHTTPRequestHandler):
         server_version = "nurse-manager-devhost"
@@ -71,14 +107,7 @@ def make_handler(workspace: Path, today: str | None):
             pass
 
         def _send(self, status: int, body: bytes, content_type: str) -> None:
-            self.send_response(status)
-            self.send_header("Content-Type", content_type)
-            self.send_header("Content-Length", str(len(body)))
-            for name, value in SECURITY_HEADERS.items():
-                self.send_header(name, value)
-            self.end_headers()
-            if self.command != "HEAD":
-                self.wfile.write(body)
+            send(self, status, body, content_type)
 
         def _text(self, status: int, message: str) -> None:
             self._send(status, message.encode("utf-8"), "text/plain; charset=utf-8")
@@ -91,6 +120,10 @@ def make_handler(workspace: Path, today: str | None):
             if not self._host_ok():
                 return self._text(421, "Misdirected request")
             url = urlparse(self.path)
+            if url.path == "/app/status":
+                # Says plainly what this is, so the screens stay read-only here.
+                body = json.dumps({"app": "nurse-manager-devhost", "read_only": True}).encode("utf-8")
+                return self._send(200, body, "application/json; charset=utf-8")
             if url.path.startswith("/ipc/"):
                 return self._ipc(url.path[len("/ipc/"):], parse_qs(url.query))
             return self._static(url.path)
@@ -125,20 +158,7 @@ def make_handler(workspace: Path, today: str | None):
             self._send(200, body, "application/json; charset=utf-8")
 
         def _static(self, path: str) -> None:
-            if path in ("", "/"):
-                path = "/index.html"
-            base = RENDERER.resolve()
-            target = (base / path.lstrip("/")).resolve()
-            if base not in target.parents or not target.is_file():
-                return self._text(404, "Not found")
-            content_type = {
-                ".mjs": "text/javascript; charset=utf-8",
-                ".js": "text/javascript; charset=utf-8",
-                ".css": "text/css; charset=utf-8",
-                ".html": "text/html; charset=utf-8",
-                ".json": "application/json; charset=utf-8",
-            }.get(target.suffix, mimetypes.guess_type(target.name)[0] or "application/octet-stream")
-            self._send(200, target.read_bytes(), content_type)
+            serve_static(self, path)
 
     return Handler
 

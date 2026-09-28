@@ -38,15 +38,15 @@ from ._naio import (
     Decision,
     EdenaPolicyEngine,
     GatewayRequest,
+    edena_engine,
     RiskTier,
 )
+from . import resources
 from .brief import BriefService
 from .services import ManagerError, ManagerWorkspace
 from .store import new_id
 
-DEFAULT_PROFILE_POLICY = (
-    Path(__file__).resolve().parents[2] / "config" / "manager-profile-policy.json"
-)
+DEFAULT_PROFILE_POLICY = resources.manager_root() / "config" / "manager-profile-policy.json"
 
 
 class ActionError(ManagerError):
@@ -125,7 +125,7 @@ class ActionBoundary:
         self.ws = ws
         self.briefs = BriefService(ws)
         self.profile_path = profile_policy or DEFAULT_PROFILE_POLICY
-        self.edena = edena or EdenaPolicyEngine()
+        self.edena = edena or edena_engine()
         self.handlers = handlers or {"export_markdown": write_markdown_export}
 
     @property

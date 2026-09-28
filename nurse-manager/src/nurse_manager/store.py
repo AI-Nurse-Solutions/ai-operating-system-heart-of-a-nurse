@@ -23,7 +23,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterator
 
-MIGRATIONS_DIR = Path(__file__).resolve().parent / "migrations"
+from . import resources
+
+MIGRATIONS_DIR = resources.manager_root() / "src" / "nurse_manager" / "migrations"
 
 
 class StoreError(RuntimeError):

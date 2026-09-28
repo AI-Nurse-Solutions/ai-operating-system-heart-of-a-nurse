@@ -23,8 +23,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 0.3 | Record corrections to the plan | ✅ | Report §3 |
 | 0.4 | Decide where the manager core lives | ✅ | ADR 0001, accepted by the steward 2026-09-28 |
 | 0.5 | Decide the rule for human-initiated local effects | ✅ | ADR 0002, accepted by the steward 2026-09-28 |
-| 0.6 | Confirm the pilot cohort's OS inventory, **especially Windows 10 vs 11** | ⛔ | Needs managers' machine list |
-| 0.7 | Pin the upstream Hermes commit for the spike | ⬜ | Candidate: tag `v2026.9.24` |
+| 0.6 | Confirm the pilot cohort's OS inventory, **especially Windows 10 vs 11** | ✅ superseded | ADR 0003 (local app in the browser) runs on Windows 10 and 11, macOS, and Linux; laptop checks remain part of 1.10 |
+| 0.7 | Pin the upstream Hermes commit for the spike | ⏸ deferred | ADR 0003; candidate when resumed: tag `v2026.9.24` |
 | 0.8 | Branding and redistribution review of Hermes (MIT) and notices | ⬜ | `THIRD_PARTY_NOTICES.md` entry |
 | 0.9 | Request code-signing identities (Windows, Apple) | ⛔ | Needs the steward's accounts |
 | 0.10 | Establish the disposition of the "PR #25 / issue #16" the plan names | ⛔ | Needs `florence-x` API access |
@@ -37,10 +37,13 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 1.2 | Initial migration and isolated workspace directory | ✅ | `migrations/0001_initial.sql`; `test_records_and_views.StoreTests` |
 | 1.3 | Headless JSON command surface the desktop host will call, with one versioned envelope per command (`nurse-manager-ipc@1`) | ✅ | `nurse_manager.cli`; `CliJourneyTests` |
 | 1.4 | Generate TypeScript types from the contract for the renderer | ✅ | `contracts/ipc/`; `test_ipc_contract.py` (stdlib schema check, generated types current) and `test_ipc_contract.mjs` (ajv strict plus `tsc --strict` over every real envelope) |
-| 1.5 | Spike: bundle Hermes Desktop with `HERMES_HOME` pointed at a Nurse AI OS data home; confirm no collision with an existing Hermes install | ⬜ | Clean-VM install log |
-| 1.6 | Spike: can a desktop plugin add Mission Control as a route? If not, a documented minimal patch set | ⬜ | Spike note plus upstream delta |
-| 1.7 | Disable terminal, home-directory discovery, auto-skills, messaging, and background capture in the backend (not just hidden in the UI) | ⬜ | Tests that call the backend directly |
-| 1.8 | Clean-machine install; offline first launch; no developer tools needed | ⛔ | Windows 11 and macOS VMs plus signing (0.9) |
+| 1.5 | Local app (ADR 0003): loopback-only host with a per-launch token, single instance, user-data folder outside the bundle | ✅ | `test_app.py` (token, Host and Origin checks, write allowlist, owner-only lock, quit, idle stop) |
+| 1.6 | First-run onboarding: explore the sample or start your own workspace, with the data rules stated first | ✅ | `test_app_browser.mjs` |
+| 1.7 | Honest lifetime: "running on this computer", Quit, heartbeat, stop after idle | ✅ | `test_app.py`, `test_app_browser.mjs` |
+| 1.8 | Packaged builds for Windows, macOS, and Linux with the Python runtime bundled (unsigned test builds) | ✅ | `nurse-manager-app.yml`: built-in self-test on all three; full browser journey against the packaged Linux build |
+| 1.9 | Code signing: Apple Developer ID plus notarization; a Windows signing route | ⛔ | Needs the steward's signing identities (0.9) |
+| 1.10 | Clean-machine install on real manager laptops; offline first launch | ⛔ | Needs signed builds (1.9) and a pilot laptop inventory |
+| 1.11 | Hermes Desktop host (upstream shell, plugins, `HERMES_HOME`) | ⏸ deferred | ADR 0003: after the pilot. The renderer's `Source` is the seam. |
 
 ## G2 — Durable manager mission (NM-005, NM-006)
 

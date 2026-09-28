@@ -11,10 +11,11 @@ import json
 from pathlib import Path
 from typing import Any, Callable
 
+from . import resources
 from .services import ManagerWorkspace
 from .store import utc_now
 
-SAMPLE_PATH = Path(__file__).resolve().parents[2] / "samples" / "synthetic-week.json"
+SAMPLE_PATH = resources.manager_root() / "samples" / "synthetic-week.json"
 
 
 def load_sample(

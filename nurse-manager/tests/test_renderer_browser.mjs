@@ -78,6 +78,8 @@ try {
   assert.equal(await page.title(), 'Mission Control — Nurse AI OS');
   assert.equal(await page.getByRole('heading', { level: 1 }).textContent(), 'Mission Control');
   assert.ok(await page.getByRole('note').filter({ hasText: 'Sample workspace' }).isVisible(), 'sample data is announced');
+  assert.equal(await page.getByRole('button', { name: 'Quit Nurse AI OS' }).isVisible(), false,
+    'the read-only development host offers no Quit');
   assert.equal(await page.locator('#workspace-name').textContent(), 'Sample manager workspace (synthetic)');
   for (const name of ["This week's priorities", 'Needs my judgment', 'Projects in motion',
     'Follow-ups due soon', 'Assistants at work', 'Recently accepted outputs', 'Tasks by status']) {
@@ -238,7 +240,7 @@ try {
   malformed.on('pageerror', (e) => malformedErrors.push(e.message));
   await malformed.goto(`${main.url}#/project/not-an-id`);
   await malformed.waitForSelector('main[aria-busy="false"]');
-  assert.match(await malformed.getByRole('alert').textContent(), /answered 400/, 'a malformed id is refused, not guessed');
+  assert.match(await malformed.getByRole('alert').textContent(), /id must be a project record id/, 'a malformed id is refused, not guessed');
   assert.deepEqual(malformedErrors, []);
   await malformed.close();
 

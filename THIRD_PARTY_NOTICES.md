@@ -12,6 +12,8 @@
 | Hermes Agent | [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) | MIT | External runtime; not vendored in this repository | No |
 | OpenClaw | [openclaw/openclaw](https://github.com/openclaw/openclaw) | MIT | Referenced for interoperability and architectural research; not vendored in this repository | No |
 | Florence-X contract schemas (`candidate_action.schema.json`, `edena_decision.schema.json`) | [AI-Nurse-Solutions/florence-x](https://github.com/AI-Nurse-Solutions/florence-x) at `09675bf` | Apache-2.0 | Vendored as data in `nurse-manager/contracts/florence-x/` for contract tests; provenance and hashes in `PROVENANCE.md` there | No |
+| CPython runtime | [python/cpython](https://github.com/python/cpython) | PSF-2.0 | Bundled inside the Nurse AI OS app builds produced by CI (`.github/workflows/nurse-manager-app.yml`); not vendored in this repository | No |
+| PyInstaller bootloader | [pyinstaller/pyinstaller](https://github.com/pyinstaller/pyinstaller) | GPL-2.0-or-later with the PyInstaller bootloader exception | Build tool (pinned); its bootloader is embedded in the app builds. The exception expressly permits distributing the resulting executables under any license; the repository's own code stays Apache-2.0 | No |
 
 No Hermes or OpenClaw source code is vendored in this repository as of July 14, 2026. Their notices are reproduced below for transparent attribution and to establish the notices that must travel with any future substantial incorporation. Files covered by this repository's Apache License 2.0 grant remain under that grant and are not listed here; separately governed Nurse AI OS artifacts may carry different terms. See `LICENSE` and `licensing.html`.
 

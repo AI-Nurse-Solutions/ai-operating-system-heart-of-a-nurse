@@ -453,3 +453,76 @@ export function renderError(doc, viewName, error) {
     h(doc, 'p', { class: 'view-subtitle' }, [`Nothing was changed. (${error.type})`]),
   ]);
 }
+
+/**
+ * First run in the local app: try the synthetic sample, or start your own.
+ * The data rules are stated before anything is typed.
+ * @param {Document} doc
+ * @param {{ onSample: () => void, onCreate: (name: string, owner: string) => void }} handlers
+ * @param {{ busy?: boolean, error?: string }} [state]
+ */
+export function renderOnboarding(doc, handlers, state = {}) {
+  const busy = Boolean(state.busy);
+  const root = h(doc, 'div', { class: 'view view--onboarding' });
+  root.append(viewHeading(doc, 'Welcome to Nurse AI OS',
+    'Organize your manager work in one place. Everything stays on this computer.'));
+  root.append(h(doc, 'p', { class: 'onboarding-rules', role: 'note' }, [
+    badge(doc, 'review', '!', 'Before you start'), ' ',
+    'This workspace is for your own planning with public, synthetic, or your own permitted material. ',
+    'Keep patient information, staff performance, and confidential employer material out of it.',
+  ]));
+  if (state.error) {
+    root.append(h(doc, 'p', { role: 'alert', class: 'error-message' }, [
+      badge(doc, 'error', '✕', 'Not created'), ' ', state.error,
+    ]));
+  }
+
+  const sampleButton = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'button', class: 'primary-button' },
+    ['Explore the sample workspace']));
+  sampleButton.disabled = busy;
+  sampleButton.addEventListener('click', () => handlers.onSample());
+
+  const nameInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+    id: 'ws-name', name: 'name', type: 'text', required: '', maxlength: '200', autocomplete: 'off',
+  }));
+  const ownerInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+    id: 'ws-owner', name: 'owner', type: 'text', required: '', maxlength: '200', autocomplete: 'name',
+  }));
+  const createButton = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' },
+    ['Create my workspace']));
+  createButton.disabled = busy;
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'own-heading' }, [
+    h(doc, 'p', { class: 'field' }, [
+      h(doc, 'label', { for: 'ws-name' }, ['Workspace name']),
+      nameInput,
+    ]),
+    h(doc, 'p', { class: 'field' }, [
+      h(doc, 'label', { for: 'ws-owner' }, ['Your name']),
+      h(doc, 'span', { class: 'field-hint', id: 'owner-hint' }, [
+        'You are the accountable manager for this workspace.',
+      ]),
+      ownerInput,
+    ]),
+    createButton,
+  ]);
+  ownerInput.setAttribute('aria-describedby', 'owner-hint');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    handlers.onCreate(nameInput.value.trim(), ownerInput.value.trim());
+  });
+
+  root.append(h(doc, 'div', { class: 'mc-grid' }, [
+    h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'sample-heading' }, [
+      h(doc, 'h2', { id: 'sample-heading' }, ['Try the sample']),
+      h(doc, 'p', { class: 'section-state' }, [
+        'A synthetic week of a manager\'s projects, tasks, and decisions. Nothing in it is real.',
+      ]),
+      sampleButton,
+    ]),
+    h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'own-heading' }, [
+      h(doc, 'h2', { id: 'own-heading' }, ['Start your own workspace']),
+      form,
+    ]),
+  ]));
+  return root;
+}

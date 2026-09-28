@@ -55,6 +55,22 @@ class IpcContractTests(unittest.TestCase):
             with self.subTest(fixture=name):
                 self.assertEqual(validate(envelope), "")
 
+    def test_every_today_and_week_is_checked_before_a_view_is_built(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = str(Path(tmp) / "ws")
+            cli.run(["sample", ws])
+            for argv in (["learning", ws, "--today", "not-a-date"],
+                         ["library", ws, "--today", "2026-13-01"],
+                         ["mission", ws, "--today", "2026-09-30", "--week", "someday"],
+                         ["weekly", ws, "--week", "2026-9-28x"]):
+                with self.subTest(argv=argv[0]):
+                    code, envelope = cli.run(argv)
+                    self.assertEqual(code, 2)
+                    self.assertFalse(envelope["ok"])
+                    self.assertEqual(validate(envelope), "")
+            code, envelope = cli.run(["learning", ws, "--today", "2026-09-30"])
+            self.assertEqual((code, envelope["data"]["today"]), (0, "2026-09-30"))
+
     def test_declared_commands_match_the_cli_exactly(self):
         self.assertEqual(sorted(COMMANDS["commands"]), sorted(cli.commands()))
         self.assertEqual(COMMANDS["contract"], cli.CONTRACT)

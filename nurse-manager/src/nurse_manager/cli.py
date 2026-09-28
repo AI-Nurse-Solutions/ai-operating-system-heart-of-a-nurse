@@ -23,7 +23,7 @@ from .actions import ActionBoundary
 from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
 from .sample import load_sample
-from .services import ManagerError, ManagerWorkspace
+from .services import ManagerError, ManagerWorkspace, _iso_date
 from .views import (
     board,
     feedback_item,
@@ -171,6 +171,12 @@ def commands() -> tuple[str, ...]:
 
 def _dispatch(args: argparse.Namespace) -> Any:
     """Run one parsed command and return its data. The workspace is always closed."""
+    # Every "today" and "week" is a real YYYY-MM-DD date before any view uses it:
+    # the envelope promises IsoDate, and views derive years and windows from it.
+    for name in ("today", "week"):
+        value = getattr(args, name, None)
+        if value is not None:
+            setattr(args, name, _iso_date(value, f"--{name}"))
     if args.command == "sample":
         ws, data = load_sample(args.workspace)
         try:

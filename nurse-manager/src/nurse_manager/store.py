@@ -180,6 +180,9 @@ class Store:
         finally:
             source.close()
         self.conn.execute("PRAGMA foreign_keys = ON")
+        # A backup from an earlier release is brought up to this schema now,
+        # not on the next open.
+        self._migrate()
         return safety
 
     def close(self) -> None:

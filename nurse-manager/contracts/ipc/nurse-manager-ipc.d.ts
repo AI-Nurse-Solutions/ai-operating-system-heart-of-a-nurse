@@ -38,6 +38,47 @@ export interface Action {
   readonly status: "denied" | "awaiting_approval" | "approved" | "executing" | "succeeded" | "failed" | "effect_unknown" | "stale";
 }
 
+/** The answer to asking for an AI draft of the weekly brief. The revision is always a draft; drafted_by_model says whether a model wrote it. */
+export interface AssistantDraft {
+  readonly outcome: AssistantOutcome;
+  readonly drafted_by_model: boolean;
+  /** Written for the manager. Empty only when a model drafted it. */
+  readonly reason: string;
+  readonly provider: AssistantProvider;
+  readonly model: string;
+  readonly request_id: RecordId;
+  readonly revision: Revision;
+}
+
+/** What happened to one request. Every outcome except 'drafted' returns the draft composed from records. */
+export type AssistantOutcome = "drafted" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "provider_failed" | "output_refused";
+
+/** The connected AI provider. 'none' is the default (ADR 0004). There is no cloud value until a cloud service is chosen. */
+export type AssistantProvider = "none" | "local";
+
+/** AI settings, usage so far, and the gates every provider passes. */
+export interface AssistantStatus {
+  readonly provider: AssistantProvider;
+  readonly model: string;
+  readonly endpoint: string;
+  /** Where the text goes, said plainly. */
+  readonly runs_on: string;
+  /** @minimum 0 */
+  readonly monthly_budget_cents: number;
+  /** @minimum 0 */
+  readonly daily_request_limit: number;
+  /** @minimum 0 */
+  readonly requests_today: number;
+  /** @minimum 0 */
+  readonly spent_this_month_cents: number;
+  readonly cloud: {
+    readonly available: boolean;
+    readonly reason: string;
+  };
+  /** @minItems 1 */
+  readonly gates: readonly string[];
+}
+
 /** No assistant runtime exists yet; the section is honestly unavailable. */
 export interface AssistantsSection {
   readonly state: "unavailable";
@@ -235,7 +276,7 @@ export interface Receipt {
   readonly recorded_at: IsoDateTime;
 }
 
-/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act)-[0-9a-f]{12}$ */
+/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
 export interface Resource {
@@ -262,6 +303,8 @@ export interface Revision {
   readonly status: "draft" | "accepted" | "superseded";
   readonly sha256: Sha256;
   readonly source_refs: readonly RecordId[];
+  /** Who wrote this text: the manager, or assistant:<provider> for a model's draft. */
+  readonly created_by: string;
   readonly accepted_by: string | null;
   readonly accepted_at: IsoDateTime | null;
 }
@@ -343,6 +386,10 @@ export interface CommandData {
   readonly run: Receipt;
   readonly backup: BackupResult;
   readonly restore: RestoreResult;
+  readonly assistant: AssistantStatus;
+  readonly "assistant-local": AssistantStatus;
+  readonly "assistant-off": AssistantStatus;
+  readonly "assistant-brief": AssistantDraft;
 }
 
 export type Command = keyof CommandData;

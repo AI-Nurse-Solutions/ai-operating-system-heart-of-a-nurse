@@ -10,8 +10,12 @@ is what the real command surface prints, not a hand-written sample.
 from __future__ import annotations
 
 import json
+import socket
 import sys
 import tempfile
+import threading
+from contextlib import contextmanager
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 SRC = Path(__file__).resolve().parents[1] / "src"
@@ -26,6 +30,38 @@ WEEK, TODAY = "2026-09-28", "2026-09-30"
 
 def _run(*argv) -> tuple[int, dict]:
     return cli.run([str(a) for a in argv])
+
+
+@contextmanager
+def _stand_in_model():
+    """A stand-in local model server that rewrites the brief faithfully."""
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+
+        def do_POST(self):
+            body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            payload = json.dumps({"response": body["prompt"], "done": True}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        yield f"http://127.0.0.1:{httpd.server_port}"
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+
+
+def _closed_port() -> int:
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        return sock.getsockname()[1]
 
 
 def collect(workdir: Path) -> dict[str, dict]:
@@ -68,6 +104,24 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("error-accept", "accept", ws, "--revision", draft["id"], "--reviewer", "Someone Else",
          "--sha", draft["sha256"])
     keep("error-restore-missing", "restore", ws, workdir / "missing.sqlite")
+
+    # Bounded assistance (ADR 0004): no model by default, then a local model.
+    keep("assistant", "assistant", ws)
+    keep("assistant-brief-no-model", "assistant-brief", ws, "--week", WEEK, "--today", TODAY,
+         "--by", OWNER)
+    keep("error-assistant-not-owner", "assistant-local", ws, "--model", "llama3.2",
+         "--by", "Someone Else")
+    keep("assistant-local-offline", "assistant-local", ws, "--model", "llama3.2", "--by", OWNER,
+         "--endpoint", f"http://127.0.0.1:{_closed_port()}")
+    keep("assistant-brief-unavailable", "assistant-brief", ws, "--week", WEEK, "--today", TODAY,
+         "--by", OWNER)
+    with _stand_in_model() as endpoint:
+        keep("assistant-local", "assistant-local", ws, "--model", "llama3.2", "--by", OWNER,
+             "--endpoint", endpoint)
+        keep("assistant-brief-drafted", "assistant-brief", ws, "--week", WEEK, "--today", TODAY,
+             "--by", OWNER)
+    keep("mission-assistant-connected", "mission", ws, "--today", TODAY, "--week", WEEK)
+    keep("assistant-off", "assistant-off", ws, "--by", OWNER)
     return out
 
 

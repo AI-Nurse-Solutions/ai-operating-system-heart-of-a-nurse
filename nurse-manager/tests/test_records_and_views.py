@@ -11,7 +11,7 @@ from _bootstrap import fixed_clock
 
 from nurse_manager.sample import SAMPLE_PATH, load_sample
 from nurse_manager.services import CaptureRefused, ManagerError, ManagerWorkspace
-from nurse_manager.store import RestoreRefused, Store, StoreError
+from nurse_manager.store import MIGRATIONS_DIR, RestoreRefused, Store, StoreError
 from nurse_manager.views import board, mission_control, project_dashboard, table
 
 WEEK = "2026-09-28"
@@ -47,7 +47,7 @@ class StoreTests(_TempCase):
         self.addCleanup(reopened.close)
         self.assertEqual(reopened.schema_version, version)
         count = reopened.conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0]
-        self.assertEqual(count, 1)
+        self.assertEqual(count, len(list(MIGRATIONS_DIR.glob("*.sql"))))
 
     def test_database_from_a_newer_release_is_refused(self):
         store = Store(self.tmp / "a.sqlite")
@@ -79,6 +79,21 @@ class StoreTests(_TempCase):
         self.assertEqual(
             kept.execute("SELECT count(*) FROM tasks WHERE id = ?", (task_id,)).fetchone()[0], 1
         )
+
+    def test_a_backup_from_an_earlier_release_is_brought_up_to_date_on_restore(self):
+        ws = self.sample()
+        backup = ws.store.backup(self.tmp / "backups" / "b1.sqlite")
+        old = sqlite3.connect(str(backup))
+        old.executescript(
+            "DROP TABLE assistant_requests; DROP TABLE assistant_settings;"
+            " DELETE FROM schema_migrations WHERE version = '0002_assistant';"
+        )
+        old.close()
+        ws.store.restore(backup)
+        tables = {r[0] for r in ws.store.conn.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table'")}
+        self.assertIn("assistant_settings", tables)
+        self.assertEqual(ws.store.schema_version, "0002_assistant")
 
     def test_restore_of_an_identical_backup_needs_no_permission(self):
         ws = self.sample()

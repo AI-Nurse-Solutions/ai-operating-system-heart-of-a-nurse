@@ -8,7 +8,7 @@
     "IsoDate": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
     "IsoDateTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)$"},
     "Sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act)-[0-9a-f]{12}$"},
+    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air)-[0-9a-f]{12}$"},
     "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed"]},
     "SectionState": {"enum": ["ok", "empty"]},
 
@@ -376,10 +376,11 @@
         "status": {"enum": ["draft", "accepted", "superseded"]},
         "sha256": {"$ref": "#/$defs/Sha256"},
         "source_refs": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}},
+        "created_by": {"type": "string", "minLength": 1, "description": "Who wrote this text: the manager, or assistant:<provider> for a model's draft."},
         "accepted_by": {"type": ["string", "null"]},
         "accepted_at": {"anyOf": [{"$ref": "#/$defs/IsoDateTime"}, {"type": "null"}]}
       },
-      "required": ["id", "artifact_id", "revision_no", "status", "sha256", "source_refs", "accepted_by", "accepted_at"],
+      "required": ["id", "artifact_id", "revision_no", "status", "sha256", "source_refs", "created_by", "accepted_by", "accepted_at"],
       "additionalProperties": false
     },
     "ShownRevision": {
@@ -440,6 +441,53 @@
         "pre_restore_backup": {"type": "string", "description": "Always taken, so even an accepted discard is recoverable."}
       },
       "required": ["restored_from", "pre_restore_backup"],
+      "additionalProperties": false
+    },
+
+    "AssistantProvider": {
+      "description": "The connected AI provider. 'none' is the default (ADR 0004). There is no cloud value until a cloud service is chosen.",
+      "enum": ["none", "local"]
+    },
+    "AssistantStatus": {
+      "description": "AI settings, usage so far, and the gates every provider passes.",
+      "type": "object",
+      "properties": {
+        "provider": {"$ref": "#/$defs/AssistantProvider"},
+        "model": {"type": "string"},
+        "endpoint": {"type": "string"},
+        "runs_on": {"type": "string", "description": "Where the text goes, said plainly."},
+        "monthly_budget_cents": {"type": "integer", "minimum": 0},
+        "daily_request_limit": {"type": "integer", "minimum": 0},
+        "requests_today": {"type": "integer", "minimum": 0},
+        "spent_this_month_cents": {"type": "integer", "minimum": 0},
+        "cloud": {
+          "type": "object",
+          "properties": {"available": {"type": "boolean"}, "reason": {"type": "string"}},
+          "required": ["available", "reason"],
+          "additionalProperties": false
+        },
+        "gates": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+      },
+      "required": ["provider", "model", "endpoint", "runs_on", "monthly_budget_cents", "daily_request_limit", "requests_today", "spent_this_month_cents", "cloud", "gates"],
+      "additionalProperties": false
+    },
+    "AssistantOutcome": {
+      "description": "What happened to one request. Every outcome except 'drafted' returns the draft composed from records.",
+      "enum": ["drafted", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "provider_failed", "output_refused"]
+    },
+    "AssistantDraft": {
+      "description": "The answer to asking for an AI draft of the weekly brief. The revision is always a draft; drafted_by_model says whether a model wrote it.",
+      "type": "object",
+      "properties": {
+        "outcome": {"$ref": "#/$defs/AssistantOutcome"},
+        "drafted_by_model": {"type": "boolean"},
+        "reason": {"type": "string", "description": "Written for the manager. Empty only when a model drafted it."},
+        "provider": {"$ref": "#/$defs/AssistantProvider"},
+        "model": {"type": "string"},
+        "request_id": {"$ref": "#/$defs/RecordId"},
+        "revision": {"$ref": "#/$defs/Revision"}
+      },
+      "required": ["outcome", "drafted_by_model", "reason", "provider", "model", "request_id", "revision"],
       "additionalProperties": false
     }
   }

@@ -38,6 +38,15 @@ BRIEF_DRAFT_BANNER = (
     " makes it final."
 )
 
+# Authors of model-written text are recorded as ``assistant:<provider>``.
+ASSISTANT_PREFIX = "assistant:"
+
+ASSISTANT_DRAFT_BANNER = (
+    "> **AI DRAFT — written by an AI model from your workspace records.** Not"
+    " accepted. Check every line against the records it cites; a model can be"
+    " wrong or leave things out. Accepting it is your decision."
+)
+
 
 class StaleRevision(ManagerError):
     """The revision changed after the reviewer saw it."""
@@ -205,6 +214,14 @@ class BriefService:
 
     def draft_weekly_brief(self, week_of: str, today: str) -> Revision:
         body, refs = compose_weekly_brief(self.ws, week_of, today)
+        return self.add_weekly_draft(week_of, body, refs, self.ws.info.owner)
+
+    def add_weekly_draft(
+        self, week_of: str, body: str, refs: list[str], author: str
+    ) -> Revision:
+        """Save a draft of this week's brief. ``author`` is who wrote the text:
+        the owner for the records-only draft, ``assistant:<provider>`` for a
+        model's. Either way it is a draft until the manager accepts it."""
         artifact = self.ws.store.conn.execute(
             "SELECT * FROM artifacts WHERE workspace_id = ? AND kind = 'weekly_brief'"
             " AND week_of = ?",
@@ -222,7 +239,7 @@ class BriefService:
                 self.ws.store.log(self.ws.info.owner, "create", "artifact", artifact_id)
             else:
                 artifact_id = artifact["id"]
-            return self._add_revision(artifact_id, body, refs, self.ws.info.owner)
+            return self._add_revision(artifact_id, body, refs, author)
 
     def revise(self, artifact_id: str, body_markdown: str, editor: str) -> Revision:
         """A human edit. Always a new draft; an acceptance never follows the text."""
@@ -354,6 +371,8 @@ class BriefService:
                 f"> **Superseded.** Revision {revision.revision_no} is kept for history"
                 " and is not the current text."
             )
+        elif revision.created_by.startswith(ASSISTANT_PREFIX):
+            banners.append(ASSISTANT_DRAFT_BANNER)
         else:
             banners.append(BRIEF_DRAFT_BANNER)
         return "\n\n".join([title, *banners, rest.lstrip("\n")])
@@ -366,6 +385,7 @@ class BriefService:
             "status": revision.status,
             "sha256": revision.body_sha256,
             "source_refs": list(revision.source_refs),
+            "created_by": revision.created_by,
             "accepted_by": revision.accepted_by,
             "accepted_at": revision.accepted_at,
         }

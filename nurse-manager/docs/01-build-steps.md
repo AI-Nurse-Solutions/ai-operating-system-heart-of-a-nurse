@@ -74,16 +74,18 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 3.5b | Project dashboard page (purpose, owner, milestone, readiness, tasks, resources, decisions, evidence) | ✅ | `project` IPC command and `ProjectDashboard` contract type; `ProjectDashboardTests`; browser journey from Mission Control, by keyboard and back. Readiness is stated facts, never a score or percentage |
 | 3.5c | Project feedback on the dashboard | ⬜ | No feedback record exists yet; needs a record type and capture rules first (the plan lists feedback, so it is not faked as an empty section) |
 | 3.6 | Library, Learning and Growth, and Contribution views | ⬜ | |
-| 3.7 | "Think with this project" composer that shows the context it will send | ⬜ | Depends on G4 |
+| 3.7 | "Think with this project" composer that shows the context it will send | ⬜ | The G4 gates exist (4.2–4.4); the screens for AI settings and AI drafts come with this step |
 
 ## G4 — Bounded assistance (NM-009, NM-010)
 
 | # | Step | Status | Exit check |
 |---|---|---|---|
 | 4.1 | Assistant proposals evaluated by the authoritative EDENA engine at `recommend` | ✅ | `AssistantProposalTests` |
-| 4.2 | Hermes adapter behind a replaceable interface; session ↔ mission id map | ⬜ | Adapter contract tests |
-| 4.3 | Budgets and cost limit enforced before any provider call | ⬜ | Budget-exhaustion test |
-| 4.4 | Provider failure degrades to the no-model path | ⬜ | Timeout and offline tests |
+| 4.2 | Provider adapter behind a replaceable interface (ADR 0004): no model by default; a model on this computer (Ollama-compatible, loopback only, proxies bypassed, redirects refused) | ✅ | `test_assistant.py` (`DefaultPostureTests`, `SettingsTests`, `LocalDraftTests`) against a stand-in model server over real HTTP; `assistant*` IPC commands in the contract |
+| 4.2b | The one cloud AI service | ⛔ | Needs the steward's choice of provider, plus review of its data-use, retention, and pricing terms. The key goes in the OS credential store (ADR 0004) |
+| 4.2c | Hermes session ↔ mission id map | ⏸ deferred | With the Hermes host (1.11) |
+| 4.3 | Budgets checked before any provider call: a daily request limit and a monthly cost budget; each request recorded before the call | ✅ | `BudgetTests` (limit reached, zero limit, failures count, a paid provider stopped before it is called, an interrupted request still counts) |
+| 4.4 | Any gate or provider failure returns the records-only draft and the reason; never another service | ✅ | `FallbackTests` (server down, server error, timeout, adapter bug, output with identifiers, invented citations, empty output, data rules, EDENA) |
 | 4.5 | DecisionAdapter (JEV-shaped), shadow mode on synthetic data only | ⬜ | Labeled set plus shadow report; needs JEV early access |
 
 ## G5 — Controlled follow-through (NM-011)

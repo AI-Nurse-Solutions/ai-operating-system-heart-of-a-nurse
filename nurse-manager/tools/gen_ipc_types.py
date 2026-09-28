@@ -12,6 +12,7 @@ check that it has not drifted from the schema.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -78,12 +79,17 @@ def _doc(schema, indent: str) -> str:
     return indent + "/**\n" + "".join(f"{indent} * {n}\n" for n in notes) + indent + " */\n"
 
 
+def _key(name: str) -> str:
+    """A property name, quoted when it is not a plain identifier (``assistant-brief``)."""
+    return name if re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", name) else json.dumps(name)
+
+
 def _members(schema, indent: str) -> str:
     required = set(schema.get("required", []))
     lines = []
     for name, sub in schema["properties"].items():
         optional = "" if name in required else "?"
-        lines.append(_doc(sub, indent) + f"{indent}readonly {name}{optional}: {ts_type(sub, indent)};\n")
+        lines.append(_doc(sub, indent) + f"{indent}readonly {_key(name)}{optional}: {ts_type(sub, indent)};\n")
     return "".join(lines)
 
 
@@ -114,7 +120,7 @@ def generate() -> str:
     out.append("/** The data type each command returns inside an OkEnvelope. */")
     out.append("export interface CommandData {")
     for command, type_name in commands["commands"].items():
-        out.append(f"  readonly {command}: {type_name};")
+        out.append(f"  readonly {_key(command)}: {type_name};")
     out.append("}\n")
     out.append("export type Command = keyof CommandData;\n")
     out.append("export interface OkEnvelope<C extends Command = Command> {")

@@ -269,12 +269,20 @@ def mission_control(ws: ManagerWorkspace, *, today: str, week_of: str) -> dict[s
         "assistants_at_work": {
             "state": "unavailable",
             "items": [],
-            "empty_message": (
-                "No assistant is connected. Planning, briefs, and exports work"
-                " without one."
-            ),
+            "empty_message": _assistants_message(ws),
         },
         "recent_accepted_outputs": _section(accepted, "No accepted outputs yet."),
         "task_counts": {status: sum(1 for t in tasks if t["status"] == status)
                         for status in TASK_STATUSES},
     }
+
+
+def _assistants_message(ws: ManagerWorkspace) -> str:
+    row = ws.store.conn.execute(
+        "SELECT provider FROM assistant_settings WHERE workspace_id = ?", (ws.info.id,)
+    ).fetchone()
+    if row is None or row["provider"] == "none":
+        return "No assistant is connected. Planning, briefs, and exports work without one."
+    # A model is connected, but nothing runs in the background (G5).
+    return ("No assistant is running. A model on this computer drafts only when you"
+            " ask it to.")

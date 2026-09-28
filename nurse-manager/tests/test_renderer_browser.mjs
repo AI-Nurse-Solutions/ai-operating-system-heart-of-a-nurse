@@ -204,6 +204,9 @@ try {
   const projectIds = await page.$$eval('.view--project tbody tr', (rows) => rows.map((r) => r.getAttribute('data-record-id')));
   assert.equal(projectIds.length, 3);
   assert.ok(projectIds.every((id) => boardIds.includes(id)), 'dashboard tasks are the same records as the board');
+  assert.match(await page.getByRole('region', { name: 'Think with this project' }).textContent(),
+    /Read-only.*Asking is available in the Nurse AI OS app/s);
+  assert.equal(await page.getByLabel('What do you want to think through?').count(), 0, 'no question box on the dev host');
   const projectTable = page.getByRole('table', { name: /Unit Based Council charter refresh tasks, sorted by Due date, ascending/ });
   assert.ok(await projectTable.isVisible());
   await page.getByRole('button', { name: /^Task/ }).click();

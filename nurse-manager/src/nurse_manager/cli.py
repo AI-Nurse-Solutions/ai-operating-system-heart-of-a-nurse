@@ -100,6 +100,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--today", required=True)
     p.add_argument("--by", required=True)
     p.add_argument("--reviewed-sha", help="sha256 of the preview you reviewed; refuses if it changed")
+    p = ws_cmd("assistant-project-preview",
+               "exactly what asking about one project would send; sends nothing")
+    p.add_argument("--id", required=True)
+    p.add_argument("--today", required=True)
+    p.add_argument("--question", required=True)
+    p = ws_cmd("assistant-project", "ask the connected model about one project; nothing is saved")
+    p.add_argument("--id", required=True)
+    p.add_argument("--today", required=True)
+    p.add_argument("--question", required=True)
+    p.add_argument("--by", required=True)
+    p.add_argument("--reviewed-sha", help="sha256 of the preview you reviewed; refuses if it changed")
 
     return parser
 
@@ -141,6 +152,12 @@ def _dispatch(args: argparse.Namespace) -> Any:
                 return assistant.disconnect(args.by)
             if args.command == "assistant-preview":
                 return assistant.preview_weekly_brief(args.week, args.today)
+            if args.command == "assistant-project-preview":
+                return assistant.preview_project_question(args.id, args.question, args.today)
+            if args.command == "assistant-project":
+                return assistant.answer_project_question(
+                    args.id, args.question, args.today, args.by,
+                    reviewed_prompt_sha256=args.reviewed_sha)
             if args.command == "assistant-brief":
                 return assistant.draft_weekly_brief(
                     args.week, args.today, args.by, reviewed_prompt_sha256=args.reviewed_sha)

@@ -58,6 +58,8 @@ class DevHostTests(unittest.TestCase):
         for command in devhost.READ_ONLY_COMMANDS:
             with self.subTest(command=command):
                 query = f"?id={self.project_id}" if command == "project" else ""
+                if command == "assistant-project-preview":
+                    query = f"?id={self.project_id}&question=What%20next%3F"
                 response, body = self.request(f"/ipc/{command}{query}")
                 self.assertEqual(response.status, 200)
                 argv = [command, str(self.workspace)]
@@ -69,6 +71,8 @@ class DevHostTests(unittest.TestCase):
                     argv += ["--week", "2026-09-28"]
                 if command == "assistant-preview":
                     argv += ["--today", TODAY, "--week", "2026-09-28"]
+                if command == "assistant-project-preview":
+                    argv += ["--id", self.project_id, "--today", TODAY, "--question", "What next?"]
                 self.assertEqual(json.loads(body), cli.run(argv)[1])
 
     def test_nothing_that_writes_is_reachable(self):

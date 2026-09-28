@@ -34,7 +34,7 @@ from . import cli, resources
 
 RENDERER = resources.manager_root() / "renderer"
 READ_ONLY_COMMANDS = ("mission", "project", "board", "table", "weekly", "assistant",
-                      "assistant-preview")
+                      "assistant-preview", "assistant-project-preview")
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _PROJECT_ID = re.compile(r"^prj-[0-9a-f]{12}$")
 
@@ -71,11 +71,16 @@ def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
         argv += ["--today", day, "--week", week]
     elif command == "weekly":
         argv += ["--week", week]
-    elif command == "project":
+    elif command in ("project", "assistant-project-preview"):
         project_id = (query.get("id") or [""])[0]
         if not _PROJECT_ID.match(project_id):
             return "id must be a project record id"
         argv += ["--id", project_id, "--today", day]
+        if command == "assistant-project-preview":
+            question = (query.get("question") or [""])[0]
+            if len(question) > 2000:
+                return "question is too long"
+            argv += ["--question", question]
     return argv
 
 

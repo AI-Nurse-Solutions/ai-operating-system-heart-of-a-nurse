@@ -41,6 +41,7 @@ from urllib.parse import parse_qs, urlparse
 from . import __version__, cli, resources
 from .devhost import (
     READ_ONLY_COMMANDS,
+    _PROJECT_ID,
     _valid_date,
     monday_of,
     read_argv,
@@ -56,7 +57,8 @@ LOCK_NAME = "app.lock.json"
 # The only writes the screens can ask for once a workspace exists. Each one
 # acts as the workspace's owner: the app runs for one person on their own
 # computer, and the launch token proves the request came from its page.
-WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief")
+WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief",
+                  "assistant-project")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
@@ -314,10 +316,16 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         return argv + ["--endpoint", endpoint] if endpoint.strip() else argv
     if command == "assistant-off":
         return ["assistant-off", ws, "--by", owner]
-    # assistant-brief is always bound to the preview the manager reviewed.
+    # AI requests are always bound to the preview the manager reviewed.
     sha = text("prompt_sha256", 64)
     if sha is None or not (sha == "" or _SHA256.match(sha)):
         return "prompt_sha256 from the preview is required"
+    if command == "assistant-project":
+        project_id, question = text("id", 64), text("question", 2000)
+        if not project_id or not _PROJECT_ID.match(project_id) or question is None:
+            return "id and question are required"
+        return ["assistant-project", ws, "--id", project_id, "--today", today,
+                "--question", question, "--by", owner, "--reviewed-sha", sha]
     return ["assistant-brief", ws, "--week", week, "--today", today, "--by", owner,
             "--reviewed-sha", sha]
 

@@ -110,6 +110,9 @@ def collect(workdir: Path) -> dict[str, dict]:
     # Bounded assistance (ADR 0004): no model by default, then a local model.
     keep("assistant", "assistant", ws)
     keep("assistant-preview-no-model", "assistant-preview", ws, "--week", WEEK, "--today", TODAY)
+    first_project = mission["projects_in_motion"]["items"][0]["id"]
+    keep("assistant-project-no-model", "assistant-project", ws, "--id", first_project,
+         "--today", TODAY, "--question", "What is blocking this?", "--by", OWNER)
     keep("assistant-brief-no-model", "assistant-brief", ws, "--week", WEEK, "--today", TODAY,
          "--by", OWNER)
     keep("error-assistant-not-owner", "assistant-local", ws, "--model", "llama3.2",
@@ -128,6 +131,14 @@ def collect(workdir: Path) -> dict[str, dict]:
         keep("assistant-brief-drafted", "assistant-brief", ws, "--week", WEEK, "--today", TODAY,
              "--by", OWNER, "--reviewed-sha", preview["prompt_sha256"])
         keep("weekly-ai-draft", "weekly", ws, "--week", WEEK)
+        project_id = mission["projects_in_motion"]["items"][0]["id"]
+        question = "What should I do first?"
+        asked = keep("assistant-project-preview", "assistant-project-preview", ws,
+                     "--id", project_id, "--today", TODAY, "--question", question)
+        keep("assistant-project", "assistant-project", ws, "--id", project_id, "--today", TODAY,
+             "--question", question, "--by", OWNER, "--reviewed-sha", asked["prompt_sha256"])
+    keep("error-assistant-project-empty-question", "assistant-project-preview", ws,
+         "--id", project_id, "--today", TODAY, "--question", "  ")
     keep("mission-assistant-connected", "mission", ws, "--today", TODAY, "--week", WEEK)
     keep("assistant-off", "assistant-off", ws, "--by", OWNER)
     return out

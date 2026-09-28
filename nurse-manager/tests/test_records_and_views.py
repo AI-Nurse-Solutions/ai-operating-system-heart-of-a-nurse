@@ -86,14 +86,47 @@ class StoreTests(_TempCase):
         old = sqlite3.connect(str(backup))
         old.executescript(
             "DROP TABLE assistant_requests; DROP TABLE assistant_settings;"
-            " DELETE FROM schema_migrations WHERE version = '0002_assistant';"
+            " DELETE FROM schema_migrations WHERE version != '0001_initial';"
         )
         old.close()
         ws.store.restore(backup)
         tables = {r[0] for r in ws.store.conn.execute(
             "SELECT name FROM sqlite_master WHERE type = 'table'")}
         self.assertIn("assistant_settings", tables)
-        self.assertEqual(ws.store.schema_version, "0002_assistant")
+        self.assertEqual(ws.store.schema_version, max(f.stem for f in MIGRATIONS_DIR.glob("*.sql")))
+
+    def test_upgrading_keeps_every_ai_request_already_recorded(self):
+        # Open a workspace with the schema as it was at 0002, record a request...
+        import shutil as _shutil
+        from unittest import mock
+
+        from nurse_manager import store as store_module
+        old_dir = self.tmp / "migrations-0002"
+        old_dir.mkdir()
+        for name in ("0001_initial.sql", "0002_assistant.sql"):
+            _shutil.copy(MIGRATIONS_DIR / name, old_dir / name)
+        with mock.patch.object(store_module, "MIGRATIONS_DIR", old_dir):
+            old = Store(self.tmp / "u.sqlite")
+            old.conn.execute("INSERT INTO workspaces VALUES ('ws-000000000001', 'W', 'personal_manager',"
+                             " 'M', 0, '2026-09-28T00:00:00+00:00')")
+            old.conn.execute(
+                "INSERT INTO assistant_requests (id, workspace_id, task, provider, outcome,"
+                " requested_by, created_at, cost_cents) VALUES ('air-000000000001',"
+                " 'ws-000000000001', 'weekly_brief', 'local', 'provider_failed', 'M',"
+                " '2026-09-28T00:00:00+00:00', NULL)")
+            self.assertEqual(old.schema_version, "0002_assistant")
+            old.close()
+        # ...then open it with this release: the row survives the table rebuild.
+        new = Store(self.tmp / "u.sqlite")
+        self.addCleanup(new.close)
+        rows = [tuple(r) for r in new.conn.execute(
+            "SELECT id, task, outcome, cost_cents FROM assistant_requests")]
+        self.assertEqual(rows, [("air-000000000001", "weekly_brief", "provider_failed", None)])
+        new.conn.execute(
+            "INSERT INTO assistant_requests (id, workspace_id, task, provider, outcome,"
+            " requested_by, created_at) VALUES ('air-000000000002', 'ws-000000000001',"
+            " 'project_question', 'local', 'answered', 'M', '2026-09-28T00:00:00+00:00')")
+        self.assertEqual(new.conn.execute("PRAGMA foreign_key_check").fetchall(), [])
 
     def test_restore_of_an_identical_backup_needs_no_permission(self):
         ws = self.sample()

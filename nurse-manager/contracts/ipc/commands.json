@@ -21,6 +21,8 @@
     "assistant-off": "AssistantStatus",
     "assistant-brief": "AssistantDraft",
     "weekly": "WeeklyBrief",
-    "assistant-preview": "AssistantPreview"
+    "assistant-preview": "AssistantPreview",
+    "assistant-project-preview": "ProjectQuestionPreview",
+    "assistant-project": "ProjectAnswer"
   }
 }

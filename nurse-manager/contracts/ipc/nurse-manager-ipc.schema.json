@@ -511,6 +511,41 @@
       "required": ["week_of", "provider", "model", "runs_on", "system", "prompt", "prompt_sha256", "checks", "will_send", "reason"],
       "additionalProperties": false
     },
+    "ProjectQuestionPreview": {
+      "description": "Exactly what asking the model about one project would send, and the gates' verdicts. Nothing is sent to produce it. With no model connected, system and prompt are empty and will_send is false.",
+      "type": "object",
+      "properties": {
+        "project_id": {"$ref": "#/$defs/RecordId"},
+        "provider": {"$ref": "#/$defs/AssistantProvider"},
+        "model": {"type": "string"},
+        "runs_on": {"type": "string"},
+        "system": {"type": "string", "description": "The instructions sent to the model."},
+        "prompt": {"type": "string", "description": "The question and the project's record text sent to the model."},
+        "prompt_sha256": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"const": ""}], "description": "Send it back with assistant-project; a change since the preview refuses the request."},
+        "checks": {"type": "array", "items": {"$ref": "#/$defs/AssistantCheck"}},
+        "will_send": {"type": "boolean"},
+        "reason": {"type": "string", "description": "Why nothing would be sent. Empty when will_send is true."}
+      },
+      "required": ["project_id", "provider", "model", "runs_on", "system", "prompt", "prompt_sha256", "checks", "will_send", "reason"],
+      "additionalProperties": false
+    },
+    "ProjectAnswer": {
+      "description": "The answer to a question about one project. It is a suggestion shown to the manager and is never saved; the ledger keeps only metadata.",
+      "type": "object",
+      "properties": {
+        "outcome": {"enum": ["answered", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "provider_failed", "output_refused"]},
+        "answered_by_model": {"type": "boolean"},
+        "reason": {"type": "string", "description": "Written for the manager. Empty only when the model answered."},
+        "provider": {"$ref": "#/$defs/AssistantProvider"},
+        "model": {"type": "string"},
+        "request_id": {"$ref": "#/$defs/RecordId"},
+        "project_id": {"$ref": "#/$defs/RecordId"},
+        "answer": {"type": "string", "description": "Markdown with record citations; empty unless the model answered."},
+        "source_refs": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}}
+      },
+      "required": ["outcome", "answered_by_model", "reason", "provider", "model", "request_id", "project_id", "answer", "source_refs"],
+      "additionalProperties": false
+    },
     "AssistantOutcome": {
       "description": "What happened to one request. Every outcome except 'drafted' returns the draft composed from records.",
       "enum": ["drafted", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "provider_failed", "output_refused"]

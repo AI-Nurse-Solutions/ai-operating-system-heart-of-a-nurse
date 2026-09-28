@@ -549,12 +549,38 @@ class ProjectQuestionTests(_Case):
         db = self.ws.store.conn
         for ref in refs[1:]:
             table = {"tsk": "tasks", "dec": "decisions", "src": "sources",
-                     "fbk": "project_feedback"}[ref.split("-")[0]]
+                     "fbk": "project_feedback", "mem": "memories"}[ref.split("-")[0]]
             (project,) = db.execute(f"SELECT project_id FROM {table} WHERE id = ?", (ref,)).fetchone()
-            self.assertEqual(project, self.project_id)
+            # A memory may also be for all work (no project).
+            allowed = (self.project_id, None) if table == "memories" else (self.project_id,)
+            self.assertIn(project, allowed)
         other = [r for r in db.execute("SELECT id FROM tasks WHERE project_id != ?", (self.project_id,))]
         for (task_id,) in other:
             self.assertNotIn(task_id, text)
+
+    def test_memories_in_use_reach_the_model_and_can_be_cited_excluded_ones_never(self):
+        from nurse_manager.memory import WorkspaceMemory
+        from nurse_manager.views import memory
+
+        items = memory(self.ws, today=TODAY)["items"]
+        excluded = next(i for i in items if i["status"] == "excluded")
+        in_use = next(i for i in items if i["status"] == "active" and i["project_id"] is None)
+        server = self.server(lambda body: f"Lead with decisions `{in_use['id']}`.")
+        assistant = self.connect(server)
+        preview = assistant.preview_project_question(self.project_id, self.QUESTION, TODAY)
+        result = self.ask(assistant, reviewed_prompt_sha256=preview["prompt_sha256"])
+        self.assertEqual(result["outcome"], "answered", result["reason"])
+        self.assertEqual(result["source_refs"], [in_use["id"]])
+        sent = server.requests[0]["body"]["prompt"]
+        self.assertIn(in_use["content"], sent)
+        self.assertNotIn(excluded["content"], sent)
+        self.assertNotIn(excluded["id"], sent)
+        self.assertIn("remember", server.requests[0]["body"]["system"])
+        # Excluding a memory changes what would be sent: the old preview is stale.
+        WorkspaceMemory(self.ws).exclude(in_use["id"])
+        with self.assertRaises(AssistantError):
+            self.ask(assistant, reviewed_prompt_sha256=preview["prompt_sha256"])
+        self.assertEqual(len(server.requests), 1)
 
     def test_a_changed_question_or_record_needs_a_new_preview(self):
         server = self.server()

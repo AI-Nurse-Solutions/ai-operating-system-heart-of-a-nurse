@@ -62,6 +62,13 @@ def load_sample(
             ws.start_learning(item_id)
         if item["status"] == "completed":
             ws.complete_learning(item_id, item["takeaway"], item["completed_on"])
+    from .memory import WorkspaceMemory
+
+    memories = WorkspaceMemory(ws)
+    for item in data.get("memories", []):
+        memory_id = memories.add(item["content"], project_id=projects.get(item.get("project")))
+        if item.get("excluded"):
+            memories.exclude(memory_id)
     for item in data.get("contributions", []):
         item_id = ws.add_contribution(item["title"], item["kind"], item["occurred_on"],
                                       item["my_part"], item["shared_credit"],

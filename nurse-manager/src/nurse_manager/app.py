@@ -62,12 +62,15 @@ LOCK_NAME = "app.lock.json"
 WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief",
                   "assistant-project", "note-keep", "feedback-add", "feedback-address",
                   "source-add", "learning-add", "learning-start", "learning-complete",
-                  "contribution-add", "contribution-verify", "brief-schedule-set")
+                  "contribution-add", "contribution-verify", "brief-schedule-set",
+                  "memory-add", "memory-correct", "memory-exclude", "memory-include",
+                  "memory-delete")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
 _FEEDBACK_ID = re.compile(r"^fbk-[0-9a-f]{12}$")
 _LEARNING_ID = re.compile(r"^lrn-[0-9a-f]{12}$")
+_MEMORY_ID = re.compile(r"^mem-[0-9a-f]{12}$")
 _CONTRIBUTION_ID = re.compile(r"^ctb-[0-9a-f]{12}$")
 _HOURS = re.compile(r"^\d{1,3}(\.\d{1,2})?$")
 
@@ -388,7 +391,7 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         return ["brief", ws, "--week", week, "--today", today]
     if command == "accept":
         revision, sha = text("revision", 64), text("sha256", 64)
-        if not revision or not _REVISION_ID.match(revision) or not sha or not _SHA256.match(sha):
+        if not revision or not _REVISION_ID.fullmatch(revision) or not sha or not _SHA256.fullmatch(sha):
             return "revision and sha256 are required"
         return ["accept", ws, "--revision", revision, "--reviewer", owner, "--sha", sha]
     if command == "assistant-local":
@@ -401,7 +404,7 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         return ["assistant-off", ws, "--by", owner]
     if command in ("learning-add", "learning-start", "learning-complete"):
         hours = text("hours", 10, required=False)
-        if hours is None or (hours and not _HOURS.match(hours)):
+        if hours is None or (hours and not _HOURS.fullmatch(hours)):
             return "hours must be a number, like 1.5"
         if command == "learning-add":
             title, kind = text("title", 400), text("kind", 40)
@@ -414,7 +417,7 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
             argv += ["--target", target] if target else []
             return argv + (["--hours", hours] if hours else [])
         learning_id = text("learning_id", 64)
-        if not learning_id or not _LEARNING_ID.match(learning_id):
+        if not learning_id or not _LEARNING_ID.fullmatch(learning_id):
             return "learning_id is required"
         if command == "learning-start":
             return ["learning-start", ws, "--id", learning_id]
@@ -425,6 +428,27 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         argv = ["learning-complete", ws, "--id", learning_id, "--takeaway", takeaway,
                 "--completed", completed]
         return argv + (["--hours", hours] if hours else [])
+    if command == "memory-add":
+        content, project_id = text("content", 1000), text("project_id", 64, required=False)
+        expires = text("expires_on", 20, required=False)
+        if (content is None or project_id is None
+                or (project_id and not _PROJECT_ID.fullmatch(project_id))
+                or expires is None or (expires and not _valid_date(expires))):
+            return "content is required; project_id and expires_on (YYYY-MM-DD) are optional"
+        argv = ["memory-add", ws, "--content", content, "--today", today]
+        argv += ["--project", project_id] if project_id else []
+        return argv + (["--expires", expires] if expires else [])
+    if command in ("memory-correct", "memory-exclude", "memory-include", "memory-delete"):
+        memory_id = text("memory_id", 64)
+        if not memory_id or not _MEMORY_ID.fullmatch(memory_id):
+            return "memory_id is required"
+        argv = [command, ws, "--id", memory_id]
+        if command == "memory-correct":
+            content = text("content", 1000)
+            if content is None:
+                return "content is required"
+            argv += ["--content", content]
+        return argv if command == "memory-delete" else argv + ["--today", today]
     if command == "brief-schedule-set":
         enabled, weekday, hour = body.get("enabled"), body.get("weekday"), body.get("hour")
         if (not isinstance(enabled, bool) or type(weekday) is not int or not 0 <= weekday <= 6
@@ -440,7 +464,7 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         if (title is None or my_part is None or shared is None
                 or kind not in ("improvement", "teaching", "committee", "presentation",
                                 "publication")
-                or project_id is None or (project_id and not _PROJECT_ID.match(project_id))
+                or project_id is None or (project_id and not _PROJECT_ID.fullmatch(project_id))
                 or not isinstance(occurred, str) or not _valid_date(occurred)):
             return ("title, kind, my_part, shared_credit, and an occurred_on date are required;"
                     " project_id is optional")
@@ -449,7 +473,7 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         return argv + (["--project", project_id] if project_id else [])
     if command == "contribution-verify":
         contribution_id, evidence = text("contribution_id", 64), text("evidence", 2000)
-        if not contribution_id or not _CONTRIBUTION_ID.match(contribution_id) or evidence is None:
+        if not contribution_id or not _CONTRIBUTION_ID.fullmatch(contribution_id) or evidence is None:
             return "contribution_id and evidence are required"
         return ["contribution-verify", ws, "--id", contribution_id, "--evidence", evidence]
     if command == "source-add":
@@ -458,7 +482,7 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         review = text("review_date", 20, required=False)
         if (title is None or reference is None or kind not in ("public", "synthetic", "personal_permitted")
                 or data_class not in ("", "D0", "D1") or project_id is None
-                or (project_id and not _PROJECT_ID.match(project_id)) or review is None
+                or (project_id and not _PROJECT_ID.fullmatch(project_id)) or review is None
                 or (review and not _valid_date(review))):
             return "title, kind, and reference are required; data_class is D0 or D1"
         argv = ["source-add", ws, "--title", title, "--kind", kind, "--reference", reference,
@@ -470,7 +494,7 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         project_id, from_group = text("project_id", 64), text("from_group", 200)
         kind, summary = text("kind", 20), text("summary", 2000)
         received = body.get("received_on", today)
-        if (not project_id or not _PROJECT_ID.match(project_id) or from_group is None
+        if (not project_id or not _PROJECT_ID.fullmatch(project_id) or from_group is None
                 or kind not in ("worked", "change", "question") or summary is None
                 or not isinstance(received, str)
                 or not _valid_date(received)):
@@ -479,24 +503,24 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
                 "--kind", kind, "--summary", summary, "--received", received]
     if command == "feedback-address":
         feedback_id, response = text("feedback_id", 64), text("response", 2000)
-        if not feedback_id or not _FEEDBACK_ID.match(feedback_id) or response is None:
+        if not feedback_id or not _FEEDBACK_ID.fullmatch(feedback_id) or response is None:
             return "feedback_id and response are required"
         return ["feedback-address", ws, "--id", feedback_id, "--response", response]
     if command == "note-keep":
         request_id, project_id = text("request_id", 64), text("project_id", 64)
         question, answer = text("question", 2000), text("answer", 40000)
-        if (not request_id or not _REQUEST_ID.match(request_id) or not project_id
-                or not _PROJECT_ID.match(project_id) or question is None or answer is None):
+        if (not request_id or not _REQUEST_ID.fullmatch(request_id) or not project_id
+                or not _PROJECT_ID.fullmatch(project_id) or question is None or answer is None):
             return "request_id, project_id, question, and answer are required"
         return ["note-keep", ws, "--request", request_id, "--project", project_id,
                 "--question", question, "--answer", answer, "--by", owner]
     # AI requests are always bound to the preview the manager reviewed.
     sha = text("prompt_sha256", 64)
-    if sha is None or not (sha == "" or _SHA256.match(sha)):
+    if sha is None or not (sha == "" or _SHA256.fullmatch(sha)):
         return "prompt_sha256 from the preview is required"
     if command == "assistant-project":
         project_id, question = text("id", 64), text("question", 2000)
-        if not project_id or not _PROJECT_ID.match(project_id) or question is None:
+        if not project_id or not _PROJECT_ID.fullmatch(project_id) or question is None:
             return "id and question are required"
         return ["assistant-project", ws, "--id", project_id, "--today", today,
                 "--question", question, "--by", owner, "--reviewed-sha", sha]

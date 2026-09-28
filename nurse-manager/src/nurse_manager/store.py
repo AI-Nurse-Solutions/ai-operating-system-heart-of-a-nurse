@@ -64,6 +64,9 @@ def _connect(path: Path) -> sqlite3.Connection:
     conn = sqlite3.connect(str(path), isolation_level=None)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    # Deleted or overwritten text is zeroed in the file, not just unlinked:
+    # a deleted memory must not survive in free pages (step 5.2).
+    conn.execute("PRAGMA secure_delete = ON")
     return conn
 
 

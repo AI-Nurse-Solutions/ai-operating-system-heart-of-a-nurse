@@ -367,6 +367,47 @@ export interface LibraryItem {
   readonly review_overdue: boolean;
 }
 
+/** Scoped memory: in use first, then expired, then excluded. Only memories in use are ever sent, and only to Think with this project. */
+export interface Memory {
+  readonly sample: boolean;
+  readonly today: IsoDate;
+  readonly items: readonly MemoryItem[];
+  /** @minimum 0 */
+  readonly in_use: number;
+  /** @minimum 0 */
+  readonly excluded: number;
+  /** @minimum 0 */
+  readonly expired: number;
+  /** Projects a new memory can be scoped to. */
+  readonly projects: readonly {
+    readonly id: RecordId;
+    readonly title: string;
+  }[];
+}
+
+/** The memory is gone; only its id remains, in the audit log. */
+export interface MemoryDeleted {
+  readonly deleted: RecordId;
+}
+
+/** One thing the manager asked the assistant to remember, in their own words. Excluded or expired memories are kept but never sent. */
+export interface MemoryItem {
+  readonly id: RecordId;
+  readonly content: string;
+  /** Null means all work. */
+  readonly project_id: RecordId | null;
+  readonly project_title: string | null;
+  readonly status: "active" | "excluded";
+  /** Who wrote or last corrected it, and when. */
+  readonly provenance: string;
+  readonly expires_on: IsoDate | null;
+  readonly expired: boolean;
+}
+
+export interface MemoryResult {
+  readonly item: MemoryItem;
+}
+
 /** What needs my attention? Every section reads the same records as the board and table. */
 export interface MissionControl {
   readonly workspace: string;
@@ -527,7 +568,7 @@ export interface Receipt {
   readonly recorded_at: IsoDateTime;
 }
 
-/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb)-[0-9a-f]{12}$ */
+/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
 export interface Resource {
@@ -671,6 +712,12 @@ export interface CommandData {
   readonly "contribution-verify": ContributionResult;
   readonly "brief-schedule-set": BriefSchedule;
   readonly "brief-run-due": BriefRunResult;
+  readonly memory: Memory;
+  readonly "memory-add": MemoryResult;
+  readonly "memory-correct": MemoryResult;
+  readonly "memory-exclude": MemoryResult;
+  readonly "memory-include": MemoryResult;
+  readonly "memory-delete": MemoryDeleted;
 }
 
 export type Command = keyof CommandData;

@@ -93,6 +93,7 @@ One logical writer per record type. Views never write.
 | Contribution (the manager's own, with shared credit and evidence) | `contributions` | `ManagerWorkspace.add_contribution/verify_contribution` | Contributions |
 | Recurring brief settings (the owner's choice of weekday and hour; off by default) | `brief_schedule` | `BriefSchedule.configure` (the workspace owner only) | Weekly brief |
 | Recurring brief runs (one per week: drafted, skipped, or failed with retries) | `brief_runs` | `BriefSchedule.run_due`, called by the running app | Weekly brief |
+| Memory (what the manager asks the assistant to remember; for all work or one project) | `memories` | `WorkspaceMemory` (the Integration Contract's `MemoryInterface`; the workspace owner only) | Memory, assistant (project context) |
 | Project note (an AI answer the manager kept, exactly as given) | `project_notes` | `AssistantService.keep_project_note` (the workspace owner only) | project dashboard |
 | Audit stream | `event_log` | every writer, via `Store.log`, inside the same transaction | backup/restore |
 | Schema | `schema_migrations` | `Store._migrate` | restore |

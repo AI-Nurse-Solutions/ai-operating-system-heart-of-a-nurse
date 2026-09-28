@@ -485,3 +485,48 @@ def contributions(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
         "this_year_verified": sum(1 for r in verified if r["occurred_on"].startswith(year)),
         "projects": _project_choices(ws),
     }
+
+
+_MEMORIES = (
+    "SELECT m.*, p.title AS project_title FROM memories m"
+    " LEFT JOIN projects p ON p.id = m.project_id WHERE m.workspace_id = ?"
+)
+
+
+def _memory(row, today: str) -> dict[str, Any]:
+    from .memory import memory_dict
+
+    item = memory_dict(row)
+    item["expired"] = bool(item["expires_on"] and item["expires_on"] < today)
+    return item
+
+
+def memory_item(ws: ManagerWorkspace, memory_id: str, *, today: str) -> dict[str, Any]:
+    ws._require_row("memories", memory_id)
+    return _memory(ws.store.conn.execute(
+        _MEMORIES + " AND m.id = ?", (ws.info.id, memory_id)).fetchone(), today)
+
+
+def memory(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
+    """Everything the assistant has been asked to remember, and what it is sent.
+
+    In use first (workspace-wide, then by project), then expired, then
+    excluded. Only memories in use and not expired are ever sent.
+    """
+    items = [_memory(r, today) for r in ws.store.conn.execute(
+        _MEMORIES + " ORDER BY m.created_at, m.id", (ws.info.id,))]
+
+    def order(m):
+        group = 2 if m["status"] == "excluded" else 1 if m["expired"] else 0
+        return (group, m["project_title"] is not None, (m["project_title"] or "").lower())
+
+    items.sort(key=order)
+    return {
+        "sample": ws.info.sample,
+        "today": today,
+        "items": items,
+        "in_use": sum(1 for m in items if m["status"] == "active" and not m["expired"]),
+        "excluded": sum(1 for m in items if m["status"] == "excluded"),
+        "expired": sum(1 for m in items if m["status"] == "active" and m["expired"]),
+        "projects": _project_choices(ws),
+    }

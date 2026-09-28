@@ -1622,3 +1622,183 @@ export function renderContributions(doc, data, options) {
   ]));
   return root;
 }
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').Memory} Memory */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').MemoryItem} MemoryItem */
+/**
+ * Unsaved text on the Memory screen: the add form, and corrections by memory id.
+ * @typedef {{ add: Record<string, string>, edits: Record<string, string> }} MemoryTyped
+ */
+/**
+ * @typedef {object} MemoryOptions
+ * @property {boolean} writable
+ * @property {boolean} [busy]
+ * @property {Notice} [notice]
+ * @property {string | null} [editing] the memory whose correction form is open
+ * @property {string | null} [deleting] the memory whose delete is being confirmed
+ * @property {MemoryTyped} [typed] unsaved text, kept across re-renders
+ * @property {'add' | string} [saving] the form whose save is in flight; read-only until it finishes
+ * @property {(fields: Record<string, string>) => void} onAdd
+ * @property {(id: string) => void} onOpenCorrect
+ * @property {() => void} onCancelCorrect
+ * @property {(id: string, content: string) => void} onCorrect
+ * @property {(id: string) => void} onExclude
+ * @property {(id: string) => void} onInclude
+ * @property {(id: string) => void} onOpenDelete
+ * @property {() => void} onCancelDelete
+ * @property {(id: string) => void} onDelete
+ */
+
+/**
+ * Read what the manager has typed on a rendered Memory view, so a re-render keeps it.
+ * @param {ParentNode} root
+ * @param {MemoryTyped} [previous]
+ * @returns {MemoryTyped}
+ */
+export function typedMemory(root, previous) {
+  /** @type {Record<string, string>} */
+  const add = {};
+  for (const [key, id] of [['content', 'memory-content'], ['project_id', 'memory-project'], ['expires_on', 'memory-expires']]) {
+    const control = /** @type {HTMLInputElement | null} */ (root.querySelector(`#${id}`));
+    if (control) add[key] = control.value;
+  }
+  const edits = { ...(previous?.edits ?? {}) };
+  for (const open of /** @type {NodeListOf<HTMLTextAreaElement>} */ (root.querySelectorAll('textarea[id^="correct-"]'))) {
+    edits[open.id.slice('correct-'.length)] = open.value;
+  }
+  return { add, edits };
+}
+
+/**
+ * Scoped memory: what the assistant is asked to remember, in the manager's words.
+ * @param {Document} doc
+ * @param {Memory} data
+ * @param {MemoryOptions} options
+ */
+export function renderMemory(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const typed = options.typed ?? { add: {}, edits: {} };
+  const root = h(doc, 'div', { class: 'view view--memory' });
+  root.append(viewHeading(doc, 'Memory',
+    'What the assistant is asked to remember, in your words. Only you add to it; the assistant never does.'));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+  root.append(h(doc, 'ul', { class: 'item-list', 'aria-label': 'Facts' }, [
+    h(doc, 'li', {}, [`${data.in_use} in use · ${data.expired} expired · ${data.excluded} excluded`]),
+    h(doc, 'li', {}, ['Only memories in use are sent, and only with “Think with this project”, whose preview shows them.']),
+  ]));
+
+  /** @param {MemoryItem} item */
+  const card = (item) => {
+    const el = h(doc, 'li', { class: 'card', 'data-record-id': item.id }, [
+      h(doc, 'p', { class: 'card__title' }, [item.content]),
+      h(doc, 'p', { class: 'card__meta' }, item.project_id
+        ? ['Project: ', h(doc, 'a', { href: `#/project/${encodeURIComponent(item.project_id)}` }, [item.project_title ?? item.project_id])]
+        : ['All work']),
+      h(doc, 'p', { class: 'card__meta' }, [
+        item.provenance,
+        item.expires_on ? ` · ${item.expired ? 'expired' : 'expires'} ${item.expires_on}` : '',
+      ]),
+    ]);
+    if (!options.writable) return el;
+    if (options.editing === item.id) {
+      const text = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+        id: `correct-${item.id}`, rows: '2', required: '', maxlength: '500',
+      }));
+      text.value = typed.edits[item.id] ?? item.content;
+      text.readOnly = busy && options.saving === item.id;
+      const save = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Save correction']));
+      save.disabled = busy;
+      const form = h(doc, 'form', { class: 'onboarding-form' }, [
+        h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: `correct-${item.id}` }, ['Corrected wording']), text]),
+        h(doc, 'p', { class: 'button-row' }, [save, button(doc, 'Cancel', busy, options.onCancelCorrect, 'secondary-button')]),
+      ]);
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        options.onCorrect(item.id, text.value.trim());
+      });
+      el.append(form);
+    } else if (options.deleting === item.id) {
+      el.append(
+        h(doc, 'p', { class: 'section-state', role: 'note' }, [
+          badge(doc, 'blocked', '!', 'Delete for good?'), ' Its text is not kept anywhere, and it cannot be brought back.',
+        ]),
+        h(doc, 'p', { class: 'button-row' }, [
+          button(doc, 'Delete for good', busy, () => options.onDelete(item.id)),
+          button(doc, 'Keep it', busy, options.onCancelDelete, 'secondary-button'),
+        ]),
+      );
+    } else {
+      if (item.status === 'excluded' && item.expired) {
+        el.append(h(doc, 'p', { class: 'field-hint' }, ['Expired, so it cannot be used again. Remember it again if it still applies.']));
+      }
+      el.append(h(doc, 'p', { class: 'button-row' }, [
+        button(doc, 'Correct…', busy, () => options.onOpenCorrect(item.id), 'secondary-button'),
+        item.status === 'active'
+          ? button(doc, 'Exclude', busy, () => options.onExclude(item.id), 'secondary-button')
+          // An expired memory would never be sent again, so it is not offered.
+          : item.expired ? null : button(doc, 'Use again', busy, () => options.onInclude(item.id), 'secondary-button'),
+        button(doc, 'Delete…', busy, () => options.onOpenDelete(item.id), 'secondary-button'),
+      ]));
+    }
+    return el;
+  };
+
+  for (const [key, title, empty, pick] of /** @type {const} */ ([
+    ['in-use', 'In use', 'Nothing in use.', (/** @type {MemoryItem} */ m) => m.status === 'active' && !m.expired],
+    ['expired', 'Expired', 'Nothing expired.', (/** @type {MemoryItem} */ m) => m.status === 'active' && m.expired],
+    ['excluded', 'Excluded', 'Nothing excluded.', (/** @type {MemoryItem} */ m) => m.status === 'excluded'],
+  ])) {
+    const items = data.items.filter(pick);
+    const headingId = `memory-${key}-heading`;
+    root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': headingId }, [
+      h(doc, 'h2', { id: headingId, tabindex: '-1' }, [`${title} (${items.length})`]),
+      items.length
+        ? h(doc, 'ul', { class: 'card-list' }, items.map(card))
+        : h(doc, 'p', { class: 'section-state section-state--empty' }, [empty]),
+    ]));
+  }
+
+  if (!options.writable) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Changing memory is available in the Nurse AI OS app.',
+    ]));
+    return root;
+  }
+  const content = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', { id: 'memory-content', rows: '2', required: '', maxlength: '500' }));
+  const project = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id: 'memory-project' }, [
+    h(doc, 'option', { value: '' }, ['All work']),
+    ...data.projects.map((p) => h(doc, 'option', { value: p.id }, [p.title])),
+  ]));
+  const expires = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'memory-expires', type: 'date', min: data.today }));
+  content.value = typed.add.content ?? '';
+  project.value = typed.add.project_id ?? '';
+  expires.value = typed.add.expires_on ?? '';
+  // The submitted form is read-only while its own save is in flight.
+  if (busy && options.saving === 'add') {
+    content.readOnly = true;
+    expires.readOnly = true;
+    project.disabled = true;
+  }
+  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Remember this']));
+  submit.disabled = busy;
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'memory-add-heading' }, [
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'memory-content' }, ['What should the assistant remember?']), content]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'memory-project' }, ['For']), project]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'memory-expires' }, ['Until (optional)']), expires]),
+    submit,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    options.onAdd({ content: content.value.trim(), project_id: project.value, expires_on: expires.value });
+  });
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'memory-add-heading' }, [
+    h(doc, 'h2', { id: 'memory-add-heading' }, ['Remember something']),
+    h(doc, 'p', { class: 'onboarding-rules', role: 'note' }, [
+      badge(doc, 'review', '!', 'Data rules'), ' ',
+      'Your own preferences and context only. Keep patient information, staff performance, and named colleagues out.',
+    ]),
+    form,
+  ]));
+  return root;
+}

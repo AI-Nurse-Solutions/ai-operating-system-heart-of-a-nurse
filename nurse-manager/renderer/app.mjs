@@ -6,7 +6,7 @@
 // its own validated IPC without touching any view.
 
 import {
-  renderAssistant, renderBoard, renderBrief, renderContributions, renderError, typedContributions, typedSchedule, renderLearning, renderLibrary, renderMission, renderOnboarding,
+  renderAssistant, renderBoard, renderBrief, renderContributions, renderError, renderMemory, typedContributions, typedMemory, typedSchedule, renderLearning, renderLibrary, renderMission, renderOnboarding,
   renderProject, renderTable,
 } from './views.mjs';
 
@@ -106,9 +106,10 @@ export function httpSource(token = '') {
 }
 
 /** @typedef {Record<string, string | number | boolean>} WriteBody */
-/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions'} ReadCommand */
+/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory'} ReadCommand */
 /** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'
- *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify' | 'brief-schedule-set'} WriteCommand */
+ *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify' | 'brief-schedule-set'
+ *   | 'memory-add' | 'memory-correct' | 'memory-exclude' | 'memory-include' | 'memory-delete'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -120,6 +121,7 @@ const ROUTES = {
   library: { title: 'Library', command: 'library' },
   learning: { title: 'Learning and Growth', command: 'learning' },
   contributions: { title: 'Contributions', command: 'contributions' },
+  memory: { title: 'Memory', command: 'memory' },
   assistant: { title: 'AI assistance', command: 'assistant' },
 };
 
@@ -372,6 +374,9 @@ export function start(doc, source) {
     } else if (envelope.command === 'contributions') {
       showContributions(/** @type {import('./views.mjs').Contributions} */ (data), {}, moveFocus);
       announce('Contributions loaded.');
+    } else if (envelope.command === 'memory') {
+      showMemory(/** @type {import('./views.mjs').Memory} */ (data), {}, moveFocus);
+      announce('Memory loaded.');
     } else if (envelope.command === 'library') {
       showLibrary(/** @type {import('./views.mjs').Library} */ (data), {}, moveFocus);
       announce('Library loaded.');
@@ -427,7 +432,7 @@ export function start(doc, source) {
 
   /**
    * Reload a view's data after an action, unless the manager has navigated away.
-   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions'} command
+   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory'} command
    * @param {number} mine
    * @param {Record<string, string>} [params]
    * @param {(message: string) => void} [onFail] handle a failed reload instead of showing the error page
@@ -441,7 +446,7 @@ export function start(doc, source) {
         return null;
       }
       if (!envelope.ok) {
-        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions' }[command];
+        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions', memory: 'memory' }[command];
         show(renderError(doc, ROUTES[view].title, envelope.error), true);
         return null;
       }
@@ -690,6 +695,77 @@ export function start(doc, source) {
       onVerify: (id, fields) => act('contribution-verify', { contribution_id: id, ...fields }, 'Verified, with your evidence.'),
     };
     const view = renderContributions(doc, data, { ...options, ...state });
+    if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
+    else show(view, moveFocus);
+  };
+
+  /**
+   * @param {import('./views.mjs').Memory} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, editing?: string | null, deleting?: string | null, typed?: import('./views.mjs').MemoryTyped }} state
+   * @param {boolean} moveFocus
+   * @param {string} [focusSelector]
+   */
+  const showMemory = (data, state, moveFocus, focusSelector) => {
+    const mine = generation;
+    const typedNow = () => typedMemory(main, state.typed);
+    /** @param {Record<string, string>} edits @param {string | undefined} id */
+    const without = (edits, id) => Object.fromEntries(Object.entries(edits).filter(([key]) => key !== id));
+    /**
+     * @param {WriteCommand} command
+     * @param {Record<string, string>} body
+     * @param {string} done
+     */
+    const act = async (command, body, done) => {
+      const before = typedNow();
+      const saving = command === 'memory-add' ? 'add' : body.memory_id;
+      main.replaceChildren(renderMemory(doc, data, { ...options, ...state, typed: before, busy: true, saving }));
+      // The submitted form is read-only while it saves; everything else stays
+      // editable, so read the view again afterwards: nothing typed is lost.
+      const latest = () => typedMemory(main, before);
+      const { failure } = await write(command, body);
+      if (mine !== generation) return;
+      if (failure) {
+        showMemory(data, { editing: state.editing, notice: failure, typed: latest() }, true);
+        return;
+      }
+      // The saved form starts empty; everything else keeps what was typed in it.
+      const next = () => {
+        const typed = latest();
+        if (command === 'memory-add') return { editing: state.editing, typed: { add: {}, edits: typed.edits } };
+        const done = command === 'memory-correct' || command === 'memory-delete';
+        return {
+          editing: done && state.editing === body.memory_id ? null : state.editing,
+          typed: { add: typed.add, edits: done ? without(typed.edits, body.memory_id) : typed.edits },
+        };
+      };
+      // If the save worked but the refresh fails, stay on this screen with the
+      // unsaved text, rather than replacing it with the error page.
+      const fresh = await reload('memory', mine, {}, (message) => showMemory(data, {
+        ...next(), notice: { kind: 'error', text: `${done} The list could not be refreshed (${message}); open Memory again to see it.` },
+      }, true));
+      // Re-render from the fresh records, so every button acts on them.
+      if (!fresh) return;
+      showMemory(/** @type {import('./views.mjs').Memory} */ (fresh), { ...next(), notice: { kind: 'ok', text: done } }, true);
+    };
+    /** @type {import('./views.mjs').MemoryOptions} */
+    const options = {
+      writable,
+      onAdd: (fields) => act('memory-add', fields, 'Remembered. It is used with “Think with this project”.'),
+      onOpenCorrect: (id) => showMemory(data, { editing: id, typed: typedNow() }, true, `#correct-${id}`),
+      onCancelCorrect: () => {
+        const typed = typedNow();
+        showMemory(data, { typed: { add: typed.add, edits: without(typed.edits, state.editing ?? undefined) } }, true);
+      },
+      onCorrect: (id, content) => act('memory-correct', { memory_id: id, content }, 'Corrected.'),
+      onExclude: (id) => act('memory-exclude', { memory_id: id }, 'Excluded. It is kept but never sent.'),
+      onInclude: (id) => act('memory-include', { memory_id: id }, 'In use again.'),
+      // Focus lands on the confirmation, so the choice is made deliberately.
+      onOpenDelete: (id) => showMemory(data, { editing: state.editing, deleting: id, typed: typedNow() }, true,
+        `li[data-record-id="${id}"] .button-row button`),
+      onCancelDelete: () => showMemory(data, { editing: state.editing, typed: typedNow() }, true),
+      onDelete: (id) => act('memory-delete', { memory_id: id }, 'Deleted for good.'),
+    };
+    const view = renderMemory(doc, data, { ...options, ...state });
     if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
     else show(view, moveFocus);
   };

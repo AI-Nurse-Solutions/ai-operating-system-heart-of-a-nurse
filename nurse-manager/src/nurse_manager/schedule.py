@@ -98,7 +98,11 @@ class BriefSchedule:
         if settings["enabled"]:
             at = self.due_at(week, settings["weekday"], settings["hour"])
             run = self._run(week.isoformat())
-            if run is not None and run["status"] == "failed" and run["next_attempt_at"]:
+            carried = self._run((week - timedelta(days=7)).isoformat())
+            if now < at and _retry_pending(carried):
+                # Last week's retry still runs, until this week's own time.
+                at = datetime.fromisoformat(carried["next_attempt_at"]).astimezone(at.tzinfo)
+            elif run is not None and run["status"] == "failed" and run["next_attempt_at"]:
                 at = datetime.fromisoformat(run["next_attempt_at"]).astimezone(at.tzinfo)
             elif run is not None:
                 # This week is done (drafted, skipped, or given up), whatever
@@ -141,9 +145,15 @@ class BriefSchedule:
                 now = self._now()
                 week = monday_of(now.date())
                 week_of = week.isoformat()
-                if now < self.due_at(week, settings["weekday"], settings["hour"]):
-                    return _result("not_due", week_of)
                 stamp = _utc(now)
+                if now < self.due_at(week, settings["weekday"], settings["hour"]):
+                    # Before this week's time, a retry still pending from last
+                    # week (a late-Sunday failure, say) gets its turn; this
+                    # week's own time ends it, so a draft is never days late.
+                    carried_over = (week - timedelta(days=7)).isoformat()
+                    if not _retry_pending(self._run(carried_over)):
+                        return _result("not_due", week_of)
+                    week_of = carried_over
                 run = self._run(week_of)
                 if run is not None:
                     if run["status"] != "failed":
@@ -196,6 +206,11 @@ class BriefSchedule:
             " updated_at = excluded.updated_at",
             (self.ws.info.id, week_of, status, attempts, revision_id, reason, retry_at, stamp),
         )
+
+
+def _retry_pending(run) -> bool:
+    return (run is not None and run["status"] == "failed" and run["attempts"] < MAX_ATTEMPTS
+            and run["next_attempt_at"] is not None)
 
 
 def _result(outcome: str, week_of: str | None = None, run=None) -> dict[str, Any]:

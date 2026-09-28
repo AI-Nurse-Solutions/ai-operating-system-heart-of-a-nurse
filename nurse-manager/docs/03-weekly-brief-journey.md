@@ -46,7 +46,7 @@ The UI must never merge these states:
 | Export approved, then the brief re-accepted | The approval is **stale**; nothing is written |
 | File already exists with different content | Export **failed**; earlier file untouched |
 | Crash mid-export | On restart: **succeeded** only if the file's hash matches, else **effect unknown**, and never re-run automatically |
-| Recurring draft fails (for example, the workspace is busy) | Retried after 5, then 30 minutes; after 3 attempts it stops and says "draft this week's brief by hand" |
+| Recurring draft fails (for example, the workspace is busy) | Retried after 5, then 30 minutes; after 3 attempts it stops and says "draft this week's brief by hand". A retry still pending when the week ends runs until the new week's own time |
 | App closed or computer asleep at the chosen time | The draft is prepared the next time the app opens that week; earlier weeks are never backfilled |
 | Restore from an older backup | Refused if it would discard newer changes; explicit discard keeps a pre-restore copy |
 | Empty workspace | Each Mission Control section states that it is empty, and why |

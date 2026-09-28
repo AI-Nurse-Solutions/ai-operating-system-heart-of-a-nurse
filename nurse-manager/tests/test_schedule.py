@@ -347,6 +347,38 @@ class RetryTests(_Case):
         self.assertEqual(self.schedule().view()["next_at"], "2026-10-12T21:00:00+00:00")
         self.assertEqual(self.revisions("2026-09-28"), [])
 
+    def test_moving_the_hour_later_just_after_the_cutoff_does_not_revive_the_retry(self):
+        self.turn_on(weekday=0, hour=7)
+        self.clock.set(MONDAY + timedelta(days=6, hours=23, minutes=50))
+        with self.fail_drafting(1):
+            self.assertEqual(self.schedule().run_due()["outcome"], "failed")
+        # 07:00 Monday has passed, but the scheduler has not looked yet when
+        # the manager moves the hour later.
+        self.clock.set(MONDAY + timedelta(days=7, hours=7, seconds=20))
+        self.turn_on(weekday=0, hour=21)
+        self.assertEqual(self.schedule().run_due()["outcome"], "not_due")
+        self.assertEqual(self.revisions("2026-09-28"), [])
+        old = self.ws.store.conn.execute(
+            "SELECT next_attempt_at FROM brief_runs WHERE week_of = '2026-09-28'").fetchone()
+        self.assertIsNone(old["next_attempt_at"])
+
+    def test_turning_it_off_ends_a_pending_retry(self):
+        self.turn_on()
+        self.clock.set(MONDAY + timedelta(hours=8))
+        with self.fail_drafting(1):
+            self.assertEqual(self.schedule().run_due()["outcome"], "failed")
+        self.schedule().configure(enabled=False, weekday=0, hour=7, by=OWNER)
+        run = self.schedule().view()["last_run"]
+        self.assertIsNone(run["next_attempt_at"])
+        self.assertIn("The recurring brief was turned off.", run["reason"])
+        # Turned back on the same week: an explicit request, so this week's
+        # draft is prepared at the next check, as a catch-up would be.
+        self.turn_on()
+        self.clock.set(MONDAY + timedelta(hours=9))
+        result = self.schedule().run_due()
+        self.assertEqual((result["outcome"], result["run"]["attempts"]), ("drafted", 2))
+        self.assertEqual(len(self.revisions()), 1)
+
     def test_no_carried_retry_once_this_week_has_its_own_run(self):
         self.turn_on(weekday=0, hour=7)
         self.clock.set(MONDAY + timedelta(days=6, hours=23, minutes=50))

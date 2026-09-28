@@ -67,6 +67,23 @@ class BriefSchedule:
         if not isinstance(hour, int) or not 0 <= hour <= 23:
             raise ManagerError("hour must be 0 to 23")
         with self.ws.store.transaction() as db:
+            # A retry carried over from last week ends at this week's time under
+            # the settings in force when that time came. Record that before the
+            # settings change, so a later hour cannot revive it; turning the
+            # recurring brief off ends every pending retry.
+            old = self.settings()
+            now = self._now()
+            stamp = _utc(now)
+            week = monday_of(now.date())
+            if not enabled:
+                for row in db.execute(
+                        "SELECT week_of FROM brief_runs WHERE workspace_id = ?"
+                        " AND status = 'failed' AND next_attempt_at IS NOT NULL",
+                        (self.ws.info.id,)).fetchall():
+                    self._end_carried_retry(db, row["week_of"], stamp,
+                                            "The recurring brief was turned off.")
+            elif old["enabled"] and now >= self.due_at(week, old["weekday"], old["hour"]):
+                self._end_carried_retry(db, (week - timedelta(days=7)).isoformat(), stamp)
             db.execute(
                 "INSERT INTO brief_schedule (workspace_id, enabled, weekday, hour, updated_by,"
                 " updated_at) VALUES (?, ?, ?, ?, ?, ?)"
@@ -183,14 +200,14 @@ class BriefSchedule:
         except Exception as exc:  # noqa: BLE001 - any failure is recorded and retried
             return self._failed(week_of, now, exc)
 
-    def _end_carried_retry(self, db, week_of: str, stamp: str) -> None:
+    def _end_carried_retry(self, db, week_of: str, stamp: str,
+                           why: str = "The week ended before it could be tried again.") -> None:
         run = self._run(week_of)
         if _retry_pending(run):
             db.execute(
                 "UPDATE brief_runs SET next_attempt_at = NULL, reason = ?, updated_at = ?"
                 " WHERE workspace_id = ? AND week_of = ? AND status = 'failed'",
-                (run["reason"] + " The week ended before it could be tried again.", stamp,
-                 self.ws.info.id, week_of),
+                (f"{run['reason']} {why}", stamp, self.ws.info.id, week_of),
             )
             self.ws.store.log("scheduler", "expired", "brief_run", week_of)
 

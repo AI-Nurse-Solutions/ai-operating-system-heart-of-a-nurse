@@ -297,6 +297,43 @@ class LibraryTests(_TempCase):
         sid = ws.add_source("Guide", "public", "https://example.org/guide", review_date="2027-01-05")
         self.assertIn(sid, [i["id"] for i in library(ws, today=TODAY)["items"]])
 
+    @unittest.skipUnless(hasattr(__import__("time"), "tzset"), "needs a settable time zone")
+    def test_an_added_source_reads_the_same_as_the_library(self):
+        # In a time zone whose day differs from UTC's right now, the earlier of
+        # the two days is overdue by one reckoning and not the other, so the
+        # answer from adding the source must use the same (local) day as the Library.
+        import os
+        import time
+        from datetime import datetime, timedelta, timezone
+
+        from nurse_manager import cli
+
+        now = datetime.now(timezone.utc)
+        zone, offset = (("Etc/GMT-14", 14) if (now + timedelta(hours=14)).date() != now.date()
+                        else ("Etc/GMT+12", -12))
+        previous = os.environ.get("TZ")
+        os.environ["TZ"] = zone
+        time.tzset()
+        try:
+            local_today = (now + timedelta(hours=offset)).date().isoformat()
+            review = min(local_today, now.date().isoformat())
+            ws = str(self.tmp / "tz")
+            cli.run(["sample", ws])
+            code, env = cli.run(["source-add", ws, "--title", "Guide", "--kind", "public",
+                                 "--reference", "https://example.org/guide",
+                                 "--review", review])
+            self.assertEqual(code, 0, env)
+            self.assertEqual(env["data"]["source"]["review_overdue"], review < local_today)
+            _, lib = cli.run(["library", ws, "--today", local_today])
+            added = next(i for i in lib["data"]["items"] if i["title"] == "Guide")
+            self.assertEqual(added, env["data"]["source"])
+        finally:
+            if previous is None:
+                os.environ.pop("TZ", None)
+            else:
+                os.environ["TZ"] = previous
+            time.tzset()
+
     def test_an_empty_workspace_has_an_empty_library(self):
         ws = ManagerWorkspace(self.tmp / "empty", clock=fixed_clock())
         self.addCleanup(ws.close)

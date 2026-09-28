@@ -171,7 +171,7 @@ def _dispatch(args: argparse.Namespace) -> Any:
             source_id = ws.add_source(args.title, args.kind, args.reference,
                                       data_class=args.data_class, project_id=args.project,
                                       review_date=args.review)
-            return {"source": next(i for i in library(ws, today=ws.clock()[:10])["items"]
+            return {"source": next(i for i in library(ws, today=ws.local_today())["items"]
                                    if i["id"] == source_id)}
         if args.command in ("feedback-add", "feedback-address"):
             if args.command == "feedback-add":

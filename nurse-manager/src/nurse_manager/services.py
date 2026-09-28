@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
-from ._naio import PrivacyScreen
+from ._naio import PrivacyScreen, privacy_screen
 from .store import Store, new_id, utc_now
 
 TASK_STATUSES = ("idea", "ready", "in_progress", "needs_judgment", "completed")
@@ -57,7 +57,7 @@ class ManagerWorkspace:
         self.root = Path(root)
         self.store = Store(self.root / "workspace.sqlite", clock=clock)
         self.clock = clock
-        self.privacy = privacy or PrivacyScreen()
+        self.privacy = privacy or privacy_screen()
 
     # -- workspace --------------------------------------------------------
 

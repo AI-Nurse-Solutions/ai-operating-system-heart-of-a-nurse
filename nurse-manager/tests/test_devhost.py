@@ -111,6 +111,11 @@ class DevHostTests(unittest.TestCase):
         response, body = self.request("/ipc/mission?today=2026-10-07")
         self.assertEqual(json.loads(body)["data"]["week_of"], "2026-10-05")
 
+    def test_status_says_this_host_is_read_only(self):
+        response, body = self.request("/app/status")
+        self.assertEqual(response.status, 200)
+        self.assertEqual(json.loads(body), {"app": "nurse-manager-devhost", "read_only": True})
+
     def test_renderer_files_are_served_with_their_types(self):
         for path, kind in (("/", "text/html"), ("/app.mjs", "text/javascript"),
                            ("/tokens.css", "text/css"), ("/favicon.svg", "image/svg+xml")):

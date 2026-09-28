@@ -37,7 +37,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Verify Python syntax
-        run: python3 -m py_compile nurse-manager/src/nurse_manager/*.py nurse-manager/tests/*.py nurse-manager/tools/*.py
+        run: python3 -m py_compile nurse-manager/src/nurse_manager/*.py nurse-manager/tests/*.py nurse-manager/tools/*.py nurse-manager/packaging/launch.py
       - name: Run manager core suite
         run: python3 -m unittest discover -s nurse-manager/tests -p 'test_*.py' -v
       - name: Refuse accidental secrets or PHI examples in shipped artifacts
@@ -48,6 +48,7 @@ jobs:
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/docs --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/contracts --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/renderer --label NURSE-MANAGER
+          python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/packaging --label NURSE-MANAGER
 
   florence-x-contract:
     # Build step 2.11: adapter output must satisfy Florence-X's own Pydantic
@@ -131,3 +132,7 @@ jobs:
           node --check nurse-manager/tests/test_renderer_browser.mjs
       - name: Run the browser journey
         run: npm run test:nurse-manager-renderer
+      - name: Run the local app journey (ADR 0003)
+        run: |
+          node --check nurse-manager/tests/test_app_browser.mjs
+          npm run test:nurse-manager-app

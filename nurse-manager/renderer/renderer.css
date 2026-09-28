@@ -6,6 +6,9 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/* The hidden attribute always wins over a component's display rule. */
+[hidden] { display: none !important; }
+
 html {
   background: var(--nm-canvas);
   color: var(--nm-text);
@@ -244,6 +247,57 @@ a { color: var(--nm-primary); }
 .breadcrumb a { font-weight: 600; }
 .project-tasks { margin-top: var(--nm-space-3); }
 .card__title a { color: var(--nm-primary); }
+
+/* Local app: onboarding and lifetime */
+.onboarding-rules {
+  background: var(--nm-surface);
+  border-left: 4px solid var(--nm-accent-review);
+  border-radius: var(--nm-radius-badge);
+  padding: var(--nm-space-1) var(--nm-space-2);
+  margin: 0 0 var(--nm-space-3);
+}
+.onboarding-form .field { display: grid; gap: 4px; margin: 0 0 var(--nm-space-2); }
+.onboarding-form label { font-weight: 600; }
+.field-hint { font-size: 0.9375rem; }
+.onboarding-form input {
+  font: inherit;
+  color: var(--nm-text);
+  background: var(--nm-canvas);
+  border: 2px solid var(--nm-primary);
+  border-radius: var(--nm-radius-badge);
+  padding: var(--nm-space-1);
+  max-width: 100%;
+}
+.primary-button,
+.quit-button {
+  font: inherit;
+  font-weight: 600;
+  border-radius: var(--nm-radius-badge);
+  padding: var(--nm-space-1) var(--nm-space-2);
+  cursor: pointer;
+}
+.primary-button {
+  color: var(--nm-on-primary);
+  background: var(--nm-primary);
+  border: 2px solid var(--nm-primary);
+}
+.primary-button:disabled { cursor: progress; }
+.app-footer {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: var(--nm-space-2) var(--nm-space-3) var(--nm-space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nm-space-1) var(--nm-space-3);
+  align-items: center;
+  border-top: 1px solid var(--nm-sage);
+}
+.app-footer p { margin: 0; flex: 1 1 20rem; }
+.quit-button {
+  color: var(--nm-primary);
+  background: var(--nm-surface);
+  border: 2px solid var(--nm-primary);
+}
 
 /* Errors */
 .error-message { font-weight: 600; }

@@ -33,6 +33,19 @@ from naio_integrations.deliverables import SYNTHETIC_BANNER  # noqa: E402
 from naio_integrations.policy import EdenaPolicyEngine  # noqa: E402
 from naio_integrations.privacy import PrivacyScreen  # noqa: E402
 
+from . import resources  # noqa: E402
+
+
+def privacy_screen() -> PrivacyScreen:
+    """The privacy screen, configured from wherever the recognizers live."""
+    return PrivacyScreen(resources.naio_config("privacy-recognizers.json"))
+
+
+def edena_engine() -> EdenaPolicyEngine:
+    """The authoritative EDENA engine, configured from wherever its policy lives."""
+    return EdenaPolicyEngine(resources.naio_config("edena-gateway-policy.json"))
+
+
 __all__ = [
     "ActionMode",
     "Actor",
@@ -45,4 +58,6 @@ __all__ = [
     "PrivacyScreen",
     "RiskTier",
     "SYNTHETIC_BANNER",
+    "edena_engine",
+    "privacy_screen",
 ]

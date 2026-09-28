@@ -5,33 +5,99 @@
 // Hermes desktop host can later replace the development HTTP source with
 // its own validated IPC without touching any view.
 
-import { renderBoard, renderError, renderMission, renderProject, renderTable } from './views.mjs';
+import { renderBoard, renderError, renderMission, renderOnboarding, renderProject, renderTable } from './views.mjs';
 
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Command} Command */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Envelope} Envelope */
 /** @typedef {import('./views.mjs').TableColumn} TableColumn */
 /** @typedef {import('./views.mjs').SortDirection} SortDirection */
-/** @typedef {{ call: (command: 'mission' | 'project' | 'board' | 'table', params?: Record<string, string>) => Promise<Envelope> }} Source */
+/**
+ * @typedef {object} AppStatus
+ * @property {string} app
+ * @property {string} version
+ * @property {boolean} has_workspace
+ * @property {number} idle_timeout_seconds
+ */
+/**
+ * A data source. Only `call` is required; the local app adds the rest.
+ * @typedef {object} Source
+ * @property {(command: 'mission' | 'project' | 'board' | 'table', params?: Record<string, string>) => Promise<Envelope>} call
+ * @property {() => Promise<AppStatus | null>} [status] null means a read-only development host
+ * @property {(command: 'sample' | 'init', body: Record<string, string>) => Promise<Envelope>} [send]
+ * @property {() => Promise<void>} [heartbeat]
+ * @property {() => Promise<void>} [quit]
+ */
 
 const CONTRACT = 'nurse-manager-ipc@1';
+const TOKEN_KEY = 'nm-token';
 
 /**
- * Development source: read-only calls to the loopback dev host.
+ * Take the launch token from "#token=…", keep it for this tab only, and
+ * clear it from the address bar so it is never bookmarked or shared.
+ * @param {Window} win
+ * @returns {string}
+ */
+export function takeToken(win) {
+  const match = /(?:^#|&)token=([A-Za-z0-9_-]{20,})/.exec(win.location.hash);
+  if (match) {
+    try { win.sessionStorage.setItem(TOKEN_KEY, match[1]); } catch { /* storage may be unavailable */ }
+    win.history.replaceState(null, '', `${win.location.pathname}#/mission`);
+    return match[1];
+  }
+  try { return win.sessionStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; }
+}
+
+/**
+ * HTTP source for the local app and the development host. The token, when
+ * present, goes in a header on every data call.
+ * @param {string} [token]
  * @returns {Source}
  */
-export function httpSource() {
+export function httpSource(token = '') {
+  /** @param {Record<string, string>} [extra] */
+  const headers = (extra = {}) => ({
+    accept: 'application/json',
+    ...(token ? { authorization: `Bearer ${token}` } : {}),
+    ...extra,
+  });
+  /** @param {Response} response */
+  const failure = async (response) => {
+    const text = (await response.text()).trim();
+    return new Error(text && response.status < 500 ? text : `The workspace host answered ${response.status}.`);
+  };
+  /** @param {Response} response */
+  const envelopeOf = async (response) => {
+    if (!response.ok) throw await failure(response);
+    const envelope = /** @type {Envelope} */ (await response.json());
+    if (envelope.contract !== CONTRACT) {
+      throw new Error(`This screen understands ${CONTRACT}; the workspace sent ${String(envelope.contract)}.`);
+    }
+    return envelope;
+  };
+  const post = (/** @type {string} */ path, /** @type {unknown} */ body) => fetch(path, {
+    method: 'POST', headers: headers({ 'content-type': 'application/json' }), body: JSON.stringify(body),
+  });
   return {
     async call(command, params = {}) {
       const query = new URLSearchParams(params).toString();
-      const response = await fetch(`/ipc/${command}${query ? `?${query}` : ''}`, {
-        headers: { accept: 'application/json' },
-      });
-      if (!response.ok) throw new Error(`The workspace host answered ${response.status}.`);
-      const envelope = /** @type {Envelope} */ (await response.json());
-      if (envelope.contract !== CONTRACT) {
-        throw new Error(`This screen understands ${CONTRACT}; the workspace sent ${String(envelope.contract)}.`);
-      }
-      return envelope;
+      return envelopeOf(await fetch(`/ipc/${command}${query ? `?${query}` : ''}`, { headers: headers() }));
+    },
+    async status() {
+      const response = await fetch('/app/status', { headers: headers() });
+      if (!response.ok) throw await failure(response);
+      const status = /** @type {AppStatus} */ (await response.json());
+      // Only the local app offers onboarding and Quit; the dev host is read-only.
+      return status.app === 'nurse-ai-os' ? status : null;
+    },
+    async send(command, body) {
+      return envelopeOf(await post(`/ipc/${command}`, body));
+    },
+    async heartbeat() {
+      await post('/app/heartbeat', {});
+    },
+    async quit() {
+      const response = await post('/app/quit', {});
+      if (!response.ok) throw await failure(response);
     },
   };
 }
@@ -215,9 +281,95 @@ export function start(doc, source) {
     const hash = doc.defaultView?.location.hash || '';
     if (hash === '' || hash.startsWith('#/')) render(true);
   });
-  render(false);
+  // --- Local app: onboarding, heartbeat, and quit (ADR 0003) -------------
+  const footer = /** @type {HTMLElement} */ (doc.getElementById('app-footer'));
+  const quitButton = /** @type {HTMLButtonElement} */ (doc.getElementById('quit-button'));
+
+  /** @param {{ busy?: boolean, error?: string }} state @param {boolean} moveFocus */
+  const showOnboarding = (state, moveFocus) => {
+    const send = source.send;
+    if (!send) return;
+    doc.title = 'Welcome — Nurse AI OS';
+    /** @param {Promise<Envelope>} pending */
+    const finish = async (pending) => {
+      showOnboarding({ busy: true }, false);
+      let envelope;
+      try {
+        envelope = await pending;
+      } catch (error) {
+        showOnboarding({ error: error instanceof Error ? error.message : String(error) }, true);
+        return;
+      }
+      if (!envelope.ok) {
+        showOnboarding({ error: envelope.error.message }, true);
+        return;
+      }
+      announce('Workspace ready.');
+      focusAtNavigation = doc.activeElement;
+      if (doc.defaultView && doc.defaultView.location.hash !== '#/mission') {
+        doc.defaultView.location.hash = '#/mission'; // the hashchange handler renders
+      } else {
+        render(true);
+      }
+    };
+    show(renderOnboarding(doc, {
+      onSample: () => { finish(send('sample', {})); },
+      onCreate: (name, owner) => { finish(send('init', { name, owner })); },
+    }, state), moveFocus);
+    if (state.error) announce(`Not created: ${state.error}`);
+  };
+
+  const showStopped = () => {
+    const stopped = doc.createElement('div');
+    stopped.className = 'view';
+    const heading = doc.createElement('h1');
+    heading.className = 'view-title';
+    heading.tabIndex = -1;
+    heading.textContent = 'Nurse AI OS has stopped';
+    const note = doc.createElement('p');
+    note.textContent = 'Your work is saved on this computer. You can close this tab and open Nurse AI OS again any time.';
+    stopped.append(heading, note);
+    main.replaceChildren(stopped);
+    main.setAttribute('aria-busy', 'false');
+    footer.hidden = true;
+    heading.focus();
+    announce('Nurse AI OS has stopped.');
+  };
+
+  const boot = async () => {
+    let status = null;
+    try {
+      status = source.status ? await source.status() : null;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      show(renderError(doc, 'Nurse AI OS', { type: 'NotConnected', message }), false);
+      return;
+    }
+    if (status) {
+      footer.hidden = false;
+      const minutes = Math.round(status.idle_timeout_seconds / 60);
+      const lifetime = doc.getElementById('app-lifetime');
+      if (lifetime) {
+        lifetime.textContent = `Nurse AI OS is running on this computer. It stops when you quit, or by itself after ${minutes} minutes with no page open.`;
+      }
+      const beat = () => { source.heartbeat?.().catch(() => { /* the next view load reports failures */ }); };
+      doc.defaultView?.setInterval(beat, 60000);
+      doc.addEventListener('visibilitychange', () => { if (doc.visibilityState === 'visible') beat(); });
+      quitButton.addEventListener('click', async () => {
+        quitButton.disabled = true;
+        try { await source.quit?.(); } catch { /* it is stopping either way */ }
+        showStopped();
+      });
+      if (!status.has_workspace) {
+        showOnboarding({}, false);
+        return;
+      }
+    }
+    render(false);
+  };
+  boot();
 }
 
-if (typeof document !== 'undefined' && document.getElementById('main')) {
-  start(document, httpSource());
+if (typeof document !== 'undefined' && document.getElementById('main') && typeof window !== 'undefined') {
+  start(document, httpSource(takeToken(window)));
 }

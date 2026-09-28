@@ -23,7 +23,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterator
 
-MIGRATIONS_DIR = Path(__file__).resolve().parent / "migrations"
+from . import resources
+
+MIGRATIONS_DIR = resources.manager_root() / "src" / "nurse_manager" / "migrations"
 
 
 class StoreError(RuntimeError):
@@ -178,6 +180,9 @@ class Store:
         finally:
             source.close()
         self.conn.execute("PRAGMA foreign_keys = ON")
+        # A backup from an earlier release is brought up to this schema now,
+        # not on the next open.
+        self._migrate()
         return safety
 
     def close(self) -> None:

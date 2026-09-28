@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 from .actions import ActionBoundary
+from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
 from .sample import load_sample
 from .services import ManagerError, ManagerWorkspace
@@ -81,6 +82,18 @@ def build_parser() -> argparse.ArgumentParser:
     p = ws_cmd("restore", "restore from a backup (refuses to discard newer work)")
     p.add_argument("src", type=Path)
     p.add_argument("--discard-newer", action="store_true")
+    ws_cmd("assistant", "AI settings, usage, and the gates every provider passes")
+    p = ws_cmd("assistant-local", "connect a model on this computer (never preselected)")
+    p.add_argument("--model", required=True)
+    p.add_argument("--by", required=True)
+    p.add_argument("--endpoint", default=DEFAULT_LOCAL_ENDPOINT)
+    p.add_argument("--daily-limit", type=int)
+    p = ws_cmd("assistant-off", "disconnect the AI model; back to no model")
+    p.add_argument("--by", required=True)
+    p = ws_cmd("assistant-brief", "draft this week's brief with the connected model, or without one")
+    p.add_argument("--week", required=True)
+    p.add_argument("--today", required=True)
+    p.add_argument("--by", required=True)
 
     return parser
 
@@ -111,6 +124,17 @@ def _dispatch(args: argparse.Namespace) -> Any:
             return board(ws)
         if args.command == "table":
             return table(ws)
+        if args.command.startswith("assistant"):
+            assistant = AssistantService(ws)
+            if args.command == "assistant":
+                return assistant.status()
+            if args.command == "assistant-local":
+                return assistant.connect_local(args.by, args.model, endpoint=args.endpoint,
+                                               daily_request_limit=args.daily_limit)
+            if args.command == "assistant-off":
+                return assistant.disconnect(args.by)
+            if args.command == "assistant-brief":
+                return assistant.draft_weekly_brief(args.week, args.today, args.by)
         briefs = BriefService(ws)
         if args.command == "brief":
             return briefs.as_dict(briefs.draft_weekly_brief(args.week, args.today))

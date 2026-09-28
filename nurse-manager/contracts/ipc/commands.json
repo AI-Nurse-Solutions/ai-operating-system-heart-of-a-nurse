@@ -15,6 +15,10 @@
     "approve": "Action",
     "run": "Receipt",
     "backup": "BackupResult",
-    "restore": "RestoreResult"
+    "restore": "RestoreResult",
+    "assistant": "AssistantStatus",
+    "assistant-local": "AssistantStatus",
+    "assistant-off": "AssistantStatus",
+    "assistant-brief": "AssistantDraft"
   }
 }

@@ -73,6 +73,17 @@ class IpcContractTests(unittest.TestCase):
         self.assertTrue(denied["ok"])  # the proposal was recorded...
         self.assertEqual(denied["data"]["status"], "denied")  # ...and refused
         self.assertIn("SYNTHETIC EXAMPLE", self.fixtures["show-draft"]["data"]["markdown"])
+
+    def test_ai_outcomes_reach_the_host_honestly(self):
+        outcomes = {name: self.fixtures[name]["data"] for name in (
+            "assistant-brief-no-model", "assistant-brief-unavailable", "assistant-brief-drafted")}
+        self.assertEqual([d["outcome"] for d in outcomes.values()],
+                         ["no_model", "provider_failed", "drafted"])
+        self.assertEqual([d["drafted_by_model"] for d in outcomes.values()], [False, False, True])
+        self.assertEqual(outcomes["assistant-brief-drafted"]["revision"]["created_by"],
+                         "assistant:local")
+        self.assertEqual(self.fixtures["assistant"]["data"]["provider"], "none")
+        self.assertEqual(self.fixtures["assistant-off"]["data"]["provider"], "none")
         kinds = {i["kind"] for i in
                  self.fixtures["mission-awaiting-approval"]["data"]["needs_my_judgment"]["items"]}
         self.assertIn("action", kinds)

@@ -35,8 +35,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 |---|---|---|---|
 | 1.1 | Contract map and record-writer register | ✅ | `02-contract-map.md` |
 | 1.2 | Initial migration and isolated workspace directory | ✅ | `migrations/0001_initial.sql`; `test_records_and_views.StoreTests` |
-| 1.3 | Headless JSON command surface the desktop host will call | ✅ | `nurse_manager.cli`; `CliJourneyTests` |
-| 1.4 | Generate TypeScript types from the contract for the renderer | ⬜ | Generated client plus fixture round-trip test |
+| 1.3 | Headless JSON command surface the desktop host will call, with one versioned envelope per command (`nurse-manager-ipc@1`) | ✅ | `nurse_manager.cli`; `CliJourneyTests` |
+| 1.4 | Generate TypeScript types from the contract for the renderer | ✅ | `contracts/ipc/`; `test_ipc_contract.py` (stdlib schema check, generated types current) and `test_ipc_contract.mjs` (ajv strict plus `tsc --strict` over every real envelope) |
 | 1.5 | Spike: bundle Hermes Desktop with `HERMES_HOME` pointed at a Nurse AI OS data home; confirm no collision with an existing Hermes install | ⬜ | Clean-VM install log |
 | 1.6 | Spike: can a desktop plugin add Mission Control as a route? If not, a documented minimal patch set | ⬜ | Spike note plus upstream delta |
 | 1.7 | Disable terminal, home-directory discovery, auto-skills, messaging, and background capture in the backend (not just hidden in the UI) | ⬜ | Tests that call the backend directly |

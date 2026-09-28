@@ -321,38 +321,48 @@ class AssistantProposalTests(_Case):
 
 class CliJourneyTests(unittest.TestCase):
     def run_cli(self, *argv):
+        """Run one command; return (exit code, parsed envelope)."""
         buf = io.StringIO()
         with redirect_stdout(buf):
             code = cli.main([str(a) for a in argv])
-        out = buf.getvalue()
-        return code, (json.loads(out) if out.lstrip().startswith("{") else out)
+        envelope = json.loads(buf.getvalue())
+        self.assertEqual(envelope["contract"], cli.CONTRACT)
+        self.assertEqual(envelope["command"], str(argv[0]))
+        self.assertEqual(envelope["ok"], code == 0)
+        return code, envelope
+
+    def data(self, *argv):
+        code, envelope = self.run_cli(*argv)
+        self.assertEqual(code, 0, envelope)
+        return envelope["data"]
 
     def test_full_manager_journey_through_the_headless_surface(self):
         tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, tmp)
         ws = tmp / "ws"
-        self.assertEqual(self.run_cli("sample", ws)[0], 0)
-        code, mc = self.run_cli("mission", ws, "--today", TODAY, "--week", WEEK)
-        self.assertEqual(code, 0)
+        self.data("sample", ws)
+        mc = self.data("mission", ws, "--today", TODAY, "--week", WEEK)
         self.assertEqual(len(mc["priorities"]["items"]), 3)
-        _, draft = self.run_cli("brief", ws, "--week", WEEK, "--today", TODAY)
-        _, shown = self.run_cli("show", ws, "--revision", draft["id"])
-        self.assertIn("DRAFT", shown)
-        _, accepted = self.run_cli("accept", ws, "--revision", draft["id"], "--reviewer", OWNER,
-                                   "--sha", draft["sha256"])
+        draft = self.data("brief", ws, "--week", WEEK, "--today", TODAY)
+        shown = self.data("show", ws, "--revision", draft["id"])
+        self.assertIn("DRAFT", shown["markdown"])
+        self.assertEqual(shown["revision"], draft)
+        accepted = self.data("accept", ws, "--revision", draft["id"], "--reviewer", OWNER,
+                             "--sha", draft["sha256"])
         self.assertEqual(accepted["status"], "accepted")
-        _, action = self.run_cli("export", ws, "--revision", draft["id"], "--file", "week.md",
-                                 "--by", OWNER)
+        action = self.data("export", ws, "--revision", draft["id"], "--file", "week.md",
+                           "--by", OWNER)
         self.assertEqual(action["status"], "awaiting_approval")
-        self.run_cli("approve", ws, "--action", action["id"], "--approver", OWNER,
-                     "--sha", action["payload_sha256"], "--destination", "week.md")
-        _, receipt = self.run_cli("run", ws, "--action", action["id"], "--actor", OWNER)
+        self.data("approve", ws, "--action", action["id"], "--approver", OWNER,
+                  "--sha", action["payload_sha256"], "--destination", "week.md")
+        receipt = self.data("run", ws, "--action", action["id"], "--actor", OWNER)
         self.assertEqual(receipt["outcome"], "succeeded")
         self.assertTrue((ws / "exports" / "week.md").is_file())
         code, err = self.run_cli("accept", ws, "--revision", draft["id"], "--reviewer", OWNER,
                                  "--sha", draft["sha256"])
         self.assertEqual(code, 2)
-        self.assertIn("error", err)
+        self.assertEqual(err["error"]["type"], "ManagerError")
+        self.assertNotIn("data", err)
 
 
 if __name__ == "__main__":

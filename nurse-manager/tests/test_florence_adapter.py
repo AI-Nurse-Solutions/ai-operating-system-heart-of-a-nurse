@@ -1,8 +1,7 @@
 """Florence-X adapter honors the Florence-X contract (build step 2.11).
 
 Always: adapter output validates against the pinned Florence-X JSON
-Schemas (stdlib subset validator: types, required, enums, anyOf,
-additionalProperties=false, date-time).
+Schemas (stdlib validator in ``_schema.py``).
 
 When Florence-X is importable (the CI ``florence-x-contract`` job): the
 output also validates against Florence-X's own Pydantic models, and the
@@ -12,14 +11,13 @@ pinned schemas must match the upstream checkout byte-for-byte.
 import hashlib
 import json
 import os
-import re
 import tempfile
 import unittest
-from datetime import datetime
 from pathlib import Path
 
 import _bootstrap
 from _bootstrap import fixed_clock
+from _schema import check as _check
 
 from nurse_manager.actions import ActionBoundary
 from nurse_manager.brief import BriefService
@@ -42,55 +40,6 @@ try:  # present only in the florence-x-contract CI job
     from florence_core.schemas import CandidateAction, EDENADecision
 except ImportError:  # pragma: no cover
     CandidateAction = EDENADecision = None
-
-
-def _check(value, schema, root, path="$"):
-    """Minimal JSON Schema validator for the constructs these schemas use."""
-    if "$ref" in schema:
-        name = schema["$ref"].split("/")[-1]
-        return _check(value, root["$defs"][name], root, path)
-    if "anyOf" in schema:
-        errors = [_check(value, option, root, path) for option in schema["anyOf"]]
-        if all(errors):
-            return f"{path}: matches no anyOf option ({errors})"
-        return ""
-    if "enum" in schema and value not in schema["enum"]:
-        return f"{path}: {value!r} not in {schema['enum']}"
-    kind = schema.get("type")
-    checks = {
-        "string": lambda v: isinstance(v, str),
-        "boolean": lambda v: isinstance(v, bool),
-        "array": lambda v: isinstance(v, list),
-        "object": lambda v: isinstance(v, dict),
-        "null": lambda v: v is None,
-    }
-    if kind and not checks[kind](value):
-        return f"{path}: expected {kind}, got {type(value).__name__}"
-    if schema.get("format") == "date-time":
-        try:
-            datetime.fromisoformat(value)
-        except (TypeError, ValueError):
-            return f"{path}: not a date-time"
-    if kind == "array":
-        for i, item in enumerate(value):
-            err = _check(item, schema.get("items", {}), root, f"{path}[{i}]")
-            if err:
-                return err
-    if kind == "object":
-        props = schema.get("properties", {})
-        missing = [k for k in schema.get("required", []) if k not in value]
-        if missing:
-            return f"{path}: missing {missing}"
-        if schema.get("additionalProperties") is False:
-            extra = sorted(set(value) - set(props))
-            if extra:
-                return f"{path}: unexpected {extra}"
-        for key, sub in props.items():
-            if key in value:
-                err = _check(value[key], sub, root, f"{path}.{key}")
-                if err:
-                    return err
-    return ""
 
 
 def _schema(name):

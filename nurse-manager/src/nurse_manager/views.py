@@ -75,9 +75,9 @@ def table(ws: ManagerWorkspace, *, sort_by: str = "due_date") -> dict[str, Any]:
         {
             "id": t["id"],
             "task": t["title"],
-            "project": t["project_title"] or "",
+            "project": t["project_title"],
             "owner": t["owner"],
-            "due_date": t["due_date"] or "",
+            "due_date": t["due_date"],
             "status": t["status"],
             "blocked": bool(t["blocked"]),
             "paused": bool(t["paused"]),
@@ -87,7 +87,8 @@ def table(ws: ManagerWorkspace, *, sort_by: str = "due_date") -> dict[str, Any]:
         }
         for t in _tasks(ws)
     ]
-    rows.sort(key=lambda r: (r[sort_by] == "", str(r[sort_by]), r["id"]))
+    # Absent values (null) sort last, whatever the column.
+    rows.sort(key=lambda r: (r[sort_by] in (None, ""), str(r[sort_by] or ""), r["id"]))
     return {"sample": ws.info.sample, "columns": list(TABLE_COLUMNS), "rows": rows}
 
 

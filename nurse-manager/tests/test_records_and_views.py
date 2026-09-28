@@ -12,7 +12,7 @@ from _bootstrap import fixed_clock
 from nurse_manager.sample import SAMPLE_PATH, load_sample
 from nurse_manager.services import CaptureRefused, ManagerError, ManagerWorkspace
 from nurse_manager.store import RestoreRefused, Store, StoreError
-from nurse_manager.views import board, mission_control, table
+from nurse_manager.views import board, mission_control, project_dashboard, table
 
 WEEK = "2026-09-28"
 TODAY = "2026-09-30"
@@ -204,6 +204,45 @@ class ViewTests(_TempCase):
         self.assertEqual(board(ws, show_paused=False)["columns"][1]["count"], 0)
         mc = mission_control(ws, today=TODAY, week_of=WEEK)
         self.assertEqual(mc["follow_ups"]["state"], "empty")
+
+
+class ProjectDashboardTests(_TempCase):
+    def project(self, ws, title_prefix):
+        return ws.store.conn.execute(
+            "SELECT id FROM projects WHERE title LIKE ?", (title_prefix + "%",)
+        ).fetchone()[0]
+
+    def test_tasks_are_the_tables_rows_for_this_project(self):
+        ws = self.sample()
+        pid = self.project(ws, "Unit Based Council")
+        dash = project_dashboard(ws, pid, today=TODAY)
+        rows = [r for r in table(ws)["rows"] if r["project"] == dash["project"]["title"]]
+        self.assertEqual(dash["tasks"], rows)
+        self.assertEqual(dash["project"]["owner"], "Sample Manager")
+
+    def test_readiness_is_stated_facts_from_the_records(self):
+        ws = self.sample()
+        ubc = project_dashboard(ws, self.project(ws, "Unit Based Council"), today=TODAY)
+        self.assertEqual(ubc["readiness"], {
+            "has_next_milestone": True, "open_tasks": 3, "completed_tasks": 0,
+            "blocked_tasks": 1, "needs_judgment": 1, "overdue_tasks": 0,
+            "tasks_without_next_action": 1,
+        })
+        self.assertTrue(ubc["resources"][0]["review_overdue"])
+        edu = project_dashboard(ws, self.project(ws, "Fall education"), today=TODAY)
+        self.assertEqual(edu["readiness"]["overdue_tasks"], 1)
+        self.assertEqual([e["task"] for e in edu["evidence"]], ["List required annual education modules"])
+        huddle = project_dashboard(ws, self.project(ws, "Huddle"), today=TODAY)
+        self.assertEqual([d["question"] for d in huddle["decisions"]], ["Which huddle format do we pilot?"])
+
+    def test_a_project_from_elsewhere_is_refused(self):
+        other = self.sample("other")
+        foreign = self.project(other, "Huddle")
+        ws = self.empty()
+        with self.assertRaises(ManagerError):
+            project_dashboard(ws, foreign, today=TODAY)
+        with self.assertRaises(ManagerError):
+            project_dashboard(ws, "prj-000000000000", today=TODAY)
 
 
 if __name__ == "__main__":

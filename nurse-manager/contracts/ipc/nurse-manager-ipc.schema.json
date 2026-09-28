@@ -218,6 +218,86 @@
       "additionalProperties": false
     },
 
+    "ProjectSummaryHeader": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "purpose": {"type": "string"},
+        "owner": {"type": "string", "description": "The accountable owner."},
+        "next_milestone": {"type": "string"},
+        "status": {"enum": ["active", "paused", "completed"]}
+      },
+      "required": ["id", "title", "purpose", "owner", "next_milestone", "status"],
+      "additionalProperties": false
+    },
+    "Readiness": {
+      "description": "Stated facts about readiness. Deliberately not a score or a percentage.",
+      "type": "object",
+      "properties": {
+        "has_next_milestone": {"type": "boolean"},
+        "open_tasks": {"type": "integer", "minimum": 0},
+        "completed_tasks": {"type": "integer", "minimum": 0},
+        "blocked_tasks": {"type": "integer", "minimum": 0},
+        "needs_judgment": {"type": "integer", "minimum": 0},
+        "overdue_tasks": {"type": "integer", "minimum": 0},
+        "tasks_without_next_action": {"type": "integer", "minimum": 0, "description": "Ready or in-progress tasks with no next action written down."}
+      },
+      "required": ["has_next_milestone", "open_tasks", "completed_tasks", "blocked_tasks", "needs_judgment", "overdue_tasks", "tasks_without_next_action"],
+      "additionalProperties": false
+    },
+    "Decision": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "question": {"type": "string"},
+        "decision": {"type": "string"},
+        "decided_by": {"type": "string"},
+        "decided_on": {"$ref": "#/$defs/IsoDate"},
+        "rationale": {"type": "string"}
+      },
+      "required": ["id", "question", "decision", "decided_by", "decided_on", "rationale"],
+      "additionalProperties": false
+    },
+    "Resource": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "kind": {"enum": ["public", "synthetic", "personal_permitted"]},
+        "reference": {"type": "string"},
+        "review_date": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "review_overdue": {"type": "boolean"}
+      },
+      "required": ["id", "title", "kind", "reference", "review_date", "review_overdue"],
+      "additionalProperties": false
+    },
+    "EvidenceItem": {
+      "type": "object",
+      "properties": {
+        "task_id": {"$ref": "#/$defs/RecordId"},
+        "task": {"type": "string"},
+        "evidence": {"type": "string"}
+      },
+      "required": ["task_id", "task", "evidence"],
+      "additionalProperties": false
+    },
+    "ProjectDashboard": {
+      "description": "What will move this initiative forward? Tasks use the same rows and ids as the table.",
+      "type": "object",
+      "properties": {
+        "sample": {"type": "boolean"},
+        "today": {"$ref": "#/$defs/IsoDate"},
+        "project": {"$ref": "#/$defs/ProjectSummaryHeader"},
+        "readiness": {"$ref": "#/$defs/Readiness"},
+        "tasks": {"type": "array", "items": {"$ref": "#/$defs/TableRow"}},
+        "decisions": {"type": "array", "items": {"$ref": "#/$defs/Decision"}},
+        "resources": {"type": "array", "items": {"$ref": "#/$defs/Resource"}},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/EvidenceItem"}}
+      },
+      "required": ["sample", "today", "project", "readiness", "tasks", "decisions", "resources", "evidence"],
+      "additionalProperties": false
+    },
     "BoardCard": {
       "type": "object",
       "properties": {

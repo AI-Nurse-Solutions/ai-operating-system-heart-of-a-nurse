@@ -80,6 +80,21 @@ export interface BoardColumn {
 
 export type Contract = "nurse-manager-ipc@1";
 
+export interface Decision {
+  readonly id: RecordId;
+  readonly question: string;
+  readonly decision: string;
+  readonly decided_by: string;
+  readonly decided_on: IsoDate;
+  readonly rationale: string;
+}
+
+export interface EvidenceItem {
+  readonly task_id: RecordId;
+  readonly task: string;
+  readonly evidence: string;
+}
+
 export interface FollowUp {
   readonly id: RecordId;
   readonly title: string;
@@ -152,6 +167,18 @@ export interface Priority {
   readonly project_id: RecordId | null;
 }
 
+/** What will move this initiative forward? Tasks use the same rows and ids as the table. */
+export interface ProjectDashboard {
+  readonly sample: boolean;
+  readonly today: IsoDate;
+  readonly project: ProjectSummaryHeader;
+  readonly readiness: Readiness;
+  readonly tasks: readonly TableRow[];
+  readonly decisions: readonly Decision[];
+  readonly resources: readonly Resource[];
+  readonly evidence: readonly EvidenceItem[];
+}
+
 export interface ProjectSummary {
   readonly id: RecordId;
   readonly title: string;
@@ -165,10 +192,40 @@ export interface ProjectSummary {
   readonly blocked_tasks: number;
 }
 
+export interface ProjectSummaryHeader {
+  readonly id: RecordId;
+  readonly title: string;
+  readonly purpose: string;
+  /** The accountable owner. */
+  readonly owner: string;
+  readonly next_milestone: string;
+  readonly status: "active" | "paused" | "completed";
+}
+
 export interface ProjectsSection {
   readonly state: SectionState;
   readonly items: readonly ProjectSummary[];
   readonly empty_message: string;
+}
+
+/** Stated facts about readiness. Deliberately not a score or a percentage. */
+export interface Readiness {
+  readonly has_next_milestone: boolean;
+  /** @minimum 0 */
+  readonly open_tasks: number;
+  /** @minimum 0 */
+  readonly completed_tasks: number;
+  /** @minimum 0 */
+  readonly blocked_tasks: number;
+  /** @minimum 0 */
+  readonly needs_judgment: number;
+  /** @minimum 0 */
+  readonly overdue_tasks: number;
+  /**
+   * Ready or in-progress tasks with no next action written down.
+   * @minimum 0
+   */
+  readonly tasks_without_next_action: number;
 }
 
 export interface Receipt {
@@ -180,6 +237,15 @@ export interface Receipt {
 
 /** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act)-[0-9a-f]{12}$ */
 export type RecordId = string;
+
+export interface Resource {
+  readonly id: RecordId;
+  readonly title: string;
+  readonly kind: "public" | "synthetic" | "personal_permitted";
+  readonly reference: string;
+  readonly review_date: IsoDate | null;
+  readonly review_overdue: boolean;
+}
 
 export interface RestoreResult {
   readonly restored_from: string;
@@ -266,6 +332,7 @@ export interface CommandData {
   readonly sample: SampleResult;
   readonly init: Workspace;
   readonly mission: MissionControl;
+  readonly project: ProjectDashboard;
   readonly board: Board;
   readonly table: Table;
   readonly brief: Revision;

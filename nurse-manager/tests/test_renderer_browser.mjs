@@ -156,6 +156,42 @@ try {
   assert.equal(await page.getByRole('columnheader', { name: /Owner/ }).getAttribute('aria-sort'), 'ascending');
   assert.equal(await dueHeader.getAttribute('aria-sort'), 'none');
 
+  // --- Project dashboard: what will move this initiative forward? --------
+  await page.getByRole('link', { name: 'Mission Control', exact: true }).click();
+  await page.waitForSelector('.view--mission');
+  const projectLink = page.getByRole('link', { name: 'Unit Based Council charter refresh' });
+  await projectLink.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => document.activeElement?.tagName === 'H1'
+    && document.activeElement.textContent === 'Unit Based Council charter refresh', null, { timeout: 10000 });
+  assert.match(new URL(page.url()).hash, /^#\/project\/prj-[0-9a-f]{12}$/);
+  assert.equal(await page.title(), 'Unit Based Council charter refresh — Nurse AI OS');
+  assert.ok(await page.getByRole('navigation', { name: 'Breadcrumb' }).isVisible());
+  for (const name of ['Purpose', 'Readiness', 'Decisions', 'Resources', 'Evidence of completed work', 'Tasks']) {
+    assert.ok(await page.getByRole('region', { name, exact: true }).isVisible(), `dashboard region "${name}" is named`);
+  }
+  assert.match(await page.locator('.view-subtitle').first().textContent(), /Accountable owner: Sample Manager/);
+  const readiness = await page.getByRole('region', { name: 'Readiness', exact: true }).textContent();
+  assert.match(readiness, /Next milestone: Charter draft to council on 2026-10-07/);
+  assert.match(readiness, /3 open tasks · 0 completed/);
+  assert.match(readiness, /1 task blocked/);
+  assert.match(readiness, /1 decision waiting on you/);
+  assert.match(readiness, /1 active task has no next action written down/);
+  assert.equal(await page.locator('main').locator('text=/\\d+\\s?%/').count(), 0, 'readiness is facts, not a percentage');
+  assert.match(await page.getByRole('region', { name: 'Resources', exact: true }).textContent(), /Review overdue since 2026-09-01/);
+  assert.match(await page.getByRole('region', { name: 'Decisions', exact: true }).textContent(), /No decisions recorded/);
+  const projectIds = await page.$$eval('.view--project tbody tr', (rows) => rows.map((r) => r.getAttribute('data-record-id')));
+  assert.equal(projectIds.length, 3);
+  assert.ok(projectIds.every((id) => boardIds.includes(id)), 'dashboard tasks are the same records as the board');
+  const projectTable = page.getByRole('table', { name: /Unit Based Council charter refresh tasks, sorted by Due date, ascending/ });
+  assert.ok(await projectTable.isVisible());
+  await page.getByRole('button', { name: /^Task/ }).click();
+  assert.equal(await page.getByRole('columnheader', { name: /^Task/ }).getAttribute('aria-sort'), 'ascending');
+  await page.getByRole('link', { name: '← Mission Control' }).focus();
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => document.activeElement?.tagName === 'H1'
+    && document.activeElement.textContent === 'Mission Control', null, { timeout: 10000 });
+
   // --- Night Studio and reduced motion -----------------------------------
   const toggle = page.getByRole('button', { name: 'Night Studio' });
   await toggle.click();
@@ -173,7 +209,10 @@ try {
   await calm.close();
 
   // --- Reflow at 320px (WCAG 1.4.10) --------------------------------------
-  for (const route of ['mission', 'board', 'table']) {
+  const reflowProject = await open(`${main.url}#/mission`);
+  const someProject = await reflowProject.$eval('.card__title a', (a) => a.getAttribute('href'));
+  await reflowProject.close();
+  for (const route of ['mission', 'board', 'table', someProject.replace('#/', '')]) {
     const narrow = await open(`${main.url}#/${route}`, { viewport: { width: 320, height: 800 } });
     const overflow = await narrow.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     assert.ok(overflow <= 0, `${route} reflows at 320px (overflow ${overflow}px)`);
@@ -190,13 +229,26 @@ try {
   assert.match(await emptyPage.locator('main').textContent(), /No tasks yet/);
   await emptyPage.close();
 
+  const unknownProject = await open(`${main.url}#/project/prj-000000000000`);
+  assert.match(await unknownProject.getByRole('alert').textContent(), /not in this workspace/);
+  assert.equal(await unknownProject.getByRole('heading', { level: 1 }).textContent(), "Couldn't load Project");
+  await unknownProject.close();
+  const malformed = await browser.newPage();
+  const malformedErrors = [];
+  malformed.on('pageerror', (e) => malformedErrors.push(e.message));
+  await malformed.goto(`${main.url}#/project/not-an-id`);
+  await malformed.waitForSelector('main[aria-busy="false"]');
+  assert.match(await malformed.getByRole('alert').textContent(), /answered 400/, 'a malformed id is refused, not guessed');
+  assert.deepEqual(malformedErrors, []);
+  await malformed.close();
+
   const errorPage = await open(`${missing.url}#/mission`);
   assert.match(await errorPage.getByRole('alert').textContent(), /no workspace has been created here yet/);
   assert.equal(await errorPage.getByRole('heading', { level: 1 }).textContent(), "Couldn't load Mission Control");
   await errorPage.close();
 
   assert.deepEqual(errors, [], 'no console errors or CSP violations');
-  console.log('nurse-manager renderer: keyboard, names, ids, states, reflow, themes pass');
+  console.log('nurse-manager renderer: keyboard, names, ids, project dashboard, states, reflow, themes pass');
 } finally {
   await browser?.close();
   for (const child of hosts) child.kill();

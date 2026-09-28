@@ -16,6 +16,7 @@ import _bootstrap  # noqa: F401
 
 from nurse_manager import cli, devhost
 from nurse_manager.sample import load_sample
+from nurse_manager.services import ManagerWorkspace
 
 TODAY = "2026-09-30"
 
@@ -26,6 +27,9 @@ class DevHostTests(unittest.TestCase):
         cls._tmp = tempfile.TemporaryDirectory()
         cls.workspace = Path(cls._tmp.name) / "ws"
         ws, _ = load_sample(cls.workspace)
+        ws.close()
+        ws = ManagerWorkspace(cls.workspace)
+        cls.project_id = ws.store.conn.execute("SELECT id FROM projects ORDER BY id").fetchone()[0]
         ws.close()
         cls.server = devhost.serve(cls.workspace, 0, TODAY)
         cls.port = cls.server.server_address[1]
@@ -53,11 +57,14 @@ class DevHostTests(unittest.TestCase):
     def test_read_only_commands_return_the_cores_envelope(self):
         for command in devhost.READ_ONLY_COMMANDS:
             with self.subTest(command=command):
-                response, body = self.request(f"/ipc/{command}")
+                query = f"?id={self.project_id}" if command == "project" else ""
+                response, body = self.request(f"/ipc/{command}{query}")
                 self.assertEqual(response.status, 200)
                 argv = [command, str(self.workspace)]
                 if command == "mission":
                     argv += ["--today", TODAY, "--week", "2026-09-28"]
+                if command == "project":
+                    argv += ["--id", self.project_id, "--today", TODAY]
                 self.assertEqual(json.loads(body), cli.run(argv)[1])
 
     def test_nothing_that_writes_is_reachable(self):
@@ -95,6 +102,12 @@ class DevHostTests(unittest.TestCase):
         for query in ("today=2026-13-45", "today=yesterday", "today=2026-09-30&week=bad"):
             with self.subTest(query=query):
                 self.assertEqual(self.request(f"/ipc/mission?{query}")[0].status, 400)
+        for query in ("", "id=", "id=tsk-000000000000", "id=prj-XYZ", "id=../../etc",
+                      f"id={self.project_id}&today=bad"):
+            with self.subTest(project_query=query):
+                self.assertEqual(self.request(f"/ipc/project?{query}")[0].status, 400)
+        unknown = json.loads(self.request("/ipc/project?id=prj-000000000000")[1])
+        self.assertFalse(unknown["ok"])
         response, body = self.request("/ipc/mission?today=2026-10-07")
         self.assertEqual(json.loads(body)["data"]["week_of"], "2026-10-05")
 

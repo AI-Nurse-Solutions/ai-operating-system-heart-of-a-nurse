@@ -13,6 +13,7 @@
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Board} Board */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Table} Table */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').TableRow} TableRow */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ProjectDashboard} ProjectDashboard */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').TaskStatus} TaskStatus */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').IpcError} IpcError */
 /** @typedef {'ascending' | 'descending'} SortDirection */
@@ -147,7 +148,9 @@ export function renderMission(doc, data) {
     missionSection(doc, 'projects', 'Projects in motion', data.projects_in_motion, () =>
       h(doc, 'ul', { class: 'card-list' }, data.projects_in_motion.items.map((p) =>
         h(doc, 'li', { class: 'card', 'data-record-id': p.id }, [
-          h(doc, 'h3', { class: 'card__title' }, [p.title]),
+          h(doc, 'h3', { class: 'card__title' }, [
+            h(doc, 'a', { href: `#/project/${encodeURIComponent(p.id)}` }, [p.title]),
+          ]),
           h(doc, 'p', { class: 'card__meta' }, [`Owner: ${p.owner}`]),
           p.next_milestone ? h(doc, 'p', { class: 'card__meta' }, [`Next: ${p.next_milestone}`]) : null,
           h(doc, 'p', { class: 'card__counts' }, [
@@ -262,21 +265,17 @@ export function sortRows(rows, column, direction) {
 }
 
 /**
- * Table: every task, sortable by any column.
+ * A sortable task table. Shared by the task list and project dashboards so a
+ * task looks and sorts the same wherever it appears.
  * @param {Document} doc
- * @param {Table} data
+ * @param {readonly TableRow[]} rows
+ * @param {readonly TableColumn[]} columns
  * @param {{ column: TableColumn, direction: SortDirection }} sort
  * @param {(column: TableColumn) => void} onSort
+ * @param {string} captionId
+ * @param {string} captionLead e.g. "All tasks"
  */
-export function renderTable(doc, data, sort, onSort) {
-  const root = h(doc, 'div', { class: 'view view--table' });
-  root.append(viewHeading(doc, 'Tasks', `${count(data.rows.length, 'task', 'tasks')} in this workspace.`));
-  if (data.rows.length === 0) {
-    root.append(h(doc, 'p', { class: 'section-state section-state--empty' }, ['No tasks yet. Capture one to start.']));
-    return root;
-  }
-  const columns = /** @type {TableColumn[]} */ (data.columns);
-  const captionId = 'tasks-caption';
+function taskTable(doc, rows, columns, sort, onSort, captionId, captionLead) {
   const headRow = h(doc, 'tr', {}, columns.map((column) => {
     const active = sort.column === column;
     const button = h(doc, 'button', { type: 'button', class: 'sort-button', 'data-column': column }, [
@@ -288,7 +287,7 @@ export function renderTable(doc, data, sort, onSort) {
     button.addEventListener('click', () => onSort(column));
     return h(doc, 'th', { scope: 'col', 'aria-sort': active ? sort.direction : 'none' }, [button]);
   }));
-  const body = h(doc, 'tbody', {}, sortRows(data.rows, sort.column, sort.direction).map((row) =>
+  const body = h(doc, 'tbody', {}, sortRows(rows, sort.column, sort.direction).map((row) =>
     h(doc, 'tr', { 'data-record-id': row.id }, columns.map((column) => {
       if (column === 'status') {
         return h(doc, 'td', {}, [
@@ -302,14 +301,139 @@ export function renderTable(doc, data, sort, onSort) {
         value === null || value === '' ? '—' : String(value),
       ]);
     }))));
-  root.append(h(doc, 'div', { class: 'table-scroll', role: 'region', 'aria-labelledby': captionId, tabindex: '0' }, [
-    h(doc, 'table', { class: 'task-table' }, [
-      h(doc, 'caption', { id: captionId }, [
-        `All tasks, sorted by ${COLUMN_LABELS[sort.column]}, ${sort.direction}`,
+  const summary = `${captionLead}, sorted by ${COLUMN_LABELS[sort.column]}, ${sort.direction}`;
+  // The caption names the table for assistive technology; a visible copy
+  // sits outside the scroll area so it is never clipped on a narrow screen.
+  return h(doc, 'div', { class: 'table-block' }, [
+    h(doc, 'p', { class: 'table-summary', 'aria-hidden': 'true' }, [summary]),
+    h(doc, 'div', { class: 'table-scroll', role: 'region', 'aria-labelledby': captionId, tabindex: '0' }, [
+      h(doc, 'table', { class: 'task-table' }, [
+        h(doc, 'caption', { id: captionId, class: 'visually-hidden' }, [summary]),
+        h(doc, 'thead', {}, [headRow]),
+        body,
       ]),
-      h(doc, 'thead', {}, [headRow]),
-      body,
     ]),
+  ]);
+}
+
+/**
+ * Table: every task, sortable by any column.
+ * @param {Document} doc
+ * @param {Table} data
+ * @param {{ column: TableColumn, direction: SortDirection }} sort
+ * @param {(column: TableColumn) => void} onSort
+ */
+export function renderTable(doc, data, sort, onSort) {
+  const root = h(doc, 'div', { class: 'view view--table' });
+  root.append(viewHeading(doc, 'Tasks', `${count(data.rows.length, 'task', 'tasks')} in this workspace.`));
+  if (data.rows.length === 0) {
+    root.append(h(doc, 'p', { class: 'section-state section-state--empty' }, ['No tasks yet. Capture one to start.']));
+    return root;
+  }
+  root.append(taskTable(doc, data.rows, /** @type {TableColumn[]} */ (data.columns), sort, onSort,
+    'tasks-caption', 'All tasks'));
+  return root;
+}
+
+/**
+ * A dashboard section with an honest empty state.
+ * @param {Document} doc
+ * @param {string} id
+ * @param {string} title
+ * @param {boolean} empty
+ * @param {string} emptyMessage
+ * @param {() => HTMLElement} renderBody
+ */
+function dashboardSection(doc, id, title, empty, emptyMessage, renderBody) {
+  const headingId = `${id}-heading`;
+  return h(doc, 'section', { class: 'mc-section', id, 'aria-labelledby': headingId }, [
+    h(doc, 'h2', { id: headingId }, [title]),
+    empty ? h(doc, 'p', { class: 'section-state section-state--empty' }, [emptyMessage]) : renderBody(),
+  ]);
+}
+
+/**
+ * Project dashboard: what will move this initiative forward?
+ * Readiness is stated as facts; there is no score and no percentage.
+ * @param {Document} doc
+ * @param {ProjectDashboard} data
+ * @param {{ column: TableColumn, direction: SortDirection }} sort
+ * @param {(column: TableColumn) => void} onSort
+ */
+export function renderProject(doc, data, sort, onSort) {
+  const { project, readiness } = data;
+  const root = h(doc, 'div', { class: 'view view--project' });
+  root.append(h(doc, 'nav', { 'aria-label': 'Breadcrumb', class: 'breadcrumb' }, [
+    h(doc, 'a', { href: '#/mission' }, ['← Mission Control']),
+  ]));
+  const statusLabel = { active: 'Active', paused: 'Paused', completed: 'Completed' }[project.status];
+  root.append(viewHeading(doc, project.title, `Accountable owner: ${project.owner} · ${statusLabel}`));
+
+  /** @type {HTMLElement[]} */
+  const facts = [];
+  facts.push(readiness.has_next_milestone
+    ? h(doc, 'li', {}, [`Next milestone: ${project.next_milestone}`])
+    : h(doc, 'li', {}, [badge(doc, 'review', '!', 'No next milestone'), ' Set one so the team knows what comes next.']));
+  facts.push(h(doc, 'li', {}, [
+    `${count(readiness.open_tasks, 'open task', 'open tasks')} · ${readiness.completed_tasks} completed`,
+  ]));
+  if (readiness.blocked_tasks) {
+    facts.push(h(doc, 'li', {}, [badge(doc, 'blocked', '⛔', count(readiness.blocked_tasks, 'task blocked', 'tasks blocked'))]));
+  }
+  if (readiness.needs_judgment) {
+    facts.push(h(doc, 'li', {}, [badge(doc, 'judgment', '◇', count(readiness.needs_judgment, 'decision waiting on you', 'decisions waiting on you'))]));
+  }
+  if (readiness.overdue_tasks) {
+    facts.push(h(doc, 'li', {}, [badge(doc, 'overdue', '⚠', count(readiness.overdue_tasks, 'task overdue', 'tasks overdue'))]));
+  }
+  if (readiness.tasks_without_next_action) {
+    facts.push(h(doc, 'li', {}, [
+      count(readiness.tasks_without_next_action, 'active task has', 'active tasks have'), ' no next action written down.',
+    ]));
+  }
+
+  const grid = h(doc, 'div', { class: 'mc-grid' });
+  grid.append(
+    dashboardSection(doc, 'purpose', 'Purpose', !project.purpose, 'No purpose recorded.', () =>
+      h(doc, 'p', { class: 'section-state' }, [project.purpose])),
+    dashboardSection(doc, 'readiness', 'Readiness', false, '', () =>
+      h(doc, 'ul', { class: 'item-list' }, facts)),
+    dashboardSection(doc, 'decisions', 'Decisions', data.decisions.length === 0,
+      'No decisions recorded for this project yet.', () =>
+        h(doc, 'ul', { class: 'item-list' }, data.decisions.map((d) =>
+          h(doc, 'li', { 'data-record-id': d.id }, [
+            h(doc, 'span', { class: 'item-title' }, [d.question]), ` — ${d.decision}`,
+            h(doc, 'span', { class: 'item-meta' }, [` (${d.decided_by}, `,
+              h(doc, 'time', { datetime: d.decided_on }, [d.decided_on]), ')']),
+            d.rationale ? h(doc, 'span', { class: 'item-meta' }, [` Rationale: ${d.rationale}`]) : null,
+          ])))),
+    dashboardSection(doc, 'resources', 'Resources', data.resources.length === 0,
+      'No resources linked to this project yet.', () =>
+        h(doc, 'ul', { class: 'item-list' }, data.resources.map((r) =>
+          h(doc, 'li', { 'data-record-id': r.id }, [
+            h(doc, 'span', { class: 'item-title' }, [r.title]),
+            h(doc, 'span', { class: 'item-meta' }, [` · ${r.kind} · ${r.reference}`]),
+            r.review_overdue ? ' ' : '',
+            r.review_overdue ? badge(doc, 'overdue', '⚠', `Review overdue since ${r.review_date}`) : null,
+          ])))),
+    dashboardSection(doc, 'evidence', 'Evidence of completed work', data.evidence.length === 0,
+      'No completed tasks with recorded evidence yet.', () =>
+        h(doc, 'ul', { class: 'item-list' }, data.evidence.map((e) =>
+          h(doc, 'li', { 'data-record-id': e.task_id }, [
+            badge(doc, 'accepted', '✓', 'Completed'), ' ',
+            h(doc, 'span', { class: 'item-title' }, [e.task]),
+            h(doc, 'span', { class: 'item-meta' }, [` · ${e.evidence}`]),
+          ])))),
+  );
+  root.append(grid);
+
+  const tasksHeading = 'project-tasks-heading';
+  root.append(h(doc, 'section', { class: 'project-tasks', 'aria-labelledby': tasksHeading }, [
+    h(doc, 'h2', { id: tasksHeading }, ['Tasks']),
+    data.tasks.length === 0
+      ? h(doc, 'p', { class: 'section-state section-state--empty' }, ['No tasks in this project yet.'])
+      : taskTable(doc, data.tasks, ['task', 'owner', 'due_date', 'status', 'next_action', 'evidence'],
+        sort, onSort, 'project-tasks-caption', `${project.title} tasks`),
   ]));
   return root;
 }

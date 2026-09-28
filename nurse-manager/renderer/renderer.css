@@ -124,8 +124,10 @@ a { color: var(--nm-primary); }
 }
 .app-main:focus { outline: none; }
 .view-heading { margin-bottom: var(--nm-space-3); }
-.view-title:focus { outline: none; }
-.view-title:focus-visible { outline: 3px solid var(--nm-focus-ring); }
+/* The heading takes focus only so screen readers start in the right place
+   after navigation; it is not interactive, so it draws no focus box. */
+.view-title:focus,
+.view-title:focus-visible { outline: none; }
 .view-subtitle { margin: 0; }
 .loading { font-style: italic; }
 
@@ -213,10 +215,9 @@ a { color: var(--nm-primary); }
   width: 100%;
   background: var(--nm-surface);
 }
-.task-table caption {
-  text-align: left;
+.table-summary {
   font-weight: 600;
-  padding-bottom: var(--nm-space-1);
+  margin: 0 0 var(--nm-space-1);
 }
 .task-table th,
 .task-table td {
@@ -237,6 +238,12 @@ a { color: var(--nm-primary); }
   cursor: pointer;
   text-align: left;
 }
+
+/* Project dashboard */
+.breadcrumb { margin-bottom: var(--nm-space-2); }
+.breadcrumb a { font-weight: 600; }
+.project-tasks { margin-top: var(--nm-space-3); }
+.card__title a { color: var(--nm-primary); }
 
 /* Errors */
 .error-message { font-weight: 600; }

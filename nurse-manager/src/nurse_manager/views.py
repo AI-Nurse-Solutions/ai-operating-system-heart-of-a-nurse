@@ -68,28 +68,108 @@ def board(ws: ManagerWorkspace, *, show_paused: bool = True) -> dict[str, Any]:
     return {"sample": ws.info.sample, "columns": columns}
 
 
+def _row(t: dict[str, Any]) -> dict[str, Any]:
+    """One task as a table row: the same shape wherever tasks are listed."""
+    return {
+        "id": t["id"],
+        "task": t["title"],
+        "project": t["project_title"],
+        "owner": t["owner"],
+        "due_date": t["due_date"],
+        "status": t["status"],
+        "blocked": bool(t["blocked"]),
+        "paused": bool(t["paused"]),
+        "reviewer": t["reviewer"],
+        "evidence": t["completion_evidence"],
+        "next_action": t["next_action"],
+    }
+
+
+def _sort_rows(rows: list[dict[str, Any]], sort_by: str) -> list[dict[str, Any]]:
+    # Absent values (null) sort last, whatever the column.
+    return sorted(rows, key=lambda r: (r[sort_by] in (None, ""), str(r[sort_by] or ""), r["id"]))
+
+
 def table(ws: ManagerWorkspace, *, sort_by: str = "due_date") -> dict[str, Any]:
     if sort_by not in TABLE_COLUMNS:
         raise ValueError(f"cannot sort by {sort_by}")
-    rows = [
-        {
-            "id": t["id"],
-            "task": t["title"],
-            "project": t["project_title"],
-            "owner": t["owner"],
-            "due_date": t["due_date"],
-            "status": t["status"],
-            "blocked": bool(t["blocked"]),
-            "paused": bool(t["paused"]),
-            "reviewer": t["reviewer"],
-            "evidence": t["completion_evidence"],
-            "next_action": t["next_action"],
-        }
-        for t in _tasks(ws)
-    ]
-    # Absent values (null) sort last, whatever the column.
-    rows.sort(key=lambda r: (r[sort_by] in (None, ""), str(r[sort_by] or ""), r["id"]))
+    rows = _sort_rows([_row(t) for t in _tasks(ws)], sort_by)
     return {"sample": ws.info.sample, "columns": list(TABLE_COLUMNS), "rows": rows}
+
+
+def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> dict[str, Any]:
+    """What will move this initiative forward? One project, from the same records.
+
+    Readiness is a set of stated facts, never a score or a percentage: the
+    plan forbids progress figures without a defined denominator.
+    """
+    project = ws._require_row("projects", project_id)
+    db = ws.store.conn
+    tasks = [t for t in _tasks(ws) if t["project_id"] == project_id]
+    open_tasks = [t for t in tasks if t["status"] != "completed"]
+    decisions = [
+        {
+            "id": d["id"],
+            "question": d["question"],
+            "decision": d["decision"],
+            "decided_by": d["decided_by"],
+            "decided_on": d["decided_on"],
+            "rationale": d["rationale"],
+        }
+        for d in db.execute(
+            "SELECT * FROM decisions WHERE workspace_id = ? AND project_id = ?"
+            " ORDER BY decided_on DESC, id",
+            (ws.info.id, project_id),
+        )
+    ]
+    resources = [
+        {
+            "id": r["id"],
+            "title": r["title"],
+            "kind": r["kind"],
+            "reference": r["reference"],
+            "review_date": r["review_date"],
+            "review_overdue": bool(r["review_date"] and r["review_date"] < today),
+        }
+        for r in db.execute(
+            "SELECT * FROM sources WHERE workspace_id = ? AND project_id = ? ORDER BY title, id",
+            (ws.info.id, project_id),
+        )
+    ]
+    evidence = [
+        {"task_id": t["id"], "task": t["title"], "evidence": t["completion_evidence"]}
+        for t in tasks
+        if t["status"] == "completed"
+    ]
+    return {
+        "sample": ws.info.sample,
+        "today": today,
+        "project": {
+            "id": project["id"],
+            "title": project["title"],
+            "purpose": project["purpose"],
+            "owner": project["owner"],
+            "next_milestone": project["next_milestone"],
+            "status": project["status"],
+        },
+        "readiness": {
+            "has_next_milestone": bool(project["next_milestone"].strip()),
+            "open_tasks": len(open_tasks),
+            "completed_tasks": len(tasks) - len(open_tasks),
+            "blocked_tasks": sum(1 for t in open_tasks if t["blocked"]),
+            "needs_judgment": sum(1 for t in open_tasks if t["status"] == "needs_judgment"),
+            "overdue_tasks": sum(
+                1 for t in open_tasks if t["due_date"] and t["due_date"] < today and not t["paused"]
+            ),
+            "tasks_without_next_action": sum(
+                1 for t in open_tasks if t["status"] in ("ready", "in_progress") and not t["next_action"]
+            ),
+        },
+        "tasks": _sort_rows([_row(t) for t in tasks], "due_date"),
+        "decisions": decisions,
+        "resources": resources,
+        "evidence": evidence,
+    }
 
 
 def mission_control(ws: ManagerWorkspace, *, today: str, week_of: str) -> dict[str, Any]:

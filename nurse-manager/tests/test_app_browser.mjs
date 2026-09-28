@@ -200,6 +200,27 @@ try {
     await samplePage.getByRole('button', { name: /accept this version/ }).click();
     await samplePage.waitForFunction(() => /Version 2 is accepted/.test(document.activeElement?.textContent ?? ''));
 
+    // Think with a project: preview, send, and an answer that is not saved.
+    await samplePage.getByRole('link', { name: 'Mission Control' }).click();
+    await samplePage.waitForSelector('.view--mission');
+    await samplePage.getByRole('region', { name: 'Projects in motion' }).getByRole('link').first().click();
+    await samplePage.waitForSelector('.view--project');
+    const think = samplePage.getByRole('region', { name: 'Think with this project' });
+    await think.getByLabel('What do you want to think through?').fill('What should I do first?');
+    await think.getByRole('button', { name: 'Preview what will be sent' }).click();
+    await samplePage.waitForFunction(() => document.activeElement?.id === 'think-preview-heading');
+    const thinkPrompt = await samplePage.getByLabel("Your question and this project's records").textContent();
+    assert.match(thinkPrompt, /^## Question\n\nWhat should I do first\?/);
+    const sentBefore = modelRequests.length;
+    await think.getByRole('button', { name: 'Send to llama3.2' }).click();
+    await samplePage.waitForFunction(() => /The AI model answered/.test(document.activeElement?.textContent ?? ''), null, { timeout: 20000 });
+    assert.equal(modelRequests.length, sentBefore + 1);
+    assert.equal(modelRequests.at(-1).prompt, thinkPrompt, 'what was sent is what was shown');
+    const suggestion = samplePage.getByRole('document', { name: 'AI suggestion' });
+    assert.match(await suggestion.textContent(), /A clearer week\./);
+    assert.match(await think.textContent(), /Not saved/);
+    assert.equal(await think.getByLabel('What do you want to think through?').inputValue(), 'What should I do first?');
+
     // Disconnect: back to no model.
     await samplePage.getByRole('link', { name: 'AI assistance' }).click();
     await samplePage.waitForSelector('.view--assistant');
@@ -213,7 +234,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

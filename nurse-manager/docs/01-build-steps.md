@@ -75,7 +75,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 3.5c | Project feedback on the dashboard | ⬜ | No feedback record exists yet; needs a record type and capture rules first (the plan lists feedback, so it is not faked as an empty section) |
 | 3.6 | Library, Learning and Growth, and Contribution views | ⬜ | |
 | 3.7 | Weekly brief and AI assistance screens: draft from records or with AI, a preview of exactly what will be sent before anything is, review, and accept | ✅ | `assistant-preview` and `weekly` IPC commands; the request is bound to the reviewed preview (`PreviewTests`, `WorkspaceWriteTests`); `test_app_browser.mjs` (no model by default, connect a model on this computer, preview equals what the stand-in model received, AI draft waits for acceptance, 320px reflow); `test_renderer_browser.mjs` (read-only on the dev host, brief text never becomes markup) |
-| 3.7b | "Think with this project" composer on the project dashboard | ⬜ | Reuses the preview and gates from 3.7; needs a project-scoped AI task |
+| 3.7b | "Think with this project" on the project dashboard: ask a question, see exactly what would be sent, get an answer that is a suggestion and is never saved | ✅ | `ProjectQuestionTests` (no model, preview equals what is sent, only this project's records, a changed question needs a new preview, identifiers never sent, invented citations not shown, shared daily limit); migration `0003` keeps every ledger row (`test_upgrading_keeps_every_ai_request_already_recorded`); `test_app_browser.mjs` (preview, send, "Not saved" answer); dev host read-only |
+| 3.7c | Save an AI answer as a project note the manager accepts | ⬜ | Needs a note record type and its capture rules |
 
 ## G4 — Bounded assistance (NM-009, NM-010)
 

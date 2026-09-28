@@ -23,7 +23,7 @@ import {
 /**
  * A data source. Only `call` is required; the local app adds the rest.
  * @typedef {object} Source
- * @property {(command: ReadCommand | 'assistant-preview', params?: Record<string, string>) => Promise<Envelope>} call
+ * @property {(command: ReadCommand | 'assistant-preview' | 'assistant-project-preview', params?: Record<string, string>) => Promise<Envelope>} call
  * @property {() => Promise<AppStatus | null>} [status] null means a read-only development host
  * @property {(command: WriteCommand, body: Record<string, string>) => Promise<Envelope>} [send]
  * @property {() => Promise<void>} [heartbeat]
@@ -105,7 +105,7 @@ export function httpSource(token = '') {
 }
 
 /** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant'} ReadCommand */
-/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief'} WriteCommand */
+/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -179,6 +179,7 @@ export function start(doc, source) {
    * @param {'table' | 'project'} key
    * @param {(sort: { column: TableColumn, direction: SortDirection }, onSort: (column: TableColumn) => void) => HTMLElement} build
    * @param {boolean} moveFocus
+   * @returns {(focusSelector?: string) => void} redraw in place, keeping the sort
    */
   const showSortable = (key, build, moveFocus) => {
     /** @param {TableColumn} column */
@@ -195,6 +196,16 @@ export function start(doc, source) {
       announce(`Sorted by ${column.replace('_', ' ')}, ${sorts[key].direction}.`);
     };
     show(build(sorts[key], onSort), moveFocus);
+    return (focusSelector) => {
+      const view = build(sorts[key], onSort);
+      main.replaceChildren(view);
+      main.setAttribute('aria-busy', 'false');
+      const target = focusSelector ? view.querySelector(focusSelector) : null;
+      if (target instanceof HTMLElement) {
+        if (!target.hasAttribute('tabindex')) target.tabIndex = -1;
+        target.focus();
+      }
+    };
   };
 
   /** @param {boolean} moveFocus */
@@ -236,7 +247,52 @@ export function start(doc, source) {
     } else if (envelope.command === 'project') {
       const dashboard = /** @type {import('../contracts/ipc/nurse-manager-ipc').ProjectDashboard} */ (data);
       doc.title = `${dashboard.project.title} — Nurse AI OS`;
-      showSortable('project', (sort, onSort) => renderProject(doc, dashboard, sort, onSort), moveFocus);
+      /** @type {Omit<import('./views.mjs').ThinkOptions, 'writable' | 'onPreview' | 'onSend' | 'onCancel'>} */
+      let think = { question: '' };
+      const thinkHandlers = {
+        onPreview: (/** @type {string} */ question) => thinkAction({ question }, async () => {
+          const envelope = await source.call('assistant-project-preview', { id: dashboard.project.id, question });
+          if (!envelope.ok) return { notice: { kind: 'error', text: envelope.error.message } };
+          announce('Showing exactly what would be sent. Nothing has been sent yet.');
+          return { preview: /** @type {import('./views.mjs').ProjectQuestionPreview} */ (envelope.data) };
+        }, '#think-preview-heading'),
+        onSend: (/** @type {string} */ sha) => thinkAction({}, async () => {
+          announce('Sending to the AI model. This can take a minute.');
+          const { envelope, failure } = await write('assistant-project', {
+            id: dashboard.project.id, question: think.question ?? '', prompt_sha256: sha,
+          });
+          if (failure || !envelope || !envelope.ok) return { notice: failure };
+          const answer = /** @type {import('./views.mjs').ProjectAnswer} */ (envelope.data);
+          return answer.answered_by_model
+            ? { answer, notice: { kind: 'ok', text: 'The AI model answered. It is a suggestion and is not saved.' } }
+            : { notice: { kind: 'unanswered', text: answer.reason } };
+        }),
+        onCancel: () => { think = { question: think.question }; redraw('#think-question'); },
+      };
+      const build = (/** @type {{ column: TableColumn, direction: SortDirection }} */ sort, /** @type {(column: TableColumn) => void} */ onSort) =>
+        renderProject(doc, dashboard, sort, onSort, { ...think, ...thinkHandlers, writable });
+      const redraw = showSortable('project', build, moveFocus);
+      /**
+       * Run one "think" step: show it busy, then redraw with its result.
+       * @param {Partial<typeof think>} start
+       * @param {() => Promise<Partial<typeof think>>} work
+       * @param {string} [focusSelector]
+       */
+      const thinkAction = async (start, work, focusSelector) => {
+        const mine2 = generation;
+        think = { question: think.question, ...start, busy: true };
+        redraw();
+        let next;
+        try {
+          next = await work();
+        } catch (error) {
+          next = { notice: { kind: /** @type {'error'} */ ('error'), text: error instanceof Error ? error.message : String(error) } };
+        }
+        if (mine2 !== generation) return;
+        think = { question: think.question, ...next, busy: false };
+        if (think.notice) announce(think.notice.text);
+        redraw(think.notice ? '#think .notice' : focusSelector);
+      };
       announce(`Project ${dashboard.project.title} loaded.`);
     } else if (envelope.command === 'weekly') {
       showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (data), {}, moveFocus);

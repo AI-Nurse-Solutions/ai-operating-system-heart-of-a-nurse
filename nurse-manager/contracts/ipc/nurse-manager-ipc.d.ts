@@ -234,6 +234,21 @@ export interface Priority {
   readonly project_id: RecordId | null;
 }
 
+/** The answer to a question about one project. It is a suggestion shown to the manager and is never saved; the ledger keeps only metadata. */
+export interface ProjectAnswer {
+  readonly outcome: "answered" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "provider_failed" | "output_refused";
+  readonly answered_by_model: boolean;
+  /** Written for the manager. Empty only when the model answered. */
+  readonly reason: string;
+  readonly provider: AssistantProvider;
+  readonly model: string;
+  readonly request_id: RecordId;
+  readonly project_id: RecordId;
+  /** Markdown with record citations; empty unless the model answered. */
+  readonly answer: string;
+  readonly source_refs: readonly RecordId[];
+}
+
 /** What will move this initiative forward? Tasks use the same rows and ids as the table. */
 export interface ProjectDashboard {
   readonly sample: boolean;
@@ -244,6 +259,24 @@ export interface ProjectDashboard {
   readonly decisions: readonly Decision[];
   readonly resources: readonly Resource[];
   readonly evidence: readonly EvidenceItem[];
+}
+
+/** Exactly what asking the model about one project would send, and the gates' verdicts. Nothing is sent to produce it. With no model connected, system and prompt are empty and will_send is false. */
+export interface ProjectQuestionPreview {
+  readonly project_id: RecordId;
+  readonly provider: AssistantProvider;
+  readonly model: string;
+  readonly runs_on: string;
+  /** The instructions sent to the model. */
+  readonly system: string;
+  /** The question and the project's record text sent to the model. */
+  readonly prompt: string;
+  /** Send it back with assistant-project; a change since the preview refuses the request. */
+  readonly prompt_sha256: Sha256 | "";
+  readonly checks: readonly AssistantCheck[];
+  readonly will_send: boolean;
+  /** Why nothing would be sent. Empty when will_send is true. */
+  readonly reason: string;
 }
 
 export interface ProjectSummary {
@@ -425,6 +458,8 @@ export interface CommandData {
   readonly "assistant-brief": AssistantDraft;
   readonly weekly: WeeklyBrief;
   readonly "assistant-preview": AssistantPreview;
+  readonly "assistant-project-preview": ProjectQuestionPreview;
+  readonly "assistant-project": ProjectAnswer;
 }
 
 export type Command = keyof CommandData;

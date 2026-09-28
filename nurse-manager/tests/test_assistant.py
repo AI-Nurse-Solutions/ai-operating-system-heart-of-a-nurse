@@ -470,6 +470,99 @@ class PreviewTests(_Case):
         self.assertTrue(preview["prompt"], "the manager still sees what would have been sent")
 
 
+class ProjectQuestionTests(_Case):
+    QUESTION = "What should I do first?"
+
+    def setUp(self):
+        super().setUp()
+        self.project_id = mission_control(self.ws, today=TODAY, week_of=WEEK)[
+            "projects_in_motion"]["items"][0]["id"]
+
+    def revisions(self) -> int:
+        return self.ws.store.conn.execute("SELECT count(*) FROM artifact_revisions").fetchone()[0]
+
+    def ask(self, assistant, question=QUESTION, **kwargs):
+        return assistant.answer_project_question(self.project_id, question, TODAY, OWNER, **kwargs)
+
+    def test_with_no_model_nothing_is_sent_and_the_dashboard_is_the_answer(self):
+        result = self.ask(self.service())
+        self.assertEqual((result["outcome"], result["answer"]), ("no_model", ""))
+        self.assertIn("project dashboard", result["reason"])
+        self.assertEqual(self.ledger()[-1]["task"], "project_question")
+
+    def test_the_preview_is_what_is_sent_and_the_answer_is_never_saved(self):
+        server = self.server(lambda body: "Start with `" + body["prompt"].split("`")[1] + "`.")
+        assistant = self.connect(server)
+        preview = assistant.preview_project_question(self.project_id, self.QUESTION, TODAY)
+        self.assertTrue(preview["will_send"])
+        self.assertTrue(preview["prompt"].startswith("## Question\n\nWhat should I do first?"))
+        self.assertIn(self.project_id, preview["prompt"])
+        before = self.revisions()
+        result = self.ask(assistant, reviewed_prompt_sha256=preview["prompt_sha256"])
+        self.assertEqual(result["outcome"], "answered", result["reason"])
+        self.assertTrue(result["answered_by_model"])
+        self.assertEqual(result["source_refs"], [self.project_id])
+        sent = server.requests[0]["body"]
+        self.assertEqual((sent["system"], sent["prompt"]), (preview["system"], preview["prompt"]))
+        self.assertEqual(self.revisions(), before, "an answer is never saved as a record")
+        (row,) = [r for r in self.ledger() if r["task"] == "project_question"]
+        self.assertEqual((row["outcome"], row["revision_id"]), ("answered", None))
+        self.assertNotIn("Start with", " ".join(str(v) for v in tuple(row)))
+
+    def test_the_context_holds_only_this_projects_records(self):
+        from nurse_manager.assistant import compose_project_context
+
+        text, refs = compose_project_context(self.ws, self.project_id, TODAY)
+        self.assertEqual(refs[0], self.project_id)
+        db = self.ws.store.conn
+        for ref in refs[1:]:
+            table = {"tsk": "tasks", "dec": "decisions", "src": "sources"}[ref.split("-")[0]]
+            (project,) = db.execute(f"SELECT project_id FROM {table} WHERE id = ?", (ref,)).fetchone()
+            self.assertEqual(project, self.project_id)
+        other = [r for r in db.execute("SELECT id FROM tasks WHERE project_id != ?", (self.project_id,))]
+        for (task_id,) in other:
+            self.assertNotIn(task_id, text)
+
+    def test_a_changed_question_or_record_needs_a_new_preview(self):
+        server = self.server()
+        assistant = self.connect(server)
+        preview = assistant.preview_project_question(self.project_id, self.QUESTION, TODAY)
+        with self.assertRaises(AssistantError):
+            self.ask(assistant, "What is blocking this?",
+                     reviewed_prompt_sha256=preview["prompt_sha256"])
+        self.assertEqual(server.requests, [])
+
+    def test_identifiers_in_the_question_are_never_sent(self):
+        server = self.server()
+        result = self.ask(self.connect(server), "Should I email jane.doe@example.org first?")
+        self.assertEqual(result["outcome"], "refused_data_rules")
+        self.assertIn("EMAIL_ADDRESS", result["reason"])
+        self.assertEqual(server.requests, [])
+
+    def test_questions_are_checked(self):
+        for question in ("", "   ", "x" * 501):
+            with self.subTest(length=len(question)), self.assertRaises(AssistantError):
+                self.ask(self.service(), question)
+        with self.assertRaises(ManagerError):
+            self.service().answer_project_question("prj-000000000000", self.QUESTION, TODAY, OWNER)
+        with self.assertRaises(AssistantError):
+            self.service().answer_project_question(self.project_id, self.QUESTION, TODAY,
+                                                   "Someone Else")
+
+    def test_an_answer_citing_other_records_is_not_shown(self):
+        server = self.server(lambda body: "See `tsk-0123456789ab`.")
+        result = self.ask(self.connect(server))
+        self.assertEqual((result["outcome"], result["answer"]), ("output_refused", ""))
+        self.assertIn("not sent to it", result["reason"])
+
+    def test_project_questions_share_the_daily_limit(self):
+        server = self.server()
+        assistant = self.connect(server, daily_request_limit=1)
+        self.assertEqual(self.draft(assistant)["outcome"], "drafted")
+        self.assertEqual(self.ask(assistant)["outcome"], "refused_budget")
+        self.assertEqual(len(server.requests), 1)
+
+
 class LocalAdapterTests(unittest.TestCase):
     def test_the_local_adapter_costs_nothing(self):
         self.assertEqual(LocalModelProvider("m").estimate_cents("s", "p" * 10_000, 1200), 0)

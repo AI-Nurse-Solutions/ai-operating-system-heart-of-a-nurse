@@ -190,6 +190,20 @@ class WorkspaceWriteTests(_AppCase):
         self.assertEqual(drafted["outcome"], "drafted")
         self.assertEqual(server.requests[0]["body"]["prompt"], preview["prompt"])
         self.assertEqual(server.requests[0]["body"]["system"], preview["system"])
+        project_id = self.envelope("/ipc/mission")["data"]["projects_in_motion"]["items"][0]["id"]
+        question = "What should I do first?"
+        from urllib.parse import quote
+        asked = self.envelope(f"/ipc/assistant-project-preview?id={project_id}"
+                              f"&today=2026-09-30&question={quote(question)}")["data"]
+        self.assertTrue(asked["will_send"])
+        self.assertIn(question, asked["prompt"])
+        answer = self.envelope("/ipc/assistant-project", "POST", {
+            "id": project_id, "question": question, "today": "2026-09-30",
+            "prompt_sha256": asked["prompt_sha256"]})["data"]
+        self.assertEqual(answer["outcome"], "answered")
+        self.assertEqual(server.requests[-1]["body"]["prompt"], asked["prompt"])
+        self.assertEqual(self.request("/ipc/assistant-project", "POST",
+                                      {"id": "nope", "question": question, "prompt_sha256": ""})[0], 400)
         self.assertEqual(self.envelope("/ipc/assistant-off", "POST", {})["data"]["provider"], "none")
 
 

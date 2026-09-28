@@ -359,8 +359,9 @@ function dashboardSection(doc, id, title, empty, emptyMessage, renderBody) {
  * @param {ProjectDashboard} data
  * @param {{ column: TableColumn, direction: SortDirection }} sort
  * @param {(column: TableColumn) => void} onSort
+ * @param {ThinkOptions} [think] the "Think with this project" section, when offered
  */
-export function renderProject(doc, data, sort, onSort) {
+export function renderProject(doc, data, sort, onSort, think) {
   const { project, readiness } = data;
   const root = h(doc, 'div', { class: 'view view--project' });
   root.append(h(doc, 'nav', { 'aria-label': 'Breadcrumb', class: 'breadcrumb' }, [
@@ -435,7 +436,71 @@ export function renderProject(doc, data, sort, onSort) {
       : taskTable(doc, data.tasks, ['task', 'owner', 'due_date', 'status', 'next_action', 'evidence'],
         sort, onSort, 'project-tasks-caption', `${project.title} tasks`),
   ]));
+  if (think) root.append(thinkSection(doc, think));
   return root;
+}
+
+/**
+ * "Think with this project": ask the AI model a question, after seeing
+ * exactly what would be sent. The answer is a suggestion and is not saved.
+ * @param {Document} doc
+ * @param {ThinkOptions} think
+ */
+function thinkSection(doc, think) {
+  const busy = Boolean(think.busy);
+  const section = h(doc, 'section', { class: 'mc-section think-section', id: 'think', 'aria-labelledby': 'think-heading' }, [
+    h(doc, 'h2', { id: 'think-heading' }, ['Think with this project']),
+    h(doc, 'p', {}, [
+      'Ask the AI model a question about this project. You will see exactly what would be sent before anything is. ',
+      'Answers are suggestions, and they are not saved.',
+    ]),
+  ]);
+  const notice = noticeBlock(doc, think.notice);
+  if (notice) section.append(notice);
+  if (!think.writable) {
+    section.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Asking is available in the Nurse AI OS app.',
+    ]));
+    return section;
+  }
+  const questionInput = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+    id: 'think-question', name: 'question', rows: '3', maxlength: '500', required: '',
+    'aria-describedby': 'think-question-hint',
+  }));
+  questionInput.value = think.question ?? '';
+  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' },
+    ['Preview what will be sent']));
+  submit.disabled = busy;
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'think-heading' }, [
+    h(doc, 'p', { class: 'field' }, [
+      h(doc, 'label', { for: 'think-question' }, ['What do you want to think through?']),
+      h(doc, 'span', { class: 'field-hint', id: 'think-question-hint' }, [
+        'For example: what should I do first, or what is at risk before the milestone? Leave out names of patients and staff.',
+      ]),
+      questionInput,
+    ]),
+    submit,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    think.onPreview(questionInput.value.trim());
+  });
+  section.append(form);
+  if (think.preview) {
+    section.append(previewPanel(doc, think.preview, busy, think,
+      { prefix: 'think-', level: 'h3', promptLabel: "Your question and this project's records" }));
+  }
+  if (think.answer && think.answer.answered_by_model) {
+    section.append(h(doc, 'div', { class: 'think-answer', 'aria-labelledby': 'think-answer-heading' }, [
+      h(doc, 'h3', { id: 'think-answer-heading' }, ['AI suggestion']),
+      h(doc, 'p', { class: 'card__badges' }, [
+        badge(doc, 'review', '!', 'Not saved'),
+        ` From the AI model “${think.answer.model}”. Check it against the records it cites; you decide what to do.`,
+      ]),
+      markdownBlock(doc, think.answer.answer, 'AI suggestion'),
+    ]));
+  }
+  return section;
 }
 
 /**
@@ -532,17 +597,36 @@ export function renderOnboarding(doc, handlers, state = {}) {
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').AssistantPreview} AssistantPreview */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').AssistantDraft} AssistantDraft */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Revision} Revision */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ProjectQuestionPreview} ProjectQuestionPreview */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ProjectAnswer} ProjectAnswer */
+/**
+ * @typedef {object} ThinkOptions
+ * @property {boolean} writable
+ * @property {boolean} [busy]
+ * @property {string} [question]
+ * @property {ProjectQuestionPreview | null} [preview]
+ * @property {ProjectAnswer | null} [answer]
+ * @property {Notice} [notice]
+ * @property {(question: string) => void} onPreview
+ * @property {(sha: string) => void} onSend
+ * @property {() => void} onCancel
+ */
 
 /**
  * @typedef {object} Notice
- * @property {'ok' | 'fallback' | 'error'} kind
+ * @property {'ok' | 'fallback' | 'unanswered' | 'error'} kind
  * @property {string} text
  */
 
 /** @param {Document} doc @param {Notice} [notice] */
 function noticeBlock(doc, notice) {
   if (!notice) return null;
-  const icons = { ok: ['accepted', '✓', 'Done'], fallback: ['review', '!', 'Drafted from your records'], error: ['error', '✕', 'Not done'] };
+  const icons = {
+    ok: ['accepted', '✓', 'Done'],
+    fallback: ['review', '!', 'Drafted from your records'],
+    unanswered: ['review', '!', 'No AI answer'],
+    error: ['error', '✕', 'Not done'],
+  };
   const [kind, icon, label] = icons[notice.kind];
   return h(doc, 'p', { class: 'notice', role: notice.kind === 'ok' ? 'status' : 'alert' }, [
     badge(doc, kind, icon, label), ' ', notice.text,
@@ -620,22 +704,29 @@ const GATE_LABELS = { data_rules: 'Data rules', edena: 'EDENA policy', budget: '
 /**
  * The preview: exactly what asking the model would send, before anything is sent.
  * @param {Document} doc
- * @param {AssistantPreview} preview
+ * @param {AssistantPreview | ProjectQuestionPreview} preview
  * @param {boolean} busy
- * @param {{ onSend: (sha: string) => void, onCancel: () => void, onRecords: () => void }} handlers
+ * @param {{ onSend: (sha: string) => void, onCancel: () => void, onRecords?: () => void }} handlers
+ * @param {{ prefix?: string, level?: string, promptLabel?: string }} [layout]
  */
-function previewPanel(doc, preview, busy, handlers) {
-  const panel = h(doc, 'section', { class: 'mc-section preview-panel', id: 'ai-preview', 'aria-labelledby': 'preview-heading' }, [
-    h(doc, 'h2', { id: 'preview-heading', tabindex: '-1' }, ['Before anything is sent']),
+function previewPanel(doc, preview, busy, handlers, layout = {}) {
+  const prefix = layout.prefix ?? '';
+  const level = layout.level ?? 'h2';
+  const sub = level === 'h2' ? 'h3' : 'h4';
+  const promptLabel = layout.promptLabel ?? 'Text from your records';
+  /** @param {string} label */
+  const fallbackRow = (label) => h(doc, 'p', { class: 'button-row' }, [
+    handlers.onRecords ? button(doc, label, busy, handlers.onRecords) : null,
+    button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button'),
+  ]);
+  const panel = h(doc, 'section', { class: 'mc-section preview-panel', id: `${prefix}ai-preview`, 'aria-labelledby': `${prefix}preview-heading` }, [
+    h(doc, level, { id: `${prefix}preview-heading`, tabindex: '-1' }, ['Before anything is sent']),
   ]);
   if (preview.provider === 'none') {
     panel.append(
       h(doc, 'p', { class: 'section-state' }, [badge(doc, 'unavailable', '○', 'No AI model'), ' ', preview.reason]),
       h(doc, 'p', {}, [h(doc, 'a', { href: '#/assistant' }, ['Set up AI assistance']), ' to connect a model on this computer.']),
-      h(doc, 'p', { class: 'button-row' }, [
-        button(doc, 'Draft from my records', busy, handlers.onRecords),
-        button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button'),
-      ]),
+      fallbackRow('Draft from my records'),
     );
     return panel;
   }
@@ -649,10 +740,10 @@ function previewPanel(doc, preview, busy, handlers) {
       ' ', check.detail,
     ]))));
   panel.append(
-    h(doc, 'h3', {}, ['Instructions to the model']),
+    h(doc, sub, {}, ['Instructions to the model']),
     h(doc, 'pre', { class: 'sent-text', tabindex: '0', 'aria-label': 'Instructions to the model' }, [preview.system]),
-    h(doc, 'h3', {}, ['Text from your records']),
-    h(doc, 'pre', { class: 'sent-text', tabindex: '0', 'aria-label': 'Text from your records' }, [preview.prompt]),
+    h(doc, sub, {}, [promptLabel]),
+    h(doc, 'pre', { class: 'sent-text', tabindex: '0', 'aria-label': promptLabel }, [preview.prompt]),
   );
   if (preview.will_send) {
     panel.append(h(doc, 'p', { class: 'button-row' }, [
@@ -662,10 +753,7 @@ function previewPanel(doc, preview, busy, handlers) {
   } else {
     panel.append(
       h(doc, 'p', { class: 'error-message' }, [badge(doc, 'blocked', '✕', 'Will not be sent'), ' ', preview.reason]),
-      h(doc, 'p', { class: 'button-row' }, [
-        button(doc, 'Draft from my records', busy, handlers.onRecords),
-        button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button'),
-      ]),
+      fallbackRow('Draft from my records'),
     );
   }
   return panel;

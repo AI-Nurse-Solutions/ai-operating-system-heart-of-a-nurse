@@ -65,8 +65,10 @@ There is no AI model by default, and every workflow works without one
 computer; text never leaves the device. No cloud AI service is offered
 until the steward chooses one.
 
-In the app, **AI assistance** connects or disconnects the model, and
-**Weekly brief** offers "Draft with AI…". Before anything is sent, the
+In the app, **AI assistance** connects or disconnects the model,
+**Weekly brief** offers "Draft with AI…", and each project dashboard offers
+**Think with this project**, whose answers are suggestions and are never
+saved. Before anything is sent, the
 manager sees exactly what will be sent and each check's verdict. The
 request is bound to that preview: if the records change in between,
 nothing is sent. The same commands, for the headless surface:
@@ -76,6 +78,7 @@ python3 -m nurse_manager assistant       /tmp/mgr    # settings, usage, and the 
 python3 -m nurse_manager assistant-local /tmp/mgr --model llama3.2 --by "Sample Manager"
 python3 -m nurse_manager assistant-preview /tmp/mgr --week 2026-09-28 --today 2026-09-30   # sends nothing
 python3 -m nurse_manager assistant-brief /tmp/mgr --week 2026-09-28 --today 2026-09-30 --by "Sample Manager" --reviewed-sha <prompt_sha256>
+python3 -m nurse_manager assistant-project-preview /tmp/mgr --id <prj-id> --today 2026-09-30 --question "What should I do first?"
 python3 -m nurse_manager assistant-off   /tmp/mgr --by "Sample Manager"
 ```
 
@@ -109,7 +112,7 @@ python3 -m nurse_manager.app      # the packaged app runs exactly this
   - macOS: `~/Library/Application Support/Nurse AI OS`
   - Linux: `~/.local/share/nurse-ai-os`
 - **Security:** the app listens on 127.0.0.1 only. Each launch creates a fresh token, passed to the browser in the address fragment and then cleared. Every data call must carry it.
-- **Writes:** besides first-run setup, the screens can only draft and accept the weekly brief and change AI settings. The app acts as the workspace's owner, because it runs for one person on their own computer.
+- **Writes:** besides first-run setup, the screens can only draft and accept the weekly brief, change AI settings, and ask the AI about a project. The app acts as the workspace's owner, because it runs for one person on their own computer.
 - **Lifetime:** the page says the app is running on this computer and offers Quit. With no page open, the app stops by itself after 15 minutes.
 - **Builds:** `.github/workflows/nurse-manager-app.yml` builds Windows, macOS, and Linux versions with Python bundled. **They are unsigned test builds. Do not give them to managers until they are signed.**
 
@@ -126,7 +129,7 @@ table. On Mission Control, a project's title opens its dashboard. The dev host s
 is deliberately narrow:
 
 - It listens on 127.0.0.1 only, and refuses requests with any other `Host` header.
-- It answers only the read-only commands `mission`, `project`, `board`, `table`, `weekly`, `assistant`, and `assistant-preview`. The screens show drafting, accepting, and AI settings as read-only there.
+- It answers only the read-only commands `mission`, `project`, `board`, `table`, `weekly`, `assistant`, `assistant-preview`, and `assistant-project-preview`. The screens show drafting, accepting, and AI settings as read-only there.
 - It sends a strict Content-Security-Policy.
 
 The screens are plain ES modules with no framework and no network access

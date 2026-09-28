@@ -17,6 +17,7 @@ rules first:
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
 
@@ -90,6 +91,15 @@ class ManagerWorkspace:
             owner=row["owner"],
             sample=bool(row["sample"]),
         )
+
+    def local_today(self) -> str:
+        """Today on this computer's calendar: the day the app shows the manager.
+
+        The workspace clock is UTC; date-only fields (a feedback date, the day
+        it was addressed) follow the local day, or "today" would be refused as
+        the future in time zones ahead of UTC.
+        """
+        return datetime.fromisoformat(self.clock()).astimezone().date().isoformat()
 
     def _workspace_row(self):
         return self.store.conn.execute("SELECT * FROM workspaces").fetchone()
@@ -344,7 +354,7 @@ class ManagerWorkspace:
         if len(summary) > MAX_FEEDBACK_TEXT:
             raise ManagerError(f"keep the feedback under {MAX_FEEDBACK_TEXT} characters")
         received_on = _iso_date(received_on, "the date it was received")
-        if received_on > self.clock()[:10]:
+        if received_on > self.local_today():
             raise ManagerError("feedback cannot be received in the future")
         self._screen(from_group=from_group, feedback=summary)
         feedback_id = new_id("fbk")
@@ -369,13 +379,16 @@ class ManagerWorkspace:
         if len(response) > MAX_FEEDBACK_TEXT:
             raise ManagerError(f"keep the response under {MAX_FEEDBACK_TEXT} characters")
         self._screen(response=response)
-        now = self.clock()
         with self.store.transaction() as db:
-            db.execute(
+            # Only open feedback changes, decided inside the write transaction:
+            # two requests racing to address it cannot both succeed.
+            changed = db.execute(
                 "UPDATE project_feedback SET status = 'addressed', response = ?,"
-                " addressed_on = ?, updated_at = ? WHERE id = ?",
-                (response, now[:10], now, feedback_id),
-            )
+                " addressed_on = ?, updated_at = ? WHERE id = ? AND status = 'open'",
+                (response, self.local_today(), self.clock(), feedback_id),
+            ).rowcount
+            if changed != 1:
+                raise ManagerError("this feedback is already addressed")
             self.store.log(self.info.owner, "address", "feedback", feedback_id)
 
     def close(self) -> None:

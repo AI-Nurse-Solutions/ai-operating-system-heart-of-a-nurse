@@ -355,6 +355,47 @@ class FeedbackTests(_TempCase):
         with self.assertRaises(ManagerError):
             ws.address_feedback("fbk-000000000000", "Done")
 
+    def test_addressing_is_decided_inside_the_write(self):
+        # Two requests that both read "open" before either writes: only one wins.
+        from unittest import mock
+
+        ws = self.sample()
+        fid = project_dashboard(ws, self.project(ws, "Huddle"), today=TODAY)["feedback"][0]["id"]
+        stale = dict(ws._require_row("project_feedback", fid))
+        ws.address_feedback(fid, "First response.")
+        with mock.patch.object(ws, "_require_row", return_value=stale), \
+                self.assertRaises(ManagerError):
+            ws.address_feedback(fid, "Second response.")
+        row = ws._require_row("project_feedback", fid)
+        self.assertEqual(row["response"], "First response.")
+        events = [e for e in ws.store.events() if e["record_id"] == fid and e["kind"] == "address"]
+        self.assertEqual(len(events), 1)
+
+    @unittest.skipUnless(hasattr(__import__("time"), "tzset"), "needs a settable time zone")
+    def test_feedback_dates_follow_the_local_calendar_day(self):
+        import os
+        import time
+
+        previous = os.environ.get("TZ")
+        os.environ["TZ"] = "Etc/GMT-10"  # UTC+10: local midnight comes first
+        time.tzset()
+        try:
+            # 15:00 UTC on 30 September is 01:00 on 1 October locally.
+            ws, _ = load_sample(self.tmp / "tz", clock=fixed_clock("2026-09-30T15:00:00+00:00"))
+            self.addCleanup(ws.close)
+            self.assertEqual(ws.local_today(), "2026-10-01")
+            fid = ws.add_feedback(self.project(ws, "Huddle"), "Night shift huddle", "worked",
+                                  "The Dates slot helped.", "2026-10-01")
+            ws.address_feedback(fid, "Kept it.")
+            self.assertEqual(ws._require_row("project_feedback", fid)["addressed_on"],
+                             "2026-10-01")
+        finally:
+            if previous is None:
+                os.environ.pop("TZ", None)
+            else:
+                os.environ["TZ"] = previous
+            time.tzset()
+
     def test_feedback_is_audited(self):
         ws = self.sample()
         fid = ws.add_feedback(self.project(ws, "Unit"), "Council members", "worked",

@@ -65,6 +65,10 @@ class DevHostTests(unittest.TestCase):
                     argv += ["--today", TODAY, "--week", "2026-09-28"]
                 if command == "project":
                     argv += ["--id", self.project_id, "--today", TODAY]
+                if command == "weekly":
+                    argv += ["--week", "2026-09-28"]
+                if command == "assistant-preview":
+                    argv += ["--today", TODAY, "--week", "2026-09-28"]
                 self.assertEqual(json.loads(body), cli.run(argv)[1])
 
     def test_nothing_that_writes_is_reachable(self):

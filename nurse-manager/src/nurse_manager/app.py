@@ -25,6 +25,7 @@ import argparse
 import hmac
 import json
 import os
+import re
 import secrets
 import sys
 import threading
@@ -40,16 +41,24 @@ from urllib.parse import parse_qs, urlparse
 from . import __version__, cli, resources
 from .devhost import (
     READ_ONLY_COMMANDS,
-    _PROJECT_ID,
     _valid_date,
     monday_of,
+    read_argv,
     send,
     serve_static,
 )
+from .services import ManagerWorkspace
 
 DEFAULT_IDLE_TIMEOUT = 15 * 60
 MAX_BODY = 16 * 1024
 LOCK_NAME = "app.lock.json"
+
+# The only writes the screens can ask for once a workspace exists. Each one
+# acts as the workspace's owner: the app runs for one person on their own
+# computer, and the launch token proves the request came from its page.
+WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief")
+_REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
 def _launch_token() -> str:
@@ -88,6 +97,14 @@ class LocalApp:
     def _workspace_ready(self) -> bool:
         code, envelope = cli.run(["board", str(self.workspace)])
         return envelope.get("ok", False)
+
+    def owner(self) -> str:
+        """The workspace's accountable manager: the person this app runs for."""
+        ws = ManagerWorkspace(self.workspace)
+        try:
+            return ws.info.owner
+        finally:
+            ws.close()
 
     def touch(self) -> None:
         self.last_seen = time.monotonic()
@@ -209,35 +226,40 @@ class LocalApp:
                     self._json(200, {"ok": True, "message": "Nurse AI OS has stopped."})
                     app.stop()
                     return None
-                if url.path in ("/ipc/sample", "/ipc/init"):
-                    if (self.headers.get("Content-Type") or "").split(";")[0] != "application/json":
-                        return self._text(415, "Send JSON")
-                    try:
-                        body = json.loads(raw.decode("utf-8") or "{}")
-                    except (UnicodeDecodeError, ValueError):
-                        return self._text(400, "Malformed JSON")
-                    if not isinstance(body, dict):
-                        return self._text(400, "Send a JSON object")
-                    return self._onboard(url.path[len("/ipc/"):], body)
-                return self._text(404, "Unknown or unavailable command")
+                command = url.path[len("/ipc/"):] if url.path.startswith("/ipc/") else ""
+                if command not in ("sample", "init", *WRITE_COMMANDS):
+                    return self._text(404, "Unknown or unavailable command")
+                if (self.headers.get("Content-Type") or "").split(";")[0] != "application/json":
+                    return self._text(415, "Send JSON")
+                try:
+                    body = json.loads(raw.decode("utf-8") or "{}")
+                except (UnicodeDecodeError, ValueError):
+                    return self._text(400, "Malformed JSON")
+                if not isinstance(body, dict):
+                    return self._text(400, "Send a JSON object")
+                if command in ("sample", "init"):
+                    return self._onboard(command, body)
+                return self._write(command, body)
 
             def _read(self, command: str, query: dict[str, list[str]]) -> None:
                 if command not in READ_ONLY_COMMANDS:
                     return self._text(404, "Unknown or unavailable command")
-                argv = [command, str(app.workspace)]
-                day = (query.get("today") or [date.today().isoformat()])[0]
-                if command in ("mission", "project") and not _valid_date(day):
-                    return self._text(400, "today must be a YYYY-MM-DD date")
-                if command == "mission":
-                    week = (query.get("week") or [monday_of(date.fromisoformat(day)).isoformat()])[0]
-                    if not _valid_date(week):
-                        return self._text(400, "week must be a YYYY-MM-DD date")
-                    argv += ["--today", day, "--week", week]
-                if command == "project":
-                    project_id = (query.get("id") or [""])[0]
-                    if not _PROJECT_ID.match(project_id):
-                        return self._text(400, "id must be a project record id")
-                    argv += ["--id", project_id, "--today", day]
+                argv = read_argv(command, app.workspace, query, date.today().isoformat())
+                if isinstance(argv, str):
+                    return self._text(400, argv)
+                _code, envelope = cli.run(argv)
+                return self._json(200, envelope)
+
+            def _write(self, command: str, body: dict) -> None:
+                if not app.has_workspace():
+                    return self._json(200, {
+                        "contract": cli.CONTRACT, "command": command, "ok": False,
+                        "error": {"type": "ManagerError",
+                                  "message": "Create or open a workspace first."},
+                    })
+                argv = _write_argv(command, body, app.workspace, app.owner())
+                if isinstance(argv, str):
+                    return self._text(400, argv)
                 _code, envelope = cli.run(argv)
                 return self._json(200, envelope)
 
@@ -261,6 +283,43 @@ class LocalApp:
                 return self._json(200, envelope)
 
         return Handler
+
+
+def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[str] | str:
+    """The CLI arguments for one write, or a message saying what is wrong."""
+
+    def text(key: str, limit: int, *, required: bool = True) -> str | None:
+        value = body.get(key, None if required else "")
+        return value[:limit] if isinstance(value, str) else None
+
+    today = body.get("today", date.today().isoformat())
+    if not isinstance(today, str) or not _valid_date(today):
+        return "today must be a YYYY-MM-DD date"
+    week = body.get("week", monday_of(date.fromisoformat(today)).isoformat())
+    if not isinstance(week, str) or not _valid_date(week):
+        return "week must be a YYYY-MM-DD date"
+    ws = str(workspace)
+    if command == "brief":
+        return ["brief", ws, "--week", week, "--today", today]
+    if command == "accept":
+        revision, sha = text("revision", 64), text("sha256", 64)
+        if not revision or not _REVISION_ID.match(revision) or not sha or not _SHA256.match(sha):
+            return "revision and sha256 are required"
+        return ["accept", ws, "--revision", revision, "--reviewer", owner, "--sha", sha]
+    if command == "assistant-local":
+        model, endpoint = text("model", 100), text("endpoint", 200, required=False)
+        if model is None or endpoint is None:
+            return "model is required text; endpoint is optional text"
+        argv = ["assistant-local", ws, "--model", model, "--by", owner]
+        return argv + ["--endpoint", endpoint] if endpoint.strip() else argv
+    if command == "assistant-off":
+        return ["assistant-off", ws, "--by", owner]
+    # assistant-brief is always bound to the preview the manager reviewed.
+    sha = text("prompt_sha256", 64)
+    if sha is None or not (sha == "" or _SHA256.match(sha)):
+        return "prompt_sha256 from the preview is required"
+    return ["assistant-brief", ws, "--week", week, "--today", today, "--by", owner,
+            "--reviewed-sha", sha]
 
 
 def _running_instance(home: Path) -> str | None:

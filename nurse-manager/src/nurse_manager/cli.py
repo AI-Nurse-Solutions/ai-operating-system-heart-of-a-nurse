@@ -82,6 +82,8 @@ def build_parser() -> argparse.ArgumentParser:
     p = ws_cmd("restore", "restore from a backup (refuses to discard newer work)")
     p.add_argument("src", type=Path)
     p.add_argument("--discard-newer", action="store_true")
+    p = ws_cmd("weekly", "this week's brief: the current revision and the accepted one")
+    p.add_argument("--week", required=True)
     ws_cmd("assistant", "AI settings, usage, and the gates every provider passes")
     p = ws_cmd("assistant-local", "connect a model on this computer (never preselected)")
     p.add_argument("--model", required=True)
@@ -90,10 +92,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--daily-limit", type=int)
     p = ws_cmd("assistant-off", "disconnect the AI model; back to no model")
     p.add_argument("--by", required=True)
+    p = ws_cmd("assistant-preview", "exactly what asking the model would send; sends nothing")
+    p.add_argument("--week", required=True)
+    p.add_argument("--today", required=True)
     p = ws_cmd("assistant-brief", "draft this week's brief with the connected model, or without one")
     p.add_argument("--week", required=True)
     p.add_argument("--today", required=True)
     p.add_argument("--by", required=True)
+    p.add_argument("--reviewed-sha", help="sha256 of the preview you reviewed; refuses if it changed")
 
     return parser
 
@@ -133,11 +139,16 @@ def _dispatch(args: argparse.Namespace) -> Any:
                                                daily_request_limit=args.daily_limit)
             if args.command == "assistant-off":
                 return assistant.disconnect(args.by)
+            if args.command == "assistant-preview":
+                return assistant.preview_weekly_brief(args.week, args.today)
             if args.command == "assistant-brief":
-                return assistant.draft_weekly_brief(args.week, args.today, args.by)
+                return assistant.draft_weekly_brief(
+                    args.week, args.today, args.by, reviewed_prompt_sha256=args.reviewed_sha)
         briefs = BriefService(ws)
         if args.command == "brief":
             return briefs.as_dict(briefs.draft_weekly_brief(args.week, args.today))
+        if args.command == "weekly":
+            return briefs.weekly(args.week)
         if args.command == "show":
             revision = briefs.revision(args.revision)
             return {"revision": briefs.as_dict(revision), "markdown": briefs.render(revision)}

@@ -84,6 +84,13 @@ class IpcContractTests(unittest.TestCase):
                          "assistant:local")
         self.assertEqual(self.fixtures["assistant"]["data"]["provider"], "none")
         self.assertEqual(self.fixtures["assistant-off"]["data"]["provider"], "none")
+        self.assertFalse(self.fixtures["assistant-preview-no-model"]["data"]["will_send"])
+        preview = self.fixtures["assistant-preview"]["data"]
+        self.assertTrue(preview["will_send"])
+        self.assertEqual([c["gate"] for c in preview["checks"]], ["data_rules", "edena", "budget"])
+        self.assertFalse(self.fixtures["error-assistant-brief-stale-preview"]["ok"])
+        self.assertIn("AI DRAFT", self.fixtures["weekly-ai-draft"]["data"]["current"]["markdown"])
+        self.assertIsNone(self.fixtures["weekly-empty"]["data"]["current"])
         kinds = {i["kind"] for i in
                  self.fixtures["mission-awaiting-approval"]["data"]["needs_my_judgment"]["items"]}
         self.assertIn("action", kinds)

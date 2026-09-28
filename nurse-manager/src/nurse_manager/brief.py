@@ -344,6 +344,22 @@ class BriefService:
         ).fetchone()
         return _revision(row) if row else None
 
+    def weekly(self, week_of: str) -> dict[str, Any]:
+        """The week's current revision (rendered with its banner) and its accepted one."""
+        artifact = self.ws.store.conn.execute(
+            "SELECT id FROM artifacts WHERE workspace_id = ? AND kind = 'weekly_brief'"
+            " AND week_of = ?",
+            (self.ws.info.id, week_of),
+        ).fetchone()
+        latest = self.latest(artifact["id"]) if artifact else None
+        accepted = self.accepted(artifact["id"]) if artifact else None
+        return {
+            "week_of": week_of,
+            "current": {"revision": self.as_dict(latest), "markdown": self.render(latest)}
+            if latest else None,
+            "accepted": self.as_dict(accepted) if accepted else None,
+        }
+
     def history(self, artifact_id: str) -> list[Revision]:
         self._artifact(artifact_id)
         return [

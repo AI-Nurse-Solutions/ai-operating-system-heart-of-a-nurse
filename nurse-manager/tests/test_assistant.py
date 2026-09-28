@@ -431,6 +431,45 @@ class BudgetTests(_Case):
         self.assertEqual(self.draft(self.service())["outcome"], "refused_budget")
 
 
+class PreviewTests(_Case):
+    def test_the_preview_is_exactly_what_is_sent_and_writes_nothing(self):
+        server = self.server()
+        assistant = self.connect(server)
+        events = len(self.ws.store.events())
+        preview = assistant.preview_weekly_brief(WEEK, TODAY)
+        self.assertTrue(preview["will_send"])
+        self.assertEqual(len(self.ws.store.events()), events, "a preview records nothing")
+        self.assertEqual(self.ledger(), [])
+        self.assertEqual(server.requests, [])
+        result = assistant.draft_weekly_brief(WEEK, TODAY, OWNER,
+                                              reviewed_prompt_sha256=preview["prompt_sha256"])
+        self.assertEqual(result["outcome"], "drafted")
+        sent = server.requests[0]["body"]
+        self.assertEqual((sent["system"], sent["prompt"]), (preview["system"], preview["prompt"]))
+        self.assertEqual(self.ledger()[0]["prompt_sha256"], preview["prompt_sha256"])
+
+    def test_a_request_is_refused_if_the_records_changed_after_the_preview(self):
+        server = self.server()
+        assistant = self.connect(server)
+        preview = assistant.preview_weekly_brief(WEEK, TODAY)
+        self.ws.store.conn.execute(
+            "UPDATE priorities SET text = 'A different first priority' WHERE rank = 1")
+        with self.assertRaises(AssistantError):
+            assistant.draft_weekly_brief(WEEK, TODAY, OWNER,
+                                         reviewed_prompt_sha256=preview["prompt_sha256"])
+        self.assertEqual(server.requests, [])
+        self.assertEqual(self.ledger(), [])
+
+    def test_the_preview_says_why_nothing_would_be_sent(self):
+        self.assertEqual(self.service().preview_weekly_brief(WEEK, TODAY)["reason"],
+                         "No AI model is connected. This draft was composed from your records.")
+        preview = self.connect(self.server(), daily_request_limit=0).preview_weekly_brief(WEEK, TODAY)
+        self.assertFalse(preview["will_send"])
+        self.assertEqual([c["passed"] for c in preview["checks"]], [True, True, False])
+        self.assertIn("today's limit of 0", preview["reason"])
+        self.assertTrue(preview["prompt"], "the manager still sees what would have been sent")
+
+
 class LocalAdapterTests(unittest.TestCase):
     def test_the_local_adapter_costs_nothing(self):
         self.assertEqual(LocalModelProvider("m").estimate_cents("s", "p" * 10_000, 1200), 0)

@@ -5,7 +5,9 @@
 // Hermes desktop host can later replace the development HTTP source with
 // its own validated IPC without touching any view.
 
-import { renderBoard, renderError, renderMission, renderOnboarding, renderProject, renderTable } from './views.mjs';
+import {
+  renderAssistant, renderBoard, renderBrief, renderError, renderMission, renderOnboarding, renderProject, renderTable,
+} from './views.mjs';
 
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Command} Command */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Envelope} Envelope */
@@ -21,9 +23,9 @@ import { renderBoard, renderError, renderMission, renderOnboarding, renderProjec
 /**
  * A data source. Only `call` is required; the local app adds the rest.
  * @typedef {object} Source
- * @property {(command: 'mission' | 'project' | 'board' | 'table', params?: Record<string, string>) => Promise<Envelope>} call
+ * @property {(command: ReadCommand | 'assistant-preview', params?: Record<string, string>) => Promise<Envelope>} call
  * @property {() => Promise<AppStatus | null>} [status] null means a read-only development host
- * @property {(command: 'sample' | 'init', body: Record<string, string>) => Promise<Envelope>} [send]
+ * @property {(command: WriteCommand, body: Record<string, string>) => Promise<Envelope>} [send]
  * @property {() => Promise<void>} [heartbeat]
  * @property {() => Promise<void>} [quit]
  */
@@ -102,7 +104,8 @@ export function httpSource(token = '') {
   };
 }
 
-/** @typedef {'mission' | 'project' | 'board' | 'table'} ReadCommand */
+/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant'} ReadCommand */
+/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -110,6 +113,8 @@ const ROUTES = {
   project: { title: 'Project', command: 'project' },
   board: { title: 'Board', command: 'board' },
   table: { title: 'Tasks', command: 'table' },
+  brief: { title: 'Weekly brief', command: 'weekly' },
+  assistant: { title: 'AI assistance', command: 'assistant' },
 };
 
 const PROJECT_ID = /^prj-[0-9a-f]{12}$/;
@@ -233,6 +238,12 @@ export function start(doc, source) {
       doc.title = `${dashboard.project.title} — Nurse AI OS`;
       showSortable('project', (sort, onSort) => renderProject(doc, dashboard, sort, onSort), moveFocus);
       announce(`Project ${dashboard.project.title} loaded.`);
+    } else if (envelope.command === 'weekly') {
+      showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (data), {}, moveFocus);
+      announce('Weekly brief loaded.');
+    } else if (envelope.command === 'assistant') {
+      showAssistant(/** @type {import('./views.mjs').AssistantStatus} */ (data), {}, moveFocus);
+      announce('AI assistance loaded.');
     } else if (envelope.command === 'board') {
       show(renderBoard(doc, /** @type {import('../contracts/ipc/nurse-manager-ipc').Board} */ (data)), moveFocus);
       announce('Board loaded.');
@@ -241,6 +252,153 @@ export function start(doc, source) {
       showSortable('table', (sort, onSort) => renderTable(doc, table, sort, onSort), moveFocus);
       announce(`Tasks loaded: ${table.rows.length}.`);
     }
+  };
+
+  // --- Writes from the screens (local app only) --------------------------
+  let writable = false;
+
+  /**
+   * Show a view after an action, putting focus on its notice when it has one.
+   * @param {HTMLElement} view
+   * @param {import('./views.mjs').Notice | undefined} notice
+   * @param {string} [focusSelector]
+   */
+  const showAfterAction = (view, notice, focusSelector) => {
+    main.replaceChildren(view);
+    main.setAttribute('aria-busy', 'false');
+    const target = focusSelector ? view.querySelector(focusSelector) : view.querySelector('.notice') || view.querySelector('h1');
+    if (target instanceof HTMLElement) {
+      if (!target.hasAttribute('tabindex')) target.tabIndex = -1;
+      target.focus();
+    }
+    if (notice) announce(notice.text);
+  };
+
+  /**
+   * Send one write and return its envelope, or a notice describing the failure.
+   * @param {WriteCommand} command
+   * @param {Record<string, string>} body
+   * @returns {Promise<{ envelope?: Envelope, failure?: import('./views.mjs').Notice }>}
+   */
+  const write = async (command, body) => {
+    if (!source.send) return { failure: { kind: 'error', text: 'This host is read-only.' } };
+    try {
+      const envelope = await source.send(command, body);
+      if (!envelope.ok) return { failure: { kind: 'error', text: envelope.error.message } };
+      return { envelope };
+    } catch (error) {
+      return { failure: { kind: 'error', text: error instanceof Error ? error.message : String(error) } };
+    }
+  };
+
+  /**
+   * Reload a view's data after an action, unless the manager has navigated away.
+   * @param {'weekly' | 'assistant'} command
+   * @param {number} mine
+   */
+  const reload = async (command, mine) => {
+    try {
+      const envelope = await source.call(command);
+      if (mine !== generation) return null;
+      if (!envelope.ok) {
+        show(renderError(doc, ROUTES[command === 'weekly' ? 'brief' : 'assistant'].title, envelope.error), true);
+        return null;
+      }
+      return envelope.data;
+    } catch (error) {
+      if (mine !== generation) return null;
+      show(renderError(doc, 'this page', { type: 'Unavailable', message: error instanceof Error ? error.message : String(error) }), true);
+      return null;
+    }
+  };
+
+  /**
+   * @param {import('./views.mjs').WeeklyBrief} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, preview?: import('./views.mjs').AssistantPreview | null }} state
+   * @param {boolean} moveFocus
+   * @param {string} [focusSelector]
+   */
+  const showBrief = (data, state, moveFocus, focusSelector) => {
+    const mine = generation;
+    /** @param {import('./views.mjs').Notice} [notice] */
+    const refresh = async (notice) => {
+      const fresh = await reload('weekly', mine);
+      if (fresh) showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (fresh), { notice }, true);
+    };
+    /** @param {Promise<void>} work */
+    const busyWhile = (work) => {
+      main.replaceChildren(renderBrief(doc, data, { ...handlers, ...state, busy: true }));
+      main.setAttribute('aria-busy', 'true');
+      return work;
+    };
+    const handlers = {
+      writable,
+      onRecords: () => busyWhile((async () => {
+        const { failure } = await write('brief', {});
+        await refresh(failure || { kind: 'ok', text: 'A new draft was composed from your records. Review it, then accept it.' });
+      })()),
+      onPreview: () => busyWhile((async () => {
+        try {
+          const envelope = await source.call('assistant-preview');
+          if (mine !== generation) return;
+          if (!envelope.ok) {
+            showBrief(data, { notice: { kind: 'error', text: envelope.error.message } }, true);
+            return;
+          }
+          const preview = /** @type {import('./views.mjs').AssistantPreview} */ (envelope.data);
+          showBrief(data, { preview }, true, '#preview-heading');
+          announce('Showing exactly what would be sent. Nothing has been sent yet.');
+        } catch (error) {
+          if (mine !== generation) return;
+          showBrief(data, { notice: { kind: 'error', text: error instanceof Error ? error.message : String(error) } }, true);
+        }
+      })()),
+      onSend: (/** @type {string} */ sha) => busyWhile((async () => {
+        announce('Sending to the AI model. This can take a minute.');
+        const { envelope, failure } = await write('assistant-brief', { prompt_sha256: sha });
+        if (failure || !envelope || !envelope.ok) {
+          await refresh(failure);
+          return;
+        }
+        const result = /** @type {import('./views.mjs').AssistantDraft} */ (envelope.data);
+        await refresh(result.drafted_by_model
+          ? { kind: 'ok', text: 'The AI model drafted a new version. Check every line against your records before you accept it.' }
+          : { kind: 'fallback', text: result.reason });
+      })()),
+      onCancel: () => showBrief(data, {}, true),
+      onAccept: (/** @type {import('./views.mjs').Revision} */ revision) => busyWhile((async () => {
+        const { failure } = await write('accept', { revision: revision.id, sha256: revision.sha256 });
+        await refresh(failure || { kind: 'ok', text: `Version ${revision.revision_no} is accepted.` });
+      })()),
+    };
+    const view = renderBrief(doc, data, { ...handlers, ...state });
+    if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
+    else show(view, moveFocus);
+  };
+
+  /**
+   * @param {import('./views.mjs').AssistantStatus} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice }} state
+   * @param {boolean} moveFocus
+   */
+  const showAssistant = (data, state, moveFocus) => {
+    const mine = generation;
+    /** @param {WriteCommand} command @param {Record<string, string>} body @param {string} done */
+    const act = async (command, body, done) => {
+      main.replaceChildren(renderAssistant(doc, data, { ...options, busy: true }));
+      const { failure } = await write(command, body);
+      const fresh = await reload('assistant', mine);
+      if (fresh) showAssistant(/** @type {import('./views.mjs').AssistantStatus} */ (fresh), { notice: failure || { kind: 'ok', text: done } }, true);
+    };
+    const options = {
+      writable,
+      onConnect: (/** @type {string} */ model, /** @type {string} */ endpoint) =>
+        act('assistant-local', { model, endpoint }, `Connected to the AI model “${model}” on this computer.`),
+      onDisconnect: () => act('assistant-off', {}, 'The AI model is disconnected. Nothing will be sent anywhere.'),
+    };
+    const view = renderAssistant(doc, data, { ...options, ...state });
+    if (state.notice) showAfterAction(view, state.notice);
+    else show(view, moveFocus);
   };
 
   const themeToggle = /** @type {HTMLButtonElement} */ (doc.getElementById('theme-toggle'));
@@ -346,6 +504,7 @@ export function start(doc, source) {
       return;
     }
     if (status) {
+      writable = true;
       footer.hidden = false;
       const minutes = Math.round(status.idle_timeout_seconds / 60);
       const lifetime = doc.getElementById('app-lifetime');

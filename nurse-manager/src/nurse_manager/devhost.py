@@ -33,7 +33,8 @@ from urllib.parse import parse_qs, urlparse
 from . import cli, resources
 
 RENDERER = resources.manager_root() / "renderer"
-READ_ONLY_COMMANDS = ("mission", "project", "board", "table")
+READ_ONLY_COMMANDS = ("mission", "project", "board", "table", "weekly", "assistant",
+                      "assistant-preview")
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _PROJECT_ID = re.compile(r"^prj-[0-9a-f]{12}$")
 
@@ -50,6 +51,32 @@ SECURITY_HEADERS = {
 
 def monday_of(day: date) -> date:
     return day - timedelta(days=day.weekday())
+
+
+def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
+              default_today: str) -> list[str] | str:
+    """The CLI arguments for one read-only command, or a message saying what is wrong.
+
+    Shared by the dev host and the local app. ``today`` defaults to the
+    host's date and ``week`` to that week's Monday.
+    """
+    argv = [command, str(workspace)]
+    day = (query.get("today") or [default_today])[0]
+    if not _valid_date(day):
+        return "today must be a YYYY-MM-DD date"
+    week = (query.get("week") or [monday_of(date.fromisoformat(day)).isoformat()])[0]
+    if not _valid_date(week):
+        return "week must be a YYYY-MM-DD date"
+    if command in ("mission", "assistant-preview"):
+        argv += ["--today", day, "--week", week]
+    elif command == "weekly":
+        argv += ["--week", week]
+    elif command == "project":
+        project_id = (query.get("id") or [""])[0]
+        if not _PROJECT_ID.match(project_id):
+            return "id must be a project record id"
+        argv += ["--id", project_id, "--today", day]
+    return argv
 
 
 def _valid_date(value: str) -> bool:
@@ -138,20 +165,9 @@ def make_handler(workspace: Path, today: str | None):
         def _ipc(self, command: str, query: dict[str, list[str]]) -> None:
             if command not in READ_ONLY_COMMANDS:
                 return self._text(404, "Unknown or non-read-only command")
-            argv = [command, str(workspace)]
-            day = (query.get("today") or [today or date.today().isoformat()])[0]
-            if command in ("mission", "project") and not _valid_date(day):
-                return self._text(400, "today must be a YYYY-MM-DD date")
-            if command == "mission":
-                week = (query.get("week") or [monday_of(date.fromisoformat(day)).isoformat()])[0]
-                if not _valid_date(week):
-                    return self._text(400, "week must be a YYYY-MM-DD date")
-                argv += ["--today", day, "--week", week]
-            if command == "project":
-                project_id = (query.get("id") or [""])[0]
-                if not _PROJECT_ID.match(project_id):
-                    return self._text(400, "id must be a project record id")
-                argv += ["--id", project_id, "--today", day]
+            argv = read_argv(command, workspace, query, today or date.today().isoformat())
+            if isinstance(argv, str):
+                return self._text(400, argv)
             _code, envelope = cli.run(argv)
             body = json.dumps(envelope, sort_keys=True).encode("utf-8")
             # The envelope carries success or failure; HTTP only says it was delivered.

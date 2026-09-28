@@ -68,12 +68,19 @@ export function start(doc, source) {
     return name in ROUTES ? name : 'mission';
   };
 
+  /** @type {Element | null} */
+  let focusAtNavigation = null;
+
   /** @param {HTMLElement} view @param {boolean} moveFocus */
   const show = (view, moveFocus) => {
+    const active = doc.activeElement;
+    // Only move focus if the manager has not put it somewhere else while
+    // the view was loading: a late render must never steal focus.
+    const untouched = active === focusAtNavigation || active === doc.body || main.contains(active);
     main.replaceChildren(view);
     main.setAttribute('aria-busy', 'false');
     const title = view.querySelector('h1');
-    if (moveFocus && title instanceof HTMLElement) title.focus();
+    if (moveFocus && untouched && title instanceof HTMLElement) title.focus();
   };
 
   /** @param {boolean} moveFocus */
@@ -81,6 +88,7 @@ export function start(doc, source) {
     const name = routeName();
     const route = ROUTES[name];
     const mine = ++generation;
+    focusAtNavigation = doc.activeElement;
     doc.title = `${route.title} — Nurse AI OS`;
     for (const link of doc.querySelectorAll('[data-route]')) {
       if (link.getAttribute('data-route') === name) link.setAttribute('aria-current', 'page');
@@ -158,7 +166,19 @@ export function start(doc, source) {
     }).catch(() => { /* the view itself reports failures */ });
   }
 
-  doc.defaultView?.addEventListener('hashchange', () => { render(true); });
+  // The skip link moves focus without touching the URL, so it never
+  // triggers a route change (the href stays for use without scripts).
+  const skipLink = doc.querySelector('.skip-link');
+  skipLink?.addEventListener('click', (event) => {
+    event.preventDefault();
+    main.focus();
+  });
+
+  // Only "#/<route>" fragments are routes; any other fragment is ignored.
+  doc.defaultView?.addEventListener('hashchange', () => {
+    const hash = doc.defaultView?.location.hash || '';
+    if (hash === '' || hash.startsWith('#/')) render(true);
+  });
   render(false);
 }
 

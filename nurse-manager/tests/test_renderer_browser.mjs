@@ -94,10 +94,21 @@ try {
   assert.equal(await page.evaluate(() => document.activeElement?.textContent), 'Skip to main content');
   await page.keyboard.press('Enter');
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'main', 'skip link moves focus to main');
+  assert.equal(new URL(page.url()).hash, '#/mission', 'the skip link does not change the route');
   for (const [linkName, heading, hash] of [['Board', 'Board', '#/board'], ['Table', 'Tasks', '#/table'], ['Mission Control', 'Mission Control', '#/mission']]) {
     await page.getByRole('link', { name: linkName, exact: true }).focus();
     await page.keyboard.press('Enter');
-    await page.waitForFunction((h) => document.activeElement?.tagName === 'H1' && document.activeElement.textContent === h, heading);
+    try {
+      await page.waitForFunction((h) => document.activeElement?.tagName === 'H1' && document.activeElement.textContent === h, heading, { timeout: 10000 });
+    } catch (error) {
+      const state = await page.evaluate(() => ({
+        active: `${document.activeElement?.tagName}#${document.activeElement?.id} "${(document.activeElement?.textContent || '').slice(0, 40)}"`,
+        hash: location.hash,
+        busy: document.querySelector('main')?.getAttribute('aria-busy'),
+        h1: document.querySelector('h1')?.textContent,
+      }));
+      throw new Error(`focus did not reach "${heading}" after ${linkName}: ${JSON.stringify(state)}; page errors: ${JSON.stringify(errors)}`, { cause: error });
+    }
     assert.equal(new URL(page.url()).hash, hash);
     assert.equal(await page.getByRole('link', { name: linkName, exact: true }).getAttribute('aria-current'), 'page');
     assert.equal(await page.title(), `${heading} — Nurse AI OS`);

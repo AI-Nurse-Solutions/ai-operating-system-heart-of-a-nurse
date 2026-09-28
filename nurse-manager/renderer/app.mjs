@@ -351,10 +351,11 @@ export function start(doc, source) {
    * Reload a view's data after an action, unless the manager has navigated away.
    * @param {'weekly' | 'assistant'} command
    * @param {number} mine
+   * @param {Record<string, string>} [params]
    */
-  const reload = async (command, mine) => {
+  const reload = async (command, mine, params = {}) => {
     try {
-      const envelope = await source.call(command);
+      const envelope = await source.call(command, params);
       if (mine !== generation) return null;
       if (!envelope.ok) {
         show(renderError(doc, ROUTES[command === 'weekly' ? 'brief' : 'assistant'].title, envelope.error), true);
@@ -376,9 +377,11 @@ export function start(doc, source) {
    */
   const showBrief = (data, state, moveFocus, focusSelector) => {
     const mine = generation;
+    // Every action stays on the week the page shows, even across a Monday.
+    const week = data.week_of;
     /** @param {import('./views.mjs').Notice} [notice] */
     const refresh = async (notice) => {
-      const fresh = await reload('weekly', mine);
+      const fresh = await reload('weekly', mine, { week });
       if (fresh) showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (fresh), { notice }, true);
     };
     /** @param {Promise<void>} work */
@@ -390,12 +393,12 @@ export function start(doc, source) {
     const handlers = {
       writable,
       onRecords: () => busyWhile((async () => {
-        const { failure } = await write('brief', {});
+        const { failure } = await write('brief', { week });
         await refresh(failure || { kind: 'ok', text: 'A new draft was composed from your records. Review it, then accept it.' });
       })()),
       onPreview: () => busyWhile((async () => {
         try {
-          const envelope = await source.call('assistant-preview');
+          const envelope = await source.call('assistant-preview', { week });
           if (mine !== generation) return;
           if (!envelope.ok) {
             showBrief(data, { notice: { kind: 'error', text: envelope.error.message } }, true);
@@ -411,7 +414,7 @@ export function start(doc, source) {
       })()),
       onSend: (/** @type {string} */ sha) => busyWhile((async () => {
         announce('Sending to the AI model. This can take a minute.');
-        const { envelope, failure } = await write('assistant-brief', { prompt_sha256: sha });
+        const { envelope, failure } = await write('assistant-brief', { week, prompt_sha256: sha });
         if (failure || !envelope || !envelope.ok) {
           await refresh(failure);
           return;

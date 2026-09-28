@@ -78,22 +78,24 @@ GATES = (
 SYSTEM_PROMPT = (
     "You help a nurse manager prepare their weekly brief. Rewrite the brief below"
     " so it is clear and concise. Use only the facts it contains; never add names,"
-    " numbers, dates, or events that are not in it. Keep each record citation"
-    " exactly as written, in backticks, next to the fact it supports. Keep the"
-    " section headings. Write Markdown with no title line and no preamble."
+    " numbers, dates, or events that are not in it. Every line you write must keep the"
+    " record citation of the fact it states, exactly as written, in backticks. Keep"
+    " the section headings. Write Markdown with no title line and no preamble."
 )
 
 
 PROJECT_SYSTEM_PROMPT = (
     "You are a thinking partner for a nurse manager. Answer their question about one"
     " project using only the project records below. After each fact, cite the record it"
-    " came from exactly as written, in backticks. If the records do not answer the"
-    " question, say so plainly. Offer options and considerations; the manager decides."
+    " came from exactly as written, in backticks; every line must cite a record. If the"
+    ' records do not answer the question, reply with exactly: "The records do not answer this."'
+    " Offer options and considerations; the manager decides."
     " Never add names, numbers, dates, or events that are not in the records. Write short"
     " Markdown with no preamble."
 )
 
 MAX_QUESTION_CHARS = 500
+NO_ANSWER = "The records do not answer this."
 
 # The screens' wording for task status, so the model reads what the manager reads.
 STATUS_LABELS = {"idea": "Idea", "ready": "Ready", "in_progress": "In progress",
@@ -371,7 +373,7 @@ class AssistantService:
         checks, blocked, estimate = self._gates(provider, settings, SYSTEM_PROMPT, prompt,
                                                 "draft_weekly_brief", "draft this")
         return _Prepared(settings, body, refs, provider, prompt,
-                         sha256_text(SYSTEM_PROMPT + "\n\n" + prompt), checks, blocked, estimate)
+                         _binding(provider, SYSTEM_PROMPT, prompt), checks, blocked, estimate)
 
     def _gates(self, provider: Provider, settings: dict[str, Any], system: str, prompt: str,
                intent: str, act: str) -> tuple[list[dict[str, Any]], tuple[str, str] | None, int]:
@@ -494,7 +496,7 @@ class AssistantService:
             return request_id, "", ("provider_failed",
                                     "The AI model connection failed unexpectedly."), None
         cost = max(0, int(reply.cost_cents))
-        problem = self._check_output(reply.text, refs)
+        problem = self._check_output(reply.text, refs, prompt)
         if problem:
             return request_id, "", ("output_refused", f"{refused}: {problem}."), cost
         return request_id, reply.text.strip(), None, cost
@@ -519,7 +521,7 @@ class AssistantService:
                                                 prompt, "answer_project_question",
                                                 "answer this")
         return _Prepared(settings, context, refs, provider, prompt,
-                         sha256_text(PROJECT_SYSTEM_PROMPT + "\n\n" + prompt), checks,
+                         _binding(provider, PROJECT_SYSTEM_PROMPT, prompt), checks,
                          blocked, estimate)
 
     def preview_project_question(self, project_id: str, question: str,
@@ -586,7 +588,13 @@ class AssistantService:
         self._finish(request_id, "answered", "", cost, None)
         return result("answered", "", request_id, text)
 
-    def _check_output(self, text: str, refs: list[str]) -> str | None:
+    def _check_output(self, text: str, refs: list[str], sent: str) -> str | None:
+        """Why the model's text must not be shown, or None.
+
+        Every line must be checkable: it cites a record that was sent, or it
+        repeats a line that was sent word for word. One valid citation does
+        not vouch for the other lines.
+        """
         if not isinstance(text, str) or not text.strip():
             return "the model returned nothing"
         if len(text) > MAX_OUTPUT_CHARS:
@@ -599,8 +607,19 @@ class AssistantService:
         invented = sorted(cited - set(refs))
         if invented:
             return "it cited records that were not sent to it (" + ", ".join(invented) + ")"
-        if refs and not cited:
-            return "it cited none of your records, so its lines could not be checked"
+        if text.strip() == NO_ANSWER:
+            return None
+        sent_lines = {line.strip() for line in sent.splitlines() if line.strip()}
+        uncited = [
+            line.strip() for line in text.splitlines()
+            if line.strip()
+            and not line.lstrip().startswith("#")
+            and not CITATION.search(line)
+            and line.strip() not in sent_lines
+        ]
+        if uncited:
+            return (f"{len(uncited)} line(s) had no citation, so they could not be checked"
+                    f" against your records (the first: \"{uncited[0][:80]}\")")
         return None
 
     def _edena_decide(self, provider: Provider, intent: str, content: str):
@@ -752,3 +771,13 @@ def compose_project_context(ws: ManagerWorkspace, project_id: str,
     if not data["resources"]:
         lines.append("- none")
     return "\n".join(lines) + "\n", refs
+
+
+def _binding(provider: Provider, system: str, prompt: str) -> str:
+    """The hash a preview is bound to: which model, where, and exactly what text.
+
+    Changing the model or its address after the preview changes the hash, so
+    the request is refused rather than sent somewhere the manager did not review.
+    """
+    where = getattr(provider, "endpoint", "")
+    return sha256_text(f"{provider.kind}\n{provider.model}\n{where}\n\n{system}\n\n{prompt}")

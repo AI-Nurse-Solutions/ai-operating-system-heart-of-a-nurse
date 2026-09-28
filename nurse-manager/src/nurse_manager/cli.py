@@ -23,7 +23,7 @@ from .actions import ActionBoundary
 from .brief import BriefService
 from .sample import load_sample
 from .services import ManagerError, ManagerWorkspace
-from .views import board, mission_control, table
+from .views import board, mission_control, project_dashboard, table
 
 
 CONTRACT = "nurse-manager-ipc@1"
@@ -50,6 +50,9 @@ def build_parser() -> argparse.ArgumentParser:
     p = ws_cmd("mission", "Mission Control: what needs my attention?")
     p.add_argument("--today", required=True)
     p.add_argument("--week", required=True)
+    p = ws_cmd("project", "one project's dashboard: what will move it forward?")
+    p.add_argument("--id", required=True)
+    p.add_argument("--today", required=True)
     ws_cmd("board", "task board")
     ws_cmd("table", "task table")
     p = ws_cmd("brief", "draft this week's brief from records (no model)")
@@ -102,6 +105,8 @@ def _dispatch(args: argparse.Namespace) -> Any:
             return ws.create(args.name, args.owner).__dict__
         if args.command == "mission":
             return mission_control(ws, today=args.today, week_of=args.week)
+        if args.command == "project":
+            return project_dashboard(ws, args.id, today=args.today)
         if args.command == "board":
             return board(ws)
         if args.command == "table":

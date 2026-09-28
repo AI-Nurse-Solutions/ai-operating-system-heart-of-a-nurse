@@ -21,8 +21,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 0.1 | Reinspect this repo and `florence-x`; run their tests | ✅ | `00-validation-report.md` §1 |
 | 0.2 | Verify Hermes Desktop and JEV claims against primary sources | ✅ | Report §2 |
 | 0.3 | Record corrections to the plan | ✅ | Report §3 |
-| 0.4 | Decide where the manager core lives | 🟡 proposed | ADR 0001, needs steward decision |
-| 0.5 | Decide the rule for human-initiated local effects | 🟡 proposed | ADR 0002, needs steward decision |
+| 0.4 | Decide where the manager core lives | ✅ | ADR 0001, accepted by the steward 2026-09-28 |
+| 0.5 | Decide the rule for human-initiated local effects | ✅ | ADR 0002, accepted by the steward 2026-09-28 |
 | 0.6 | Confirm the pilot cohort's OS inventory, **especially Windows 10 vs 11** | ⛔ | Needs managers' machine list |
 | 0.7 | Pin the upstream Hermes commit for the spike | ⬜ | Candidate: tag `v2026.9.24` |
 | 0.8 | Branding and redistribution review of Hermes (MIT) and notices | ⬜ | `THIRD_PARTY_NOTICES.md` entry |
@@ -68,7 +68,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 3.3 | Design tokens with enforced contrast; text-safe orange | ✅ | `test_design_tokens.py` |
 | 3.4 | Weekly brief journey spec and synthetic sample week | ✅ | `03-weekly-brief-journey.md`, `samples/synthetic-week.json` |
 | 3.5 | Renderer: Mission Control, board, and table pages over the IPC contract | ✅ | `renderer/`; `test_renderer_browser.mjs` (keyboard journey, accessible names, same ids across views, empty and error states, injected markup stays text, 320px reflow, Night Studio, reduced motion, no console or CSP errors); renderer typechecks against the contract |
-| 3.5b | Project dashboard page (purpose, owner, milestone, readiness, tasks, resources, decisions, evidence) | ⬜ | Needs a `project` IPC command; next renderer step |
+| 3.5b | Project dashboard page (purpose, owner, milestone, readiness, tasks, resources, decisions, evidence) | ✅ | `project` IPC command and `ProjectDashboard` contract type; `ProjectDashboardTests`; browser journey from Mission Control, by keyboard and back. Readiness is stated facts, never a score or percentage |
+| 3.5c | Project feedback on the dashboard | ⬜ | No feedback record exists yet; needs a record type and capture rules first (the plan lists feedback, so it is not faked as an empty section) |
 | 3.6 | Library, Learning and Growth, and Contribution views | ⬜ | |
 | 3.7 | "Think with this project" composer that shows the context it will send | ⬜ | Depends on G4 |
 

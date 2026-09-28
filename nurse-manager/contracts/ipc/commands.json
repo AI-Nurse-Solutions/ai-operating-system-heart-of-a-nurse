@@ -5,6 +5,7 @@
     "sample": "SampleResult",
     "init": "Workspace",
     "mission": "MissionControl",
+    "project": "ProjectDashboard",
     "board": "Board",
     "table": "Table",
     "brief": "Revision",

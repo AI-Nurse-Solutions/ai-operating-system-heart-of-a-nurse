@@ -42,7 +42,10 @@ def collect(workdir: Path) -> dict[str, dict]:
 
     keep("sample", "sample", ws)
     keep("init", "init", empty, "--name", "Empty workspace", "--owner", "Test Manager")
-    keep("mission", "mission", ws, "--today", TODAY, "--week", WEEK)
+    mission = keep("mission", "mission", ws, "--today", TODAY, "--week", WEEK)
+    for item in mission["projects_in_motion"]["items"]:
+        keep(f"project-{item['id']}", "project", ws, "--id", item["id"], "--today", TODAY)
+    keep("error-project-unknown", "project", ws, "--id", "prj-000000000000", "--today", TODAY)
     keep("mission-empty", "mission", empty, "--today", TODAY, "--week", WEEK)
     keep("board", "board", ws)
     keep("table", "table", ws)

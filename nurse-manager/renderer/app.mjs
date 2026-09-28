@@ -5,13 +5,13 @@
 // Hermes desktop host can later replace the development HTTP source with
 // its own validated IPC without touching any view.
 
-import { renderBoard, renderError, renderMission, renderTable } from './views.mjs';
+import { renderBoard, renderError, renderMission, renderProject, renderTable } from './views.mjs';
 
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Command} Command */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Envelope} Envelope */
 /** @typedef {import('./views.mjs').TableColumn} TableColumn */
 /** @typedef {import('./views.mjs').SortDirection} SortDirection */
-/** @typedef {{ call: (command: 'mission' | 'board' | 'table', params?: Record<string, string>) => Promise<Envelope> }} Source */
+/** @typedef {{ call: (command: 'mission' | 'project' | 'board' | 'table', params?: Record<string, string>) => Promise<Envelope> }} Source */
 
 const CONTRACT = 'nurse-manager-ipc@1';
 
@@ -36,12 +36,32 @@ export function httpSource() {
   };
 }
 
-/** @type {Record<string, { title: string, command: 'mission' | 'board' | 'table' }>} */
+/** @typedef {'mission' | 'project' | 'board' | 'table'} ReadCommand */
+
+/** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
   mission: { title: 'Mission Control', command: 'mission' },
+  project: { title: 'Project', command: 'project' },
   board: { title: 'Board', command: 'board' },
   table: { title: 'Tasks', command: 'table' },
 };
+
+const PROJECT_ID = /^prj-[0-9a-f]{12}$/;
+
+/**
+ * Parse "#/<route>" or "#/project/<id>". Anything else is Mission Control.
+ * @param {string} hash
+ * @returns {{ name: string, params: Record<string, string> }}
+ */
+export function parseRoute(hash) {
+  const parts = hash.replace(/^#\/?/, '').split('/');
+  if (parts[0] === 'project' && parts.length === 2) {
+    const id = decodeURIComponent(parts[1]);
+    // A malformed id still routes to the project view, which reports it honestly.
+    return { name: 'project', params: { id: PROJECT_ID.test(id) ? id : id.slice(0, 64) } };
+  }
+  return { name: parts.length === 1 && parts[0] in ROUTES && parts[0] !== 'project' ? parts[0] : 'mission', params: {} };
+}
 
 /**
  * @param {Document} doc
@@ -52,8 +72,11 @@ export function start(doc, source) {
   const announcer = /** @type {HTMLElement} */ (doc.getElementById('announcer'));
   const workspaceName = /** @type {HTMLElement} */ (doc.getElementById('workspace-name'));
   const sampleBanner = /** @type {HTMLElement} */ (doc.getElementById('sample-banner'));
-  /** @type {{ column: TableColumn, direction: SortDirection }} */
-  let sort = { column: 'due_date', direction: 'ascending' };
+  /** @type {Record<'table' | 'project', { column: TableColumn, direction: SortDirection }>} */
+  const sorts = {
+    table: { column: 'due_date', direction: 'ascending' },
+    project: { column: 'due_date', direction: 'ascending' },
+  };
   let generation = 0;
 
   /** @param {string} message */
@@ -63,10 +86,7 @@ export function start(doc, source) {
     setTimeout(() => { announcer.textContent = message; }, 50);
   };
 
-  const routeName = () => {
-    const name = (doc.defaultView?.location.hash || '').replace(/^#\/?/, '');
-    return name in ROUTES ? name : 'mission';
-  };
+  const currentRoute = () => parseRoute(doc.defaultView?.location.hash || '');
 
   /** @type {Element | null} */
   let focusAtNavigation = null;
@@ -83,9 +103,32 @@ export function start(doc, source) {
     if (moveFocus && untouched && title instanceof HTMLElement) title.focus();
   };
 
+  /**
+   * A sortable view: re-render in place on sort, keep focus on the sort button.
+   * @param {'table' | 'project'} key
+   * @param {(sort: { column: TableColumn, direction: SortDirection }, onSort: (column: TableColumn) => void) => HTMLElement} build
+   * @param {boolean} moveFocus
+   */
+  const showSortable = (key, build, moveFocus) => {
+    /** @param {TableColumn} column */
+    const onSort = (column) => {
+      const sort = sorts[key];
+      sorts[key] = {
+        column,
+        direction: sort.column === column && sort.direction === 'ascending' ? 'descending' : 'ascending',
+      };
+      const view = build(sorts[key], onSort);
+      main.replaceChildren(view);
+      const again = view.querySelector(`[data-column="${column}"]`);
+      if (again instanceof HTMLElement) again.focus();
+      announce(`Sorted by ${column.replace('_', ' ')}, ${sorts[key].direction}.`);
+    };
+    show(build(sorts[key], onSort), moveFocus);
+  };
+
   /** @param {boolean} moveFocus */
   const render = async (moveFocus) => {
-    const name = routeName();
+    const { name, params } = currentRoute();
     const route = ROUTES[name];
     const mine = ++generation;
     focusAtNavigation = doc.activeElement;
@@ -97,7 +140,7 @@ export function start(doc, source) {
     main.setAttribute('aria-busy', 'true');
     let envelope;
     try {
-      envelope = await source.call(route.command);
+      envelope = await source.call(route.command, params);
     } catch (error) {
       if (mine !== generation) return;
       const message = error instanceof Error ? error.message : String(error);
@@ -119,24 +162,17 @@ export function start(doc, source) {
     if (envelope.command === 'mission') {
       show(renderMission(doc, /** @type {import('../contracts/ipc/nurse-manager-ipc').MissionControl} */ (data)), moveFocus);
       announce('Mission Control loaded.');
+    } else if (envelope.command === 'project') {
+      const dashboard = /** @type {import('../contracts/ipc/nurse-manager-ipc').ProjectDashboard} */ (data);
+      doc.title = `${dashboard.project.title} — Nurse AI OS`;
+      showSortable('project', (sort, onSort) => renderProject(doc, dashboard, sort, onSort), moveFocus);
+      announce(`Project ${dashboard.project.title} loaded.`);
     } else if (envelope.command === 'board') {
       show(renderBoard(doc, /** @type {import('../contracts/ipc/nurse-manager-ipc').Board} */ (data)), moveFocus);
       announce('Board loaded.');
     } else {
       const table = /** @type {import('../contracts/ipc/nurse-manager-ipc').Table} */ (data);
-      /** @param {TableColumn} column */
-      const onSort = (column) => {
-        sort = {
-          column,
-          direction: sort.column === column && sort.direction === 'ascending' ? 'descending' : 'ascending',
-        };
-        const view = renderTable(doc, table, sort, onSort);
-        main.replaceChildren(view);
-        const again = view.querySelector(`[data-column="${column}"]`);
-        if (again instanceof HTMLElement) again.focus();
-        announce(`Sorted by ${column.replace('_', ' ')}, ${sort.direction}.`);
-      };
-      show(renderTable(doc, table, sort, onSort), moveFocus);
+      showSortable('table', (sort, onSort) => renderTable(doc, table, sort, onSort), moveFocus);
       announce(`Tasks loaded: ${table.rows.length}.`);
     }
   };
@@ -158,7 +194,7 @@ export function start(doc, source) {
 
   // Board and table data carry no workspace name, so the header asks
   // Mission Control once when the manager lands somewhere else first.
-  if (routeName() !== 'mission') {
+  if (currentRoute().name !== 'mission') {
     source.call('mission').then((envelope) => {
       if (envelope.ok && 'workspace' in envelope.data && typeof envelope.data.workspace === 'string') {
         workspaceName.textContent = envelope.data.workspace;

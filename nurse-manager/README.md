@@ -26,7 +26,7 @@ patient, employee-performance, or confidential employer information:
 - [`docs/01-build-steps.md`](docs/01-build-steps.md): the plan divided into steps, with status.
 - [`docs/02-contract-map.md`](docs/02-contract-map.md): Florence-X ↔ Integration Contract ↔ manager records, and the record-writer register.
 - [`docs/03-weekly-brief-journey.md`](docs/03-weekly-brief-journey.md): the first workflow, including its states and failure states.
-- [`docs/adr/`](docs/adr/): proposed decisions awaiting the steward.
+- [`docs/adr/`](docs/adr/): architecture decisions. ADR 0001 and ADR 0002 were accepted by the steward on 2026-09-28.
 
 ## Try it
 
@@ -67,11 +67,11 @@ python3 -m nurse_manager.devhost /tmp/mgr --today 2026-09-30   # prints http://1
 ```
 
 Open the printed address for Mission Control, the board, and the task
-table. The dev host stands in for the Hermes desktop host until G1, and it
+table. On Mission Control, a project's title opens its dashboard. The dev host stands in for the Hermes desktop host until G1, and it
 is deliberately narrow:
 
 - It listens on 127.0.0.1 only, and refuses requests with any other `Host` header.
-- It answers only the read-only commands `mission`, `board`, and `table`.
+- It answers only the read-only commands `mission`, `project`, `board`, and `table`.
 - It sends a strict Content-Security-Policy.
 
 The screens are plain ES modules with no framework and no network access
@@ -90,7 +90,7 @@ never become markup.
 | `src/nurse_manager/florence_adapter.py` | Projects actions onto Florence-X `CandidateAction` / `EDENADecision` (no names, hash not content) |
 | `contracts/florence-x/` | Pinned, unmodified Florence-X JSON Schemas with provenance |
 | `contracts/ipc/` | IPC contract for the desktop host: schema, command map, generated TypeScript |
-| `renderer/` | Mission Control, board, and table screens (`views.mjs` pure DOM rendering, `app.mjs` routing, focus, and theme; `tokens.css` generated) |
+| `renderer/` | Mission Control, project dashboard, board, and table screens (`views.mjs` pure DOM rendering, `app.mjs` routing, focus, and theme; `tokens.css` generated) |
 | `src/nurse_manager/devhost.py` | Loopback-only, read-only development host for the screens |
 | `tools/` | `gen_ipc_types.py` (schema → TypeScript), `gen_tokens_css.py` (tokens → CSS), and `ipc_fixtures.py` (drives every command for contract tests) |
 | `config/manager-profile-policy.json` | Personal Manager effect table (narrows only; see ADR 0002) |

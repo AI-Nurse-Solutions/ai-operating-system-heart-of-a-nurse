@@ -21,8 +21,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 0.1 | Reinspect this repo and `florence-x`; run their tests | ✅ | `00-validation-report.md` §1 |
 | 0.2 | Verify Hermes Desktop and JEV claims against primary sources | ✅ | Report §2 |
 | 0.3 | Record corrections to the plan | ✅ | Report §3 |
-| 0.4 | Decide where the manager core lives | 🟡 proposed | ADR 0001, needs steward decision |
-| 0.5 | Decide the rule for human-initiated local effects | 🟡 proposed | ADR 0002, needs steward decision |
+| 0.4 | Decide where the manager core lives | ✅ | ADR 0001, accepted by the steward 2026-09-28 |
+| 0.5 | Decide the rule for human-initiated local effects | ✅ | ADR 0002, accepted by the steward 2026-09-28 |
 | 0.6 | Confirm the pilot cohort's OS inventory, **especially Windows 10 vs 11** | ⛔ | Needs managers' machine list |
 | 0.7 | Pin the upstream Hermes commit for the spike | ⬜ | Candidate: tag `v2026.9.24` |
 | 0.8 | Branding and redistribution review of Hermes (MIT) and notices | ⬜ | `THIRD_PARTY_NOTICES.md` entry |

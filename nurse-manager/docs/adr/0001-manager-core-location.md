@@ -1,7 +1,9 @@
 ---
 title: "ADR 0001: Where the manager core lives"
-status: Proposed — needs steward decision (GOVERNANCE.md §3, architecture)
+status: Accepted
 date: 2026-09-28
+decided_by: Robert Domondon (project steward, GOVERNANCE.md §1)
+decided_on: 2026-09-28
 ---
 
 # ADR 0001: Where the manager core lives
@@ -26,7 +28,7 @@ The manager edition needs to run locally without Postgres or Redis. It
 must not create "duplicate production records merely to fit upstream
 APIs".
 
-## Decision (proposed)
+## Decision
 
 1. The manager records and services live in `nurse-manager/` in this
    repository. They **reuse** `naio-integrations` for policy, privacy, and
@@ -53,3 +55,7 @@ APIs".
   as a package. The core has no Pydantic dependency to reconcile, and its
   SQLite-specific SQL (`AUTOINCREMENT`, `BEGIN IMMEDIATE`, the backup API)
   is confined to `store.py` and the migration file.
+
+## Decision record
+
+Accepted by the project steward, Robert Domondon, on 2026-09-28. This is a steward decision on architecture under `GOVERNANCE.md` §3. He gave the approval as a direct instruction in the Claude Code session that drafted this ADR. He then explicitly authorized recording it here.

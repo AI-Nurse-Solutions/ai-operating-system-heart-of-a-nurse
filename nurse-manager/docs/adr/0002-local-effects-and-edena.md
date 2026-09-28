@@ -1,7 +1,9 @@
 ---
 title: "ADR 0002: Human-initiated local effects in a Personal workspace"
-status: Proposed — needs steward decision (touches EDENA posture; GOVERNANCE.md §3)
+status: Accepted
 date: 2026-09-28
+decided_by: Robert Domondon (project steward, GOVERNANCE.md §1)
+decided_on: 2026-09-28
 ---
 
 # ADR 0002: Human-initiated local effects in a Personal workspace
@@ -26,7 +28,7 @@ The gateway was written to govern agents, models, memory, and tools. It
 does not say how a person acting directly on their own local records is
 governed.
 
-## Decision (proposed)
+## Decision
 
 1. **Assistant-originated proposals** are evaluated by the authoritative
    EDENA engine at `recommend` mode, yellow tier, D1, in the
@@ -63,3 +65,7 @@ governed.
   recheck, and a receipt, even though only one person is involved.
 - Adding a new effect, such as "export to PDF", means editing a reviewed
   JSON table plus its tests. No code path can add one silently.
+
+## Decision record
+
+Accepted by the project steward, Robert Domondon, on 2026-09-28. This is a steward decision on EDENA posture under `GOVERNANCE.md` §3. He gave the approval as a direct instruction in the Claude Code session that drafted this ADR. He then explicitly authorized recording it here.

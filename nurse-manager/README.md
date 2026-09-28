@@ -26,7 +26,7 @@ patient, employee-performance, or confidential employer information:
 - [`docs/01-build-steps.md`](docs/01-build-steps.md): the plan divided into steps, with status.
 - [`docs/02-contract-map.md`](docs/02-contract-map.md): Florence-X ↔ Integration Contract ↔ manager records, and the record-writer register.
 - [`docs/03-weekly-brief-journey.md`](docs/03-weekly-brief-journey.md): the first workflow, including its states and failure states.
-- [`docs/adr/`](docs/adr/): proposed decisions awaiting the steward.
+- [`docs/adr/`](docs/adr/): architecture decisions. ADR 0001 and ADR 0002 were accepted by the steward on 2026-09-28.
 
 ## Try it
 

@@ -1,7 +1,7 @@
 {
   "policy_id": "nurse-manager-personal-profile",
   "version": "0.1.0",
-  "status": "proposed — pending steward decision (docs/adr/0002-local-effects-and-edena.md)",
+  "status": "accepted — steward decision 2026-09-28 (docs/adr/0002-local-effects-and-edena.md)",
   "profile": "personal_manager",
   "authoritative_policy": "naio-integrations/config/edena-gateway-policy.json",
   "note": "This table only narrows. It admits the local effects a Personal Manager workspace may perform after human approval, and blocks everything else. Assistant-originated proposals are additionally evaluated by the authoritative EDENA gateway policy, which remains authoritative wherever the two differ.",

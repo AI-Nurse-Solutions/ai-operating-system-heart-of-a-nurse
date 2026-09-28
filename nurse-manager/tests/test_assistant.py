@@ -351,6 +351,12 @@ class FallbackTests(_Case):
         self.assertNotIn("Morale", result["reason"])
         self.assertNotIn("Morale", " ".join(str(v) for v in tuple(self.ledger()[-1])))
 
+    def test_a_brief_cannot_be_replaced_by_the_no_answer_sentence(self):
+        from nurse_manager.assistant import NO_ANSWER
+
+        result = self.draft(self.connect(self.server(NO_ANSWER)))
+        self.assert_records_only(result, "output_refused", "1 line(s) had no citation")
+
     def test_an_invented_heading_is_not_exempt(self):
         def invented_heading(body):
             kept = [line for line in body["prompt"].splitlines()

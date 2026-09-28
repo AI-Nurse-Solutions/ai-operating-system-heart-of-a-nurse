@@ -498,7 +498,8 @@ class AssistantService:
             return request_id, "", ("provider_failed",
                                     "The AI model connection failed unexpectedly."), None
         cost = max(0, int(reply.cost_cents))
-        problem = self._check_output(reply.text, refs, prompt)
+        problem = self._check_output(reply.text, refs, prompt,
+                                     allow_no_answer=task == "project_question")
         if problem:
             return request_id, "", ("output_refused", f"{refused}: {problem}."), cost
         return request_id, reply.text.strip(), None, cost
@@ -590,7 +591,8 @@ class AssistantService:
         self._finish(request_id, "answered", "", cost, None)
         return result("answered", "", request_id, text)
 
-    def _check_output(self, text: str, refs: list[str], sent: str) -> str | None:
+    def _check_output(self, text: str, refs: list[str], sent: str, *,
+                      allow_no_answer: bool = False) -> str | None:
         """Why the model's text must not be shown, or None.
 
         Every line must be checkable: it cites a record that was sent, or it
@@ -609,7 +611,9 @@ class AssistantService:
         invented = sorted(cited - set(refs))
         if invented:
             return "it cited records that were not sent to it (" + ", ".join(invented) + ")"
-        if text.strip() == NO_ANSWER:
+        # Only a question may be answered "the records do not answer this";
+        # a brief must be built from the records it cites.
+        if allow_no_answer and text.strip() == NO_ANSWER:
             return None
         sent_lines = {line.strip() for line in sent.splitlines() if line.strip()}
         # Headings get no exemption: only a heading that was sent word for

@@ -85,7 +85,8 @@ class StoreTests(_TempCase):
         backup = ws.store.backup(self.tmp / "backups" / "b1.sqlite")
         old = sqlite3.connect(str(backup))
         old.executescript(
-            "DROP TABLE project_notes; DROP TABLE assistant_requests;"
+            "DROP TABLE project_feedback; DROP TABLE project_notes;"
+            " DROP TABLE assistant_requests;"
             " DROP TABLE assistant_settings;"
             " DELETE FROM schema_migrations WHERE version != '0001_initial';"
         )
@@ -255,6 +256,66 @@ class ViewTests(_TempCase):
         self.assertEqual(mc["follow_ups"]["state"], "empty")
 
 
+class FeedbackTests(_TempCase):
+    """Project feedback (3.5c): about the work, from a group or role, closed with a response."""
+
+    def project(self, ws, title_prefix):
+        return ws.store.conn.execute(
+            "SELECT id FROM projects WHERE title LIKE ?", (title_prefix + "%",)).fetchone()[0]
+
+    def test_feedback_shows_on_its_project_open_first(self):
+        ws = self.sample()
+        huddle = self.project(ws, "Huddle")
+        dash = project_dashboard(ws, huddle, today=TODAY)
+        self.assertEqual([f["kind"] for f in dash["feedback"]], ["change", "worked"])
+        self.assertEqual(dash["readiness"]["open_feedback"], 2)
+        ws.address_feedback(dash["feedback"][1]["id"], "Kept the Dates slot in week two.")
+        dash = project_dashboard(ws, huddle, today=TODAY)
+        self.assertEqual([f["status"] for f in dash["feedback"]], ["open", "addressed"])
+        self.assertEqual(dash["feedback"][1]["response"], "Kept the Dates slot in week two.")
+        self.assertEqual(dash["feedback"][1]["addressed_on"], TODAY)
+        self.assertEqual(dash["readiness"]["open_feedback"], 1)
+
+    def test_addressed_needs_a_written_response_even_in_the_database(self):
+        ws = self.sample()
+        fid = project_dashboard(ws, self.project(ws, "Huddle"), today=TODAY)["feedback"][0]["id"]
+        with self.assertRaises(ManagerError):
+            ws.address_feedback(fid, "   ")
+        with self.assertRaises(sqlite3.IntegrityError):
+            ws.store.conn.execute(
+                "UPDATE project_feedback SET status = 'addressed' WHERE id = ?", (fid,))
+        ws.address_feedback(fid, "Capped Asks at three.")
+        with self.assertRaises(ManagerError):
+            ws.address_feedback(fid, "Again.")
+
+    def test_capture_rules_apply(self):
+        ws = self.sample()
+        pid = self.project(ws, "Huddle")
+        with self.assertRaises(CaptureRefused):
+            ws.add_feedback(pid, "Night shift", "change", "Call 555-867-5309 about it", TODAY)
+        with self.assertRaises(CaptureRefused):
+            ws.add_feedback(pid, "jane.doe@example.org", "worked", "Good pilot", TODAY)
+        for args in (("", "worked", "Good", TODAY), ("Group", "praise", "Good", TODAY),
+                     ("Group", "worked", "", TODAY), ("Group", "worked", "Good", "last week"),
+                     ("Group", "worked", "Good", "2030-01-01"), ("x" * 81, "worked", "Good", TODAY),
+                     ("Group", "worked", "x" * 1001, TODAY)):
+            with self.subTest(args=args[:2]), self.assertRaises(ManagerError):
+                ws.add_feedback(pid, *args)
+        with self.assertRaises(ManagerError):
+            ws.add_feedback("prj-000000000000", "Group", "worked", "Good", TODAY)
+        with self.assertRaises(ManagerError):
+            ws.address_feedback("fbk-000000000000", "Done")
+
+    def test_feedback_is_audited(self):
+        ws = self.sample()
+        fid = ws.add_feedback(self.project(ws, "Unit"), "Council members", "worked",
+                              "The draft scope section was clear.", TODAY)
+        ws.address_feedback(fid, "Shared at the next meeting.")
+        kinds = [(e["kind"], e["record_type"], e["record_id"]) for e in ws.store.events()]
+        self.assertIn(("create", "feedback", fid), kinds)
+        self.assertIn(("address", "feedback", fid), kinds)
+
+
 class ProjectDashboardTests(_TempCase):
     def project(self, ws, title_prefix):
         return ws.store.conn.execute(
@@ -276,6 +337,7 @@ class ProjectDashboardTests(_TempCase):
             "has_next_milestone": True, "open_tasks": 3, "completed_tasks": 0,
             "blocked_tasks": 1, "needs_judgment": 1, "overdue_tasks": 0,
             "tasks_without_next_action": 1,
+            "open_feedback": 1,
         })
         self.assertTrue(ubc["resources"][0]["review_overdue"])
         edu = project_dashboard(ws, self.project(ws, "Fall education"), today=TODAY)

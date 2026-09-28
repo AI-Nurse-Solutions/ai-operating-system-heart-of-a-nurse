@@ -137,6 +137,15 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
             (ws.info.id, project_id),
         )
     ]
+    feedback = [
+        _feedback(f)
+        # Open feedback first; newest first within each.
+        for f in db.execute(
+            "SELECT * FROM project_feedback WHERE workspace_id = ? AND project_id = ?"
+            " ORDER BY status = 'addressed', received_on DESC, id",
+            (ws.info.id, project_id),
+        )
+    ]
     evidence = [
         {"task_id": t["id"], "task": t["title"], "evidence": t["completion_evidence"]}
         for t in tasks
@@ -162,6 +171,7 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
             "overdue_tasks": sum(
                 1 for t in open_tasks if t["due_date"] and t["due_date"] < today and not t["paused"]
             ),
+            "open_feedback": sum(1 for f in feedback if f["status"] == "open"),
             "tasks_without_next_action": sum(
                 1 for t in open_tasks if t["status"] in ("ready", "in_progress") and not t["next_action"]
             ),
@@ -170,6 +180,7 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
         "decisions": decisions,
         "resources": resources,
         "evidence": evidence,
+        "feedback": feedback,
         # Kept AI answers, newest first. Each was kept by the manager on purpose.
         "notes": [
             note_dict(n)
@@ -313,3 +324,20 @@ def note_dict(row) -> dict[str, Any]:
         "kept_by": row["kept_by"],
         "kept_at": row["kept_at"],
     }
+
+
+def _feedback(row) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "from_group": row["from_group"],
+        "kind": row["kind"],
+        "summary": row["summary"],
+        "received_on": row["received_on"],
+        "status": row["status"],
+        "response": row["response"],
+        "addressed_on": row["addressed_on"],
+    }
+
+
+def feedback_item(ws: ManagerWorkspace, feedback_id: str) -> dict[str, Any]:
+    return _feedback(ws._require_row("project_feedback", feedback_id))

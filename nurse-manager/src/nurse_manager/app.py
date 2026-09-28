@@ -58,10 +58,11 @@ LOCK_NAME = "app.lock.json"
 # acts as the workspace's owner: the app runs for one person on their own
 # computer, and the launch token proves the request came from its page.
 WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assistant-brief",
-                  "assistant-project", "note-keep")
+                  "assistant-project", "note-keep", "feedback-add", "feedback-address")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
+_FEEDBACK_ID = re.compile(r"^fbk-[0-9a-f]{12}$")
 
 
 INSTANCE_NAME = "app.instance"
@@ -375,6 +376,22 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         return argv + ["--endpoint", endpoint] if endpoint.strip() else argv
     if command == "assistant-off":
         return ["assistant-off", ws, "--by", owner]
+    if command == "feedback-add":
+        project_id, from_group = text("project_id", 64), text("from_group", 200)
+        kind, summary = text("kind", 20), text("summary", 2000)
+        received = body.get("received_on", today)
+        if (not project_id or not _PROJECT_ID.match(project_id) or from_group is None
+                or kind not in ("worked", "change", "question") or summary is None
+                or not isinstance(received, str)
+                or not _valid_date(received)):
+            return "project_id, from_group, kind, summary, and a received_on date are required"
+        return ["feedback-add", ws, "--project", project_id, "--from", from_group,
+                "--kind", kind, "--summary", summary, "--received", received]
+    if command == "feedback-address":
+        feedback_id, response = text("feedback_id", 64), text("response", 2000)
+        if not feedback_id or not _FEEDBACK_ID.match(feedback_id) or response is None:
+            return "feedback_id and response are required"
+        return ["feedback-address", ws, "--id", feedback_id, "--response", response]
     if command == "note-keep":
         request_id, project_id = text("request_id", 64), text("project_id", 64)
         question, answer = text("question", 2000), text("answer", 40000)

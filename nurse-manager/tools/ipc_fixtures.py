@@ -83,6 +83,15 @@ def collect(workdir: Path) -> dict[str, dict]:
         keep(f"project-{item['id']}", "project", ws, "--id", item["id"], "--today", TODAY)
     keep("error-project-unknown", "project", ws, "--id", "prj-000000000000", "--today", TODAY)
     keep("mission-empty", "mission", empty, "--today", TODAY, "--week", WEEK)
+    huddle = next(i["id"] for i in mission["projects_in_motion"]["items"]
+                  if i["title"].startswith("Huddle"))
+    added = keep("feedback-add", "feedback-add", ws, "--project", huddle, "--from",
+                 "Evening huddle (synthetic)", "--kind", "question", "--summary",
+                 "Can the Dates slot include next week too?", "--received", "2026-09-27")
+    keep("feedback-address", "feedback-address", ws, "--id", added["feedback"]["id"],
+         "--response", "Yes: Dates now covers two weeks.")
+    keep("error-feedback-address-again", "feedback-address", ws, "--id",
+         added["feedback"]["id"], "--response", " ")
     keep("board", "board", ws)
     keep("table", "table", ws)
     keep("weekly-empty", "weekly", ws, "--week", WEEK)

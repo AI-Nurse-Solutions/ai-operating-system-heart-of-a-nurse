@@ -548,7 +548,8 @@ class ProjectQuestionTests(_Case):
         self.assertEqual(refs[0], self.project_id)
         db = self.ws.store.conn
         for ref in refs[1:]:
-            table = {"tsk": "tasks", "dec": "decisions", "src": "sources"}[ref.split("-")[0]]
+            table = {"tsk": "tasks", "dec": "decisions", "src": "sources",
+                     "fbk": "project_feedback"}[ref.split("-")[0]]
             (project,) = db.execute(f"SELECT project_id FROM {table} WHERE id = ?", (ref,)).fetchone()
             self.assertEqual(project, self.project_id)
         other = [r for r in db.execute("SELECT id FROM tasks WHERE project_id != ?", (self.project_id,))]

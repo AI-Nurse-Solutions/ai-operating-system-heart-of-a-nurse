@@ -47,6 +47,29 @@
     {"project": "huddle", "title": "Huddle format one-pager (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/huddle-format-one-pager", "data_class": "D0", "review_date": "2027-03-31"},
     {"project": "ubc", "title": "Council charter template (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/council-charter-template", "data_class": "D0", "review_date": "2026-09-01"}
   ],
+  "feedback": [
+    {
+      "project": "huddle",
+      "from": "Day shift huddle (synthetic)",
+      "kind": "worked",
+      "summary": "The Dates slot helped people remember the education sessions coming up.",
+      "received_on": "2026-09-24"
+    },
+    {
+      "project": "huddle",
+      "from": "Night shift huddle (synthetic)",
+      "kind": "change",
+      "summary": "Five minutes runs long when the Asks slot has more than three items; try capping Asks at three.",
+      "received_on": "2026-09-25"
+    },
+    {
+      "project": "ubc",
+      "from": "Council members (synthetic)",
+      "kind": "question",
+      "summary": "Will the refreshed charter say how members rotate off the council?",
+      "received_on": "2026-09-26"
+    }
+  ],
   "priorities": [
     {"text": "Settle council cadence so the charter can move", "project": "ubc"},
     {"text": "Get the education calendar into review", "project": "edu"},

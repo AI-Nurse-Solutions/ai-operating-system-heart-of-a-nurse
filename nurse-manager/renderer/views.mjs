@@ -360,8 +360,9 @@ function dashboardSection(doc, id, title, empty, emptyMessage, renderBody) {
  * @param {{ column: TableColumn, direction: SortDirection }} sort
  * @param {(column: TableColumn) => void} onSort
  * @param {ThinkOptions} [think] the "Think with this project" section, when offered
+ * @param {FeedbackOptions} [feedback] adding and addressing feedback, when offered
  */
-export function renderProject(doc, data, sort, onSort, think) {
+export function renderProject(doc, data, sort, onSort, think, feedback) {
   const { project, readiness } = data;
   const root = h(doc, 'div', { class: 'view view--project' });
   root.append(h(doc, 'nav', { 'aria-label': 'Breadcrumb', class: 'breadcrumb' }, [
@@ -386,6 +387,9 @@ export function renderProject(doc, data, sort, onSort, think) {
   }
   if (readiness.overdue_tasks) {
     facts.push(h(doc, 'li', {}, [badge(doc, 'overdue', '⚠', count(readiness.overdue_tasks, 'task overdue', 'tasks overdue'))]));
+  }
+  if (readiness.open_feedback) {
+    facts.push(h(doc, 'li', {}, [count(readiness.open_feedback, 'feedback item is', 'feedback items are'), ' still open.']));
   }
   if (readiness.tasks_without_next_action) {
     facts.push(h(doc, 'li', {}, [
@@ -436,9 +440,122 @@ export function renderProject(doc, data, sort, onSort, think) {
       : taskTable(doc, data.tasks, ['task', 'owner', 'due_date', 'status', 'next_action', 'evidence'],
         sort, onSort, 'project-tasks-caption', `${project.title} tasks`),
   ]));
+  root.append(feedbackSection(doc, data, feedback));
   root.append(notesSection(doc, data.notes));
   if (think) root.append(thinkSection(doc, think));
   return root;
+}
+
+/** @type {Record<'worked' | 'change' | 'question', [string, string, string]>} */
+const FEEDBACK_KINDS = {
+  worked: ['accepted', '✓', 'What worked'],
+  change: ['review', '↻', 'Change asked for'],
+  question: ['judgment', '?', 'Question'],
+};
+
+/**
+ * Feedback about the project's work: from a group or role, closed only
+ * with a written response.
+ * @param {Document} doc
+ * @param {ProjectDashboard} data
+ * @param {FeedbackOptions} [options]
+ */
+function feedbackSection(doc, data, options) {
+  const busy = Boolean(options?.busy);
+  const items = data.feedback;
+  const open = items.filter((f) => f.status === 'open').length;
+  const section = h(doc, 'section', { class: 'mc-section feedback-section', id: 'feedback', 'aria-labelledby': 'feedback-heading' }, [
+    h(doc, 'h2', { id: 'feedback-heading', tabindex: '-1' }, [`Feedback (${open} open)`]),
+    h(doc, 'p', { class: 'field-hint', id: 'feedback-rule' }, [
+      "Feedback about the project's work, from a group or role. Not about a named person or anyone's performance.",
+    ]),
+  ]);
+  const notice = noticeBlock(doc, options?.notice);
+  if (notice) section.append(notice);
+  if (items.length === 0) {
+    section.append(h(doc, 'p', { class: 'section-state section-state--empty' }, ['No feedback recorded yet.']));
+  } else {
+    section.append(h(doc, 'ul', { class: 'card-list' }, items.map((f) => {
+      const [kind, icon, label] = FEEDBACK_KINDS[f.kind];
+      const item = h(doc, 'li', { class: 'card', 'data-record-id': f.id }, [
+        h(doc, 'p', { class: 'card__badges' }, [
+          badge(doc, kind, icon, label), ` from ${f.from_group}, ${f.received_on}`,
+        ]),
+        h(doc, 'p', { class: 'card__title' }, [f.summary]),
+      ]);
+      if (f.status === 'addressed') {
+        item.append(h(doc, 'p', { class: 'card__meta' }, [
+          badge(doc, 'accepted', '✓', `Addressed ${f.addressed_on ?? ''}`.trim()), ' ', f.response,
+        ]));
+      } else if (options?.writable) {
+        if (options.addressing === f.id) {
+          const response = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+            id: `response-${f.id}`, rows: '2', maxlength: '1000', required: '',
+          }));
+          const markButton = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Mark addressed']));
+          markButton.disabled = busy;
+          const form = h(doc, 'form', { class: 'onboarding-form' }, [
+            h(doc, 'p', { class: 'field' }, [
+              h(doc, 'label', { for: `response-${f.id}` }, ['How was it addressed?']),
+              response,
+            ]),
+            h(doc, 'p', { class: 'button-row' }, [
+              markButton,
+              button(doc, 'Cancel', busy, () => options.onCancelAddress(), 'secondary-button'),
+            ]),
+          ]);
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            options.onAddress(f.id, response.value.trim());
+          });
+          item.append(form);
+        } else {
+          item.append(h(doc, 'p', { class: 'button-row' }, [
+            button(doc, 'Mark addressed…', busy, () => options.onStartAddress(f.id), 'secondary-button'),
+          ]));
+        }
+      } else {
+        item.append(h(doc, 'p', { class: 'card__meta' }, [badge(doc, 'review', '!', 'Open')]));
+      }
+      return item;
+    })));
+  }
+  if (options?.writable) {
+    const fromInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+      id: 'feedback-from', type: 'text', required: '', maxlength: '80', autocomplete: 'off',
+      'aria-describedby': 'feedback-rule',
+    }));
+    const kindSelect = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id: 'feedback-kind' },
+      Object.entries(FEEDBACK_KINDS).map(([value, [, , label]]) => h(doc, 'option', { value }, [label]))));
+    const dateInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+      id: 'feedback-date', type: 'date', required: '', max: data.today,
+    }));
+    dateInput.value = data.today;
+    const summary = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+      id: 'feedback-summary', rows: '2', required: '', maxlength: '1000',
+    }));
+    const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Add feedback']));
+    submit.disabled = busy;
+    const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'feedback-add-heading' }, [
+      h(doc, 'h3', { id: 'feedback-add-heading' }, ['Add feedback']),
+      h(doc, 'p', { class: 'field' }, [
+        h(doc, 'label', { for: 'feedback-from' }, ['From (a group or role)']), fromInput,
+      ]),
+      h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'feedback-kind' }, ['Kind']), kindSelect]),
+      h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'feedback-date' }, ['Received on']), dateInput]),
+      h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'feedback-summary' }, ['What was said']), summary]),
+      submit,
+    ]);
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      options.onAdd({
+        from_group: fromInput.value.trim(), kind: kindSelect.value,
+        received_on: dateInput.value, summary: summary.value.trim(),
+      });
+    });
+    section.append(form);
+  }
+  return section;
 }
 
 /**
@@ -655,6 +772,17 @@ export function renderOnboarding(doc, handlers, state = {}) {
  * @property {() => void} onCancel
  * @property {(question: string) => void} [onEdit] the question changed after a preview
  * @property {() => void} [onKeep] keep the shown answer as a project note
+ */
+/**
+ * @typedef {object} FeedbackOptions
+ * @property {boolean} writable
+ * @property {boolean} [busy]
+ * @property {Notice} [notice]
+ * @property {string | null} [addressing] the feedback id whose response form is open
+ * @property {(fields: Record<string, string>) => void} onAdd
+ * @property {(id: string) => void} onStartAddress
+ * @property {() => void} onCancelAddress
+ * @property {(id: string, response: string) => void} onAddress
  */
 
 /**

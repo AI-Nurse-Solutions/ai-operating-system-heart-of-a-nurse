@@ -105,7 +105,7 @@ export function httpSource(token = '') {
 }
 
 /** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant'} ReadCommand */
-/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep'} WriteCommand */
+/** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -295,8 +295,45 @@ export function start(doc, source) {
           announce('The question changed. Preview it again before sending.');
         },
       };
+      /** @type {{ busy?: boolean, notice?: import('./views.mjs').Notice, addressing?: string | null }} */
+      let fb = {};
+      /**
+       * Write feedback, then reload the dashboard from the records.
+       * @param {'feedback-add' | 'feedback-address'} command
+       * @param {Record<string, string>} body
+       * @param {string} done
+       */
+      const feedbackWrite = async (command, body, done) => {
+        const mine2 = generation;
+        fb = { ...fb, busy: true };
+        redraw();
+        const { failure } = await write(command, body);
+        if (mine2 !== generation) return;
+        if (failure) {
+          fb = { addressing: fb.addressing, notice: failure };
+          redraw('#feedback .notice');
+          announce(failure.text);
+          return;
+        }
+        await render(false);
+        const heading = doc.getElementById('feedback-heading');
+        if (heading) heading.focus();
+        announce(done);
+      };
+      const feedbackHandlers = {
+        onAdd: (/** @type {Record<string, string>} */ fields) => feedbackWrite(
+          'feedback-add', { project_id: dashboard.project.id, ...fields }, 'Feedback added.'),
+        onStartAddress: (/** @type {string} */ id) => {
+          fb = { addressing: id };
+          redraw(`#response-${id}`);
+        },
+        onCancelAddress: () => { fb = {}; redraw('#feedback-heading'); },
+        onAddress: (/** @type {string} */ id, /** @type {string} */ response) => feedbackWrite(
+          'feedback-address', { feedback_id: id, response }, 'Feedback marked addressed.'),
+      };
       const build = (/** @type {{ column: TableColumn, direction: SortDirection }} */ sort, /** @type {(column: TableColumn) => void} */ onSort) =>
-        renderProject(doc, dashboard, sort, onSort, { ...think, ...thinkHandlers, writable });
+        renderProject(doc, dashboard, sort, onSort, { ...think, ...thinkHandlers, writable },
+          { ...fb, ...feedbackHandlers, writable });
       const redraw = showSortable('project', build, moveFocus);
       /**
        * Run one "think" step: show it busy, then redraw with its result.

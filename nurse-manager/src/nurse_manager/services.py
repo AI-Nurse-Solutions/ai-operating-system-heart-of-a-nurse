@@ -26,6 +26,9 @@ from .store import Store, new_id, utc_now
 TASK_STATUSES = ("idea", "ready", "in_progress", "needs_judgment", "completed")
 SOURCE_KINDS = ("public", "synthetic", "personal_permitted")
 PERMITTED_DATA_CLASSES = ("D0", "D1")
+FEEDBACK_KINDS = ("worked", "change", "question")
+MAX_FEEDBACK_FROM = 80
+MAX_FEEDBACK_TEXT = 1000
 
 
 class ManagerError(ValueError):
@@ -121,7 +124,8 @@ class ManagerWorkspace:
             (record_id, self.info.id),
         ).fetchone()
         if row is None:
-            raise ManagerError(f"{table[:-1]} {record_id} is not in this workspace")
+            what = (table[:-1] if table.endswith("s") else table).replace("_", " ")
+            raise ManagerError(f"{what} {record_id} is not in this workspace")
         return row
 
     # -- projects ---------------------------------------------------------
@@ -314,5 +318,69 @@ class ManagerWorkspace:
                 )
             self.store.log(self.info.owner, "set", "priorities", week_of)
 
+    # -- project feedback -------------------------------------------------
+
+    def add_feedback(self, project_id: str, from_group: str, kind: str, summary: str,
+                     received_on: str) -> str:
+        """Feedback about a project's work, from a group or role.
+
+        Never about a named person or anyone's performance: that is outside
+        the Personal Manager profile. The privacy screen checks the text; it
+        cannot detect names, so the screens say the rule plainly.
+        """
+        self._require_row("projects", project_id)
+        from_group = self._require(from_group, "who the feedback came from")
+        summary = self._require(summary, "the feedback")
+        if kind not in FEEDBACK_KINDS:
+            raise ManagerError(f"unknown feedback kind: {kind}")
+        if len(from_group) > MAX_FEEDBACK_FROM:
+            raise ManagerError(
+                f"keep 'from' to a group or role, under {MAX_FEEDBACK_FROM} characters")
+        if len(summary) > MAX_FEEDBACK_TEXT:
+            raise ManagerError(f"keep the feedback under {MAX_FEEDBACK_TEXT} characters")
+        received_on = _iso_date(received_on, "the date it was received")
+        if received_on > self.clock()[:10]:
+            raise ManagerError("feedback cannot be received in the future")
+        self._screen(from_group=from_group, feedback=summary)
+        feedback_id = new_id("fbk")
+        now = self.clock()
+        with self.store.transaction() as db:
+            db.execute(
+                "INSERT INTO project_feedback (id, workspace_id, project_id, from_group, kind,"
+                " summary, received_on, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (feedback_id, self.info.id, project_id, from_group, kind, summary,
+                 received_on, now, now),
+            )
+            self.store.log(self.info.owner, "create", "feedback", feedback_id)
+        return feedback_id
+
+    def address_feedback(self, feedback_id: str, response: str) -> None:
+        """Close feedback. Like completing a task, it needs a written response."""
+        row = self._require_row("project_feedback", feedback_id)
+        if row["status"] == "addressed":
+            raise ManagerError("this feedback is already addressed")
+        response = self._require(response, "how the feedback was addressed")
+        if len(response) > MAX_FEEDBACK_TEXT:
+            raise ManagerError(f"keep the response under {MAX_FEEDBACK_TEXT} characters")
+        self._screen(response=response)
+        now = self.clock()
+        with self.store.transaction() as db:
+            db.execute(
+                "UPDATE project_feedback SET status = 'addressed', response = ?,"
+                " addressed_on = ?, updated_at = ? WHERE id = ?",
+                (response, now[:10], now, feedback_id),
+            )
+            self.store.log(self.info.owner, "address", "feedback", feedback_id)
+
     def close(self) -> None:
         self.store.close()
+
+
+def _iso_date(value: str, label: str) -> str:
+    from datetime import date
+
+    try:
+        return date.fromisoformat(value.strip()).isoformat()
+    except (AttributeError, ValueError) as exc:
+        raise ManagerError(f"{label} must be a YYYY-MM-DD date") from exc

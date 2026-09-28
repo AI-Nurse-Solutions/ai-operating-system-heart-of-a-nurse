@@ -1339,12 +1339,36 @@ export function renderLearning(doc, data, options) {
  * @property {boolean} [busy]
  * @property {Notice} [notice]
  * @property {string | null} [verifying] the draft whose evidence form is open
- * @property {Record<string, string>} [draft] what the manager typed, kept when a save is refused
+ * @property {ContributionTyped} [typed] what the manager has typed and not saved, kept across re-renders
  * @property {(fields: Record<string, string>) => void} onAdd
  * @property {(id: string) => void} onOpenVerify
  * @property {() => void} onCancelVerify
  * @property {(id: string, fields: Record<string, string>) => void} onVerify
  */
+
+/**
+ * Unsaved text on the Contributions screen: the add form, and the one open evidence form.
+ * @typedef {{ add: Record<string, string>, evidence: { id: string, text: string } | null }} ContributionTyped
+ */
+
+/**
+ * Read what the manager has typed on a rendered Contributions view, so the next
+ * render (opening a form, cancelling, a refused save) does not throw it away.
+ * @param {ParentNode} root
+ * @returns {ContributionTyped}
+ */
+export function typedContributions(root) {
+  /** @type {Record<string, string>} */
+  const add = {};
+  for (const [key, id] of [['title', 'contribution-title'], ['kind', 'contribution-kind'],
+    ['occurred_on', 'contribution-occurred'], ['my_part', 'contribution-my-part'],
+    ['shared_credit', 'contribution-shared'], ['project_id', 'contribution-project']]) {
+    const control = /** @type {HTMLInputElement | null} */ (root.querySelector(`#${id}`));
+    if (control) add[key] = control.value;
+  }
+  const open = /** @type {HTMLTextAreaElement | null} */ (root.querySelector('textarea[id^="evidence-"]'));
+  return { add, evidence: open ? { id: open.id.slice('evidence-'.length), text: open.value } : null };
+}
 
 const CONTRIBUTION_KINDS = {
   improvement: 'Improvement', teaching: 'Teaching', committee: 'Committee',
@@ -1360,7 +1384,7 @@ const CONTRIBUTION_KINDS = {
  */
 export function renderContributions(doc, data, options) {
   const busy = Boolean(options.busy);
-  const typed = options.draft ?? {};
+  const typed = options.typed ?? { add: {}, evidence: null };
   const root = h(doc, 'div', { class: 'view view--contributions' });
   root.append(viewHeading(doc, 'Contributions',
     'What you contributed, who shares the credit, and the evidence that shows it. Credit goes to teams, groups or roles, never a ranking of colleagues.'));
@@ -1390,7 +1414,7 @@ export function renderContributions(doc, data, options) {
       const evidence = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
         id: `evidence-${item.id}`, rows: '2', required: '', maxlength: '1000',
       }));
-      evidence.value = typed.contribution_id === item.id ? typed.evidence ?? '' : '';
+      evidence.value = typed.evidence?.id === item.id ? typed.evidence.text : '';
       const done = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Verify']));
       done.disabled = busy;
       const form = h(doc, 'form', { class: 'onboarding-form' }, [
@@ -1445,8 +1469,8 @@ export function renderContributions(doc, data, options) {
   }));
   const project = select('contribution-project',
     Object.fromEntries(data.projects.map((p) => [p.id, p.title])), 'No project');
-  // A refused save keeps what was typed, so the manager fixes one field, not six.
-  const adding = typed.contribution_id ? {} : typed;
+  // Unsaved text survives every re-render, so a refused save means fixing one field, not six.
+  const adding = typed.add;
   title.value = adding.title ?? '';
   kind.value = adding.kind ?? kind.value;
   occurred.value = adding.occurred_on ?? data.today;

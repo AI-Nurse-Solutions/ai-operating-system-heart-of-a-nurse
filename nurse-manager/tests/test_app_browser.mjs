@@ -189,7 +189,17 @@ try {
   // --- Contributions: a draft, refused identifiers, verified with evidence
   await samplePage.getByRole('link', { name: 'Contributions' }).click();
   await samplePage.waitForSelector('.view--contributions');
+  // Half-typed text survives opening and cancelling another draft's evidence form.
   await samplePage.getByLabel('What was the contribution?').fill('Rewrote the council agenda template (synthetic)');
+  await samplePage.getByLabel('Your part').fill('Drafted the template and tested it at two meetings.');
+  const sampleDraft = samplePage.getByRole('listitem').filter({ hasText: 'Designed the five-part huddle format' });
+  await sampleDraft.getByRole('button', { name: 'Verify with evidence…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
+  assert.equal(await samplePage.getByLabel('What was the contribution?').inputValue(), 'Rewrote the council agenda template (synthetic)');
+  await sampleDraft.getByRole('button', { name: 'Cancel' }).click();
+  await samplePage.waitForSelector('.view--contributions textarea[id^="evidence-"]', { state: 'detached' });
+  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Drafted the template and tested it at two meetings.');
+
   await samplePage.getByLabel('Kind').selectOption('committee');
   await samplePage.getByLabel('Your part').fill('Drafted the template and tested it at two meetings.');
   await samplePage.getByLabel('Who shares the credit').fill('Thanks to jane.doe@example.org');

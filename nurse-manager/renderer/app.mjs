@@ -6,7 +6,7 @@
 // its own validated IPC without touching any view.
 
 import {
-  renderAssistant, renderBoard, renderBrief, renderContributions, renderError, renderLearning, renderLibrary, renderMission, renderOnboarding,
+  renderAssistant, renderBoard, renderBrief, renderContributions, renderError, typedContributions, renderLearning, renderLibrary, renderMission, renderOnboarding,
   renderProject, renderTable,
 } from './views.mjs';
 
@@ -609,7 +609,7 @@ export function start(doc, source) {
 
   /**
    * @param {import('./views.mjs').Contributions} data
-   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, verifying?: string | null, draft?: Record<string, string> }} state
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, verifying?: string | null, typed?: import('./views.mjs').ContributionTyped }} state
    * @param {boolean} moveFocus
    * @param {string} [focusSelector]
    */
@@ -621,23 +621,29 @@ export function start(doc, source) {
      * @param {string} done
      */
     const act = async (command, body, done) => {
-      main.replaceChildren(renderContributions(doc, data, { ...options, ...state, busy: true }));
+      const typed = typedContributions(main);
+      main.replaceChildren(renderContributions(doc, data, { ...options, ...state, typed, busy: true }));
       const { failure } = await write(command, body);
       if (mine !== generation) return;
       if (failure) {
-        showContributions(data, { verifying: state.verifying, notice: failure, draft: body }, true);
+        showContributions(data, { verifying: state.verifying, notice: failure, typed }, true);
         return;
       }
       const fresh = await reload('contributions', mine);
-      // Re-render from the fresh records, so every button acts on them.
-      if (fresh) showContributions(/** @type {import('./views.mjs').Contributions} */ (fresh), { notice: { kind: 'ok', text: done } }, true);
+      // Re-render from the fresh records, so every button acts on them. The saved
+      // form starts empty; the other form keeps what was typed in it.
+      if (!fresh) return;
+      const next = command === 'contribution-add'
+        ? { verifying: state.verifying, typed: { add: {}, evidence: typed.evidence } }
+        : { typed: { add: typed.add, evidence: null } };
+      showContributions(/** @type {import('./views.mjs').Contributions} */ (fresh), { ...next, notice: { kind: 'ok', text: done } }, true);
     };
     /** @type {import('./views.mjs').ContributionsOptions} */
     const options = {
       writable,
       onAdd: (fields) => act('contribution-add', fields, `Saved “${fields.title}” as a draft. Verify it with evidence when you have it.`),
-      onOpenVerify: (id) => showContributions(data, { verifying: id }, true, `#evidence-${id}`),
-      onCancelVerify: () => showContributions(data, {}, true),
+      onOpenVerify: (id) => showContributions(data, { verifying: id, typed: { add: typedContributions(main).add, evidence: null } }, true, `#evidence-${id}`),
+      onCancelVerify: () => showContributions(data, { typed: { add: typedContributions(main).add, evidence: null } }, true),
       onVerify: (id, fields) => act('contribution-verify', { contribution_id: id, ...fields }, 'Verified, with your evidence.'),
     };
     const view = renderContributions(doc, data, { ...options, ...state });

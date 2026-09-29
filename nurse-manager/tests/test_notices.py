@@ -67,6 +67,38 @@ class HermesNoticeTests(unittest.TestCase):
         self.assertIn("Nous Research", section)
 
 
+def _workflow_paths(workflow: str, event: str) -> set[str]:
+    """Path filters under `on.<event>.paths` in a workflow file (no YAML dependency)."""
+    paths, in_event, in_paths = set(), False, False
+    for line in workflow.splitlines():
+        if re.match(r"^  \S", line):
+            in_event, in_paths = line.strip() == f"{event}:", False
+        elif in_event and re.match(r"^    paths:\s*$", line):
+            in_paths = True
+        elif in_event and re.match(r"^    \S", line):
+            in_paths = False
+        elif in_paths:
+            match = re.match(r'^\s+- "([^"]+)"', line)
+            if match:
+                paths.add(match.group(1))
+        if re.match(r"^\S", line) and not line.startswith("on:"):
+            in_event = in_paths = False
+    return paths
+
+
+class NoticeWorkflowTriggerTests(unittest.TestCase):
+    """A PR that touches only a guarded file must still run this suite."""
+
+    def test_manager_workflow_triggers_on_guarded_files(self):
+        workflow = (REPO / ".github" / "workflows" / "nurse-manager.yml").read_text(encoding="utf-8")
+        guarded = {"THIRD_PARTY_NOTICES.md", *HERMES_PAGES}
+        for event in ("pull_request", "push"):
+            with self.subTest(event=event):
+                paths = _workflow_paths(workflow, event)
+                self.assertIn("nurse-manager/**", paths)
+                self.assertEqual(set(), guarded - paths)
+
+
 class HermesReviewTests(unittest.TestCase):
     def test_review_records_sources_with_commits_and_dates(self):
         text = REVIEW.read_text(encoding="utf-8")

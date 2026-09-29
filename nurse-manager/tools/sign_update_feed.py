@@ -17,6 +17,7 @@ import argparse
 import json
 import os
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -63,10 +64,20 @@ def sign(feed: Path, private_key: Path, channel: str) -> Path:
     n, e, key_id = load_public_key(public)
     if not verify_signature(n, e, data, signature):
         raise UpdateError("the new signature does not verify; nothing was written")
+    # The signature is published beside the feed, so it must stay readable:
+    # keep the published one's permissions, or give a new one the usual ones
+    # (mkstemp alone would leave it readable by the steward only).
+    try:
+        mode = stat.S_IMODE(sig.stat().st_mode)
+    except FileNotFoundError:
+        umask = os.umask(0)
+        os.umask(umask)
+        mode = 0o666 & ~umask
     fd, tmp = tempfile.mkstemp(dir=sig.parent, prefix=f".{sig.name}.")
     try:
         with os.fdopen(fd, "wb") as fh:
             fh.write(signature)
+        os.chmod(tmp, mode)
         os.replace(tmp, sig)
     except BaseException:
         Path(tmp).unlink(missing_ok=True)

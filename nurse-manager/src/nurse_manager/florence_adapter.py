@@ -1,7 +1,8 @@
-"""Florence-X adapter (build step 2.11, ADR 0001 point 3).
+"""Florence-X adapter (build steps 2.11 and 2.12, ADR 0001 point 3).
 
 Projects manager action records onto Florence-X's contract objects:
-``CandidateAction`` and ``EDENADecision``. Florence-X consumes the output
+``CandidateAction`` and ``EDENADecision`` (2.11), and each action's
+approval, receipts, and event-log entries onto an ``EvidenceBundle`` (2.12). Florence-X consumes the output
 as plain JSON-compatible dicts, so this module needs no Pydantic, and
 neither schema is forked or redefined here. The contract is checked in
 tests against the published JSON Schemas and, when Florence-X is
@@ -16,10 +17,16 @@ Rules (docs/02-contract-map.md):
   guessed into a Florence-X enum.
 * The manager core keeps only three decisions (allow, require approval,
   deny), so it never emits contain/stop/throttle/escalate.
+* Evidence follows Florence-X's own runtime conventions: a denial ends as
+  ``blocked:deny`` with an ``edena_deny:<action>`` incident flag, an
+  executed effect is a ``ToolCallRecord``, and an approval is a
+  ``HumanReview``. Errors cross as the exception type only, since their
+  text can carry file paths (and so a user name).
 """
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from .actions import ActionBoundary, ActionRecord
@@ -137,3 +144,134 @@ def to_edena_decision(boundary: ActionBoundary, action_id: str) -> dict[str, Any
         "decided_at": _created_at(boundary, action.id),
         "expires_at": None,
     }
+
+
+# Where each action stands, as the ``final_action`` of its evidence. The
+# first two follow Florence-X's runtime; the rest are the manager's own
+# states, named so none can be mistaken for a completed effect.
+_FINAL = {
+    "denied": "blocked:deny",
+    "awaiting_approval": "awaiting_human_review",
+    "approved": "awaiting_execution",
+    "executing": "executing",
+    "stale": "blocked:stale_approval",
+}
+_OUTPUT_SHA = re.compile(r"sha256 ([0-9a-f]{64})")
+
+
+def _events(boundary: ActionBoundary, action_id: str) -> list[Any]:
+    return list(boundary.ws.store.conn.execute(
+        "SELECT * FROM event_log WHERE record_type = 'action' AND record_id = ? ORDER BY seq",
+        (action_id,)))
+
+
+def to_evidence_bundle(boundary: ActionBoundary, action_id: str) -> dict[str, Any]:
+    """The Florence-X ``EvidenceBundle`` for one action: its decision, the
+    manager's approval, what ran and with what outcome, and when."""
+    action = boundary.get(action_id)
+    if action.effect not in _EFFECTS:
+        raise AdapterError(f"no Florence-X action type is defined for effect '{action.effect}'")
+    action_type = _EFFECTS[action.effect][0]
+    conn = boundary.ws.store.conn
+    created = _created_at(boundary, action.id)
+    owner_ref = f"human:workspace-owner:{boundary.ws.info.id}"
+    decision = to_edena_decision(boundary, action.id)
+
+    approval = conn.execute("SELECT * FROM approvals WHERE action_id = ?",
+                            (action.id,)).fetchone()
+    reviews = []
+    if approval is not None:
+        if approval["approver"] != boundary.ws.info.owner:
+            raise AdapterError("only the workspace owner approves; this approval is not theirs")
+        reviews.append({
+            "review_id": approval["id"],
+            "action_id": action.id,
+            "decision_id": decision["decision_id"],
+            "reviewer_role": REQUESTER_ROLE,
+            "reviewer_ref": owner_ref,
+            "outcome": "approve",
+            "edited_payload_hash": None,
+            "note": None,
+            "reviewed_at": approval["approved_at"],
+        })
+
+    receipt = conn.execute(
+        "SELECT * FROM receipts WHERE action_id = ? ORDER BY recorded_at DESC, rowid DESC LIMIT 1",
+        (action.id,)).fetchone()
+    events = _events(boundary, action.id)
+    executed_at = next((e["at"] for e in events if e["kind"] == "execute"), None)
+    tool_calls, flags, deviations = [], [], []
+    if receipt is not None:
+        found = _OUTPUT_SHA.search(receipt["detail"])
+        tool_calls.append({
+            "tool_id": action.effect,
+            "action_id": action.id,
+            "proposed": True,
+            "executed": receipt["outcome"] == "succeeded",
+            "output_hash": f"sha256:{found.group(1)}"
+            if receipt["outcome"] == "succeeded" and found else None,
+            # The type or state only: a message can name a path, and a path a person.
+            "error": None if receipt["outcome"] == "succeeded" else
+            (receipt["outcome"] if receipt["outcome"] == "effect_unknown"
+             else receipt["detail"].split(":", 1)[0]),
+        })
+        if action.policy_decision == "deny":
+            deviations.append("an effect ran although the policy denied it")
+        if action.policy_decision == "require_approval" and approval is None:
+            deviations.append("an effect ran without the approval the policy required")
+
+    status = action.status
+    if status == "denied":
+        flags.append(f"edena_deny:{action.id}")
+    elif status == "stale":
+        flags.append(f"stale_approval:{action.id}")
+    elif status == "effect_unknown":
+        flags.append(f"effect_unknown:{action.id}")
+    final = _FINAL.get(status) or {
+        "succeeded": action_type,
+        "failed": f"failed:{action_type}",
+        "effect_unknown": f"effect_unknown:{action_type}",
+    }[status]
+
+    evidence: list[str] = []
+    artifact_ref = "none"
+    if action.artifact_revision_id:
+        revision = boundary.briefs.revision(action.artifact_revision_id)
+        evidence = [revision.id, *revision.source_refs]
+        artifact_ref = revision.artifact_id
+    completed = (receipt["recorded_at"] if receipt is not None
+                 else created if status == "denied"
+                 else events[-1]["at"] if status == "stale" and events else None)
+    return {
+        "bundle_id": f"{action.id}:evidence",
+        "workflow_run_id": f"nurse-manager:{boundary.ws.info.id}:{artifact_ref}",
+        "signal_id": f"{action.id}:proposal",
+        "context_hash": f"sha256:{action.payload_sha256}" if action.payload_sha256 else None,
+        "model_used": None,
+        "model_version": None,
+        "prompt_template_version": None,
+        "agent_versions": {},
+        "tool_calls": tool_calls,
+        "edena_decisions": [decision],
+        "human_reviews": reviews,
+        "final_action": final,
+        "source_citations": list(dict.fromkeys(evidence)),
+        "signal_received_at": created,
+        "executed_at": executed_at,
+        "reviewed_at": approval["approved_at"] if approval is not None else None,
+        "completed_at": completed,
+        "overrides": [],
+        "deviations_from_edena": deviations,
+        "incident_flags": flags,
+        "outcome_feedback": None,
+        # As of the last thing that happened to the action, so the same
+        # records always give the same bundle.
+        "created_at": events[-1]["at"] if events else created,
+    }
+
+
+def evidence_bundles(boundary: ActionBoundary) -> list[dict[str, Any]]:
+    """Evidence for every action in the workspace whose effect Florence-X can name."""
+    return [to_evidence_bundle(boundary, row["id"]) for row in boundary.ws.store.conn.execute(
+        "SELECT id, effect FROM actions WHERE workspace_id = ? ORDER BY created_at, id",
+        (boundary.ws.info.id,)) if row["effect"] in _EFFECTS]

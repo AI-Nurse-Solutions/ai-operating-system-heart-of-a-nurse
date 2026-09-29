@@ -1,4 +1,4 @@
-"""Florence-X adapter honors the Florence-X contract (build step 2.11).
+"""Florence-X adapter honors the Florence-X contract (build steps 2.11 and 2.12).
 
 Always: adapter output validates against the pinned Florence-X JSON
 Schemas (stdlib validator in ``_schema.py``).
@@ -23,8 +23,10 @@ from nurse_manager.actions import ActionBoundary
 from nurse_manager.brief import BriefService
 from nurse_manager.florence_adapter import (
     AdapterError,
+    evidence_bundles,
     to_candidate_action,
     to_edena_decision,
+    to_evidence_bundle,
 )
 from nurse_manager.sample import load_sample
 
@@ -37,16 +39,36 @@ OWNER = "Sample Manager"
 WEEK, TODAY = "2026-09-28", "2026-09-30"
 
 try:  # present only in the florence-x-contract CI job
-    from florence_core.schemas import CandidateAction, EDENADecision
+    from florence_core.schemas import CandidateAction, EDENADecision, EvidenceBundle
+    from florence_core.schemas import HumanReview, ToolCallRecord
 except ImportError:  # pragma: no cover
-    CandidateAction = EDENADecision = None
+    CandidateAction = EDENADecision = EvidenceBundle = HumanReview = ToolCallRecord = None
+
+# Florence-X publishes no JSON Schema for EvidenceBundle, so these tables
+# describe its fields for the offline check. They are not a copy of the
+# contract: the CI job holds them equal to the Pydantic models' own fields.
+_STR, _OPT = (str,), (str, type(None))
+EVIDENCE_FIELDS = {
+    "bundle_id": _STR, "workflow_run_id": _STR, "signal_id": _STR, "context_hash": _OPT,
+    "model_used": _OPT, "model_version": _OPT, "prompt_template_version": _OPT,
+    "agent_versions": (dict,), "tool_calls": (list,), "edena_decisions": (list,),
+    "human_reviews": (list,), "final_action": _OPT, "source_citations": (list,),
+    "signal_received_at": _OPT, "executed_at": _OPT, "reviewed_at": _OPT,
+    "completed_at": _OPT, "overrides": (list,), "deviations_from_edena": (list,),
+    "incident_flags": (list,), "outcome_feedback": _OPT, "created_at": _STR,
+}
+TOOL_CALL_FIELDS = {"tool_id": _STR, "action_id": _STR, "proposed": (bool,),
+                    "executed": (bool,), "output_hash": _OPT, "error": _OPT}
+REVIEW_FIELDS = {"review_id": _STR, "action_id": _STR, "decision_id": _STR,
+                 "reviewer_role": _STR, "reviewer_ref": _STR, "outcome": _STR,
+                 "edited_payload_hash": _OPT, "note": _OPT, "reviewed_at": _STR}
 
 
 def _schema(name):
     return json.loads((CONTRACTS / name).read_text(encoding="utf-8"))
 
 
-class AdapterTests(unittest.TestCase):
+class _Case(unittest.TestCase):
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
         self.ws, _ = load_sample(Path(self._tmp.name) / "ws", clock=fixed_clock())
@@ -79,6 +101,8 @@ class AdapterTests(unittest.TestCase):
         schema = _schema(schema_name)
         self.assertEqual(_check(obj, schema, schema), "")
 
+
+class AdapterTests(_Case):
     def test_every_action_maps_to_a_valid_candidate_action_and_decision(self):
         for label, action in self.actions().items():
             with self.subTest(action=label):
@@ -155,6 +179,157 @@ class AdapterTests(unittest.TestCase):
             with self.subTest(action=label):
                 CandidateAction.model_validate(to_candidate_action(self.boundary, action.id))
                 EDENADecision.model_validate(to_edena_decision(self.boundary, action.id))
+
+
+class EvidenceTests(_Case):
+    """Receipts, approvals, and the event log as Florence-X EvidenceBundles (2.12)."""
+
+    def lifecycle(self):
+        """One action in every state the manager core can leave one in."""
+        acts = self.actions()
+        propose, rid = self.boundary.propose, self.accepted.id
+        approve = lambda a: self.boundary.approve(  # noqa: E731
+            a.id, OWNER, seen_sha256=a.payload_sha256, seen_destination=a.destination)
+        out = {"awaiting": acts["awaiting"], "denied": acts["blocked"],
+               "assistant": acts["assistant"]}
+        approved = propose("export_markdown", revision_id=rid, destination="later.md",
+                           purpose="Save it later", proposed_by=OWNER)
+        approve(approved)
+        out["approved"] = approved
+        ran = propose("export_markdown", revision_id=rid, destination="ran.md",
+                      purpose="Save it", proposed_by=OWNER)
+        approve(ran)
+        self.boundary.execute(ran.id, OWNER)
+        out["succeeded"] = ran
+        taken = propose("export_markdown", revision_id=rid, destination="taken.md",
+                        purpose="Save it", proposed_by=OWNER)
+        approve(taken)
+        self.boundary.exports_dir.mkdir(parents=True, exist_ok=True)
+        (self.boundary.exports_dir / "taken.md").write_text("someone else's file")
+        self.boundary.execute(taken.id, OWNER)
+        out["failed"] = taken
+        stale = propose("export_markdown", revision_id=rid, destination="stale.md",
+                        purpose="Save it", proposed_by=OWNER)
+        approve(stale)
+        self.ws.store.conn.execute("UPDATE approvals SET destination = 'elsewhere.md'"
+                                   " WHERE action_id = ?", (stale.id,))
+        with self.assertRaises(Exception):
+            self.boundary.execute(stale.id, OWNER)
+        out["stale"] = stale
+        lost = propose("export_markdown", revision_id=rid, destination="lost.md",
+                       purpose="Save it", proposed_by=OWNER)
+        approve(lost)
+        with self.ws.store.transaction():  # interrupted mid-effect, then restarted
+            self.boundary._set_status(lost.id, "executing", OWNER, "execute")
+        self.boundary.reconcile()
+        out["effect_unknown"] = lost
+        return {label: self.boundary.get(a.id) for label, a in out.items()}
+
+    def assertShape(self, bundle):
+        def fits(obj, fields, where):
+            self.assertEqual(set(obj), set(fields), where)
+            for key, types in fields.items():
+                self.assertIsInstance(obj[key], types, f"{where}.{key}")
+        fits(bundle, EVIDENCE_FIELDS, "bundle")
+        for call in bundle["tool_calls"]:
+            fits(call, TOOL_CALL_FIELDS, "tool_call")
+        for review in bundle["human_reviews"]:
+            fits(review, REVIEW_FIELDS, "review")
+        for decision in bundle["edena_decisions"]:
+            self.assertValid(decision, "edena_decision.schema.json")
+
+    def test_every_state_maps_to_well_formed_evidence(self):
+        for label, action in self.lifecycle().items():
+            with self.subTest(state=label):
+                self.assertShape(to_evidence_bundle(self.boundary, action.id))
+
+    def test_what_happened_is_what_the_evidence_says(self):
+        acts = self.lifecycle()
+        get = lambda label: to_evidence_bundle(self.boundary, acts[label].id)  # noqa: E731
+
+        denied = get("denied")
+        self.assertEqual((denied["final_action"], denied["incident_flags"]),
+                         ("blocked:deny", [f"edena_deny:{acts['denied'].id}"]))
+        self.assertEqual((denied["tool_calls"], denied["human_reviews"]), ([], []))
+        self.assertEqual(denied["completed_at"], denied["signal_received_at"])
+
+        awaiting = get("awaiting")
+        self.assertEqual((awaiting["final_action"], awaiting["completed_at"]),
+                         ("awaiting_human_review", None))
+        self.assertEqual(awaiting["edena_decisions"][0]["decision"], "require_human")
+
+        approved = get("approved")
+        self.assertEqual((approved["final_action"], approved["tool_calls"]),
+                         ("awaiting_execution", []))
+        (review,) = approved["human_reviews"]
+        self.assertEqual((review["outcome"], review["reviewer_role"], review["decision_id"]),
+                         ("approve", "nurse_manager", f"{acts['approved'].id}:decision"))
+        self.assertEqual(approved["reviewed_at"], review["reviewed_at"])
+
+        ran = get("succeeded")
+        (call,) = ran["tool_calls"]
+        on_disk = hashlib.sha256((self.boundary.exports_dir / "ran.md").read_bytes()).hexdigest()
+        self.assertEqual((call["tool_id"], call["executed"], call["output_hash"], call["error"]),
+                         ("export_markdown", True, f"sha256:{on_disk}", None))
+        self.assertEqual(ran["final_action"], "write_record")
+        self.assertTrue(ran["signal_received_at"] <= ran["reviewed_at"] <= ran["executed_at"]
+                        <= ran["completed_at"])
+        self.assertEqual((ran["deviations_from_edena"], ran["incident_flags"]), ([], []))
+        self.assertEqual(ran["context_hash"], f"sha256:{self.accepted.body_sha256}")
+        self.assertEqual(ran["source_citations"], [self.accepted.id, *self.accepted.source_refs])
+
+        failed = get("failed")
+        (call,) = failed["tool_calls"]
+        self.assertEqual((call["executed"], call["output_hash"], call["error"]),
+                         (False, None, "FileExistsError"))
+        self.assertEqual(failed["final_action"], "failed:write_record")
+
+        stale = get("stale")
+        self.assertEqual((stale["final_action"], stale["incident_flags"], stale["tool_calls"]),
+                         ("blocked:stale_approval", [f"stale_approval:{acts['stale'].id}"], []))
+        self.assertIsNotNone(stale["completed_at"])
+
+        lost = get("effect_unknown")
+        (call,) = lost["tool_calls"]
+        self.assertEqual((call["executed"], call["error"]), (False, "effect_unknown"))
+        self.assertEqual((lost["final_action"], lost["incident_flags"]),
+                         ("effect_unknown:write_record", [f"effect_unknown:{acts['effect_unknown'].id}"]))
+
+    def test_no_names_paths_or_content_cross_the_boundary(self):
+        blob = json.dumps(evidence_bundles(self.boundary) + [
+            to_evidence_bundle(self.boundary, a.id) for a in self.lifecycle().values()])
+        self.assertNotIn(OWNER, blob)
+        self.assertNotIn(str(self.boundary.exports_dir), blob)
+        self.assertNotIn(self._tmp.name, blob)
+        self.assertNotIn("Weekly Manager Brief", blob)
+
+    def test_the_same_records_always_give_the_same_evidence(self):
+        for label, action in self.lifecycle().items():
+            with self.subTest(state=label):
+                self.assertEqual(to_evidence_bundle(self.boundary, action.id),
+                                 to_evidence_bundle(self.boundary, action.id))
+
+    def test_unknown_effects_are_refused_and_left_out_of_the_workspace_list(self):
+        action = self.boundary.propose("launch_rocket", revision_id=self.accepted.id,
+                                       destination="x", purpose="?", proposed_by=OWNER)
+        with self.assertRaises(AdapterError):
+            to_evidence_bundle(self.boundary, action.id)
+        self.assertNotIn(action.id, [b["edena_decisions"][0]["action_id"]
+                                     for b in evidence_bundles(self.boundary)])
+
+    @unittest.skipIf(EvidenceBundle is None, "Florence-X is not installed (runs in the florence-x-contract CI job)")
+    def test_florence_x_pydantic_models_accept_the_evidence(self):
+        for label, action in self.lifecycle().items():
+            with self.subTest(state=label):
+                bundle = to_evidence_bundle(self.boundary, action.id)
+                EvidenceBundle.model_validate(bundle)
+
+    @unittest.skipIf(EvidenceBundle is None, "Florence-X is not installed (runs in the florence-x-contract CI job)")
+    def test_the_offline_field_tables_match_florence_x(self):
+        for model, fields in ((EvidenceBundle, EVIDENCE_FIELDS), (ToolCallRecord, TOOL_CALL_FIELDS),
+                              (HumanReview, REVIEW_FIELDS)):
+            with self.subTest(model=model.__name__):
+                self.assertEqual(set(model.model_fields), set(fields))
 
 
 class PinnedSchemaTests(unittest.TestCase):

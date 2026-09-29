@@ -25,11 +25,13 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from dataclasses import dataclass, field
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,6 +45,98 @@ HAVE_OPENSSL = shutil.which("openssl") is not None
 def run(cmd: list[str], cwd: Path, env: dict | None = None) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, cwd=str(cwd), text=True, capture_output=True,
                           timeout=900, env={**os.environ, **(env or {})})
+
+
+def load_signer():
+    spec = importlib.util.spec_from_file_location("signer", SIGNER)
+    signer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(signer)
+    return signer
+
+
+# -- reading Mission Control's self-test ------------------------------------
+
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+_SUMMARY = re.compile(r"(\d+) passed, (\d+) failed")
+_SKIPPED = re.compile(r"^\s*–\s+(.*?) — SKIPPED: (.*)$")
+# A skip for one of these reasons says how busy the machine was, not what the
+# run could see: under load, one run can time out where another does not.
+_TIMING = ("timed out", "did not finish inside")
+
+
+@dataclass
+class SelfTestRun:
+    passed: int
+    failed: int
+    skipped: list[tuple[str, str]] = field(default_factory=list)
+
+    @property
+    def structural_skips(self) -> set[str]:
+        """Checks skipped because something was missing, not because of time."""
+        return {name for name, why in self.skipped if not any(t in why for t in _TIMING)}
+
+    def describe(self, label: str) -> str:
+        skips = "".join(f"\n      - {name} — {why}" for name, why in self.skipped) or " none"
+        return (f"  {label}: {self.passed} passed, {self.failed} failed; skipped:{skips}")
+
+
+def read_self_test(output: str) -> SelfTestRun | None:
+    """The summary and every SKIPPED line of one self_test.py run."""
+    text = _ANSI.sub("", output)
+    summary = _SUMMARY.findall(text)
+    if not summary:
+        return None
+    passed, failed = map(int, summary[-1])
+    skipped = [m.groups() for m in map(_SKIPPED.match, text.splitlines()) if m]
+    return SelfTestRun(passed, failed, skipped)
+
+
+def run_self_test(mc: Path) -> SelfTestRun:
+    r = run([sys.executable, "tests/self_test.py"], mc)
+    report = read_self_test(r.stdout)
+    if report is None:
+        raise AssertionError(f"could not read the self-test result in {mc}:\n"
+                             f"{r.stdout[-2000:]}{r.stderr[-2000:]}")
+    return report
+
+
+def timing_sensitive_checks(source: str) -> set[str]:
+    """Checks self_test.py skips when a subprocess times out, read from its source."""
+    return {name for name, why in re.findall(r'skip\(\s*"([^"]+)",\s*"([^"]*)"\s*\)', source)
+            if any(t in why for t in _TIMING)}
+
+
+def full_suite_problems(tree: SelfTestRun, staged: SelfTestRun, rehearsal: tuple[int, int],
+                        timing_sensitive: set[str]) -> str:
+    """
+    Why the rehearsal did not run the full suite, or "" if it did.
+
+    `tree` is a run in the working tree; `staged` a run in a copy staged by
+    the signer's own stage(), the copy the rehearsal ran in; `rehearsal` the
+    (passed, failed) the rehearsal printed. Only a timing skip may differ.
+    """
+    problems = []
+    for label, failed in (("the tree's run", tree.failed), ("the staged run", staged.failed),
+                          ("the rehearsal", rehearsal[1])):
+        if failed:
+            problems.append(f"{label} reported {failed} failed")
+    lost = staged.structural_skips - tree.structural_skips
+    if lost:
+        problems.append("the staged copy skipped checks the tree runs, so something the"
+                        " self-test needs was not staged: " + ", ".join(sorted(lost)))
+    # A timing-sensitive check the tree passed may be skipped in another run.
+    may_time_out = len(timing_sensitive - {name for name, _ in tree.skipped})
+    for label, passed in (("the staged run", staged.passed), ("the rehearsal", rehearsal[0])):
+        if passed < tree.passed - may_time_out:
+            problems.append(f"{label} passed {passed} checks, the tree {tree.passed}; only"
+                            f" {may_time_out} can be lost to a timeout")
+    if not problems:
+        return ""
+    return "\n".join(["the rehearsal did not run the full Mission Control suite:",
+                      *(f"  * {p}" for p in problems),
+                      tree.describe("tree"), staged.describe("staged copy"),
+                      f"  rehearsal: {rehearsal[0]} passed, {rehearsal[1]} failed (the signer"
+                      " prints no skip names; the staged copy above is what it ran in)"])
 
 
 class SigningRehearsalTests(unittest.TestCase):
@@ -78,13 +172,22 @@ class SigningRehearsalTests(unittest.TestCase):
         release.py stamped that smaller number into manifest.json and README.md
         as the release's test count. A release should not quietly report fewer
         tests than the tree actually passes.
+
+        The count is compared as what it measures, not as a string: a check
+        self_test.py skips because a subprocess timed out under runner load is
+        machine speed, not a missing directory, so one timing skip may differ
+        between runs. A structural skip may not, and neither may a failure.
+        The rehearsal prints only its totals, so what it could see is checked
+        by running the self-test in a copy staged by the signer's own stage().
         """
-        local = run([sys.executable, "tests/self_test.py"], MC)
-        expected = next((ln for ln in local.stdout.splitlines() if "passed," in ln), "")
-        count = expected.strip().split()[0] if expected else None
-        self.assertIsNotNone(count, "could not read the local self-test count")
-        self.assertIn(f"self-test: {count} passed", self.result.stdout,
-                      f"rehearsal reported a different count than a local run ({count})")
+        m = re.search(r"self-test: (\d+) passed, (\d+) failed", self.result.stdout)
+        self.assertIsNotNone(m, f"the rehearsal printed no self-test count:\n{self.result.stdout}")
+        tree = run_self_test(MC)
+        with tempfile.TemporaryDirectory(prefix="naio-stage-") as tmp:
+            staged = run_self_test(load_signer().stage(Path(tmp)) / "mission-control")
+        sensitive = timing_sensitive_checks((MC / "tests" / "self_test.py").read_text("utf-8"))
+        problems = full_suite_problems(tree, staged, (int(m[1]), int(m[2])), sensitive)
+        self.assertEqual(problems, "", problems)
 
     def test_rehearsal_leaves_the_bundle_verifying(self) -> None:
         verify = run([sys.executable, "scripts/verify-release.py", "--quiet"], NAIO)
@@ -95,6 +198,67 @@ class SigningRehearsalTests(unittest.TestCase):
         dirty = run(["git", "status", "--porcelain", "naio-os"], ROOT).stdout
         self.assertNotIn("manifest.sig", dirty)
         self.assertNotIn("mission-control.zip", dirty)
+
+
+class FullSuiteComparisonTests(unittest.TestCase):
+    """
+    The full-suite guard tells a missing directory from a slow machine.
+
+    It was a string match on the first number of the summary, which failed
+    whenever one run's node probe timed out under load (124 against 123) and
+    said nothing about which check was missing.
+    """
+
+    SENSITIVE = {"the committed v2 fixture still matches what soul-quiz emits",
+                 "every quiz role maps to a preset"}
+    FULL = SelfTestRun(124, 0)
+
+    def test_a_timeout_in_one_run_is_not_a_smaller_suite(self) -> None:
+        slow = SelfTestRun(122, 0, [
+            ("the committed v2 fixture still matches what soul-quiz emits",
+             "the node probe did not finish inside 60s"),
+            ("every quiz role maps to a preset", "the node probe timed out")])
+        self.assertEqual(full_suite_problems(self.FULL, self.FULL, (123, 0), self.SENSITIVE), "")
+        self.assertEqual(full_suite_problems(self.FULL, slow, (122, 0), self.SENSITIVE), "")
+        self.assertEqual(full_suite_problems(slow, self.FULL, (124, 0), self.SENSITIVE), "")
+
+    def test_a_missing_sibling_fails_and_names_the_check(self) -> None:
+        missing = SelfTestRun(123, 0, [
+            ("the committed v2 fixture still matches what soul-quiz emits",
+             "soul-quiz not present — running outside the site repo")])
+        problems = full_suite_problems(self.FULL, missing, (123, 0), self.SENSITIVE)
+        self.assertIn("something the self-test needs was not staged", problems)
+        self.assertIn("soul-quiz not present", problems)
+
+    def test_more_lost_than_a_timeout_explains_fails(self) -> None:
+        problems = full_suite_problems(self.FULL, self.FULL, (120, 0), self.SENSITIVE)
+        self.assertIn("the rehearsal passed 120 checks, the tree 124", problems)
+
+    def test_a_failure_in_any_run_fails(self) -> None:
+        for runs in ((SelfTestRun(123, 1), self.FULL, (124, 0)),
+                     (self.FULL, SelfTestRun(123, 1), (124, 0)),
+                     (self.FULL, self.FULL, (123, 1))):
+            with self.subTest(runs=runs):
+                self.assertIn("1 failed", full_suite_problems(*runs, self.SENSITIVE))
+
+    def test_the_timing_sensitive_checks_are_read_from_the_suite(self) -> None:
+        source = (MC / "tests" / "self_test.py").read_text(encoding="utf-8")
+        self.assertEqual(timing_sensitive_checks(source), self.SENSITIVE)
+
+    def test_a_copy_staged_without_its_siblings_is_caught(self) -> None:
+        """The bug itself, for real: a staged copy that cannot see soul-quiz or
+        the Starter Kit runs a smaller suite, and the guard says which checks."""
+        with tempfile.TemporaryDirectory(prefix="naio-stage-") as tmp:
+            staged = load_signer().stage(Path(tmp))
+            for sibling in Path(tmp).iterdir():
+                if sibling.is_symlink():
+                    sibling.unlink()
+            alone = run_self_test(staged / "mission-control")
+        tree = run_self_test(MC)
+        sensitive = timing_sensitive_checks((MC / "tests" / "self_test.py").read_text("utf-8"))
+        problems = full_suite_problems(tree, alone, (alone.passed, 0), sensitive)
+        self.assertIn("something the self-test needs was not staged", problems)
+        self.assertIn("configure --kit accepts the published Starter Kit", problems)
 
 
 class ReproducibleArchiveTests(unittest.TestCase):
@@ -177,9 +341,7 @@ class PublicationRollbackTests(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        spec = importlib.util.spec_from_file_location("signer", SIGNER)
-        self.signer = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(self.signer)
+        self.signer = load_signer()
         self._tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
         self.tmp = Path(self._tmp.name)

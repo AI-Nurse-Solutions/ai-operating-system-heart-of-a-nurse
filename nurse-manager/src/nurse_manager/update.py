@@ -181,7 +181,12 @@ def _seen_feeds(path: Path) -> Iterator[sqlite3.Connection]:
             if conn.in_transaction:  # SQLite may already have rolled back by itself
                 conn.execute("ROLLBACK")
             raise
-        conn.execute("COMMIT")
+        try:
+            conn.execute("COMMIT")
+        except BaseException:
+            if conn.in_transaction:  # a COMMIT held off by a reader keeps its lock
+                conn.execute("ROLLBACK")
+            raise
     except sqlite3.OperationalError as exc:
         if getattr(exc, "sqlite_errorname", "").startswith(("SQLITE_BUSY", "SQLITE_LOCKED")):
             raise UpdateError("another update check is running; try again in a moment") from exc

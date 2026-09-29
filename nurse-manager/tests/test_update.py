@@ -371,6 +371,14 @@ class SigningToolTests(_Tmp):
         self.assertEqual((self.tmp / "feed.json.sig").read_bytes(), before)
         self.assertEqual(sorted(p.name for p in self.tmp.glob("feed.json*")),
                          ["feed.json", "feed.json.sig"])
+        huge = self.tmp / "huge.json"
+        big = json.loads((FEEDS / "feed-seq5.json").read_text())
+        big["releases"][1]["notes"] = "x" * update.MAX_FEED_BYTES
+        huge.write_text(json.dumps(big))
+        r = subprocess.run([sys.executable, tool, huge, "--key", key], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("too large", r.stderr)
+        self.assertFalse((self.tmp / "huge.json.sig").exists())
         expired = self.tmp / "old.json"
         expired.write_bytes((FEEDS / "feed-expired.json").read_bytes())
         r = subprocess.run([sys.executable, tool, expired, "--key", key], capture_output=True, text=True)
@@ -527,6 +535,31 @@ class UpgradeTests(unittest.TestCase):
         self.addCleanup(conn.close)
         self.assertEqual(conn.execute("SELECT max(version) FROM schema_migrations").fetchone()[0],
                          "9998_example")
+
+    def test_a_commit_held_off_by_a_reader_is_rolled_back_and_releases_the_lock(self):
+        """A reader can let a step begin but stop it committing. The step must be
+        reported as not reached, and the workspace must not stay locked."""
+        _old_workspace(self.path, self.latest)
+        reader = sqlite3.connect(str(self.path), isolation_level=None)
+        self.addCleanup(reader.close)
+        reader.execute("BEGIN")
+        reader.execute("SELECT count(*) FROM workspaces").fetchone()  # holds a shared lock
+        real_connect = store_module._connect
+
+        def impatient(path):
+            conn = real_connect(path)
+            conn.execute("PRAGMA busy_timeout = 100")
+            return conn
+
+        with mock.patch.object(store_module, "_connect", impatient):
+            with self.assertRaises(store_module.UpgradeInterrupted) as caught:
+                Store(self.path)
+        self.assertEqual(caught.exception.reached, self.previous)
+        reader.execute("COMMIT")
+        other = sqlite3.connect(str(self.path), timeout=0, isolation_level=None)
+        self.addCleanup(other.close)
+        other.execute("BEGIN IMMEDIATE")  # nothing is left holding the workspace
+        other.execute("ROLLBACK")
 
     def test_a_full_disk_is_named_plainly_and_a_bad_step_is_not(self):
         full = sqlite3.OperationalError("database or disk is full")

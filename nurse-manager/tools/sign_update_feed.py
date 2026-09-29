@@ -26,6 +26,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from nurse_manager.update import (  # noqa: E402
+    MAX_FEED_BYTES,
     UpdateError,
     _parse_feed,
     load_public_key,
@@ -44,6 +45,11 @@ def sign(feed: Path, private_key: Path, channel: str) -> Path:
     if not openssl:
         raise UpdateError("signing needs OpenSSL on the steward's machine")
     data = feed.read_bytes()
+    # The app refuses a feed over this size, so signing one would only
+    # publish a feed no client can take.
+    if len(data) > MAX_FEED_BYTES:
+        raise UpdateError(f"{feed.name} is too large ({len(data)} bytes; the app takes at most "
+                          f"{MAX_FEED_BYTES}); nothing was signed")
     parsed = _parse_feed(json.loads(data.decode("utf-8")), channel)
     if parsed["expires"] <= date.today():
         raise UpdateError("this feed has already expired; set a later expiry date")

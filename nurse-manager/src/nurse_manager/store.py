@@ -131,7 +131,11 @@ class Store:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.clock = clock
         self.conn = _connect(self.path)
-        self._migrate()
+        try:
+            self._migrate()
+        except BaseException:
+            self.conn.close()  # no Store is returned, so nobody else would close it
+            raise
 
     # -- schema -----------------------------------------------------------
 
@@ -240,7 +244,15 @@ class Store:
             if self.conn.in_transaction:
                 self.conn.execute("ROLLBACK")
             raise
-        self.conn.execute("COMMIT")
+        try:
+            self.conn.execute("COMMIT")
+        except BaseException:
+            # A COMMIT held off by a reader (SQLITE_BUSY) leaves the transaction
+            # open and its lock held; roll it back so nothing half-done stays
+            # visible on this connection and the lock is released.
+            if self.conn.in_transaction:
+                self.conn.execute("ROLLBACK")
+            raise
 
     @contextlib.contextmanager
     def snapshot(self) -> Iterator[sqlite3.Connection]:

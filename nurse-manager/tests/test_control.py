@@ -233,6 +233,38 @@ class StopWhileWorkingTests(_Case):
         again = self.service(HeldModel(cited_lines, during=lambda: None))
         self.assertEqual(again.draft_weekly_brief(WEEK, TODAY, OWNER)["outcome"], "drafted")
 
+    def test_a_stop_cannot_land_between_the_last_check_and_the_send(self):
+        # Just before the provider is called, a stop is attempted from another
+        # connection. It must not be able to commit in that gap: it waits
+        # until the request is on its way, and then abandons it. (The model
+        # keeps working, so the stop is what ends the request.)
+        model = HeldModel(cited_lines)
+        self.addCleanup(model.release.set)
+        service = self.service(model)
+        real_thread = threading.Thread
+        stop_elsewhere = self.elsewhere("stop")
+        attempt: dict = {}
+
+        class StopJustBeforeSending(real_thread):
+            def start(self):
+                if self.name.startswith("assistant-") and "stop" not in attempt:
+                    attempt["stop"] = real_thread(target=stop_elsewhere, daemon=True)
+                    attempt["stop"].start()
+                    attempt["stop"].join(0.3)
+                    attempt["committed_before_send"] = not attempt["stop"].is_alive()
+                super().start()
+
+        with mock.patch("nurse_manager.assistant.threading.Thread", StopJustBeforeSending):
+            result = service.draft_weekly_brief(WEEK, TODAY, OWNER)
+        attempt["stop"].join(5)
+        self.assertEqual(model.calls, 1)
+        self.assertFalse(model.finished.is_set(), "it returned before the model answered")
+        self.assertFalse(attempt["committed_before_send"],
+                         "a stop committed after the last check, yet the request was sent")
+        self.assertTrue(self.control.state()["stopped"])  # it did land, just after
+        self.assertEqual(result["outcome"], "stopped")
+        self.assertEqual(self.model_drafts(), [])
+
     def test_an_abandoned_request_counts_as_sent(self):
         before = AssistantService(self.ws).status()["requests_today"]
         model = HeldModel(cited_lines)

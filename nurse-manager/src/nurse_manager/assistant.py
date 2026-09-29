@@ -521,27 +521,20 @@ class AssistantService:
         ``started`` is the stop generation when the request began, before it
         was prepared. Returns (request id, checked text, failure, cost, stop
         generation).
-        The request is recorded before the call, so an interrupted one still
+        The request is recorded as it is sent, so an interrupted one still
         counts, and it is left unfinished while it runs, which is how
         "Assistants at work" shows it. The caller saves a result only if
         ``_stopped_since(generation)`` is false inside its write.
         """
         generation = started
-        with self.ws.store.transaction():
-            # A stop saved since the request began (while it was prepared, even
-            # if assistants were let work again since) is honoured here.
-            if self._stopped_since(generation):
-                return (self._record(provider, prompt_sha, *STOPPED_BEFORE, 0, by, task),
-                        "", STOPPED_BEFORE, 0, generation)
-            request_id = self._record(provider, prompt_sha, "provider_failed",
-                                      "interrupted before the model replied", estimate, by, task)
-
         # The provider is called on its own thread, so a stop is noticed while
         # it works: the request is abandoned at once and its reply discarded.
         outcome: dict[str, Any] = {}
+        dispatched = threading.Event()
         done = threading.Event()
 
         def call() -> None:
+            dispatched.set()
             try:
                 outcome["reply"] = provider.complete(
                     system, prompt, max_output_tokens=MAX_OUTPUT_TOKENS, timeout=self.timeout)
@@ -550,7 +543,20 @@ class AssistantService:
             finally:
                 done.set()
 
-        threading.Thread(target=call, name=f"assistant-{request_id}", daemon=True).start()
+        with self.ws.store.transaction():
+            # The last stop check and the send are one step: this write lock is
+            # held until the provider call is under way, so a stop commits
+            # either before the check (nothing is sent) or after the send
+            # began (the reply is discarded), never in between. A stop saved
+            # since the request began is honoured here, even if assistants were
+            # let work again since.
+            if self._stopped_since(generation):
+                return (self._record(provider, prompt_sha, *STOPPED_BEFORE, 0, by, task),
+                        "", STOPPED_BEFORE, 0, generation)
+            request_id = self._record(provider, prompt_sha, "provider_failed",
+                                      "interrupted before the model replied", estimate, by, task)
+            threading.Thread(target=call, name=f"assistant-{request_id}", daemon=True).start()
+            dispatched.wait()  # set as the thread's first step; it never touches the database
         while not done.wait(self.stop_poll):
             if self._stopped_since(generation):
                 return request_id, "", STOPPED_DURING, None, generation

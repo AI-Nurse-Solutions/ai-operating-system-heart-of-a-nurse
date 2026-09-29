@@ -45,12 +45,13 @@ def sign(feed: Path, private_key: Path, channel: str) -> Path:
     openssl = shutil.which("openssl")
     if not openssl:
         raise UpdateError("signing needs OpenSSL on the steward's machine")
-    data = feed.read_bytes()
-    # The app refuses a feed over this size, so signing one would only
-    # publish a feed no client can take.
+    # The app refuses a feed over this size, so signing one would only publish
+    # a feed no client can take; and a huge file is never read whole.
+    with feed.open("rb") as fh:
+        data = fh.read(MAX_FEED_BYTES + 1)
     if len(data) > MAX_FEED_BYTES:
-        raise UpdateError(f"{feed.name} is too large ({len(data)} bytes; the app takes at most "
-                          f"{MAX_FEED_BYTES}); nothing was signed")
+        raise UpdateError(f"{feed.name} is too large (the app takes at most {MAX_FEED_BYTES}"
+                          " bytes); nothing was signed")
     parsed = _parse_feed(json.loads(data.decode("utf-8")), channel)
     if parsed["expires"] <= date.today():
         raise UpdateError("this feed has already expired; set a later expiry date")

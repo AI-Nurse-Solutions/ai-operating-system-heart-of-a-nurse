@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
+import importlib.util
 import json
 import os
 import shutil
@@ -428,6 +429,20 @@ class SigningToolTests(_Tmp):
         self.assertEqual(r.returncode, 1)
         self.assertFalse((self.tmp / "old.json.sig").exists())
 
+    def test_the_steward_tool_refuses_a_huge_feed_without_reading_it_all(self):
+        spec = importlib.util.spec_from_file_location("sign_update_feed",
+                                                      ROOT / "tools" / "sign_update_feed.py")
+        tool = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(tool)
+        big = self.tmp / "huge.json"
+        with big.open("wb") as fh:
+            fh.truncate(update.MAX_FEED_BYTES * 64)
+        with mock.patch.object(Path, "read_bytes", side_effect=AssertionError("read whole")), \
+                mock.patch.object(tool.subprocess, "run", side_effect=AssertionError("signed")):
+            with self.assertRaisesRegex(UpdateError, "too large"):
+                tool.sign(big, self.tmp / "key.pem", "pilot")
+        self.assertFalse((self.tmp / "huge.json.sig").exists())
+
 
 def _old_workspace(path: Path, before: str) -> None:
     """A workspace as a release before migration ``before`` left it, with a record."""
@@ -558,6 +573,20 @@ class UpgradeTests(unittest.TestCase):
         self.assertEqual(held[steps[-4][0]], {"ws-000000000001"})
         # The record written after the first step is kept as it was before the next one.
         self.assertIn("ws-000000000002", held.get(steps[-3][0], set()), held)
+
+    def test_a_step_that_keeps_failing_leaves_no_pile_of_copies(self):
+        """The scheduler opens the workspace every minute. A step that fails
+        before any step commits changed nothing, so its copy restores nothing:
+        it must not be kept, or a broken step would fill the disk with copies."""
+        Store(self.path).close()
+        broken = [*store_module._migrations(), ("9999_example", "INSERT INTO no_such_table VALUES (1)")]
+        with mock.patch.object(store_module, "_migrations", return_value=broken):
+            for _ in range(3):
+                with self.assertRaises(MigrationFailed) as caught:
+                    Store(self.path)
+        self.assertIsNone(caught.exception.backup)
+        self.assertIn(f"intact at step {self.latest}", str(caught.exception))
+        self.assertEqual(self.backups(), [])
 
     def test_a_backup_that_fails_partway_leaves_no_partial_copy(self):
         _old_workspace(self.path, self.latest)

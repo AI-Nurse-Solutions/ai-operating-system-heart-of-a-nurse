@@ -213,6 +213,12 @@ class Store:
                     backup.unlink(missing_ok=True)  # no step ran from it
                 raise
             except sqlite3.Error as exc:
+                if not progressed and backup is not None:
+                    # No step ran from this copy, so the workspace is exactly as it
+                    # was and the copy restores nothing. Keeping it would leave one
+                    # more full copy each time the app retries a failing step.
+                    backup.unlink(missing_ok=True)
+                    backup = None
                 if _environmental(exc):
                     # Busy, full, or unwritable: nothing is wrong with the step,
                     # and nothing of it was kept. Trying again is the remedy.

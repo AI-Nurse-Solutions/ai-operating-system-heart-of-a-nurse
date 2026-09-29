@@ -15,9 +15,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from datetime import date
 from pathlib import Path
 
@@ -46,14 +48,23 @@ def sign(feed: Path, private_key: Path, channel: str) -> Path:
     if parsed["expires"] <= date.today():
         raise UpdateError("this feed has already expired; set a later expiry date")
     sig = feed.with_name(feed.name + ".sig")
-    subprocess.run([openssl, "dgst", "-sha256", "-sign", str(private_key), "-out", str(sig),
-                    str(feed)], check=True, capture_output=True)
+    # Signed into memory and written only once it verifies, so a failed run
+    # never truncates or replaces a signature that was already good.
+    signature = subprocess.run([openssl, "dgst", "-sha256", "-sign", str(private_key)],
+                               input=data, check=True, capture_output=True).stdout
     public = subprocess.run([openssl, "pkey", "-in", str(private_key), "-pubout"], check=True,
                             capture_output=True, text=True).stdout
     n, e, key_id = load_public_key(public)
-    if not verify_signature(n, e, data, sig.read_bytes()):
-        sig.unlink()
+    if not verify_signature(n, e, data, signature):
         raise UpdateError("the new signature does not verify; nothing was written")
+    fd, tmp = tempfile.mkstemp(dir=sig.parent, prefix=f".{sig.name}.")
+    try:
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(signature)
+        os.replace(tmp, sig)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
     print(f"signed {feed.name} (sequence {parsed['sequence']}) with key {key_id}")
     return sig
 

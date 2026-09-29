@@ -230,9 +230,12 @@ def _parse_feed(feed: dict[str, Any], channel: str) -> dict[str, Any]:
         if not artifacts:
             raise UpdateError(f"release {item.get('version')} lists no downloads")
         for art in artifacts:
-            if not isinstance(art, dict) or not _PLATFORM.fullmatch(str(art.get("platform"))) \
-                    or not _SHA256.fullmatch(str(art.get("sha256"))) \
-                    or not str(art.get("url", "")).startswith("https://"):
+            fields = [art.get(k) for k in ("platform", "sha256", "url")] \
+                if isinstance(art, dict) else [None]
+            if not all(isinstance(f, str) for f in fields) \
+                    or not _PLATFORM.fullmatch(art["platform"]) \
+                    or not _SHA256.fullmatch(art["sha256"]) \
+                    or not art["url"].startswith("https://"):
                 raise UpdateError(f"release {item.get('version')} has a download without a"
                                   " platform, an https address, and a sha256")
         releases.append({"version": item["version"], "rank": version,
@@ -324,6 +327,15 @@ def fetch(url: str, *, limit: int) -> bytes:
     return body
 
 
+def _read_at_most(path: Path, limit: int) -> bytes:
+    """A file given by hand is read like a download: never more than a feed can be."""
+    with path.open("rb") as fh:
+        data = fh.read(limit + 1)
+    if len(data) > limit:
+        raise UpdateError(f"{path.name} is too large to be a genuine feed or signature")
+    return data
+
+
 def check(*, feed_file: Path | None = None, signature_file: Path | None = None,
           config_file: Path | None = None, state_file: Path | None = None,
           today: date | None = None) -> dict[str, Any]:
@@ -334,7 +346,8 @@ def check(*, feed_file: Path | None = None, signature_file: Path | None = None,
     if (feed_file is None) != (signature_file is None):
         raise UpdateError("give both the feed and its signature, or neither")
     if feed_file is not None:
-        feed_bytes, signature = Path(feed_file).read_bytes(), Path(signature_file).read_bytes()
+        feed_bytes = _read_at_most(Path(feed_file), MAX_FEED_BYTES)
+        signature = _read_at_most(Path(signature_file), MAX_SIGNATURE_BYTES)
     elif config["keys"] and config["feed_url"]:
         feed_bytes = fetch(config["feed_url"], limit=MAX_FEED_BYTES)
         signature = fetch(config["feed_url"] + ".sig", limit=MAX_SIGNATURE_BYTES)

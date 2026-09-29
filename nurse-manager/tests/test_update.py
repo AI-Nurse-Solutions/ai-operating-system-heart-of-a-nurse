@@ -275,6 +275,37 @@ class FeedTests(_Tmp):
         redirect = opened[0]
         self.assertIsNone(redirect().redirect_request(None, None, 302, "Found", {}, "https://evil"))
 
+    def test_a_huge_local_file_is_refused_without_reading_it_all(self):
+        big = self.tmp / "feed.json"
+        with big.open("wb") as fh:
+            fh.truncate(update.MAX_FEED_BYTES * 64)
+        sig = FEEDS / "feed-seq5.json.sig"
+        reads = []
+        real_open = Path.open
+
+        def counting_open(path, *args, **kwargs):
+            fh = real_open(path, *args, **kwargs)
+            if path == big:
+                real_read = fh.read
+                fh.read = lambda n=-1: reads.append(n) or real_read(n)
+            return fh
+
+        with mock.patch.object(Path, "open", counting_open), \
+                mock.patch.object(Path, "read_bytes", side_effect=AssertionError("read whole")):
+            with self.assertRaisesRegex(UpdateError, "too large"):
+                update.check(feed_file=big, signature_file=sig, config_file=FEEDS / "config.json",
+                             state_file=self.state, today=TODAY)
+        self.assertTrue(reads and all(0 <= n <= update.MAX_FEED_BYTES + 1 for n in reads))
+
+    def test_every_download_field_must_be_text(self):
+        feed = json.loads((FEEDS / "feed-seq5.json").read_text())
+        for field, value in (("platform", 12), ("sha256", int("1" * 64)), ("url", ["https://x"])):
+            with self.subTest(field=field):
+                broken = json.loads(json.dumps(feed))
+                broken["releases"][1]["artifacts"][0][field] = value
+                with self.assertRaisesRegex(UpdateError, "download"):
+                    update._parse_feed(broken, "pilot")
+
     def test_a_download_is_checked_against_the_signed_digest(self):
         artifact = self.tmp / "Nurse-AI-OS.zip"
         artifact.write_bytes(b"synthetic installer bytes")
@@ -313,6 +344,15 @@ class SigningToolTests(_Tmp):
                               config_file=self.tmp / "config.json", state_file=self.state,
                               today=TODAY)
         self.assertEqual(result["status"], "update_available")
+        # A failed signing run leaves the existing signature exactly as it was.
+        before = (self.tmp / "feed.json.sig").read_bytes()
+        (self.tmp / "bad-key.pem").write_text("not a key")
+        r = subprocess.run([sys.executable, tool, feed, "--key", self.tmp / "bad-key.pem"],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 1)
+        self.assertEqual((self.tmp / "feed.json.sig").read_bytes(), before)
+        self.assertEqual(sorted(p.name for p in self.tmp.glob("feed.json*")),
+                         ["feed.json", "feed.json.sig"])
         expired = self.tmp / "old.json"
         expired.write_bytes((FEEDS / "feed-expired.json").read_bytes())
         r = subprocess.run([sys.executable, tool, expired, "--key", key], capture_output=True, text=True)
@@ -358,6 +398,31 @@ class UpgradeTests(unittest.TestCase):
         self.assertEqual(old.execute("SELECT max(version) FROM schema_migrations").fetchone()[0],
                          self.previous)
         self.assertEqual(old.execute("SELECT count(*) FROM workspaces").fetchone()[0], 1)
+
+    def test_the_backup_holds_everything_written_before_the_upgrade_takes_its_lock(self):
+        """Another copy of the app writing just after the backup is made must not
+        leave a record the upgrade migrates but the backup lacks."""
+        _old_workspace(self.path, self.latest)
+        real_backup, writes = Store._pre_migration_backup, []
+
+        def backup_then_another_copy_writes(store, current, target):
+            dest = real_backup(store, current, target)
+            if not writes:
+                other = sqlite3.connect(str(self.path), isolation_level=None)
+                other.execute("INSERT INTO workspaces (id, name, profile, owner, sample, created_at)"
+                              " VALUES ('ws-000000000002', 'Late', 'personal_manager', 'M', 0,"
+                              " '2026-09-01T09:00:00+00:00')")
+                other.close()
+                writes.append(1)
+            return dest
+
+        with mock.patch.object(Store, "_pre_migration_backup", backup_then_another_copy_writes):
+            store = Store(self.path)
+        self.addCleanup(store.close)
+        (backup,) = self.backups()
+        old = sqlite3.connect(str(backup))
+        self.addCleanup(old.close)
+        self.assertEqual(old.execute("SELECT count(*) FROM workspaces").fetchone()[0], 2)
 
     def test_a_new_or_current_workspace_needs_no_backup(self):
         Store(self.path).close()

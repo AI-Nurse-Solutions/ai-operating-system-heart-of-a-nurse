@@ -316,14 +316,25 @@ class FeedTests(_Tmp):
             update.verify_download(artifact, "not-a-digest")
 
     def test_the_cli_answers_in_the_ipc_contract(self):
-        code, env = cli.run([str(a) for a in (
-            "update-check", "--feed", FEEDS / "feed-seq5.json", "--signature",
-            FEEDS / "feed-seq5.json.sig", "--config", FEEDS / "config.json",
-            "--state", self.state, "--today", "2026-09-29")])
-        self.assertEqual((code, env["data"]["status"]), (0, "update_available"))
-        code, env = cli.run(["update-check", "--feed", str(FEEDS / "feed-seq5.json"),
-                             "--state", str(self.state)])
-        self.assertEqual((code, env["error"]["type"]), (2, "UpdateError"))
+        with mock.patch.object(update, "config_path", return_value=FEEDS / "config.json"), \
+                mock.patch.object(update, "state_path", return_value=self.state):
+            code, env = cli.run(["update-check", "--feed", str(FEEDS / "feed-seq5.json"),
+                                 "--signature", str(FEEDS / "feed-seq5.json.sig")])
+            self.assertEqual((code, env["data"]["status"]), (0, "update_available"))
+            code, env = cli.run(["update-check", "--feed", str(FEEDS / "feed-seq5.json")])
+            self.assertEqual((code, env["error"]["type"]), (2, "UpdateError"))
+
+    def test_the_command_cannot_override_what_it_trusts(self):
+        """Whoever runs the command cannot choose the pinned keys, the record of
+        feeds seen, or today's date: each would undo a trust check."""
+        feed = ["--feed", str(FEEDS / "feed-expired.json"),
+                "--signature", str(FEEDS / "feed-expired.json.sig")]
+        for extra in (["--config", str(FEEDS / "config.json")], ["--state", str(self.state)],
+                      ["--today", "2020-01-31"]):
+            with self.subTest(option=extra[0]):
+                code, env = cli.run(["update-check", *feed, *extra])
+                self.assertEqual((code, env["error"]["type"]), (2, "UsageError"))
+        self.assertFalse(self.state.exists())
 
 
 @unittest.skipUnless(OPENSSL, "OpenSSL is not installed")

@@ -16,7 +16,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -247,9 +246,8 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("update-check", help="check the signed update feed (never installs)")
     p.add_argument("--feed", type=Path, help="a feed file you were given, instead of the feed address")
     p.add_argument("--signature", type=Path, help="that feed's signature file")
-    p.add_argument("--config", type=Path, help=argparse.SUPPRESS)
-    p.add_argument("--state", type=Path, help=argparse.SUPPRESS)
-    p.add_argument("--today", help="YYYY-MM-DD; defaults to today")
+    # Deliberately no way to choose the pinned keys, the record of feeds seen,
+    # or today's date: each would let the caller undo a trust check.
 
     return parser
 
@@ -269,9 +267,7 @@ def _dispatch(args: argparse.Namespace) -> Any:
         if value is not None:
             setattr(args, name, _iso_date(value, f"--{name}"))
     if args.command == "update-check":
-        return update.check(feed_file=args.feed, signature_file=args.signature,
-                            config_file=args.config, state_file=args.state,
-                            today=date.fromisoformat(args.today) if args.today else None)
+        return update.check(feed_file=args.feed, signature_file=args.signature)
     if args.command == "sample":
         ws, data = load_sample(args.workspace)
         try:

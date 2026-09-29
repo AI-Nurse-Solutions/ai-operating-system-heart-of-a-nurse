@@ -260,9 +260,9 @@ def _parse_feed(feed: dict[str, Any], channel: str) -> dict[str, Any]:
             if not all(isinstance(f, str) for f in fields) \
                     or not _PLATFORM.fullmatch(art["platform"]) \
                     or not _SHA256.fullmatch(art["sha256"]) \
-                    or not art["url"].startswith("https://"):
+                    or not _well_formed_https(art["url"]):
                 raise UpdateError(f"release {item.get('version')} has a download without a"
-                                  " platform, an https address, and a sha256")
+                                  " platform, a well-formed https address, and a sha256")
         releases.append({"version": item["version"], "rank": version,
                          "schema": str(item.get("schema") or ""),
                          "notes": str(item.get("notes") or ""),

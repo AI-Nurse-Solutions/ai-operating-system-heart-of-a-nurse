@@ -376,6 +376,17 @@ class FeedTests(_Tmp):
                 with self.assertRaisesRegex(UpdateError, "download"):
                     update._parse_feed(broken, "pilot")
 
+    def test_every_download_address_must_be_a_well_formed_https_address(self):
+        """Signing or offering a download no one can fetch helps no one."""
+        feed = json.loads((FEEDS / "feed-seq5.json").read_text())
+        for url in ("https://[", "https://", "https://exa mple.org/x.zip",
+                    "https://example.org:99999/x.zip", "http://example.org/x.zip"):
+            with self.subTest(url=url):
+                broken = json.loads(json.dumps(feed))
+                broken["releases"][1]["artifacts"][0]["url"] = url
+                with self.assertRaisesRegex(UpdateError, "download"):
+                    update._parse_feed(broken, "pilot")
+
     def test_the_releases_and_downloads_must_be_lists(self):
         """A scalar where a list belongs is a refusal, never a crash."""
         feed = json.loads((FEEDS / "feed-seq5.json").read_text())

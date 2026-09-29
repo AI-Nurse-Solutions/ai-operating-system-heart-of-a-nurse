@@ -52,6 +52,8 @@ try {
     'ws.add_task(sys.argv[2], "Sample Manager", status="ready", due_date="2026-10-04")',
     'ubc = ws.store.conn.execute("SELECT id FROM projects WHERE title LIKE ?", ("Unit%",)).fetchone()[0]',
     'ws.add_feedback(ubc, "Council members", "question", sys.argv[2], "2026-09-27")',
+    'from nurse_manager.pilot import PilotFeedback',
+    'PilotFeedback(ws).add("packs", "idea", sys.argv[2])',
     'ws.close()',
   ].join('\n'), sample, INJECTED]);
   python(['-m', 'nurse_manager', 'brief', sample, '--week', '2026-09-28', '--today', TODAY]);
@@ -162,6 +164,20 @@ try {
   await drafts.getByRole('link', { name: 'Huddle format pilot' }).waitFor();
   assert.equal(await page.locator('.view--contributions button').count(), 0, 'no contribution writes on the dev host');
   assert.equal(await page.locator('main').locator('text=/\\d+\\s?%/').count(), 0, 'no percentages');
+
+  // Help and feedback: what to know, and pilot feedback that is read-only here.
+  await page.getByRole('link', { name: 'Help and feedback' }).click();
+  await page.waitForSelector('.view--help');
+  assert.equal(await page.title(), 'Help and feedback — Nurse AI OS');
+  assert.equal(await page.locator('[data-route="help"]').getAttribute('aria-current'), 'page');
+  assert.match(await page.getByRole('region', { name: 'What to know' }).textContent(),
+    /No AI model runs by default.*It does not detect people’s names\./s);
+  const pilotHere = page.getByRole('region', { name: 'Pilot feedback', exact: true });
+  assert.match(await pilotHere.textContent(), /Packs · Idea.*Not in an export yet.*Read-only.*available in the Nurse AI OS app/s);
+  assert.match(await pilotHere.getByRole('list', { name: 'Your pilot feedback' }).textContent(),
+    /<img src=x onerror="window\.__injected=1">Agenda/, 'feedback text is shown as text');
+  assert.equal(await page.locator('.view--help button, .view--help form').count(), 0, 'no pilot feedback writes on the dev host');
+  assert.equal(await page.evaluate(() => window.__injected), undefined, 'markup in feedback never executes');
 
   // Memory: in use, expired, excluded, with who wrote it; read-only here.
   await page.getByRole('link', { name: 'Memory' }).click();
@@ -321,7 +337,7 @@ try {
   const reflowProject = await open(`${main.url}#/mission`);
   const someProject = await reflowProject.$eval('.card__title a', (a) => a.getAttribute('href'));
   await reflowProject.close();
-  for (const route of ['mission', 'board', 'table', someProject.replace('#/', '')]) {
+  for (const route of ['mission', 'board', 'table', 'help', someProject.replace('#/', '')]) {
     const narrow = await open(`${main.url}#/${route}`, { viewport: { width: 320, height: 800 } });
     const overflow = await narrow.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     assert.ok(overflow <= 0, `${route} reflows at 320px (overflow ${overflow}px)`);
@@ -376,7 +392,7 @@ try {
   await errorPage.close();
 
   assert.deepEqual(errors, [], 'no console errors or CSP violations');
-  console.log('nurse-manager renderer: keyboard, names, ids, project dashboard, states, reflow, themes, packs pass');
+  console.log('nurse-manager renderer: keyboard, names, ids, project dashboard, states, reflow, themes, packs, help pass');
 } finally {
   await browser?.close();
   for (const child of hosts) child.kill();

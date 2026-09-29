@@ -50,6 +50,12 @@
     "memory-correct": "MemoryResult",
     "memory-exclude": "MemoryResult",
     "memory-include": "MemoryResult",
-    "memory-delete": "MemoryDeleted"
+    "memory-delete": "MemoryDeleted",
+    "reconcile": "ReconcileResult",
+    "pilot-feedback": "PilotFeedback",
+    "pilot-feedback-add": "PilotFeedbackResult",
+    "pilot-feedback-delete": "PilotFeedbackDeleted",
+    "pilot-feedback-preview": "PilotFeedbackPreview",
+    "pilot-feedback-export": "PilotFeedbackExport"
   }
 }

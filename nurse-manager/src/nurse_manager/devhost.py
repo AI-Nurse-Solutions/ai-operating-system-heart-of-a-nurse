@@ -35,7 +35,8 @@ from . import cli, resources
 RENDERER = resources.manager_root() / "renderer"
 READ_ONLY_COMMANDS = ("mission", "project", "board", "table", "weekly", "assistant",
                       "assistant-preview", "assistant-project-preview", "library",
-                      "learning", "contributions", "memory", "packs", "document")
+                      "learning", "contributions", "memory", "packs", "document",
+                      "pilot-feedback", "pilot-feedback-preview")
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _PROJECT_ID = re.compile(r"^prj-[0-9a-f]{12}$")
 _DOCUMENT_ID = re.compile(r"^art-[0-9a-f]{12}$")

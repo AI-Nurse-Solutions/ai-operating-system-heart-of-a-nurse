@@ -341,6 +341,46 @@ class WorkspaceWriteTests(_AppCase):
         dashboard = self.envelope(f"/ipc/project?id={project_id}")["data"]
         self.assertIn(feedback_id, [f["id"] for f in dashboard["feedback"]])
 
+    def test_pilot_feedback_from_the_screens_is_exported_only_as_reviewed(self):
+        self.assertEqual(self.envelope("/ipc/pilot-feedback")["data"]["items"], [])
+        refused = self.envelope("/ipc/pilot-feedback-add", "POST", {
+            "area": "other", "kind": "question", "summary": "Email pilot@example.org?"})
+        self.assertEqual(refused["error"]["type"], "CaptureRefused")
+        added = self.envelope("/ipc/pilot-feedback-add", "POST", {
+            "area": "weekly_brief", "kind": "worked",
+            "summary": "Accepting the brief took one click."})["data"]["item"]
+        preview = self.envelope("/ipc/pilot-feedback-preview")["data"]
+        self.assertTrue(preview["can_export"])
+        stale = self.envelope("/ipc/pilot-feedback-export", "POST", {"sha256": "0" * 64})
+        self.assertIn("changed since you reviewed it", stale["error"]["message"])
+        # The app acts as the owner; a name the page sends is ignored.
+        made = self.envelope("/ipc/pilot-feedback-export", "POST",
+                             {"sha256": preview["sha256"], "by": "Someone Else"})
+        self.assertEqual((made["data"]["text"], made["data"]["sha256"]),
+                         (preview["text"], preview["sha256"]))
+        ws = ManagerWorkspace(self.app.workspace)
+        try:
+            self.assertEqual(ws.store.conn.execute(
+                "SELECT exported_by FROM pilot_feedback_exports").fetchall()[0][0], "Sample Manager")
+        finally:
+            ws.close()
+        # Reading an export never makes one: it is a write, reachable only by POST.
+        self.assertEqual(self.request("/ipc/pilot-feedback-export")[0], 404)
+        self.assertEqual(self.request("/ipc/pilot-feedback-add")[0], 404)
+        gone = self.envelope("/ipc/pilot-feedback-delete", "POST", {"feedback_id": added["id"]})
+        self.assertEqual(gone["data"], {"deleted": added["id"]})
+        for command, body in (("pilot-feedback-add", {"area": "reports", "kind": "idea",
+                                                      "summary": "x"}),
+                              ("pilot-feedback-add", {"area": "other", "kind": "rant",
+                                                      "summary": "x"}),
+                              ("pilot-feedback-add", {"area": "other", "kind": "idea"}),
+                              ("pilot-feedback-delete", {"feedback_id": "fbk-000000000000"}),
+                              ("pilot-feedback-delete", {}),
+                              ("pilot-feedback-export", {}),
+                              ("pilot-feedback-export", {"sha256": "abc"})):
+            with self.subTest(command=command, body=body):
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", body)[0], 400)
+
     def test_write_bodies_are_checked(self):
         for command, body in (("accept", {"revision": "x", "sha256": "y"}),
                               ("accept", {"revision": "rev-000000000000"}),

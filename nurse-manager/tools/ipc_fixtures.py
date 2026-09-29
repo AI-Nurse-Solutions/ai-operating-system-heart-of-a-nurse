@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import socket
+import sqlite3
 import sys
 import tempfile
 import threading
@@ -147,6 +148,27 @@ def collect(workdir: Path) -> dict[str, dict]:
          drafted["item"]["id"], "--evidence", " ")
     keep("contribution-verify", "contribution-verify", ws, "--id", drafted["item"]["id"],
          "--evidence", "Template adopted in the council minutes (synthetic).")
+    # Pilot feedback (step 6.3): kept here, screened, exported only as reviewed.
+    keep("pilot-feedback-empty", "pilot-feedback", empty)
+    keep("pilot-feedback-preview-empty", "pilot-feedback-preview", empty)
+    keep("error-pilot-feedback-export-nothing", "pilot-feedback-export", empty,
+         "--reviewed-sha", "0" * 64, "--by", "Test Manager")
+    noted = keep("pilot-feedback-add", "pilot-feedback-add", ws, "--area", "weekly_brief",
+                 "--kind", "problem", "--summary",
+                 "The Accept button was hard to find on a small screen.")["item"]["id"]
+    keep("error-pilot-feedback-add-identifier", "pilot-feedback-add", ws, "--area", "other",
+         "--kind", "question", "--summary", "Call the pilot desk at 555-010-4477?")
+    keep("pilot-feedback", "pilot-feedback", ws)
+    shown = keep("pilot-feedback-preview", "pilot-feedback-preview", ws)
+    keep("error-pilot-feedback-export-stale", "pilot-feedback-export", ws, "--reviewed-sha",
+         "0" * 64, "--by", OWNER)
+    keep("error-pilot-feedback-export-not-owner", "pilot-feedback-export", ws, "--reviewed-sha",
+         shown["sha256"], "--by", "Someone Else")
+    keep("pilot-feedback-export", "pilot-feedback-export", ws, "--reviewed-sha",
+         shown["sha256"], "--by", OWNER)
+    keep("pilot-feedback-after-export", "pilot-feedback", ws)
+    keep("pilot-feedback-delete", "pilot-feedback-delete", ws, "--id", noted)
+    keep("error-pilot-feedback-delete-again", "pilot-feedback-delete", ws, "--id", noted)
     keep("library", "library", ws, "--today", TODAY)
     keep("source-add", "source-add", ws, "--title", "Huddle evaluation questions (synthetic)",
          "--kind", "synthetic", "--reference", "synthetic://samples/huddle-evaluation",
@@ -172,6 +194,16 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("approve", "approve", ws, "--action", action["id"], "--approver", OWNER,
          "--sha", action["payload_sha256"], "--destination", "week.md")
     keep("run", "run", ws, "--action", action["id"], "--actor", OWNER)
+    # A crash mid-export: the action is left executing and no file was written.
+    # Reconcile settles it by checking the disk, and never runs it again.
+    _, second = _run("export", ws, "--revision", draft["id"], "--file", "week-again.md",
+                     "--by", OWNER)
+    _run("approve", ws, "--action", second["data"]["id"], "--approver", OWNER, "--sha",
+         second["data"]["payload_sha256"], "--destination", "week-again.md")
+    with sqlite3.connect(ws / "workspace.sqlite") as db:
+        db.execute("UPDATE actions SET status = 'executing' WHERE id = ?", (second["data"]["id"],))
+    keep("reconcile", "reconcile", ws)
+    keep("reconcile-nothing-interrupted", "reconcile", ws)
     keep("backup", "backup", ws, workdir / "backup.sqlite")
     keep("restore", "restore", ws, workdir / "backup.sqlite")
     keep("error-accept", "accept", ws, "--revision", draft["id"], "--reviewer", "Someone Else",

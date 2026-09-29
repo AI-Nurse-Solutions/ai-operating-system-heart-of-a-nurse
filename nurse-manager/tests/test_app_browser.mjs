@@ -14,13 +14,17 @@
 // - AI assistance: off by default; a model on this computer is connected
 //   explicitly; the preview shows exactly what is sent before anything is,
 //   and the model's draft waits for the manager's acceptance
+// - onboarding says what the app does and does not do, that data stays here,
+//   that no model runs by default, and that the privacy screen misses names
+// - pilot feedback (6.3): kept here, an identifier refused, and the saved file
+//   is byte for byte the text the manager previewed; nothing leaves 127.0.0.1
 //
 // CHROME_PATH=/path/to/chrome overrides the system Chrome channel (local runs).
 // NURSE_AI_OS_BIN=/path/to/nurse-ai-os runs it against a packaged build.
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createServer } from 'node:http';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -70,6 +74,19 @@ try {
   assert.match(await page.getByRole('note').filter({ hasText: 'Before you start' }).textContent(),
     /Keep patient information, staff performance, and confidential employer material out/);
 
+  // What to know first: every fact, stated before anything is created.
+  const about = page.getByRole('region', { name: 'What to know first' });
+  const aboutText = await about.textContent();
+  for (const fact of [/What it does\..*one workspace/s, /never emails, posts, or uploads anything/,
+    /does not connect to your employer’s systems/, /Your data stays on this computer\..*never uploaded/s,
+    /No AI model runs by default\..*No cloud AI service is offered/s, /sample workspace is synthetic/,
+    /Your own workspace starts empty/, /It does not detect people’s names\./,
+    /Passing it never means text is free of patient information/]) {
+    assert.match(aboutText, fact);
+  }
+  assert.doesNotMatch(await page.locator('main').textContent(), /phi[- ]free|de-identified|hipaa[- ]compliant/i,
+    'nothing is ever called free of patient information');
+
   // Keyboard onboarding, with an identifier refused first.
   await page.getByLabel('Workspace name').fill('Unit 4 planning');
   await page.getByLabel('Your name').fill('manager@example.org');
@@ -102,6 +119,96 @@ try {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   assert.ok(overflow <= 0, `mission reflows at 320px (overflow ${overflow}px)`);
   await page.setViewportSize({ width: 1280, height: 900 });
+
+  // --- Help and feedback: pilot feedback stays here until saved as reviewed ---
+  const elsewhere = [];
+  page.on('request', (r) => { if (!r.url().startsWith(base) && !r.url().startsWith('blob:')) elsewhere.push(r.url()); });
+  await page.getByRole('link', { name: 'Help and feedback' }).click();
+  await page.waitForSelector('.view--help');
+  assert.equal(await page.title(), 'Help and feedback — Nurse AI OS');
+  assert.match(await page.getByRole('region', { name: 'What to know' }).textContent(), /It does not detect people’s names/);
+  assert.match(await page.getByRole('region', { name: 'Getting help' }).textContent(), /Assistants at work.*stops them all/s);
+  const pilot = page.getByRole('region', { name: 'Pilot feedback', exact: true });
+  assert.match(await pilot.textContent(), /Nothing is sent.*does not detect names.*No pilot feedback yet/s);
+  assert.equal(await page.getByRole('button', { name: 'Preview what will be shared' }).isDisabled(), true, 'nothing to share yet');
+  // An identifier is refused with a readable reason, and the typed text is kept.
+  await page.getByLabel('Part of the app').selectOption('weekly_brief');
+  await page.getByLabel('Kind', { exact: true }).selectOption('problem');
+  await page.getByLabel('What happened, or what would help?').fill('Ask me at manager@example.org about the Accept button');
+  await page.getByRole('button', { name: 'Save feedback' }).click();
+  await page.waitForFunction(() => /Not done/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await page.getByRole('alert').textContent(), /does not keep identifying details.*EMAIL_ADDRESS/s);
+  assert.equal(await page.getByLabel('What happened, or what would help?').inputValue(), 'Ask me at manager@example.org about the Accept button');
+  assert.equal(await page.getByLabel('Part of the app').inputValue(), 'weekly_brief');
+  await page.getByLabel('What happened, or what would help?').fill('The Accept button was hard to find on a small screen.');
+  await page.getByRole('button', { name: 'Save feedback' }).focus();
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => /Saved on this computer\. Nothing was sent/.test(document.activeElement?.textContent ?? ''));
+  assert.equal(await page.getByLabel('What happened, or what would help?').inputValue(), '', 'the saved form starts empty');
+  assert.match(await pilot.getByRole('listitem').first().textContent(), /Weekly brief · Problem.*hard to find.*Not in an export yet/s);
+  await page.getByLabel('Part of the app').selectOption('getting_started');
+  await page.getByLabel('Kind', { exact: true }).selectOption('worked');
+  await page.getByLabel('What happened, or what would help?').fill('Creating my workspace took a minute.');
+  await page.getByRole('button', { name: 'Save feedback' }).click();
+  await pilot.getByText('Creating my workspace took a minute.').waitFor();
+  assert.match(await page.evaluate(() => document.activeElement?.textContent ?? ''), /Saved on this computer/);
+  assert.match(await pilot.textContent(), /2 items kept here · never exported/);
+
+  // Preview: exactly the file; the name of the workspace and its manager never cross.
+  await page.getByRole('button', { name: 'Preview what will be shared' }).click();
+  await page.waitForFunction(() => document.activeElement?.id === 'pilot-preview-heading');
+  const shown = await page.getByLabel('Exactly what will be shared', { exact: true }).textContent();
+  assert.match(shown, /^# Nurse AI OS pilot feedback\n\n- App version: .+\n- Workspace: the manager’s own\n/);
+  assert.match(shown, /## 1\. Weekly brief: Problem .*hard to find.*## 2\. Getting started: Worked well/s);
+  assert.doesNotMatch(shown, /Unit planning|Test Manager/);
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Save as a file' }).click(),
+  ]);
+  assert.match(download.suggestedFilename(), /^nurse-ai-os-pilot-feedback-\d{4}-\d{2}-\d{2}\.md$/);
+  assert.equal(readFileSync(await download.path(), 'utf8'), shown, 'the saved file is exactly the preview');
+  await page.waitForFunction(() => /Nothing was sent: give the file to your pilot team yourself/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await pilot.textContent(), /2 items kept here · last export \d{4}-\d{2}-\d{2} \(2 items\)/);
+  assert.equal(await pilot.getByText(/In the export of/).count(), 2);
+  const [savedAgain] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Save the file again' }).click(),
+  ]);
+  assert.equal(readFileSync(await savedAgain.path(), 'utf8'), shown);
+
+  // Text that reached the records another way is caught when the export is built.
+  const db = join(work, 'own', 'workspace', 'workspace.sqlite');
+  const planted = spawnSync('python3', ['-c', [
+    'import sqlite3, sys',
+    'db = sqlite3.connect(sys.argv[1])',
+    'ws = db.execute("SELECT id FROM workspaces").fetchone()[0]',
+    'db.execute("INSERT INTO pilot_feedback (id, workspace_id, area, kind, summary, created_at)'
+      + ' VALUES (\'plf-00000000beef\', ?, \'other\', \'question\', \'Call 555-010-4477\', \'2020-01-06T10:00:00+00:00\')", (ws,))',
+    'db.commit()',
+  ].join('\n'), db], { encoding: 'utf8' });
+  assert.equal(planted.status, 0, planted.stderr);
+  await page.reload();
+  await page.waitForSelector('.view--help');
+  await page.getByRole('button', { name: 'Preview what will be shared' }).click();
+  await page.waitForFunction(() => document.activeElement?.id === 'pilot-preview-heading');
+  assert.match(await page.getByRole('alert').textContent(), /Cannot be exported.*item 1 \(PHONE_NUMBER\)/s);
+  assert.doesNotMatch(await page.getByRole('alert').textContent(), /555-010-4477/, 'the finding never repeats the identifier');
+  assert.equal(await page.getByRole('button', { name: 'Save as a file' }).count(), 0);
+  await page.getByRole('button', { name: 'Close' }).click();
+  // Delete, with confirmation: the item and its text are gone.
+  const plantedItem = page.locator('[data-record-id="plf-00000000beef"]');
+  await plantedItem.getByRole('button', { name: 'Delete…' }).click();
+  await page.waitForFunction(() => document.activeElement?.textContent === 'Delete for good');
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => /Deleted\. Its text is gone/.test(document.activeElement?.textContent ?? ''));
+  assert.equal(await plantedItem.count(), 0);
+  assert.match(await pilot.textContent(), /2 items kept here/);
+
+  await page.setViewportSize({ width: 320, height: 800 });
+  const helpOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  assert.ok(helpOverflow <= 0, `help and feedback reflows at 320px (overflow ${helpOverflow}px)`);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  assert.deepEqual(elsewhere, [], 'nothing was requested from anywhere but this computer');
 
   // Quit really stops the app.
   await page.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
@@ -615,7 +722,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory, stop control, packs pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory, stop control, packs, help and pilot feedback pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

@@ -509,6 +509,76 @@ export interface Packs {
   }[];
 }
 
+export interface PilotChoice {
+  readonly value: string;
+  readonly label: string;
+}
+
+/** The manager's pilot feedback, newest first. Nothing here is sent anywhere; an export is text the manager saves and shares themselves. */
+export interface PilotFeedback {
+  readonly sample: boolean;
+  readonly items: readonly PilotFeedbackItem[];
+  /** @minimum 0 */
+  readonly not_yet_exported: number;
+  readonly last_export: {
+    /** @minimum 1 */
+    readonly items: number;
+    readonly exported_at: IsoDateTime;
+  } | null;
+  readonly areas: readonly PilotChoice[];
+  readonly kinds: readonly PilotChoice[];
+}
+
+/** The feedback is gone; only its id remains, in the audit log. */
+export interface PilotFeedbackDeleted {
+  readonly deleted: RecordId;
+}
+
+/** The export the manager reviewed: the same text and hash as the preview. The manager saves it and decides who receives it. */
+export interface PilotFeedbackExport {
+  readonly id: RecordId;
+  readonly exported_at: IsoDateTime;
+  readonly text: string;
+  readonly sha256: Sha256;
+  /** @minimum 1 */
+  readonly items: number;
+  /** @pattern ^nurse-ai-os-pilot-feedback-[0-9]{4}-[0-9]{2}-[0-9]{2}\.md$ */
+  readonly filename: string;
+  readonly can_export: true;
+  readonly reason: "";
+  /** @maxItems 0 */
+  readonly findings: readonly [];
+}
+
+/** One piece of pilot feedback about the app itself, kept on this computer. */
+export interface PilotFeedbackItem {
+  readonly id: RecordId;
+  readonly area: "getting_started" | "mission_control" | "weekly_brief" | "projects" | "ai_assistance" | "packs" | "other";
+  readonly kind: "worked" | "problem" | "idea" | "question";
+  readonly summary: string;
+  readonly created_at: IsoDateTime;
+  /** When it was last in an export the manager made; null if never. */
+  readonly exported_at: IsoDateTime | null;
+}
+
+/** Exactly the text an export would hold, and whether the privacy screen lets it be made. Nothing is exported or sent. Findings are entity types only, never the matched text. */
+export interface PilotFeedbackPreview {
+  readonly text: string;
+  readonly sha256: Sha256;
+  /** @minimum 0 */
+  readonly items: number;
+  /** @pattern ^nurse-ai-os-pilot-feedback-[0-9]{4}-[0-9]{2}-[0-9]{2}\.md$ */
+  readonly filename: string;
+  readonly can_export: boolean;
+  /** Why it cannot be exported; empty when it can. */
+  readonly reason: string;
+  readonly findings: readonly string[];
+}
+
+export interface PilotFeedbackResult {
+  readonly item: PilotFeedbackItem;
+}
+
 export interface PrioritiesSection {
   readonly state: SectionState;
   /** @maxItems 3 */
@@ -654,7 +724,12 @@ export interface Receipt {
   readonly recorded_at: IsoDateTime;
 }
 
-/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem)-[0-9a-f]{12}$ */
+/** After a crash: every export that was interrupted, settled by checking the file on disk. Nothing is run again; an empty list means nothing was interrupted. */
+export interface ReconcileResult {
+  readonly settled: readonly Receipt[];
+}
+
+/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem|plf|plx)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
 export interface Resource {
@@ -841,6 +916,12 @@ export interface CommandData {
   readonly "memory-exclude": MemoryResult;
   readonly "memory-include": MemoryResult;
   readonly "memory-delete": MemoryDeleted;
+  readonly reconcile: ReconcileResult;
+  readonly "pilot-feedback": PilotFeedback;
+  readonly "pilot-feedback-add": PilotFeedbackResult;
+  readonly "pilot-feedback-delete": PilotFeedbackDeleted;
+  readonly "pilot-feedback-preview": PilotFeedbackPreview;
+  readonly "pilot-feedback-export": PilotFeedbackExport;
 }
 
 export type Command = keyof CommandData;

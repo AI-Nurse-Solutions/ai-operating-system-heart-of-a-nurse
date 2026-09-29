@@ -85,7 +85,9 @@ class DevHostTests(unittest.TestCase):
 
     def test_nothing_that_writes_is_reachable(self):
         for command in ("brief", "accept", "export", "approve", "run", "backup", "restore",
-                        "init", "sample", "show", "assistants-stop", "assistants-resume"):
+                        "init", "sample", "show", "assistants-stop", "assistants-resume",
+                        "pilot-feedback-add", "pilot-feedback-delete", "pilot-feedback-export",
+                        "reconcile"):
             with self.subTest(command=command):
                 self.assertEqual(self.request(f"/ipc/{command}")[0].status, 404)
         for method in ("POST", "PUT", "DELETE", "PATCH"):

@@ -101,6 +101,9 @@
       "data_class": "D0"
     }
   ],
+  "pack_documents": [
+    {"pack": "education", "template": "education-plan", "project": "edu"}
+  ],
   "feedback": [
     {
       "project": "huddle",

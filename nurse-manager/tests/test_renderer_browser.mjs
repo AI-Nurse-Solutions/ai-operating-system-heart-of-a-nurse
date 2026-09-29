@@ -171,6 +171,26 @@ try {
   assert.match(await page.getByRole('region', { name: 'Excluded (1)' }).textContent(), /budget talks/);
   assert.equal(await page.locator('.view--memory button').count(), 0, 'no memory changes on the dev host');
 
+  // Packs: maintainer and review dates for each; documents open read-only here.
+  await page.getByRole('link', { name: 'Packs' }).click();
+  await page.waitForSelector('.view--packs');
+  assert.equal(await page.title(), 'Packs — Nurse AI OS');
+  for (const name of ['Committee pack 1.0.0', 'Communication pack 1.0.0', 'Education pack 1.0.0']) {
+    const pack = page.getByRole('region', { name });
+    assert.match(await pack.textContent(), /Current.*Maintained by.*Project steward \(GOVERNANCE\.md\).*Last reviewed.*Next review by/s, name);
+  }
+  assert.equal(await page.getByRole('button', { name: 'Start a draft' }).count(), 0, 'no drafts started on the dev host');
+  const packDocs = page.getByRole('region', { name: 'Your documents (1)' });
+  await packDocs.getByRole('link', { name: 'Education Plan / Lesson Plan — Fall education calendar' }).click();
+  await page.waitForSelector('.view--document');
+  assert.equal(await page.title(), 'Education Plan / Lesson Plan — Fall education calendar — Nurse AI OS');
+  assert.equal(await page.getByRole('link', { name: 'Packs', exact: true }).getAttribute('aria-current'), 'page');
+  assert.match(await page.locator('.brief-text').textContent(), /SYNTHETIC EXAMPLE.*DRAFT — started from a pack template.*Before you use this.*Needs assessment/s);
+  assert.equal(await page.locator('.view--document button').count(), 0, 'no edits or acceptance on the dev host');
+  await page.goto(`${main.url}#/document/art-000000000000`);
+  await page.waitForSelector('.view--error');
+  assert.match(await page.getByRole('alert').textContent(), /not in this workspace/);
+
   // The Library: every source, overdue reviews first, read-only here.
   await page.getByRole('link', { name: 'Library' }).click();
   await page.waitForSelector('.view--library');
@@ -329,7 +349,26 @@ try {
   await malformed.waitForSelector('main[aria-busy="false"]');
   assert.match(await malformed.getByRole('alert').textContent(), /id must be a project record id/, 'a malformed id is refused, not guessed');
   assert.deepEqual(malformedErrors, []);
+  // A broken percent escape is refused like any other malformed id, never a page error.
+  for (const route of ['document', 'project']) {
+    await malformed.goto(`${main.url}#/${route}/%`);
+    await malformed.reload();
+    await malformed.waitForSelector('main[aria-busy="false"]');
+    assert.match(await malformed.getByRole('alert').textContent(), new RegExp(`id must be a ${route} record id`), route);
+  }
+  assert.deepEqual(malformedErrors, [], 'no page error for a broken escape');
   await malformed.close();
+
+  // Opened directly on Packs or a document, a sample workspace still says it is one.
+  for (const route of ['#/packs', '#/document/' + await (async () => {
+    const listing = await (await fetch(new URL("/ipc/packs", main.url))).json();
+    return listing.data.documents[0].id;
+  })()]) {
+    const direct = await open(`${main.url}${route}`);
+    await direct.waitForSelector('main[aria-busy="false"]');
+    assert.ok(await direct.getByRole('note').filter({ hasText: 'Sample workspace' }).isVisible(), `${route} announces sample data`);
+    await direct.close();
+  }
 
   const errorPage = await open(`${missing.url}#/mission`);
   assert.match(await errorPage.getByRole('alert').textContent(), /no workspace has been created here yet/);
@@ -337,7 +376,7 @@ try {
   await errorPage.close();
 
   assert.deepEqual(errors, [], 'no console errors or CSP violations');
-  console.log('nurse-manager renderer: keyboard, names, ids, project dashboard, states, reflow, themes pass');
+  console.log('nurse-manager renderer: keyboard, names, ids, project dashboard, states, reflow, themes, packs pass');
 } finally {
   await browser?.close();
   for (const child of hosts) child.kill();

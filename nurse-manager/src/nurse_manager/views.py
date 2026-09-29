@@ -295,6 +295,40 @@ def mission_control(ws: ManagerWorkspace, *, today: str, week_of: str) -> dict[s
     }
 
 
+def packs(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
+    """The Packs screen: every pack with its maintainer and review dates, its
+    templates, and the documents the manager has started from them."""
+    from .packs import PackService, available_packs  # noqa: PLC0415 - avoids an import cycle
+
+    items = []
+    for pack in available_packs(today):
+        specs = pack.get("template_specs", {})
+        items.append({
+            "id": pack["id"],
+            "title": pack.get("title", pack["id"]),
+            "version": pack.get("version", ""),
+            "purpose": pack.get("purpose", ""),
+            "maintainer": pack.get("maintainer", ""),
+            "reviewed_on": pack.get("reviewed_on"),
+            "review_by": pack.get("review_by"),
+            "status": pack["status"],
+            "reason": pack["reason"],
+            "rules": pack.get("rules", []),
+            "templates": [
+                {"id": template_id, "title": spec["title"], "description": spec["description"],
+                 "sections": [s["heading"] for s in spec["sections"]]}
+                for template_id, spec in specs.items()
+            ],
+        })
+    return {
+        "sample": ws.info.sample,
+        "today": today,
+        "packs": items,
+        "documents": PackService(ws).documents(),
+        "projects": _project_choices(ws),
+    }
+
+
 def note_dict(row) -> dict[str, Any]:
     """A kept project note, in the contract's ProjectNote shape."""
     return {

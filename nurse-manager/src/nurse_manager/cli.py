@@ -25,6 +25,7 @@ from .brief import BriefService
 from .control import AssistantControl, assistants_at_work
 from .sample import load_sample
 from .memory import WorkspaceMemory
+from .packs import PackService
 from .schedule import BriefSchedule
 from .services import ManagerError, ManagerWorkspace, _iso_date
 from .views import (
@@ -38,6 +39,7 @@ from .views import (
     memory_item,
     library,
     mission_control,
+    packs,
     project_dashboard,
     table,
 )
@@ -118,6 +120,19 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--content", required=True)
         if name != "memory-delete":
             p.add_argument("--today", required=True)
+    p = ws_cmd("packs", "education, committee, and communication packs, and documents from them")
+    p.add_argument("--today", required=True)
+    p = ws_cmd("pack-start", "start a draft document from one template of a current pack")
+    p.add_argument("--pack", required=True)
+    p.add_argument("--template", required=True)
+    p.add_argument("--project")
+    p.add_argument("--today", required=True)
+    p = ws_cmd("document", "one document started from a pack: its current text and acceptance")
+    p.add_argument("--id", required=True)
+    p = ws_cmd("document-save", "save an edit to a pack document as a new draft")
+    p.add_argument("--id", required=True)
+    p.add_argument("--body", required=True)
+    p.add_argument("--base", required=True, help="sha256 of the text you edited")
     p = ws_cmd("library", "every source in the workspace; overdue reviews first")
     p.add_argument("--today", required=True)
     p = ws_cmd("source-add", "add a source (public, synthetic, or permitted personal material)")
@@ -274,6 +289,18 @@ def _dispatch(args: argparse.Namespace) -> Any:
              "memory-exclude": lambda: memories.exclude(args.id),
              "memory-include": lambda: memories.include(args.id)}[args.command]()
             return {"item": memory_item(ws, args.id, today=args.today)}
+        if args.command == "packs":
+            return packs(ws, today=args.today)
+        if args.command in ("pack-start", "document", "document-save"):
+            documents = PackService(ws)
+            if args.command == "pack-start":
+                document_id = documents.start(args.pack, args.template,
+                                              project_id=args.project, today=args.today)
+            else:
+                document_id = args.id
+            if args.command == "document-save":
+                documents.save(document_id, args.body, args.base)
+            return documents.view(document_id)
         if args.command == "contributions":
             return contributions(ws, today=args.today)
         if args.command == "contribution-add":
@@ -372,7 +399,16 @@ def run(argv: list[str]) -> tuple[int, dict[str, Any]]:
     The in-process entry point for hosts (the dev host, tests): no global
     stdout redirection, so it is safe to call from several threads.
     """
-    args = build_parser().parse_args(argv)
+    try:
+        args = build_parser().parse_args(argv)
+    except SystemExit as exc:
+        if not exc.code:
+            raise  # --help: argparse has printed it
+        # Arguments argparse cannot parse are answered like any other refusal,
+        # never with an exit that leaves a host without a reply.
+        return 2, {"contract": CONTRACT, "command": argv[0] if argv else "", "ok": False,
+                   "error": {"type": "UsageError",
+                             "message": "the command's arguments were not understood"}}
     base = {"contract": CONTRACT, "command": args.command}
     try:
         # Round-trip through JSON so in-process callers receive exactly the

@@ -148,6 +148,54 @@ class WorkspaceWriteTests(_AppCase):
         self.assertTrue(self.envelope("/ipc/sample", "POST", {})["ok"])
         self.body = {"week": "2026-09-28", "today": "2026-09-30"}
 
+    def test_start_edit_and_accept_a_pack_document(self):
+        packs = self.envelope("/ipc/packs")["data"]
+        self.assertEqual([p["id"] for p in packs["packs"]], ["committee", "communication", "education"])
+        started = self.envelope("/ipc/pack-start", "POST",
+                                {"pack": "communication", "template": "message-draft"})["data"]
+        document_id = started["document"]["id"]
+        self.assertEqual(self.envelope(f"/ipc/document?id={document_id}")["data"], started)
+        current = started["current"]
+        body = current["body_markdown"].replace("_Write this section._", "Huddle moves to 07:10.", 1)
+        saved = self.envelope("/ipc/document-save", "POST", {
+            "document_id": document_id, "body_markdown": body,
+            "base_sha256": current["revision"]["sha256"]})["data"]["current"]["revision"]
+        stale = self.envelope("/ipc/document-save", "POST", {
+            "document_id": document_id, "body_markdown": body + "x",
+            "base_sha256": current["revision"]["sha256"]})
+        self.assertEqual((stale["ok"], stale["error"]["type"]), (False, "StaleRevision"))
+        # A reviewer in the body is ignored: the app accepts as the owner only.
+        accepted = self.envelope("/ipc/accept", "POST", {
+            "revision": saved["id"], "sha256": saved["sha256"], "reviewer": "Someone Else"})["data"]
+        self.assertEqual((accepted["status"], accepted["accepted_by"]), ("accepted", "Sample Manager"))
+        due = self.envelope("/ipc/pack-start", "POST", {
+            "pack": "communication", "template": "message-draft", "today": "2027-04-01"})
+        self.assertIn("Past its review date", due["error"]["message"])
+        for body in ({"pack": "communication"},
+                     {"pack": "../communication", "template": "message-draft"},
+                     {"pack": "communication", "template": "message-draft", "project_id": "prj-1"},
+                     {"pack": "communication", "template": "message-draft\n"},
+                     {"document_id": document_id, "body_markdown": "x"},
+                     {"document_id": "art-1", "body_markdown": "x", "base_sha256": "0" * 64},
+                     {"document_id": document_id, "body_markdown": 5, "base_sha256": "0" * 64}):
+            command = "pack-start" if "pack" in body else "document-save"
+            with self.subTest(body=body):
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", body)[0], 400)
+        self.assertEqual(self.request("/ipc/document?id=art-1")[0], 400)
+
+    def test_text_that_starts_like_an_option_is_saved_as_text(self):
+        # Free text is the manager's words, never command-line options: text
+        # beginning "--todo" or "-h" is stored as written.
+        started = self.envelope("/ipc/pack-start", "POST",
+                                {"pack": "communication", "template": "message-draft"})["data"]
+        saved = self.envelope("/ipc/document-save", "POST", {
+            "document_id": started["document"]["id"], "body_markdown": "--todo\nDraft the huddle script.\n",
+            "base_sha256": started["current"]["revision"]["sha256"]})
+        self.assertTrue(saved["ok"], saved)
+        self.assertEqual(saved["data"]["current"]["body_markdown"], "--todo\nDraft the huddle script.\n")
+        memory = self.envelope("/ipc/memory-add", "POST", {"content": "-h means huddle (synthetic)."})
+        self.assertEqual(memory["data"]["item"]["content"], "-h means huddle (synthetic).")
+
     def test_draft_review_and_accept_as_the_workspace_owner(self):
         self.assertIsNone(self.envelope("/ipc/weekly?week=2026-09-28")["data"]["current"])
         draft = self.envelope("/ipc/brief", "POST", self.body)["data"]

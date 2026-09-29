@@ -1899,3 +1899,194 @@ export function renderMemory(doc, data, options) {
   ]));
   return root;
 }
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').Packs} Packs */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').PackDocumentView} PackDocumentView */
+/** @typedef {{ template?: string, project_id?: string }} PackChoice */
+
+/**
+ * The pack choices on screen, so a re-render never loses them.
+ * @param {ParentNode} root
+ * @param {Record<string, PackChoice>} [previous]
+ * @returns {Record<string, PackChoice>}
+ */
+export function typedPacks(root, previous = {}) {
+  /** @type {Record<string, PackChoice>} */
+  const typed = { ...previous };
+  for (const form of root.querySelectorAll('form[data-pack]')) {
+    const pack = form.getAttribute('data-pack') ?? '';
+    const template = form.querySelector('select[name="template"]');
+    const project = form.querySelector('select[name="project"]');
+    if (template instanceof HTMLSelectElement && project instanceof HTMLSelectElement) {
+      typed[pack] = { template: template.value, project_id: project.value };
+    }
+  }
+  return typed;
+}
+
+/**
+ * Packs: reviewed templates, each saying who maintains it and when it is next
+ * reviewed. A draft started from one is the manager's to write and accept.
+ * @param {Document} doc
+ * @param {Packs} data
+ * @param {{ writable: boolean, busy?: boolean, notice?: Notice, typed?: Record<string, PackChoice>,
+ *   onStart: (packId: string, choice: { template: string, project_id: string }) => void }} options
+ */
+export function renderPacks(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const typed = options.typed ?? {};
+  const root = h(doc, 'div', { class: 'view view--packs' });
+  root.append(viewHeading(doc, 'Packs',
+    'Reviewed templates for education, committees, and communication. Each says who maintains it and when it is next reviewed. You write every document yourself.'));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+
+  for (const pack of data.packs) {
+    const headingId = `pack-${pack.id}-heading`;
+    const status = pack.status === 'current' ? badge(doc, 'accepted', '✓', 'Current')
+      : pack.status === 'due_for_review' ? badge(doc, 'overdue', '⚠', 'Due for review')
+        : badge(doc, 'error', '✕', 'Unavailable');
+    const section = h(doc, 'section', { class: 'mc-section', 'aria-labelledby': headingId, 'data-pack': pack.id }, [
+      h(doc, 'h2', { id: headingId }, [pack.title, pack.version ? ` ${pack.version}` : '']),
+      h(doc, 'p', { class: 'card__badges' }, [status, pack.reason ? ` ${pack.reason}` : '']),
+    ]);
+    if (pack.purpose) section.append(h(doc, 'p', {}, [pack.purpose]));
+    if (pack.maintainer) {
+      section.append(h(doc, 'dl', { class: 'count-list' }, [
+        h(doc, 'dt', {}, ['Maintained by']), h(doc, 'dd', {}, [pack.maintainer]),
+        h(doc, 'dt', {}, ['Last reviewed']), h(doc, 'dd', {}, [pack.reviewed_on ?? '']),
+        h(doc, 'dt', {}, ['Next review by']), h(doc, 'dd', {}, [pack.review_by ?? '']),
+      ]));
+    }
+    if (pack.rules.length) {
+      section.append(h(doc, 'h3', {}, ['Rules that come with it']),
+        h(doc, 'ul', { class: 'item-list' }, pack.rules.map((rule) => h(doc, 'li', {}, [rule]))));
+    }
+    if (pack.templates.length) {
+      section.append(h(doc, 'h3', {}, ['Templates']),
+        h(doc, 'ul', { class: 'item-list' }, pack.templates.map((t) => h(doc, 'li', {}, [
+          h(doc, 'span', { class: 'item-title' }, [t.title]),
+          h(doc, 'span', { class: 'item-meta' }, [` · ${t.description} Sections: ${t.sections.join(', ')}.`]),
+        ]))));
+    }
+    if (options.writable && pack.status === 'current') {
+      const templateId = `pack-${pack.id}-template`;
+      const projectId = `pack-${pack.id}-project`;
+      const template = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id: templateId, name: 'template' },
+        pack.templates.map((t) => h(doc, 'option', { value: t.id }, [t.title]))));
+      const project = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id: projectId, name: 'project' }, [
+        h(doc, 'option', { value: '' }, ['No project']),
+        ...data.projects.map((p) => h(doc, 'option', { value: p.id }, [p.title])),
+      ]));
+      template.value = typed[pack.id]?.template ?? template.value;
+      project.value = typed[pack.id]?.project_id ?? '';
+      const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Start a draft']));
+      for (const control of [template, project, submit]) control.disabled = busy;
+      const form = h(doc, 'form', { class: 'onboarding-form', 'data-pack': pack.id, 'aria-label': `Start a draft from the ${pack.title}` }, [
+        h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: templateId }, ['Template']), template]),
+        h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: projectId }, ['For']), project]),
+        submit,
+      ]);
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        options.onStart(pack.id, { template: template.value, project_id: project.value });
+      });
+      section.append(form);
+    }
+    root.append(section);
+  }
+
+  const documents = h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'pack-documents-heading' }, [
+    h(doc, 'h2', { id: 'pack-documents-heading', tabindex: '-1' }, [`Your documents (${data.documents.length})`]),
+  ]);
+  documents.append(data.documents.length
+    ? h(doc, 'ul', { class: 'item-list' }, data.documents.map((d) => h(doc, 'li', { 'data-record-id': d.id }, [
+      d.status === 'accepted' ? badge(doc, 'accepted', '✓', 'Accepted') : badge(doc, 'review', '!', 'Draft — review it'),
+      ' ',
+      h(doc, 'a', { href: `#/document/${encodeURIComponent(d.id)}` }, [d.title]),
+      h(doc, 'span', { class: 'item-meta' }, [
+        ` · ${d.pack_id} pack ${d.pack_version} · version ${d.revision_no}`,
+        d.has_accepted && d.status !== 'accepted' ? ' · an earlier version is accepted' : '',
+      ]),
+    ])))
+    : h(doc, 'p', { class: 'section-state section-state--empty' }, ['No documents yet. Start one from a pack above.']));
+  root.append(documents);
+  if (!options.writable) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Starting and editing documents is available in the Nurse AI OS app.',
+    ]));
+  }
+  return root;
+}
+
+/**
+ * One document started from a pack: read it, edit it as a new draft, accept exactly what you reviewed.
+ * @param {Document} doc
+ * @param {PackDocumentView} data
+ * @param {{ writable: boolean, busy?: boolean, notice?: Notice, editing?: boolean, typed?: string,
+ *   onEdit: () => void, onCancelEdit: () => void,
+ *   onSave: (body: string, baseSha: string) => void, onAccept: (revision: Revision) => void }} options
+ */
+export function renderDocument(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const d = data.document;
+  const rev = data.current.revision;
+  const root = h(doc, 'div', { class: 'view view--document' });
+  root.append(h(doc, 'p', {}, [h(doc, 'a', { href: '#/packs' }, ['← Packs'])]));
+  root.append(viewHeading(doc, d.title,
+    `From the ${d.pack_id} pack ${d.pack_version} (template ${d.template_id}). Drafts are never final until you accept them.`));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+  if (d.project_id) {
+    root.append(h(doc, 'p', { class: 'card__meta' }, ['Project: ',
+      h(doc, 'a', { href: `#/project/${encodeURIComponent(d.project_id)}` }, [d.project_title ?? d.project_id])]));
+  }
+  const status = rev.status === 'accepted' ? badge(doc, 'accepted', '✓', 'Accepted') : badge(doc, 'review', '!', 'Draft — review it');
+  const section = h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'document-current-heading' }, [
+    h(doc, 'h2', { id: 'document-current-heading', tabindex: '-1' }, ['Current version']),
+    h(doc, 'p', { class: 'card__badges' }, [status, ` Version ${rev.revision_no}.`]),
+  ]);
+  if (options.writable && options.editing) {
+    const text = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+      id: 'document-text', rows: '24', required: '', maxlength: '50000', 'aria-describedby': 'document-text-hint',
+    }));
+    text.value = options.typed ?? data.current.body_markdown;
+    text.readOnly = busy;
+    const save = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Save as a new draft']));
+    save.disabled = busy;
+    const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'document-current-heading' }, [
+      h(doc, 'p', { class: 'field' }, [
+        h(doc, 'label', { for: 'document-text' }, ['Document text (Markdown)']),
+        h(doc, 'span', { class: 'field-hint', id: 'document-text-hint' }, [
+          'Replace each "Write this section." with your own words. Leave out names of patients and staff.',
+        ]),
+        text,
+      ]),
+      h(doc, 'p', { class: 'button-row' }, [save, button(doc, 'Cancel', busy, options.onCancelEdit, 'secondary-button')]),
+    ]);
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      options.onSave(text.value, rev.sha256);
+    });
+    section.append(form);
+  } else {
+    section.append(markdownBlock(doc, data.current.markdown, `${d.title}, version ${rev.revision_no}`));
+    if (options.writable) {
+      section.append(h(doc, 'p', { class: 'button-row' }, [
+        rev.status === 'draft' ? button(doc, 'I have reviewed it — accept this version', busy, () => options.onAccept(rev)) : null,
+        button(doc, 'Edit…', busy, options.onEdit, 'secondary-button'),
+      ]));
+    } else {
+      section.append(h(doc, 'p', { class: 'section-state' }, [
+        badge(doc, 'unavailable', '○', 'Read-only'), ' Editing and accepting are available in the Nurse AI OS app.',
+      ]));
+    }
+  }
+  root.append(section);
+  if (data.accepted && data.accepted.id !== rev.id) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      `Version ${data.accepted.revision_no} is the accepted one until you accept a newer version.`,
+    ]));
+  }
+  return root;
+}

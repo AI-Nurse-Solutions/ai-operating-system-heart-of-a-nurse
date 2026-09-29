@@ -35,9 +35,10 @@ from . import cli, resources
 RENDERER = resources.manager_root() / "renderer"
 READ_ONLY_COMMANDS = ("mission", "project", "board", "table", "weekly", "assistant",
                       "assistant-preview", "assistant-project-preview", "library",
-                      "learning", "contributions", "memory")
+                      "learning", "contributions", "memory", "packs", "document")
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _PROJECT_ID = re.compile(r"^prj-[0-9a-f]{12}$")
+_DOCUMENT_ID = re.compile(r"^art-[0-9a-f]{12}$")
 
 SECURITY_HEADERS = {
     "Content-Security-Policy": (
@@ -54,6 +55,15 @@ def monday_of(day: date) -> date:
     return day - timedelta(days=day.weekday())
 
 
+def bind_values(argv: list[str]) -> list[str]:
+    """Join every option to its value (``--body=text``), so text a person typed
+    is never read as another option, however it begins ("--todo", "-h")."""
+    bound, rest = argv[:2], iter(argv[2:])
+    for option in rest:
+        bound.append(f"{option}={next(rest)}")
+    return bound
+
+
 def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
               default_today: str) -> list[str] | str:
     """The CLI arguments for one read-only command, or a message saying what is wrong.
@@ -68,8 +78,13 @@ def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
     week = (query.get("week") or [monday_of(date.fromisoformat(day)).isoformat()])[0]
     if not _valid_date(week):
         return "week must be a YYYY-MM-DD date"
-    if command in ("library", "learning", "contributions", "memory"):
+    if command in ("library", "learning", "contributions", "memory", "packs"):
         argv += ["--today", day]
+    elif command == "document":
+        document_id = (query.get("id") or [""])[0]
+        if not _DOCUMENT_ID.fullmatch(document_id):
+            return "id must be a document record id"
+        argv += ["--id", document_id]
     elif command in ("mission", "assistant-preview"):
         argv += ["--today", day, "--week", week]
     elif command == "weekly":
@@ -176,7 +191,7 @@ def make_handler(workspace: Path, today: str | None):
             argv = read_argv(command, workspace, query, today or date.today().isoformat())
             if isinstance(argv, str):
                 return self._text(400, argv)
-            _code, envelope = cli.run(argv)
+            _code, envelope = cli.run(bind_values(argv))
             body = json.dumps(envelope, sort_keys=True).encode("utf-8")
             # The envelope carries success or failure; HTTP only says it was delivered.
             self._send(200, body, "application/json; charset=utf-8")

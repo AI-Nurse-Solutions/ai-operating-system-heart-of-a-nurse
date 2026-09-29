@@ -81,6 +81,11 @@ def load_sample(
     for f in data.get("feedback", []):
         ws.add_feedback(projects[f["project"]], f["from"], f["kind"], f["summary"],
                         f["received_on"])
+    from .packs import PackService
+
+    for item in data.get("pack_documents", []):  # started on the sample's own day
+        PackService(ws).start(item["pack"], item["template"],
+                              project_id=projects.get(item.get("project")), today=data["today"])
     ws.set_priorities(
         data["week_of"],
         [p["text"] for p in data["priorities"]],

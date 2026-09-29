@@ -500,7 +500,8 @@ class MigrationTests(unittest.TestCase):
 
         store = store_module.Store(path)
         self.addCleanup(store.close)
-        self.assertEqual(store.schema_version, "0010_assistant_stop")
+        applied = {row[0] for row in store.conn.execute("SELECT version FROM schema_migrations")}
+        self.assertIn("0010_assistant_stop", applied)
         (row,) = store.conn.execute("SELECT * FROM assistant_requests")
         self.assertEqual((row["id"], row["outcome"], row["output_sha256"], row["finished_at"]),
                          ("air-000000000001", "answered", "abc", at))

@@ -84,7 +84,7 @@ One logical writer per record type. Views never write.
 | Source | `sources` | `ManagerWorkspace.add_source` | brief |
 | Decision | `decisions` | `ManagerWorkspace.record_decision` | brief |
 | Priorities | `priorities` | `ManagerWorkspace.set_priorities` | views, brief |
-| Artifact + revisions | `artifacts`, `artifact_revisions` | `BriefService` | views, actions |
+| Artifact + revisions (weekly briefs and pack documents) | `artifacts`, `artifact_revisions` | `BriefService` (pack documents through `PackService`) | views, actions, Packs |
 | Action, approval, receipt | `actions`, `approvals`, `receipts` | `ActionBoundary` | views |
 | AI settings | `assistant_settings` | `AssistantService.connect_local/disconnect` (the workspace owner only) | views, assistant |
 | AI request ledger (hashes and outcomes, never text; weekly briefs and project questions; unfinished while waiting for a model) | `assistant_requests` | `AssistantService` | assistant (budget, note binding), Mission Control (assistants at work) |
@@ -95,6 +95,7 @@ One logical writer per record type. Views never write.
 | Recurring brief runs (one per week: drafted, skipped, or failed with retries) | `brief_runs` | `BriefSchedule.run_due`, called by the running app | Weekly brief |
 | Memory (what the manager asks the assistant to remember; for all work or one project) | `memories` | `WorkspaceMemory` (the Integration Contract's `MemoryInterface`; the workspace owner only) | Memory, assistant (project context) |
 | Assistants stopped or working (one switch per workspace; a generation that rises with every stop) | `assistant_control` | `AssistantControl.stop/resume` (the workspace owner only) | Mission Control, assistant, recurring brief |
+| Pack document origin (pack, version, and template pin a document started from) | `pack_documents` | `PackService.start` (the workspace owner only) | Packs, document |
 | Project note (an AI answer the manager kept, exactly as given) | `project_notes` | `AssistantService.keep_project_note` (the workspace owner only) | project dashboard |
 | Audit stream | `event_log` | every writer, via `Store.log`, inside the same transaction | backup/restore |
 | Schema | `schema_migrations` | `Store._migrate` | restore |

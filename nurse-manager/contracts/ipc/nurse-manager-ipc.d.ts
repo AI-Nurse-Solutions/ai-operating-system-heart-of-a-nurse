@@ -440,6 +440,75 @@ export interface MissionControl {
   readonly task_counts: TaskCounts;
 }
 
+/** A reviewed, versioned set of templates with its maintainer and review dates. Only a current pack can start a document; one past its review date, or failing its checks, says why. */
+export interface Pack {
+  readonly id: string;
+  readonly title: string;
+  readonly version: string;
+  readonly purpose: string;
+  readonly maintainer: string;
+  readonly reviewed_on: IsoDate | null;
+  readonly review_by: IsoDate | null;
+  readonly status: "current" | "due_for_review" | "unavailable";
+  /** Why it cannot start a document; empty when current. */
+  readonly reason: string;
+  readonly rules: readonly string[];
+  readonly templates: readonly PackTemplate[];
+}
+
+/** A document started from a pack: which pack version and template, and where its latest revision stands. */
+export interface PackDocument {
+  readonly id: RecordId;
+  readonly title: string;
+  readonly project_id: RecordId | null;
+  readonly project_title: string | null;
+  readonly pack_id: string;
+  readonly pack_version: string;
+  readonly template_id: string;
+  /** @minimum 1 */
+  readonly revision_no: number;
+  /** Of the latest revision. */
+  readonly status: "draft" | "accepted";
+  /** Some revision is accepted, even if a newer draft exists. */
+  readonly has_accepted: boolean;
+  readonly updated_at: IsoDateTime;
+}
+
+/** One pack document: the latest revision (rendered with its banner, and its raw text to edit) and the accepted one. Accept it with the accept command. */
+export interface PackDocumentView {
+  readonly sample: boolean;
+  readonly document: PackDocument;
+  readonly current: {
+    readonly revision: Revision;
+    /** The only rendering; it always carries its status banner. */
+    readonly markdown: string;
+    /** The text to edit; send its revision sha256 back as the base. */
+    readonly body_markdown: string;
+  };
+  readonly accepted: Revision | null;
+}
+
+/** One template a pack uses, from the shared deliverable catalog. */
+export interface PackTemplate {
+  readonly id: string;
+  readonly title: string;
+  readonly description: string;
+  readonly sections: readonly string[];
+}
+
+/** Education, committee, and communication packs, and the documents started from them. */
+export interface Packs {
+  readonly sample: boolean;
+  readonly today: IsoDate;
+  readonly packs: readonly Pack[];
+  readonly documents: readonly PackDocument[];
+  /** Projects a new document can be for. */
+  readonly projects: readonly {
+    readonly id: RecordId;
+    readonly title: string;
+  }[];
+}
+
 export interface PrioritiesSection {
   readonly state: SectionState;
   /** @maxItems 3 */
@@ -732,6 +801,10 @@ export interface CommandData {
   readonly "brief-schedule-set": BriefSchedule;
   readonly "brief-run-due": BriefRunResult;
   readonly memory: Memory;
+  readonly packs: Packs;
+  readonly "pack-start": PackDocumentView;
+  readonly document: PackDocumentView;
+  readonly "document-save": PackDocumentView;
   readonly "memory-add": MemoryResult;
   readonly "memory-correct": MemoryResult;
   readonly "memory-exclude": MemoryResult;

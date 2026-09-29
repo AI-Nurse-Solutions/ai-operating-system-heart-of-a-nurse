@@ -341,6 +341,42 @@ try {
   assert.equal(await samplePage.getByText('three days ahead').count(), 0);
   assert.match(await samplePage.getByRole('list', { name: 'Facts' }).textContent(), /2 in use · 0 expired · 1 excluded/);
 
+  // --- Packs (5.4): start a draft, write it, accept exactly what was reviewed ---
+  await samplePage.getByRole('link', { name: 'Packs' }).click();
+  await samplePage.waitForSelector('.view--packs');
+  const committee = samplePage.getByRole('region', { name: 'Committee pack 1.0.0' });
+  assert.match(await committee.textContent(), /Maintained by.*Next review by2027-03-29.*never effective until it is approved/s);
+  await committee.getByLabel('Template').selectOption({ label: 'Meeting Brief, Agenda, Minutes, and Action List' });
+  await committee.getByLabel('For').selectOption({ label: 'Unit Based Council charter refresh' });
+  await committee.getByRole('button', { name: 'Start a draft' }).click();
+  await samplePage.waitForSelector('.view--document');
+  assert.match(await samplePage.locator('h1').textContent(), /Meeting Brief, Agenda, Minutes, and Action List — Unit Based Council charter refresh/);
+  assert.match(await samplePage.locator('.brief-text').textContent(), /DRAFT — started from a pack template.*Committee pack 1\.0\.0.*Agenda.*Write this section/s);
+  await samplePage.getByRole('button', { name: 'Edit…' }).click();
+  await samplePage.waitForFunction(() => document.activeElement?.id === 'document-text');
+  const original = await samplePage.getByLabel('Document text (Markdown)').inputValue();
+  // An identifier is refused, and the text stays as typed to fix.
+  const withEmail = original.replace('_Write this section._', 'Ask chair@example.org to confirm the room.');
+  await samplePage.getByLabel('Document text (Markdown)').fill(withEmail);
+  await samplePage.getByRole('button', { name: 'Save as a new draft' }).click();
+  await samplePage.waitForSelector('.view--document .notice[role="alert"]');
+  assert.match(await samplePage.locator('.notice').textContent(), /not stored.*EMAIL_ADDRESS/s);
+  assert.equal(await samplePage.getByLabel('Document text (Markdown)').inputValue(), withEmail);
+  await samplePage.getByLabel('Document text (Markdown)').fill(
+    original.replace('_Write this section._', 'Agree the charter dates first (synthetic).'));
+  await samplePage.getByRole('button', { name: 'Save as a new draft' }).click();
+  await samplePage.waitForFunction(() => /Saved as a new draft/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await samplePage.locator('.brief-text').textContent(), /Agree the charter dates first/);
+  assert.match(await samplePage.locator('.view--document').textContent(), /Version 2\./);
+  await samplePage.getByRole('button', { name: /accept this version/ }).focus();
+  await samplePage.keyboard.press('Enter');
+  await samplePage.waitForFunction(() => /Version 2 is accepted/.test(document.activeElement?.textContent ?? ''));
+  assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by Sample Manager/);
+  await samplePage.getByRole('link', { name: '← Packs' }).click();
+  await samplePage.waitForSelector('.view--packs');
+  const yours = samplePage.getByRole('region', { name: 'Your documents (2)' });
+  assert.match(await yours.getByRole('listitem').filter({ hasText: 'Meeting Brief' }).textContent(), /Accepted.*committee pack 1\.0\.0 · version 2/s);
+
   // --- AI assistance: connect a model on this computer ------------------
   const modelRequests = [];
   // While holdModel is set, the model works until the test releases it.
@@ -579,7 +615,7 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory, stop control pass');
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory, stop control, packs pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

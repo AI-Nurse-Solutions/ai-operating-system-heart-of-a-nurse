@@ -21,6 +21,7 @@ datas = [
     (str(MANAGER / "renderer"), "nurse-manager/renderer"),
     (str(MANAGER / "config"), "nurse-manager/config"),
     (str(MANAGER / "samples"), "nurse-manager/samples"),
+    (str(MANAGER / "packs"), "nurse-manager/packs"),
     (str(MANAGER / "src" / "nurse_manager" / "migrations"), "nurse-manager/src/nurse_manager/migrations"),
     (str(NAIO / "config"), "naio-integrations/config"),
 ]

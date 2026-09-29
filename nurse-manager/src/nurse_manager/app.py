@@ -42,18 +42,20 @@ from . import __version__, cli, resources
 from .devhost import (
     READ_ONLY_COMMANDS,
     _PROJECT_ID,
+    bind_values,
     _valid_date,
     monday_of,
     read_argv,
     send,
     serve_static,
 )
+from .packs import MAX_DOCUMENT_CHARS
 from .services import ManagerWorkspace
 
 DEFAULT_IDLE_TIMEOUT = 15 * 60
 # How often the running app asks whether the recurring brief is due (step 5.1).
 SCHEDULE_INTERVAL = 60.0
-MAX_BODY = 64 * 1024  # room for an AI answer being kept as a note
+MAX_BODY = 256 * 1024  # room for a pack document (50,000 characters) as JSON
 LOCK_NAME = "app.lock.json"
 
 # The only writes the screens can ask for once a workspace exists. Each one
@@ -64,7 +66,8 @@ WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assist
                   "source-add", "learning-add", "learning-start", "learning-complete",
                   "contribution-add", "contribution-verify", "brief-schedule-set",
                   "memory-add", "memory-correct", "memory-exclude", "memory-include",
-                  "memory-delete", "assistants-stop", "assistants-resume")
+                  "memory-delete", "assistants-stop", "assistants-resume", "pack-start",
+                  "document-save")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
@@ -72,6 +75,8 @@ _FEEDBACK_ID = re.compile(r"^fbk-[0-9a-f]{12}$")
 _LEARNING_ID = re.compile(r"^lrn-[0-9a-f]{12}$")
 _MEMORY_ID = re.compile(r"^mem-[0-9a-f]{12}$")
 _CONTRIBUTION_ID = re.compile(r"^ctb-[0-9a-f]{12}$")
+_DOCUMENT_ID = re.compile(r"^art-[0-9a-f]{12}$")
+_PACK_PART = re.compile(r"^[a-z][a-z0-9-]{1,59}$")
 _HOURS = re.compile(r"^\d{1,3}(\.\d{1,2})?$")
 
 
@@ -335,7 +340,7 @@ class LocalApp:
                 argv = read_argv(command, app.workspace, query, date.today().isoformat())
                 if isinstance(argv, str):
                     return self._text(400, argv)
-                _code, envelope = cli.run(argv)
+                _code, envelope = cli.run(bind_values(argv))
                 return self._json(200, envelope)
 
             def _write(self, command: str, body: dict) -> None:
@@ -348,7 +353,7 @@ class LocalApp:
                 argv = _write_argv(command, body, app.workspace, app.owner())
                 if isinstance(argv, str):
                     return self._text(400, argv)
-                _code, envelope = cli.run(argv)
+                _code, envelope = cli.run(bind_values(argv))
                 return self._json(200, envelope)
 
             def _onboard(self, command: str, body: dict) -> None:
@@ -402,6 +407,22 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         return argv + ["--endpoint", endpoint] if endpoint.strip() else argv
     if command in ("assistant-off", "assistants-stop", "assistants-resume"):
         return [command, ws, "--by", owner]
+    if command == "pack-start":
+        pack, template = text("pack", 60), text("template", 60)
+        project_id = text("project_id", 64, required=False)
+        if (not pack or not _PACK_PART.fullmatch(pack) or not template
+                or not _PACK_PART.fullmatch(template) or project_id is None
+                or (project_id and not _PROJECT_ID.fullmatch(project_id))):
+            return "pack and template are required; project_id is optional"
+        argv = ["pack-start", ws, "--pack", pack, "--template", template, "--today", today]
+        return argv + (["--project", project_id] if project_id else [])
+    if command == "document-save":
+        document_id, base = text("document_id", 64), text("base_sha256", 64)
+        content = text("body_markdown", MAX_DOCUMENT_CHARS + 1)
+        if (not document_id or not _DOCUMENT_ID.fullmatch(document_id) or not base
+                or not _SHA256.fullmatch(base) or content is None):
+            return "document_id, body_markdown, and base_sha256 are required"
+        return ["document-save", ws, "--id", document_id, "--body", content, "--base", base]
     if command in ("learning-add", "learning-start", "learning-complete"):
         hours = text("hours", 10, required=False)
         if hours is None or (hours and not _HOURS.fullmatch(hours)):

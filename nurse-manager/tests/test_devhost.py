@@ -30,6 +30,8 @@ class DevHostTests(unittest.TestCase):
         ws.close()
         ws = ManagerWorkspace(cls.workspace)
         cls.project_id = ws.store.conn.execute("SELECT id FROM projects ORDER BY id").fetchone()[0]
+        cls.document_id = ws.store.conn.execute(
+            "SELECT artifact_id FROM pack_documents ORDER BY artifact_id").fetchone()[0]
         ws.close()
         cls.server = devhost.serve(cls.workspace, 0, TODAY)
         cls.port = cls.server.server_address[1]
@@ -58,6 +60,8 @@ class DevHostTests(unittest.TestCase):
         for command in devhost.READ_ONLY_COMMANDS:
             with self.subTest(command=command):
                 query = f"?id={self.project_id}" if command == "project" else ""
+                if command == "document":
+                    query = f"?id={self.document_id}"
                 if command == "assistant-project-preview":
                     query = f"?id={self.project_id}&question=What%20next%3F"
                 response, body = self.request(f"/ipc/{command}{query}")
@@ -67,8 +71,10 @@ class DevHostTests(unittest.TestCase):
                     argv += ["--today", TODAY, "--week", "2026-09-28"]
                 if command == "project":
                     argv += ["--id", self.project_id, "--today", TODAY]
-                if command in ("library", "learning", "contributions", "memory"):
+                if command in ("library", "learning", "contributions", "memory", "packs"):
                     argv += ["--today", TODAY]
+                if command == "document":
+                    argv += ["--id", self.document_id]
                 if command == "weekly":
                     argv += ["--week", "2026-09-28"]
                 if command == "assistant-preview":

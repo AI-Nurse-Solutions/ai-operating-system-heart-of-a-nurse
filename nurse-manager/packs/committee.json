@@ -1,0 +1,24 @@
+{
+  "schema": "nurse-manager-pack@1",
+  "id": "committee",
+  "title": "Committee pack",
+  "version": "1.0.0",
+  "purpose": "Prepare for a committee, record what it decided, and draft what it will review.",
+  "maintainer": "Project steward (GOVERNANCE.md)",
+  "reviewed_on": "2026-09-29",
+  "review_by": "2027-03-29",
+  "catalog": {
+    "file": "naio-integrations/config/deliverable-templates.json",
+    "schema_version": "1.0.0"
+  },
+  "templates": {
+    "meeting-pack": "c4bd8a792595e627908e627cf1c1b623f8094bce92b36969a5d1a77d62ba9cd9",
+    "executive-brief": "532f93fcb3a113675ad192b1543ff5388292d0e32062b2ea23448b6c53050059",
+    "policy-procedure-draft": "64503c10220a8e95dd4ede9f732fc79f9d69ea5998522e0ed0d715fbb49a65fc"
+  },
+  "rules": [
+    "A policy or procedure draft is never effective until it is approved through your organization's governance.",
+    "Minutes record decisions and owners by role; they are a draft until the committee accepts them.",
+    "Keep confidential employer material out: it needs an organization workspace, not this one."
+  ]
+}

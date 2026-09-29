@@ -345,6 +345,32 @@ class FeedTests(_Tmp):
             with self.assertRaisesRegex(UpdateError, "answered 503"):
                 update.fetch("https://example.org/feed.json", limit=10)
 
+    def test_the_feed_address_names_a_file_its_signature_sits_beside(self):
+        """The signature is fetched from the feed address plus ".sig". A query or
+        fragment would take the suffix instead of the path, and an address with
+        no file would change the host."""
+        config = json.loads((FEEDS / "config.json").read_text())
+        path = self.tmp / "config.json"
+        for url in ("https://example.org/feed.json?v=1", "https://example.org/feed.json#v1",
+                    "https://example.org", "https://example.org/", "https://example.org/feeds/"):
+            with self.subTest(url=url):
+                path.write_text(json.dumps({**config, "feed_url": url}))
+                with self.assertRaisesRegex(UpdateError, "feed address"):
+                    update.load_config(path)
+        path.write_text(json.dumps({**config, "feed_url": "https://example.org/pilot/feed.json"}))
+        fetched = []
+
+        def fake_fetch(url, *, limit):
+            fetched.append(url)
+            name = "feed-seq5.json.sig" if url.endswith(".sig") else "feed-seq5.json"
+            return (FEEDS / name).read_bytes()
+
+        with mock.patch.object(update, "fetch", fake_fetch):
+            result = update.check(config_file=path, state_file=self.state, today=TODAY)
+        self.assertEqual(result["status"], "update_available")
+        self.assertEqual(fetched, ["https://example.org/pilot/feed.json",
+                                   "https://example.org/pilot/feed.json.sig"])
+
     def test_a_huge_local_file_is_refused_without_reading_it_all(self):
         big = self.tmp / "feed.json"
         with big.open("wb") as fh:

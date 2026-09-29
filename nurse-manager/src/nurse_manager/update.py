@@ -174,6 +174,15 @@ def load_config(path: Path | None = None) -> dict[str, Any]:
     url = data.get("feed_url")
     if url is not None and not _well_formed_https(url):
         raise UpdateError("the feed address must be a well-formed https address; check the settings")
+    if url is not None:
+        # The signature is fetched from this address plus ".sig", so it must name
+        # a file: a query or fragment would take the suffix instead of the path,
+        # and an address with no file would change the host.
+        parts = urllib.parse.urlsplit(url)
+        if parts.query or parts.fragment or "?" in url or "#" in url \
+                or not parts.path or parts.path.endswith("/"):
+            raise UpdateError("the feed address must name the feed file, with no query or"
+                              " fragment (its signature sits beside it as .sig); check the settings")
     return {"channel": channel, "feed_url": url, "keys": keys}
 
 

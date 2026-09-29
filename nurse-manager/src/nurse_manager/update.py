@@ -34,6 +34,7 @@ import json
 import re
 import sqlite3
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import date
 from pathlib import Path
@@ -171,8 +172,8 @@ def load_config(path: Path | None = None) -> dict[str, Any]:
             raise UpdateError("a trusted key's id does not match the key; check the settings")
         keys.append((key_id, n, e))
     url = data.get("feed_url")
-    if url is not None and not (isinstance(url, str) and url.startswith("https://")):
-        raise UpdateError("the feed address must be https")
+    if url is not None and not _well_formed_https(url):
+        raise UpdateError("the feed address must be a well-formed https address; check the settings")
     return {"channel": channel, "feed_url": url, "keys": keys}
 
 
@@ -328,10 +329,24 @@ def check_feed(feed_bytes: bytes, signature: bytes, *, config: dict[str, Any],
             "sequence": feed["sequence"], "key_id": key_id}
 
 
+def _well_formed_https(url: Any) -> bool:
+    """An https address with a host, a valid port, and no spaces or control characters."""
+    if not isinstance(url, str) or any(c.isspace() or ord(c) < 32 or ord(c) == 127 for c in url):
+        return False
+    try:
+        parts = urllib.parse.urlsplit(url)
+        parts.port  # noqa: B018  (raises ValueError for a port out of range)
+    except ValueError:
+        return False
+    return parts.scheme == "https" and bool(parts.hostname)
+
+
 def fetch(url: str, *, limit: int) -> bytes:
     """GET ``url`` over https, following no redirects, reading at most ``limit`` bytes."""
-    if not url.startswith("https://"):
+    if not (isinstance(url, str) and url.startswith("https://")):
         raise UpdateError("updates are only fetched over https")
+    if not _well_formed_https(url):
+        raise UpdateError("the feed address is not a well-formed https address; check the settings")
 
     class _NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, *args, **kwargs):  # noqa: ANN002, ANN003
@@ -347,8 +362,12 @@ def fetch(url: str, *, limit: int) -> bytes:
             body = response.read(limit + 1)
     except urllib.error.HTTPError as exc:
         raise UpdateError(f"the update server answered {exc.code}") from exc
+    except UpdateError:
+        raise  # already says what happened (UpdateError is itself a ValueError)
     except (urllib.error.URLError, OSError) as exc:
         raise UpdateError("the update server could not be reached") from exc
+    except ValueError as exc:  # an address the standard library could not use
+        raise UpdateError("the feed address could not be used; check the settings") from exc
     if len(body) > limit:
         raise UpdateError("the update server sent more than a feed can be")
     return body

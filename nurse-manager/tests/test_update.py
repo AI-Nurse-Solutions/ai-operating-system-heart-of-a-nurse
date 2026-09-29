@@ -304,6 +304,47 @@ class FeedTests(_Tmp):
         redirect = opened[0]
         self.assertIsNone(redirect().redirect_request(None, None, 302, "Found", {}, "https://evil"))
 
+    def test_a_malformed_https_address_is_refused_plainly_never_a_crash(self):
+        config = json.loads((FEEDS / "config.json").read_text())
+        path = self.tmp / "config.json"
+        for url in ("https://[", "https://", "https://example.org:99999/feed.json",
+                    "https://exa mple.org/feed.json", "https://example.org/\nfeed.json"):
+            with self.subTest(url=url):
+                path.write_text(json.dumps({**config, "feed_url": url}))
+                with self.assertRaisesRegex(UpdateError, "feed address"):
+                    update.load_config(path)
+                with self.assertRaises(UpdateError):
+                    update.fetch(url, limit=10)
+
+        class Opener:
+            def __init__(self, *handlers):
+                pass
+
+            def open(self, request, timeout):
+                raise ValueError("a URL the standard library could not use")
+
+        with mock.patch.object(update.urllib.request, "build_opener", Opener):
+            with self.assertRaisesRegex(UpdateError, "feed address"):
+                update.fetch("https://example.org/feed.json", limit=10)
+
+        class Refusing:
+            status = 503
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *exc):
+                return False
+
+        class RefusingOpener(Opener):
+            def open(self, request, timeout):
+                return Refusing()
+
+        # The server's own answer is still what the manager is told.
+        with mock.patch.object(update.urllib.request, "build_opener", RefusingOpener):
+            with self.assertRaisesRegex(UpdateError, "answered 503"):
+                update.fetch("https://example.org/feed.json", limit=10)
+
     def test_a_huge_local_file_is_refused_without_reading_it_all(self):
         big = self.tmp / "feed.json"
         with big.open("wb") as fh:

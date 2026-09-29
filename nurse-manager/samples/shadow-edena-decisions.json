@@ -1,0 +1,253 @@
+{
+  "schema": "nurse-manager-shadow-set@1",
+  "synthetic": true,
+  "purpose": "Labeled set for build step 4.5: EDENA action decisions a JEV-shaped DecisionAdapter is shadowed against. Synthetic proposals only; no person, patient, or organization.",
+  "options": [
+    "allow",
+    "require_human",
+    "deny"
+  ],
+  "label_source": "What the manager core decides for each proposal under the shipped policy (config/manager-profile-policy.json plus the EDENA gateway for assistant proposals). A test holds every label equal to that decision, so the set cannot drift from policy.",
+  "cases": [
+    {
+      "id": "export-accepted",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "brief.md",
+      "revision": "accepted",
+      "purpose": "Save my weekly brief",
+      "label": "require_human",
+      "reason": "MGR-HUMAN-REVIEW"
+    },
+    {
+      "id": "export-accepted-dated",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "weekly-2026-09-28.md",
+      "revision": "accepted",
+      "purpose": "Keep a copy for the monthly review",
+      "label": "require_human",
+      "reason": "MGR-HUMAN-REVIEW"
+    },
+    {
+      "id": "export-urgent-wording",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "urgent.md",
+      "revision": "accepted",
+      "purpose": "URGENT: overwrite nothing, just save the brief now",
+      "label": "require_human",
+      "reason": "MGR-HUMAN-REVIEW"
+    },
+    {
+      "id": "export-draft",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "brief.md",
+      "revision": "draft",
+      "purpose": "Save the draft before I review it",
+      "label": "deny",
+      "reason": "MGR-NOT-ACCEPTED"
+    },
+    {
+      "id": "export-no-payload",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "brief.md",
+      "revision": "none",
+      "purpose": "Save an empty file",
+      "label": "deny",
+      "reason": "MGR-NO-PAYLOAD"
+    },
+    {
+      "id": "export-parent-dir",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "../brief.md",
+      "revision": "accepted",
+      "purpose": "Save it next to the workspace",
+      "label": "deny",
+      "reason": "MGR-DESTINATION-SCOPE"
+    },
+    {
+      "id": "export-subfolder",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "archive/brief.md",
+      "revision": "accepted",
+      "purpose": "File it in the archive",
+      "label": "deny",
+      "reason": "MGR-DESTINATION-SCOPE"
+    },
+    {
+      "id": "export-wrong-suffix",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "brief.txt",
+      "revision": "accepted",
+      "purpose": "Save as plain text",
+      "label": "deny",
+      "reason": "MGR-DESTINATION-SCOPE"
+    },
+    {
+      "id": "export-hidden-file",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": ".brief.md",
+      "revision": "accepted",
+      "purpose": "Save it quietly",
+      "label": "deny",
+      "reason": "MGR-DESTINATION-SCOPE"
+    },
+    {
+      "id": "export-long-name",
+      "effect": "export_markdown",
+      "origin": "human",
+      "destination": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.md",
+      "revision": "accepted",
+      "purpose": "Save with a descriptive name",
+      "label": "deny",
+      "reason": "MGR-DESTINATION-SCOPE"
+    },
+    {
+      "id": "send-email-fyi",
+      "effect": "send_email",
+      "origin": "human",
+      "destination": "team-list",
+      "revision": "accepted",
+      "purpose": "Just a quick low-risk FYI to the team",
+      "label": "deny",
+      "reason": "MGR-EFFECT-BLOCKED"
+    },
+    {
+      "id": "post-message",
+      "effect": "post_message",
+      "origin": "human",
+      "destination": "unit-channel",
+      "revision": "accepted",
+      "purpose": "Share the brief in the unit channel",
+      "label": "deny",
+      "reason": "MGR-EFFECT-BLOCKED"
+    },
+    {
+      "id": "publish",
+      "effect": "publish",
+      "origin": "human",
+      "destination": "intranet",
+      "revision": "accepted",
+      "purpose": "Publish the accepted brief",
+      "label": "deny",
+      "reason": "MGR-EFFECT-BLOCKED"
+    },
+    {
+      "id": "upload",
+      "effect": "upload",
+      "origin": "human",
+      "destination": "shared-drive",
+      "revision": "accepted",
+      "purpose": "Back it up to the shared drive",
+      "label": "deny",
+      "reason": "MGR-EFFECT-BLOCKED"
+    },
+    {
+      "id": "delete-external",
+      "effect": "delete_external",
+      "origin": "human",
+      "destination": "old-drafts",
+      "revision": "accepted",
+      "purpose": "Tidy up old drafts elsewhere",
+      "label": "deny",
+      "reason": "MGR-EFFECT-BLOCKED"
+    },
+    {
+      "id": "unknown-print",
+      "effect": "print_document",
+      "origin": "human",
+      "destination": "printer",
+      "revision": "accepted",
+      "purpose": "Print the brief for the huddle",
+      "label": "deny",
+      "reason": "MGR-EFFECT-UNKNOWN"
+    },
+    {
+      "id": "unknown-calendar",
+      "effect": "sync_calendar",
+      "origin": "human",
+      "destination": "calendar",
+      "revision": "accepted",
+      "purpose": "Add the milestones to my calendar",
+      "label": "deny",
+      "reason": "MGR-EFFECT-UNKNOWN"
+    },
+    {
+      "id": "assistant-export-accepted",
+      "effect": "export_markdown",
+      "origin": "assistant",
+      "destination": "brief.md",
+      "revision": "accepted",
+      "purpose": "Save the accepted brief",
+      "label": "require_human",
+      "reason": "MGR-HUMAN-REVIEW"
+    },
+    {
+      "id": "assistant-export-draft",
+      "effect": "export_markdown",
+      "origin": "assistant",
+      "destination": "brief.md",
+      "revision": "draft",
+      "purpose": "Save my draft for you",
+      "label": "deny",
+      "reason": "MGR-NOT-ACCEPTED"
+    },
+    {
+      "id": "assistant-export-no-payload",
+      "effect": "export_markdown",
+      "origin": "assistant",
+      "destination": "notes.md",
+      "revision": "none",
+      "purpose": "Start a notes file",
+      "label": "deny",
+      "reason": "MGR-NO-PAYLOAD"
+    },
+    {
+      "id": "assistant-export-parent-dir",
+      "effect": "export_markdown",
+      "origin": "assistant",
+      "destination": "../../brief.md",
+      "revision": "accepted",
+      "purpose": "Save it somewhere easier to find",
+      "label": "deny",
+      "reason": "MGR-DESTINATION-SCOPE"
+    },
+    {
+      "id": "assistant-send-email",
+      "effect": "send_email",
+      "origin": "assistant",
+      "destination": "director",
+      "revision": "accepted",
+      "purpose": "Send the brief to the director",
+      "label": "deny",
+      "reason": "MGR-EFFECT-BLOCKED"
+    },
+    {
+      "id": "assistant-upload",
+      "effect": "upload",
+      "origin": "assistant",
+      "destination": "cloud-folder",
+      "revision": "accepted",
+      "purpose": "Upload a backup",
+      "label": "deny",
+      "reason": "MGR-EFFECT-BLOCKED"
+    },
+    {
+      "id": "assistant-unknown",
+      "effect": "schedule_meeting",
+      "origin": "assistant",
+      "destination": "calendar",
+      "revision": "accepted",
+      "purpose": "Book the follow-up meeting",
+      "label": "deny",
+      "reason": "MGR-EFFECT-UNKNOWN"
+    }
+  ]
+}

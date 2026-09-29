@@ -1,5 +1,6 @@
 """Hermes notices and naming stay truthful (build step 0.8)."""
 
+import hashlib
 import re
 import unittest
 from pathlib import Path
@@ -7,6 +8,10 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 NOTICES = REPO / "THIRD_PARTY_NOTICES.md"
 REVIEW = REPO / "nurse-manager" / "docs" / "05-hermes-review.md"
+# SHA-256 of `LICENSE` (stripped) in NousResearch/hermes-agent at tag
+# v2026.9.24 (f97608f) and main ee5f49b, read 2026-09-29. Any edit to the
+# reproduced notice, including the grant or the disclaimer, fails this pin.
+HERMES_MIT_SHA256 = "547925cbc7510811a7fd35eb72e8eee3d5381ae9527e8d4e1bd0fe74057e511c"
 HERMES_PAGES = (
     "hermes-masterclass.html",
     "hermes-configuration-handbook.html",
@@ -51,9 +56,10 @@ class HermesNoticeTests(unittest.TestCase):
             self.assertIn(needle, section)
 
     def test_mit_notice_is_intact(self):
-        self.assertIn("Copyright (c) 2025 Nous Research", self.notices)
-        self.assertIn("The above copyright notice and this permission notice shall be included in all\n"
-                      "copies or substantial portions of the Software.", self.notices)
+        match = re.search(r"## 2\. Hermes\n.*?```text\n(.*?)```", self.notices, re.S)
+        self.assertIsNotNone(match, "Hermes MIT notice block missing")
+        digest = hashlib.sha256(match.group(1).strip().encode("utf-8")).hexdigest()
+        self.assertEqual(HERMES_MIT_SHA256, digest)
 
     def test_no_affiliation_names_nous_research(self):
         section = self.notices.split("## 5. No Affiliation", 1)[1]

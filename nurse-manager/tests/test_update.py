@@ -331,6 +331,16 @@ class FeedTests(_Tmp):
                 with self.assertRaises(UpdateError):
                     update._parse_feed(broken, "pilot")
 
+    def test_a_feed_may_be_good_for_a_single_day_but_not_end_before_it_starts(self):
+        """Both dates are inclusive, as the checks against today are."""
+        feed = json.loads((FEEDS / "feed-seq5.json").read_text())
+        feed["expires"] = feed["issued"]
+        parsed = update._parse_feed(feed, "pilot")
+        self.assertEqual(parsed["issued"], parsed["expires"])
+        feed["expires"] = "2026-08-31"
+        with self.assertRaisesRegex(UpdateError, "expires before it was issued"):
+            update._parse_feed(feed, "pilot")
+
     def test_a_sequence_beyond_what_the_app_can_hold_exactly_is_refused(self):
         """The sequence reaches the app as a JavaScript number, exact only up to
         2^53 - 1; beyond that the app would see a different sequence than the

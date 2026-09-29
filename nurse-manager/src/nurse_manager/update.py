@@ -228,7 +228,8 @@ def _parse_feed(feed: dict[str, Any], channel: str) -> dict[str, Any]:
     if isinstance(sequence, bool) or not isinstance(sequence, int) or not 1 <= sequence <= MAX_SEQUENCE:
         raise UpdateError(f"the feed's sequence is not a whole number from 1 to {MAX_SEQUENCE}")
     issued, expires = _date(feed.get("issued"), "issue date"), _date(feed.get("expires"), "expiry date")
-    if expires <= issued:
+    # Both dates are inclusive (a feed may be good for one day), as in check_feed.
+    if expires < issued:
         raise UpdateError("the feed expires before it was issued")
     items = feed.get("releases", [])
     if not isinstance(items, list):

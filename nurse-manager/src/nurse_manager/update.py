@@ -150,11 +150,22 @@ def state_path() -> Path:
 
 
 def load_config(path: Path | None = None) -> dict[str, Any]:
-    data = json.loads(Path(path or config_path()).read_text(encoding="utf-8"))
-    if data.get("schema") != CONFIG_SCHEMA:
+    try:
+        data = json.loads(Path(path or config_path()).read_text(encoding="utf-8"))
+    except ValueError as exc:
+        raise UpdateError("the update settings are not valid JSON; check the settings") from exc
+    # Malformed settings are refused plainly, never a crash.
+    if not isinstance(data, dict) or data.get("schema") != CONFIG_SCHEMA:
         raise UpdateError(f"the update settings are not {CONFIG_SCHEMA}")
+    entries = data.get("trusted_keys", [])
+    if not isinstance(entries, list) or not all(
+            isinstance(entry, dict) and isinstance(entry.get("pem", ""), str) for entry in entries):
+        raise UpdateError("the trusted keys must be a list of entries with a pem; check the settings")
+    channel = data.get("channel", "")
+    if not isinstance(channel, str):
+        raise UpdateError("the update channel must be text; check the settings")
     keys = []
-    for entry in data.get("trusted_keys") or []:
+    for entry in entries:
         n, e, key_id = load_public_key(entry.get("pem", ""))
         if entry.get("key_id") != key_id:
             raise UpdateError("a trusted key's id does not match the key; check the settings")
@@ -162,7 +173,7 @@ def load_config(path: Path | None = None) -> dict[str, Any]:
     url = data.get("feed_url")
     if url is not None and not (isinstance(url, str) and url.startswith("https://")):
         raise UpdateError("the feed address must be https")
-    return {"channel": data.get("channel") or "", "feed_url": url, "keys": keys}
+    return {"channel": channel, "feed_url": url, "keys": keys}
 
 
 @contextlib.contextmanager

@@ -109,6 +109,24 @@ class SignatureTests(_Tmp):
         with self.assertRaisesRegex(UpdateError, "id does not match"):
             update.load_config(path)
 
+    def test_malformed_settings_are_refused_plainly_never_a_crash(self):
+        good = json.loads((FEEDS / "config.json").read_text())
+        path = self.tmp / "config.json"
+        cases = {
+            "not JSON": "{not json",
+            "not an object": json.dumps([good]),
+            "keys as an object": json.dumps({**good, "trusted_keys": {"a": good["trusted_keys"][0]}}),
+            "a key as text": json.dumps({**good, "trusted_keys": ["pem"]}),
+            "a key as a number": json.dumps({**good, "trusted_keys": [7]}),
+            "a pem as a number": json.dumps({**good, "trusted_keys": [{**good["trusted_keys"][0], "pem": 7}]}),
+            "a channel as a number": json.dumps({**good, "channel": 7}),
+        }
+        for label, text in cases.items():
+            with self.subTest(label):
+                path.write_text(text)
+                with self.assertRaises(UpdateError):
+                    update.load_config(path)
+
     @unittest.skipUnless(OPENSSL, "OpenSSL is not installed")
     def test_weak_or_non_rsa_keys_are_refused(self):
         for label, args in (("1024-bit RSA", ("-algorithm", "RSA", "-pkeyopt", "rsa_keygen_bits:1024")),

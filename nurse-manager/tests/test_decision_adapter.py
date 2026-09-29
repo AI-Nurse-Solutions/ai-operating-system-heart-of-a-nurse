@@ -6,6 +6,7 @@ set cannot drift from policy, no adapter can change a decision, and a
 suggester that would be less strict than EDENA is always called out.
 """
 
+import hashlib
 import json
 import math
 import subprocess
@@ -117,6 +118,49 @@ class LabeledSetTests(unittest.TestCase):
                 with self.assertRaises((ShadowError, TypeError)):
                     run_shadow(spy, labeled)
         self.assertEqual(spy.seen, [])
+
+    def test_every_field_an_adapter_sees_is_checked(self):
+        """The effect, destination, and purpose all reach the adapter's question,
+        so each is checked, not only the ones the policy path screens."""
+        base = json.loads(default_set_path().read_text(encoding="utf-8"))["cases"][15]
+        self.assertEqual(base["reason"], "MGR-EFFECT-UNKNOWN")
+        smuggled = {
+            "effect as prose": {"effect": "call the family of the patient in room 12"},
+            "effect with an identifier": {"effect": "mrn_12345678"},
+            "effect as snake-case prose": {"effect": "call_patient_family"},
+            "effect with an email": {"effect": "a.person@example.org"},
+            "destination with a phone": {"destination": "call 555-867-5309"},
+            "purpose with an SSN": {"purpose": "Record 123-45-6789 for payroll"},
+        }
+        for label, change in smuggled.items():
+            with self.subTest(label):
+                path = _write_set(self.tmp.name, cases=[{**base, **change}])
+                with self.assertRaises(ShadowError):
+                    load_labeled_set(path)
+                spy = _Fixed("spy", Choice({"allow": 0.0, "require_human": 0.0, "deny": 1.0}))
+                with self.assertRaises(ShadowError):
+                    run_shadow(spy, path)
+                self.assertEqual(spy.seen, [])
+
+    def test_the_digest_is_of_the_bytes_that_were_parsed(self):
+        path = _write_set(self.tmp.name)
+        parsed = path.read_bytes()
+        real_read_text, real_read_bytes = Path.read_text, Path.read_bytes
+
+        def swap_after_first_read(self_path, *args, **kwargs):
+            # Another writer replaces the file right after the loader reads it.
+            data = real_read_bytes(self_path)
+            if self_path == path:
+                self_path.write_text(json.dumps({"replaced": True}), encoding="utf-8")
+            return data
+
+        from unittest import mock
+        with mock.patch.object(Path, "read_bytes", swap_after_first_read), \
+                mock.patch.object(Path, "read_text",
+                                  lambda p, *a, **k: swap_after_first_read(p).decode("utf-8")):
+            loaded = load_labeled_set(path)
+        self.assertEqual(loaded["sha256"], hashlib.sha256(parsed).hexdigest())
+        del real_read_text
 
     def test_malformed_sets_are_refused(self):
         cases = json.loads(default_set_path().read_text(encoding="utf-8"))["cases"]

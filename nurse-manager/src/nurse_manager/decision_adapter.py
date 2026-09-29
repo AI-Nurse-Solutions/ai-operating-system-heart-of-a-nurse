@@ -38,7 +38,8 @@ from pathlib import Path
 from typing import Any, Protocol, Sequence
 
 from . import resources
-from .actions import ActionBoundary
+from ._naio import privacy_screen
+from .actions import DEFAULT_PROFILE_POLICY, ActionBoundary
 from .brief import BriefService
 from .sample import load_sample
 
@@ -52,6 +53,9 @@ STRICTNESS = {"allow": 0, "require_human": 1, "deny": 2}
 _DECISIONS = {"allow": "allow", "require_approval": "require_human", "deny": "deny"}
 ASSISTANT_ID = "assistant:planning-partner"
 _TOLERANCE = 1e-6
+# Effects no policy names, for the "unknown effect" cases. Fixed here, so a
+# labeled set cannot put free text where an effect goes.
+SYNTHETIC_UNKNOWN_EFFECTS = ("print_document", "sync_calendar", "schedule_meeting")
 
 
 def default_set_path() -> Path:
@@ -123,7 +127,9 @@ def load_labeled_set(path: Path | None = None) -> dict[str, Any]:
     """Read and check a labeled set. Refuses anything not marked synthetic."""
     path = Path(path or default_set_path())
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
+        # One read: the digest is of exactly the bytes that were parsed.
+        raw_bytes = path.read_bytes()
+        data = json.loads(raw_bytes.decode("utf-8"))
     except (OSError, ValueError) as exc:
         raise ShadowError(f"{path.name}: not a readable labeled set") from exc
     if not isinstance(data, dict) or data.get("schema") != SET_SCHEMA:
@@ -133,6 +139,9 @@ def load_labeled_set(path: Path | None = None) -> dict[str, Any]:
                           " is not marked synthetic")
     if tuple(data.get("options") or ()) != OPTIONS:
         raise ShadowError(f"{path.name}: options must be {list(OPTIONS)}")
+    screen = privacy_screen()
+    profile = json.loads(DEFAULT_PROFILE_POLICY.read_text(encoding="utf-8"))
+    effects = {*profile["effects"], *profile["blocked_effects"], *SYNTHETIC_UNKNOWN_EFFECTS}
     raw = data.get("cases")
     if not isinstance(raw, list) or not raw:
         raise ShadowError(f"{path.name}: it has no cases")
@@ -148,9 +157,20 @@ def load_labeled_set(path: Path | None = None) -> dict[str, Any]:
                 case.revision not in ("accepted", "draft", "none"):
             raise ShadowError(f"{path.name}: case {case.id} has an unknown label, origin,"
                               " or revision")
+        if not all(isinstance(getattr(case, f), str) for f in ShadowCase.__dataclass_fields__):
+            raise ShadowError(f"{path.name}: case {case.id} has a field that is not text")
+        # Everything in the question reaches the adapter, so everything in it is
+        # checked here, not only what the policy path happens to screen.
+        if case.effect not in effects:
+            raise ShadowError(f"{path.name}: case {case.id}: effect '{case.effect[:40]}' is not"
+                              " one the policy names or one of the synthetic unknown effects")
+        for field_name in ("effect", "destination", "purpose"):
+            if screen.analyze(getattr(case, field_name)):
+                raise ShadowError(f"{path.name}: case {case.id}: its {field_name} looks like it"
+                                  " holds identifying details; a shadow set is synthetic only")
         seen.add(case.id)
         cases.append(case)
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    digest = hashlib.sha256(raw_bytes).hexdigest()
     return {"name": path.name, "sha256": digest, "cases": cases}
 
 
@@ -343,5 +363,6 @@ def render_markdown(report: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
-__all__ = ["Choice", "DecisionAdapter", "ReviewAlwaysBaseline", "ShadowCase", "ShadowError",
+__all__ = ["SYNTHETIC_UNKNOWN_EFFECTS", "Choice", "DecisionAdapter", "ReviewAlwaysBaseline",
+           "ShadowCase", "ShadowError",
            "default_set_path", "load_labeled_set", "render_markdown", "run_shadow"]

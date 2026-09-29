@@ -91,7 +91,9 @@ try {
   assert.equal(await page.getByRole('region', { name: "This week's priorities" }).getByRole('listitem').count(), 3);
   const overdue = page.getByRole('region', { name: 'Follow-ups due soon' }).getByRole('listitem').filter({ hasText: 'Overdue' });
   assert.equal(await overdue.count(), 1, 'overdue is stated in text, not color alone');
-  assert.match(await page.getByRole('region', { name: 'Assistants at work' }).textContent(), /Unavailable.*No assistant is connected/s);
+  const atWork = page.getByRole('region', { name: 'Assistants at work' });
+  assert.match(await atWork.textContent(), /No assistant is connected.*Read-only.*Stopping assistants is available in the Nurse AI OS app/s);
+  assert.equal(await atWork.getByRole('button').count(), 0, 'the read-only host offers no stop switch');
   assert.equal(await page.locator('text=/\\d+\\s?%/').count(), 0, 'no percentages without a denominator');
 
   // --- Keyboard journey --------------------------------------------------

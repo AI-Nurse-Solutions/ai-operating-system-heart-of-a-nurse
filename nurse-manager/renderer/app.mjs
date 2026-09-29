@@ -109,7 +109,8 @@ export function httpSource(token = '') {
 /** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory'} ReadCommand */
 /** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'
  *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify' | 'brief-schedule-set'
- *   | 'memory-add' | 'memory-correct' | 'memory-exclude' | 'memory-include' | 'memory-delete'} WriteCommand */
+ *   | 'memory-add' | 'memory-correct' | 'memory-exclude' | 'memory-include' | 'memory-delete'
+ *   | 'assistants-stop' | 'assistants-resume'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -250,7 +251,7 @@ export function start(doc, source) {
       workspaceName.textContent = data.workspace;
     }
     if (envelope.command === 'mission') {
-      show(renderMission(doc, /** @type {import('../contracts/ipc/nurse-manager-ipc').MissionControl} */ (data)), moveFocus);
+      showMission(/** @type {import('../contracts/ipc/nurse-manager-ipc').MissionControl} */ (data), {}, moveFocus);
       announce('Mission Control loaded.');
     } else if (envelope.command === 'project') {
       const dashboard = /** @type {import('../contracts/ipc/nurse-manager-ipc').ProjectDashboard} */ (data);
@@ -264,8 +265,8 @@ export function start(doc, source) {
           announce('Showing exactly what would be sent. Nothing has been sent yet.');
           return { preview: /** @type {import('./views.mjs').ProjectQuestionPreview} */ (envelope.data) };
         }, '#think-preview-heading'),
-        onSend: (/** @type {string} */ sha) => thinkAction({}, async () => {
-          announce('Sending to the AI model. This can take a minute.');
+        onSend: (/** @type {string} */ sha) => thinkAction({ sending: true }, async () => {
+          announce('Sending to the AI model. This can take a minute. You can stop it.');
           const { envelope, failure } = await write('assistant-project', {
             id: dashboard.project.id, question: think.question ?? '', prompt_sha256: sha,
           });
@@ -276,6 +277,7 @@ export function start(doc, source) {
             : { notice: { kind: 'unanswered', text: answer.reason } };
         }),
         onCancel: () => { think = { question: think.question }; redraw('#think-question'); },
+        onStop: stopAssistants,
         onKeep: async () => {
           const answer = think.answer;
           if (!answer) return;
@@ -432,7 +434,7 @@ export function start(doc, source) {
 
   /**
    * Reload a view's data after an action, unless the manager has navigated away.
-   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory'} command
+   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'mission'} command
    * @param {number} mine
    * @param {Record<string, string>} [params]
    * @param {(message: string) => void} [onFail] handle a failed reload instead of showing the error page
@@ -446,7 +448,7 @@ export function start(doc, source) {
         return null;
       }
       if (!envelope.ok) {
-        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions', memory: 'memory' }[command];
+        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions', memory: 'memory', mission: 'mission' }[command];
         show(renderError(doc, ROUTES[view].title, envelope.error), true);
         return null;
       }
@@ -460,6 +462,53 @@ export function start(doc, source) {
       show(renderError(doc, 'this page', { type: 'Unavailable', message: error instanceof Error ? error.message : String(error) }), true);
       return null;
     }
+  };
+
+  /**
+   * Stop every assistant from where the work is waiting. The request that is
+   * waiting returns by itself, within a second, saying it was stopped.
+   * @returns {Promise<boolean>} whether the stop was saved
+   */
+  const stopAssistants = async () => {
+    const { failure } = await write('assistants-stop', {});
+    announce(failure ? `Not stopped: ${failure.text}. Try again.` : 'Stopped. Nothing more is sent, and its reply will be discarded.');
+    return !failure;
+  };
+
+  /**
+   * Mission Control, with the switch that stops every assistant (step 5.3).
+   * @param {import('../contracts/ipc/nurse-manager-ipc').MissionControl} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice }} state
+   * @param {boolean} moveFocus
+   */
+  const showMission = (data, state, moveFocus) => {
+    const mine = generation;
+    /** @param {'assistants-stop' | 'assistants-resume'} command @param {string} done */
+    const act = async (command, done) => {
+      main.replaceChildren(renderMission(doc, data, { ...options, busy: true }));
+      main.setAttribute('aria-busy', 'true');
+      const { failure } = await write(command, {});
+      if (mine !== generation) return;
+      if (failure) {
+        showMission(data, { notice: failure }, true);
+        return;
+      }
+      // Re-render from the fresh records, so the switch shows what is true now.
+      const fresh = await reload('mission', mine, {}, (message) => showMission(data, {
+        notice: { kind: 'error', text: `${done} Mission Control could not be refreshed (${message}); open it again to see it.` },
+      }, true));
+      if (!fresh) return;
+      showMission(/** @type {import('../contracts/ipc/nurse-manager-ipc').MissionControl} */ (fresh), { notice: { kind: 'ok', text: done } }, true);
+    };
+    /** @type {import('./views.mjs').MissionOptions} */
+    const options = {
+      writable,
+      onStop: () => act('assistants-stop', 'Assistants are stopped. Nothing is sent to an AI model until you let them work again.'),
+      onResume: () => act('assistants-resume', 'Assistants can work again. Nothing that was stopped restarts by itself.'),
+    };
+    const view = renderMission(doc, data, { ...options, ...state });
+    if (state.notice) showAfterAction(view, state.notice, '#assistants .notice');
+    else show(view, moveFocus);
   };
 
   /**
@@ -482,10 +531,10 @@ export function start(doc, source) {
       const fresh = await reload('weekly', mine, { week });
       if (fresh) showBrief(/** @type {import('./views.mjs').WeeklyBrief} */ (fresh), { notice, scheduleDraft: kept }, true);
     };
-    /** @param {Promise<void>} work */
-    const busyWhile = (work) => {
+    /** @param {Promise<void>} work @param {boolean} [sending] a request is waiting for the model */
+    const busyWhile = (work, sending = false) => {
       state = { ...state, scheduleDraft: scheduleDraft() };
-      main.replaceChildren(renderBrief(doc, data, { ...handlers, ...state, busy: true }));
+      main.replaceChildren(renderBrief(doc, data, { ...handlers, ...state, busy: true, sending }));
       main.setAttribute('aria-busy', 'true');
       return work;
     };
@@ -512,7 +561,7 @@ export function start(doc, source) {
         }
       })()),
       onSend: (/** @type {string} */ sha) => busyWhile((async () => {
-        announce('Sending to the AI model. This can take a minute.');
+        announce('Sending to the AI model. This can take a minute. You can stop it.');
         const { envelope, failure } = await write('assistant-brief', { week, prompt_sha256: sha });
         if (failure || !envelope || !envelope.ok) {
           await refresh(failure);
@@ -522,7 +571,8 @@ export function start(doc, source) {
         await refresh(result.drafted_by_model
           ? { kind: 'ok', text: 'The AI model drafted a new version. Check every line against your records before you accept it.' }
           : { kind: 'fallback', text: result.reason });
-      })()),
+      })(), true),
+      onStop: stopAssistants,
       onCancel: () => showBrief(data, { scheduleDraft: scheduleDraft() }, true),
       onAccept: (/** @type {import('./views.mjs').Revision} */ revision) => busyWhile((async () => {
         const { failure } = await write('accept', { revision: revision.id, sha256: revision.sha256 });

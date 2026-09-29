@@ -79,7 +79,7 @@ class DevHostTests(unittest.TestCase):
 
     def test_nothing_that_writes_is_reachable(self):
         for command in ("brief", "accept", "export", "approve", "run", "backup", "restore",
-                        "init", "sample", "show"):
+                        "init", "sample", "show", "assistants-stop", "assistants-resume"):
             with self.subTest(command=command):
                 self.assertEqual(self.request(f"/ipc/{command}")[0].status, 404)
         for method in ("POST", "PUT", "DELETE", "PATCH"):

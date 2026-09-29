@@ -84,7 +84,7 @@ class IpcContractTests(unittest.TestCase):
     def test_honest_states_reach_the_host(self):
         empty = self.fixtures["mission-empty"]["data"]
         self.assertEqual(empty["priorities"]["state"], "empty")
-        self.assertEqual(empty["assistants_at_work"]["state"], "unavailable")
+        self.assertEqual(empty["assistants_at_work"]["state"], "empty")
         denied = self.fixtures["export-denied"]
         self.assertTrue(denied["ok"])  # the proposal was recorded...
         self.assertEqual(denied["data"]["status"], "denied")  # ...and refused
@@ -120,7 +120,7 @@ class IpcContractTests(unittest.TestCase):
             "wrong contract version": (run, ("contract",), "nurse-manager-ipc@2"),
             "bad date": (mission, ("data", "today"), "30/09/2026"),
             "boolean is not a count": (mission, ("data", "task_counts", "idea"), True),
-            "assistants cannot appear yet": (
+            "an assistant at work says what it is": (
                 mission, ("data", "assistants_at_work", "items"), [{"id": "x"}]),
         }
         for label, (envelope, path, value) in cases.items():

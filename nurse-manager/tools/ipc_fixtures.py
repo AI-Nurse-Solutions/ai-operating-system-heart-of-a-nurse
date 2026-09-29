@@ -197,6 +197,16 @@ def collect(workdir: Path) -> dict[str, dict]:
              "--answer", answer["answer"], "--by", OWNER)
         keep(f"project-with-note-{project_id}", "project", ws, "--id", project_id,
              "--today", TODAY)
+        # Stopped assistants send nothing: the brief falls back to records, the
+        # question is refused, and both say why.
+        keep("error-assistants-stop-not-owner", "assistants-stop", ws, "--by", "Someone Else")
+        keep("assistants-stop", "assistants-stop", ws, "--by", OWNER)
+        keep("assistant-brief-stopped", "assistant-brief", ws, "--week", WEEK,
+             "--today", TODAY, "--by", OWNER)
+        keep("assistant-project-stopped", "assistant-project", ws, "--id", project_id,
+             "--today", TODAY, "--question", question, "--by", OWNER)
+        keep("assistants-resume", "assistants-resume", ws, "--by", OWNER)
+        keep("error-assistants-resume-not-stopped", "assistants-resume", ws, "--by", OWNER)
     keep("error-assistant-project-empty-question", "assistant-project-preview", ws,
          "--id", project_id, "--today", TODAY, "--question", "  ")
     keep("mission-assistant-connected", "mission", ws, "--today", TODAY, "--week", WEEK)
@@ -213,6 +223,11 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("brief-run-due", "brief-run-due", scheduled)
     keep("brief-run-due-again", "brief-run-due", scheduled)
     keep("weekly-with-schedule", "weekly", scheduled, "--week", WEEK)
+    keep("mission-with-schedule", "mission", scheduled, "--today", TODAY, "--week", WEEK)
+    keep("assistants-stop-scheduled", "assistants-stop", scheduled, "--by", OWNER)
+    keep("brief-run-due-stopped", "brief-run-due", scheduled)
+    keep("mission-stopped", "mission", scheduled, "--today", TODAY, "--week", WEEK)
+    keep("weekly-stopped", "weekly", scheduled, "--week", WEEK)
     return out
 
 

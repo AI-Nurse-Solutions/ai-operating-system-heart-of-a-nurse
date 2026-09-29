@@ -18,6 +18,9 @@ The guarantees the tests hold it to:
   make a second draft.
 * **The manager's own brief wins.** If the week already has a brief, the
   run records that it skipped and changes nothing.
+* **Stopped means stopped.** While the manager has stopped assistants
+  (step 5.3), a check does nothing and says so; it starts again only when
+  they let assistants work again.
 * **Bounded retries.** A failed run is retried after 5 minutes, then 30,
   and gives up after the third attempt, saying so.
 """
@@ -28,6 +31,7 @@ from datetime import date, datetime, time, timedelta, timezone
 from typing import Any
 
 from .brief import BriefService
+from .control import AssistantControl
 from .services import ManagerError, ManagerWorkspace
 
 WEEKDAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -128,7 +132,8 @@ class BriefSchedule:
             "SELECT * FROM brief_runs WHERE workspace_id = ? ORDER BY week_of DESC LIMIT 1",
             (self.ws.info.id,),
         ).fetchone()
-        return {**settings, "next_at": next_at, "last_run": _run_dict(last) if last else None}
+        return {**settings, "next_at": next_at, "last_run": _run_dict(last) if last else None,
+                "stopped": AssistantControl(self.ws).state()["stopped"]}
 
     # -- running ----------------------------------------------------------
 
@@ -141,12 +146,15 @@ class BriefSchedule:
     def run_due(self) -> dict[str, Any]:
         """Prepare this week's draft if it is due and not done. Safe to call any time.
 
-        Returns what happened: ``off``, ``not_due``, ``done`` (already
-        drafted or skipped this week), ``waiting`` (a retry is not due yet),
-        ``gave_up``, or the new run's status.
+        Returns what happened: ``off``, ``stopped`` (the manager stopped
+        assistants), ``not_due``, ``done`` (already drafted or skipped this
+        week), ``waiting`` (a retry is not due yet), ``gave_up``, or the new
+        run's status.
         """
         if not self.settings()["enabled"]:
             return _result("off")  # the common case, answered without taking the lock
+        if AssistantControl(self.ws).state()["stopped"]:
+            return _result("stopped")
         now = self._now()
         week_of = monday_of(now.date()).isoformat()
         try:
@@ -157,6 +165,8 @@ class BriefSchedule:
                 settings = self.settings()
                 if not settings["enabled"]:
                     return _result("off")
+                if AssistantControl(self.ws).state()["stopped"]:
+                    return _result("stopped")
                 now = self._now()
                 stamp = _utc(now)
                 week = monday_of(now.date())
@@ -228,6 +238,8 @@ class BriefSchedule:
         with self.ws.store.transaction() as db:
             if not self.settings()["enabled"]:
                 return _result("off")  # turned off meanwhile: nothing to retry
+            if AssistantControl(self.ws).state()["stopped"]:
+                return _result("stopped")  # stopped meanwhile: not counted as an attempt
             run = self._run(week_of)
             if run is not None and run["status"] != "failed":
                 # Another process finished the week meanwhile; its result stands.

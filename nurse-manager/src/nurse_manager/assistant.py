@@ -20,6 +20,10 @@ and passes exactly the same gates:
 5. **Honest fallback.** If any gate stops the request, or the provider
    fails, the manager gets the records-only draft and the reason. There
    is never a silent switch to another service.
+6. **The manager can stop it.** While assistants are stopped (step 5.3),
+   nothing is sent; a request already waiting for a model is abandoned
+   within about half a second, and whatever the model sends back is
+   discarded.
 
 The request ledger keeps metadata only: hashes, outcomes, and costs,
 never the text sent or received.
@@ -27,11 +31,11 @@ never the text sent or received.
 
 from __future__ import annotations
 
+import http.client
 import json
 import re
-import urllib.error
+import threading
 import urllib.parse
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Protocol
@@ -49,6 +53,7 @@ from ._naio import (
 )
 from .actions import DEFAULT_PROFILE_POLICY
 from .brief import ASSISTANT_PREFIX, BriefService, compose_weekly_brief, sha256_text
+from .control import AssistantControl
 from .memory import WorkspaceMemory
 from .services import ManagerError, ManagerWorkspace
 from .views import note_dict, project_dashboard
@@ -63,10 +68,19 @@ MAX_OUTPUT_TOKENS = 1200
 MAX_OUTPUT_CHARS = 20_000
 MAX_RESPONSE_BYTES = 256 * 1024
 REQUEST_TIMEOUT_SECONDS = 60.0
+CONNECT_TIMEOUT_SECONDS = 5.0
+# How often a request waiting for a model checks whether the manager stopped
+# assistants (step 5.3).
+STOP_POLL_SECONDS = 0.5
 
 # Requests that reached a provider count against the budget, whatever
 # became of their output.
-_SENT = ("drafted", "answered", "provider_failed", "output_refused")
+_SENT = ("drafted", "answered", "provider_failed", "output_refused", "stopped")
+
+STOPPED_BEFORE = ("refused_stopped", "Nothing was sent: assistants are stopped. Let them work"
+                  " again from Mission Control first.")
+STOPPED_DURING = ("stopped", "You stopped assistants while the model was working, so"
+                  " whatever it sends back is discarded.")
 
 GATES = (
     "Only material your workspace's data rules admit is sent, and it is checked again first.",
@@ -130,8 +144,17 @@ class Provider(Protocol):
     def estimate_cents(self, system: str, prompt: str, max_output_tokens: int) -> int: ...
 
     def complete(
-        self, system: str, prompt: str, *, max_output_tokens: int, timeout: float
-    ) -> ProviderReply: ...
+        self, system: str, prompt: str, *, max_output_tokens: int, timeout: float,
+        on_sent: Callable[[], None],
+    ) -> ProviderReply:
+        """Send one request and return the reply.
+
+        Call ``on_sent`` once, the moment the request has been handed to the
+        network and before waiting for the reply; never call it if nothing
+        was sent. Until then the request can still be stopped without
+        anything leaving the workspace (step 5.3).
+        """
+        ...
 
 
 # -- the local option --------------------------------------------------------
@@ -161,16 +184,12 @@ def check_local_endpoint(endpoint: str) -> str:
     return f"http://{host}:{port or 80}"
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *args, **kwargs):  # noqa: ANN002, ANN003
-        return None  # a local server must not send the request anywhere else
-
-
 class LocalModelProvider:
     """A model on this computer via the Ollama-compatible ``/api/generate``.
 
-    Text never leaves the device: the endpoint must be loopback, proxies
-    are bypassed, and redirects are refused.
+    Text never leaves the device: the endpoint must be loopback, and the
+    plain HTTP connection made here uses no proxy and follows no redirect
+    (anything but 200 is a failure).
     """
 
     kind = "local"
@@ -179,15 +198,13 @@ class LocalModelProvider:
     def __init__(self, model: str, endpoint: str = DEFAULT_LOCAL_ENDPOINT):
         self.model = model
         self.endpoint = check_local_endpoint(endpoint)
-        self._opener = urllib.request.build_opener(
-            urllib.request.ProxyHandler({}), _NoRedirect()
-        )
 
     def estimate_cents(self, system: str, prompt: str, max_output_tokens: int) -> int:
         return 0  # runs on the manager's own hardware
 
     def complete(
-        self, system: str, prompt: str, *, max_output_tokens: int, timeout: float
+        self, system: str, prompt: str, *, max_output_tokens: int, timeout: float,
+        on_sent: Callable[[], None],
     ) -> ProviderReply:
         body = json.dumps({
             "model": self.model,
@@ -196,23 +213,38 @@ class LocalModelProvider:
             "stream": False,
             "options": {"num_predict": max_output_tokens, "temperature": 0.2},
         }).encode("utf-8")
-        request = urllib.request.Request(
-            f"{self.endpoint}/api/generate", data=body, method="POST",
-            headers={"Content-Type": "application/json"},
-        )
+        address = urllib.parse.urlsplit(self.endpoint)
+        # Connecting to this computer is immediate or refused, so it gets a
+        # short limit of its own; the reply gets the full timeout.
+        conn = http.client.HTTPConnection(address.hostname, address.port or 80,
+                                          timeout=min(timeout, CONNECT_TIMEOUT_SECONDS))
         try:
-            with self._opener.open(request, timeout=timeout) as response:
+            try:
+                conn.connect()
+                conn.sock.settimeout(timeout)
+                conn.request("POST", "/api/generate", body=body,
+                             headers={"Content-Type": "application/json"})
+            except (OSError, http.client.HTTPException) as exc:
+                raise ProviderUnavailable(
+                    "the local model server is not reachable on this computer; start it"
+                    " and try again"
+                ) from exc
+            on_sent()  # the request is on its way
+            try:
+                response = conn.getresponse()
+                if response.status != 200:
+                    raise ProviderUnavailable(
+                        f"the local model server answered {response.status}; check that the"
+                        f" model '{self.model}' is installed"
+                    )
                 raw = response.read(MAX_RESPONSE_BYTES + 1)
-        except urllib.error.HTTPError as exc:
-            raise ProviderUnavailable(
-                f"the local model server answered {exc.code}; check that the model"
-                f" '{self.model}' is installed"
-            ) from exc
-        except (urllib.error.URLError, OSError) as exc:
-            raise ProviderUnavailable(
-                "the local model server is not reachable on this computer; start it"
-                " and try again"
-            ) from exc
+            except (OSError, http.client.HTTPException) as exc:
+                raise ProviderUnavailable(
+                    "the local model server is not reachable on this computer; start it"
+                    " and try again"
+                ) from exc
+        finally:
+            conn.close()
         if len(raw) > MAX_RESPONSE_BYTES:
             raise ProviderUnavailable("the local model's reply was too large")
         try:
@@ -244,9 +276,12 @@ class AssistantService:
         edena: EdenaPolicyEngine | None = None,
         profile_policy: Path = DEFAULT_PROFILE_POLICY,
         timeout: float = REQUEST_TIMEOUT_SECONDS,
+        stop_poll: float = STOP_POLL_SECONDS,
     ):
         self.ws = ws
         self.briefs = BriefService(ws)
+        self.control = AssistantControl(ws)
+        self.stop_poll = stop_poll
         self.provider_factory = provider_factory
         self.edena = edena or edena_engine()
         self.profile = json.loads(Path(profile_policy).read_text(encoding="utf-8"))
@@ -419,6 +454,8 @@ class AssistantService:
         })
         if refusal and blocked is None:
             blocked = ("refused_budget", f"Nothing was sent: {refusal}.")
+        if self.control.state()["stopped"]:
+            blocked = STOPPED_BEFORE  # the manager's stop comes before every other reason
         return checks, blocked, estimate
 
     def preview_weekly_brief(self, week_of: str, today: str) -> dict[str, Any]:
@@ -447,6 +484,9 @@ class AssistantService:
         records changed since, nothing is sent and nothing is drafted.
         """
         self._owner(requested_by)
+        # The request begins now: a stop from here on abandons it, even if
+        # assistants are let work again before it reaches the model.
+        started = self.control.state()["generation"]
         prep = self._prepare(week_of, today)
         body, refs, settings, provider = prep.body, prep.refs, prep.settings, prep.provider
         if (reviewed_prompt_sha256 is not None and provider is not None
@@ -461,9 +501,9 @@ class AssistantService:
         prompt, prompt_sha, estimate = prep.prompt, prep.prompt_sha, prep.estimate
         title = body.split("\n", 1)[0]
 
-        request_id, text, failure, cost = self._send(
+        request_id, text, failure, cost, generation = self._send(
             provider, SYSTEM_PROMPT, prompt, prompt_sha, estimate, refs, requested_by,
-            "weekly_brief", "The AI draft was not saved")
+            "weekly_brief", "The AI draft was not saved", started)
         if failure:
             return self._fallback(week_of, body, refs, requested_by, settings, failure[0],
                                   failure[1], provider=provider, request_id=request_id,
@@ -475,36 +515,98 @@ class AssistantService:
             "", text, "",
         ])
         used = list(dict.fromkeys(CITATION.findall(text)))
-        revision = self.briefs.add_weekly_draft(
-            week_of, ai_body, used, f"{ASSISTANT_PREFIX}{provider.kind}"
-        )
-        self._finish(request_id, "drafted", "", cost, revision.id)
+        # Saved only if no stop came since the request began, decided inside
+        # the write: a stop either comes after the draft is saved, or the
+        # reply is discarded.
+        with self.ws.store.transaction():
+            if self._stopped_since(generation):
+                revision = None
+            else:
+                revision = self.briefs.add_weekly_draft(
+                    week_of, ai_body, used, f"{ASSISTANT_PREFIX}{provider.kind}"
+                )
+                self._finish(request_id, "drafted", "", cost, revision.id)
+        if revision is None:
+            return self._fallback(week_of, body, refs, requested_by, settings, *STOPPED_DURING,
+                                  provider=provider, request_id=request_id, cost=cost)
         return self._result("drafted", "", provider, request_id, revision)
 
     def _send(self, provider: Provider, system: str, prompt: str, prompt_sha: str,
               estimate: int, refs: list[str], by: str, task: str, refused: str,
-              ) -> tuple[str, str, tuple[str, str] | None, int | None]:
+              started: int) -> tuple[str, str, tuple[str, str] | None, int | None, int]:
         """Call the provider once and check what comes back.
 
-        Returns (request id, checked text, failure, cost). The request is
-        recorded before the call, so an interrupted one still counts.
+        ``started`` is the stop generation when the request began, before it
+        was prepared. Returns (request id, checked text, failure, cost, stop
+        generation).
+        The request is recorded as it is sent, so an interrupted one still
+        counts, and it is left unfinished while it runs, which is how
+        "Assistants at work" shows it. The caller saves a result only if
+        ``_stopped_since(generation)`` is false inside its write.
         """
-        request_id = self._record(provider, prompt_sha, "provider_failed",
-                                  "interrupted before the model replied", estimate, by, task)
-        try:
-            reply = provider.complete(system, prompt,
-                                      max_output_tokens=MAX_OUTPUT_TOKENS, timeout=self.timeout)
-        except ProviderUnavailable as exc:
-            return request_id, "", ("provider_failed", f"The AI model did not answer: {exc}."), None
-        except Exception:  # noqa: BLE001 — an adapter bug must still fall back honestly
-            return request_id, "", ("provider_failed",
-                                    "The AI model connection failed unexpectedly."), None
+        generation = started
+        # The provider is called on its own thread, so a stop is noticed while
+        # it works: the request is abandoned at once and its reply discarded.
+        outcome: dict[str, Any] = {}
+        sent = threading.Event()
+        done = threading.Event()
+
+        def call() -> None:
+            try:
+                outcome["reply"] = provider.complete(
+                    system, prompt, max_output_tokens=MAX_OUTPUT_TOKENS, timeout=self.timeout,
+                    on_sent=sent.set)
+            except BaseException as exc:  # noqa: BLE001 — reported below
+                outcome["error"] = exc
+            finally:
+                done.set()
+
+        with self.ws.store.transaction():
+            # The last stop check and the send are one step: this write lock is
+            # held until the provider says the request has gone out (or it
+            # failed without sending), so a stop commits either before the
+            # check (nothing is sent) or after the request left (the reply is
+            # discarded), never in between. A stop saved since the request
+            # began is honoured here, even if assistants were let work again
+            # since.
+            if self._stopped_since(generation):
+                return (self._record(provider, prompt_sha, *STOPPED_BEFORE, 0, by, task),
+                        "", STOPPED_BEFORE, 0, generation)
+            request_id = self._record(provider, prompt_sha, "provider_failed",
+                                      "interrupted before the model replied", estimate, by, task)
+            threading.Thread(target=call, name=f"assistant-{request_id}", daemon=True).start()
+            # The provider thread never touches the database, so this cannot
+            # deadlock; connecting to it is bounded by CONNECT_TIMEOUT_SECONDS.
+            while not sent.wait(0.01) and not done.is_set():
+                pass
+        while not done.wait(self.stop_poll):
+            if self._stopped_since(generation):
+                return request_id, "", STOPPED_DURING, None, generation
+        if self._stopped_since(generation):
+            return request_id, "", STOPPED_DURING, None, generation
+        error = outcome.get("error")
+        if isinstance(error, ProviderUnavailable):
+            return (request_id, "", ("provider_failed", f"The AI model did not answer: {error}."),
+                    None, generation)
+        if error is not None and not isinstance(error, Exception):
+            raise error  # an interrupt, not a provider failure: the request stays counted
+        if error is not None:  # an adapter bug must still fall back honestly
+            return (request_id, "", ("provider_failed",
+                                     "The AI model connection failed unexpectedly."),
+                    None, generation)
+        reply = outcome["reply"]
         cost = max(0, int(reply.cost_cents))
         problem = self._check_output(reply.text, refs, prompt,
                                      allow_no_answer=task == "project_question")
         if problem:
-            return request_id, "", ("output_refused", f"{refused}: {problem}."), cost
-        return request_id, reply.text.strip(), None, cost
+            return request_id, "", ("output_refused", f"{refused}: {problem}."), cost, generation
+        return request_id, reply.text.strip(), None, cost, generation
+
+    def _stopped_since(self, generation: int) -> bool:
+        """Whether the manager has stopped assistants since a request began
+        (even if they have let them work again)."""
+        control = self.control.state()
+        return control["stopped"] or control["generation"] != generation
 
     # -- thinking with one project ----------------------------------------
 
@@ -557,6 +659,7 @@ class AssistantService:
         bound to the preview the manager reviewed.
         """
         self._owner(requested_by)
+        started = self.control.state()["generation"]  # as for the brief
         prep = self._prepare_project(project_id, question, today)
         provider = prep.provider
 
@@ -585,15 +688,19 @@ class AssistantService:
                                       requested_by, "project_question")
             self._finish(request_id, outcome, reason, 0, None)
             return result(outcome, reason, request_id)
-        request_id, text, failure, cost = self._send(
+        request_id, text, failure, cost, generation = self._send(
             provider, PROJECT_SYSTEM_PROMPT, prep.prompt, prep.prompt_sha, prep.estimate,
-            prep.refs, requested_by, "project_question", "The AI answer was not shown")
+            prep.refs, requested_by, "project_question", "The AI answer was not shown", started)
         if failure:
             self._finish(request_id, failure[0], failure[1], cost, None)
             return result(failure[0], failure[1], request_id)
-        self._finish(request_id, "answered", "", cost, None)
-        # Only a hash is kept: the answer itself is saved only if the manager keeps it.
         with self.ws.store.transaction() as db:
+            # Shown only if no stop came since the request began (decided in the write).
+            if self._stopped_since(generation):
+                self._finish(request_id, *STOPPED_DURING, cost, None)
+                return result(*STOPPED_DURING, request_id)
+            self._finish(request_id, "answered", "", cost, None)
+            # Only a hash is kept: the answer itself is saved only if the manager keeps it.
             db.execute("UPDATE assistant_requests SET output_sha256 = ? WHERE id = ?",
                        (_answer_binding(project_id, prep.question, text), request_id))
         return result("answered", "", request_id, text)
@@ -716,8 +823,8 @@ class AssistantService:
         with self.ws.store.transaction() as db:
             db.execute(
                 "UPDATE assistant_requests SET outcome = ?, reason = ?, cost_cents = ?,"
-                " revision_id = ? WHERE id = ?",
-                (outcome, reason, cost, revision_id, request_id),
+                " revision_id = ?, finished_at = ? WHERE id = ?",
+                (outcome, reason, cost, revision_id, self.ws.clock(), request_id),
             )
 
     def _fallback(self, week_of: str, body: str, refs: list[str], by: str,

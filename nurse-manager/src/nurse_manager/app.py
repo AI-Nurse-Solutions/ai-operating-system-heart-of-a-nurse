@@ -64,7 +64,7 @@ WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assist
                   "source-add", "learning-add", "learning-start", "learning-complete",
                   "contribution-add", "contribution-verify", "brief-schedule-set",
                   "memory-add", "memory-correct", "memory-exclude", "memory-include",
-                  "memory-delete")
+                  "memory-delete", "assistants-stop", "assistants-resume")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
@@ -400,8 +400,8 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
             return "model is required text; endpoint is optional text"
         argv = ["assistant-local", ws, "--model", model, "--by", owner]
         return argv + ["--endpoint", endpoint] if endpoint.strip() else argv
-    if command == "assistant-off":
-        return ["assistant-off", ws, "--by", owner]
+    if command in ("assistant-off", "assistants-stop", "assistants-resume"):
+        return [command, ws, "--by", owner]
     if command in ("learning-add", "learning-start", "learning-complete"):
         hours = text("hours", 10, required=False)
         if hours is None or (hours and not _HOURS.fullmatch(hours)):

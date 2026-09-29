@@ -118,11 +118,99 @@ function missionSection(doc, id, title, section, renderItems) {
 const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 /**
+ * @typedef {object} MissionOptions
+ * @property {boolean} writable
+ * @property {boolean} [busy]
+ * @property {Notice} [notice]
+ * @property {() => void} [onStop]
+ * @property {() => void} [onResume]
+ */
+
+/**
+ * Assistants at work, and the one switch that stops them all (step 5.3).
+ * The switch is always there in the app, even when nothing is running.
+ * @param {Document} doc
+ * @param {MissionControl['assistants_at_work']} section
+ * @param {MissionOptions} options
+ */
+function assistantsSection(doc, section, options) {
+  const busy = Boolean(options.busy);
+  const root = h(doc, 'section', { class: 'mc-section', id: 'assistants', 'aria-labelledby': 'assistants-heading' }, [
+    h(doc, 'h2', { id: 'assistants-heading', tabindex: '-1' }, ['Assistants at work']),
+  ]);
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+  if (section.stopped) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'blocked', '■', 'Stopped'),
+      ` by ${section.changed_by}${section.changed_at ? `, ${localTime(section.changed_at)}` : ''}.`,
+      ' Nothing is sent to an AI model, and the weekly draft waits, until you let assistants work again.',
+    ]));
+  }
+  if (section.items.length === 0) {
+    root.append(h(doc, 'p', { class: 'section-state section-state--empty' }, [section.empty_message]));
+  } else {
+    root.append(h(doc, 'ul', { class: 'item-list' }, section.items.map((item) =>
+      h(doc, 'li', { 'data-record-id': item.id }, [
+        item.kind === 'request' ? badge(doc, 'review', '…', 'Working') : badge(doc, 'paused', '○', 'Waiting'),
+        ' ',
+        h(doc, 'span', { class: 'item-title' }, [item.title]),
+        h(doc, 'span', { class: 'item-meta' }, [
+          ` · ${item.detail}`,
+          item.since ? ` Since ${localTime(item.since)}.` : '',
+        ]),
+      ]))));
+  }
+  if (!options.writable) {
+    root.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Stopping assistants is available in the Nurse AI OS app.',
+    ]));
+    return root;
+  }
+  root.append(h(doc, 'p', { class: 'field-hint', id: 'stop-rules' }, [
+    'Stopping sends nothing more to any AI model, abandons work already on its way (whatever it sends back is discarded), ',
+    'and pauses the weekly draft. Nothing starts again until you say so.',
+  ]));
+  const control = section.stopped
+    ? button(doc, 'Let assistants work again', busy, () => options.onResume?.(), 'secondary-button')
+    : button(doc, 'Stop all assistants', busy, () => options.onStop?.());
+  control.setAttribute('aria-describedby', 'stop-rules');
+  root.append(h(doc, 'p', { class: 'button-row' }, [control]));
+  return root;
+}
+
+/**
+ * Shown while a request waits for the AI model: the way to stop it, right there.
+ * @param {Document} doc
+ * @param {() => Promise<boolean>} onStop resolves false if the stop was not saved
+ */
+function workingBlock(doc, onStop) {
+  const stop = button(doc, 'Stop assistants', false, async () => {
+    stop.disabled = true;
+    stop.textContent = 'Stopping…';
+    // Not stopped (the request failed): offer it again, since the model is still working.
+    if (!(await onStop())) {
+      stop.disabled = false;
+      stop.textContent = 'Stop assistants';
+    }
+  }, 'secondary-button');
+  stop.setAttribute('aria-describedby', 'working-hint');
+  return h(doc, 'div', { class: 'working', id: 'working' }, [
+    h(doc, 'p', { id: 'working-hint' }, [
+      badge(doc, 'review', '…', 'Working'),
+      ' Waiting for the AI model. Stop it, and nothing more is sent; whatever it sends back is discarded.',
+    ]),
+    h(doc, 'p', { class: 'button-row' }, [stop]),
+  ]);
+}
+
+/**
  * Mission Control: what needs my attention?
  * @param {Document} doc
  * @param {MissionControl} data
+ * @param {MissionOptions} [options]
  */
-export function renderMission(doc, data) {
+export function renderMission(doc, data, options = { writable: false }) {
   const root = h(doc, 'div', { class: 'view view--mission' });
   root.append(viewHeading(doc, 'Mission Control', `Week of ${data.week_of} · Today ${data.today}`));
 
@@ -171,8 +259,7 @@ export function renderMission(doc, data) {
           h(doc, 'span', { class: 'item-meta' }, [` · ${f.owner}`]),
         ])))),
 
-    missionSection(doc, 'assistants', 'Assistants at work', data.assistants_at_work, () =>
-      h(doc, 'ul', {}, [])),
+    assistantsSection(doc, data.assistants_at_work, options),
 
     missionSection(doc, 'accepted', 'Recently accepted outputs', data.recent_accepted_outputs, () =>
       h(doc, 'ul', { class: 'item-list' }, data.recent_accepted_outputs.items.map((a) =>
@@ -641,6 +728,7 @@ function thinkSection(doc, think) {
     think.onPreview(questionInput.value.trim());
   });
   section.append(form);
+  if (think.sending && think.onStop) section.append(workingBlock(doc, think.onStop));
   if (think.preview) {
     section.append(previewPanel(doc, think.preview, busy, think,
       { prefix: 'think-', level: 'h3', promptLabel: "Your question and this project's records" }));
@@ -772,6 +860,8 @@ export function renderOnboarding(doc, handlers, state = {}) {
  * @property {() => void} onCancel
  * @property {(question: string) => void} [onEdit] the question changed after a preview
  * @property {() => void} [onKeep] keep the shown answer as a project note
+ * @property {boolean} [sending] a question is waiting for the AI model
+ * @property {() => Promise<boolean>} [onStop] stop assistants while it waits; false if not stopped
  */
 /**
  * @typedef {object} FeedbackOptions
@@ -938,7 +1028,7 @@ function previewPanel(doc, preview, busy, handlers, layout = {}) {
  * @param {WeeklyBrief} data
  * @param {{
  *   writable: boolean, busy?: boolean, notice?: Notice, preview?: AssistantPreview | null,
- *   scheduleDraft?: ScheduleFields | null,
+ *   scheduleDraft?: ScheduleFields | null, sending?: boolean, onStop?: () => Promise<boolean>,
  *   onRecords: () => void, onPreview: () => void, onSend: (sha: string) => void,
  *   onCancel: () => void, onAccept: (revision: Revision) => void,
  *   onSchedule: (fields: ScheduleFields) => void,
@@ -961,6 +1051,7 @@ export function renderBrief(doc, data, options) {
       badge(doc, 'unavailable', '○', 'Read-only'), ' Drafting and accepting are available in the Nurse AI OS app.',
     ]));
   }
+  if (options.sending && options.onStop) root.append(workingBlock(doc, options.onStop));
   if (options.preview) root.append(previewPanel(doc, options.preview, busy, options));
 
   const current = data.current;
@@ -1037,6 +1128,12 @@ function scheduleSection(doc, schedule, busy, options) {
   if (!schedule.enabled) {
     section.append(h(doc, 'p', { class: 'section-state' }, [
       badge(doc, 'unavailable', '○', 'Off'), ' Turn it on to have a draft from your records waiting each week.',
+    ]));
+  } else if (schedule.stopped) {
+    section.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'blocked', '■', 'Waiting'),
+      ` On for every ${WEEKDAYS[schedule.weekday]} at ${hourLabel(schedule.hour)}, but assistants are stopped, so nothing is prepared. `,
+      h(doc, 'a', { href: '#/mission' }, ['Let them work again from Mission Control']), '.',
     ]));
   } else {
     const next = schedule.next_at && Date.parse(schedule.next_at) <= Date.now()

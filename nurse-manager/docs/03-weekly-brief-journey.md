@@ -14,7 +14,7 @@ It runs entirely without a model, a network, or an API key.
 | Step | Manager does | System does | Backing call |
 |---|---|---|---|
 | 1 | Chooses Nurse Manager → Personal → "Try the sample brief" | Creates a workspace marked **sample**; every view and render says so | `load_sample` / `nurse-manager sample` |
-| 2 | Opens Mission Control | Shows three priorities, Needs my judgment, projects in motion, follow-ups (overdue flagged), assistants (honestly "none connected"), and recent accepted outputs | `mission_control` |
+| 2 | Opens Mission Control | Shows three priorities, Needs my judgment, projects in motion, follow-ups (overdue flagged), assistants at work (anything waiting for a model, and the recurring brief) with the switch that stops them all, and recent accepted outputs | `mission_control` |
 | 3 | Captures priorities, tasks, decisions, and sources | Refuses identifiers at capture, and refuses D2+ material and non-permitted source kinds, with the reason | `ManagerWorkspace.*` |
 | 4 | Asks for this week's brief | Composes a **draft** from records; every line cites a record id; the banner says no model was used | `BriefService.draft_weekly_brief` |
 | 5 | Reads, edits | Each edit is a new draft revision; history is kept | `BriefService.revise` |
@@ -47,6 +47,7 @@ The UI must never merge these states:
 | File already exists with different content | Export **failed**; earlier file untouched |
 | Crash mid-export | On restart: **succeeded** only if the file's hash matches, else **effect unknown**, and never re-run automatically |
 | Recurring draft fails (for example, the workspace is busy) | Retried after 5, then 30 minutes; after 3 attempts it stops and says "draft this week's brief by hand". A retry still pending when the week ends runs until the new week's own time |
+| The manager stops assistants while a model drafts the brief | The request returns within a second; whatever the model sends back later is discarded. The brief is drafted from records instead, saying why. While stopped, nothing is sent and the recurring draft waits, until the manager lets assistants work again |
 | App closed or computer asleep at the chosen time | The draft is prepared the next time the app opens that week; earlier weeks are never backfilled |
 | Restore from an older backup | Refused if it would discard newer changes; explicit discard keeps a pre-restore copy |
 | Empty workspace | Each Mission Control section states that it is empty, and why |

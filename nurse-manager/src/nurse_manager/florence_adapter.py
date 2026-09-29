@@ -154,6 +154,8 @@ _FINAL = {
     "stale": "blocked:stale_approval",
 }
 _OUTPUT_SHA = re.compile(r"sha256 ([0-9a-f]{64})")
+# What reconcile() recorded for a confirmed export before it kept the digest.
+_LEGACY_RECONCILED = "confirmed after restart: file on disk matches the approved content"
 
 
 def _events(boundary: ActionBoundary, action_id: str) -> list[Any]:
@@ -200,13 +202,20 @@ def to_evidence_bundle(boundary: ActionBoundary, action_id: str) -> dict[str, An
     tool_calls, flags, deviations = [], [], []
     if receipt is not None:
         found = _OUTPUT_SHA.search(receipt["detail"])
+        output = found.group(1) if found else None
+        if (output is None and receipt["outcome"] == "succeeded"
+                and receipt["detail"] == _LEGACY_RECONCILED):
+            # Confirmed by an earlier release, which did not record the digest.
+            # It confirmed the file matched the approved content, so that
+            # content's digest is the one it verified.
+            output = boundary.approved_export_sha256(action)
         tool_calls.append({
             "tool_id": action.effect,
             "action_id": action.id,
             "proposed": True,
             "executed": receipt["outcome"] == "succeeded",
-            "output_hash": f"sha256:{found.group(1)}"
-            if receipt["outcome"] == "succeeded" and found else None,
+            "output_hash": f"sha256:{output}"
+            if receipt["outcome"] == "succeeded" and output else None,
             # The type or state only: a message can name a path, and a path a person.
             "error": None if receipt["outcome"] == "succeeded" else
             (receipt["outcome"] if receipt["outcome"] == "effect_unknown"

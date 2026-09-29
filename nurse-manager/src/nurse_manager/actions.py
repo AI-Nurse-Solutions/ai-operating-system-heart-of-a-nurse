@@ -315,10 +315,7 @@ class ActionBoundary:
         ).fetchall():
             action = self.get(row["id"])
             target = self.exports_dir / action.destination
-            expected = hashlib.sha256(
-                self.briefs.render(self.briefs.revision(action.artifact_revision_id))
-                .encode("utf-8")
-            ).hexdigest()
+            expected = self.approved_export_sha256(action)
             if target.is_file() and hashlib.sha256(target.read_bytes()).hexdigest() == expected:
                 settled.append(self._finish(
                     action.id, "system", "succeeded",
@@ -331,6 +328,13 @@ class ActionBoundary:
                     "interrupted before the effect could be confirmed; not retried",
                 ))
         return settled
+
+    def approved_export_sha256(self, action: ActionRecord) -> str:
+        """The sha256 of the export the manager approved: what reconcile()
+        requires the file on disk to match before calling it a success."""
+        return hashlib.sha256(
+            self.briefs.render(self.briefs.revision(action.artifact_revision_id)).encode("utf-8")
+        ).hexdigest()
 
     def _recheck(self, action: ActionRecord) -> str:
         approval = self.ws.store.conn.execute(

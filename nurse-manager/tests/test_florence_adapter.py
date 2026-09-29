@@ -333,6 +333,12 @@ class EvidenceTests(_Case):
         self.assertEqual((call["executed"], call["output_hash"], call["error"]),
                          (True, f"sha256:{on_disk}", None))
         self.assertEqual(recovered["final_action"], "write_record")
+        # A receipt the previous release wrote, without the digest, still gives it.
+        self.ws.store.conn.execute(
+            "UPDATE receipts SET detail = 'confirmed after restart: file on disk matches the"
+            " approved content' WHERE action_id = ?", (acts["recovered"].id,))
+        (call,) = get("recovered")["tool_calls"]
+        self.assertEqual((call["executed"], call["output_hash"]), (True, f"sha256:{on_disk}"))
 
         lost = get("effect_unknown")
         (call,) = lost["tool_calls"]

@@ -141,10 +141,10 @@ class ActionBoundary:
 
     def _evaluate(
         self, effect: str, origin: str, proposed_by: str, purpose: str,
-        revision_id: str | None, destination: str,
+        revision_id: str | None, destination: str, profile: dict[str, Any] | None = None,
     ) -> tuple[str, str, tuple[str, ...], dict[str, Any] | None]:
         """Return (tier, decision, reasons, effect_rule)."""
-        profile = self._profile()
+        profile = profile or self._profile()
         if effect in profile["blocked_effects"]:
             return "red", "deny", ("MGR-EFFECT-BLOCKED",), None
         rule = profile["effects"].get(effect)
@@ -184,6 +184,14 @@ class ActionBoundary:
         )
         return self.edena.decide(request)
 
+    def _policy_version(self, profile: dict[str, Any], origin: str) -> str:
+        """The policy that decides an action: the profile, and for an
+        assistant's proposal the EDENA gateway policy as well."""
+        version = f"{profile['policy_id']}@{profile['version']}"
+        if origin == "assistant":
+            version += f"+edena-gateway-policy@{self.edena.version}"
+        return version
+
     # -- lifecycle --------------------------------------------------------
 
     def propose(
@@ -209,8 +217,9 @@ class ActionBoundary:
         payload_sha = ""
         if revision_id is not None:
             payload_sha = self.briefs.revision(revision_id).body_sha256
+        profile = self._profile()
         tier, decision, reasons, _ = self._evaluate(
-            effect, origin, proposed_by, purpose, revision_id, destination
+            effect, origin, proposed_by, purpose, revision_id, destination, profile
         )
         status = {"deny": "denied", "require_approval": "awaiting_approval",
                   "allow": "approved"}[decision]
@@ -226,6 +235,10 @@ class ActionBoundary:
                  revision_id, payload_sha, destination, cost_limit_cents,
                  _expected_effect(effect, destination), tier, decision,
                  json.dumps(list(reasons)), status, now, now),
+            )
+            db.execute(
+                "INSERT INTO action_policy_versions (action_id, policy_version) VALUES (?, ?)",
+                (action_id, self._policy_version(profile, origin)),
             )
             self.ws.store.log(proposed_by, f"propose:{decision}", "action", action_id)
         return self.get(action_id)
@@ -309,7 +322,8 @@ class ActionBoundary:
             if target.is_file() and hashlib.sha256(target.read_bytes()).hexdigest() == expected:
                 settled.append(self._finish(
                     action.id, "system", "succeeded",
-                    "confirmed after restart: file on disk matches the approved content",
+                    "confirmed after restart: file on disk matches the approved content"
+                    f" (sha256 {expected})",
                 ))
             else:
                 settled.append(self._finish(
@@ -378,6 +392,17 @@ class ActionBoundary:
             tier=row["tier"], policy_decision=row["policy_decision"],
             policy_reasons=tuple(json.loads(row["policy_reasons"])), status=row["status"],
         )
+
+    def policy_version(self, action_id: str) -> str | None:
+        """The policy that decided the action, as it was then. None for an
+        action recorded before versions were kept: unknown, not guessed."""
+        row = self.ws.store.conn.execute(
+            "SELECT v.policy_version FROM action_policy_versions v"
+            " JOIN actions a ON a.id = v.action_id"
+            " WHERE v.action_id = ? AND a.workspace_id = ?",
+            (action_id, self.ws.info.id),
+        ).fetchone()
+        return row["policy_version"] if row else None
 
     def receipt(self, action_id: str) -> dict[str, Any]:
         row = self.ws.store.conn.execute(

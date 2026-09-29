@@ -127,10 +127,6 @@ def to_edena_decision(boundary: ActionBoundary, action_id: str) -> dict[str, Any
     if action.policy_decision not in _DECISIONS:
         raise AdapterError(f"unknown decision: {action.policy_decision}")
     decision = _DECISIONS[action.policy_decision]
-    policy = boundary._profile()
-    version = f"{policy['policy_id']}@{policy['version']}"
-    if action.origin == "assistant":
-        version += f"+edena-gateway-policy@{boundary.edena.version}"
     return {
         "decision_id": f"{action.id}:decision",
         "action_id": action.id,
@@ -140,7 +136,8 @@ def to_edena_decision(boundary: ActionBoundary, action_id: str) -> dict[str, Any
         "constraints": list(_APPROVAL_CONSTRAINTS) if decision == "require_human" else [],
         "rationale": "reason codes: " + ", ".join(action.policy_reasons),
         "evidence_required": [],
-        "policy_pack_version": version,
+        # As recorded when the action was decided, never today's policy.
+        "policy_pack_version": boundary.policy_version(action.id),
         "decided_at": _created_at(boundary, action.id),
         "expires_at": None,
     }

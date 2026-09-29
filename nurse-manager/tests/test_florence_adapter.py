@@ -165,6 +165,35 @@ class AdapterTests(_Case):
         candidate = to_candidate_action(self.boundary, self.actions()["assistant"].id)
         self.assertEqual(candidate["agent_id"], "assistant:planning-partner")
 
+    def test_decisions_name_the_policy_in_force_when_they_were_made(self):
+        acts = self.actions()
+        before = {label: to_edena_decision(self.boundary, a.id)["policy_pack_version"]
+                  for label, a in acts.items()}
+        profile = json.loads(self.boundary.profile_path.read_text(encoding="utf-8"))
+        profile["version"] = "99.0.0"
+        upgraded = Path(self._tmp.name) / "profile.json"
+        upgraded.write_text(json.dumps(profile), encoding="utf-8")
+        later = ActionBoundary(self.ws, profile_policy=upgraded)
+        for label, action in acts.items():
+            with self.subTest(action=label):
+                self.assertNotIn("99.0.0", before[label])
+                self.assertEqual(to_edena_decision(later, action.id)["policy_pack_version"],
+                                 before[label])
+                self.assertEqual(to_evidence_bundle(later, action.id)["edena_decisions"][0]
+                                 ["policy_pack_version"], before[label])
+        fresh = later.propose("export_markdown", revision_id=self.accepted.id,
+                              destination="new.md", purpose="Save", proposed_by=OWNER)
+        self.assertTrue(to_edena_decision(later, fresh.id)["policy_pack_version"]
+                        .endswith("@99.0.0"))
+
+    def test_a_decision_recorded_before_versions_were_kept_names_none(self):
+        action = self.actions()["awaiting"]
+        self.ws.store.conn.execute("DELETE FROM action_policy_versions WHERE action_id = ?",
+                                   (action.id,))
+        decision = to_edena_decision(self.boundary, action.id)
+        self.assertIsNone(decision["policy_pack_version"])  # unknown, never guessed
+        self.assertValid(decision, "edena_decision.schema.json")
+
     def test_unknown_effects_are_refused_not_guessed(self):
         action = self.boundary.propose("launch_rocket", revision_id=self.accepted.id,
                                        destination="x", purpose="?", proposed_by=OWNER)
@@ -221,8 +250,16 @@ class EvidenceTests(_Case):
         approve(lost)
         with self.ws.store.transaction():  # interrupted mid-effect, then restarted
             self.boundary._set_status(lost.id, "executing", OWNER, "execute")
+        recovered = propose("export_markdown", revision_id=rid, destination="recovered.md",
+                            purpose="Save it", proposed_by=OWNER)
+        approve(recovered)
+        (self.boundary.exports_dir / "recovered.md").write_text(  # written, then the crash
+            self.boundary.briefs.render(self.accepted), encoding="utf-8")
+        with self.ws.store.transaction():
+            self.boundary._set_status(recovered.id, "executing", OWNER, "execute")
         self.boundary.reconcile()
         out["effect_unknown"] = lost
+        out["recovered"] = recovered
         return {label: self.boundary.get(a.id) for label, a in out.items()}
 
     def assertShape(self, bundle):
@@ -288,6 +325,14 @@ class EvidenceTests(_Case):
         self.assertEqual((stale["final_action"], stale["incident_flags"], stale["tool_calls"]),
                          ("blocked:stale_approval", [f"stale_approval:{acts['stale'].id}"], []))
         self.assertIsNotNone(stale["completed_at"])
+
+        recovered = get("recovered")  # confirmed after a restart: the digest still crosses
+        (call,) = recovered["tool_calls"]
+        on_disk = hashlib.sha256(
+            (self.boundary.exports_dir / "recovered.md").read_bytes()).hexdigest()
+        self.assertEqual((call["executed"], call["output_hash"], call["error"]),
+                         (True, f"sha256:{on_disk}", None))
+        self.assertEqual(recovered["final_action"], "write_record")
 
         lost = get("effect_unknown")
         (call,) = lost["tool_calls"]

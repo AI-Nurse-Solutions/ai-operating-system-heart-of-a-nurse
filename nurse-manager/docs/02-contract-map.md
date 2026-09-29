@@ -65,7 +65,7 @@ projection; Florence-X types are never written back into manager tables.
 | `tier` | `risk_hint` / `risk_tier` | green→green, yellow→yellow, red→**red_blocked** |
 | `policy_decision` | `decision` | allow→allow, require_approval→require_human, deny→deny |
 | `policy_reasons` | `rationale` | reason codes, verbatim |
-| profile (+ gateway) version | `policy_pack_version` | `nurse-manager-personal-profile@v`, plus `+edena-gateway-policy@v` for assistants |
+| `action_policy_versions` (recorded when the action was decided) | `policy_pack_version` | `nurse-manager-personal-profile@v`, plus `+edena-gateway-policy@v` for assistants; the policy in force at the decision, never today's (so an upgrade does not rewrite history). `null` for actions recorded before migration 0012, which did not keep it |
 
 The contract is enforced two ways:
 
@@ -85,7 +85,7 @@ Florence-X's own runtime uses when it fills a bundle.
 | `payload_sha256` | `context_hash` | `sha256:<hex>`: the content the action acted on, never the content itself |
 | the action's `EDENADecision` | `edena_decisions` | exactly one, the same dict `to_edena_decision` returns |
 | `approvals` row | `human_reviews` | one `approve` review by `nurse_manager`, reviewer `human:workspace-owner:<workspace>`; the approver must be the owner |
-| latest `receipts` row | `tool_calls` | one `ToolCallRecord` once an effect was attempted: `tool_id` is the effect; `executed` only when it succeeded; `output_hash` is the exported file's sha256; `error` is the exception type or `effect_unknown`, never the message (it can hold a path, and so a user name) |
+| latest `receipts` row | `tool_calls` | one `ToolCallRecord` once an effect was attempted: `tool_id` is the effect; `executed` only when it succeeded; `output_hash` is the exported file's sha256, also when an interrupted export is confirmed after a restart; `error` is the exception type or `effect_unknown`, never the message (it can hold a path, and so a user name) |
 | `actions.status` | `final_action` | denied → `blocked:deny`; awaiting approval → `awaiting_human_review`; approved → `awaiting_execution`; succeeded → the action type (`write_record`); failed → `failed:<type>`; effect unknown → `effect_unknown:<type>`; stale → `blocked:stale_approval` |
 | `actions.status` | `incident_flags` | `edena_deny:<action>`, `stale_approval:<action>`, or `effect_unknown:<action>` |
 | policy vs. what ran | `deviations_from_edena` | an effect after a denial, or without a required approval; never expected, reported if it happens |

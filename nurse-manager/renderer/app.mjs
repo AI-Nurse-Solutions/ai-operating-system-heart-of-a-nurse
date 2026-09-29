@@ -139,7 +139,12 @@ const DOCUMENT_ID = /^art-[0-9a-f]{12}$/;
 export function parseRoute(hash) {
   const parts = hash.replace(/^#\/?/, '').split('/');
   if ((parts[0] === 'project' || parts[0] === 'document') && parts.length === 2) {
-    const id = decodeURIComponent(parts[1]);
+    let id;
+    try {
+      id = decodeURIComponent(parts[1]);
+    } catch {
+      id = parts[1]; // a broken escape is just a malformed id
+    }
     // A malformed id still routes to its view, which reports it honestly.
     const valid = (parts[0] === 'project' ? PROJECT_ID : DOCUMENT_ID).test(id);
     return { name: parts[0], params: { id: valid ? id : id.slice(0, 64) } };

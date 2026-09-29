@@ -195,6 +195,7 @@ class PackService:
         latest = self.briefs.latest(document_id)
         accepted = self.briefs.accepted(document_id)
         return {
+            "sample": self.ws.info.sample,
             "document": document,
             "current": {
                 "revision": self.briefs.as_dict(latest),

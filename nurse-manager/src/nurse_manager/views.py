@@ -321,6 +321,7 @@ def packs(ws: ManagerWorkspace, *, today: str) -> dict[str, Any]:
             ],
         })
     return {
+        "sample": ws.info.sample,
         "today": today,
         "packs": items,
         "documents": PackService(ws).documents(),

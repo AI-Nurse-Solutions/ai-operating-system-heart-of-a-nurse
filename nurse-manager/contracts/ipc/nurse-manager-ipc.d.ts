@@ -476,6 +476,7 @@ export interface PackDocument {
 
 /** One pack document: the latest revision (rendered with its banner, and its raw text to edit) and the accepted one. Accept it with the accept command. */
 export interface PackDocumentView {
+  readonly sample: boolean;
   readonly document: PackDocument;
   readonly current: {
     readonly revision: Revision;
@@ -497,6 +498,7 @@ export interface PackTemplate {
 
 /** Education, committee, and communication packs, and the documents started from them. */
 export interface Packs {
+  readonly sample: boolean;
   readonly today: IsoDate;
   readonly packs: readonly Pack[];
   readonly documents: readonly PackDocument[];

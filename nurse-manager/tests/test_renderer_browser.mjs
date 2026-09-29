@@ -349,7 +349,26 @@ try {
   await malformed.waitForSelector('main[aria-busy="false"]');
   assert.match(await malformed.getByRole('alert').textContent(), /id must be a project record id/, 'a malformed id is refused, not guessed');
   assert.deepEqual(malformedErrors, []);
+  // A broken percent escape is refused like any other malformed id, never a page error.
+  for (const route of ['document', 'project']) {
+    await malformed.goto(`${main.url}#/${route}/%`);
+    await malformed.reload();
+    await malformed.waitForSelector('main[aria-busy="false"]');
+    assert.match(await malformed.getByRole('alert').textContent(), new RegExp(`id must be a ${route} record id`), route);
+  }
+  assert.deepEqual(malformedErrors, [], 'no page error for a broken escape');
   await malformed.close();
+
+  // Opened directly on Packs or a document, a sample workspace still says it is one.
+  for (const route of ['#/packs', '#/document/' + await (async () => {
+    const listing = await (await fetch(new URL("/ipc/packs", main.url))).json();
+    return listing.data.documents[0].id;
+  })()]) {
+    const direct = await open(`${main.url}${route}`);
+    await direct.waitForSelector('main[aria-busy="false"]');
+    assert.ok(await direct.getByRole('note').filter({ hasText: 'Sample workspace' }).isVisible(), `${route} announces sample data`);
+    await direct.close();
+  }
 
   const errorPage = await open(`${missing.url}#/mission`);
   assert.match(await errorPage.getByRole('alert').textContent(), /no workspace has been created here yet/);

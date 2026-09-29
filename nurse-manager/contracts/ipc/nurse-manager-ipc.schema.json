@@ -381,6 +381,7 @@
       "description": "Education, committee, and communication packs, and the documents started from them.",
       "type": "object",
       "properties": {
+        "sample": {"type": "boolean"},
         "today": {"$ref": "#/$defs/IsoDate"},
         "packs": {"type": "array", "items": {"$ref": "#/$defs/Pack"}},
         "documents": {"type": "array", "items": {"$ref": "#/$defs/PackDocument"}},
@@ -395,13 +396,14 @@
           }
         }
       },
-      "required": ["today", "packs", "documents", "projects"],
+      "required": ["sample", "today", "packs", "documents", "projects"],
       "additionalProperties": false
     },
     "PackDocumentView": {
       "description": "One pack document: the latest revision (rendered with its banner, and its raw text to edit) and the accepted one. Accept it with the accept command.",
       "type": "object",
       "properties": {
+        "sample": {"type": "boolean"},
         "document": {"$ref": "#/$defs/PackDocument"},
         "current": {
           "type": "object",
@@ -415,7 +417,7 @@
         },
         "accepted": {"anyOf": [{"$ref": "#/$defs/Revision"}, {"type": "null"}]}
       },
-      "required": ["document", "current", "accepted"],
+      "required": ["sample", "document", "current", "accepted"],
       "additionalProperties": false
     },
     "Memory": {

@@ -31,12 +31,11 @@ never the text sent or received.
 
 from __future__ import annotations
 
+import http.client
 import json
 import re
 import threading
-import urllib.error
 import urllib.parse
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Protocol
@@ -69,6 +68,7 @@ MAX_OUTPUT_TOKENS = 1200
 MAX_OUTPUT_CHARS = 20_000
 MAX_RESPONSE_BYTES = 256 * 1024
 REQUEST_TIMEOUT_SECONDS = 60.0
+CONNECT_TIMEOUT_SECONDS = 5.0
 # How often a request waiting for a model checks whether the manager stopped
 # assistants (step 5.3).
 STOP_POLL_SECONDS = 0.5
@@ -144,8 +144,17 @@ class Provider(Protocol):
     def estimate_cents(self, system: str, prompt: str, max_output_tokens: int) -> int: ...
 
     def complete(
-        self, system: str, prompt: str, *, max_output_tokens: int, timeout: float
-    ) -> ProviderReply: ...
+        self, system: str, prompt: str, *, max_output_tokens: int, timeout: float,
+        on_sent: Callable[[], None],
+    ) -> ProviderReply:
+        """Send one request and return the reply.
+
+        Call ``on_sent`` once, the moment the request has been handed to the
+        network and before waiting for the reply; never call it if nothing
+        was sent. Until then the request can still be stopped without
+        anything leaving the workspace (step 5.3).
+        """
+        ...
 
 
 # -- the local option --------------------------------------------------------
@@ -175,16 +184,12 @@ def check_local_endpoint(endpoint: str) -> str:
     return f"http://{host}:{port or 80}"
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *args, **kwargs):  # noqa: ANN002, ANN003
-        return None  # a local server must not send the request anywhere else
-
-
 class LocalModelProvider:
     """A model on this computer via the Ollama-compatible ``/api/generate``.
 
-    Text never leaves the device: the endpoint must be loopback, proxies
-    are bypassed, and redirects are refused.
+    Text never leaves the device: the endpoint must be loopback, and the
+    plain HTTP connection made here uses no proxy and follows no redirect
+    (anything but 200 is a failure).
     """
 
     kind = "local"
@@ -193,15 +198,13 @@ class LocalModelProvider:
     def __init__(self, model: str, endpoint: str = DEFAULT_LOCAL_ENDPOINT):
         self.model = model
         self.endpoint = check_local_endpoint(endpoint)
-        self._opener = urllib.request.build_opener(
-            urllib.request.ProxyHandler({}), _NoRedirect()
-        )
 
     def estimate_cents(self, system: str, prompt: str, max_output_tokens: int) -> int:
         return 0  # runs on the manager's own hardware
 
     def complete(
-        self, system: str, prompt: str, *, max_output_tokens: int, timeout: float
+        self, system: str, prompt: str, *, max_output_tokens: int, timeout: float,
+        on_sent: Callable[[], None],
     ) -> ProviderReply:
         body = json.dumps({
             "model": self.model,
@@ -210,23 +213,38 @@ class LocalModelProvider:
             "stream": False,
             "options": {"num_predict": max_output_tokens, "temperature": 0.2},
         }).encode("utf-8")
-        request = urllib.request.Request(
-            f"{self.endpoint}/api/generate", data=body, method="POST",
-            headers={"Content-Type": "application/json"},
-        )
+        address = urllib.parse.urlsplit(self.endpoint)
+        # Connecting to this computer is immediate or refused, so it gets a
+        # short limit of its own; the reply gets the full timeout.
+        conn = http.client.HTTPConnection(address.hostname, address.port or 80,
+                                          timeout=min(timeout, CONNECT_TIMEOUT_SECONDS))
         try:
-            with self._opener.open(request, timeout=timeout) as response:
+            try:
+                conn.connect()
+                conn.sock.settimeout(timeout)
+                conn.request("POST", "/api/generate", body=body,
+                             headers={"Content-Type": "application/json"})
+            except (OSError, http.client.HTTPException) as exc:
+                raise ProviderUnavailable(
+                    "the local model server is not reachable on this computer; start it"
+                    " and try again"
+                ) from exc
+            on_sent()  # the request is on its way
+            try:
+                response = conn.getresponse()
+                if response.status != 200:
+                    raise ProviderUnavailable(
+                        f"the local model server answered {response.status}; check that the"
+                        f" model '{self.model}' is installed"
+                    )
                 raw = response.read(MAX_RESPONSE_BYTES + 1)
-        except urllib.error.HTTPError as exc:
-            raise ProviderUnavailable(
-                f"the local model server answered {exc.code}; check that the model"
-                f" '{self.model}' is installed"
-            ) from exc
-        except (urllib.error.URLError, OSError) as exc:
-            raise ProviderUnavailable(
-                "the local model server is not reachable on this computer; start it"
-                " and try again"
-            ) from exc
+            except (OSError, http.client.HTTPException) as exc:
+                raise ProviderUnavailable(
+                    "the local model server is not reachable on this computer; start it"
+                    " and try again"
+                ) from exc
+        finally:
+            conn.close()
         if len(raw) > MAX_RESPONSE_BYTES:
             raise ProviderUnavailable("the local model's reply was too large")
         try:
@@ -530,14 +548,14 @@ class AssistantService:
         # The provider is called on its own thread, so a stop is noticed while
         # it works: the request is abandoned at once and its reply discarded.
         outcome: dict[str, Any] = {}
-        dispatched = threading.Event()
+        sent = threading.Event()
         done = threading.Event()
 
         def call() -> None:
-            dispatched.set()
             try:
                 outcome["reply"] = provider.complete(
-                    system, prompt, max_output_tokens=MAX_OUTPUT_TOKENS, timeout=self.timeout)
+                    system, prompt, max_output_tokens=MAX_OUTPUT_TOKENS, timeout=self.timeout,
+                    on_sent=sent.set)
             except BaseException as exc:  # noqa: BLE001 — reported below
                 outcome["error"] = exc
             finally:
@@ -545,18 +563,22 @@ class AssistantService:
 
         with self.ws.store.transaction():
             # The last stop check and the send are one step: this write lock is
-            # held until the provider call is under way, so a stop commits
-            # either before the check (nothing is sent) or after the send
-            # began (the reply is discarded), never in between. A stop saved
-            # since the request began is honoured here, even if assistants were
-            # let work again since.
+            # held until the provider says the request has gone out (or it
+            # failed without sending), so a stop commits either before the
+            # check (nothing is sent) or after the request left (the reply is
+            # discarded), never in between. A stop saved since the request
+            # began is honoured here, even if assistants were let work again
+            # since.
             if self._stopped_since(generation):
                 return (self._record(provider, prompt_sha, *STOPPED_BEFORE, 0, by, task),
                         "", STOPPED_BEFORE, 0, generation)
             request_id = self._record(provider, prompt_sha, "provider_failed",
                                       "interrupted before the model replied", estimate, by, task)
             threading.Thread(target=call, name=f"assistant-{request_id}", daemon=True).start()
-            dispatched.wait()  # set as the thread's first step; it never touches the database
+            # The provider thread never touches the database, so this cannot
+            # deadlock; connecting to it is bounded by CONNECT_TIMEOUT_SECONDS.
+            while not sent.wait(0.01) and not done.is_set():
+                pass
         while not done.wait(self.stop_poll):
             if self._stopped_since(generation):
                 return request_id, "", STOPPED_DURING, None, generation

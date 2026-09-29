@@ -727,9 +727,36 @@ class LocalAdapterTests(unittest.TestCase):
         try:
             with self.assertRaises(ProviderUnavailable):
                 LocalModelProvider("m", server.endpoint).complete(
-                    "s", "p", max_output_tokens=10, timeout=5)
+                    "s", "p", max_output_tokens=10, timeout=5, on_sent=lambda: None)
         finally:
             server.close()
+
+    def test_it_says_when_the_request_has_gone_out_and_only_then(self):
+        # on_sent is what lets a stop be decided exactly at the send (5.3):
+        # once, after the request is sent and before the reply arrives;
+        # never when nothing could be sent.
+        from nurse_manager.assistant import ProviderUnavailable
+
+        server = FakeModelServer(reply="ok", delay=0.5)
+        sent: list[float] = []
+        try:
+            reply = LocalModelProvider("m", server.endpoint).complete(
+                "s", "p", max_output_tokens=10, timeout=5,
+                on_sent=lambda: sent.append(time.monotonic()))
+            answered = time.monotonic()
+        finally:
+            server.close()
+        self.assertEqual(reply.text, "ok")
+        self.assertEqual(len(sent), 1)
+        self.assertGreater(answered - sent[0], 0.3, "on_sent came before the reply")
+
+        gone = FakeModelServer(reply="ok")
+        endpoint = gone.endpoint
+        gone.close()
+        with self.assertRaises(ProviderUnavailable):
+            LocalModelProvider("m", endpoint).complete(
+                "s", "p", max_output_tokens=10, timeout=5, on_sent=lambda: sent.append(0.0))
+        self.assertEqual(len(sent), 1, "nothing was sent, so on_sent was not called")
 
 
 class CliTests(unittest.TestCase):

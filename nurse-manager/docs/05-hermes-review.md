@@ -187,6 +187,25 @@ software."
 free, open-source desktop runtime from Nous Research", so it was left
 as is.
 
+**Follow-up (PR after #138).** A later check found ten more pages whose
+`<title>` names Hermes and that carried no attribution. The English
+sentence was added to:
+
+- `cheat-sheet.html`
+- `when-things-go-wrong.html`
+
+A translation was added to the localized cheat sheets: `ar/`, `es/`,
+`fr/`, `hi/`, `ru/`, `tl/`, `vi/`, and `zh/cheat-sheet.html`. These
+translations are AI-drafted and need review by a fluent reader before
+they are treated as final.
+
+Every note now carries `data-attribution="hermes-independence"`.
+`nurse-manager/tests/test_notices.py` finds every page whose title
+names Hermes and requires exactly one such note mentioning Nous
+Research and Nurse AI OS. `hermes-downloads/index.html` is the one
+listed exception, for the reason above. `.github/workflows/nurse-manager.yml`
+runs that test when any of these pages changes.
+
 **Listed for the owner, not edited.** These are hash-bound or owned by
 other areas.
 

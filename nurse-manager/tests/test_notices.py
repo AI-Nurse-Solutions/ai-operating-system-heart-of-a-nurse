@@ -12,12 +12,46 @@ REVIEW = REPO / "nurse-manager" / "docs" / "05-hermes-review.md"
 # v2026.9.24 (f97608f) and main ee5f49b, read 2026-09-29. Any edit to the
 # reproduced notice, including the grant or the disclaimer, fails this pin.
 HERMES_MIT_SHA256 = "547925cbc7510811a7fd35eb72e8eee3d5381ae9527e8d4e1bd0fe74057e511c"
-HERMES_PAGES = (
-    "hermes-masterclass.html",
-    "hermes-configuration-handbook.html",
-    "remote-hermes-safely.html",
-    "hermes-downloads/index.html",
-)
+# Every public page whose <title> names Hermes must carry the independence
+# note, marked so the test finds it in any language. Pages that make the same
+# statement in their own words are listed here with the phrase that does it.
+ATTRIBUTION_MARKER = 'data-attribution="hermes-independence"'
+EQUIVALENT_ATTRIBUTION = {
+    "hermes-downloads/index.html": "separate, free, open-source desktop runtime from Nous Research",
+}
+SKIP_DIRS = {".git", "node_modules"}
+TITLE = re.compile(r"<title>(.*?)</title>", re.I | re.S)
+ATTRIBUTION_NOTE = re.compile(r'<p data-attribution="hermes-independence">(.*?)</p>', re.S)
+
+
+def hermes_pages() -> list[str]:
+    """Repository-relative paths of HTML pages whose title mentions Hermes."""
+    pages = []
+    for path in REPO.rglob("*.html"):
+        rel = path.relative_to(REPO)
+        if SKIP_DIRS & set(rel.parts):
+            continue
+        match = TITLE.search(path.read_text(encoding="utf-8", errors="replace"))
+        if match and "hermes" in match.group(1).lower():
+            pages.append(rel.as_posix())
+    return sorted(pages)
+
+
+def _github_glob(pattern: str) -> re.Pattern:
+    """GitHub Actions path-filter semantics: `*` stays within a directory, `**` crosses them."""
+    out, i = "", 0
+    while i < len(pattern):
+        if pattern.startswith("**/", i):
+            out, i = out + "(?:.*/)?", i + 3
+        elif pattern.startswith("**", i):
+            out, i = out + ".*", i + 2
+        elif pattern[i] == "*":
+            out, i = out + "[^/]*", i + 1
+        elif pattern[i] == "?":
+            out, i = out + "[^/]", i + 1
+        else:
+            out, i = out + re.escape(pattern[i]), i + 1
+    return re.compile(out + r"\Z")
 
 
 def _inventory_row(text: str, component: str) -> list[str]:
@@ -89,14 +123,21 @@ def _workflow_paths(workflow: str, event: str) -> set[str]:
 class NoticeWorkflowTriggerTests(unittest.TestCase):
     """A PR that touches only a guarded file must still run this suite."""
 
+    def test_github_glob_semantics(self):
+        self.assertTrue(_github_glob("*hermes*.html").match("remote-hermes-safely.html"))
+        self.assertFalse(_github_glob("*hermes*.html").match("fr/hermes.html"))
+        self.assertTrue(_github_glob("**/cheat-sheet.html").match("cheat-sheet.html"))
+        self.assertTrue(_github_glob("**/cheat-sheet.html").match("zh/cheat-sheet.html"))
+
     def test_manager_workflow_triggers_on_guarded_files(self):
         workflow = (REPO / ".github" / "workflows" / "nurse-manager.yml").read_text(encoding="utf-8")
-        guarded = {"THIRD_PARTY_NOTICES.md", *HERMES_PAGES}
+        guarded = {"THIRD_PARTY_NOTICES.md", *hermes_pages()}
         for event in ("pull_request", "push"):
             with self.subTest(event=event):
-                paths = _workflow_paths(workflow, event)
-                self.assertIn("nurse-manager/**", paths)
-                self.assertEqual(set(), guarded - paths)
+                patterns = [_github_glob(p) for p in _workflow_paths(workflow, event)]
+                self.assertTrue(any(p.match("nurse-manager/tests/test_notices.py") for p in patterns))
+                missed = sorted(f for f in guarded if not any(p.match(f) for p in patterns))
+                self.assertEqual([], missed)
 
 
 class HermesReviewTests(unittest.TestCase):
@@ -110,18 +151,31 @@ class HermesReviewTests(unittest.TestCase):
 
 
 class HermesPageAttributionTests(unittest.TestCase):
+    def test_discovery_finds_the_known_pages(self):
+        pages = hermes_pages()
+        for page in ("hermes-masterclass.html", "hermes-downloads/index.html",
+                     "cheat-sheet.html", "when-things-go-wrong.html", "zh/cheat-sheet.html"):
+            self.assertIn(page, pages)
+
     def test_hermes_titled_pages_state_independence(self):
-        for page in HERMES_PAGES:
+        for page in hermes_pages():
             with self.subTest(page=page):
                 text = (REPO / page).read_text(encoding="utf-8")
-                self.assertIn("Nous Research", text)
-                self.assertRegex(text, r"(not affiliated with or endorsed by Nous Research"
-                                       r"|separate, free, open-source desktop runtime from Nous Research)")
+                if page in EQUIVALENT_ATTRIBUTION:
+                    self.assertIn(EQUIVALENT_ATTRIBUTION[page], text)
+                    continue
+                notes = ATTRIBUTION_NOTE.findall(text)
+                self.assertEqual(1, len(notes), f"expected one {ATTRIBUTION_MARKER} note")
+                self.assertIn("Nous Research", notes[0])
+                self.assertIn("Nurse AI OS", notes[0])
+
+    def test_equivalent_attributions_are_still_hermes_pages(self):
+        self.assertEqual([], sorted(set(EQUIVALENT_ATTRIBUTION) - set(hermes_pages())))
 
     def test_pages_do_not_claim_endorsement(self):
         pattern = re.compile(r"(official|certified|endorsed|approved) (nurse ai os|partner)"
                              r"|(endorsed|certified|approved) by (hermes|nous)", re.I)
-        for page in HERMES_PAGES:
+        for page in hermes_pages():
             with self.subTest(page=page):
                 text = (REPO / page).read_text(encoding="utf-8")
                 text = text.replace("not affiliated with or endorsed by", "")

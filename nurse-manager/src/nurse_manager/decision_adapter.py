@@ -33,7 +33,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -234,15 +233,17 @@ def _check_choice(choice: Any) -> str:
     probs = choice.probabilities
     if set(probs) != set(OPTIONS):
         return "probabilities must cover exactly the options"
+    # Bounds are compared before anything converts to float: a huge integer
+    # must be an invalid answer, not an OverflowError. NaN fails the bounds too.
     for value in probs.values():
         if isinstance(value, bool) or not isinstance(value, (int, float)) \
-                or not math.isfinite(value) or not 0 <= value <= 1:
+                or not 0 <= value <= 1:
             return "each probability must be a number from 0 to 1"
     if abs(sum(probs.values()) - 1) > _TOLERANCE:
         return "probabilities must sum to 1"
     c = choice.confidence
     if c is not None and (isinstance(c, bool) or not isinstance(c, (int, float))
-                          or not math.isfinite(c) or not 0 <= c <= 1):
+                          or not 0 <= c <= 1):
         return "confidence must be a number from 0 to 1, or absent"
     return ""
 
@@ -292,9 +293,11 @@ def run_shadow(adapter: DecisionAdapter, set_path: Path | str | None = None) -> 
             rows.append(row)
             continue
         suggested = choice.suggested
+        # Recorded as given, never rounded: the recorded values must reproduce
+        # the suggestion, even for a close call. Only the rendering rounds.
         row.update(suggested=suggested,
-                   probabilities={o: round(float(choice.probabilities[o]), 6) for o in OPTIONS},
-                   confidence=None if choice.confidence is None else round(float(choice.confidence), 6))
+                   probabilities={o: float(choice.probabilities[o]) for o in OPTIONS},
+                   confidence=None if choice.confidence is None else float(choice.confidence))
         gap = STRICTNESS[suggested] - STRICTNESS[decision]
         row["outcome"] = "agree" if gap == 0 else ("stricter" if gap > 0 else "less_strict")
         rows.append(row)

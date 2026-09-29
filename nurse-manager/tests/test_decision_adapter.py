@@ -271,12 +271,24 @@ class ShadowModeTests(unittest.TestCase):
             "nan": Choice({"allow": math.nan, "require_human": 0.5, "deny": 0.5}),
             "confidence too high": Choice({"allow": 0.0, "require_human": 0.0, "deny": 1.0}, 1.5),
             "confidence nan": Choice({"allow": 0.0, "require_human": 0.0, "deny": 1.0}, math.nan),
+            "huge integer": Choice({"allow": 10 ** 1000, "require_human": 0, "deny": 0}),
+            "huge integer confidence": Choice({"allow": 0.0, "require_human": 0.0, "deny": 1.0},
+                                              10 ** 1000),
         }
         for label, answer in bad.items():
             with self.subTest(label):
                 report = run_shadow(_Fixed(label, answer))
                 self.assertEqual((report["invalid_outputs"], report["answered"], report["agree"]),
                                  (len(self.cases), 0, 0))
+
+    def test_the_recorded_probabilities_reproduce_the_suggestion(self):
+        close = {"allow": 0.5000004, "require_human": 0.0, "deny": 0.4999996}
+        report = run_shadow(_Fixed("close call", Choice(close, 0.5000004)))
+        for row in report["rows"]:
+            self.assertEqual(row["suggested"], "allow")
+            self.assertEqual(row["probabilities"], close)
+            self.assertEqual(Choice(row["probabilities"]).suggested, row["suggested"])
+            self.assertEqual(row["confidence"], 0.5000004)
 
     def test_a_tie_goes_to_the_stricter_option(self):
         self.assertEqual(Choice({"allow": 0.5, "require_human": 0.0, "deny": 0.5}).suggested, "deny")

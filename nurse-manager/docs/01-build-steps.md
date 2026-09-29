@@ -25,7 +25,7 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 0.5 | Decide the rule for human-initiated local effects | ✅ | ADR 0002, accepted by the steward 2026-09-28 |
 | 0.6 | Confirm the pilot cohort's OS inventory, **especially Windows 10 vs 11** | ✅ superseded | ADR 0003 (local app in the browser) runs on Windows 10 and 11, macOS, and Linux; laptop checks remain part of 1.10 |
 | 0.7 | Pin the upstream Hermes commit for the spike | ⏸ deferred | ADR 0003; candidate when resumed: tag `v2026.9.24` |
-| 0.8 | Branding and redistribution review of Hermes (MIT) and notices | ⬜ | `THIRD_PARTY_NOTICES.md` entry |
+| 0.8 | Branding and redistribution review of Hermes (MIT) and notices | ✅ | `THIRD_PARTY_NOTICES.md` Hermes Desktop row and §2.1 (referenced, not bundled; step 1.11 obligations); `05-hermes-review.md` (sources read 2026-09-29 at `v2026.9.24`/`f97608f` and main `ee5f49b`); `test_notices.py` |
 | 0.9 | Request code-signing identities (Windows, Apple) | ⛔ | Needs the steward's accounts |
 | 0.10 | Establish the disposition of the "PR #25 / issue #16" the plan names | ⛔ | Needs `florence-x` API access |
 

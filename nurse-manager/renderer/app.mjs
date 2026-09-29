@@ -7,7 +7,7 @@
 
 import {
   renderAssistant, renderBoard, renderBrief, renderContributions, renderError, renderMemory, typedContributions, typedMemory, typedSchedule, renderLearning, renderLibrary, renderMission, renderOnboarding,
-  renderProject, renderTable, renderPacks, typedPacks, renderDocument,
+  renderProject, renderTable, renderPacks, typedPacks, renderDocument, renderHelp, typedPilot,
 } from './views.mjs';
 
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Command} Command */
@@ -24,7 +24,7 @@ import {
 /**
  * A data source. Only `call` is required; the local app adds the rest.
  * @typedef {object} Source
- * @property {(command: ReadCommand | 'assistant-preview' | 'assistant-project-preview', params?: Record<string, string>) => Promise<Envelope>} call
+ * @property {(command: ReadCommand | 'assistant-preview' | 'assistant-project-preview' | 'pilot-feedback-preview', params?: Record<string, string>) => Promise<Envelope>} call
  * @property {() => Promise<AppStatus | null>} [status] null means a read-only development host
  * @property {(command: WriteCommand, body: WriteBody) => Promise<Envelope>} [send]
  * @property {() => Promise<void>} [heartbeat]
@@ -106,11 +106,12 @@ export function httpSource(token = '') {
 }
 
 /** @typedef {Record<string, string | number | boolean>} WriteBody */
-/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'packs' | 'document'} ReadCommand */
+/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'packs' | 'document' | 'pilot-feedback'} ReadCommand */
 /** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'
  *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify' | 'brief-schedule-set'
  *   | 'memory-add' | 'memory-correct' | 'memory-exclude' | 'memory-include' | 'memory-delete'
- *   | 'assistants-stop' | 'assistants-resume' | 'pack-start' | 'document-save'} WriteCommand */
+ *   | 'assistants-stop' | 'assistants-resume' | 'pack-start' | 'document-save'
+ *   | 'pilot-feedback-add' | 'pilot-feedback-delete' | 'pilot-feedback-export'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -126,6 +127,7 @@ const ROUTES = {
   packs: { title: 'Packs', command: 'packs' },
   document: { title: 'Document', command: 'document' },
   assistant: { title: 'AI assistance', command: 'assistant' },
+  help: { title: 'Help and feedback', command: 'pilot-feedback' },
 };
 
 const PROJECT_ID = /^prj-[0-9a-f]{12}$/;
@@ -388,6 +390,9 @@ export function start(doc, source) {
     } else if (envelope.command === 'contributions') {
       showContributions(/** @type {import('./views.mjs').Contributions} */ (data), {}, moveFocus);
       announce('Contributions loaded.');
+    } else if (envelope.command === 'pilot-feedback') {
+      showHelp(/** @type {import('./views.mjs').PilotFeedback} */ (data), {}, moveFocus);
+      announce('Help and feedback loaded.');
     } else if (envelope.command === 'packs') {
       showPacks(/** @type {import('./views.mjs').Packs} */ (data), {}, moveFocus);
       announce('Packs loaded.');
@@ -454,7 +459,7 @@ export function start(doc, source) {
 
   /**
    * Reload a view's data after an action, unless the manager has navigated away.
-   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'mission' | 'packs' | 'document'} command
+   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'mission' | 'packs' | 'document' | 'pilot-feedback'} command
    * @param {number} mine
    * @param {Record<string, string>} [params]
    * @param {(message: string) => void} [onFail] handle a failed reload instead of showing the error page
@@ -468,7 +473,7 @@ export function start(doc, source) {
         return null;
       }
       if (!envelope.ok) {
-        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions', memory: 'memory', mission: 'mission', packs: 'packs', document: 'document' }[command];
+        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions', memory: 'memory', mission: 'mission', packs: 'packs', document: 'document', 'pilot-feedback': 'help' }[command];
         show(renderError(doc, ROUTES[view].title, envelope.error), true);
         return null;
       }
@@ -847,6 +852,120 @@ export function start(doc, source) {
       onVerify: (id, fields) => act('contribution-verify', { contribution_id: id, ...fields }, 'Verified, with your evidence.'),
     };
     const view = renderContributions(doc, data, { ...options, ...state });
+    if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
+    else show(view, moveFocus);
+  };
+
+  /**
+   * Save text as a file through the browser. The app itself writes nothing:
+   * the browser saves exactly the text the manager reviewed, and nothing is sent.
+   * @param {string} filename
+   * @param {string} text
+   */
+  const saveFile = (filename, text) => {
+    const view = doc.defaultView;
+    if (!view) return;
+    const url = view.URL.createObjectURL(new view.Blob([text], { type: 'text/markdown;charset=utf-8' }));
+    const link = doc.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.hidden = true;
+    doc.body.append(link);
+    link.click();
+    link.remove();
+    view.setTimeout(() => view.URL.revokeObjectURL(url), 10000);
+  };
+
+  /**
+   * Help and feedback: pilot feedback kept here, exported only as previewed.
+   * @param {import('./views.mjs').PilotFeedback} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, deleting?: string | null, typed?: Record<string, string>,
+   *   preview?: import('./views.mjs').PilotFeedbackPreview | null, exported?: import('./views.mjs').PilotFeedbackExport | null }} state
+   * @param {boolean} moveFocus
+   * @param {string} [focusSelector]
+   */
+  const showHelp = (data, state, moveFocus, focusSelector) => {
+    const mine = generation;
+    /** @param {Partial<typeof state>} next @param {string} [selector] */
+    const redraw = (next, selector) => showHelp(data, { typed: typedPilot(main), ...next }, true, selector);
+    /**
+     * Write, then reload the list from the records. Any preview is withdrawn,
+     * because what an export would hold may have changed.
+     * @param {WriteCommand} command
+     * @param {Record<string, string>} body
+     * @param {string} done
+     */
+    const act = async (command, body, done) => {
+      const typed = typedPilot(main);
+      main.replaceChildren(renderHelp(doc, data, { ...options, ...state, typed, busy: true }));
+      const { failure } = await write(command, body);
+      if (mine !== generation) return;
+      if (failure) {
+        showHelp(data, { typed, notice: failure }, true);
+        return;
+      }
+      const kept = command === 'pilot-feedback-add' ? { ...typed, summary: '' } : typed;
+      const fresh = await reload('pilot-feedback', mine, {}, (message) => showHelp(data, {
+        typed: kept, notice: { kind: 'error', text: `${done} The list could not be refreshed (${message}); open Help and feedback again to see it.` },
+      }, true));
+      if (!fresh) return;
+      showHelp(/** @type {import('./views.mjs').PilotFeedback} */ (fresh), { typed: kept, notice: { kind: 'ok', text: done } }, true);
+    };
+    /** @type {import('./views.mjs').HelpOptions} */
+    const options = {
+      writable,
+      onAdd: (fields) => act('pilot-feedback-add', fields, 'Saved on this computer. Nothing was sent.'),
+      onAskDelete: (id) => redraw({ deleting: id }, `[data-record-id="${id}"] .button-row button`),
+      onCancelDelete: () => redraw({}, '#pilot-heading'),
+      onDelete: (id) => act('pilot-feedback-delete', { feedback_id: id }, 'Deleted. Its text is gone.'),
+      onPreview: async () => {
+        const typed = typedPilot(main);
+        main.replaceChildren(renderHelp(doc, data, { ...options, ...state, typed, busy: true }));
+        let envelope;
+        try {
+          envelope = await source.call('pilot-feedback-preview');
+        } catch (error) {
+          if (mine !== generation) return;
+          showHelp(data, { typed, notice: { kind: 'error', text: error instanceof Error ? error.message : String(error) } }, true);
+          return;
+        }
+        if (mine !== generation) return;
+        if (!envelope.ok) {
+          showHelp(data, { typed, notice: { kind: 'error', text: envelope.error.message } }, true);
+          return;
+        }
+        const preview = /** @type {import('./views.mjs').PilotFeedbackPreview} */ (envelope.data);
+        showHelp(data, { typed, preview }, true, '#pilot-preview-heading');
+        announce(preview.can_export
+          ? 'Showing exactly what will be shared. Nothing has been saved or sent.'
+          : `This cannot be exported: ${preview.reason}`);
+      },
+      onCancelPreview: () => redraw({}, '#pilot-share-heading'),
+      onExport: async (sha) => {
+        const typed = typedPilot(main);
+        main.replaceChildren(renderHelp(doc, data, { ...options, ...state, typed, busy: true }));
+        const { envelope, failure } = await write('pilot-feedback-export', { sha256: sha });
+        if (mine !== generation) return;
+        if (failure || !envelope || !envelope.ok) {
+          // The preview is withdrawn: whatever changed must be reviewed again.
+          showHelp(data, { typed, notice: failure }, true);
+          return;
+        }
+        const exported = /** @type {import('./views.mjs').PilotFeedbackExport} */ (envelope.data);
+        saveFile(exported.filename, exported.text);
+        const fresh = await reload('pilot-feedback', mine, {}, () => { /* the export itself worked */ });
+        if (mine !== generation) return;
+        showHelp(/** @type {import('./views.mjs').PilotFeedback} */ (fresh ?? data), {
+          typed, exported,
+          notice: { kind: 'ok', text: `Saved as ${exported.filename}. Nothing was sent: give the file to your pilot team yourself.` },
+        }, true);
+      },
+      onSaveAgain: () => {
+        if (state.exported) saveFile(state.exported.filename, state.exported.text);
+        announce('Saved the same file again.');
+      },
+    };
+    const view = renderHelp(doc, data, { ...options, ...state });
     if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
     else show(view, moveFocus);
   };

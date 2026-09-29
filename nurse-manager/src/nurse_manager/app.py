@@ -50,6 +50,7 @@ from .devhost import (
     serve_static,
 )
 from .packs import MAX_DOCUMENT_CHARS
+from .pilot import AREAS as PILOT_AREAS, KINDS as PILOT_KINDS
 from .services import ManagerWorkspace
 
 DEFAULT_IDLE_TIMEOUT = 15 * 60
@@ -67,7 +68,8 @@ WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assist
                   "contribution-add", "contribution-verify", "brief-schedule-set",
                   "memory-add", "memory-correct", "memory-exclude", "memory-include",
                   "memory-delete", "assistants-stop", "assistants-resume", "pack-start",
-                  "document-save")
+                  "document-save", "pilot-feedback-add", "pilot-feedback-delete",
+                  "pilot-feedback-export")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
@@ -76,6 +78,7 @@ _LEARNING_ID = re.compile(r"^lrn-[0-9a-f]{12}$")
 _MEMORY_ID = re.compile(r"^mem-[0-9a-f]{12}$")
 _CONTRIBUTION_ID = re.compile(r"^ctb-[0-9a-f]{12}$")
 _DOCUMENT_ID = re.compile(r"^art-[0-9a-f]{12}$")
+_PILOT_ID = re.compile(r"^plf-[0-9a-f]{12}$")
 _PACK_PART = re.compile(r"^[a-z][a-z0-9-]{1,59}$")
 _HOURS = re.compile(r"^\d{1,3}(\.\d{1,2})?$")
 
@@ -449,6 +452,22 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         argv = ["learning-complete", ws, "--id", learning_id, "--takeaway", takeaway,
                 "--completed", completed]
         return argv + (["--hours", hours] if hours else [])
+    if command == "pilot-feedback-add":
+        area, kind, summary = text("area", 40), text("kind", 20), text("summary", 2000)
+        if area not in PILOT_AREAS or kind not in PILOT_KINDS or summary is None:
+            return "area, kind, and summary are required"
+        return ["pilot-feedback-add", ws, "--area", area, "--kind", kind, "--summary", summary]
+    if command == "pilot-feedback-delete":
+        feedback_id = text("feedback_id", 64)
+        if not feedback_id or not _PILOT_ID.fullmatch(feedback_id):
+            return "feedback_id is required"
+        return ["pilot-feedback-delete", ws, "--id", feedback_id]
+    if command == "pilot-feedback-export":
+        # Bound to the preview the manager reviewed, like every AI request.
+        sha = text("sha256", 64)
+        if not sha or not _SHA256.fullmatch(sha):
+            return "sha256 from the preview is required"
+        return ["pilot-feedback-export", ws, "--reviewed-sha", sha, "--by", owner]
     if command == "memory-add":
         content, project_id = text("content", 1000), text("project_id", 64, required=False)
         expires = text("expires_on", 20, required=False)

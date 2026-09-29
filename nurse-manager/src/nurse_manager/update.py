@@ -267,6 +267,9 @@ def check_feed(feed_bytes: bytes, signature: bytes, *, config: dict[str, Any],
         if isinstance(exc, UpdateError):
             raise
         raise UpdateError("the signed feed is not valid JSON") from exc
+    if today < feed["issued"]:
+        raise UpdateError(f"the feed is not issued until {feed['issued'].isoformat()}; it is"
+                          " not believed before then")
     if today > feed["expires"]:
         raise UpdateError(f"the feed expired on {feed['expires'].isoformat()}; an old feed"
                           " cannot be trusted to say what is current")

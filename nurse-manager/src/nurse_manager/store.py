@@ -276,8 +276,13 @@ class Store:
         target = sqlite3.connect(str(dest))
         try:
             self.conn.backup(target)
-        finally:
+        except BaseException:
+            # A copy that failed partway (a full disk, say) is not a backup;
+            # leaving it would invite restoring from it.
             target.close()
+            dest.unlink(missing_ok=True)
+            raise
+        target.close()
         return dest
 
     def restore(self, src: Path, *, allow_discarding_newer: bool = False) -> Path:

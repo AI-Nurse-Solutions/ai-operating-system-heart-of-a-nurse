@@ -218,6 +218,13 @@ class FeedTests(_Tmp):
                     self.check(name)
         self.assertEqual(self.check("feed-current.json")["sequence"], 7)
 
+    def test_a_feed_is_not_believed_before_its_issue_date(self):
+        with self.assertRaisesRegex(UpdateError, "not issued until 2026-09-01"):
+            self.check("feed-seq5.json", today=date(2026, 8, 31))
+        self.assertFalse(self.state.exists())
+        self.assertEqual(self.check("feed-seq5.json", today=date(2026, 9, 1))["status"],
+                         "update_available")
+
     def test_a_feed_for_another_channel_is_refused(self):
         self.config["channel"] = "beta"
         with self.assertRaisesRegex(UpdateError, "another channel"):
@@ -434,6 +441,21 @@ class UpgradeTests(unittest.TestCase):
         old = sqlite3.connect(str(backup))
         self.addCleanup(old.close)
         self.assertEqual(old.execute("SELECT count(*) FROM workspaces").fetchone()[0], 2)
+
+    def test_a_backup_that_fails_partway_leaves_no_partial_copy(self):
+        _old_workspace(self.path, self.latest)
+        real_connect = sqlite3.connect
+
+        def small_backup_disk(target, *args, **kwargs):
+            conn = real_connect(target, *args, **kwargs)
+            if "pre-migration-" in str(target):
+                conn.execute("PRAGMA max_page_count = 2")  # fills partway through the copy
+            return conn
+
+        with mock.patch.object(store_module.sqlite3, "connect", small_backup_disk):
+            with self.assertRaisesRegex(StoreError, "backup could not be made first"):
+                Store(self.path)
+        self.assertEqual(list((self.path.parent / "backups").glob("*")), [])
 
     def test_a_new_or_current_workspace_needs_no_backup(self):
         Store(self.path).close()

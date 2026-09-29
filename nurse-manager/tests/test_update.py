@@ -206,6 +206,18 @@ class FeedTests(_Tmp):
         with self.assertRaisesRegex(UpdateError, "older than one already seen"):
             self.check("feed-seq5.json")
 
+    def test_a_contradicted_sequence_stays_refused(self):
+        """Once two signed feeds are seen under one sequence, neither is trusted,
+        now or later; only a later sequence is."""
+        self.check("feed-seq5.json")
+        with self.assertRaisesRegex(UpdateError, "same sequence"):
+            self.check("feed-seq5-other.json")
+        for name in ("feed-seq5.json", "feed-seq5-other.json"):
+            with self.subTest(feed=name):
+                with self.assertRaisesRegex(UpdateError, "same sequence"):
+                    self.check(name)
+        self.assertEqual(self.check("feed-current.json")["sequence"], 7)
+
     def test_a_feed_for_another_channel_is_refused(self):
         self.config["channel"] = "beta"
         with self.assertRaisesRegex(UpdateError, "another channel"):
@@ -386,6 +398,37 @@ class UpgradeTests(unittest.TestCase):
         store = Store(self.path)  # once the other copy lets go, the upgrade completes
         self.addCleanup(store.close)
         self.assertEqual(store.schema_version, self.latest)
+
+    def test_a_disk_that_fills_during_a_step_is_not_called_a_broken_release(self):
+        """SQLite may roll a transaction back by itself when the disk fills; the
+        full disk must still be what the manager is told."""
+        _old_workspace(self.path, self.latest)
+        filler = [*store_module._migrations(),
+                  ("9998_example", "CREATE TABLE example_big (body TEXT)"),
+                  # The ROLLBACK stands in for SQLite rolling the transaction back
+                  # by itself when the disk fills; then the disk does fill.
+                  ("9999_example", "ROLLBACK; INSERT INTO example_big SELECT"
+                   " hex(randomblob(4000)) FROM (WITH RECURSIVE n(i) AS (SELECT 1"
+                   " UNION ALL SELECT i + 1 FROM n WHERE i < 200) SELECT i FROM n)")]
+        real_connect = store_module._connect
+
+        def small_disk(path):
+            conn = real_connect(path)
+            if Path(path) == self.path:
+                pages = conn.execute("PRAGMA page_count").fetchone()[0]
+                conn.execute(f"PRAGMA max_page_count = {pages + 40}")
+            return conn
+
+        with mock.patch.object(store_module, "_migrations", return_value=filler), \
+                mock.patch.object(store_module, "_connect", small_disk):
+            with self.assertRaises(StoreError) as caught:
+                Store(self.path)
+        self.assertNotIsInstance(caught.exception, MigrationFailed)
+        self.assertIn("the disk is full", str(caught.exception))
+        conn = sqlite3.connect(str(self.path))
+        self.addCleanup(conn.close)
+        self.assertEqual(conn.execute("SELECT max(version) FROM schema_migrations").fetchone()[0],
+                         "9998_example")
 
     def test_a_full_disk_is_named_plainly_and_a_bad_step_is_not(self):
         full = sqlite3.OperationalError("database or disk is full")

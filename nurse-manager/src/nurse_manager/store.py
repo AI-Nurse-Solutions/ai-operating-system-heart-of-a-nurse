@@ -205,7 +205,10 @@ class Store:
         try:
             yield self.conn
         except BaseException:
-            self.conn.execute("ROLLBACK")
+            # SQLite may already have rolled back by itself (a full disk, an I/O
+            # error); a second ROLLBACK would then fail and hide the real error.
+            if self.conn.in_transaction:
+                self.conn.execute("ROLLBACK")
             raise
         self.conn.execute("COMMIT")
 

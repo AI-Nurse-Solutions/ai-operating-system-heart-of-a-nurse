@@ -55,6 +55,8 @@ _PLATFORM = re.compile(r"[a-z0-9][a-z0-9-]{1,31}")
 # DigestInfo for SHA-256 (RFC 8017 §9.2, note 1).
 _SHA256_DIGEST_INFO = bytes.fromhex("3031300d060960864801650304020105000420")
 _RSA_OID = bytes.fromhex("2a864886f70d010101")
+# Recorded in place of a digest when two feeds claim one sequence: matches no feed.
+_CONTRADICTED = "contradicted"
 
 
 class UpdateError(ManagerError):
@@ -176,7 +178,8 @@ def _seen_feeds(path: Path) -> Iterator[sqlite3.Connection]:
         try:
             yield conn
         except BaseException:
-            conn.execute("ROLLBACK")
+            if conn.in_transaction:  # SQLite may already have rolled back by itself
+                conn.execute("ROLLBACK")
             raise
         conn.execute("COMMIT")
     except sqlite3.OperationalError as exc:
@@ -265,23 +268,30 @@ def check_feed(feed_bytes: bytes, signature: bytes, *, config: dict[str, Any],
         raise UpdateError(f"the feed expired on {feed['expires'].isoformat()}; an old feed"
                           " cannot be trusted to say what is current")
     digest = hashlib.sha256(feed_bytes).hexdigest()
+    refusal = ""
     with _seen_feeds(Path(state_file)) as db:
         seen = db.execute("SELECT sequence, feed_sha256 FROM feeds_seen WHERE channel = ?",
                           (config["channel"],)).fetchone()
-        if seen:
-            if feed["sequence"] < seen[0]:
-                raise UpdateError(f"this feed (sequence {feed['sequence']}) is older than one"
-                                  f" already seen (sequence {seen[0]}); it may be replayed")
-            if feed["sequence"] == seen[0] and digest != seen[1]:
-                raise UpdateError("two different feeds carry the same sequence; neither is trusted")
-        current = _version(current_version)
-        newer = sorted((r for r in feed["releases"] if r["rank"] > current),
-                       key=lambda r: r["rank"])
-        latest = newer[-1] if newer else None
-        db.execute("INSERT INTO feeds_seen (channel, sequence, feed_sha256) VALUES (?, ?, ?)"
-                   " ON CONFLICT (channel) DO UPDATE SET sequence = excluded.sequence,"
-                   " feed_sha256 = excluded.feed_sha256",
-                   (config["channel"], feed["sequence"], digest))
+        if seen and feed["sequence"] < seen[0]:
+            raise UpdateError(f"this feed (sequence {feed['sequence']}) is older than one"
+                              f" already seen (sequence {seen[0]}); it may be replayed")
+        if seen and feed["sequence"] == seen[0] and digest != seen[1]:
+            # Committed, not rolled back: once a sequence is contradicted, no feed
+            # under it is trusted again. Only a later sequence can be.
+            db.execute("UPDATE feeds_seen SET feed_sha256 = ? WHERE channel = ?",
+                       (_CONTRADICTED, config["channel"]))
+            refusal = "two different feeds carry the same sequence; neither is trusted"
+        else:
+            current = _version(current_version)
+            newer = sorted((r for r in feed["releases"] if r["rank"] > current),
+                           key=lambda r: r["rank"])
+            latest = newer[-1] if newer else None
+            db.execute("INSERT INTO feeds_seen (channel, sequence, feed_sha256) VALUES (?, ?, ?)"
+                       " ON CONFLICT (channel) DO UPDATE SET sequence = excluded.sequence,"
+                       " feed_sha256 = excluded.feed_sha256",
+                       (config["channel"], feed["sequence"], digest))
+    if refusal:
+        raise UpdateError(refusal)
     return {**result, "status": "update_available" if latest else "current",
             "reason": "" if latest else "this is the newest release the feed lists",
             "latest": None if latest is None else {k: v for k, v in latest.items() if k != "rank"},

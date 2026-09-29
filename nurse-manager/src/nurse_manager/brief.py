@@ -373,7 +373,7 @@ class BriefService:
             )
         ]
 
-    def render(self, revision: Revision) -> str:
+    def render(self, revision: Revision, *, draft_banner: str = BRIEF_DRAFT_BANNER) -> str:
         """The only rendering path. A draft cannot render without its banner."""
         title, _, rest = revision.body_markdown.partition("\n")
         banners: list[str] = []
@@ -393,7 +393,7 @@ class BriefService:
         elif revision.created_by.startswith(ASSISTANT_PREFIX):
             banners.append(ASSISTANT_DRAFT_BANNER)
         else:
-            banners.append(BRIEF_DRAFT_BANNER)
+            banners.append(draft_banner)
         return "\n\n".join([title, *banners, rest.lstrip("\n")])
 
     def as_dict(self, revision: Revision) -> dict[str, Any]:

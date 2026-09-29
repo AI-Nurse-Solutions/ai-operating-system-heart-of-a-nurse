@@ -7,7 +7,7 @@
 
 import {
   renderAssistant, renderBoard, renderBrief, renderContributions, renderError, renderMemory, typedContributions, typedMemory, typedSchedule, renderLearning, renderLibrary, renderMission, renderOnboarding,
-  renderProject, renderTable,
+  renderProject, renderTable, renderPacks, typedPacks, renderDocument,
 } from './views.mjs';
 
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Command} Command */
@@ -106,11 +106,11 @@ export function httpSource(token = '') {
 }
 
 /** @typedef {Record<string, string | number | boolean>} WriteBody */
-/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory'} ReadCommand */
+/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'packs' | 'document'} ReadCommand */
 /** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'
  *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify' | 'brief-schedule-set'
  *   | 'memory-add' | 'memory-correct' | 'memory-exclude' | 'memory-include' | 'memory-delete'
- *   | 'assistants-stop' | 'assistants-resume'} WriteCommand */
+ *   | 'assistants-stop' | 'assistants-resume' | 'pack-start' | 'document-save'} WriteCommand */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -123,10 +123,13 @@ const ROUTES = {
   learning: { title: 'Learning and Growth', command: 'learning' },
   contributions: { title: 'Contributions', command: 'contributions' },
   memory: { title: 'Memory', command: 'memory' },
+  packs: { title: 'Packs', command: 'packs' },
+  document: { title: 'Document', command: 'document' },
   assistant: { title: 'AI assistance', command: 'assistant' },
 };
 
 const PROJECT_ID = /^prj-[0-9a-f]{12}$/;
+const DOCUMENT_ID = /^art-[0-9a-f]{12}$/;
 
 /**
  * Parse "#/<route>" or "#/project/<id>". Anything else is Mission Control.
@@ -135,12 +138,14 @@ const PROJECT_ID = /^prj-[0-9a-f]{12}$/;
  */
 export function parseRoute(hash) {
   const parts = hash.replace(/^#\/?/, '').split('/');
-  if (parts[0] === 'project' && parts.length === 2) {
+  if ((parts[0] === 'project' || parts[0] === 'document') && parts.length === 2) {
     const id = decodeURIComponent(parts[1]);
-    // A malformed id still routes to the project view, which reports it honestly.
-    return { name: 'project', params: { id: PROJECT_ID.test(id) ? id : id.slice(0, 64) } };
+    // A malformed id still routes to its view, which reports it honestly.
+    const valid = (parts[0] === 'project' ? PROJECT_ID : DOCUMENT_ID).test(id);
+    return { name: parts[0], params: { id: valid ? id : id.slice(0, 64) } };
   }
-  return { name: parts.length === 1 && parts[0] in ROUTES && parts[0] !== 'project' ? parts[0] : 'mission', params: {} };
+  const single = parts.length === 1 && parts[0] in ROUTES && parts[0] !== 'project' && parts[0] !== 'document';
+  return { name: single ? parts[0] : 'mission', params: {} };
 }
 
 /**
@@ -224,8 +229,10 @@ export function start(doc, source) {
     const mine = ++generation;
     focusAtNavigation = doc.activeElement;
     doc.title = `${route.title} — Nurse AI OS`;
+    // A document opened from Packs keeps Packs marked as where the manager is.
+    const section = name === 'document' ? 'packs' : name;
     for (const link of doc.querySelectorAll('[data-route]')) {
-      if (link.getAttribute('data-route') === name) link.setAttribute('aria-current', 'page');
+      if (link.getAttribute('data-route') === section) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     }
     main.setAttribute('aria-busy', 'true');
@@ -376,6 +383,14 @@ export function start(doc, source) {
     } else if (envelope.command === 'contributions') {
       showContributions(/** @type {import('./views.mjs').Contributions} */ (data), {}, moveFocus);
       announce('Contributions loaded.');
+    } else if (envelope.command === 'packs') {
+      showPacks(/** @type {import('./views.mjs').Packs} */ (data), {}, moveFocus);
+      announce('Packs loaded.');
+    } else if (envelope.command === 'document') {
+      const view = /** @type {import('./views.mjs').PackDocumentView} */ (data);
+      doc.title = `${view.document.title} — Nurse AI OS`;
+      showDocument(view, {}, moveFocus);
+      announce(`Document ${view.document.title} loaded.`);
     } else if (envelope.command === 'memory') {
       showMemory(/** @type {import('./views.mjs').Memory} */ (data), {}, moveFocus);
       announce('Memory loaded.');
@@ -434,7 +449,7 @@ export function start(doc, source) {
 
   /**
    * Reload a view's data after an action, unless the manager has navigated away.
-   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'mission'} command
+   * @param {'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'mission' | 'packs' | 'document'} command
    * @param {number} mine
    * @param {Record<string, string>} [params]
    * @param {(message: string) => void} [onFail] handle a failed reload instead of showing the error page
@@ -448,7 +463,7 @@ export function start(doc, source) {
         return null;
       }
       if (!envelope.ok) {
-        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions', memory: 'memory', mission: 'mission' }[command];
+        const view = { weekly: 'brief', assistant: 'assistant', library: 'library', learning: 'learning', contributions: 'contributions', memory: 'memory', mission: 'mission', packs: 'packs', document: 'document' }[command];
         show(renderError(doc, ROUTES[view].title, envelope.error), true);
         return null;
       }
@@ -473,6 +488,88 @@ export function start(doc, source) {
     const { failure } = await write('assistants-stop', {});
     announce(failure ? `Not stopped: ${failure.text}. Try again.` : 'Stopped. Nothing more is sent, and its reply will be discarded.');
     return !failure;
+  };
+
+  /**
+   * Packs: start a draft from a reviewed template, then open it.
+   * @param {import('./views.mjs').Packs} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, typed?: Record<string, import('./views.mjs').PackChoice> }} state
+   * @param {boolean} moveFocus
+   */
+  const showPacks = (data, state, moveFocus) => {
+    const mine = generation;
+    const options = {
+      writable,
+      onStart: async (/** @type {string} */ packId, /** @type {{ template: string, project_id: string }} */ choice) => {
+        const typed = typedPacks(main, state.typed);
+        main.replaceChildren(renderPacks(doc, data, { ...options, typed, busy: true }));
+        main.setAttribute('aria-busy', 'true');
+        const { envelope, failure } = await write('pack-start', { pack: packId, ...choice });
+        if (mine !== generation) return;
+        if (failure || !envelope || !envelope.ok) {
+          showPacks(data, { notice: failure, typed }, true);
+          return;
+        }
+        // The new draft opens straight away: the next step is to write it.
+        const started = /** @type {import('./views.mjs').PackDocumentView} */ (envelope.data);
+        const win = doc.defaultView;
+        if (win) win.location.hash = `#/document/${encodeURIComponent(started.document.id)}`;
+      },
+    };
+    const view = renderPacks(doc, data, { ...options, ...state });
+    if (state.notice) showAfterAction(view, state.notice);
+    else show(view, moveFocus);
+  };
+
+  /**
+   * One pack document: edit as a new draft, accept exactly what was reviewed.
+   * @param {import('./views.mjs').PackDocumentView} data
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, editing?: boolean, typed?: string }} state
+   * @param {boolean} moveFocus
+   * @param {string} [focusSelector]
+   */
+  const showDocument = (data, state, moveFocus, focusSelector) => {
+    const mine = generation;
+    const typedNow = () => {
+      const text = main.querySelector('#document-text');
+      return text instanceof HTMLTextAreaElement ? text.value : state.typed;
+    };
+    /**
+     * @param {WriteCommand} command
+     * @param {WriteBody} body
+     * @param {string} done
+     * @param {boolean} editing whether the editor stays open if it fails
+     */
+    const act = async (command, body, done, editing) => {
+      const typed = typedNow();
+      main.replaceChildren(renderDocument(doc, data, { ...options, editing, typed, busy: true }));
+      main.setAttribute('aria-busy', 'true');
+      const { failure } = await write(command, body);
+      if (mine !== generation) return;
+      if (failure) {
+        // Refused: the text stays as typed, to fix and save again.
+        showDocument(data, { notice: failure, editing, typed }, true);
+        return;
+      }
+      const fresh = await reload('document', mine, { id: data.document.id }, (message) => showDocument(data, {
+        notice: { kind: 'error', text: `${done} The document could not be refreshed (${message}); open it again to see it.` },
+      }, true));
+      if (!fresh) return;
+      showDocument(/** @type {import('./views.mjs').PackDocumentView} */ (fresh), { notice: { kind: 'ok', text: done } }, true);
+    };
+    const options = {
+      writable,
+      onEdit: () => showDocument(data, { editing: true }, true, '#document-text'),
+      onCancelEdit: () => showDocument(data, {}, true, '#document-current-heading'),
+      onSave: (/** @type {string} */ body, /** @type {string} */ base) => act('document-save',
+        { document_id: data.document.id, body_markdown: body, base_sha256: base },
+        'Saved as a new draft. Review it, then accept it.', true),
+      onAccept: (/** @type {import('./views.mjs').Revision} */ revision) => act('accept',
+        { revision: revision.id, sha256: revision.sha256 }, `Version ${revision.revision_no} is accepted.`, false),
+    };
+    const view = renderDocument(doc, data, { ...options, ...state });
+    if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
+    else show(view, moveFocus);
   };
 
   /**

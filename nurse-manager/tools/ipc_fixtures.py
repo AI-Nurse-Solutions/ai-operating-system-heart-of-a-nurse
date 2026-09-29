@@ -117,6 +117,26 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("memory-include", "memory-include", ws, "--id", kept, "--today", TODAY)
     keep("memory-delete", "memory-delete", ws, "--id", kept)
     keep("error-memory-delete-again", "memory-delete", ws, "--id", kept)
+    keep("packs-empty", "packs", empty, "--today", TODAY)
+    keep("error-pack-start-unknown-template", "pack-start", ws, "--pack", "committee",
+         "--template", "education-plan", "--today", TODAY)
+    keep("error-pack-start-due-for-review", "pack-start", ws, "--pack", "committee",
+         "--template", "meeting-pack", "--today", "2027-04-01")
+    keep("packs-due-for-review", "packs", ws, "--today", "2027-04-01")
+    started = keep("pack-start", "pack-start", ws, "--pack", "committee", "--template",
+                   "meeting-pack", "--project", huddle, "--today", TODAY)
+    document_id = started["document"]["id"]
+    keep("error-document-save-stale", "document-save", ws, "--id", document_id, "--body",
+         "# Meeting pack\n\nAgenda: dates first.\n", "--base", "0" * 64)
+    saved = keep("document-save", "document-save", ws, "--id", document_id, "--body",
+                 started["current"]["body_markdown"].replace(
+                     "_Write this section._", "Council members (synthetic) agree dates first.", 1),
+                 "--base", started["current"]["revision"]["sha256"])
+    keep("accept-pack-document", "accept", ws, "--revision", saved["current"]["revision"]["id"],
+         "--reviewer", OWNER, "--sha", saved["current"]["revision"]["sha256"])
+    keep("document", "document", ws, "--id", document_id)
+    keep("error-document-unknown", "document", ws, "--id", "art-000000000000")
+    keep("packs", "packs", ws, "--today", TODAY)
     keep("contributions", "contributions", ws, "--today", TODAY)
     keep("contributions-empty", "contributions", empty, "--today", TODAY)
     drafted = keep("contribution-add", "contribution-add", ws, "--title",

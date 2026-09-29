@@ -45,6 +45,7 @@ jobs:
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/src --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/config --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/samples --label NURSE-MANAGER
+          python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/packs --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/docs --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/contracts --label NURSE-MANAGER
           python3 scripts/scan-public-healthcare-artifacts.py nurse-manager/renderer --label NURSE-MANAGER

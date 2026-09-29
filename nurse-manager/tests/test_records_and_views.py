@@ -243,7 +243,9 @@ class ViewTests(_TempCase):
         self.assertEqual(len(mc["priorities"]["items"]), 3)
         self.assertEqual(
             [i["title"] for i in mc["needs_my_judgment"]["items"]],
-            ["Decide council meeting cadence"],
+            # A draft started from a pack waits for review like any other.
+            ["Decide council meeting cadence",
+             "Review draft: Education Plan / Lesson Plan — Fall education calendar"],
         )
         overdue = [f for f in mc["follow_ups"]["items"] if f["overdue"]]
         self.assertEqual([f["title"] for f in overdue], ["Confirm vendor webinar dates"])

@@ -1,0 +1,24 @@
+{
+  "schema": "nurse-manager-pack@1",
+  "id": "education",
+  "title": "Education pack",
+  "version": "1.0.0",
+  "purpose": "Plan, teach, and check learning for your team.",
+  "maintainer": "Project steward (GOVERNANCE.md)",
+  "reviewed_on": "2026-09-29",
+  "review_by": "2027-03-29",
+  "catalog": {
+    "file": "naio-integrations/config/deliverable-templates.json",
+    "schema_version": "1.0.0"
+  },
+  "templates": {
+    "education-plan": "2128e4480c475aec04fc53287959220b30de105dbd607599d735eb81732e419b",
+    "competency-checklist": "f29b648035a6d541f8639b34f55538e14c39624e9976c8cb3573420e302352ac",
+    "case-study": "7a81376ed39ad4e4e79d6568ad0de4c26fb7e04a3af9b2942db4b489b03e712a"
+  },
+  "rules": [
+    "Cases are synthetic or fully de-identified: no real patients, colleagues, dates, or facility details.",
+    "A competency is verified only by a qualified human observer; this pack drafts the checklist, never the sign-off.",
+    "Name learners by group or role, never by name."
+  ]
+}

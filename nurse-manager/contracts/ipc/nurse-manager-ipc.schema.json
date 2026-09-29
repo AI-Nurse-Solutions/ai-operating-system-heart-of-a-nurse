@@ -327,6 +327,97 @@
       "required": ["id", "content", "project_id", "project_title", "status", "provenance", "expires_on", "expired"],
       "additionalProperties": false
     },
+    "PackTemplate": {
+      "description": "One template a pack uses, from the shared deliverable catalog.",
+      "type": "object",
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "description": {"type": "string"},
+        "sections": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["id", "title", "description", "sections"],
+      "additionalProperties": false
+    },
+    "Pack": {
+      "description": "A reviewed, versioned set of templates with its maintainer and review dates. Only a current pack can start a document; one past its review date, or failing its checks, says why.",
+      "type": "object",
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "version": {"type": "string"},
+        "purpose": {"type": "string"},
+        "maintainer": {"type": "string"},
+        "reviewed_on": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "review_by": {"anyOf": [{"$ref": "#/$defs/IsoDate"}, {"type": "null"}]},
+        "status": {"enum": ["current", "due_for_review", "unavailable"]},
+        "reason": {"type": "string", "description": "Why it cannot start a document; empty when current."},
+        "rules": {"type": "array", "items": {"type": "string"}},
+        "templates": {"type": "array", "items": {"$ref": "#/$defs/PackTemplate"}}
+      },
+      "required": ["id", "title", "version", "purpose", "maintainer", "reviewed_on", "review_by", "status", "reason", "rules", "templates"],
+      "additionalProperties": false
+    },
+    "PackDocument": {
+      "description": "A document started from a pack: which pack version and template, and where its latest revision stands.",
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/RecordId"},
+        "title": {"type": "string"},
+        "project_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"type": "null"}]},
+        "project_title": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+        "pack_id": {"type": "string"},
+        "pack_version": {"type": "string"},
+        "template_id": {"type": "string"},
+        "revision_no": {"type": "integer", "minimum": 1},
+        "status": {"enum": ["draft", "accepted"], "description": "Of the latest revision."},
+        "has_accepted": {"type": "boolean", "description": "Some revision is accepted, even if a newer draft exists."},
+        "updated_at": {"$ref": "#/$defs/IsoDateTime"}
+      },
+      "required": ["id", "title", "project_id", "project_title", "pack_id", "pack_version", "template_id", "revision_no", "status", "has_accepted", "updated_at"],
+      "additionalProperties": false
+    },
+    "Packs": {
+      "description": "Education, committee, and communication packs, and the documents started from them.",
+      "type": "object",
+      "properties": {
+        "today": {"$ref": "#/$defs/IsoDate"},
+        "packs": {"type": "array", "items": {"$ref": "#/$defs/Pack"}},
+        "documents": {"type": "array", "items": {"$ref": "#/$defs/PackDocument"}},
+        "projects": {
+          "description": "Projects a new document can be for.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {"id": {"$ref": "#/$defs/RecordId"}, "title": {"type": "string"}},
+            "required": ["id", "title"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["today", "packs", "documents", "projects"],
+      "additionalProperties": false
+    },
+    "PackDocumentView": {
+      "description": "One pack document: the latest revision (rendered with its banner, and its raw text to edit) and the accepted one. Accept it with the accept command.",
+      "type": "object",
+      "properties": {
+        "document": {"$ref": "#/$defs/PackDocument"},
+        "current": {
+          "type": "object",
+          "properties": {
+            "revision": {"$ref": "#/$defs/Revision"},
+            "markdown": {"type": "string", "description": "The only rendering; it always carries its status banner."},
+            "body_markdown": {"type": "string", "description": "The text to edit; send its revision sha256 back as the base."}
+          },
+          "required": ["revision", "markdown", "body_markdown"],
+          "additionalProperties": false
+        },
+        "accepted": {"anyOf": [{"$ref": "#/$defs/Revision"}, {"type": "null"}]}
+      },
+      "required": ["document", "current", "accepted"],
+      "additionalProperties": false
+    },
     "Memory": {
       "description": "Scoped memory: in use first, then expired, then excluded. Only memories in use are ever sent, and only to Think with this project.",
       "type": "object",

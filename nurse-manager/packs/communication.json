@@ -1,0 +1,24 @@
+{
+  "schema": "nurse-manager-pack@1",
+  "id": "communication",
+  "title": "Communication pack",
+  "version": "1.0.0",
+  "purpose": "Plan who hears what, and draft the message.",
+  "maintainer": "Project steward (GOVERNANCE.md)",
+  "reviewed_on": "2026-09-29",
+  "review_by": "2027-03-29",
+  "catalog": {
+    "file": "naio-integrations/config/deliverable-templates.json",
+    "schema_version": "1.0.0"
+  },
+  "templates": {
+    "communication-plan": "b2fa8ed4671ba3614055dbbfeaf02516e9bb6da3fe11675e2026a9e454ac67ca",
+    "message-draft": "4968e8fd89323e41404ea1a41a9319c75dcb5ba7766146a56bf201bd73ae4f4e",
+    "presentation-poster-outline": "028f3eaf5f0fddfc30467d56b738925abaf3ae51f39e729cba93bb3f882442f7"
+  },
+  "rules": [
+    "Sending is always a human action: Nurse AI OS drafts, you send, from your own email or channel.",
+    "Name audiences by group or role, never by name.",
+    "Check every fact against its source before it goes to anyone."
+  ]
+}

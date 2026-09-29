@@ -16,10 +16,12 @@ set, and never shown, stored, or used.
   boundary: only the proposal as text and the options. An adapter that
   fails, or answers outside the contract, is recorded as such and the
   run continues.
-* **Synthetic data only.** The labeled set must say it is synthetic, and
-  the run builds its own throwaway sample workspace to decide the cases
-  in. A real workspace is never opened, so real records cannot reach an
-  adapter.
+* **Synthetic data only.** An adapter only ever sees a reviewed,
+  committed labeled set, pinned by the sha256 of its exact bytes
+  (``TRUSTED_SET_DIGESTS``). A file's own "synthetic" claim and the
+  privacy screen are checked too, but neither proves anything alone: the
+  screen does not detect names. The run decides the cases in its own
+  throwaway sample workspace, so a real workspace is never opened.
 
 The shadow report measures what matters before a suggester could ever be
 trusted with anything: how often it agrees with EDENA, how well its
@@ -53,6 +55,15 @@ STRICTNESS = {"allow": 0, "require_human": 1, "deny": 2}
 _DECISIONS = {"allow": "allow", "require_approval": "require_human", "deny": "deny"}
 ASSISTANT_ID = "assistant:planning-partner"
 _TOLERANCE = 1e-6
+# The labeled sets an adapter may ever see, pinned by the sha256 of their exact
+# bytes. "synthetic": true is a claim, and the privacy screen cannot catch
+# names, so neither can prove a file is synthetic: review can. Changing a set
+# means changing this pin in a reviewed commit (tools/shadow_report.py prints
+# the new digest).
+TRUSTED_SET_DIGESTS = {
+    "5b68895de9e72a406415df6255a96062415b69f38713758f84f958f98d0aea41": "shadow-edena-decisions.json",
+}
+
 # Effects no policy names, for the "unknown effect" cases. Fixed here, so a
 # labeled set cannot put free text where an effect goes.
 SYNTHETIC_UNKNOWN_EFFECTS = ("print_document", "sync_calendar", "schedule_meeting")
@@ -151,14 +162,14 @@ def load_labeled_set(path: Path | None = None) -> dict[str, Any]:
             case = ShadowCase(**{k: item[k] for k in ShadowCase.__dataclass_fields__})
         except (KeyError, TypeError) as exc:
             raise ShadowError(f"{path.name}: a case is missing a field") from exc
+        if not all(isinstance(getattr(case, f), str) for f in ShadowCase.__dataclass_fields__):
+            raise ShadowError(f"{path.name}: a case has a field that is not text")
         if case.id in seen:
             raise ShadowError(f"{path.name}: case {case.id} appears twice")
         if case.label not in OPTIONS or case.origin not in ("human", "assistant") or \
                 case.revision not in ("accepted", "draft", "none"):
             raise ShadowError(f"{path.name}: case {case.id} has an unknown label, origin,"
                               " or revision")
-        if not all(isinstance(getattr(case, f), str) for f in ShadowCase.__dataclass_fields__):
-            raise ShadowError(f"{path.name}: case {case.id} has a field that is not text")
         # Everything in the question reaches the adapter, so everything in it is
         # checked here, not only what the policy path happens to screen.
         if case.effect not in effects:
@@ -190,7 +201,11 @@ def decide_cases(cases: Sequence[ShadowCase]) -> dict[str, dict[str, Any]]:
                                     accepted.body_markdown + "\nA later edit.\n", ws.info.owner)
             revisions = {"accepted": accepted.id, "draft": pending.id, "none": None}
             boundary = ActionBoundary(ws)
-            policy = boundary._policy_version(boundary._profile(), "human")
+            # The policy as the run starts. propose() rereads it for every case,
+            # so each action's recorded version is checked against this one.
+            snapshot = boundary._profile()
+            expected = {origin: boundary._policy_version(snapshot, origin)
+                        for origin in ("human", "assistant")}
             for case in cases:
                 action = boundary.propose(
                     case.effect, revision_id=revisions[case.revision],
@@ -201,7 +216,12 @@ def decide_cases(cases: Sequence[ShadowCase]) -> dict[str, dict[str, Any]]:
                 decided[case.id] = {"decision": _DECISIONS[action.policy_decision],
                                     "reasons": list(action.policy_reasons),
                                     "policy": boundary.policy_version(action.id)}
-            decided["_policy"] = {"policy": policy, "edena": boundary.edena.version}
+            changed = sorted(case.id for case in cases
+                             if decided[case.id]["policy"] != expected[case.origin])
+            if changed:
+                raise ShadowError("the policy changed during the run (cases "
+                                  + ", ".join(changed) + "); run it again")
+            decided["_policy"] = {"policy": expected["human"], "edena": boundary.edena.version}
         finally:
             ws.close()
     return decided
@@ -241,6 +261,10 @@ def run_shadow(adapter: DecisionAdapter, set_path: Path | str | None = None) -> 
         raise ShadowError("run_shadow reads its labeled set from a file path; pass the path,"
                           " not a set built elsewhere")
     labeled_set = load_labeled_set(Path(set_path) if set_path is not None else None)
+    if labeled_set["sha256"] not in TRUSTED_SET_DIGESTS:
+        raise ShadowError(f"{labeled_set['name']} is not a reviewed labeled set (sha256"
+                          f" {labeled_set['sha256'][:12]} is not pinned in TRUSTED_SET_DIGESTS);"
+                          " only a reviewed, committed set is ever shown to an adapter")
     cases: list[ShadowCase] = labeled_set["cases"]
     decided = decide_cases(cases)
     policy = decided.pop("_policy")

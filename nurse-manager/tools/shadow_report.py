@@ -17,8 +17,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from nurse_manager.decision_adapter import (  # noqa: E402
+    TRUSTED_SET_DIGESTS,
     ReviewAlwaysBaseline,
     default_set_path,
+    load_labeled_set,
     render_markdown,
     run_shadow,
 )
@@ -27,6 +29,11 @@ REPORT = default_set_path().with_name("shadow-edena-decisions.report.md")
 
 
 def main(argv: list[str]) -> int:
+    digest = load_labeled_set()["sha256"]
+    if digest not in TRUSTED_SET_DIGESTS:
+        print(f"the labeled set changed; after review, pin its sha256 in"
+              f" decision_adapter.TRUSTED_SET_DIGESTS:\n    {digest}", file=sys.stderr)
+        return 1
     text = render_markdown(run_shadow(ReviewAlwaysBaseline()))
     if "--check" in argv:
         if not REPORT.is_file() or REPORT.read_text(encoding="utf-8") != text:

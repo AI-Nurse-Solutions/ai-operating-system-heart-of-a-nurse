@@ -19,6 +19,7 @@ import _bootstrap  # noqa: F401
 
 from nurse_manager.decision_adapter import (
     OPTIONS,
+    TRUSTED_SET_DIGESTS,
     Choice,
     ReviewAlwaysBaseline,
     ShadowError,
@@ -93,8 +94,11 @@ class LabeledSetTests(unittest.TestCase):
     def test_a_label_that_drifts_from_policy_is_refused(self):
         data = json.loads(default_set_path().read_text(encoding="utf-8"))
         data["cases"][0]["label"] = "allow"
-        with self.assertRaisesRegex(ShadowError, "no longer matches the policy for: export-accepted"):
-            run_shadow(ReviewAlwaysBaseline(), _write_set(self.tmp.name, cases=data["cases"]))
+        drifted = _write_set(self.tmp.name, cases=data["cases"])
+        from unittest import mock
+        with mock.patch.dict(TRUSTED_SET_DIGESTS, {load_labeled_set(drifted)["sha256"]: "drifted"}):
+            with self.assertRaisesRegex(ShadowError, "no longer matches the policy for: export-accepted"):
+                run_shadow(ReviewAlwaysBaseline(), drifted)
 
     def test_only_synthetic_sets_are_used(self):
         for value in (False, None, "yes"):
@@ -161,6 +165,33 @@ class LabeledSetTests(unittest.TestCase):
             loaded = load_labeled_set(path)
         self.assertEqual(loaded["sha256"], hashlib.sha256(parsed).hexdigest())
         del real_read_text
+
+    def test_only_the_reviewed_committed_set_reaches_an_adapter(self):
+        """A file that merely says it is synthetic is not trusted: names pass the
+        privacy screen. Only a set pinned by its exact digest in reviewed code runs."""
+        cases = json.loads(default_set_path().read_text(encoding="utf-8"))["cases"]
+        named = [{**cases[0], "purpose": "Discuss Alice Smith's diagnosis with her manager"}]
+        spy = _Fixed("spy", Choice({"allow": 0.0, "require_human": 0.0, "deny": 1.0}))
+        for label, path in (("names in the purpose", _write_set(self.tmp.name, cases=named)),
+                            ("an unchanged copy with one byte added",
+                             self._copy_with_trailing_space())):
+            with self.subTest(label):
+                with self.assertRaisesRegex(ShadowError, "not a reviewed labeled set"):
+                    run_shadow(spy, path)
+        self.assertEqual(spy.seen, [])
+        self.assertIn(load_labeled_set()["sha256"], TRUSTED_SET_DIGESTS)
+
+    def _copy_with_trailing_space(self):
+        path = Path(self.tmp.name) / "copy.json"
+        path.write_bytes(default_set_path().read_bytes() + b" ")
+        return path
+
+    def test_an_id_that_is_not_text_is_a_shadow_error(self):
+        cases = json.loads(default_set_path().read_text(encoding="utf-8"))["cases"]
+        for bad in ([1, 2], {"a": 1}, 7):
+            with self.subTest(id=bad):
+                with self.assertRaises(ShadowError):
+                    load_labeled_set(_write_set(self.tmp.name, cases=[{**cases[0], "id": bad}]))
 
     def test_malformed_sets_are_refused(self):
         cases = json.loads(default_set_path().read_text(encoding="utf-8"))["cases"]
@@ -262,6 +293,23 @@ class ShadowModeTests(unittest.TestCase):
         for question, options in spy.seen:
             self.assertIsInstance(question, str)
             self.assertEqual(options, OPTIONS)
+
+    def test_a_policy_that_changes_mid_run_is_refused(self):
+        from unittest import mock
+
+        from nurse_manager.actions import ActionBoundary
+        real_profile, reads = ActionBoundary._profile, []
+
+        def profile_bumped_after_a_few_reads(boundary):
+            profile = real_profile(boundary)
+            reads.append(1)
+            return {**profile, "version": "9.9.9"} if len(reads) > 5 else profile
+
+        spy = _Fixed("spy", Choice({"allow": 0.0, "require_human": 0.0, "deny": 1.0}))
+        with mock.patch.object(ActionBoundary, "_profile", profile_bumped_after_a_few_reads):
+            with self.assertRaisesRegex(ShadowError, "policy changed during the run"):
+                run_shadow(spy)
+        self.assertEqual(spy.seen, [])
 
     def test_the_throwaway_workspace_is_removed(self):
         before = set(Path(tempfile.gettempdir()).glob("nm-shadow-*"))

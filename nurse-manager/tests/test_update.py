@@ -330,15 +330,22 @@ class FeedTests(_Tmp):
                 with self.assertRaises(UpdateError):
                     update._parse_feed(broken, "pilot")
 
-    def test_a_sequence_beyond_what_the_record_can_hold_is_refused(self):
-        """SQLite keeps a signed 64-bit integer; a larger sequence would pass
-        the signing tool and then crash every client's check."""
+    def test_a_sequence_beyond_what_the_app_can_hold_exactly_is_refused(self):
+        """The sequence reaches the app as a JavaScript number, exact only up to
+        2^53 - 1; beyond that the app would see a different sequence than the
+        one signed (and SQLite's own limit, 2^63 - 1, is further still)."""
         feed = json.loads((FEEDS / "feed-seq5.json").read_text())
-        feed["sequence"] = 2**63 - 1
-        self.assertEqual(update._parse_feed(feed, "pilot")["sequence"], 2**63 - 1)
-        feed["sequence"] = 2**63
-        with self.assertRaisesRegex(UpdateError, "sequence"):
-            update._parse_feed(feed, "pilot")
+        feed["sequence"] = 2**53 - 1
+        self.assertEqual(update._parse_feed(feed, "pilot")["sequence"], 2**53 - 1)
+        for too_big in (2**53, 2**63 - 1, 2**63):
+            with self.subTest(sequence=too_big):
+                feed["sequence"] = too_big
+                with self.assertRaisesRegex(UpdateError, "sequence"):
+                    update._parse_feed(feed, "pilot")
+        schema = json.loads((ROOT / "contracts" / "ipc" / "nurse-manager-ipc.schema.json").read_text())
+        (bounded,) = [branch for branch in schema["$defs"]["UpdateCheck"]["properties"]["sequence"]["anyOf"]
+                      if branch.get("type") == "integer"]
+        self.assertEqual(bounded.get("maximum"), update.MAX_SEQUENCE)
 
     def test_a_download_is_checked_against_the_signed_digest(self):
         artifact = self.tmp / "Nurse-AI-OS.zip"

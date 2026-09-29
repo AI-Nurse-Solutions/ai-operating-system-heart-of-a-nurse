@@ -941,7 +941,7 @@
         "status": {"enum": ["not_configured", "current", "update_available"]},
         "reason": {"type": "string"},
         "latest": {"anyOf": [{"$ref": "#/$defs/UpdateRelease"}, {"type": "null"}]},
-        "sequence": {"anyOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "sequence": {"anyOf": [{"type": "integer", "minimum": 1, "maximum": 9007199254740991}, {"type": "null"}]},
         "key_id": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"type": "null"}]}
       },
       "required": ["current_version", "status", "reason", "latest", "sequence", "key_id"],

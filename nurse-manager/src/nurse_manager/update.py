@@ -45,7 +45,9 @@ from .services import ManagerError
 FEED_SCHEMA = "nurse-manager-update-feed@1"
 CONFIG_SCHEMA = "nurse-manager-update-config@1"
 MAX_FEED_BYTES = 256 * 1024
-MAX_SEQUENCE = 2**63 - 1
+# The largest integer the app receives exactly (JavaScript's Number.MAX_SAFE_INTEGER),
+# well inside the SQLite INTEGER the record of feeds seen keeps it in.
+MAX_SEQUENCE = 2**53 - 1
 MAX_SIGNATURE_BYTES = 4096
 MIN_KEY_BITS = 2048
 FETCH_TIMEOUT_SECONDS = 15
@@ -222,7 +224,7 @@ def _parse_feed(feed: dict[str, Any], channel: str) -> dict[str, Any]:
     if feed.get("channel") != channel:
         raise UpdateError(f"the feed is for another channel ({feed.get('channel')!r})")
     sequence = feed.get("sequence")
-    # The record of feeds seen keeps the sequence as SQLite's signed 64-bit integer.
+    # Bounded so the app and the record of feeds seen both hold it exactly.
     if isinstance(sequence, bool) or not isinstance(sequence, int) or not 1 <= sequence <= MAX_SEQUENCE:
         raise UpdateError(f"the feed's sequence is not a whole number from 1 to {MAX_SEQUENCE}")
     issued, expires = _date(feed.get("issued"), "issue date"), _date(feed.get("expires"), "expiry date")

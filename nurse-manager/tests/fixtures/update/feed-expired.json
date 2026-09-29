@@ -1,0 +1,26 @@
+{
+  "schema": "nurse-manager-update-feed@1",
+  "channel": "pilot",
+  "sequence": 6,
+  "issued": "2020-01-01",
+  "expires": "2020-02-01",
+  "releases": [
+    {
+      "version": "0.2.0",
+      "schema": "0013_pilot_feedback",
+      "notes": "Synthetic.",
+      "artifacts": [
+        {
+          "platform": "windows-x64",
+          "url": "https://example.org/nurse-ai-os/0.2.0/Nurse-AI-OS-0.2.0-windows-x64.zip",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "platform": "macos-arm64",
+          "url": "https://example.org/nurse-ai-os/0.2.0/Nurse-AI-OS-0.2.0-macos-arm64.zip",
+          "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ]
+    }
+  ]
+}

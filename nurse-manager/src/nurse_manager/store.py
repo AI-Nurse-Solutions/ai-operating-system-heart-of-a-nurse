@@ -70,6 +70,19 @@ def _connect(path: Path) -> sqlite3.Connection:
     return conn
 
 
+class MigrationFailed(StoreError):
+    """An upgrade step failed. The workspace stays at the last step that
+    finished; it is repaired forward by a release with a corrected step."""
+
+    def __init__(self, version: str, reached: str, backup: Path | None, cause: Exception):
+        self.version, self.reached, self.backup = version, reached, backup
+        where = f" A copy from before the upgrade is at {backup}." if backup else ""
+        super().__init__(
+            f"upgrading this workspace stopped at step {version} ({type(cause).__name__})."
+            f" Your records are intact at step {reached or 'none'}.{where}"
+            " Install a release that corrects this step; never an older one.")
+
+
 class Store:
     """One workspace database file. Records live outside the app bundle."""
 
@@ -99,22 +112,45 @@ class Store:
             raise StoreError(
                 "workspace was written by a newer schema: " + ", ".join(sorted(unknown))
             )
+        pending = [version for version in known if version not in applied]
+        # An existing workspace is copied before it is upgraded (build step 6.2):
+        # records are never migrated without a way back to exactly what they were.
+        backup = self._pre_migration_backup(max(applied), pending[-1]) \
+            if applied and pending else None
         for version, sql in _migrations():
             if version in applied:
                 continue
-            with self.transaction():
-                # Checked again inside the write lock: another process opening
-                # the same workspace (the app's scheduler during onboarding, say)
-                # may have applied it since the read above.
-                if self.conn.execute("SELECT 1 FROM schema_migrations WHERE version = ?",
-                                     (version,)).fetchone():
-                    continue
-                for statement in _split_sql(sql):
-                    self.conn.execute(statement)
-                self.conn.execute(
-                    "INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)",
-                    (version, self.clock()),
-                )
+            try:
+                with self.transaction():
+                    # Checked again inside the write lock: another process opening
+                    # the same workspace (the app's scheduler during onboarding, say)
+                    # may have applied it since the read above.
+                    if self.conn.execute("SELECT 1 FROM schema_migrations WHERE version = ?",
+                                         (version,)).fetchone():
+                        continue
+                    for statement in _split_sql(sql):
+                        self.conn.execute(statement)
+                    self.conn.execute(
+                        "INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)",
+                        (version, self.clock()),
+                    )
+            except sqlite3.Error as exc:
+                # Forward repair: each step is its own transaction, so the
+                # workspace stays at the last step that finished, intact. It is
+                # never downgraded; a release with a corrected step continues
+                # from here, and the backup holds the records as they were.
+                raise MigrationFailed(version, self.schema_version, backup, exc) from exc
+
+    def _pre_migration_backup(self, current: str, target: str) -> Path:
+        stamp = self.clock().replace(":", "").replace("+", "Z")
+        dest = (self.path.parent / "backups"
+                / f"pre-migration-{current[:4]}-to-{target[:4]}-{stamp}-{uuid.uuid4().hex[:6]}.sqlite")
+        try:
+            self.backup(dest)
+        except (OSError, sqlite3.Error, StoreError) as exc:
+            raise StoreError("this workspace needs upgrading, but a backup could not be made"
+                             f" first ({type(exc).__name__}); nothing was changed") from exc
+        return dest
 
     @property
     def schema_version(self) -> str:

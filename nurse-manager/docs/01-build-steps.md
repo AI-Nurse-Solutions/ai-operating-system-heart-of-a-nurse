@@ -107,7 +107,8 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | # | Step | Status | Exit check |
 |---|---|---|---|
 | 6.1 | Signed release candidate; manifest pins upstream, policy, schema, and packs | ⛔ | Signing (0.9) |
-| 6.2 | Update feed with signature check, pre-migration backup, and forward repair | ⬜ | Uses `Store.backup` and the newer-schema refusal |
+| 6.2 | Update feed with signature check, pre-migration backup, and forward repair | ✅ | `update.py`: a signed feed (RSA-SHA256 over its exact bytes, verified with the standard library alone; agrees with OpenSSL) from a pinned key only; never backwards (replayed, contradicted, and expired feeds refused; no older release offered); advisory and manual (never downloads, installs, or runs by itself); `update-check` command; `tools/sign_update_feed.py` for the steward. `Store`: an existing workspace is backed up before any upgrade, and none happens without one; a failed step leaves the workspace at the last step that finished, names the backup, and is repaired forward by a corrected release. `test_update.py` |
+| 6.2b | Turn the update feed on | ⛔ | Needs the steward: an update signing key kept off this repository (its public half and id pinned in `config/update-feed.json`), a feed address, and hosting. A "Check for updates" button on the Help page follows once step 6.3's page is merged |
 | 6.3 | Onboarding, support guide, and pilot feedback | ⬜ | |
 
 ## G7 — Managed organization extension

@@ -1,0 +1,12 @@
+{
+  "schema": "nurse-manager-update-config@1",
+  "note": "Test settings only: the key is a throwaway whose private half was deleted after signing these fixtures.",
+  "channel": "pilot",
+  "feed_url": null,
+  "trusted_keys": [
+    {
+      "key_id": "76827cfeddb806b3cff5a1b33534e601685696a7c1b95326a3846b45277d0cd8",
+      "pem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0lVlezh4SP8/Zw0/Rfa5\n+Rk8+H4zdowQkAITlwnq98GWUFXE9YckW9YLJ94SXxRzTLUVgHp4GoapRQTPiN1Y\nwjzVbACUnPlHxIIO/rVYAwdUX7Cus1RjE1Avf4CCOinUsZpTfKyhHFsCMEY+ITr8\n3xsF0x/9mAVyVlKoXrCCz22vFku1cGuSUv3TE31s6CJMIEpZac/8HhlQ1/98+aPe\nrtgthSKPI0cvGVLb3YgtQIgzRDU+uQZYb4/mCA88wDda5ITlx8gCzrHm7TS6GG4P\noA6vPqScWGx52u/Ak8zPVHfZbl/LnsCEb1uEYVeBXLqED9PhhxmZ+8ghFXDadBwl\nkwIDAQAB\n-----END PUBLIC KEY-----\n"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schema": "nurse-manager-update-config@1",
+  "note": "Build step 6.2. Until the steward pins an update key and a feed address (step 6.2b), every update check answers 'not configured' and trusts nothing. A trusted key is {\"key_id\": sha256 of the key's DER, \"pem\": the RSA public key}; tools/sign_update_feed.py prints both.",
+  "channel": "pilot",
+  "feed_url": null,
+  "trusted_keys": []
+}

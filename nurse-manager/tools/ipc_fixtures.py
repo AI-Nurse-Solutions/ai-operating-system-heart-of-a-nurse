@@ -177,6 +177,18 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("error-accept", "accept", ws, "--revision", draft["id"], "--reviewer", "Someone Else",
          "--sha", draft["sha256"])
     keep("error-restore-missing", "restore", ws, workdir / "missing.sqlite")
+    # The update check (step 6.2), from signed test feeds and a throwaway key.
+    feeds, state = SRC.parent / "tests" / "fixtures" / "update", workdir / "update-state.json"
+    signed = ("--config", feeds / "config.json", "--state", state, "--today", TODAY)
+    keep("update-check-not-configured", "update-check", "--state", state)
+    keep("update-check-available", "update-check", "--feed", feeds / "feed-seq5.json",
+         "--signature", feeds / "feed-seq5.json.sig", *signed)
+    keep("update-check-current", "update-check", "--feed", feeds / "feed-current.json",
+         "--signature", feeds / "feed-current.json.sig", *signed)
+    keep("error-update-check-replayed", "update-check", "--feed", feeds / "feed-seq4.json",
+         "--signature", feeds / "feed-seq4.json.sig", *signed)
+    keep("error-update-check-no-signature", "update-check", "--feed", feeds / "feed-seq5.json",
+         *signed)
 
     # Bounded assistance (ADR 0004): no model by default, then a local model.
     keep("assistant", "assistant", ws)

@@ -814,6 +814,43 @@
       "required": ["restored_from", "pre_restore_backup"],
       "additionalProperties": false
     },
+    "UpdateArtifact": {
+      "description": "One download a signed feed names. Check the file against its sha256 before installing.",
+      "type": "object",
+      "properties": {
+        "platform": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,31}$"},
+        "url": {"type": "string", "pattern": "^https://"},
+        "sha256": {"$ref": "#/$defs/Sha256"}
+      },
+      "required": ["platform", "url", "sha256"],
+      "additionalProperties": false
+    },
+    "UpdateRelease": {
+      "description": "A release newer than this one, from a feed whose signature verified.",
+      "type": "object",
+      "properties": {
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "schema": {"type": "string", "description": "The workspace schema it upgrades to; empty if the feed does not say."},
+        "notes": {"type": "string"},
+        "artifacts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/UpdateArtifact"}}
+      },
+      "required": ["version", "schema", "notes", "artifacts"],
+      "additionalProperties": false
+    },
+    "UpdateCheck": {
+      "description": "The answer to checking for updates. Advisory only: nothing is downloaded or installed. not_configured means no update key is pinned, so no feed is trusted.",
+      "type": "object",
+      "properties": {
+        "current_version": {"type": "string"},
+        "status": {"enum": ["not_configured", "current", "update_available"]},
+        "reason": {"type": "string"},
+        "latest": {"anyOf": [{"$ref": "#/$defs/UpdateRelease"}, {"type": "null"}]},
+        "sequence": {"anyOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "key_id": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"type": "null"}]}
+      },
+      "required": ["current_version", "status", "reason", "latest", "sequence", "key_id"],
+      "additionalProperties": false
+    },
 
     "AssistantProvider": {
       "description": "The connected AI provider. 'none' is the default (ADR 0004). There is no cloud value until a cloud service is chosen.",

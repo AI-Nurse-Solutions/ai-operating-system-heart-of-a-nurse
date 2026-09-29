@@ -26,6 +26,7 @@ patient, employee-performance, or confidential employer information:
 - [`docs/01-build-steps.md`](docs/01-build-steps.md): the plan divided into steps, with status.
 - [`docs/02-contract-map.md`](docs/02-contract-map.md): Florence-X ↔ Integration Contract ↔ manager records, and the record-writer register.
 - [`docs/03-weekly-brief-journey.md`](docs/03-weekly-brief-journey.md): the first workflow, including its states and failure states.
+- [`docs/04-support-guide.md`](docs/04-support-guide.md): for a pilot manager and their support person. Covers launch, backup and restore, what to do after a crash, stopping assistants, how packs are reviewed, pilot feedback, and where to get help.
 - [`docs/adr/`](docs/adr/): architecture decisions. ADRs 0001–0004 were accepted by the steward on 2026-09-28.
 
 ## Try it
@@ -107,13 +108,14 @@ export PYTHONPATH=nurse-manager/src
 python3 -m nurse_manager.app      # the packaged app runs exactly this
 ```
 
-- **First run** asks you to explore the synthetic sample or start your own workspace. The data rules are stated first.
+- **First run** asks you to explore the synthetic sample or start your own workspace. The data rules are stated first, then what the app does and does not do. That covers where records stay, that no AI model runs by default, and that the privacy screen does not detect names. **Help and feedback** repeats these facts after the first run.
+- **Pilot feedback** stays on this computer. On Help and feedback, the manager writes feedback about the app, previews exactly what an export holds, and saves it as a file through the browser. The app sends nothing. The export is screened again, and it is bound to the text that was previewed.
 - **Records** live in your user-data folder, never inside the app:
   - Windows: `%LOCALAPPDATA%\Nurse AI OS`
   - macOS: `~/Library/Application Support/Nurse AI OS`
   - Linux: `~/.local/share/nurse-ai-os`
 - **Security:** the app listens on 127.0.0.1 only. Each launch creates a fresh token, passed to the browser in the address fragment and then cleared. Every data call must carry it.
-- **Writes:** besides first-run setup, the screens can only draft and accept the weekly brief, change AI settings, and ask the AI about a project. The app acts as the workspace's owner, because it runs for one person on their own computer.
+- **Writes:** besides first-run setup, the screens can only make the writes listed in `WRITE_COMMANDS` in `app.py`. Examples: drafting and accepting the weekly brief, recording feedback, learning, and contributions, managing memory, AI settings and the stop control, starting and saving pack documents, and pilot feedback. They cannot export, back up, restore, or reconcile. The app acts as the workspace's owner, because it runs for one person on their own computer.
 - **Lifetime:** the page says the app is running on this computer and offers Quit. With no page open, the app stops by itself after 15 minutes.
 - **Builds:** `.github/workflows/nurse-manager-app.yml` builds Windows, macOS, and Linux versions with Python bundled. **They are unsigned test builds. Do not give them to managers until they are signed.**
 
@@ -130,7 +132,7 @@ table. On Mission Control, a project's title opens its dashboard. The dev host s
 is deliberately narrow:
 
 - It listens on 127.0.0.1 only, and refuses requests with any other `Host` header.
-- It answers only the read-only commands `mission`, `project`, `board`, `table`, `weekly`, `assistant`, `assistant-preview`, and `assistant-project-preview`. The screens show drafting, accepting, and AI settings as read-only there.
+- It answers only the read-only commands in `READ_ONLY_COMMANDS` in `devhost.py`. The screens show every write as read-only there.
 - It sends a strict Content-Security-Policy.
 
 The screens are plain ES modules with no framework and no network access
@@ -147,6 +149,7 @@ never become markup.
 | `src/nurse_manager/brief.py` | Deterministic weekly brief; revisions; acceptance bound to text hash |
 | `src/nurse_manager/actions.py` | Governed action boundary: propose → evaluate → approve → recheck → execute → receipt |
 | `src/nurse_manager/assistant.py` | Bounded assistance (ADR 0004): no model by default, a model on this computer, the same gates for every provider, honest fallback |
+| `src/nurse_manager/pilot.py` | Pilot feedback (6.3): kept on this computer, screened at capture and again at export, and exported only as the text the manager previewed |
 | `src/nurse_manager/florence_adapter.py` | Projects actions onto Florence-X `CandidateAction` / `EDENADecision` (no names, hash not content) |
 | `contracts/florence-x/` | Pinned, unmodified Florence-X JSON Schemas with provenance |
 | `contracts/ipc/` | IPC contract for the desktop host: schema, command map, generated TypeScript |

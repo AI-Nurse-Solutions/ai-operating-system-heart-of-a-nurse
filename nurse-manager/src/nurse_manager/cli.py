@@ -26,6 +26,7 @@ from .control import AssistantControl, assistants_at_work
 from .sample import load_sample
 from .memory import WorkspaceMemory
 from .packs import PackService
+from .pilot import AREAS as PILOT_AREAS, KINDS as PILOT_KINDS, PilotFeedback, pilot_item
 from .schedule import BriefSchedule
 from .services import ManagerError, ManagerWorkspace, _iso_date
 from .views import (
@@ -179,6 +180,21 @@ def build_parser() -> argparse.ArgumentParser:
     p = ws_cmd("run", "run an approved action (rechecks first)")
     p.add_argument("--action", required=True)
     p.add_argument("--actor", required=True)
+    p = ws_cmd("reconcile", "after a crash: settle any export that was interrupted"
+                            " (checks the file; never runs it again)")
+    ws_cmd("pilot-feedback", "your pilot feedback, kept on this computer")
+    p = ws_cmd("pilot-feedback-add", "write pilot feedback about the app (never sent anywhere)")
+    p.add_argument("--area", required=True, choices=tuple(PILOT_AREAS))
+    p.add_argument("--kind", required=True, choices=tuple(PILOT_KINDS))
+    p.add_argument("--summary", required=True)
+    p = ws_cmd("pilot-feedback-delete", "delete one piece of pilot feedback for good")
+    p.add_argument("--id", required=True)
+    ws_cmd("pilot-feedback-preview", "exactly what exporting pilot feedback would share;"
+                                     " exports nothing")
+    p = ws_cmd("pilot-feedback-export", "export the pilot feedback you reviewed, as text you save"
+                                        " and share yourself")
+    p.add_argument("--reviewed-sha", required=True, help="sha256 of the preview you reviewed")
+    p.add_argument("--by", required=True)
     p = ws_cmd("backup", "copy the workspace database")
     p.add_argument("dest", type=Path)
     p = ws_cmd("restore", "restore from a backup (refuses to discard newer work)")
@@ -301,6 +317,18 @@ def _dispatch(args: argparse.Namespace) -> Any:
             if args.command == "document-save":
                 documents.save(document_id, args.body, args.base)
             return documents.view(document_id)
+        if args.command.startswith("pilot-feedback"):
+            pilot = PilotFeedback(ws)
+            if args.command == "pilot-feedback-add":
+                return {"item": pilot_item(ws, pilot.add(args.area, args.kind, args.summary))}
+            if args.command == "pilot-feedback-delete":
+                pilot.delete(args.id)
+                return {"deleted": args.id}
+            if args.command == "pilot-feedback-preview":
+                return pilot.preview()
+            if args.command == "pilot-feedback-export":
+                return pilot.export(args.reviewed_sha, args.by)
+            return pilot.view()
         if args.command == "contributions":
             return contributions(ws, today=args.today)
         if args.command == "contribution-add":
@@ -383,6 +411,8 @@ def _dispatch(args: argparse.Namespace) -> Any:
             ).__dict__
         if args.command == "run":
             return boundary.execute(args.action, args.actor)
+        if args.command == "reconcile":
+            return {"settled": boundary.reconcile()}
         if args.command == "backup":
             return {"backup": str(ws.store.backup(args.dest))}
         if args.command == "restore":

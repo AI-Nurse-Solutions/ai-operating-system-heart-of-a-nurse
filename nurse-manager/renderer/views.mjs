@@ -789,6 +789,10 @@ export function renderOnboarding(doc, handlers, state = {}) {
       badge(doc, 'error', '✕', 'Not created'), ' ', state.error,
     ]));
   }
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'about-heading' }, [
+    h(doc, 'h2', { id: 'about-heading' }, ['What to know first']),
+    aboutFacts(doc),
+  ]));
 
   const sampleButton = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'button', class: 'primary-button' },
     ['Explore the sample workspace']));
@@ -837,6 +841,236 @@ export function renderOnboarding(doc, handlers, state = {}) {
       form,
     ]),
   ]));
+  return root;
+}
+
+/**
+ * What the app does and does not do, stated before anything is created and
+ * again on Help and feedback. Every sentence is one the code keeps; the
+ * privacy screen's limits are said plainly (validation report, correction 9).
+ * @param {Document} doc
+ */
+export function aboutFacts(doc) {
+  /** @param {string} lead @param {Array<Node | string>} rest */
+  const fact = (lead, rest) => h(doc, 'li', {}, [h(doc, 'strong', {}, [lead]), ' ', ...rest]);
+  return h(doc, 'ul', { class: 'item-list about-facts', 'aria-label': 'What to know' }, [
+    fact('What it does.', ['Keeps your projects, tasks, decisions, sources, learning, and weekly brief in one workspace, and drafts from your own records.']),
+    fact('What it does not do.', ['It never emails, posts, or uploads anything. It does not connect to your employer’s systems. It does not decide for you: every draft waits until you accept it.']),
+    fact('Your data stays on this computer.', ['Records are saved in your user-data folder on this computer, never inside the app, and never uploaded. The app only answers this computer.']),
+    fact('No AI model runs by default.', ['Everything works without one. You can connect a model that runs on this computer, and you see exactly what it would be sent first. No cloud AI service is offered.']),
+    fact('The sample workspace', ['is synthetic: every person, project, and date in it is made up, and every screen says so. This computer keeps one workspace, so the sample does not turn into your own later; the support guide says how to set it aside.']),
+    fact('Your own workspace', ['starts empty. You name it and give your name as its accountable manager. It is for public, synthetic, or your own permitted material.']),
+    fact('The privacy screen has limits.', [
+      'It refuses to save identifiers such as record numbers, dates of birth, room and bed numbers, phone numbers, and email addresses. ',
+      h(doc, 'strong', {}, ['It does not detect people’s names.']),
+      ' Passing it never means text is free of patient information. Keeping names, patient details, and staff performance out is up to you.',
+    ]),
+  ]);
+}
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').PilotFeedback} PilotFeedback */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').PilotFeedbackItem} PilotFeedbackItem */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').PilotFeedbackPreview} PilotFeedbackPreview */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').PilotFeedbackExport} PilotFeedbackExport */
+/**
+ * @typedef {object} HelpOptions
+ * @property {boolean} writable
+ * @property {boolean} [busy]
+ * @property {Notice} [notice]
+ * @property {Record<string, string>} [typed] unsaved text in the add form
+ * @property {string | null} [deleting] the item whose delete is being confirmed
+ * @property {PilotFeedbackPreview | null} [preview] exactly what an export would hold
+ * @property {PilotFeedbackExport | null} [exported] the export just made
+ * @property {(fields: Record<string, string>) => void} onAdd
+ * @property {(id: string) => void} onAskDelete
+ * @property {() => void} onCancelDelete
+ * @property {(id: string) => void} onDelete
+ * @property {() => void} onPreview
+ * @property {(sha: string) => void} onExport
+ * @property {() => void} onCancelPreview
+ * @property {() => void} onSaveAgain
+ */
+
+/**
+ * The day a timestamp falls on by this computer's calendar, as the export
+ * dates it; slicing the UTC text would show tomorrow in the evening.
+ * @param {string} timestamp
+ */
+function localDay(timestamp) {
+  const at = new Date(timestamp);
+  const pad = (/** @type {number} */ n) => String(n).padStart(2, '0');
+  return `${at.getFullYear()}-${pad(at.getMonth() + 1)}-${pad(at.getDate())}`;
+}
+
+/**
+ * Unsaved text in the pilot feedback form, read from the screen.
+ * @param {ParentNode} root
+ * @returns {Record<string, string>}
+ */
+export function typedPilot(root) {
+  /** @type {Record<string, string>} */
+  const typed = {};
+  for (const [key, id] of [['area', 'pilot-area'], ['kind', 'pilot-kind'], ['summary', 'pilot-summary']]) {
+    const control = /** @type {HTMLInputElement | null} */ (root.querySelector(`#${id}`));
+    if (control) typed[key] = control.value;
+  }
+  return typed;
+}
+
+/**
+ * Help and feedback: what to know, where to get help, and pilot feedback that
+ * stays on this computer until the manager saves exactly what they reviewed.
+ * @param {Document} doc
+ * @param {PilotFeedback} data
+ * @param {HelpOptions} options
+ */
+export function renderHelp(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const root = h(doc, 'div', { class: 'view view--help' });
+  root.append(viewHeading(doc, 'Help and feedback',
+    'What this app does, where to get help, and feedback for the pilot team that stays on this computer until you share it.'));
+  const notice = noticeBlock(doc, options.notice);
+  if (notice) root.append(notice);
+
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'about-heading' }, [
+    h(doc, 'h2', { id: 'about-heading' }, ['What to know']),
+    aboutFacts(doc),
+  ]));
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'support-heading' }, [
+    h(doc, 'h2', { id: 'support-heading' }, ['Getting help']),
+    h(doc, 'ul', { class: 'item-list' }, [
+      h(doc, 'li', {}, [h(doc, 'strong', {}, ['Stop assistants.']), ' On Mission Control, “Assistants at work” has one switch that stops them all, and a Stop button appears wherever a model is working.']),
+      h(doc, 'li', {}, [h(doc, 'strong', {}, ['Something looks wrong?']), ' Quit Nurse AI OS and open it again. Everything you saved is kept on this computer.']),
+      h(doc, 'li', {}, [h(doc, 'strong', {}, ['Backup, restore, and crashes']), ' are covered step by step in the support guide your pilot team has.']),
+      h(doc, 'li', {}, [h(doc, 'strong', {}, ['Ask your pilot team.']), ' Never put patient information or colleagues’ names in a question, a screenshot, or feedback.']),
+    ]),
+  ]));
+
+  /** @param {PilotFeedbackItem} item */
+  const card = (item) => {
+    const area = data.areas.find((a) => a.value === item.area)?.label ?? item.area;
+    const kind = data.kinds.find((k) => k.value === item.kind)?.label ?? item.kind;
+    const el = h(doc, 'li', { class: 'card', 'data-record-id': item.id }, [
+      h(doc, 'p', { class: 'card__meta' }, [`${area} · ${kind} · ${localDay(item.created_at)}`]),
+      h(doc, 'p', { class: 'card__title' }, [item.summary]),
+      h(doc, 'p', { class: 'card__badges' }, [item.exported_at
+        ? badge(doc, 'accepted', '✓', `In the export of ${localDay(item.exported_at)}`)
+        : badge(doc, 'unavailable', '○', 'Not in an export yet')]),
+    ]);
+    if (!options.writable) return el;
+    if (options.deleting === item.id) {
+      el.append(
+        h(doc, 'p', { class: 'section-state', role: 'note' }, [
+          badge(doc, 'blocked', '!', 'Delete for good?'), ' Its text is not kept anywhere, and it cannot be brought back.',
+        ]),
+        h(doc, 'p', { class: 'button-row' }, [
+          button(doc, 'Delete for good', busy, () => options.onDelete(item.id)),
+          button(doc, 'Keep it', busy, options.onCancelDelete, 'secondary-button'),
+        ]),
+      );
+    } else {
+      el.append(h(doc, 'p', { class: 'button-row' }, [
+        button(doc, 'Delete…', busy, () => options.onAskDelete(item.id), 'secondary-button'),
+      ]));
+    }
+    return el;
+  };
+
+  const facts = data.last_export
+    ? `${count(data.items.length, 'item', 'items')} kept here · last export ${localDay(data.last_export.exported_at)} (${count(data.last_export.items, 'item', 'items')})`
+    : `${count(data.items.length, 'item', 'items')} kept here · never exported`;
+  const section = h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'pilot-heading' }, [
+    h(doc, 'h2', { id: 'pilot-heading', tabindex: '-1' }, ['Pilot feedback']),
+    h(doc, 'p', { class: 'onboarding-rules', role: 'note' }, [
+      badge(doc, 'review', '!', 'Stays here'), ' ',
+      'Feedback about the app is kept on this computer. Nothing is sent: you preview exactly what will be shared, save it as a file, and give it to your pilot team yourself. ',
+      'The privacy screen checks it, but it does not detect names, so leave out patients, colleagues, and staff performance.',
+    ]),
+    h(doc, 'p', { class: 'section-state' }, [facts]),
+    data.items.length
+      ? h(doc, 'ul', { class: 'card-list', 'aria-label': 'Your pilot feedback' }, data.items.map(card))
+      : h(doc, 'p', { class: 'section-state section-state--empty' }, ['No pilot feedback yet.']),
+  ]);
+  root.append(section);
+
+  if (!options.writable) {
+    section.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' Writing and exporting pilot feedback is available in the Nurse AI OS app.',
+    ]));
+    return root;
+  }
+
+  /** @param {string} id @param {ReadonlyArray<{ value: string, label: string }>} choices */
+  const select = (id, choices) => /** @type {HTMLSelectElement} */ (h(doc, 'select', { id },
+    choices.map((c) => h(doc, 'option', { value: c.value }, [c.label]))));
+  const area = select('pilot-area', data.areas);
+  const kind = select('pilot-kind', data.kinds);
+  const summary = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+    id: 'pilot-summary', rows: '3', required: '', maxlength: '1000',
+  }));
+  const typed = options.typed ?? {};
+  area.value = typed.area ?? area.value;
+  kind.value = typed.kind ?? kind.value;
+  summary.value = typed.summary ?? '';
+  if (busy) {
+    summary.readOnly = true;
+    area.disabled = true;
+    kind.disabled = true;
+  }
+  const save = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Save feedback']));
+  save.disabled = busy;
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'pilot-add-heading' }, [
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'pilot-area' }, ['Part of the app']), area]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'pilot-kind' }, ['Kind']), kind]),
+    h(doc, 'p', { class: 'field' }, [h(doc, 'label', { for: 'pilot-summary' }, ['What happened, or what would help?']), summary]),
+    save,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    options.onAdd({ area: area.value, kind: kind.value, summary: summary.value.trim() });
+  });
+  root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'pilot-add-heading' }, [
+    h(doc, 'h2', { id: 'pilot-add-heading' }, ['Write pilot feedback']),
+    form,
+  ]));
+
+  const share = h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'pilot-share-heading' }, [
+    h(doc, 'h2', { id: 'pilot-share-heading' }, ['Share with the pilot team']),
+  ]);
+  const exported = options.exported;
+  const preview = options.preview;
+  if (exported) {
+    share.append(
+      h(doc, 'p', {}, [`Saved as ${exported.filename}: ${count(exported.items, 'item', 'items')}. Nothing was sent. Give the file to your pilot team the way they asked.`]),
+      h(doc, 'p', { class: 'button-row' }, [button(doc, 'Save the file again', busy, options.onSaveAgain, 'secondary-button')]),
+    );
+  } else if (preview) {
+    const panel = h(doc, 'div', { class: 'preview-panel mc-section' }, [
+      h(doc, 'h3', { id: 'pilot-preview-heading', tabindex: '-1' }, ['Exactly what will be shared']),
+      h(doc, 'pre', { class: 'sent-text', 'aria-label': 'Exactly what will be shared', tabindex: '0' }, [preview.text]),
+    ]);
+    if (preview.can_export) {
+      panel.append(
+        h(doc, 'p', {}, [`This is the whole file, ${preview.filename}. Saving it sends nothing; you decide who receives it.`]),
+        h(doc, 'p', { class: 'button-row' }, [
+          button(doc, 'Save as a file', busy, () => options.onExport(preview.sha256)),
+          button(doc, 'Cancel', busy, options.onCancelPreview, 'secondary-button'),
+        ]),
+      );
+    } else {
+      panel.append(
+        h(doc, 'p', { role: 'alert' }, [badge(doc, 'blocked', '✕', 'Cannot be exported'), ' ', preview.reason]),
+        h(doc, 'p', { class: 'button-row' }, [button(doc, 'Close', busy, options.onCancelPreview, 'secondary-button')]),
+      );
+    }
+    share.append(panel);
+  } else {
+    share.append(
+      h(doc, 'p', {}, ['Every export holds all the feedback above. Delete what you no longer want to share first.']),
+      h(doc, 'p', { class: 'button-row' }, [button(doc, 'Preview what will be shared', busy || data.items.length === 0, options.onPreview)]),
+    );
+  }
+  root.append(share);
   return root;
 }
 

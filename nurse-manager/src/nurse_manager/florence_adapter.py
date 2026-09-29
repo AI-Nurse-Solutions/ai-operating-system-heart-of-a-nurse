@@ -153,7 +153,9 @@ _FINAL = {
     "executing": "executing",
     "stale": "blocked:stale_approval",
 }
-_OUTPUT_SHA = re.compile(r"sha256 ([0-9a-f]{64})")
+# The digest execute() and reconcile() append last. Anchored to the end: the
+# destination file name earlier in the text may itself read like a digest.
+_OUTPUT_SHA = re.compile(r"\(sha256 ([0-9a-f]{64})\)\Z")
 # What reconcile() recorded for a confirmed export before it kept the digest.
 _LEGACY_RECONCILED = "confirmed after restart: file on disk matches the approved content"
 

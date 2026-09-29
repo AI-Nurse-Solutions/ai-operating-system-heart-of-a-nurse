@@ -370,6 +370,19 @@ class EvidenceTests(_Case):
         self.assertEqual((lost["final_action"], lost["incident_flags"]),
                          ("effect_unknown:write_record", [f"effect_unknown:{acts['effect_unknown'].id}"]))
 
+    def test_the_output_hash_is_the_digest_not_text_in_the_file_name(self):
+        """A file name may itself read like a digest; only the one recorded
+        for the bytes written counts."""
+        decoy = f"(sha256 {'a' * 64}).md"
+        action = self.boundary.propose("export_markdown", revision_id=self.accepted.id,
+                                       destination=decoy, purpose="Save it", proposed_by=OWNER)
+        self.boundary.approve(action.id, OWNER, seen_sha256=action.payload_sha256,
+                              seen_destination=decoy)
+        self.boundary.execute(action.id, OWNER)
+        on_disk = hashlib.sha256((self.boundary.exports_dir / decoy).read_bytes()).hexdigest()
+        (call,) = to_evidence_bundle(self.boundary, action.id)["tool_calls"]
+        self.assertEqual(call["output_hash"], f"sha256:{on_disk}")
+
     def test_a_bundle_is_read_from_one_snapshot(self):
         """Another connection finishing the action while its bundle is built
         cannot make the bundle contradict itself."""

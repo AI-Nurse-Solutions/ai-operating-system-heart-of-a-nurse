@@ -399,7 +399,16 @@ def run(argv: list[str]) -> tuple[int, dict[str, Any]]:
     The in-process entry point for hosts (the dev host, tests): no global
     stdout redirection, so it is safe to call from several threads.
     """
-    args = build_parser().parse_args(argv)
+    try:
+        args = build_parser().parse_args(argv)
+    except SystemExit as exc:
+        if not exc.code:
+            raise  # --help: argparse has printed it
+        # Arguments argparse cannot parse are answered like any other refusal,
+        # never with an exit that leaves a host without a reply.
+        return 2, {"contract": CONTRACT, "command": argv[0] if argv else "", "ok": False,
+                   "error": {"type": "UsageError",
+                             "message": "the command's arguments were not understood"}}
     base = {"contract": CONTRACT, "command": args.command}
     try:
         # Round-trip through JSON so in-process callers receive exactly the

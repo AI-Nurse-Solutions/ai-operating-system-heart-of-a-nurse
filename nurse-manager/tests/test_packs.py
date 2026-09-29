@@ -12,6 +12,7 @@ import copy
 import json
 import sqlite3
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -216,6 +217,49 @@ class DocumentTests(_WorkspaceCase):
                                                       week_of="2026-09-28")["recent_accepted_outputs"]["items"]]
         self.assertIn("Meeting Brief, Agenda, Minutes, and Action List", titles)
 
+    def test_a_save_cannot_land_between_the_acceptance_checks_and_the_acceptance(self):
+        # Two tabs: one accepts version 2 while the other saves version 3. The
+        # save must not commit between the "is this the latest?" check and the
+        # acceptance, or an older version ends up accepted.
+        document_id = self.start()
+        first = self.service.view(document_id)["current"]
+        v2 = self.service.save(document_id, first["body_markdown"] + "\nv2\n",
+                               first["revision"]["sha256"])
+        root, clock = self.root, self.ws.clock
+        attempt: dict = {}
+
+        def other_tab_saves():
+            ws = ManagerWorkspace(root, clock=clock)
+            try:
+                PackService(ws).save(document_id, v2.body_markdown + "v3\n", v2.body_sha256)
+                attempt["saved"] = True
+            except Exception as exc:  # noqa: BLE001 - reported below
+                attempt["saved"] = exc
+            finally:
+                ws.close()
+
+        latest = BriefService.latest
+
+        def latest_then_other_tab(self_, artifact_id):
+            found = latest(self_, artifact_id)
+            if "thread" not in attempt:
+                attempt["thread"] = threading.Thread(target=other_tab_saves, daemon=True)
+                attempt["thread"].start()
+                attempt["thread"].join(0.3)
+                attempt["saved_before_accept"] = not attempt["thread"].is_alive()
+            return found
+
+        with mock.patch.object(BriefService, "latest", latest_then_other_tab):
+            BriefService(self.ws).accept(v2.id, OWNER, v2.body_sha256)
+        attempt["thread"].join(5)
+        self.assertFalse(attempt["saved_before_accept"],
+                         "a save committed between the acceptance checks and the acceptance")
+        self.assertIs(attempt["saved"], True)
+        # The acceptance came first: version 2 accepted, version 3 the newer draft.
+        view = self.service.view(document_id)
+        self.assertEqual((view["accepted"]["revision_no"], view["current"]["revision"]["revision_no"]),
+                         (2, 3))
+
     def test_a_stale_empty_unchanged_or_identifying_edit_is_refused_and_nothing_is_stored(self):
         document_id = self.start()
         current = self.service.view(document_id)["current"]
@@ -231,6 +275,15 @@ class DocumentTests(_WorkspaceCase):
             with self.subTest(case=label), self.assertRaisesRegex(error, message):
                 self.service.save(document_id, body, sha)
         self.assertEqual(len(BriefService(self.ws).history(document_id)), 1)
+
+    def test_arguments_the_cli_cannot_parse_get_an_answer_not_an_exit(self):
+        from nurse_manager import cli
+
+        code, envelope = cli.run(["document-save", str(self.root), "--id", "art-000000000000",
+                                  "--body"])
+        self.assertEqual((code, envelope["ok"], envelope["error"]["type"]),
+                         (2, False, "UsageError"))
+        self.assertEqual(envelope["command"], "document-save")
 
     def test_a_document_is_found_only_in_its_own_workspace(self):
         with self.assertRaisesRegex(PackError, "not in this workspace"):

@@ -256,21 +256,26 @@ class BriefService:
             return self._add_revision(artifact_id, body_markdown, refs, editor)
 
     def accept(self, revision_id: str, reviewer: str, seen_sha256: str) -> Revision:
-        """The manager accepts exactly the text they reviewed."""
-        revision = self.revision(revision_id)
+        """The manager accepts exactly the text they reviewed.
+
+        Every check is made inside the write that accepts, so a new revision
+        saved from another window cannot land between "this is the latest"
+        and the acceptance: an older revision is never the accepted one.
+        """
         if reviewer.strip() != self.ws.info.owner:
             raise ManagerError(
                 "only the accountable manager for this workspace can accept its outputs"
             )
-        if revision.status != "draft":
-            raise ManagerError(f"revision is {revision.status}, not a draft awaiting review")
-        latest = self.latest(revision.artifact_id)
-        if latest is None or latest.id != revision.id:
-            raise StaleRevision("a newer revision exists; review that one instead")
-        if seen_sha256 != revision.body_sha256:
-            raise StaleRevision("the text changed after it was reviewed; review it again")
-        now = self.ws.clock()
         with self.ws.store.transaction() as db:
+            revision = self.revision(revision_id)
+            if revision.status != "draft":
+                raise ManagerError(f"revision is {revision.status}, not a draft awaiting review")
+            latest = self.latest(revision.artifact_id)
+            if latest is None or latest.id != revision.id:
+                raise StaleRevision("a newer revision exists; review that one instead")
+            if seen_sha256 != revision.body_sha256:
+                raise StaleRevision("the text changed after it was reviewed; review it again")
+            now = self.ws.clock()
             db.execute(
                 "UPDATE artifact_revisions SET status = 'superseded'"
                 " WHERE artifact_id = ? AND status = 'accepted'",

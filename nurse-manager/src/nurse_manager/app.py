@@ -42,6 +42,7 @@ from . import __version__, cli, resources
 from .devhost import (
     READ_ONLY_COMMANDS,
     _PROJECT_ID,
+    bind_values,
     _valid_date,
     monday_of,
     read_argv,
@@ -339,7 +340,7 @@ class LocalApp:
                 argv = read_argv(command, app.workspace, query, date.today().isoformat())
                 if isinstance(argv, str):
                     return self._text(400, argv)
-                _code, envelope = cli.run(argv)
+                _code, envelope = cli.run(bind_values(argv))
                 return self._json(200, envelope)
 
             def _write(self, command: str, body: dict) -> None:
@@ -352,7 +353,7 @@ class LocalApp:
                 argv = _write_argv(command, body, app.workspace, app.owner())
                 if isinstance(argv, str):
                     return self._text(400, argv)
-                _code, envelope = cli.run(argv)
+                _code, envelope = cli.run(bind_values(argv))
                 return self._json(200, envelope)
 
             def _onboard(self, command: str, body: dict) -> None:

@@ -183,6 +183,19 @@ class WorkspaceWriteTests(_AppCase):
                 self.assertEqual(self.request(f"/ipc/{command}", "POST", body)[0], 400)
         self.assertEqual(self.request("/ipc/document?id=art-1")[0], 400)
 
+    def test_text_that_starts_like_an_option_is_saved_as_text(self):
+        # Free text is the manager's words, never command-line options: text
+        # beginning "--todo" or "-h" is stored as written.
+        started = self.envelope("/ipc/pack-start", "POST",
+                                {"pack": "communication", "template": "message-draft"})["data"]
+        saved = self.envelope("/ipc/document-save", "POST", {
+            "document_id": started["document"]["id"], "body_markdown": "--todo\nDraft the huddle script.\n",
+            "base_sha256": started["current"]["revision"]["sha256"]})
+        self.assertTrue(saved["ok"], saved)
+        self.assertEqual(saved["data"]["current"]["body_markdown"], "--todo\nDraft the huddle script.\n")
+        memory = self.envelope("/ipc/memory-add", "POST", {"content": "-h means huddle (synthetic)."})
+        self.assertEqual(memory["data"]["item"]["content"], "-h means huddle (synthetic).")
+
     def test_draft_review_and_accept_as_the_workspace_owner(self):
         self.assertIsNone(self.envelope("/ipc/weekly?week=2026-09-28")["data"]["current"])
         draft = self.envelope("/ipc/brief", "POST", self.body)["data"]

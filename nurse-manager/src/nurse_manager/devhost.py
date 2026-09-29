@@ -55,6 +55,15 @@ def monday_of(day: date) -> date:
     return day - timedelta(days=day.weekday())
 
 
+def bind_values(argv: list[str]) -> list[str]:
+    """Join every option to its value (``--body=text``), so text a person typed
+    is never read as another option, however it begins ("--todo", "-h")."""
+    bound, rest = argv[:2], iter(argv[2:])
+    for option in rest:
+        bound.append(f"{option}={next(rest)}")
+    return bound
+
+
 def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
               default_today: str) -> list[str] | str:
     """The CLI arguments for one read-only command, or a message saying what is wrong.
@@ -182,7 +191,7 @@ def make_handler(workspace: Path, today: str | None):
             argv = read_argv(command, workspace, query, today or date.today().isoformat())
             if isinstance(argv, str):
                 return self._text(400, argv)
-            _code, envelope = cli.run(argv)
+            _code, envelope = cli.run(bind_values(argv))
             body = json.dumps(envelope, sort_keys=True).encode("utf-8")
             # The envelope carries success or failure; HTTP only says it was delivered.
             self._send(200, body, "application/json; charset=utf-8")

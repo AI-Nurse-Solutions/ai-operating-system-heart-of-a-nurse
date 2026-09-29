@@ -78,7 +78,7 @@ class LabeledSetTests(unittest.TestCase):
 
     def test_every_label_is_what_the_policy_decides(self):
         # run_shadow refuses to compare against a set that disagrees with policy.
-        report = run_shadow(ReviewAlwaysBaseline(), self.labeled)
+        report = run_shadow(ReviewAlwaysBaseline())
         self.assertEqual(report["cases"], len(self.labeled["cases"]))
 
     def test_the_set_covers_every_reason_and_both_origins(self):
@@ -93,13 +93,30 @@ class LabeledSetTests(unittest.TestCase):
         data = json.loads(default_set_path().read_text(encoding="utf-8"))
         data["cases"][0]["label"] = "allow"
         with self.assertRaisesRegex(ShadowError, "no longer matches the policy for: export-accepted"):
-            run_shadow(ReviewAlwaysBaseline(), load_labeled_set(_write_set(self.tmp.name, cases=data["cases"])))
+            run_shadow(ReviewAlwaysBaseline(), _write_set(self.tmp.name, cases=data["cases"]))
 
     def test_only_synthetic_sets_are_used(self):
         for value in (False, None, "yes"):
             with self.subTest(synthetic=value):
                 with self.assertRaisesRegex(ShadowError, "synthetic data only"):
                     load_labeled_set(_write_set(self.tmp.name, synthetic=value))
+
+    def test_a_set_that_skips_the_loader_never_reaches_an_adapter(self):
+        """Only a set read and checked from a file is used: a hand-built one could
+        carry real proposals past the synthetic-only rule."""
+        real = load_labeled_set()
+        spy = _Fixed("spy", Choice({"allow": 0.0, "require_human": 0.0, "deny": 1.0}))
+        handmade = [
+            {**real, "synthetic": False},
+            {"name": "x", "sha256": "0" * 64, "cases": real["cases"]},
+            {"cases": real["cases"]},
+            real["cases"],
+        ]
+        for labeled in handmade:
+            with self.subTest(kind=type(labeled).__name__):
+                with self.assertRaises((ShadowError, TypeError)):
+                    run_shadow(spy, labeled)
+        self.assertEqual(spy.seen, [])
 
     def test_malformed_sets_are_refused(self):
         cases = json.loads(default_set_path().read_text(encoding="utf-8"))["cases"]
@@ -135,11 +152,11 @@ class ShadowModeTests(unittest.TestCase):
         ]
         for adapter in adapters:
             with self.subTest(adapter=adapter.name):
-                self.assertEqual(self.edena(run_shadow(adapter, self.labeled)), expected)
+                self.assertEqual(self.edena(run_shadow(adapter)), expected)
 
     def test_a_less_strict_suggester_is_called_out_case_by_case(self):
         report = run_shadow(_Fixed("allow-everything", Choice(
-            {"allow": 0.9, "require_human": 0.1, "deny": 0.0}, 0.95)), self.labeled)
+            {"allow": 0.9, "require_human": 0.1, "deny": 0.0}, 0.95)))
         self.assertEqual(report["less_strict"], len(self.cases))
         self.assertEqual(report["less_strict_cases"], [c.id for c in self.cases])
         self.assertEqual(report["agree"], 0)
@@ -148,13 +165,13 @@ class ShadowModeTests(unittest.TestCase):
         self.assertIn("- `send-email-fyi`", text)
 
     def test_the_baseline_is_the_floor_and_is_not_safe(self):
-        report = run_shadow(ReviewAlwaysBaseline(), self.labeled)
+        report = run_shadow(ReviewAlwaysBaseline())
         denials = sum(1 for c in self.cases if c.label == "deny")
         self.assertEqual((report["agree"], report["less_strict"], report["stricter"]),
                          (len(self.cases) - denials, denials, 0))
 
     def test_a_perfect_suggester_scores_perfectly(self):
-        report = run_shadow(_Oracle(self.cases, confidence=0.8), self.labeled)
+        report = run_shadow(_Oracle(self.cases, confidence=0.8))
         self.assertEqual((report["agree"], report["less_strict"], report["brier"]),
                          (len(self.cases), 0, 0.0))
         self.assertEqual(report["mean_confidence_when_agreeing"], 0.8)
@@ -162,7 +179,7 @@ class ShadowModeTests(unittest.TestCase):
         self.assertIn("None. It never suggested less than EDENA required.", render_markdown(report))
 
     def test_a_failing_adapter_is_a_finding_not_a_crash(self):
-        report = run_shadow(_Fixed("raises", TimeoutError()), self.labeled)
+        report = run_shadow(_Fixed("raises", TimeoutError()))
         self.assertEqual((report["adapter_errors"], report["answered"], report["brier"]),
                          (len(self.cases), 0, None))
         self.assertEqual({r["outcome"] for r in report["rows"]}, {"adapter_error:TimeoutError"})
@@ -182,7 +199,7 @@ class ShadowModeTests(unittest.TestCase):
         }
         for label, answer in bad.items():
             with self.subTest(label):
-                report = run_shadow(_Fixed(label, answer), self.labeled)
+                report = run_shadow(_Fixed(label, answer))
                 self.assertEqual((report["invalid_outputs"], report["answered"], report["agree"]),
                                  (len(self.cases), 0, 0))
 
@@ -193,7 +210,7 @@ class ShadowModeTests(unittest.TestCase):
 
     def test_an_adapter_sees_the_proposal_and_the_options_only(self):
         spy = _Fixed("spy", Choice({"allow": 0.0, "require_human": 0.0, "deny": 1.0}))
-        run_shadow(spy, self.labeled)
+        run_shadow(spy)
         self.assertEqual(len(spy.seen), len(self.cases))
         blob = json.dumps([q for q, _ in spy.seen])
         for secret in ("MGR-", "EDENA-", "require_approval", "Sample Manager", tempfile.gettempdir()):
@@ -204,12 +221,12 @@ class ShadowModeTests(unittest.TestCase):
 
     def test_the_throwaway_workspace_is_removed(self):
         before = set(Path(tempfile.gettempdir()).glob("nm-shadow-*"))
-        run_shadow(ReviewAlwaysBaseline(), self.labeled)
+        run_shadow(ReviewAlwaysBaseline())
         self.assertEqual(set(Path(tempfile.gettempdir()).glob("nm-shadow-*")), before)
 
     def test_the_same_inputs_give_the_same_report(self):
-        self.assertEqual(run_shadow(ReviewAlwaysBaseline(), self.labeled),
-                         run_shadow(ReviewAlwaysBaseline(), self.labeled))
+        self.assertEqual(run_shadow(ReviewAlwaysBaseline()),
+                         run_shadow(ReviewAlwaysBaseline()))
 
 
 class CommittedReportTests(unittest.TestCase):

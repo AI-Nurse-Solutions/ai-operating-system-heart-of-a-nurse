@@ -207,13 +207,20 @@ def _check_choice(choice: Any) -> str:
     return ""
 
 
-def run_shadow(adapter: DecisionAdapter, labeled_set: dict[str, Any] | None = None) -> dict[str, Any]:
+def run_shadow(adapter: DecisionAdapter, set_path: Path | str | None = None) -> dict[str, Any]:
     """Decide every case with EDENA, then ask the adapter, and compare.
 
     The decisions come first and are final; the adapter's answer is only
     recorded. Nothing an adapter does, including raising, changes them.
+
+    The labeled set is always read and checked here, from its file: an
+    already-built set is refused, so nothing that skipped the
+    synthetic-only check can reach an adapter.
     """
-    labeled_set = labeled_set or load_labeled_set()
+    if set_path is not None and not isinstance(set_path, (str, Path)):
+        raise ShadowError("run_shadow reads its labeled set from a file path; pass the path,"
+                          " not a set built elsewhere")
+    labeled_set = load_labeled_set(Path(set_path) if set_path is not None else None)
     cases: list[ShadowCase] = labeled_set["cases"]
     decided = decide_cases(cases)
     policy = decided.pop("_policy")

@@ -27,17 +27,17 @@ backup before any migration, and forward repair when one fails.
 from __future__ import annotations
 
 import base64
+import contextlib
 import hashlib
 import hmac
 import json
-import os
 import re
-import tempfile
+import sqlite3
 import urllib.error
 import urllib.request
 from datetime import date
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from . import __version__, resources
 from .services import ManagerError
@@ -48,6 +48,7 @@ MAX_FEED_BYTES = 256 * 1024
 MAX_SIGNATURE_BYTES = 4096
 MIN_KEY_BITS = 2048
 FETCH_TIMEOUT_SECONDS = 15
+STATE_LOCK_TIMEOUT_SECONDS = 10
 _VERSION = re.compile(r"(0|[1-9][0-9]{0,5})\.(0|[1-9][0-9]{0,5})\.(0|[1-9][0-9]{0,5})")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _PLATFORM = re.compile(r"[a-z0-9][a-z0-9-]{1,31}")
@@ -140,7 +141,7 @@ def config_path() -> Path:
 
 
 def state_path() -> Path:
-    return resources.user_data_dir() / "update-state.json"
+    return resources.user_data_dir() / "update-state.sqlite"
 
 
 def load_config(path: Path | None = None) -> dict[str, Any]:
@@ -159,26 +160,35 @@ def load_config(path: Path | None = None) -> dict[str, Any]:
     return {"channel": data.get("channel") or "", "feed_url": url, "keys": keys}
 
 
-def _read_state(path: Path) -> dict[str, Any]:
+@contextlib.contextmanager
+def _seen_feeds(path: Path) -> Iterator[sqlite3.Connection]:
+    """The record of feeds already seen, held under a write lock for the whole
+    compare-and-record, so two checks at once cannot roll it back."""
+    path.parent.mkdir(parents=True, exist_ok=True)
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        return {}
-    except (OSError, ValueError) as exc:
+        conn = sqlite3.connect(str(path), timeout=STATE_LOCK_TIMEOUT_SECONDS, isolation_level=None)
+    except sqlite3.Error as exc:
+        raise UpdateError("the record of feeds already seen cannot be opened") from exc
+    try:
+        conn.execute("BEGIN IMMEDIATE")
+        conn.execute("CREATE TABLE IF NOT EXISTS feeds_seen (channel TEXT PRIMARY KEY,"
+                     " sequence INTEGER NOT NULL, feed_sha256 TEXT NOT NULL)")
+        try:
+            yield conn
+        except BaseException:
+            conn.execute("ROLLBACK")
+            raise
+        conn.execute("COMMIT")
+    except sqlite3.OperationalError as exc:
+        if getattr(exc, "sqlite_errorname", "").startswith(("SQLITE_BUSY", "SQLITE_LOCKED")):
+            raise UpdateError("another update check is running; try again in a moment") from exc
         raise UpdateError("the record of feeds already seen is unreadable; nothing is trusted"
                           " until it is repaired or removed by hand") from exc
-
-
-def _write_state(path: Path, state: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=".update-state-")
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as fh:
-            json.dump(state, fh, sort_keys=True)
-        os.replace(tmp, path)
-    except BaseException:
-        Path(tmp).unlink(missing_ok=True)
-        raise
+    except sqlite3.DatabaseError as exc:
+        raise UpdateError("the record of feeds already seen is unreadable; nothing is trusted"
+                          " until it is repaired or removed by hand") from exc
+    finally:
+        conn.close()
 
 
 # -- the feed ------------------------------------------------------------------
@@ -255,20 +265,23 @@ def check_feed(feed_bytes: bytes, signature: bytes, *, config: dict[str, Any],
         raise UpdateError(f"the feed expired on {feed['expires'].isoformat()}; an old feed"
                           " cannot be trusted to say what is current")
     digest = hashlib.sha256(feed_bytes).hexdigest()
-    seen = _read_state(state_file).get(config["channel"], {})
-    if seen:
-        if feed["sequence"] < seen.get("sequence", 0):
-            raise UpdateError(f"this feed (sequence {feed['sequence']}) is older than one already"
-                              f" seen (sequence {seen['sequence']}); it may be replayed")
-        if feed["sequence"] == seen.get("sequence") and digest != seen.get("feed_sha256"):
-            raise UpdateError("two different feeds carry the same sequence; neither is trusted")
-    current = _version(current_version)
-    newer = sorted((r for r in feed["releases"] if r["rank"] > current),
-                   key=lambda r: r["rank"])
-    latest = newer[-1] if newer else None
-    state = _read_state(state_file)
-    state[config["channel"]] = {"sequence": feed["sequence"], "feed_sha256": digest}
-    _write_state(state_file, state)
+    with _seen_feeds(Path(state_file)) as db:
+        seen = db.execute("SELECT sequence, feed_sha256 FROM feeds_seen WHERE channel = ?",
+                          (config["channel"],)).fetchone()
+        if seen:
+            if feed["sequence"] < seen[0]:
+                raise UpdateError(f"this feed (sequence {feed['sequence']}) is older than one"
+                                  f" already seen (sequence {seen[0]}); it may be replayed")
+            if feed["sequence"] == seen[0] and digest != seen[1]:
+                raise UpdateError("two different feeds carry the same sequence; neither is trusted")
+        current = _version(current_version)
+        newer = sorted((r for r in feed["releases"] if r["rank"] > current),
+                       key=lambda r: r["rank"])
+        latest = newer[-1] if newer else None
+        db.execute("INSERT INTO feeds_seen (channel, sequence, feed_sha256) VALUES (?, ?, ?)"
+                   " ON CONFLICT (channel) DO UPDATE SET sequence = excluded.sequence,"
+                   " feed_sha256 = excluded.feed_sha256",
+                   (config["channel"], feed["sequence"], digest))
     return {**result, "status": "update_available" if latest else "current",
             "reason": "" if latest else "this is the newest release the feed lists",
             "latest": None if latest is None else {k: v for k, v in latest.items() if k != "rank"},

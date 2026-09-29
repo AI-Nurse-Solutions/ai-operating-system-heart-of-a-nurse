@@ -83,6 +83,39 @@ class MigrationFailed(StoreError):
             " Install a release that corrects this step; never an older one.")
 
 
+class UpgradeInterrupted(StoreError):
+    """An upgrade step could not run for a reason outside it: the workspace
+    was busy, the disk was full, or it could not be written. Try again."""
+
+    _PLAIN = {"SQLITE_BUSY": "another copy of the app is using this workspace",
+              "SQLITE_LOCKED": "another copy of the app is using this workspace",
+              "SQLITE_FULL": "the disk is full",
+              "SQLITE_READONLY": "the workspace cannot be written to",
+              "SQLITE_CANTOPEN": "the workspace file could not be opened",
+              "SQLITE_NOMEM": "the computer ran out of memory"}
+
+    def __init__(self, version: str, reached: str, backup: Path | None, cause: Exception):
+        self.version, self.reached, self.backup = version, reached, backup
+        name = getattr(cause, "sqlite_errorname", "")
+        reason = next((text for code, text in self._PLAIN.items() if name.startswith(code)),
+                      "the workspace could not be read or written")
+        where = f" A copy from before the upgrade is at {backup}." if backup else ""
+        super().__init__(
+            f"this workspace could not be upgraded just now: {reason}. Nothing of step"
+            f" {version} was kept, and your records are intact at step {reached or 'none'}.{where}"
+            " Close other copies of the app, make sure there is free disk space, and try again.")
+
+
+# Errors that say the step could not run here and now, not that it is wrong.
+_ENVIRONMENTAL = ("SQLITE_BUSY", "SQLITE_LOCKED", "SQLITE_FULL", "SQLITE_IOERR",
+                  "SQLITE_READONLY", "SQLITE_CANTOPEN", "SQLITE_NOMEM", "SQLITE_INTERRUPT",
+                  "SQLITE_PROTOCOL", "SQLITE_NOLFS")
+
+
+def _environmental(exc: sqlite3.Error) -> bool:
+    return getattr(exc, "sqlite_errorname", "").startswith(_ENVIRONMENTAL)
+
+
 class Store:
     """One workspace database file. Records live outside the app bundle."""
 
@@ -135,6 +168,10 @@ class Store:
                         (version, self.clock()),
                     )
             except sqlite3.Error as exc:
+                if _environmental(exc):
+                    # Busy, full, or unwritable: nothing is wrong with the step,
+                    # and nothing of it was kept. Trying again is the remedy.
+                    raise UpgradeInterrupted(version, self.schema_version, backup, exc) from exc
                 # Forward repair: each step is its own transaction, so the
                 # workspace stays at the last step that finished, intact. It is
                 # never downgraded; a release with a corrected step continues

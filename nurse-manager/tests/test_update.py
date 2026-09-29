@@ -180,6 +180,32 @@ class FeedTests(_Tmp):
         with self.assertRaisesRegex(UpdateError, "expired"):
             self.check("feed-current.json", today=date(2100, 1, 1))
 
+    def test_a_concurrent_check_cannot_roll_the_record_back(self):
+        """Two checks at once: the one holding an older sequence must not
+        overwrite a newer one recorded meanwhile, or an older feed would be
+        believed again."""
+        real_version, raced, calls = update._version, [], []
+
+        def race(value):
+            # The first two calls parse feed-seq5's releases; the third comes after
+            # the comparison and before the write. There, another check records 7.
+            calls.append(value)
+            if len(calls) == 3 and not raced:
+                raced.append(1)
+                try:
+                    self.check("feed-current.json")
+                except UpdateError:
+                    raced.append("held off")
+            return real_version(value)
+
+        with mock.patch.object(update, "STATE_LOCK_TIMEOUT_SECONDS", 0.1), \
+                mock.patch.object(update, "_version", race):
+            self.check("feed-seq5.json")
+        if "held off" in raced:  # the other check waits its turn, then runs
+            self.check("feed-current.json")
+        with self.assertRaisesRegex(UpdateError, "older than one already seen"):
+            self.check("feed-seq5.json")
+
     def test_a_feed_for_another_channel_is_refused(self):
         self.config["channel"] = "beta"
         with self.assertRaisesRegex(UpdateError, "another channel"):
@@ -335,6 +361,42 @@ class UpgradeTests(unittest.TestCase):
         self.addCleanup(conn.close)
         self.assertEqual(conn.execute("SELECT max(version) FROM schema_migrations").fetchone()[0],
                          self.previous)
+
+    def test_a_busy_or_full_workspace_is_not_called_a_broken_release(self):
+        """A lock held elsewhere, a full disk, or an I/O error means try again,
+        not install a corrected release."""
+        _old_workspace(self.path, self.latest)
+        holder = sqlite3.connect(str(self.path), isolation_level=None)
+        self.addCleanup(holder.close)
+        holder.execute("BEGIN IMMEDIATE")
+        real_connect = store_module._connect
+
+        def impatient(path):
+            conn = real_connect(path)
+            conn.execute("PRAGMA busy_timeout = 100")
+            return conn
+
+        with mock.patch.object(store_module, "_connect", impatient):
+            with self.assertRaises(StoreError) as caught:
+                Store(self.path)
+        self.assertNotIsInstance(caught.exception, MigrationFailed)
+        self.assertIn("try again", str(caught.exception))
+        self.assertNotIn("corrects this step", str(caught.exception))
+        holder.execute("ROLLBACK")
+        store = Store(self.path)  # once the other copy lets go, the upgrade completes
+        self.addCleanup(store.close)
+        self.assertEqual(store.schema_version, self.latest)
+
+    def test_a_full_disk_is_named_plainly_and_a_bad_step_is_not(self):
+        full = sqlite3.OperationalError("database or disk is full")
+        full.sqlite_errorname = "SQLITE_FULL"
+        bad = sqlite3.OperationalError("no such table: nowhere")
+        bad.sqlite_errorname = "SQLITE_ERROR"
+        self.assertTrue(store_module._environmental(full))
+        self.assertFalse(store_module._environmental(bad))
+        message = str(store_module.UpgradeInterrupted("0013_x", "0012_y", None, full))
+        self.assertIn("the disk is full", message)
+        self.assertIn("intact at step 0012_y", message)
 
     def test_a_failed_step_is_repaired_forward_never_backwards(self):
         _old_workspace(self.path, self.latest)

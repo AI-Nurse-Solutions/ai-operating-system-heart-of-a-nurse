@@ -280,6 +280,22 @@ class ActionBoundaryTests(_Case):
         settled = boundary.reconcile()
         self.assertEqual([s["outcome"] for s in settled], ["succeeded"])
 
+    def test_interrupted_export_is_confirmed_even_after_its_revision_is_superseded(self):
+        # The file holds the text as accepted; a later acceptance changes how the
+        # old revision renders now, not what was written before the crash.
+        boundary, action, accepted = self.approved_export()
+        (self.tmp / "ws" / "exports").mkdir()
+        written = self.briefs.render(accepted)
+        (self.tmp / "ws" / "exports" / "brief.md").write_text(written, encoding="utf-8")
+        self.ws.store.conn.execute(
+            "UPDATE actions SET status = 'executing' WHERE id = ?", (action.id,)
+        )
+        newer = self.briefs.revise(accepted.artifact_id, accepted.body_markdown + "\nMore.\n", OWNER)
+        self.briefs.accept(newer.id, OWNER, newer.body_sha256)
+        settled = boundary.reconcile()
+        self.assertEqual([s["outcome"] for s in settled], ["succeeded"])
+        self.assertIn(hashlib.sha256(written.encode()).hexdigest(), settled[0]["detail"])
+
 
 class AssistantProposalTests(_Case):
     def test_assistant_may_recommend_and_only_the_manager_approves(self):

@@ -58,9 +58,9 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 2.7 | Retry never duplicates; interrupted execution is verified, never re-run | ✅ | `test_retry_never_duplicates_the_effect`, reconcile tests |
 | 2.8 | Backup and restore never silently discard newer records | ✅ | `test_restore_refuses_to_discard_newer_work` |
 | 2.9 | Create → review → save → close → reopen → export | ✅ | `test_create_review_save_close_reopen`, `CliJourneyTests` |
-| 2.10 | Concern, containment, and preservation-hold records carried over from the prior plan | ⬜ | Needs the prior plan's definitions (S1 was not available here) |
+| 2.10 | Concern, containment, and preservation-hold records carried over from the prior plan | ⛔ | Needs the prior plan's definitions (S1 is not in this repository; searched 2026-09-29). A hold can stop deletion, so it is not built on guessed definitions |
 | 2.11 | Align action records to Florence-X `CandidateAction`/`EDENADecision` via an adapter | ✅ | `test_florence_adapter.py`: pinned JSON Schemas always, Florence-X Pydantic models in the `florence-x-contract` CI job |
-| 2.12 | Map receipts and the event log to Florence-X `EvidenceBundle` | ⬜ | Florence-X publishes no JSON Schema for it yet; needs its model or a published schema |
+| 2.12 | Map receipts and the event log to Florence-X `EvidenceBundle` | ✅ | `florence_adapter.to_evidence_bundle` / `evidence_bundles`, following Florence-X's runtime conventions (contract map §4). Florence-X publishes no JSON Schema for it, so `test_florence_adapter.py` checks every action state (awaiting, approved, succeeded, failed, denied, stale, effect unknown) against field tables offline, and the `florence-x-contract` job validates the same bundles with Florence-X's own `EvidenceBundle` model at the pinned commit and holds the tables equal to its fields. No names, paths, or content cross; the same records always give the same bundle |
 
 ## G3 — Unified manager views (NM-002, NM-007)
 

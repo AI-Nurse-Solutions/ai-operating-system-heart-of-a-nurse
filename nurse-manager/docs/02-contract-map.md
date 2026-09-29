@@ -45,7 +45,7 @@ authorship: Substantially AI-generated (Claude Code) with human review pending
 | red-e | red | Red | unreachable |
 | red-p | red_blocked | Red | blocked |
 
-## 4. Florence-X adapter (build step 2.11)
+## 4. Florence-X adapter (build steps 2.11 and 2.12)
 
 `src/nurse_manager/florence_adapter.py` turns a manager action into
 Florence-X `CandidateAction` and `EDENADecision` dicts. It is a one-way
@@ -65,12 +65,41 @@ projection; Florence-X types are never written back into manager tables.
 | `tier` | `risk_hint` / `risk_tier` | green→green, yellow→yellow, red→**red_blocked** |
 | `policy_decision` | `decision` | allow→allow, require_approval→require_human, deny→deny |
 | `policy_reasons` | `rationale` | reason codes, verbatim |
-| profile (+ gateway) version | `policy_pack_version` | `nurse-manager-personal-profile@v`, plus `+edena-gateway-policy@v` for assistants |
+| `action_policy_versions` (recorded when the action was decided) | `policy_pack_version` | `nurse-manager-personal-profile@v`, plus `+edena-gateway-policy@v` for assistants; the policy in force at the decision, never today's (so an upgrade does not rewrite history). `null` for actions recorded before migration 0012, which did not keep it |
 
 The contract is enforced two ways:
 
 - `contracts/florence-x/` holds unmodified copies of Florence-X's JSON Schemas, pinned by commit and hash. Every test run validates against them.
 - The CI job `florence-x-contract` installs Florence-X at the same commit, validates against its Pydantic models (`extra="forbid"`), and checks the pinned copies byte-for-byte.
+
+### Evidence (build step 2.12)
+
+`to_evidence_bundle` turns one action's approval, receipt, and event-log
+entries into a Florence-X `EvidenceBundle`; `evidence_bundles` does it for
+every action whose effect Florence-X can name. It follows the conventions
+Florence-X's own runtime uses when it fills a bundle. Each bundle (and the
+whole list) is read from one database snapshot, so an action finishing while
+it is read cannot give a bundle that contradicts itself.
+
+| Manager record | `EvidenceBundle` field | Rule |
+|---|---|---|
+| action | `bundle_id`, `signal_id`, `workflow_run_id` | `<action>:evidence`, `<action>:proposal`, and the same run id as the `CandidateAction` |
+| `payload_sha256` | `context_hash` | `sha256:<hex>`: the content the action acted on, never the content itself |
+| the action's `EDENADecision` | `edena_decisions` | exactly one, the same dict `to_edena_decision` returns |
+| `approvals` row | `human_reviews` | one `approve` review by `nurse_manager`, reviewer `human:workspace-owner:<workspace>`; the approver must be the owner |
+| latest `receipts` row (or the `execute` event) | `tool_calls` | one `ToolCallRecord` once an effect was attempted (started but not yet receipted: `executed: false`, no hash, no error): `tool_id` is the effect; `executed` only when it succeeded; `output_hash` is the exported file's sha256, also when an interrupted export is confirmed after a restart (for a confirmation recorded by an earlier release without the digest, the digest of the approved content it was confirmed against); `error` is the exception type or `effect_unknown`, never the message (it can hold a path, and so a user name) |
+| `actions.status` | `final_action` | denied → `blocked:deny`; awaiting approval → `awaiting_human_review`; approved → `awaiting_execution`; succeeded → the action type (`write_record`); failed → `failed:<type>`; effect unknown → `effect_unknown:<type>`; stale → `blocked:stale_approval` |
+| `actions.status` | `incident_flags` | `edena_deny:<action>`, `stale_approval:<action>`, or `effect_unknown:<action>` |
+| policy vs. what ran | `deviations_from_edena` | an effect after a denial, or without a required approval; never expected, reported if it happens |
+| revision + `source_refs` | `source_citations` | as `evidence_refs` |
+| `created_at`, approval, `event_log` `execute`, receipt | `signal_received_at`, `reviewed_at`, `executed_at`, `completed_at` | a denial completes when it is made; a stale approval when it is found stale; pending actions have no `completed_at` |
+| last `event_log` entry for the action | `created_at` | so the same records always give the same bundle |
+| — | `model_*`, `prompt_template_version`, `agent_versions`, `overrides`, `outcome_feedback` | empty: the action boundary calls no model, and nothing overrides a decision |
+
+Florence-X publishes no JSON Schema for `EvidenceBundle`. Offline, the
+tests check the shape against field tables; the `florence-x-contract` job
+validates every bundle with Florence-X's own `EvidenceBundle` model and
+holds those tables equal to its fields, so they cannot drift.
 
 ## 5. Record-writer register
 

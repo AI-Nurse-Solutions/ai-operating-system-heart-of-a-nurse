@@ -136,6 +136,20 @@ class Store:
             raise
         self.conn.execute("COMMIT")
 
+    @contextlib.contextmanager
+    def snapshot(self) -> Iterator[sqlite3.Connection]:
+        """Reads that must agree with each other. A deferred transaction holds
+        its shared lock from the first read until it ends, so no other
+        connection commits in between. Inside a transaction, that one serves."""
+        if self.conn.in_transaction:
+            yield self.conn
+            return
+        self.conn.execute("BEGIN")
+        try:
+            yield self.conn
+        finally:
+            self.conn.execute("COMMIT")
+
     def log(self, actor: str, kind: str, record_type: str, record_id: str) -> None:
         self.conn.execute(
             "INSERT INTO event_log (at, actor, kind, record_type, record_id)"

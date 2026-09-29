@@ -77,7 +77,9 @@ The contract is enforced two ways:
 `to_evidence_bundle` turns one action's approval, receipt, and event-log
 entries into a Florence-X `EvidenceBundle`; `evidence_bundles` does it for
 every action whose effect Florence-X can name. It follows the conventions
-Florence-X's own runtime uses when it fills a bundle.
+Florence-X's own runtime uses when it fills a bundle. Each bundle (and the
+whole list) is read from one database snapshot, so an action finishing while
+it is read cannot give a bundle that contradicts itself.
 
 | Manager record | `EvidenceBundle` field | Rule |
 |---|---|---|
@@ -85,7 +87,7 @@ Florence-X's own runtime uses when it fills a bundle.
 | `payload_sha256` | `context_hash` | `sha256:<hex>`: the content the action acted on, never the content itself |
 | the action's `EDENADecision` | `edena_decisions` | exactly one, the same dict `to_edena_decision` returns |
 | `approvals` row | `human_reviews` | one `approve` review by `nurse_manager`, reviewer `human:workspace-owner:<workspace>`; the approver must be the owner |
-| latest `receipts` row | `tool_calls` | one `ToolCallRecord` once an effect was attempted: `tool_id` is the effect; `executed` only when it succeeded; `output_hash` is the exported file's sha256, also when an interrupted export is confirmed after a restart (for a confirmation recorded by an earlier release without the digest, the digest of the approved content it was confirmed against); `error` is the exception type or `effect_unknown`, never the message (it can hold a path, and so a user name) |
+| latest `receipts` row (or the `execute` event) | `tool_calls` | one `ToolCallRecord` once an effect was attempted (started but not yet receipted: `executed: false`, no hash, no error): `tool_id` is the effect; `executed` only when it succeeded; `output_hash` is the exported file's sha256, also when an interrupted export is confirmed after a restart (for a confirmation recorded by an earlier release without the digest, the digest of the approved content it was confirmed against); `error` is the exception type or `effect_unknown`, never the message (it can hold a path, and so a user name) |
 | `actions.status` | `final_action` | denied → `blocked:deny`; awaiting approval → `awaiting_human_review`; approved → `awaiting_execution`; succeeded → the action type (`write_record`); failed → `failed:<type>`; effect unknown → `effect_unknown:<type>`; stale → `blocked:stale_approval` |
 | `actions.status` | `incident_flags` | `edena_deny:<action>`, `stale_approval:<action>`, or `effect_unknown:<action>` |
 | policy vs. what ran | `deviations_from_edena` | an effect after a denial, or without a required approval; never expected, reported if it happens |

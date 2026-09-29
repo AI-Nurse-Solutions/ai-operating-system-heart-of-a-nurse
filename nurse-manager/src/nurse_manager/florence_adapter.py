@@ -166,7 +166,15 @@ def _events(boundary: ActionBoundary, action_id: str) -> list[Any]:
 
 def to_evidence_bundle(boundary: ActionBoundary, action_id: str) -> dict[str, Any]:
     """The Florence-X ``EvidenceBundle`` for one action: its decision, the
-    manager's approval, what ran and with what outcome, and when."""
+    manager's approval, what ran and with what outcome, and when.
+
+    Everything is read from one snapshot, so an action finishing elsewhere
+    while this runs cannot give a bundle that contradicts itself."""
+    with boundary.ws.store.snapshot():
+        return _evidence_bundle(boundary, action_id)
+
+
+def _evidence_bundle(boundary: ActionBoundary, action_id: str) -> dict[str, Any]:
     action = boundary.get(action_id)
     if action.effect not in _EFFECTS:
         raise AdapterError(f"no Florence-X action type is defined for effect '{action.effect}'")
@@ -200,6 +208,11 @@ def to_evidence_bundle(boundary: ActionBoundary, action_id: str) -> dict[str, An
     events = _events(boundary, action.id)
     executed_at = next((e["at"] for e in events if e["kind"] == "execute"), None)
     tool_calls, flags, deviations = [], [], []
+    if receipt is None and executed_at is not None:
+        # Started, with no receipt yet: running now, or interrupted before it
+        # could record one. Attempted, and not known to have completed.
+        tool_calls.append({"tool_id": action.effect, "action_id": action.id, "proposed": True,
+                           "executed": False, "output_hash": None, "error": None})
     if receipt is not None:
         found = _OUTPUT_SHA.search(receipt["detail"])
         output = found.group(1) if found else None
@@ -221,6 +234,8 @@ def to_evidence_bundle(boundary: ActionBoundary, action_id: str) -> dict[str, An
             (receipt["outcome"] if receipt["outcome"] == "effect_unknown"
              else receipt["detail"].split(":", 1)[0]),
         })
+
+    if tool_calls:
         if action.policy_decision == "deny":
             deviations.append("an effect ran although the policy denied it")
         if action.policy_decision == "require_approval" and approval is None:
@@ -277,7 +292,10 @@ def to_evidence_bundle(boundary: ActionBoundary, action_id: str) -> dict[str, An
 
 
 def evidence_bundles(boundary: ActionBoundary) -> list[dict[str, Any]]:
-    """Evidence for every action in the workspace whose effect Florence-X can name."""
-    return [to_evidence_bundle(boundary, row["id"]) for row in boundary.ws.store.conn.execute(
-        "SELECT id, effect FROM actions WHERE workspace_id = ? ORDER BY created_at, id",
-        (boundary.ws.info.id,)) if row["effect"] in _EFFECTS]
+    """Evidence for every action in the workspace whose effect Florence-X can name,
+    all as of one moment."""
+    with boundary.ws.store.snapshot():
+        return [to_evidence_bundle(boundary, row["id"]) for row in list(
+            boundary.ws.store.conn.execute(
+                "SELECT id, effect FROM actions WHERE workspace_id = ? ORDER BY created_at, id",
+                (boundary.ws.info.id,))) if row["effect"] in _EFFECTS]

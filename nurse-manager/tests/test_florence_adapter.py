@@ -11,6 +11,7 @@ pinned schemas must match the upstream checkout byte-for-byte.
 import hashlib
 import json
 import os
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -260,6 +261,12 @@ class EvidenceTests(_Case):
         self.boundary.reconcile()
         out["effect_unknown"] = lost
         out["recovered"] = recovered
+        running = propose("export_markdown", revision_id=rid, destination="running.md",
+                          purpose="Save it", proposed_by=OWNER)
+        approve(running)
+        with self.ws.store.transaction():  # started; no receipt yet (running, or crashed)
+            self.boundary._set_status(running.id, "executing", OWNER, "execute")
+        out["executing"] = running
         return {label: self.boundary.get(a.id) for label, a in out.items()}
 
     def assertShape(self, bundle):
@@ -349,11 +356,50 @@ class EvidenceTests(_Case):
         (call,) = get("recovered")["tool_calls"]
         self.assertEqual(call["output_hash"], f"sha256:{on_disk}")
 
+        running = get("executing")  # an attempted effect is evidence before its receipt
+        (call,) = running["tool_calls"]
+        self.assertEqual((call["tool_id"], call["executed"], call["output_hash"], call["error"]),
+                         ("export_markdown", False, None, None))
+        self.assertEqual((running["final_action"], running["completed_at"]), ("executing", None))
+        self.assertIsNotNone(running["executed_at"])
+        self.assertEqual(running["deviations_from_edena"], [])
+
         lost = get("effect_unknown")
         (call,) = lost["tool_calls"]
         self.assertEqual((call["executed"], call["error"]), (False, "effect_unknown"))
         self.assertEqual((lost["final_action"], lost["incident_flags"]),
                          ("effect_unknown:write_record", [f"effect_unknown:{acts['effect_unknown'].id}"]))
+
+    def test_a_bundle_is_read_from_one_snapshot(self):
+        """Another connection finishing the action while its bundle is built
+        cannot make the bundle contradict itself."""
+        action = self.lifecycle()["approved"]
+        other = sqlite3.connect(str(self.ws.store.path), timeout=0, isolation_level=None)
+        self.addCleanup(other.close)
+        real_get, tried = self.boundary.get, []
+
+        def get_then_finish_elsewhere(action_id):
+            record = real_get(action_id)
+            if tried:
+                return record
+            tried.append(action_id)
+            try:
+                other.execute("BEGIN IMMEDIATE")
+                other.execute("INSERT INTO receipts (id, action_id, outcome, detail, recorded_at)"
+                              " VALUES ('rcp-elsewhere', ?, 'succeeded', 'wrote it', ?)",
+                              (action_id, "2099-01-01T00:00:00+00:00"))
+                other.execute("UPDATE actions SET status = 'succeeded' WHERE id = ?", (action_id,))
+                other.execute("COMMIT")
+            except sqlite3.OperationalError:  # held off until the bundle is read
+                if other.in_transaction:
+                    other.execute("ROLLBACK")
+            return record
+
+        self.boundary.get = get_then_finish_elsewhere
+        bundle = to_evidence_bundle(self.boundary, action.id)
+        self.assertEqual(tried, [action.id])
+        self.assertEqual(bundle["final_action"], "awaiting_execution")
+        self.assertEqual((bundle["tool_calls"], bundle["completed_at"]), ([], None))
 
     def test_no_names_paths_or_content_cross_the_boundary(self):
         blob = json.dumps(evidence_bundles(self.boundary) + [

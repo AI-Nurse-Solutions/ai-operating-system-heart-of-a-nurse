@@ -339,6 +339,15 @@ class EvidenceTests(_Case):
             " approved content' WHERE action_id = ?", (acts["recovered"].id,))
         (call,) = get("recovered")["tool_calls"]
         self.assertEqual((call["executed"], call["output_hash"]), (True, f"sha256:{on_disk}"))
+        # ...also after a newer revision is accepted and this one is superseded,
+        # which changes how it renders today but not what was exported.
+        briefs = self.boundary.briefs
+        newer = briefs.revise(self.accepted.artifact_id,
+                              self.accepted.body_markdown + "\nA later edit.\n", OWNER)
+        briefs.accept(newer.id, OWNER, newer.body_sha256)
+        self.assertEqual(briefs.revision(self.accepted.id).status, "superseded")
+        (call,) = get("recovered")["tool_calls"]
+        self.assertEqual(call["output_hash"], f"sha256:{on_disk}")
 
         lost = get("effect_unknown")
         (call,) = lost["tool_calls"]

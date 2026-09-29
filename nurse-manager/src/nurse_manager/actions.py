@@ -26,7 +26,7 @@ import hashlib
 import json
 import os
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable
 
@@ -331,10 +331,17 @@ class ActionBoundary:
 
     def approved_export_sha256(self, action: ActionRecord) -> str:
         """The sha256 of the export the manager approved: what reconcile()
-        requires the file on disk to match before calling it a success."""
-        return hashlib.sha256(
-            self.briefs.render(self.briefs.revision(action.artifact_revision_id)).encode("utf-8")
-        ).hexdigest()
+        requires the file on disk to match before calling it a success.
+
+        An export is of an accepted revision (the policy requires it, and the
+        recheck at execution sees it), so this is its rendering as accepted.
+        Accepting a later revision supersedes this one and changes its banner
+        today, but not the bytes that were written then.
+        """
+        revision = self.briefs.revision(action.artifact_revision_id)
+        if revision.status == "superseded" and revision.accepted_at is not None:
+            revision = replace(revision, status="accepted")
+        return hashlib.sha256(self.briefs.render(revision).encode("utf-8")).hexdigest()
 
     def _recheck(self, action: ActionRecord) -> str:
         approval = self.ws.store.conn.execute(

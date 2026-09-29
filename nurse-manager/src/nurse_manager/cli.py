@@ -19,6 +19,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from . import update
 from .actions import ActionBoundary
 from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
@@ -241,6 +242,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--by", required=True)
     p.add_argument("--reviewed-sha", help="sha256 of the preview you reviewed; refuses if it changed")
 
+    # Not a workspace command: it checks this installation's release.
+    p = sub.add_parser("update-check", help="check the signed update feed (never installs)")
+    p.add_argument("--feed", type=Path, help="a feed file you were given, instead of the feed address")
+    p.add_argument("--signature", type=Path, help="that feed's signature file")
+    # Deliberately no way to choose the pinned keys, the record of feeds seen,
+    # or today's date: each would let the caller undo a trust check.
+
     return parser
 
 
@@ -258,6 +266,8 @@ def _dispatch(args: argparse.Namespace) -> Any:
         value = getattr(args, name, None)
         if value is not None:
             setattr(args, name, _iso_date(value, f"--{name}"))
+    if args.command == "update-check":
+        return update.check(feed_file=args.feed, signature_file=args.signature)
     if args.command == "sample":
         ws, data = load_sample(args.workspace)
         try:

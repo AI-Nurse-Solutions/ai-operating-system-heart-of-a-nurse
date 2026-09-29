@@ -818,6 +818,36 @@ export interface TaskCounts {
 
 export type TaskStatus = "idea" | "ready" | "in_progress" | "needs_judgment" | "completed";
 
+/** One download a signed feed names. Check the file against its sha256 before installing. */
+export interface UpdateArtifact {
+  /** @pattern ^[a-z0-9][a-z0-9-]{1,31}$ */
+  readonly platform: string;
+  /** @pattern ^https:// */
+  readonly url: string;
+  readonly sha256: Sha256;
+}
+
+/** The answer to checking for updates. Advisory only: nothing is downloaded or installed. not_configured means no update key is pinned, so no feed is trusted. */
+export interface UpdateCheck {
+  readonly current_version: string;
+  readonly status: "not_configured" | "current" | "update_available";
+  readonly reason: string;
+  readonly latest: UpdateRelease | null;
+  readonly sequence: number | null;
+  readonly key_id: Sha256 | null;
+}
+
+/** A release newer than this one, from a feed whose signature verified. */
+export interface UpdateRelease {
+  /** @pattern ^[0-9]+\.[0-9]+\.[0-9]+$ */
+  readonly version: string;
+  /** The workspace schema it upgrades to; empty if the feed does not say. */
+  readonly schema: string;
+  readonly notes: string;
+  /** @minItems 1 */
+  readonly artifacts: readonly UpdateArtifact[];
+}
+
 /** One week's brief: the newest revision, rendered with its status banner, and the accepted revision if there is one. */
 export interface WeeklyBrief {
   readonly week_of: IsoDate;
@@ -851,6 +881,7 @@ export interface CommandData {
   readonly run: Receipt;
   readonly backup: BackupResult;
   readonly restore: RestoreResult;
+  readonly "update-check": UpdateCheck;
   readonly assistant: AssistantStatus;
   readonly "assistant-local": AssistantStatus;
   readonly "assistant-off": AssistantStatus;

@@ -18,12 +18,13 @@ import threading
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from unittest import mock
 
 SRC = Path(__file__).resolve().parents[1] / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from nurse_manager import cli  # noqa: E402
+from nurse_manager import cli, update  # noqa: E402
 
 OWNER = "Sample Manager"
 WEEK, TODAY = "2026-09-28", "2026-09-30"
@@ -209,6 +210,20 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("error-accept", "accept", ws, "--revision", draft["id"], "--reviewer", "Someone Else",
          "--sha", draft["sha256"])
     keep("error-restore-missing", "restore", ws, workdir / "missing.sqlite")
+    # The update check (step 6.2), from signed test feeds and a throwaway key. The
+    # command offers no way to choose its keys or state, so they are set here.
+    feeds, state = SRC.parent / "tests" / "fixtures" / "update", workdir / "update-state.sqlite"
+    with mock.patch.object(update, "state_path", return_value=state):
+        keep("update-check-not-configured", "update-check")
+        with mock.patch.object(update, "config_path", return_value=feeds / "config.json"):
+            keep("update-check-available", "update-check", "--feed", feeds / "feed-seq5.json",
+                 "--signature", feeds / "feed-seq5.json.sig")
+            keep("update-check-current", "update-check", "--feed", feeds / "feed-current.json",
+                 "--signature", feeds / "feed-current.json.sig")
+            keep("error-update-check-replayed", "update-check", "--feed",
+                 feeds / "feed-seq4.json", "--signature", feeds / "feed-seq4.json.sig")
+            keep("error-update-check-no-signature", "update-check", "--feed",
+                 feeds / "feed-seq5.json")
 
     # Bounded assistance (ADR 0004): no model by default, then a local model.
     keep("assistant", "assistant", ws)

@@ -170,6 +170,10 @@ class Store:
                                      " Close other copies of the app and try again.") from None
 
     def _migrate_once(self) -> None:
+        # Taken before anything is read, so a commit by another copy of the app
+        # at any point after this (even between the read below and the copy) is
+        # caught by the check each step makes.
+        seen = self._data_version()  # this connection's own commits leave it as is
         applied = {
             row["version"]
             for row in self.conn.execute("SELECT version FROM schema_migrations")
@@ -186,7 +190,6 @@ class Store:
         backup: Path | None = None
         guarded = bool(applied and pending)
         if guarded:
-            seen = self._data_version()  # this connection's own commits leave it as is
             backup = self._pre_migration_backup(max(applied), pending[-1])
         progressed = False
         for version, sql in _migrations():

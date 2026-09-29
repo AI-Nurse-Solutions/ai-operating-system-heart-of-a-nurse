@@ -53,7 +53,8 @@ def sign(feed: Path, private_key: Path, channel: str) -> Path:
         raise UpdateError(f"{feed.name} is too large (the app takes at most {MAX_FEED_BYTES}"
                           " bytes); nothing was signed")
     parsed = _parse_feed(json.loads(data.decode("utf-8")), channel)
-    if parsed["expires"] <= date.today():
+    # The app accepts a feed through its expiry date, so it can be signed that day too.
+    if parsed["expires"] < date.today():
         raise UpdateError("this feed has already expired; set a later expiry date")
     sig = feed.with_name(feed.name + ".sig")
     # Signed into memory and written only once it verifies, so a failed run

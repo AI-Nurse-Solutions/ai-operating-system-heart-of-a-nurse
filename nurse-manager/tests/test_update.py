@@ -423,6 +423,13 @@ class SigningToolTests(_Tmp):
         self.assertEqual(r.returncode, 1)
         self.assertIn("too large", r.stderr)
         self.assertFalse((self.tmp / "huge.json.sig").exists())
+        # A feed is still good on its expiry date, so it can be signed that day.
+        last_day = json.loads((FEEDS / "feed-seq5.json").read_text())
+        last_day["expires"] = date.today().isoformat()
+        (self.tmp / "last-day.json").write_text(json.dumps(last_day))
+        r = subprocess.run([sys.executable, tool, self.tmp / "last-day.json", "--key", key],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
         expired = self.tmp / "old.json"
         expired.write_bytes((FEEDS / "feed-expired.json").read_bytes())
         r = subprocess.run([sys.executable, tool, expired, "--key", key], capture_output=True, text=True)
@@ -539,6 +546,36 @@ class UpgradeTests(unittest.TestCase):
             self.assertEqual(old.execute("SELECT max(version) FROM schema_migrations").fetchone()[0],
                              self.previous, backup.name)
         self.assertEqual(self.backups(), [])
+
+    def test_an_upgrade_by_another_copy_just_after_the_read_is_not_backed_up_as_before(self):
+        """Another copy of the app may apply the pending step between this copy's
+        read of what is applied and its guard; the copy taken then already holds
+        the new schema and must not be kept as a pre-migration backup."""
+        _old_workspace(self.path, self.latest)
+        real_data_version, upgraded = Store._data_version, []
+
+        def another_copy_upgrades_first(store):
+            if not upgraded:
+                other = sqlite3.connect(str(self.path), isolation_level=None)
+                sql = dict(store_module._migrations())[self.latest]
+                other.execute("BEGIN IMMEDIATE")
+                for statement in _split_sql(sql):
+                    other.execute(statement)
+                other.execute("INSERT INTO schema_migrations VALUES (?, 'elsewhere')", (self.latest,))
+                other.execute("COMMIT")
+                other.close()
+                upgraded.append(1)
+            return real_data_version(store)
+
+        with mock.patch.object(Store, "_data_version", another_copy_upgrades_first):
+            store = Store(self.path)
+        self.addCleanup(store.close)
+        self.assertEqual(store.schema_version, self.latest)
+        for backup in self.backups():
+            old = sqlite3.connect(str(backup))
+            self.addCleanup(old.close)
+            self.assertEqual(old.execute("SELECT max(version) FROM schema_migrations").fetchone()[0],
+                             self.previous, backup.name)
 
     def test_a_record_written_between_steps_is_backed_up_before_the_next_step(self):
         """Each step releases the write lock when it commits. A record another copy

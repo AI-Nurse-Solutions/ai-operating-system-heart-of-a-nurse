@@ -112,6 +112,10 @@ _BACKUP_ATTEMPTS = 3
 class _StaleBackup(Exception):
     """Another copy of the app wrote after the pre-upgrade copy was taken."""
 
+    def __init__(self, progressed: bool):
+        super().__init__()
+        self.progressed = progressed  # whether a step had committed from that copy
+
 
 # Errors that say the step could not run here and now, not that it is wrong.
 _ENVIRONMENTAL = ("SQLITE_BUSY", "SQLITE_LOCKED", "SQLITE_FULL", "SQLITE_IOERR",
@@ -146,19 +150,24 @@ class Store:
         )
         # An existing workspace is copied before it is upgraded (build step 6.2):
         # records are never migrated without a way back to exactly what they were.
-        # The copy is taken just before the first step's write lock; if another
-        # copy of the app commits in between, it is discarded and everything is
-        # read again, so the copy always holds exactly what the upgrade starts
-        # from, and is not taken at all if that commit was the upgrade itself.
-        for _attempt in range(_BACKUP_ATTEMPTS):
+        # Each step takes the write lock and releases it when it commits, so
+        # every step first checks that no other copy of the app has committed
+        # since the latest copy was taken. If one has, everything is read again
+        # and a fresh copy is taken before the next step: every record a step
+        # transforms is in a copy as it was before that step. Copies of steps
+        # already committed are kept; one no step ran from is discarded (and none
+        # is taken if what the other copy committed was the upgrade itself).
+        stale = 0
+        while True:
             try:
                 self._migrate_once()
                 return
-            except _StaleBackup:
-                continue
-        raise StoreError("this workspace kept changing while it was being copied"
-                         " before its upgrade; nothing was changed. Close other copies"
-                         " of the app and try again.")
+            except _StaleBackup as exc:
+                stale = 0 if exc.progressed else stale + 1
+                if stale >= _BACKUP_ATTEMPTS:
+                    raise StoreError("this workspace kept changing while it was being"
+                                     " copied before its upgrade; nothing more was changed."
+                                     " Close other copies of the app and try again.") from None
 
     def _migrate_once(self) -> None:
         applied = {
@@ -175,18 +184,18 @@ class Store:
             )
         pending = [version for version in known if version not in applied]
         backup: Path | None = None
-        unverified = bool(applied and pending)
-        if unverified:
-            seen = self._data_version()
+        guarded = bool(applied and pending)
+        if guarded:
+            seen = self._data_version()  # this connection's own commits leave it as is
             backup = self._pre_migration_backup(max(applied), pending[-1])
+        progressed = False
         for version, sql in _migrations():
             if version in applied:
                 continue
             try:
                 with self.transaction():
-                    if unverified and self._data_version() != seen:
-                        raise _StaleBackup
-                    unverified = False
+                    if guarded and self._data_version() != seen:
+                        raise _StaleBackup(progressed)
                     # Checked again inside the write lock: another process opening
                     # the same workspace (the app's scheduler during onboarding, say)
                     # may have applied it since the read above.
@@ -198,8 +207,10 @@ class Store:
                         self.conn.execute(
                             "INSERT INTO schema_migrations (version, applied_at)"
                             " VALUES (?, ?)", (version, self.clock()))
+                progressed = True
             except _StaleBackup:
-                backup.unlink(missing_ok=True)
+                if not progressed:
+                    backup.unlink(missing_ok=True)  # no step ran from it
                 raise
             except sqlite3.Error as exc:
                 if _environmental(exc):

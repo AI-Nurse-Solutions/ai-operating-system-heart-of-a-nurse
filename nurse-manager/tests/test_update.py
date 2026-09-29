@@ -8,6 +8,7 @@ workspace makes a backup first, and a failed step is repaired forward.
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -516,6 +517,40 @@ class UpgradeTests(unittest.TestCase):
             self.assertEqual(old.execute("SELECT max(version) FROM schema_migrations").fetchone()[0],
                              self.previous, backup.name)
         self.assertEqual(self.backups(), [])
+
+    def test_a_record_written_between_steps_is_backed_up_before_the_next_step(self):
+        """Each step releases the write lock when it commits. A record another copy
+        of the app writes in between must be in a backup before a later step
+        transforms it."""
+        steps = store_module._migrations()
+        _old_workspace(self.path, steps[-3][0])
+        real_transaction, done = Store.transaction, []
+
+        @contextlib.contextmanager
+        def another_copy_writes_after_the_first_step(store):
+            with real_transaction(store) as conn:
+                yield conn
+            if store.path == self.path and not done:
+                other = sqlite3.connect(str(self.path), isolation_level=None)
+                other.execute("INSERT INTO workspaces (id, name, profile, owner, sample, created_at)"
+                              " VALUES ('ws-000000000002', 'Between', 'personal_manager', 'M', 0,"
+                              " '2026-09-01T09:00:00+00:00')")
+                other.close()
+                done.append(1)
+
+        with mock.patch.object(Store, "transaction", another_copy_writes_after_the_first_step):
+            store = Store(self.path)
+        self.addCleanup(store.close)
+        self.assertEqual(store.schema_version, self.latest)
+        held = {}
+        for backup in self.backups():
+            old = sqlite3.connect(str(backup))
+            self.addCleanup(old.close)
+            version = old.execute("SELECT max(version) FROM schema_migrations").fetchone()[0]
+            held[version] = {r[0] for r in old.execute("SELECT id FROM workspaces")}
+        self.assertEqual(held[steps[-4][0]], {"ws-000000000001"})
+        # The record written after the first step is kept as it was before the next one.
+        self.assertIn("ws-000000000002", held.get(steps[-3][0], set()), held)
 
     def test_a_backup_that_fails_partway_leaves_no_partial_copy(self):
         _old_workspace(self.path, self.latest)

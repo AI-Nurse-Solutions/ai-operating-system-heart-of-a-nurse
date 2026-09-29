@@ -228,13 +228,16 @@ def _parse_feed(feed: dict[str, Any], channel: str) -> dict[str, Any]:
     issued, expires = _date(feed.get("issued"), "issue date"), _date(feed.get("expires"), "expiry date")
     if expires <= issued:
         raise UpdateError("the feed expires before it was issued")
+    items = feed.get("releases", [])
+    if not isinstance(items, list):
+        raise UpdateError("the feed's releases are not a list")
     releases = []
-    for item in feed.get("releases") or []:
+    for item in items:
         if not isinstance(item, dict):
             raise UpdateError("a release entry is not an object")
         version = _version(item.get("version"))
-        artifacts = item.get("artifacts") or []
-        if not artifacts:
+        artifacts = item.get("artifacts")
+        if not isinstance(artifacts, list) or not artifacts:
             raise UpdateError(f"release {item.get('version')} lists no downloads")
         for art in artifacts:
             fields = [art.get(k) for k in ("platform", "sha256", "url")] \

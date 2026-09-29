@@ -315,6 +315,20 @@ class FeedTests(_Tmp):
                 with self.assertRaisesRegex(UpdateError, "download"):
                     update._parse_feed(broken, "pilot")
 
+    def test_the_releases_and_downloads_must_be_lists(self):
+        """A scalar where a list belongs is a refusal, never a crash."""
+        feed = json.loads((FEEDS / "feed-seq5.json").read_text())
+        for where, value in (("releases", 1), ("releases", True), ("releases", "0.2.0"),
+                             ("artifacts", 1), ("artifacts", {"platform": "macos"})):
+            with self.subTest(where=where, value=value):
+                broken = json.loads(json.dumps(feed))
+                if where == "releases":
+                    broken["releases"] = value
+                else:
+                    broken["releases"][1]["artifacts"] = value
+                with self.assertRaises(UpdateError):
+                    update._parse_feed(broken, "pilot")
+
     def test_a_sequence_beyond_what_the_record_can_hold_is_refused(self):
         """SQLite keeps a signed 64-bit integer; a larger sequence would pass
         the signing tool and then crash every client's check."""
@@ -470,6 +484,38 @@ class UpgradeTests(unittest.TestCase):
         old = sqlite3.connect(str(backup))
         self.addCleanup(old.close)
         self.assertEqual(old.execute("SELECT count(*) FROM workspaces").fetchone()[0], 2)
+
+    def test_no_backup_is_labelled_pre_migration_after_another_copy_upgraded(self):
+        """If the commit that makes the first backup stale is the upgrade itself
+        (another copy of the app ran it), the next copy would already hold the
+        new schema: it must not be kept as a pre-migration backup."""
+        _old_workspace(self.path, self.latest)
+        real_backup, upgraded = Store._pre_migration_backup, []
+
+        def backup_then_another_copy_upgrades(store, current, target):
+            dest = real_backup(store, current, target)
+            if not upgraded:
+                other = sqlite3.connect(str(self.path), isolation_level=None)
+                sql = dict(store_module._migrations())[self.latest]
+                other.execute("BEGIN IMMEDIATE")
+                for statement in _split_sql(sql):
+                    other.execute(statement)
+                other.execute("INSERT INTO schema_migrations VALUES (?, 'elsewhere')", (self.latest,))
+                other.execute("COMMIT")
+                other.close()
+                upgraded.append(1)
+            return dest
+
+        with mock.patch.object(Store, "_pre_migration_backup", backup_then_another_copy_upgrades):
+            store = Store(self.path)
+        self.addCleanup(store.close)
+        self.assertEqual(store.schema_version, self.latest)
+        for backup in self.backups():
+            old = sqlite3.connect(str(backup))
+            self.addCleanup(old.close)
+            self.assertEqual(old.execute("SELECT max(version) FROM schema_migrations").fetchone()[0],
+                             self.previous, backup.name)
+        self.assertEqual(self.backups(), [])
 
     def test_a_backup_that_fails_partway_leaves_no_partial_copy(self):
         _old_workspace(self.path, self.latest)

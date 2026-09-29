@@ -144,6 +144,23 @@ class Store:
             "CREATE TABLE IF NOT EXISTS schema_migrations"
             " (version TEXT PRIMARY KEY, applied_at TEXT NOT NULL)"
         )
+        # An existing workspace is copied before it is upgraded (build step 6.2):
+        # records are never migrated without a way back to exactly what they were.
+        # The copy is taken just before the first step's write lock; if another
+        # copy of the app commits in between, it is discarded and everything is
+        # read again, so the copy always holds exactly what the upgrade starts
+        # from, and is not taken at all if that commit was the upgrade itself.
+        for _attempt in range(_BACKUP_ATTEMPTS):
+            try:
+                self._migrate_once()
+                return
+            except _StaleBackup:
+                continue
+        raise StoreError("this workspace kept changing while it was being copied"
+                         " before its upgrade; nothing was changed. Close other copies"
+                         " of the app and try again.")
+
+    def _migrate_once(self) -> None:
         applied = {
             row["version"]
             for row in self.conn.execute("SELECT version FROM schema_migrations")
@@ -157,56 +174,44 @@ class Store:
                 "workspace was written by a newer schema: " + ", ".join(sorted(unknown))
             )
         pending = [version for version in known if version not in applied]
-        # An existing workspace is copied before it is upgraded (build step 6.2):
-        # records are never migrated without a way back to exactly what they were.
-        # The copy is taken just before the first step's write lock; if another
-        # copy of the app commits in between, it is taken again, so it always
-        # holds everything the upgrade starts from.
         backup: Path | None = None
         unverified = bool(applied and pending)
-        seen = 0
+        if unverified:
+            seen = self._data_version()
+            backup = self._pre_migration_backup(max(applied), pending[-1])
         for version, sql in _migrations():
             if version in applied:
                 continue
-            for _attempt in range(_BACKUP_ATTEMPTS):
-                if unverified and backup is None:
-                    seen = self._data_version()
-                    backup = self._pre_migration_backup(max(applied), pending[-1])
-                try:
-                    with self.transaction():
-                        if unverified and self._data_version() != seen:
-                            raise _StaleBackup
-                        unverified = False
-                        # Checked again inside the write lock: another process opening
-                        # the same workspace (the app's scheduler during onboarding, say)
-                        # may have applied it since the read above.
-                        if not self.conn.execute(
-                                "SELECT 1 FROM schema_migrations WHERE version = ?",
-                                (version,)).fetchone():
-                            for statement in _split_sql(sql):
-                                self.conn.execute(statement)
-                            self.conn.execute(
-                                "INSERT INTO schema_migrations (version, applied_at)"
-                                " VALUES (?, ?)", (version, self.clock()))
-                    break
-                except _StaleBackup:
-                    backup.unlink(missing_ok=True)
-                    backup = None
-                except sqlite3.Error as exc:
-                    if _environmental(exc):
-                        # Busy, full, or unwritable: nothing is wrong with the step,
-                        # and nothing of it was kept. Trying again is the remedy.
-                        raise UpgradeInterrupted(version, self.schema_version, backup,
-                                                 exc) from exc
-                    # Forward repair: each step is its own transaction, so the
-                    # workspace stays at the last step that finished, intact. It is
-                    # never downgraded; a release with a corrected step continues
-                    # from here, and the backup holds the records as they were.
-                    raise MigrationFailed(version, self.schema_version, backup, exc) from exc
-            else:
-                raise StoreError("this workspace kept changing while it was being copied"
-                                 " before its upgrade; nothing was changed. Close other copies"
-                                 " of the app and try again.")
+            try:
+                with self.transaction():
+                    if unverified and self._data_version() != seen:
+                        raise _StaleBackup
+                    unverified = False
+                    # Checked again inside the write lock: another process opening
+                    # the same workspace (the app's scheduler during onboarding, say)
+                    # may have applied it since the read above.
+                    if not self.conn.execute(
+                            "SELECT 1 FROM schema_migrations WHERE version = ?",
+                            (version,)).fetchone():
+                        for statement in _split_sql(sql):
+                            self.conn.execute(statement)
+                        self.conn.execute(
+                            "INSERT INTO schema_migrations (version, applied_at)"
+                            " VALUES (?, ?)", (version, self.clock()))
+            except _StaleBackup:
+                backup.unlink(missing_ok=True)
+                raise
+            except sqlite3.Error as exc:
+                if _environmental(exc):
+                    # Busy, full, or unwritable: nothing is wrong with the step,
+                    # and nothing of it was kept. Trying again is the remedy.
+                    raise UpgradeInterrupted(version, self.schema_version, backup,
+                                             exc) from exc
+                # Forward repair: each step is its own transaction, so the
+                # workspace stays at the last step that finished, intact. It is
+                # never downgraded; a release with a corrected step continues
+                # from here, and the backup holds the records as they were.
+                raise MigrationFailed(version, self.schema_version, backup, exc) from exc
 
     def _data_version(self) -> int:
         """Changes only when another connection commits to this workspace."""

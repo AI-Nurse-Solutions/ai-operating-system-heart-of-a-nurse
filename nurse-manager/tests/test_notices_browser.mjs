@@ -47,6 +47,8 @@ const { pages, clauses } = JSON.parse(load.stdout);
 assert.ok(pages.length >= 14, `expected the known Hermes pages, found ${pages.length}`);
 
 const MARKER = '[data-attribution="hermes-independence"]';
+// Same normalisation as primary_language() in test_notices.py: 'zh-Hans' -> 'zh'.
+const primaryLanguage = (tag) => (tag || '').trim().toLowerCase().split(/[-_]/)[0];
 // Pixels per character of a required phrase that must stand out 3:1 from what
 // is behind them. 14px text paints well over 20 per character; transparent or
 // background-coloured text paints none, and 1px text almost none.
@@ -197,6 +199,8 @@ try {
   const note = `<p data-attribution="hermes-independence">${words}</p>`;
   const onDark = 'body { background: linear-gradient(160deg, #0e1f33, #1d3b5c); color: #e8eef4 }';
   await page.setViewportSize(VIEWPORTS[1]);
+  check('page language comes from the <html lang> subtag',
+    primaryLanguage('zh-Hans') === 'zh' && primaryLanguage(' ES_mx ') === 'es' && primaryLanguage('') === '');
   check('a plain note is seen', await count(`<main>${note}</main>`) === 1);
   check('a light note on a dark gradient is seen', await count(`<style>${onDark}</style>${note}`) === 1);
   check('a note further down the page is seen', await count(`<div style="height:3000px"></div>${note}`) === 1);
@@ -241,8 +245,12 @@ try {
     await page.setViewportSize(viewport);
     for (const rel of pages) {
       await page.goto(pathToFileURL(join(repo, rel)).href, { waitUntil: 'load' });
-      const first = rel.split('/')[0];
-      const lang = rel.includes('/') && first in clauses ? first : 'en';
+      // The language is the document's own <html lang>, not the directory it sits in.
+      const lang = primaryLanguage(await page.evaluate(() => document.documentElement.lang));
+      if (!(lang in clauses)) {
+        check(`${viewport.name} ${rel}: <html lang> names a language with a clause`, false, lang);
+        continue;
+      }
       const notes = await readableNotes(page, ['Nous Research', 'Nurse AI OS', clauses[lang]]);
       const ok = notes.length === 1 && notes[0].includes('Nous Research')
         && notes[0].includes('Nurse AI OS') && notes[0].includes(clauses[lang]);

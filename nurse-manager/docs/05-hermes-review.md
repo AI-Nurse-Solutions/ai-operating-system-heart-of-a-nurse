@@ -208,7 +208,8 @@ Research and Nurse AI OS, with no exceptions.
 reader sees. It renders each of those pages in Chromium with the site's own
 stylesheets and scripts. It requires exactly one note that the browser
 computes as visible and legible, whose rendered text carries the page
-language's non-endorsement clause. `.github/workflows/hermes-notices.yml` runs both
+language's non-endorsement clause, taking the language from the page's own
+`<html lang>` rather than its folder. `.github/workflows/hermes-notices.yml` runs both
 tests whenever any HTML, CSS or JavaScript file changes. A page of any name
 becomes guarded once its title names Hermes, and a stylesheet or script
 could hide a note.

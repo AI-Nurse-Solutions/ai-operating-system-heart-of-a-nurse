@@ -118,6 +118,31 @@ def attribution_notes(html: str) -> list[str]:
     return parser.notes
 
 
+class _LangParser(HTMLParser):
+    """Reads the lang attribute of the first <html> start tag."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.lang = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "html" and self.lang is None:
+            self.lang = dict(attrs).get("lang") or ""
+
+
+def primary_language(tag: str) -> str:
+    """'zh-Hans' -> 'zh', ' ES_mx ' -> 'es'; '' when no language is declared."""
+    return re.split(r"[-_]", (tag or "").strip().lower(), maxsplit=1)[0]
+
+
+def page_language(html: str) -> str:
+    """Primary language subtag of the document's <html lang>, or '' if absent."""
+    parser = _LangParser()
+    parser.feed(html)
+    parser.close()
+    return primary_language(parser.lang or "")
+
+
 def page_title(html: str) -> str:
     parser = _TitleParser()
     parser.feed(html)
@@ -312,12 +337,21 @@ class HermesPageAttributionTests(unittest.TestCase):
                 self.assertIn("Nous Research", notes[0])
                 self.assertIn("Nurse AI OS", notes[0])
 
+    def test_page_language_comes_from_the_document(self):
+        self.assertEqual("zh", page_language('<!doctype html><html lang="zh-Hans"><body>'))
+        self.assertEqual("es", page_language("<HTML LANG=' ES_mx '><p>hola"))
+        self.assertEqual("", page_language("<html><body lang=\"fr\">"))
+        self.assertEqual("", page_language("<p>no html tag</p>"))
+        self.assertEqual("fr", page_language('<!-- <html lang="en"> --><html lang="fr">'))
+
     def test_note_says_nous_research_does_not_endorse_us(self):
         for page in hermes_pages():
             with self.subTest(page=page):
-                first = page.split("/", 1)[0]
-                lang = first if "/" in page and first in NON_ENDORSEMENT_CLAUSE else "en"
-                notes = attribution_notes((REPO / page).read_text(encoding="utf-8"))
+                html = (REPO / page).read_text(encoding="utf-8")
+                lang = page_language(html)
+                self.assertIn(lang, NON_ENDORSEMENT_CLAUSE,
+                              "declare <html lang> with a language that has a clause")
+                notes = attribution_notes(html)
                 self.assertEqual(1, len(notes))
                 self.assertIn(NON_ENDORSEMENT_CLAUSE[lang], notes[0])
 

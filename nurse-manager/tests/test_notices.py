@@ -35,7 +35,6 @@ NON_ENDORSEMENT_CLAUSE = {
     "zh": "也未获其认可",
 }
 SKIP_DIRS = {".git", "node_modules"}
-ATTRIBUTION_NOTE = re.compile(r'<p data-attribution="hermes-independence">(.*?)</p>', re.S)
 
 
 class _TitleParser(HTMLParser):
@@ -56,6 +55,56 @@ class _TitleParser(HTMLParser):
     def handle_data(self, data):
         if self.depth:
             self.parts.append(data)
+
+
+class _NoteParser(HTMLParser):
+    """Text of each rendered element marked as the Hermes independence note.
+
+    Comments never reach handle_data, and marked elements inside script,
+    style, template or noscript, or carrying `hidden`, are not collected,
+    so a note the browser does not show cannot satisfy the check.
+    """
+
+    NOT_RENDERED = {"script", "style", "template", "noscript"}
+    VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+            "link", "meta", "source", "track", "wbr"}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.notes, self.hidden_depth, self.depth, self.parts = [], 0, 0, []
+
+    def handle_starttag(self, tag, attrs):
+        if tag in self.VOID:
+            return
+        if tag in self.NOT_RENDERED:
+            self.hidden_depth += 1
+        if self.depth:
+            self.depth += 1
+            return
+        marked = dict(attrs).get("data-attribution") == "hermes-independence"
+        if marked and not self.hidden_depth and "hidden" not in dict(attrs):
+            self.depth, self.parts = 1, []
+
+    def handle_endtag(self, tag):
+        if tag in self.VOID:
+            return
+        if tag in self.NOT_RENDERED and self.hidden_depth:
+            self.hidden_depth -= 1
+        if self.depth:
+            self.depth -= 1
+            if not self.depth:
+                self.notes.append(" ".join("".join(self.parts).split()))
+
+    def handle_data(self, data):
+        if self.depth:
+            self.parts.append(data)
+
+
+def attribution_notes(html: str) -> list[str]:
+    parser = _NoteParser()
+    parser.feed(html)
+    parser.close()
+    return parser.notes
 
 
 def page_title(html: str) -> str:
@@ -202,6 +251,18 @@ class HermesPageAttributionTests(unittest.TestCase):
         self.assertEqual("Q&A — Hermes", page_title("<title data-x='1'>Q&amp;A &mdash; Hermes</title>"))
         self.assertEqual("", page_title("<p>Hermes</p>"))
 
+    def test_only_rendered_notes_count(self):
+        note = '<p data-attribution="hermes-independence"><small>Nous Research</small></p>'
+        self.assertEqual(["Nous Research"], attribution_notes(note))
+        self.assertEqual([], attribution_notes(f"<!-- {note} -->"))
+        self.assertEqual([], attribution_notes(f"<template>{note}</template>"))
+        self.assertEqual([], attribution_notes(f"<noscript>{note}</noscript>"))
+        self.assertEqual([], attribution_notes(note.replace("<p ", "<p hidden ")))
+        # A void element inside the note must not end or extend it early.
+        self.assertEqual(["ab", "c"], attribution_notes(
+            '<p class="x" data-attribution="hermes-independence">a<br>b</p>'
+            '<p data-attribution="hermes-independence">c</p>'))
+
     def test_discovery_finds_the_known_pages(self):
         pages = hermes_pages()
         for page in ("hermes-masterclass.html", "hermes-downloads/index.html",
@@ -215,7 +276,7 @@ class HermesPageAttributionTests(unittest.TestCase):
                 if page in EQUIVALENT_ATTRIBUTION:
                     self.assertIn(EQUIVALENT_ATTRIBUTION[page], text)
                     continue
-                notes = ATTRIBUTION_NOTE.findall(text)
+                notes = attribution_notes(text)
                 self.assertEqual(1, len(notes), f"expected one {ATTRIBUTION_MARKER} note")
                 self.assertIn("Nous Research", notes[0])
                 self.assertIn("Nurse AI OS", notes[0])
@@ -227,7 +288,7 @@ class HermesPageAttributionTests(unittest.TestCase):
             with self.subTest(page=page):
                 first = page.split("/", 1)[0]
                 lang = first if "/" in page and first in NON_ENDORSEMENT_CLAUSE else "en"
-                notes = ATTRIBUTION_NOTE.findall((REPO / page).read_text(encoding="utf-8"))
+                notes = attribution_notes((REPO / page).read_text(encoding="utf-8"))
                 self.assertEqual(1, len(notes))
                 self.assertIn(NON_ENDORSEMENT_CLAUSE[lang], notes[0])
 

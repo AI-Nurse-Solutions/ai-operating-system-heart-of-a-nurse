@@ -1,0 +1,38 @@
+name: Hermes notices and attribution
+
+# Runs nurse-manager/tests/test_notices.py whenever a file it guards could
+# change: the third-party notices, the review doc, or any HTML page, since a
+# page of any name becomes guarded once its <title> names Hermes (step 0.8).
+on:
+  pull_request:
+    paths:
+      - "**/*.html"
+      - "THIRD_PARTY_NOTICES.md"
+      - "nurse-manager/docs/05-hermes-review.md"
+      - "nurse-manager/tests/test_notices.py"
+      - ".github/workflows/hermes-notices.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.html"
+      - "THIRD_PARTY_NOTICES.md"
+      - "nurse-manager/docs/05-hermes-review.md"
+      - "nurse-manager/tests/test_notices.py"
+      - ".github/workflows/hermes-notices.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Check Hermes notices and page attribution
+        run: python3 -m unittest nurse-manager/tests/test_notices.py -v

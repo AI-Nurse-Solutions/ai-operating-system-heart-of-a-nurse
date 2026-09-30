@@ -128,14 +128,19 @@ class NoticeWorkflowTriggerTests(unittest.TestCase):
         self.assertFalse(_github_glob("*hermes*.html").match("fr/hermes.html"))
         self.assertTrue(_github_glob("**/cheat-sheet.html").match("cheat-sheet.html"))
         self.assertTrue(_github_glob("**/cheat-sheet.html").match("zh/cheat-sheet.html"))
+        self.assertTrue(_github_glob("**/*.html").match("setup-guide.html"))
+        self.assertTrue(_github_glob("**/*.html").match("a/b/page.html"))
 
-    def test_manager_workflow_triggers_on_guarded_files(self):
-        workflow = (REPO / ".github" / "workflows" / "nurse-manager.yml").read_text(encoding="utf-8")
-        guarded = {"THIRD_PARTY_NOTICES.md", *hermes_pages()}
+    def test_notice_workflow_triggers_on_guarded_and_future_pages(self):
+        workflow = (REPO / ".github" / "workflows" / "hermes-notices.yml").read_text(encoding="utf-8")
+        self.assertIn("nurse-manager/tests/test_notices.py", workflow)
+        # Any HTML page can become guarded by naming Hermes in its title, so
+        # the filter must cover pages of any name, not today's names only.
+        guarded = {"THIRD_PARTY_NOTICES.md", "nurse-manager/tests/test_notices.py",
+                   "setup-guide.html", "new-section/any-page.html", *hermes_pages()}
         for event in ("pull_request", "push"):
             with self.subTest(event=event):
                 patterns = [_github_glob(p) for p in _workflow_paths(workflow, event)]
-                self.assertTrue(any(p.match("nurse-manager/tests/test_notices.py") for p in patterns))
                 missed = sorted(f for f in guarded if not any(p.match(f) for p in patterns))
                 self.assertEqual([], missed)
 

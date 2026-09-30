@@ -9,13 +9,12 @@ on:
       - "naio-integrations/src/**"
       - "naio-integrations/config/**"
       - ".github/workflows/nurse-manager.yml"
-      # Files guarded by nurse-manager/tests/test_notices.py (step 0.8):
-      # the notices and every page whose title names Hermes.
+      # Files guarded by nurse-manager/tests/test_notices.py (step 0.8)
       - "THIRD_PARTY_NOTICES.md"
-      - "*hermes*.html"
-      - "hermes-downloads/**"
-      - "**/cheat-sheet.html"
-      - "when-things-go-wrong.html"
+      - "hermes-masterclass.html"
+      - "hermes-configuration-handbook.html"
+      - "remote-hermes-safely.html"
+      - "hermes-downloads/index.html"
   push:
     branches: [main]
     paths:
@@ -25,13 +24,12 @@ on:
       - "naio-integrations/src/**"
       - "naio-integrations/config/**"
       - ".github/workflows/nurse-manager.yml"
-      # Files guarded by nurse-manager/tests/test_notices.py (step 0.8):
-      # the notices and every page whose title names Hermes.
+      # Files guarded by nurse-manager/tests/test_notices.py (step 0.8)
       - "THIRD_PARTY_NOTICES.md"
-      - "*hermes*.html"
-      - "hermes-downloads/**"
-      - "**/cheat-sheet.html"
-      - "when-things-go-wrong.html"
+      - "hermes-masterclass.html"
+      - "hermes-configuration-handbook.html"
+      - "remote-hermes-safely.html"
+      - "hermes-downloads/index.html"
 
 permissions:
   contents: read

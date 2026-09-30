@@ -203,8 +203,10 @@ Every note now carries `data-attribution="hermes-independence"`.
 `nurse-manager/tests/test_notices.py` finds every page whose title
 names Hermes and requires exactly one such note mentioning Nous
 Research and Nurse AI OS. `hermes-downloads/index.html` is the one
-listed exception, for the reason above. `.github/workflows/nurse-manager.yml`
-runs that test when any of these pages changes.
+listed exception, for the reason above.
+`.github/workflows/hermes-notices.yml` runs that test whenever any HTML
+page changes, because a page of any name becomes guarded once its title
+names Hermes.
 
 **Listed for the owner, not edited.** These are hash-bound or owned by
 other areas.

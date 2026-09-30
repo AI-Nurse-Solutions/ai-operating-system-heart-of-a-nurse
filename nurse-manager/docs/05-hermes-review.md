@@ -206,7 +206,9 @@ names Hermes and requires exactly one such note mentioning Nous
 Research and Nurse AI OS, with no exceptions.
 `nurse-manager/tests/test_notices_browser.mjs` is the authority on what a
 reader sees. It renders each of those pages in Chromium with the site's own
-stylesheets and scripts. It requires exactly one note that the browser
+stylesheets and scripts, served over a local HTTP origin so root-relative
+links load the repo's files, and fast-forwards a minute of page timers so
+late scripts run first. It requires exactly one note that the browser
 computes as visible and legible, whose rendered text carries the page
 language's non-endorsement clause, taking the language from the page's own
 `<html lang>` rather than its folder. `.github/workflows/hermes-notices.yml` runs both

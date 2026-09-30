@@ -27,12 +27,22 @@
 // Each page is checked at a phone and a desktop viewport, so a responsive
 // rule cannot hide the note from phone readers only.
 //
-// Network requests other than file:// are blocked so the run is offline.
+// Pages are served from the checkout over a local HTTP origin, as the site is
+// deployed, so root-relative links such as /assets/site.css load the repo's
+// own files (a file: URL would look for them at the filesystem root). The
+// page clock is faked: after load the test fast-forwards SETTLE_MS of timers
+// and animation frames and waits for the network to go quiet, so a script
+// that hides the note later (a timer, deferred init, an async callback) runs
+// before the note is judged.
+//
+// Requests to any other origin are blocked so the run is offline.
 // CHROME_PATH=/path/to/chrome overrides the system Chrome channel (local runs).
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { fileURLToPath, pathToFileURL } from 'node:url';
-import { join } from 'node:path';
+import { readFile, stat } from 'node:fs/promises';
+import { createServer } from 'node:http';
+import { fileURLToPath } from 'node:url';
+import { extname, join, resolve, sep } from 'node:path';
 import { chromium } from 'playwright-core';
 
 const repo = fileURLToPath(new URL('../..', import.meta.url));
@@ -171,6 +181,46 @@ const VIEWPORTS = [
   { name: 'desktop', width: 1280, height: 800 },
 ];
 
+// Serves the checkout read-only, plus in-memory self-test pages under /__fixtures__/.
+const MIME = {
+  '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
+  '.mjs': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml',
+  '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp',
+  '.gif': 'image/gif', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2',
+};
+const fixtures = new Map();
+const root = resolve(repo);
+const server = createServer(async (req, res) => {
+  const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  if (fixtures.has(path)) {
+    res.writeHead(200, { 'content-type': MIME[extname(path)] || 'text/plain' });
+    res.end(fixtures.get(path));
+    return;
+  }
+  let file = resolve(root, `.${path}`);
+  try {
+    if (file !== root && !file.startsWith(root + sep)) throw new Error('outside the checkout');
+    if ((await stat(file)).isDirectory()) file = join(file, 'index.html');
+    const body = await readFile(file);
+    res.writeHead(200, { 'content-type': MIME[extname(file)] || 'application/octet-stream' });
+    res.end(body);
+  } catch {
+    res.writeHead(404).end();
+  }
+});
+await new Promise((ok) => server.listen(0, '127.0.0.1', ok));
+const origin = `http://127.0.0.1:${server.address().port}`;
+const pageUrl = (rel) => `${origin}/${rel.split('/').map(encodeURIComponent).join('/')}`;
+
+// Timers and animation frames run this far ahead before a note is judged.
+const SETTLE_MS = 60_000;
+async function openSettled(page, url) {
+  await page.goto(url, { waitUntil: 'load' });
+  await page.waitForLoadState('networkidle');
+  await page.clock.runFor(SETTLE_MS);
+  await page.waitForLoadState('networkidle');
+}
+
 const browser = await chromium.launch(process.env.CHROME_PATH
   ? { executablePath: process.env.CHROME_PATH, headless: true }
   : { channel: 'chrome', headless: true });
@@ -182,7 +232,8 @@ const check = (name, ok, detail = '') => {
 
 try {
   const context = await browser.newContext();
-  await context.route(/^(?!file:)/, (route) => route.abort());
+  await context.route((url) => url.origin !== origin, (route) => route.abort());
+  await context.clock.install();
   const page = await context.newPage();
   const SELF_TEST_PHRASES = ['Nurse AI OS', 'Nous Research', 'not endorsed by it'];
   const count = async (html) => {
@@ -240,11 +291,29 @@ try {
   await page.setViewportSize(VIEWPORTS[1]);
   check('the same note is seen at desktop width', await count(phoneOnly) === 1);
 
+  // Served pages: root-relative assets resolve against the checkout, and late scripts run.
+  const served = async (name, body) => {
+    fixtures.set(`/__fixtures__/${name}/page.html`, `<!doctype html><html lang="en"><body>${body}</body></html>`);
+    await openSettled(page, `${origin}/__fixtures__/${name}/page.html`);
+    return (await readableNotes(page, SELF_TEST_PHRASES)).length;
+  };
+  fixtures.set('/__fixtures__/hide.css', `${MARKER} { display: none }`);
+  check('a served note is seen', await served('plain', note) === 1);
+  check('a root-relative stylesheet that hides the note is caught',
+    await served('root-relative', `<link rel="stylesheet" href="/__fixtures__/hide.css">${note}`) === 0);
+  const later = (ms, how) => `${note}<script>setTimeout(() => {
+    document.querySelector('${MARKER.replace(/"/g, '\\"')}')${how} }, ${ms})</script>`;
+  check('a note hidden by a timer after load is caught', await served('timer', later(5000, '.hidden = true')) === 0);
+  check('a note removed 30 s after load is caught', await served('timer-late', later(30000, '.remove()')) === 0);
+  check('a note hidden after an async callback is caught', await served('async', `${note}<script>
+    fetch('/__fixtures__/hide.css').then((r) => r.text()).then((css) => {
+      document.head.append(Object.assign(document.createElement('style'), { textContent: css })) })</script>`) === 0);
+
   // Every Hermes page, rendered with its own CSS and scripts, at each viewport.
   for (const viewport of VIEWPORTS) {
     await page.setViewportSize(viewport);
     for (const rel of pages) {
-      await page.goto(pathToFileURL(join(repo, rel)).href, { waitUntil: 'load' });
+      await openSettled(page, pageUrl(rel));
       // The language is the document's own <html lang>, not the directory it sits in.
       const lang = primaryLanguage(await page.evaluate(() => document.documentElement.lang));
       if (!(lang in clauses)) {
@@ -260,6 +329,7 @@ try {
   }
 } finally {
   await browser.close();
+  server.close();
 }
 
 console.log(failures ? `${failures} check(s) failed` : 'All attribution notes are visible and readable.');

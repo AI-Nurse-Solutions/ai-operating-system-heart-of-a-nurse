@@ -14,11 +14,14 @@
 //      opacity); once scrolled to, it overlaps the viewport; and it is what
 //      the browser paints at the centre of that overlap, so a note moved
 //      off-canvas, clipped away or covered by another element fails.
-//   2. In pixels: the note is screenshotted as rendered and again with its
-//      text forced transparent. Enough pixels must differ between the two by
-//      at least 3:1 contrast, so text that is transparent, coloured like its
-//      background (a colour, gradient or image), too faint or too small to
-//      read fails. The browser decodes the screenshots itself, so no image
+//   2. In pixels, for each required phrase (Nous Research, Nurse AI OS and
+//      the page language's non-endorsement clause): the rectangles where the
+//      browser lays out that phrase are screenshotted as rendered and again
+//      with the note's text forced transparent. Enough pixels inside them
+//      must differ by at least 3:1 contrast, so a phrase that is transparent,
+//      coloured like its background (a colour, gradient or image), too faint
+//      or too small to read fails, even when other text in the note is
+//      readable. The browser decodes the screenshots itself, so no image
 //      library is needed.
 //
 // Each page is checked at a phone and a desktop viewport, so a responsive
@@ -44,10 +47,10 @@ const { pages, clauses } = JSON.parse(load.stdout);
 assert.ok(pages.length >= 14, `expected the known Hermes pages, found ${pages.length}`);
 
 const MARKER = '[data-attribution="hermes-independence"]';
-// Pixels of the note's text that must stand out 3:1 from what is behind them.
-// A 14px sentence paints thousands; transparent or background-coloured text
-// paints none, and 1px text a handful.
-const MIN_LEGIBLE_PIXELS = 200;
+// Pixels per character of a required phrase that must stand out 3:1 from what
+// is behind them. 14px text paints well over 20 per character; transparent or
+// background-coloured text paints none, and 1px text almost none.
+const MIN_LEGIBLE_PIXELS_PER_CHAR = 4;
 
 /** Step 1, run in the page: notes that are visible, on screen and on top. */
 const onScreenNotes = (marker) => [...document.querySelectorAll(marker)]
@@ -89,26 +92,74 @@ const legiblePixels = async ([withText, withoutText]) => {
   return count;
 };
 
-/** Step 2: keep the on-screen notes whose text is actually painted legibly. */
-const readableNotes = async (page) => {
+/**
+ * In the page: the on-screen rectangles where `phrase` is laid out inside the
+ * index-th note, or null when the note's text does not contain it.
+ */
+const phraseRects = ([marker, index, phrase]) => {
+  const el = document.querySelectorAll(marker)[index];
+  const nodes = [];
+  let text = '';
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    nodes.push({ node: n, start: text.length });
+    text += n.data;
+  }
+  const at = text.indexOf(phrase);
+  if (at < 0) return null;
+  const locate = (offset) => {
+    let i = nodes.length - 1;
+    while (i > 0 && nodes[i].start > offset) i -= 1;
+    return [nodes[i].node, offset - nodes[i].start];
+  };
+  const range = document.createRange();
+  range.setStart(...locate(at));
+  range.setEnd(...locate(at + phrase.length));
+  return [...range.getClientRects()]
+    .map((r) => ({
+      x: Math.max(r.left, 0), y: Math.max(r.top, 0),
+      right: Math.min(r.right, window.innerWidth), bottom: Math.min(r.bottom, window.innerHeight),
+    }))
+    .filter((r) => r.right - r.x >= 1 && r.bottom - r.y >= 1)
+    .map((r) => ({ x: r.x, y: r.y, width: r.right - r.x, height: r.bottom - r.y }));
+};
+
+const TEXT_OFF = `${MARKER}, ${MARKER} * { color: transparent !important;
+  -webkit-text-fill-color: transparent !important; text-shadow: none !important;
+  text-decoration-color: transparent !important; caret-color: transparent !important; }`;
+
+/** Legible pixels inside the rectangles where `phrase` is painted in the index-th note. */
+const phrasePixels = async (page, index, phrase) => {
+  await page.locator(MARKER).nth(index).scrollIntoViewIfNeeded();
+  const rects = await page.evaluate(phraseRects, [MARKER, index, phrase]);
+  if (!rects || !rects.length) return 0;
+  const shots = async () => Promise.all(rects.map(async (clip) =>
+    (await page.screenshot({ clip, animations: 'disabled' })).toString('base64')));
+  const withText = await shots();
+  const probe = await page.addStyleTag({ content: TEXT_OFF });
+  const withoutText = await shots();
+  await probe.evaluate((node) => node.remove());
+  let total = 0;
+  for (let i = 0; i < rects.length; i += 1) {
+    total += await page.evaluate(legiblePixels, [withText[i], withoutText[i]]);
+  }
+  return total;
+};
+
+/**
+ * Step 2: keep the on-screen notes in which every required phrase is itself
+ * painted legibly, not just some other text in the same note.
+ */
+const readableNotes = async (page, phrases) => {
   const candidates = await page.evaluate(onScreenNotes, MARKER);
   const readable = [];
   for (const { index, text } of candidates) {
-    const note = page.locator(MARKER).nth(index);
-    await note.scrollIntoViewIfNeeded();
-    const box = await note.boundingBox();
-    if (!box || box.width < 1 || box.height < 1) continue;
-    const clip = { x: box.x, y: box.y, width: box.width, height: box.height };
-    const withText = (await page.screenshot({ clip, animations: 'disabled' })).toString('base64');
-    const probe = await page.addStyleTag({ content:
-      `${MARKER}, ${MARKER} * { color: transparent !important;
-        -webkit-text-fill-color: transparent !important; text-shadow: none !important;
-        text-decoration-color: transparent !important; caret-color: transparent !important; }` });
-    const withoutText = (await page.screenshot({ clip, animations: 'disabled' })).toString('base64');
-    await probe.evaluate((node) => node.remove());
-    if (await page.evaluate(legiblePixels, [withText, withoutText]) >= MIN_LEGIBLE_PIXELS) {
-      readable.push(text);
+    let ok = true;
+    for (const phrase of phrases) {
+      const need = MIN_LEGIBLE_PIXELS_PER_CHAR * phrase.length;
+      if (await phrasePixels(page, index, phrase) < need) { ok = false; break; }
     }
+    if (ok) readable.push(text);
   }
   return readable;
 };
@@ -131,13 +182,14 @@ try {
   const context = await browser.newContext();
   await context.route(/^(?!file:)/, (route) => route.abort());
   const page = await context.newPage();
+  const SELF_TEST_PHRASES = ['Nurse AI OS', 'Nous Research', 'not endorsed by it'];
   const count = async (html) => {
     await page.setContent(html);
-    return (await readableNotes(page)).length;
+    return (await readableNotes(page, SELF_TEST_PHRASES)).length;
   };
   const texts = async (html) => {
     await page.setContent(html);
-    return JSON.stringify(await readableNotes(page));
+    return JSON.stringify(await readableNotes(page, SELF_TEST_PHRASES));
   };
 
   // Self-tests: the detector must reject what a reader cannot see or read.
@@ -166,6 +218,13 @@ try {
     await count(`<style>body { background: #fff } ${MARKER} { color: #d0d0d0 }</style>${note}`) === 0);
   check('a note in unreadably small text is caught',
     await count(`<style>${MARKER} { font-size: 1px }</style>${note}`) === 0);
+  check('a required phrase made transparent is caught though the rest is readable',
+    await count(`<p data-attribution="hermes-independence">Nurse AI OS is independent of
+      <span style="color: transparent">Nous Research</span> and not endorsed by it.
+      Plenty of other readable filler text sits in this same note to carry pixels.</p>`) === 0);
+  check('a required phrase coloured like its background is caught',
+    await count(`<style>body { background: #fff }</style><p data-attribution="hermes-independence">Nurse AI OS
+      is independent of Nous Research and <span style="color:#fff">not endorsed by it</span>.</p>`) === 0);
   check('text after an omitted </p> is not part of the note',
     await texts(`<p data-attribution="hermes-independence">${words}<p>Nous Research</p>`) === JSON.stringify([words]));
   check('hidden text inside a note does not count',
@@ -182,9 +241,9 @@ try {
     await page.setViewportSize(viewport);
     for (const rel of pages) {
       await page.goto(pathToFileURL(join(repo, rel)).href, { waitUntil: 'load' });
-      const notes = await readableNotes(page);
       const first = rel.split('/')[0];
       const lang = rel.includes('/') && first in clauses ? first : 'en';
+      const notes = await readableNotes(page, ['Nous Research', 'Nurse AI OS', clauses[lang]]);
       const ok = notes.length === 1 && notes[0].includes('Nous Research')
         && notes[0].includes('Nurse AI OS') && notes[0].includes(clauses[lang]);
       check(`${viewport.name} ${rel}: one readable note with the ${lang} non-endorsement clause`,

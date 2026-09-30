@@ -32,12 +32,25 @@ assert.equal(load.status, 0, load.stderr);
 const { pages, equivalent, clauses } = JSON.parse(load.stdout);
 assert.ok(pages.length >= 14, `expected the known Hermes pages, found ${pages.length}`);
 
-/** Visible attribution notes in the current document, as rendered text. */
+/**
+ * Attribution notes a reader can actually see, as rendered text. A note must
+ * be visible to CSS (display, visibility, opacity), and once scrolled to it
+ * must overlap the viewport by a non-zero area. The note itself must also be
+ * what the browser paints at the centre of that overlap, so a note moved
+ * off-canvas, clipped away or covered by another element does not count.
+ */
 const visibleNotes = () => [...document.querySelectorAll('[data-attribution="hermes-independence"]')]
   .filter((el) => {
+    if (!el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) return false;
+    el.scrollIntoView({ block: 'center', inline: 'center' });
     const box = el.getBoundingClientRect();
-    return el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })
-      && box.width > 0 && box.height > 0;
+    const left = Math.max(box.left, 0);
+    const right = Math.min(box.right, window.innerWidth);
+    const top = Math.max(box.top, 0);
+    const bottom = Math.min(box.bottom, window.innerHeight);
+    if (right - left < 1 || bottom - top < 1) return false;
+    const hit = document.elementFromPoint((left + right) / 2, (top + bottom) / 2);
+    return hit !== null && el.contains(hit);
   })
   .map((el) => el.innerText.replace(/\s+/g, ' ').trim());
 
@@ -74,6 +87,17 @@ try {
   await page.setContent('<p data-attribution="hermes-independence">x<span hidden>Nous Research</span></p>');
   check('hidden text inside a note does not count',
     JSON.stringify(await page.evaluate(visibleNotes)) === '["x"]');
+  await page.setContent(`<main><p data-attribution="hermes-independence"
+    style="position:absolute; left:-10000px">Nurse AI OS · Nous Research</p></main>`);
+  check('a note moved off-canvas is caught', (await page.evaluate(visibleNotes)).length === 0);
+  await page.setContent(`<main style="position:relative">${note}
+    <div style="position:absolute; inset:0; background:#fff"></div></main>`);
+  check('a note covered by another element is caught', (await page.evaluate(visibleNotes)).length === 0);
+  await page.setContent(`<p data-attribution="hermes-independence"
+    style="clip-path: inset(50%)">Nurse AI OS · Nous Research</p>`);
+  check('a note clipped away is caught', (await page.evaluate(visibleNotes)).length === 0);
+  await page.setContent(`<div style="height:3000px"></div>${note}`);
+  check('a note further down the page is still seen', (await page.evaluate(visibleNotes)).length === 1);
   const phoneOnly = `<style>@media (max-width: 600px) { [data-attribution] { display: none } }</style>${note}`;
   await page.setViewportSize(VIEWPORTS[0]);
   await page.setContent(phoneOnly);

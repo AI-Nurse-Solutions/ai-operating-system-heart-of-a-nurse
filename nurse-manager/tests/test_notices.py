@@ -2,6 +2,7 @@
 
 import hashlib
 import re
+from html.parser import HTMLParser
 import unittest
 from pathlib import Path
 
@@ -20,8 +21,34 @@ EQUIVALENT_ATTRIBUTION = {
     "hermes-downloads/index.html": "separate, free, open-source desktop runtime from Nous Research",
 }
 SKIP_DIRS = {".git", "node_modules"}
-TITLE = re.compile(r"<title>(.*?)</title>", re.I | re.S)
 ATTRIBUTION_NOTE = re.compile(r'<p data-attribution="hermes-independence">(.*?)</p>', re.S)
+
+
+class _TitleParser(HTMLParser):
+    """Collects the text of the first <title>, whatever its attributes or case."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.depth, self.done, self.parts = 0, False, []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "title" and not self.done:
+            self.depth += 1
+
+    def handle_endtag(self, tag):
+        if tag == "title" and self.depth:
+            self.depth, self.done = 0, True
+
+    def handle_data(self, data):
+        if self.depth:
+            self.parts.append(data)
+
+
+def page_title(html: str) -> str:
+    parser = _TitleParser()
+    parser.feed(html)
+    parser.close()
+    return " ".join("".join(parser.parts).split())
 
 
 def hermes_pages() -> list[str]:
@@ -31,8 +58,7 @@ def hermes_pages() -> list[str]:
         rel = path.relative_to(REPO)
         if SKIP_DIRS & set(rel.parts):
             continue
-        match = TITLE.search(path.read_text(encoding="utf-8", errors="replace"))
-        if match and "hermes" in match.group(1).lower():
+        if "hermes" in page_title(path.read_text(encoding="utf-8", errors="replace")).lower():
             pages.append(rel.as_posix())
     return sorted(pages)
 
@@ -156,6 +182,12 @@ class HermesReviewTests(unittest.TestCase):
 
 
 class HermesPageAttributionTests(unittest.TestCase):
+    def test_title_parsing_ignores_attributes_case_and_whitespace(self):
+        self.assertEqual("Hermes Setup", page_title('<title lang="en">Hermes Setup</title>'))
+        self.assertEqual("Hermes Setup", page_title("<TITLE>\n  Hermes\n  Setup </TITLE>"))
+        self.assertEqual("Q&A — Hermes", page_title("<title data-x='1'>Q&amp;A &mdash; Hermes</title>"))
+        self.assertEqual("", page_title("<p>Hermes</p>"))
+
     def test_discovery_finds_the_known_pages(self):
         pages = hermes_pages()
         for page in ("hermes-masterclass.html", "hermes-downloads/index.html",

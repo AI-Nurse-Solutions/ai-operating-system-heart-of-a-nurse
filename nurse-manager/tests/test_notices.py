@@ -20,6 +20,20 @@ ATTRIBUTION_MARKER = 'data-attribution="hermes-independence"'
 EQUIVALENT_ATTRIBUTION = {
     "hermes-downloads/index.html": "separate, free, open-source desktop runtime from Nous Research",
 }
+# The clause that says Nous Research does not endorse Nurse AI OS, by page
+# language. Each one names Nous Research (or refers back to it) as the party
+# that does not endorse, so a translation cannot flip the direction.
+NON_ENDORSEMENT_CLAUSE = {
+    "en": "not affiliated with or endorsed by Nous Research",
+    "ar": "ولا يحظى بتأييدها",
+    "es": "ni cuenta con su respaldo",
+    "fr": "ni approuvé par elle",
+    "hi": "न ही उसके द्वारा समर्थित",
+    "ru": "не одобрен ею",
+    "tl": "hindi rin ito ineendorso ng Nous Research",
+    "vi": "không được Nous Research chứng thực",
+    "zh": "也未获其认可",
+}
 SKIP_DIRS = {".git", "node_modules"}
 ATTRIBUTION_NOTE = re.compile(r'<p data-attribution="hermes-independence">(.*?)</p>', re.S)
 
@@ -205,6 +219,17 @@ class HermesPageAttributionTests(unittest.TestCase):
                 self.assertEqual(1, len(notes), f"expected one {ATTRIBUTION_MARKER} note")
                 self.assertIn("Nous Research", notes[0])
                 self.assertIn("Nurse AI OS", notes[0])
+
+    def test_note_says_nous_research_does_not_endorse_us(self):
+        for page in hermes_pages():
+            if page in EQUIVALENT_ATTRIBUTION:
+                continue
+            with self.subTest(page=page):
+                first = page.split("/", 1)[0]
+                lang = first if "/" in page and first in NON_ENDORSEMENT_CLAUSE else "en"
+                notes = ATTRIBUTION_NOTE.findall((REPO / page).read_text(encoding="utf-8"))
+                self.assertEqual(1, len(notes))
+                self.assertIn(NON_ENDORSEMENT_CLAUSE[lang], notes[0])
 
     def test_equivalent_attributions_are_still_hermes_pages(self):
         self.assertEqual([], sorted(set(EQUIVALENT_ATTRIBUTION) - set(hermes_pages())))

@@ -58,11 +58,14 @@ class _TitleParser(HTMLParser):
 
 
 class _NoteParser(HTMLParser):
-    """Text of each rendered element marked as the Hermes independence note.
+    """Visible text of each element marked as the Hermes independence note.
 
-    Comments never reach handle_data, and marked elements inside script,
-    style, template or noscript, or carrying `hidden`, are not collected,
-    so a note the browser does not show cannot satisfy the check.
+    Keeps a stack of open elements, each hidden if its parent is, if it is
+    script, style, template or noscript, or if it carries `hidden` or an
+    inline display:none / visibility:hidden. Text counts only while the
+    innermost open element is visible, so neither a hidden note nor hidden
+    text nested inside a visible note can satisfy the check. Comments never
+    reach handle_data.
     """
 
     NOT_RENDERED = {"script", "style", "template", "noscript"}
@@ -71,32 +74,36 @@ class _NoteParser(HTMLParser):
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.notes, self.hidden_depth, self.depth, self.parts = [], 0, 0, []
+        self.notes, self.stack, self.note_at, self.parts = [], [], None, []
+
+    @staticmethod
+    def _hides(tag, attrs):
+        style = "".join((attrs.get("style") or "").lower().split())
+        return (tag in _NoteParser.NOT_RENDERED or "hidden" in attrs
+                or "display:none" in style or "visibility:hidden" in style)
 
     def handle_starttag(self, tag, attrs):
         if tag in self.VOID:
             return
-        if tag in self.NOT_RENDERED:
-            self.hidden_depth += 1
-        if self.depth:
-            self.depth += 1
-            return
-        marked = dict(attrs).get("data-attribution") == "hermes-independence"
-        if marked and not self.hidden_depth and "hidden" not in dict(attrs):
-            self.depth, self.parts = 1, []
+        attrs = dict(attrs)
+        hidden = (self.stack[-1][1] if self.stack else False) or self._hides(tag, attrs)
+        self.stack.append((tag, hidden))
+        if (self.note_at is None and not hidden
+                and attrs.get("data-attribution") == "hermes-independence"):
+            self.note_at, self.parts = len(self.stack), []
 
     def handle_endtag(self, tag):
-        if tag in self.VOID:
-            return
-        if tag in self.NOT_RENDERED and self.hidden_depth:
-            self.hidden_depth -= 1
-        if self.depth:
-            self.depth -= 1
-            if not self.depth:
-                self.notes.append(" ".join("".join(self.parts).split()))
+        # Close up to the matching open tag; an unmatched end tag is ignored.
+        for k in range(len(self.stack) - 1, -1, -1):
+            if self.stack[k][0] == tag:
+                del self.stack[k:]
+                break
+        if self.note_at is not None and len(self.stack) < self.note_at:
+            self.notes.append(" ".join("".join(self.parts).split()))
+            self.note_at = None
 
     def handle_data(self, data):
-        if self.depth:
+        if self.note_at is not None and self.stack and not self.stack[-1][1]:
             self.parts.append(data)
 
 
@@ -258,6 +265,20 @@ class HermesPageAttributionTests(unittest.TestCase):
         self.assertEqual([], attribution_notes(f"<template>{note}</template>"))
         self.assertEqual([], attribution_notes(f"<noscript>{note}</noscript>"))
         self.assertEqual([], attribution_notes(note.replace("<p ", "<p hidden ")))
+        # Hidden text nested inside a visible note does not count.
+        for inner in ("<script>Nous Research</script>", "<style>Nous Research</style>",
+                      "<span hidden>Nous Research</span>",
+                      '<span style="display: none">Nous Research</span>',
+                      "<span hidden><b>Nous Research</b></span>"):
+            with self.subTest(inner=inner):
+                self.assertEqual(["x"], attribution_notes(
+                    f'<p data-attribution="hermes-independence">x{inner}</p>'))
+        # Visible text after a hidden child still counts.
+        self.assertEqual(["x y"], attribution_notes(
+            '<p data-attribution="hermes-independence">x <span hidden>z</span>y</p>'))
+        # An unclosed child inside the note does not swallow text after the note.
+        self.assertEqual(["a b"], attribution_notes(
+            '<div data-attribution="hermes-independence">a <p>b</div><p>outside</p>'))
         # A void element inside the note must not end or extend it early.
         self.assertEqual(["ab", "c"], attribution_notes(
             '<p class="x" data-attribution="hermes-independence">a<br>b</p>'

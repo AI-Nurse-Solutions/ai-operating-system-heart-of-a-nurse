@@ -9,6 +9,9 @@
 // page language's non-endorsement clause. The page list, the documented
 // exception and the clauses come from test_notices.py, so both tests agree.
 //
+// Each page is checked at a phone and a desktop viewport, so a responsive
+// rule cannot hide the note from phone readers only.
+//
 // Network requests other than file:// are blocked so the run is offline.
 // CHROME_PATH=/path/to/chrome overrides the system Chrome channel (local runs).
 import assert from 'node:assert/strict';
@@ -38,6 +41,11 @@ const visibleNotes = () => [...document.querySelectorAll('[data-attribution="her
   })
   .map((el) => el.innerText.replace(/\s+/g, ' ').trim());
 
+const VIEWPORTS = [
+  { name: 'phone', width: 390, height: 844 },
+  { name: 'desktop', width: 1280, height: 800 },
+];
+
 const browser = await chromium.launch(process.env.CHROME_PATH
   ? { executablePath: process.env.CHROME_PATH, headless: true }
   : { channel: 'chrome', headless: true });
@@ -66,22 +74,34 @@ try {
   await page.setContent('<p data-attribution="hermes-independence">x<span hidden>Nous Research</span></p>');
   check('hidden text inside a note does not count',
     JSON.stringify(await page.evaluate(visibleNotes)) === '["x"]');
+  const phoneOnly = `<style>@media (max-width: 600px) { [data-attribution] { display: none } }</style>${note}`;
+  await page.setViewportSize(VIEWPORTS[0]);
+  await page.setContent(phoneOnly);
+  check('a note hidden only at phone width is caught at phone width',
+    (await page.evaluate(visibleNotes)).length === 0);
+  await page.setViewportSize(VIEWPORTS[1]);
+  await page.setContent(phoneOnly);
+  check('the same note is seen at desktop width', (await page.evaluate(visibleNotes)).length === 1);
 
-  // Every Hermes page, rendered with its own CSS and scripts.
-  for (const rel of pages) {
-    await page.goto(pathToFileURL(join(repo, rel)).href, { waitUntil: 'load' });
-    if (rel in equivalent) {
-      const text = await page.evaluate(() => document.body.innerText);
-      check(`${rel}: equivalent attribution is visible`, text.includes(equivalent[rel]));
-      continue;
+  // Every Hermes page, rendered with its own CSS and scripts, at each viewport.
+  for (const viewport of VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    for (const rel of pages) {
+      await page.goto(pathToFileURL(join(repo, rel)).href, { waitUntil: 'load' });
+      if (rel in equivalent) {
+        const text = await page.evaluate(() => document.body.innerText);
+        check(`${viewport.name} ${rel}: equivalent attribution is visible`,
+          text.includes(equivalent[rel]));
+        continue;
+      }
+      const notes = await page.evaluate(visibleNotes);
+      const first = rel.split('/')[0];
+      const lang = rel.includes('/') && first in clauses ? first : 'en';
+      const ok = notes.length === 1 && notes[0].includes('Nous Research')
+        && notes[0].includes('Nurse AI OS') && notes[0].includes(clauses[lang]);
+      check(`${viewport.name} ${rel}: one visible note with the ${lang} non-endorsement clause`,
+        ok, JSON.stringify(notes));
     }
-    const notes = await page.evaluate(visibleNotes);
-    const first = rel.split('/')[0];
-    const lang = rel.includes('/') && first in clauses ? first : 'en';
-    const ok = notes.length === 1 && notes[0].includes('Nous Research')
-      && notes[0].includes('Nurse AI OS') && notes[0].includes(clauses[lang]);
-    check(`${rel}: one visible note with the ${lang} non-endorsement clause`, ok,
-      JSON.stringify(notes));
   }
 } finally {
   await browser.close();

@@ -1,23 +1,36 @@
 name: Hermes notices and attribution
 
-# Runs nurse-manager/tests/test_notices.py whenever a file it guards could
-# change: the third-party notices, the review doc, or any HTML page, since a
-# page of any name becomes guarded once its <title> names Hermes (step 0.8).
+# Checks the third-party notices and the Hermes independence note on every
+# page whose <title> names Hermes (step 0.8). A page of any name can become
+# guarded, and a stylesheet or script can hide a note, so this runs on any
+# HTML, CSS or JavaScript change as well as on the notices and the tests.
 on:
   pull_request:
     paths:
       - "**/*.html"
+      - "**/*.css"
+      - "**/*.js"
+      - "**/*.mjs"
       - "THIRD_PARTY_NOTICES.md"
       - "nurse-manager/docs/05-hermes-review.md"
       - "nurse-manager/tests/test_notices.py"
+      - "nurse-manager/tests/test_notices_browser.mjs"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/hermes-notices.yml"
   push:
     branches: [main]
     paths:
       - "**/*.html"
+      - "**/*.css"
+      - "**/*.js"
+      - "**/*.mjs"
       - "THIRD_PARTY_NOTICES.md"
       - "nurse-manager/docs/05-hermes-review.md"
       - "nurse-manager/tests/test_notices.py"
+      - "nurse-manager/tests/test_notices_browser.mjs"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/hermes-notices.yml"
 
 permissions:
@@ -36,3 +49,26 @@ jobs:
           python-version: "3.11"
       - name: Check Hermes notices and page attribution
         run: python3 -m unittest nurse-manager/tests/test_notices.py -v
+
+  browser:
+    # The authority on what a reader sees: each note must be visible as the
+    # browser renders the page with its own stylesheets and scripts.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+      - name: Check attribution notes in a real browser
+        run: |
+          node --check nurse-manager/tests/test_notices_browser.mjs
+          npm run test:notices-browser

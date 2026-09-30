@@ -71,6 +71,11 @@ class _NoteParser(HTMLParser):
     NOT_RENDERED = {"script", "style", "template", "noscript"}
     VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
             "link", "meta", "source", "track", "wbr"}
+    # HTML closes an open <p> when one of these starts (optional end tag).
+    CLOSES_P = {"address", "article", "aside", "blockquote", "details", "div",
+                "dl", "fieldset", "figcaption", "figure", "footer", "form",
+                "h1", "h2", "h3", "h4", "h5", "h6", "header", "hgroup", "hr",
+                "main", "menu", "nav", "ol", "p", "pre", "section", "table", "ul"}
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -83,6 +88,8 @@ class _NoteParser(HTMLParser):
                 or "display:none" in style or "visibility:hidden" in style)
 
     def handle_starttag(self, tag, attrs):
+        if tag in self.CLOSES_P and any(t == "p" for t, _ in self.stack):
+            self.handle_endtag("p")
         if tag in self.VOID:
             return
         attrs = dict(attrs)
@@ -230,10 +237,15 @@ class NoticeWorkflowTriggerTests(unittest.TestCase):
     def test_notice_workflow_triggers_on_guarded_and_future_pages(self):
         workflow = (REPO / ".github" / "workflows" / "hermes-notices.yml").read_text(encoding="utf-8")
         self.assertIn("nurse-manager/tests/test_notices.py", workflow)
+        self.assertIn("npm run test:notices-browser", workflow)
         # Any HTML page can become guarded by naming Hermes in its title, so
         # the filter must cover pages of any name, not today's names only.
+        # A stylesheet or script can hide a note, so those changes run it too.
         guarded = {"THIRD_PARTY_NOTICES.md", "nurse-manager/tests/test_notices.py",
-                   "setup-guide.html", "new-section/any-page.html", *hermes_pages()}
+                   "nurse-manager/tests/test_notices_browser.mjs",
+                   "setup-guide.html", "new-section/any-page.html",
+                   "assets/nurse-ai.css", "assets/new-theme.css", "assets/app.js",
+                   "setup-helper/setup-helper.mjs", *hermes_pages()}
         for event in ("pull_request", "push"):
             with self.subTest(event=event):
                 patterns = [_github_glob(p) for p in _workflow_paths(workflow, event)]
@@ -279,6 +291,11 @@ class HermesPageAttributionTests(unittest.TestCase):
         # An unclosed child inside the note does not swallow text after the note.
         self.assertEqual(["a b"], attribution_notes(
             '<div data-attribution="hermes-independence">a <p>b</div><p>outside</p>'))
+        # An omitted </p> is closed by the next block, as a browser does.
+        self.assertEqual(["Nurse AI OS"], attribution_notes(
+            '<p data-attribution="hermes-independence">Nurse AI OS<p>Nous Research</p>'))
+        self.assertEqual(["a"], attribution_notes(
+            '<p data-attribution="hermes-independence">a<div>b</div>'))
         # A void element inside the note must not end or extend it early.
         self.assertEqual(["ab", "c"], attribution_notes(
             '<p class="x" data-attribution="hermes-independence">a<br>b</p>'

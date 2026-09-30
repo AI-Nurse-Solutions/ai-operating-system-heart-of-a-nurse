@@ -20,7 +20,8 @@
     "test:burnout-signal-browser": "node tests/test_burnout_signal_dashboard_browser.mjs",
     "test:nurse-manager-ipc": "node nurse-manager/tests/test_ipc_contract.mjs",
     "test:nurse-manager-renderer": "node nurse-manager/tests/test_renderer_browser.mjs",
-    "test:nurse-manager-app": "node nurse-manager/tests/test_app_browser.mjs"
+    "test:nurse-manager-app": "node nurse-manager/tests/test_app_browser.mjs",
+    "test:notices-browser": "node nurse-manager/tests/test_notices_browser.mjs"
   },
   "devDependencies": {
     "ajv": "8.20.0",

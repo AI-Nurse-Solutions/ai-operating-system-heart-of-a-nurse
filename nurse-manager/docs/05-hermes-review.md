@@ -204,9 +204,14 @@ Every note now carries `data-attribution="hermes-independence"`.
 names Hermes and requires exactly one such note mentioning Nous
 Research and Nurse AI OS. `hermes-downloads/index.html` is the one
 listed exception, for the reason above.
-`.github/workflows/hermes-notices.yml` runs that test whenever any HTML
-page changes, because a page of any name becomes guarded once its title
-names Hermes.
+`nurse-manager/tests/test_notices_browser.mjs` is the authority on what a
+reader sees. It renders each of those pages in Chromium with the site's own
+stylesheets and scripts. It requires exactly one note that the browser
+computes as visible, whose rendered text carries the page language's
+non-endorsement clause. `.github/workflows/hermes-notices.yml` runs both
+tests whenever any HTML, CSS or JavaScript file changes. A page of any name
+becomes guarded once its title names Hermes, and a stylesheet or script
+could hide a note.
 
 **Listed for the owner, not edited.** These are hash-bound or owned by
 other areas.

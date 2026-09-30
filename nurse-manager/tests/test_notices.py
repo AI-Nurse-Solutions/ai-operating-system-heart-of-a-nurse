@@ -14,12 +14,9 @@ REVIEW = REPO / "nurse-manager" / "docs" / "05-hermes-review.md"
 # reproduced notice, including the grant or the disclaimer, fails this pin.
 HERMES_MIT_SHA256 = "547925cbc7510811a7fd35eb72e8eee3d5381ae9527e8d4e1bd0fe74057e511c"
 # Every public page whose <title> names Hermes must carry the independence
-# note, marked so the test finds it in any language. Pages that make the same
-# statement in their own words are listed here with the phrase that does it.
+# note, marked so the test finds it in any language. There are no exceptions,
+# so the browser check can hold every page to the same visibility rules.
 ATTRIBUTION_MARKER = 'data-attribution="hermes-independence"'
-EQUIVALENT_ATTRIBUTION = {
-    "hermes-downloads/index.html": "separate, free, open-source desktop runtime from Nous Research",
-}
 # The clause that says Nous Research does not endorse Nurse AI OS, by page
 # language. Each one names Nous Research (or refers back to it) as the party
 # that does not endorse, so a translation cannot flip the direction.
@@ -310,28 +307,19 @@ class HermesPageAttributionTests(unittest.TestCase):
     def test_hermes_titled_pages_state_independence(self):
         for page in hermes_pages():
             with self.subTest(page=page):
-                text = (REPO / page).read_text(encoding="utf-8")
-                if page in EQUIVALENT_ATTRIBUTION:
-                    self.assertIn(EQUIVALENT_ATTRIBUTION[page], text)
-                    continue
-                notes = attribution_notes(text)
+                notes = attribution_notes((REPO / page).read_text(encoding="utf-8"))
                 self.assertEqual(1, len(notes), f"expected one {ATTRIBUTION_MARKER} note")
                 self.assertIn("Nous Research", notes[0])
                 self.assertIn("Nurse AI OS", notes[0])
 
     def test_note_says_nous_research_does_not_endorse_us(self):
         for page in hermes_pages():
-            if page in EQUIVALENT_ATTRIBUTION:
-                continue
             with self.subTest(page=page):
                 first = page.split("/", 1)[0]
                 lang = first if "/" in page and first in NON_ENDORSEMENT_CLAUSE else "en"
                 notes = attribution_notes((REPO / page).read_text(encoding="utf-8"))
                 self.assertEqual(1, len(notes))
                 self.assertIn(NON_ENDORSEMENT_CLAUSE[lang], notes[0])
-
-    def test_equivalent_attributions_are_still_hermes_pages(self):
-        self.assertEqual([], sorted(set(EQUIVALENT_ATTRIBUTION) - set(hermes_pages())))
 
     def test_pages_do_not_claim_endorsement(self):
         pattern = re.compile(r"(official|certified|endorsed|approved) (nurse ai os|partner)"

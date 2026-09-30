@@ -183,9 +183,10 @@ software."
 - `hermes-configuration-handbook.html`
 - `remote-hermes-safely.html`
 
-`hermes-downloads/index.html` already says Hermes is "a separate,
-free, open-source desktop runtime from Nous Research", so it was left
-as is.
+`hermes-downloads/index.html` already said Hermes is "a separate,
+free, open-source desktop runtime from Nous Research". The follow-up below
+gave it the same marked note as the other pages, so no page is an
+exception.
 
 **Follow-up (PR after #138).** A later check found ten more pages whose
 `<title>` names Hermes and that carried no attribution. The English
@@ -202,13 +203,12 @@ they are treated as final.
 Every note now carries `data-attribution="hermes-independence"`.
 `nurse-manager/tests/test_notices.py` finds every page whose title
 names Hermes and requires exactly one such note mentioning Nous
-Research and Nurse AI OS. `hermes-downloads/index.html` is the one
-listed exception, for the reason above.
+Research and Nurse AI OS, with no exceptions.
 `nurse-manager/tests/test_notices_browser.mjs` is the authority on what a
 reader sees. It renders each of those pages in Chromium with the site's own
 stylesheets and scripts. It requires exactly one note that the browser
-computes as visible, whose rendered text carries the page language's
-non-endorsement clause. `.github/workflows/hermes-notices.yml` runs both
+computes as visible and legible, whose rendered text carries the page
+language's non-endorsement clause. `.github/workflows/hermes-notices.yml` runs both
 tests whenever any HTML, CSS or JavaScript file changes. A page of any name
 becomes guarded once its title names Hermes, and a stylesheet or script
 could hide a note.

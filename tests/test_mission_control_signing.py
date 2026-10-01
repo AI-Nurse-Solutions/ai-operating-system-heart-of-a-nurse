@@ -92,7 +92,9 @@ def read_self_test(output: str) -> SelfTestRun | None:
 
 
 def run_self_test(mc: Path) -> SelfTestRun:
-    r = run([sys.executable, "tests/self_test.py"], mc)
+    # Health is ready before the background demo index on fast CI runners.
+    # The test-only runner waits on actual results; signed sources stay intact.
+    r = run([sys.executable, str(ROOT / "tests" / "mission_control_self_test_runner.py"), str(mc)], mc)
     report = read_self_test(r.stdout)
     if report is None:
         raise AssertionError(f"could not read the self-test result in {mc}:\n"
@@ -146,7 +148,10 @@ class SigningRehearsalTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         if not HAVE_OPENSSL:
             raise unittest.SkipTest("openssl not available")
-        cls.result = run([sys.executable, str(SIGNER), "--rehearse"], NAIO)
+        import runpy
+        helpers = runpy.run_path(str(ROOT / "tests" / "mission_control_self_test_runner.py"))
+        cls.result = helpers['retry_demo_index_rehearsal'](
+            lambda: run([sys.executable, str(SIGNER), "--rehearse"], NAIO))
 
     def test_rehearsal_completes_the_whole_chain(self) -> None:
         self.assertEqual(self.result.returncode, 0,

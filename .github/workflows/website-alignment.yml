@@ -23,6 +23,14 @@ on:
       - "assets/img/resident-journal-club.jpg"
       - "assets/img/resident-career-prep.jpg"
       - "assets/site-shell.js"
+      - "tests/test_ally_stewardship.py"
+      - "tests/test_mission_control_signing.py"
+      - "tests/test_mission_control_readiness.py"
+      - "tests/mission_control_self_test_runner.py"
+      - "tests/ally_browser_qa.py"
+      - "docs/ally-pathway-*.md"
+      - "ally-starter/**"
+      - "downloads/ally-*"
       - "tests/test_physician_stewardship.py"
       - "physician-starter/**"
       - "downloads/physician-*"
@@ -120,6 +128,14 @@ on:
       - "assets/img/resident-journal-club.jpg"
       - "assets/img/resident-career-prep.jpg"
       - "assets/site-shell.js"
+      - "tests/test_ally_stewardship.py"
+      - "tests/test_mission_control_signing.py"
+      - "tests/test_mission_control_readiness.py"
+      - "tests/mission_control_self_test_runner.py"
+      - "tests/ally_browser_qa.py"
+      - "docs/ally-pathway-*.md"
+      - "ally-starter/**"
+      - "downloads/ally-*"
       - "tests/test_physician_stewardship.py"
       - "physician-starter/**"
       - "downloads/physician-*"
@@ -247,6 +263,9 @@ jobs:
           python3 scripts/scan-public-healthcare-artifacts.py assets/nurse-ai-os-media-packet.md --label MEDIA
           for artifact in physician.html physician-soul-quiz.html physician-setup.html physician-stewardship.html physician-starter/* downloads/physician-*; do
             python3 scripts/scan-public-healthcare-artifacts.py "$artifact" --label PHYSICIAN_PATHWAY
+          done
+          for artifact in ally.html ally-soul-quiz.html ally-setup.html ally-stewardship.html ally-starter/* downloads/ally-* docs/ally-pathway-*.md; do
+            python3 scripts/scan-public-healthcare-artifacts.py "$artifact" --label ALLY_PATHWAY
           done
       - name: Verify clean execution and whitespace
         run: |

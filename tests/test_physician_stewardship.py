@@ -49,6 +49,11 @@ class PhysicianStewardshipTests(unittest.TestCase):
         text=(ROOT/'physician-soul-quiz.html').read_text()
         for phrase in ['Credentials verified: false','A0 / no action','No management authority is claimed','No business ownership is claimed','Charter acceptance is voluntary and has not been recorded','service','partnership']:
             self.assertIn(phrase,text)
+    def test_pathway_pages_are_in_the_sitemap(self):
+        import xml.etree.ElementTree as ET
+        tree=ET.parse(ROOT/'sitemap.xml')
+        routes=[node.text for node in tree.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
+        for page in PAGES:self.assertEqual(routes.count('https://nurse-ai-os.org/'+page),1)
     def test_offline_tools_have_no_network_or_automatic_storage(self):
         for name in ['dashboard.html','mission-control.html','stewardship-ceremony.html']:
             text=(ROOT/'physician-starter'/name).read_text()

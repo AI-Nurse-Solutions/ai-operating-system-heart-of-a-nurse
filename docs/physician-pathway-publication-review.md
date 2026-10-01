@@ -1,7 +1,7 @@
 # Physician pathway — mission and publication review
 
-## Human decision requested
-Review and approve the physician-pathway charter language and the commemorative certificate. This is a publication candidate, not a deployed release. No push, pull request, merge, Pages deployment, runtime installation, or agent activation has been performed.
+## Approved release scope
+Robert approved the physician-pathway charter and commemorative certificate and authorized pushing and publishing this website release. The approval does not authorize clinical deployment, runtime installation, agent activation, or expanded data/tool permissions. This document records the prepublication review evidence; the PR and matching deployment are the release record.
 
 ## Mission
 Equip clinicians and people with healing, restorative, or stewardship roles to scale good. The nurse-led ethos is dignity, human primacy, honest learning, restoration, and responsible community contribution. Governance is the method of care at scale—not a substitute for compassion.

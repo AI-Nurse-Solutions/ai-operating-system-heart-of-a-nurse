@@ -23,6 +23,9 @@ on:
       - "assets/img/resident-journal-club.jpg"
       - "assets/img/resident-career-prep.jpg"
       - "assets/site-shell.js"
+      - "tests/test_physician_stewardship.py"
+      - "physician-starter/**"
+      - "downloads/physician-*"
       - "tests/test_leader_educator_home.py"
       - "personal-agi/signals/**"
       - "tests/test_signal_briefs.py"
@@ -117,6 +120,9 @@ on:
       - "assets/img/resident-journal-club.jpg"
       - "assets/img/resident-career-prep.jpg"
       - "assets/site-shell.js"
+      - "tests/test_physician_stewardship.py"
+      - "physician-starter/**"
+      - "downloads/physician-*"
       - "tests/test_leader_educator_home.py"
       - "personal-agi/signals/**"
       - "tests/test_signal_briefs.py"
@@ -239,6 +245,9 @@ jobs:
             python3 scripts/scan-public-healthcare-artifacts.py "$document" --label GOVERNANCE_RESOURCE
           done
           python3 scripts/scan-public-healthcare-artifacts.py assets/nurse-ai-os-media-packet.md --label MEDIA
+          for artifact in physician.html physician-soul-quiz.html physician-setup.html physician-stewardship.html physician-starter/* downloads/physician-*; do
+            python3 scripts/scan-public-healthcare-artifacts.py "$artifact" --label PHYSICIAN_PATHWAY
+          done
       - name: Verify clean execution and whitespace
         run: |
           git diff --check

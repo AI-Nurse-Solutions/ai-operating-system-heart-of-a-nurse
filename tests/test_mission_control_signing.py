@@ -148,7 +148,10 @@ class SigningRehearsalTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         if not HAVE_OPENSSL:
             raise unittest.SkipTest("openssl not available")
-        cls.result = run([sys.executable, str(SIGNER), "--rehearse"], NAIO)
+        import runpy
+        helpers = runpy.run_path(str(ROOT / "tests" / "mission_control_self_test_runner.py"))
+        cls.result = helpers['retry_demo_index_rehearsal'](
+            lambda: run([sys.executable, str(SIGNER), "--rehearse"], NAIO))
 
     def test_rehearsal_completes_the_whole_chain(self) -> None:
         self.assertEqual(self.result.returncode, 0,

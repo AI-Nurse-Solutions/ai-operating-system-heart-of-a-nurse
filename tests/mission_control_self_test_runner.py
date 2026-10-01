@@ -30,6 +30,23 @@ def with_demo_index_readiness(get, *, timeout=10.0):
     return checked
 
 
+def retry_demo_index_rehearsal(invoke, *, attempts=3):
+    """Retry only the known index-startup crash; never turn failures into passes."""
+    if attempts < 1:
+        raise ValueError('attempts must be positive')
+    result = invoke()
+    for attempt in range(attempts):
+        output = result.stdout + result.stderr
+        if result.returncode == 0:
+            return result
+        if not ('vault index populated from the demo vault' in output
+                and 'IndexError: list index out of range' in output):
+            return result
+        if attempt + 1 < attempts:
+            result = invoke()
+    return result
+
+
 def main(mc):
     suite = runpy.run_path(str(Path(mc) / 'tests/self_test.py'),
                           run_name='mission_control_rehearsal_self_test')

@@ -92,7 +92,9 @@ def read_self_test(output: str) -> SelfTestRun | None:
 
 
 def run_self_test(mc: Path) -> SelfTestRun:
-    r = run([sys.executable, "tests/self_test.py"], mc)
+    # Health is ready before the background demo index on fast CI runners.
+    # The test-only runner waits on actual results; signed sources stay intact.
+    r = run([sys.executable, str(ROOT / "tests" / "mission_control_self_test_runner.py"), str(mc)], mc)
     report = read_self_test(r.stdout)
     if report is None:
         raise AssertionError(f"could not read the self-test result in {mc}:\n"

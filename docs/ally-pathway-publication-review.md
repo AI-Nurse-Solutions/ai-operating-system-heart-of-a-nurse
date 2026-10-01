@@ -1,7 +1,9 @@
 # Non-Nurse Ally pathway — local publication review
 
 Date: 2026-09-30. Human release owner: **Robert Domondon**.
-Status: **prepared locally; not published; human review and release approval pending**.
+Status: **Robert approved the copy/design and authorized push and publication. Exact-head GitHub checks/review, deployment, and live verification remain release gates.**
+
+Approved scope: public educational ally pages, starter downloads, homepage invitation, and sitemap entries only. This does not authorize agent installation, runtime activation, clinical use, PHI access, external account connections, expanded permissions, or automatic production changes.
 Worktree branch: `hermes/ally-stewardship-prepublish`, based on `1fd015b2abe16629a5e97bc5dbad1138a639ae45`.
 
 ## Scope and release boundary

@@ -6,6 +6,7 @@ never seed notes, fabricate responses, skip assertions, or modify release bytes.
 """
 from __future__ import annotations
 import runpy
+import re
 import sys
 import time
 from pathlib import Path
@@ -39,8 +40,11 @@ def retry_demo_index_rehearsal(invoke, *, attempts=3):
         output = result.stdout + result.stderr
         if result.returncode == 0:
             return result
-        if not ('vault index populated from the demo vault' in output
-                and 'IndexError: list index out of range' in output):
+        plain = re.sub(r'\x1b\[[0-9;]*m', '', output)
+        failed_index = re.search(r'(?m)^\s*✗ vault index populated from the demo vault\s*$', plain)
+        failed_promotion = 'p_task = promote(notes[0]["id"], "task")' in plain
+        if not (failed_index and failed_promotion
+                and 'IndexError: list index out of range' in plain):
             return result
         if attempt + 1 < attempts:
             result = invoke()

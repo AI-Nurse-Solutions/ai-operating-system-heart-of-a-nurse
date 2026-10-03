@@ -183,9 +183,38 @@ software."
 - `hermes-configuration-handbook.html`
 - `remote-hermes-safely.html`
 
-`hermes-downloads/index.html` already says Hermes is "a separate,
-free, open-source desktop runtime from Nous Research", so it was left
-as is.
+`hermes-downloads/index.html` already said Hermes is "a separate,
+free, open-source desktop runtime from Nous Research". The follow-up below
+gave it the same marked note as the other pages, so no page is an
+exception.
+
+**Follow-up (PR after #138).** A later check found ten more pages whose
+`<title>` names Hermes and that carried no attribution. The English
+sentence was added to:
+
+- `cheat-sheet.html`
+- `when-things-go-wrong.html`
+
+A translation was added to the localized cheat sheets: `ar/`, `es/`,
+`fr/`, `hi/`, `ru/`, `tl/`, `vi/`, and `zh/cheat-sheet.html`. These
+translations are AI-drafted and need review by a fluent reader before
+they are treated as final.
+
+Every note now carries `data-attribution="hermes-independence"`.
+`nurse-manager/tests/test_notices.py` finds every page whose title
+names Hermes and requires exactly one such note mentioning Nous
+Research and Nurse AI OS, with no exceptions.
+`nurse-manager/tests/test_notices_browser.mjs` is the authority on what a
+reader sees. It renders each of those pages in Chromium with the site's own
+stylesheets and scripts, served over a local HTTP origin so root-relative
+links load the repo's files, and fast-forwards a minute of page timers so
+late scripts run first. It requires exactly one note that the browser
+computes as visible and legible, whose rendered text carries the page
+language's non-endorsement clause, taking the language from the page's own
+`<html lang>` rather than its folder. `.github/workflows/hermes-notices.yml` runs both
+tests whenever any HTML, CSS or JavaScript file changes. A page of any name
+becomes guarded once its title names Hermes, and a stylesheet or script
+could hide a note.
 
 **Listed for the owner, not edited.** These are hash-bound or owned by
 other areas.

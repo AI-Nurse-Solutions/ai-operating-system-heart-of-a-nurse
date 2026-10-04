@@ -8,7 +8,7 @@
     "IsoDate": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
     "IsoDateTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)$"},
     "Sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem|plf|plx)-[0-9a-f]{12}$"},
+    "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem|plf|plx|clr)-[0-9a-f]{12}$"},
     "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed"]},
     "SectionState": {"enum": ["ok", "empty"]},
 
@@ -1017,16 +1017,17 @@
         "prompt_sha256": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"const": ""}], "description": "Send it back with assistant-project; a change since the preview refuses the request."},
         "checks": {"type": "array", "items": {"$ref": "#/$defs/AssistantCheck"}},
         "will_send": {"type": "boolean"},
-        "reason": {"type": "string", "description": "Why nothing would be sent. Empty when will_send is true."}
+        "reason": {"type": "string", "description": "Why nothing would be sent. Empty when will_send is true."},
+        "classifier": {"$ref": "#/$defs/ClassifierPreview", "description": "JEV's refusal check on the question (ADR 0006): what it would be sent before the model sees the question. Send its request_sha256 back with assistant-project when will_send is true."}
       },
-      "required": ["project_id", "provider", "model", "runs_on", "system", "prompt", "prompt_sha256", "checks", "will_send", "reason"],
+      "required": ["project_id", "provider", "model", "runs_on", "system", "prompt", "prompt_sha256", "checks", "will_send", "reason", "classifier"],
       "additionalProperties": false
     },
     "ProjectAnswer": {
       "description": "The answer to a question about one project. It is a suggestion shown to the manager and is never saved; the ledger keeps only metadata.",
       "type": "object",
       "properties": {
-        "outcome": {"enum": ["answered", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "refused_stopped", "provider_failed", "output_refused", "stopped"]},
+        "outcome": {"enum": ["answered", "no_model", "refused_data_rules", "refused_policy", "refused_budget", "refused_stopped", "provider_failed", "output_refused", "stopped", "refused_intake"], "description": "refused_intake: JEV's refusal check stopped the question before the model saw it; request_id is then JEV's request."},
         "answered_by_model": {"type": "boolean"},
         "reason": {"type": "string", "description": "Written for the manager. Empty only when the model answered."},
         "provider": {"$ref": "#/$defs/AssistantProvider"},
@@ -1035,9 +1036,10 @@
         "project_id": {"$ref": "#/$defs/RecordId"},
         "question": {"type": "string", "description": "The question as asked, whitespace normalized. Send it back with note-keep."},
         "answer": {"type": "string", "description": "Markdown with record citations; empty unless the model answered."},
-        "source_refs": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}}
+        "source_refs": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}},
+        "refusal": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/ClassifierRefusal"}], "description": "Why JEV refused the question, and the nearest permitted path; null unless outcome is refused_intake."}
       },
-      "required": ["outcome", "answered_by_model", "reason", "provider", "model", "request_id", "project_id", "question", "answer", "source_refs"],
+      "required": ["outcome", "answered_by_model", "reason", "provider", "model", "request_id", "project_id", "question", "answer", "source_refs", "refusal"],
       "additionalProperties": false
     },
     "ProjectNote": {
@@ -1076,6 +1078,160 @@
         "revision": {"$ref": "#/$defs/Revision"}
       },
       "required": ["outcome", "drafted_by_model", "reason", "provider", "model", "request_id", "revision"],
+      "additionalProperties": false
+    },
+    "ClassifierJob": {"enum": ["action_review", "refusal_check", "routing", "attention"]},
+    "ClassifierProvider": {"description": "JEV, or nothing. 'none' is the default (ADR 0006).", "enum": ["none", "jev"]},
+    "ClassifierJobs": {
+      "description": "Which of JEV's jobs are on. All are off by default, and none can be on while JEV is not connected.",
+      "type": "object",
+      "properties": {
+        "action_review": {"type": "boolean"},
+        "refusal_check": {"type": "boolean"},
+        "routing": {"type": "boolean"},
+        "attention": {"type": "boolean"}
+      },
+      "required": ["action_review", "refusal_check", "routing", "attention"],
+      "additionalProperties": false
+    },
+    "ClassifierStatus": {
+      "description": "JEV settings, usage, what it does and never does, the gates every request passes, and TypeSafe's terms as read. Never the key.",
+      "type": "object",
+      "properties": {
+        "provider": {"$ref": "#/$defs/ClassifierProvider"},
+        "model": {"type": "string", "description": "The pinned model, e.g. jev-1.13.0; empty when not connected."},
+        "jobs": {"$ref": "#/$defs/ClassifierJobs"},
+        "daily_request_limit": {"type": "integer", "minimum": 0, "maximum": 2000},
+        "runs_on": {"type": "string", "description": "Where the text goes, said plainly."},
+        "keystore": {"type": "string", "description": "Where the key is kept: the operating system's credential store."},
+        "keystore_available": {"type": "boolean"},
+        "requests_today": {"type": "integer", "minimum": 0},
+        "input_tokens_this_month": {"type": "integer", "minimum": 0},
+        "what_it_does": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "never_does": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "gates": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "terms": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+      },
+      "required": ["provider", "model", "jobs", "daily_request_limit", "runs_on", "keystore", "keystore_available", "requests_today", "input_tokens_this_month", "what_it_does", "never_does", "gates", "terms"],
+      "additionalProperties": false
+    },
+    "ClassifierPreview": {
+      "description": "Exactly what asking JEV would send, and the gates' verdicts. Nothing is sent to produce it. When JEV is off or the job is off, request is empty and will_send is false.",
+      "type": "object",
+      "properties": {
+        "job": {"$ref": "#/$defs/ClassifierJob"},
+        "provider": {"$ref": "#/$defs/ClassifierProvider"},
+        "model": {"type": "string"},
+        "runs_on": {"type": "string"},
+        "request": {"type": "string", "description": "The exact JSON body JEV would receive."},
+        "request_sha256": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"const": ""}], "description": "Send it back with the request; a change since the preview refuses it."},
+        "checks": {"type": "array", "items": {"$ref": "#/$defs/AssistantCheck"}},
+        "will_send": {"type": "boolean"},
+        "reason": {"type": "string", "description": "Why nothing would be sent. Empty when will_send is true."}
+      },
+      "required": ["job", "provider", "model", "runs_on", "request", "request_sha256", "checks", "will_send", "reason"],
+      "additionalProperties": false
+    },
+    "ClassifierActionPreview": {
+      "description": "Exactly what asking JEV about one proposed action would send. Nothing is sent to produce it.",
+      "type": "object",
+      "properties": {
+        "action_id": {"$ref": "#/$defs/RecordId"},
+        "job": {"const": "action_review"},
+        "provider": {"$ref": "#/$defs/ClassifierProvider"},
+        "model": {"type": "string"},
+        "runs_on": {"type": "string"},
+        "request": {"type": "string"},
+        "request_sha256": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"const": ""}]},
+        "checks": {"type": "array", "items": {"$ref": "#/$defs/AssistantCheck"}},
+        "will_send": {"type": "boolean"},
+        "reason": {"type": "string"}
+      },
+      "required": ["action_id", "job", "provider", "model", "runs_on", "request", "request_sha256", "checks", "will_send", "reason"],
+      "additionalProperties": false
+    },
+    "ClassifierOutcome": {
+      "description": "What happened to one JEV request. Only 'answered' carries JEV's answer; every other outcome leaves things as they are without JEV.",
+      "enum": ["answered", "not_connected", "job_off", "refused_data_rules", "refused_policy", "refused_budget", "refused_stopped", "provider_failed", "output_refused", "stopped"]
+    },
+    "ClassifierOption": {"enum": ["allow", "require_human", "deny"]},
+    "ClassifierActionResult": {
+      "description": "JEV's suggestion beside the policy's decision on one action. A hold must be acknowledged before approval; the policy's decision never changes.",
+      "type": "object",
+      "properties": {
+        "action_id": {"$ref": "#/$defs/RecordId"},
+        "outcome": {"anyOf": [{"$ref": "#/$defs/ClassifierOutcome"}, {"const": "acknowledged"}]},
+        "reason": {"type": "string", "description": "Written for the manager."},
+        "request_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"const": ""}]},
+        "model": {"type": "string"},
+        "core_decision": {"$ref": "#/$defs/ClassifierOption", "description": "The policy's decision, as the option it corresponds to."},
+        "suggestion": {"anyOf": [{"$ref": "#/$defs/ClassifierOption"}, {"const": ""}]},
+        "probabilities": {
+          "type": "object",
+          "properties": {
+            "allow": {"type": "number", "minimum": 0, "maximum": 1},
+            "require_human": {"type": "number", "minimum": 0, "maximum": 1},
+            "deny": {"type": "number", "minimum": 0, "maximum": 1}
+          },
+          "additionalProperties": false
+        },
+        "confidence": {"anyOf": [{"type": "number", "minimum": 0, "maximum": 1}, {"type": "null"}]},
+        "hold": {"type": "boolean"},
+        "acknowledged": {"type": "boolean"}
+      },
+      "required": ["action_id", "outcome", "reason", "request_id", "model", "core_decision", "suggestion", "probabilities", "confidence", "hold", "acknowledged"],
+      "additionalProperties": false
+    },
+    "ClassifierRefusal": {
+      "description": "A refusal category JEV found in a question, and the nearest permitted path.",
+      "type": "object",
+      "properties": {
+        "category": {"enum": ["patient_information", "staff_performance", "employer_confidential", "clinical_decision", "named_person_judgment"]},
+        "label": {"type": "string"},
+        "nearest_path": {"type": "string"}
+      },
+      "required": ["category", "label", "nearest_path"],
+      "additionalProperties": false
+    },
+    "ClassifierRouteKey": {"enum": ["weekly_brief", "project_question", "pack_education", "pack_committee", "pack_communication", "library", "learning", "contributions", "memory", "outside"]},
+    "ClassifierRoute": {
+      "description": "Where JEV suggests a request belongs. A suggestion only: the manager chooses, and nothing starts.",
+      "type": "object",
+      "properties": {
+        "outcome": {"$ref": "#/$defs/ClassifierOutcome"},
+        "reason": {"type": "string"},
+        "request_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"const": ""}]},
+        "model": {"type": "string"},
+        "request": {"type": "string", "description": "The request as asked, whitespace normalized. Never stored."},
+        "suggested": {"anyOf": [{"$ref": "#/$defs/ClassifierRouteKey"}, {"const": ""}], "description": "Empty when JEV was not sure or did not answer."},
+        "label": {"type": "string"},
+        "confidence": {"anyOf": [{"type": "number", "minimum": 0, "maximum": 1}, {"type": "null"}]},
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {"route": {"$ref": "#/$defs/ClassifierRouteKey"}, "label": {"type": "string"}},
+            "required": ["route", "label"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["outcome", "reason", "request_id", "model", "request", "suggested", "label", "confidence", "alternatives"],
+      "additionalProperties": false
+    },
+    "ClassifierOrder": {
+      "description": "A suggested order for Needs my judgment. Every item is kept; no score is given. When JEV is unsure or unavailable, the usual order is returned.",
+      "type": "object",
+      "properties": {
+        "outcome": {"anyOf": [{"$ref": "#/$defs/ClassifierOutcome"}, {"enum": ["nothing_to_order", "too_many"]}]},
+        "reason": {"type": "string"},
+        "request_id": {"anyOf": [{"$ref": "#/$defs/RecordId"}, {"const": ""}]},
+        "model": {"type": "string"},
+        "order": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}},
+        "reordered": {"type": "boolean"}
+      },
+      "required": ["outcome", "reason", "request_id", "model", "order", "reordered"],
       "additionalProperties": false
     }
   }

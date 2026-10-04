@@ -36,7 +36,8 @@ RENDERER = resources.manager_root() / "renderer"
 READ_ONLY_COMMANDS = ("mission", "project", "board", "table", "weekly", "assistant",
                       "assistant-preview", "assistant-project-preview", "library",
                       "learning", "contributions", "memory", "packs", "document",
-                      "pilot-feedback", "pilot-feedback-preview")
+                      "pilot-feedback", "pilot-feedback-preview", "classifier",
+                      "classifier-route-preview", "classifier-order-preview")
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _PROJECT_ID = re.compile(r"^prj-[0-9a-f]{12}$")
 _DOCUMENT_ID = re.compile(r"^art-[0-9a-f]{12}$")
@@ -86,7 +87,12 @@ def read_argv(command: str, workspace: Path, query: dict[str, list[str]],
         if not _DOCUMENT_ID.fullmatch(document_id):
             return "id must be a document record id"
         argv += ["--id", document_id]
-    elif command in ("mission", "assistant-preview"):
+    elif command == "classifier-route-preview":
+        request = (query.get("request") or [""])[0]
+        if len(request) > 2000:
+            return "request is too long"
+        argv += ["--request", request]
+    elif command in ("mission", "assistant-preview", "classifier-order-preview"):
         argv += ["--today", day, "--week", week]
     elif command == "weekly":
         argv += ["--week", week]

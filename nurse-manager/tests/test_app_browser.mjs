@@ -18,6 +18,10 @@
 //   that no model runs by default, and that the privacy screen misses names
 // - pilot feedback (6.3): kept here, an identifier refused, and the saved file
 //   is byte for byte the text the manager previewed; nothing leaves 127.0.0.1
+// - JEV (ADR 0006): off by default; the manager's own key, never shown back;
+//   every job off until turned on; routing, ordering, and the refusal check
+//   each send exactly the previewed request, suggest only, and a refused
+//   question never reaches the AI model
 //
 // CHROME_PATH=/path/to/chrome overrides the system Chrome channel (local runs).
 // NURSE_AI_OS_BIN=/path/to/nurse-ai-os runs it against a packaged build.
@@ -79,7 +83,7 @@ try {
   const aboutText = await about.textContent();
   for (const fact of [/What it does\..*one workspace/s, /never emails, posts, or uploads anything/,
     /does not connect to your employer’s systems/, /Your data stays on this computer\..*never uploaded/s,
-    /No AI model runs by default\..*No cloud AI service is offered/s, /sample workspace is synthetic/,
+    /No AI model runs by default\..*No cloud AI service drafts or answers for you\. JEV, an optional classifier, is off unless you connect it/s, /sample workspace is synthetic/,
     /Your own workspace starts empty/, /It does not detect people’s names\./,
     /Passing it never means text is free of patient information/]) {
     assert.match(aboutText, fact);
@@ -722,7 +726,224 @@ try {
   await samplePage.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
   assert.equal(await Promise.race([sample.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
 
-  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory, stop control, packs, help and pilot feedback pass');
+  // --- JEV (ADR 0006): off by default, my own key, suggestions only -------
+  // JEV is pointed at a stand-in on 127.0.0.1 and its key kept in memory by
+  // a launcher that patches the module, since the app takes neither from
+  // its environment. A packaged build cannot be patched, so it skips this.
+  if (process.env.NURSE_AI_OS_BIN) {
+    console.log('JEV journey skipped: it needs the stand-in launcher, which a packaged build has not.');
+  } else {
+    const JEV_KEY = 'ts-browser-test-key-0123456789';
+    /** @type {string[]} */
+    const jevRaw = [];
+    const jevServer = createServer((req, res) => {
+      let raw = '';
+      req.on('data', (chunk) => { raw += chunk; });
+      req.on('end', () => {
+        if (req.headers.authorization !== `Bearer ${JEV_KEY}`) {
+          res.writeHead(401);
+          res.end();
+          return;
+        }
+        jevRaw.push(raw);
+        const body = JSON.parse(raw);
+        const text = JSON.stringify(body.state).toLowerCase();
+        const ids = Object.keys(body.questions);
+        const answers = {};
+        for (const [id, q] of Object.entries(body.questions)) {
+          if (q.type === 'noul') {
+            answers[id] = { type: 'noul', noul: id === 'patient_information' && text.includes('patient') ? 0.95 : 0.02 };
+          } else if (q.type === 'choice') {
+            const options = Object.keys(q.criteria);
+            const pick = text.includes('message') && options.includes('pack_communication') ? 'pack_communication' : options[0];
+            const rest = 0.1 / (options.length - 1);
+            answers[id] = {
+              type: 'choice', choice: pick, confidence: 0.9,
+              probabilities: Object.fromEntries(options.map((o) => [o, o === pick ? 0.9 : rest])),
+            };
+          } else {
+            // The last item is the most urgent, so the suggested order differs from the usual one.
+            const level = id === ids.at(-1) ? 4 : 1;
+            answers[id] = {
+              type: 'score', score: level, confidence: 0.85,
+              legend: Object.fromEntries(q.criteria.map((c, i) => [String(i + 1), c])),
+              probabilities: Object.fromEntries([1, 2, 3, 4].map((i) => [String(i), i === level ? 0.85 : 0.05])),
+            };
+          }
+        }
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end(JSON.stringify({ model: body.model, answers, usage: { input_tokens: 64, output_tokens: 0 } }));
+      });
+    });
+    const jevModelRequests = [];
+    const jevModel = createServer((req, res) => {
+      let raw = '';
+      req.on('data', (chunk) => { raw += chunk; });
+      req.on('end', () => {
+        const body = JSON.parse(raw);
+        jevModelRequests.push(body);
+        const kept = body.prompt.split('\n').filter((line) => line.startsWith('#') || line.includes('`'));
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end(JSON.stringify({ response: kept.join('\n'), done: true }));
+      });
+    });
+    await new Promise((done) => jevServer.listen(0, '127.0.0.1', done));
+    await new Promise((done) => jevModel.listen(0, '127.0.0.1', done));
+    try {
+      const launcher = [
+        'import sys',
+        'from nurse_manager import app, classifier, credentials',
+        'keys = credentials.MemoryKeyStore()',
+        'classifier.default_keystore = lambda: keys',
+        'classifier.JEV_ENDPOINT = sys.argv[1]',
+        'sys.exit(app.main(sys.argv[2:]))',
+      ].join('\n');
+      const jevApp = await new Promise((resolve, reject) => {
+        const child = spawn('python3', ['-c', launcher, `http://127.0.0.1:${jevServer.address().port}/v1/systemone`,
+          '--no-browser', '--print-url', '--idle-timeout', '120', '--home', join(work, 'jev')], { env });
+        const exited = new Promise((done) => child.on('exit', (code) => done(code)));
+        let out = '';
+        child.stdout.on('data', (chunk) => {
+          out += chunk;
+          if (out.includes('\n')) resolve({ child, url: out.split('\n')[0].trim(), exited });
+        });
+        child.on('error', reject);
+      });
+      apps.push(jevApp);
+      const jevBase = jevApp.url.split('#')[0];
+      const jp = await (await browser.newContext({ viewport: { width: 1280, height: 900 } })).newPage();
+      const jevErrors = [];
+      jp.on('console', (m) => { if (m.type() === 'error') jevErrors.push(m.text()); });
+      jp.on('pageerror', (e) => jevErrors.push(e.message));
+      const away = [];
+      jp.on('request', (r) => { if (!r.url().startsWith(jevBase)) away.push(r.url()); });
+      const focused = (pattern) => jp.waitForFunction((source) => new RegExp(source).test(document.activeElement?.textContent ?? ''),
+        pattern.source, { timeout: 15000 });
+      await jp.goto(jevApp.url);
+      await jp.waitForSelector('.view--onboarding');
+      await jp.getByRole('button', { name: 'Explore the sample workspace' }).click();
+      await jp.waitForSelector('.view--mission');
+      assert.equal(await jp.locator('#route').count(), 0, 'no JEV on Mission Control while it is off');
+      assert.equal(await jp.getByRole('button', { name: 'Suggest an order with JEV' }).count(), 0);
+
+      // Off by default; what it does, never does, and TypeSafe's terms, before any key.
+      await jp.getByRole('link', { name: 'AI assistance' }).click();
+      await jp.waitForSelector('.view--assistant');
+      const jevRegion = jp.getByRole('region', { name: 'JEV classifier' });
+      const off = await jevRegion.textContent();
+      assert.match(off, /Not connected.*Nothing is ever sent to JEV/s);
+      assert.match(off, /It never writes text/);
+      assert.match(off, /never approves, sends, or exports anything, and never lowers a tier/);
+      assert.match(off, /no business associate agreement/);
+      assert.equal(await jevRegion.getByLabel('Your TypeSafe API key').getAttribute('type'), 'password');
+      await jevRegion.getByLabel('Your TypeSafe API key').fill(JEV_KEY);
+      await jevRegion.getByLabel('JEV requests per day, at most').fill('50');
+      await jevRegion.getByRole('button', { name: 'Connect JEV' }).click();
+      await focused(/JEV is connected\. Every job is off/);
+      assert.ok(!(await jp.content()).includes(JEV_KEY), 'the key is never shown back');
+      const on = await jevRegion.textContent();
+      assert.match(on, /Connected.*JEV \(jev-1\.13\.0\).*kept in test memory/s);
+      assert.match(on, /JEV requests today: 0 of 50/);
+      for (const job of [/^Action review/, /^Refusal check/, /^Routing/, /^Attention order/]) {
+        assert.equal(await jevRegion.getByLabel(job).isChecked(), false, `${job} starts off`);
+        await jevRegion.getByLabel(job).check();
+      }
+      await jevRegion.getByRole('button', { name: 'Save jobs' }).click();
+      await focused(/JEV's jobs are saved/);
+      assert.equal(jevRaw.length, 0, 'connecting and turning jobs on sends nothing to JEV');
+
+      // Routing: a suggestion after a byte-exact preview; the manager chooses.
+      await jp.getByRole('link', { name: 'Mission Control', exact: true }).click();
+      await jp.waitForSelector('.view--mission');
+      const route = jp.getByRole('region', { name: 'Where does this belong?' });
+      await route.getByLabel('What do you want to do?').fill('Draft a huddle message about the float process');
+      await route.getByRole('button', { name: 'Preview what JEV would see' }).click();
+      await jp.waitForFunction(() => document.activeElement?.id === 'route-jev-preview-heading');
+      const routeSent = await route.getByLabel('The request JEV would receive').textContent();
+      assert.match(routeSent, /Draft a huddle message about the float process/);
+      assert.equal(jevRaw.length, 0, 'a preview sends nothing');
+      await route.getByRole('button', { name: 'Ask JEV' }).click();
+      await jp.waitForFunction(() => document.activeElement?.id === 'route-result');
+      assert.equal(jevRaw.length, 1);
+      assert.equal(jevRaw[0], routeSent, 'what JEV received is byte for byte what was shown');
+      const routeResult = route.locator('#route-result');
+      assert.match(await routeResult.textContent(), /JEV suggests: Communication pack.*You choose\./s);
+      assert.equal(await routeResult.getByRole('link', { name: 'Communication pack' }).first().getAttribute('href'), '#/packs');
+      assert.ok(await routeResult.getByRole('link', { name: 'Library' }).count() >= 1, 'every other place is a click away');
+
+      // Attention order: every item kept, the usual order a click away, and no number shown.
+      const judgment = jp.getByRole('region', { name: 'Needs my judgment' });
+      const order = () => judgment.locator('li[data-record-id]').evaluateAll((els) => els.map((el) => el.getAttribute('data-record-id')));
+      const usual = await order();
+      assert.ok(usual.length >= 2, 'the sample has something to order');
+      await judgment.getByRole('button', { name: 'Suggest an order with JEV' }).click();
+      await jp.waitForFunction(() => document.activeElement?.id === 'order-jev-preview-heading');
+      const orderSent = await judgment.getByLabel('The request JEV would receive').textContent();
+      for (const item of JSON.parse(orderSent).state.items) {
+        assert.deepEqual(Object.keys(item).sort(), ['due', 'item', 'kind', 'title'], 'no owner and no record id is sent');
+      }
+      await judgment.getByRole('button', { name: 'Ask JEV' }).click();
+      await focused(/Shown in the order JEV suggests\. Every item is still here\./);
+      assert.equal(jevRaw.at(-1), orderSent);
+      assert.deepEqual(await order(), [usual.at(-1), ...usual.slice(0, -1)]);
+      assert.doesNotMatch(await judgment.textContent(), /score|confiden|\d+ ?%|0\.\d/i, 'no score or confidence is shown');
+      await judgment.getByRole('button', { name: 'Show my usual order' }).click();
+      await focused(/Shown in your usual order/);
+      assert.deepEqual(await order(), usual);
+
+      // Refusal check: JEV's request is part of the question's preview, and a
+      // question it confidently refuses never reaches the AI model.
+      await jp.getByRole('link', { name: 'AI assistance' }).click();
+      await jp.waitForSelector('.view--assistant');
+      await jp.getByLabel('Model name').fill('llama3.2');
+      await jp.getByLabel('Model server address').fill(`http://127.0.0.1:${jevModel.address().port}`);
+      await jp.getByLabel('Model server address').press('Enter');
+      await focused(/Connected to the AI model/);
+      await jp.getByRole('link', { name: 'Mission Control', exact: true }).click();
+      await jp.waitForSelector('.view--mission');
+      await jp.getByRole('region', { name: 'Projects in motion' }).getByRole('link').first().click();
+      await jp.waitForSelector('.view--project');
+      const think = jp.getByRole('region', { name: 'Think with this project' });
+      const ask = async (question) => {
+        await think.getByLabel('What do you want to think through?').fill(question);
+        await think.getByRole('button', { name: 'Preview what will be sent' }).click();
+        await jp.waitForFunction(() => document.activeElement?.id === 'think-preview-heading');
+        assert.match(await think.locator('#think-jev-check').textContent(), /JEV checks the question first.*If JEV is confident it finds one, nothing goes to the AI model/s);
+        const checkSent = await think.getByLabel('The request JEV would receive').textContent();
+        assert.ok(checkSent.includes(JSON.stringify(question).slice(1, -1)), 'the question is in what JEV would receive');
+        await think.getByRole('button', { name: 'Send to llama3.2' }).click();
+        return checkSent;
+      };
+      const refusedSent = await ask('Should the patient who fell get a different treatment plan?');
+      await focused(/Not sent to the AI model: JEV found patient information in the question\./);
+      assert.equal(jevRaw.at(-1), refusedSent);
+      assert.equal(jevModelRequests.length, 0, 'the AI model never saw the refused question');
+      assert.equal(await jp.getByRole('document', { name: 'AI suggestion' }).count(), 0);
+      await ask('What is at risk before the next milestone?');
+      await focused(/The AI model answered/);
+      assert.equal(jevModelRequests.length, 1, 'a question JEV clears goes on to the AI model');
+
+      // Disconnect: every job off and the key removed; Mission Control is as before.
+      await jp.getByRole('link', { name: 'AI assistance' }).click();
+      await jp.waitForSelector('.view--assistant');
+      assert.match(await jevRegion.textContent(), /JEV requests today: 4 of 50/);
+      await jevRegion.getByRole('button', { name: 'Disconnect JEV' }).click();
+      await focused(/JEV is disconnected and your key is removed/);
+      assert.match(await jevRegion.textContent(), /Not connected/);
+      await jp.getByRole('link', { name: 'Mission Control', exact: true }).click();
+      await jp.waitForSelector('.view--mission');
+      assert.equal(await jp.locator('#route').count(), 0, 'JEV leaves Mission Control when it is disconnected');
+      assert.deepEqual(away, [], 'the browser talks only to the app; JEV is reached by the app, after a preview');
+      assert.deepEqual(jevErrors, [], 'no console errors on the JEV page');
+      await jp.getByRole('button', { name: 'Quit Nurse AI OS' }).click();
+      assert.equal(await Promise.race([jevApp.exited, new Promise((r) => setTimeout(() => r('still running'), 10000))]), 0);
+    } finally {
+      jevServer.close();
+      jevModel.close();
+    }
+  }
+
+  console.log('nurse-manager local app: token, onboarding, session, quit, sample, weekly brief, AI assistance, project questions, feedback, library, learning, contributions, recurring brief, memory, stop control, packs, help and pilot feedback, JEV classifier pass');
 } finally {
   await browser?.close();
   for (const app of apps) app.child.kill();

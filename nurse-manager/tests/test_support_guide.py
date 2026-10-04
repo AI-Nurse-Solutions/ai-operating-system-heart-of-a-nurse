@@ -42,8 +42,8 @@ class GuideCoversTheStepTests(unittest.TestCase):
     def test_every_topic_the_step_asks_for_has_a_section(self):
         headings = re.findall(r"^## \d+\. (.+)$", TEXT, re.M)
         for topic in ("Install and launch", "Back up", "Restore", "After a crash",
-                      "Stopping assistants", "How packs are reviewed", "Pilot feedback",
-                      "Where to get help"):
+                      "Stopping assistants", "JEV, the optional classifier",
+                      "How packs are reviewed", "Pilot feedback", "Where to get help"):
             with self.subTest(topic=topic):
                 self.assertIn(topic, headings)
 
@@ -64,8 +64,9 @@ class CommandsExistTests(unittest.TestCase):
                 self.assertEqual(parsed.command, argv[0])
 
     def test_every_command_and_option_named_in_the_text_exists(self):
-        for name in re.findall(r"`(pilot-feedback[a-z-]*|reconcile|export|approve|run|backup|restore)\b",
-                               TEXT):
+        for name in re.findall(
+                r"`(pilot-feedback[a-z-]*|classifier[a-z-]*|reconcile|export|approve|run|backup|restore)\b",
+                TEXT):
             with self.subTest(command=name):
                 self.assertIn(name, cli.commands())
         options = {o for a in cli.build_parser()._subparsers._group_actions[0].choices.values()
@@ -76,7 +77,8 @@ class CommandsExistTests(unittest.TestCase):
 
     def test_the_app_itself_cannot_export_backup_restore_or_reconcile(self):
         # The guide says these need the command surface: the screens cannot reach them.
-        for command in ("export", "approve", "run", "backup", "restore", "reconcile"):
+        for command in ("export", "approve", "run", "backup", "restore", "reconcile",
+                        "classifier-action", "classifier-acknowledge"):
             with self.subTest(command=command):
                 self.assertNotIn(command, local_app.WRITE_COMMANDS)
 
@@ -87,7 +89,10 @@ class WhatItQuotesIsOnScreenTests(unittest.TestCase):
                       "Nurse AI OS has stopped", "Assistants at work", "Stop all assistants",
                       "Stop assistants", "Let assistants work again", "AI assistance",
                       "Disconnect the AI model", "Help and feedback", "Preview what will be shared",
-                      "Save as a file"):
+                      "Save as a file", "JEV classifier", "Connect JEV", "Save jobs",
+                      "Refusal check", "Routing", "Attention order", "Action review",
+                      "Where does this belong?", "Suggest an order with JEV",
+                      "Show my usual order", "Disconnect JEV"):
             with self.subTest(label=label):
                 self.assertIn(label, RENDERER)
         self.assertIn('"This page is not connected to Nurse AI OS. Reopen the app."',

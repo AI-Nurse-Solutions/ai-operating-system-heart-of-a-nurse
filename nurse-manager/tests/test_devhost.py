@@ -64,6 +64,8 @@ class DevHostTests(unittest.TestCase):
                     query = f"?id={self.document_id}"
                 if command == "assistant-project-preview":
                     query = f"?id={self.project_id}&question=What%20next%3F"
+                if command == "classifier-route-preview":
+                    query = "?request=Draft%20a%20huddle%20message"
                 response, body = self.request(f"/ipc/{command}{query}")
                 self.assertEqual(response.status, 200)
                 argv = [command, str(self.workspace)]
@@ -77,8 +79,10 @@ class DevHostTests(unittest.TestCase):
                     argv += ["--id", self.document_id]
                 if command == "weekly":
                     argv += ["--week", "2026-09-28"]
-                if command == "assistant-preview":
+                if command in ("assistant-preview", "classifier-order-preview"):
                     argv += ["--today", TODAY, "--week", "2026-09-28"]
+                if command == "classifier-route-preview":
+                    argv += ["--request", "Draft a huddle message"]
                 if command == "assistant-project-preview":
                     argv += ["--id", self.project_id, "--today", TODAY, "--question", "What next?"]
                 self.assertEqual(json.loads(body), cli.run(argv)[1])
@@ -87,6 +91,9 @@ class DevHostTests(unittest.TestCase):
         for command in ("brief", "accept", "export", "approve", "run", "backup", "restore",
                         "init", "sample", "show", "assistants-stop", "assistants-resume",
                         "pilot-feedback-add", "pilot-feedback-delete", "pilot-feedback-export",
+                        "classifier-connect", "classifier-off", "classifier-jobs",
+                        "classifier-route", "classifier-order", "classifier-action",
+                        "classifier-acknowledge",
                         "reconcile"):
             with self.subTest(command=command):
                 self.assertEqual(self.request(f"/ipc/{command}")[0].status, 404)

@@ -27,7 +27,9 @@ patient, employee-performance, or confidential employer information:
 - [`docs/02-contract-map.md`](docs/02-contract-map.md): Florence-X ↔ Integration Contract ↔ manager records, and the record-writer register.
 - [`docs/03-weekly-brief-journey.md`](docs/03-weekly-brief-journey.md): the first workflow, including its states and failure states.
 - [`docs/04-support-guide.md`](docs/04-support-guide.md): for a pilot manager and their support person. Covers launch, backup and restore, what to do after a crash, stopping assistants, how packs are reviewed, pilot feedback, and where to get help.
-- [`docs/adr/`](docs/adr/): architecture decisions. ADRs 0001–0004 were accepted by the steward on 2026-09-28.
+- [`docs/05-hermes-review.md`](docs/05-hermes-review.md): Hermes branding and redistribution review (build step 0.8). What this project must include, and what it may say.
+- [`docs/06-architecture-direction.md`](docs/06-architecture-direction.md): proposed architecture direction and build-plan additions after the v2.0 concept notes. It lists ten direction decisions, a pilot-ready subset of steps, and the steward decisions they need (§6). Draft for steward review.
+- [`docs/adr/`](docs/adr/): architecture decisions. ADRs 0001–0004 were accepted by the steward on 2026-09-28. ADR 0005 (scope against the v2.0 concept notes) is proposed, not accepted. ADR 0006 (JEV as an opt-in classifier) was accepted by the steward on 2026-10-04.
 
 ## Try it
 
@@ -63,8 +65,9 @@ edit it by hand.
 
 There is no AI model by default, and every workflow works without one
 (ADR 0004). A manager may connect a model that runs on their own
-computer; text never leaves the device. No cloud AI service is offered
-until the steward chooses one.
+computer; text never leaves the device. No cloud AI service drafts or
+answers until the steward chooses one. JEV, an optional classifier, is
+described below.
 
 In the app, **AI assistance** connects or disconnects the model,
 **Weekly brief** offers "Draft with AI…", and each project dashboard offers
@@ -97,6 +100,37 @@ If any gate stops the request, or the model is unavailable, the manager
 gets the draft composed from records and the reason. There is never a
 silent switch to another service. The request ledger keeps hashes and
 outcomes, never the text.
+
+### JEV, the optional classifier (ADR 0006)
+
+JEV, from TypeSafe AI, answers yes-or-no, choice, and score questions
+about text the manager has reviewed. It never writes text, and it can only
+make things stricter. It never approves anything, removes a review step,
+or changes the EDENA policy's decision.
+
+- It is off by default. The manager connects their own key, which is kept
+  in the operating system's credential store and never in the workspace
+  file.
+- Each job is switched on separately:
+  - action review: a confident stricter suggestion holds approval until
+    the manager acknowledges it;
+  - a refusal check before the AI model sees a project question;
+  - a suggested place to start (routing);
+  - a suggested order for "Needs my judgment", with no number shown.
+- Each request passes the data rules, EDENA at `recommend`, a daily
+  request limit, and the stop control. Its body is byte for byte the
+  preview the manager saw. The ledger keeps hashes and outcomes, never
+  the text.
+- When JEV is unsure or unavailable, everything works as it does without
+  it, and the manager is told why.
+
+```bash
+python3 -m nurse_manager classifier /tmp/mgr                     # settings, usage, terms, and the gates
+python3 -m nurse_manager classifier-connect /tmp/mgr --by "Sample Manager" --key-from stdin   # then paste the key
+python3 -m nurse_manager classifier-jobs /tmp/mgr --by "Sample Manager" --routing yes
+python3 -m nurse_manager classifier-route-preview /tmp/mgr --request "Draft a huddle message"   # sends nothing
+python3 -m nurse_manager classifier-off /tmp/mgr --by "Sample Manager"   # every job off, the key removed
+```
 
 ## Run the app
 
@@ -149,6 +183,8 @@ never become markup.
 | `src/nurse_manager/brief.py` | Deterministic weekly brief; revisions; acceptance bound to text hash |
 | `src/nurse_manager/actions.py` | Governed action boundary: propose → evaluate → approve → recheck → execute → receipt |
 | `src/nurse_manager/assistant.py` | Bounded assistance (ADR 0004): no model by default, a model on this computer, the same gates for every provider, honest fallback |
+| `src/nurse_manager/classifier.py` | JEV as an opt-in classifier (ADR 0006): four jobs that advise and can only tighten, the same gates, a byte-exact preview, a ledger without text |
+| `src/nurse_manager/credentials.py` | The operating system's credential stores (macOS Keychain, Secret Service, Windows Credential Manager) for a cloud service's key |
 | `src/nurse_manager/pilot.py` | Pilot feedback (6.3): kept on this computer, screened at capture and again at export, and exported only as the text the manager previewed |
 | `src/nurse_manager/florence_adapter.py` | Projects actions onto Florence-X `CandidateAction` / `EDENADecision` (no names, hash not content) |
 | `contracts/florence-x/` | Pinned, unmodified Florence-X JSON Schemas with provenance |

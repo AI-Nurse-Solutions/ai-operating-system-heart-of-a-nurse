@@ -24,14 +24,16 @@ SRC = Path(__file__).resolve().parents[1] / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from nurse_manager import cli, update  # noqa: E402
+from nurse_manager import classifier, cli, credentials, update  # noqa: E402
 
 OWNER = "Sample Manager"
+# A throwaway key for the stand-in JEV server; never a real TypeSafe key.
+JEV_TEST_KEY = "ts-test-key-0123456789abcdef"
 WEEK, TODAY = "2026-09-28", "2026-09-30"
 
 
-def _run(*argv) -> tuple[int, dict]:
-    return cli.run([str(a) for a in argv])
+def _run(*argv, secret: str | None = None) -> tuple[int, dict]:
+    return cli.run([str(a) for a in argv], secret=secret)
 
 
 @contextmanager
@@ -60,6 +62,66 @@ def _stand_in_model():
         httpd.server_close()
 
 
+@contextmanager
+def _stand_in_jev():
+    """A stand-in JEV server: answers every question within the contract.
+
+    It refuses a question that asks to rank people, holds every action it is
+    asked about (deny, confidently), routes messages to the communication
+    pack, and scores approvals as most urgent.
+    """
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+
+        def do_POST(self):
+            body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            if self.headers.get("Authorization") != f"Bearer {JEV_TEST_KEY}":
+                self.send_response(401)
+                self.end_headers()
+                return
+            state = body["state"]
+            text = json.dumps(state).lower()
+            answers = {}
+            for qid, q in body["questions"].items():
+                if q["type"] == "noul":
+                    yes = 0.95 if qid == "named_person_judgment" and "rank" in text else 0.02
+                    answers[qid] = {"type": "noul", "noul": yes}
+                elif q["type"] == "choice":
+                    options = list(q["criteria"])
+                    pick = ("deny" if "deny" in options else
+                            "pack_communication" if "message" in text else options[0])
+                    rest = (1 - 0.9) / (len(options) - 1)
+                    answers[qid] = {"type": "choice", "choice": pick, "confidence": 0.9,
+                                    "probabilities": {o: 0.9 if o == pick else rest
+                                                      for o in options}}
+                else:
+                    n = int(qid.split("_")[1])
+                    kind = state["items"][n - 1]["kind"]
+                    level = 4 if "approve" in kind else 2
+                    probs = {str(i): (0.85 if i == level else 0.05) for i in range(1, 5)}
+                    answers[qid] = {"type": "score", "score": level, "confidence": 0.8,
+                                    "legend": {str(i): c for i, c in
+                                               enumerate(q["criteria"], start=1)},
+                                    "probabilities": probs}
+            payload = json.dumps({"model": body["model"], "answers": answers,
+                                  "usage": {"input_tokens": 64, "output_tokens": 0}}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        yield f"http://127.0.0.1:{httpd.server_port}/v1/systemone"
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+
+
 def _closed_port() -> int:
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
@@ -71,8 +133,8 @@ def collect(workdir: Path) -> dict[str, dict]:
     ws, empty = workdir / "ws", workdir / "empty"
     out: dict[str, dict] = {}
 
-    def keep(name: str, *argv) -> dict:
-        code, envelope = _run(*argv)
+    def keep(name: str, *argv, secret: str | None = None) -> dict:
+        code, envelope = _run(*argv, secret=secret)
         if (code == 0) != envelope.get("ok"):
             raise RuntimeError(f"{name}: exit code {code} disagrees with envelope")
         out[name] = envelope
@@ -225,6 +287,8 @@ def collect(workdir: Path) -> dict[str, dict]:
             keep("error-update-check-no-signature", "update-check", "--feed",
                  feeds / "feed-seq5.json")
 
+    _collect_classifier(workdir, keep)
+
     # Bounded assistance (ADR 0004): no model by default, then a local model.
     keep("assistant", "assistant", ws)
     keep("assistant-preview-no-model", "assistant-preview", ws, "--week", WEEK, "--today", TODAY)
@@ -297,6 +361,89 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("weekly-stopped", "weekly", scheduled, "--week", WEEK)
     return out
 
+
+
+def _collect_classifier(workdir: Path, keep) -> None:
+    """JEV as a classifier (ADR 0006), in a workspace of its own, against stand-ins."""
+    ws = workdir / "jev"
+    data = keep("sample-jev", "sample", ws)
+    week, today = data["week_of"], data["today"]
+    project_id = keep("mission-jev", "mission", ws, "--today", today, "--week", week)[
+        "projects_in_motion"]["items"][0]["id"]
+    request = "Draft a huddle message about the new hand hygiene audit"
+    keys = credentials.MemoryKeyStore()
+    with _stand_in_model() as model_endpoint, _stand_in_jev() as jev_endpoint, \
+            mock.patch.object(classifier, "default_keystore", return_value=keys), \
+            mock.patch.object(classifier, "JEV_ENDPOINT", jev_endpoint):
+        keep("classifier", "classifier", ws)
+        keep("classifier-route-preview-off", "classifier-route-preview", ws, "--request", request)
+        keep("classifier-route-off", "classifier-route", ws, "--request", request, "--by", OWNER,
+             "--reviewed-sha", "0" * 64)
+        keep("error-classifier-jobs-not-connected", "classifier-jobs", ws, "--by", OWNER,
+             "--routing", "yes")
+        keep("error-classifier-connect-bad-key", "classifier-connect", ws, "--by", OWNER,
+             "--key-from", "stdin", secret="not a key")
+        keep("error-classifier-connect-not-owner", "classifier-connect", ws, "--by",
+             "Someone Else", "--key-from", "stdin", secret=JEV_TEST_KEY)
+        keep("classifier-connect", "classifier-connect", ws, "--by", OWNER, "--key-from",
+             "stdin", secret=JEV_TEST_KEY)
+        keep("classifier-jobs", "classifier-jobs", ws, "--by", OWNER, "--action-review", "yes",
+             "--refusal-check", "yes", "--routing", "yes", "--attention", "yes")
+        # Routing: a suggestion bound to the preview; the manager chooses.
+        routed = keep("classifier-route-preview", "classifier-route-preview", ws,
+                      "--request", request)
+        keep("error-classifier-route-stale", "classifier-route", ws, "--request", request,
+             "--by", OWNER, "--reviewed-sha", "0" * 64)
+        keep("classifier-route", "classifier-route", ws, "--request", request, "--by", OWNER,
+             "--reviewed-sha", routed["request_sha256"])
+        # The refusal check runs only when the question would reach a model.
+        keep("assistant-local-jev", "assistant-local", ws, "--model", "llama3.2", "--by", OWNER,
+             "--endpoint", model_endpoint)
+        for name, question in (("refused-intake", "Rank my staff from strongest to weakest"),
+                               ("checked", "What should I do first?")):
+            asked = keep(f"assistant-project-preview-{name}", "assistant-project-preview", ws,
+                         "--id", project_id, "--today", today, "--question", question)
+            keep(f"assistant-project-{name}", "assistant-project", ws, "--id", project_id,
+                 "--today", today, "--question", question, "--by", OWNER, "--reviewed-sha",
+                 asked["prompt_sha256"], "--reviewed-classifier-sha",
+                 asked["classifier"]["request_sha256"])
+        keep("error-assistant-project-classifier-unreviewed", "assistant-project", ws, "--id",
+             project_id, "--today", today, "--question", "What should I do first?", "--by",
+             OWNER)
+        # Action review: a confident, stricter suggestion holds the approval.
+        draft = keep("brief-jev", "brief", ws, "--week", week, "--today", today)
+        keep("accept-jev", "accept", ws, "--revision", draft["id"], "--reviewer", OWNER,
+             "--sha", draft["sha256"])
+        action = keep("export-jev", "export", ws, "--revision", draft["id"], "--file",
+                      "week.md", "--by", OWNER)
+        ordered = keep("classifier-order-preview", "classifier-order-preview", ws,
+                       "--today", today, "--week", week)
+        keep("classifier-order", "classifier-order", ws, "--today", today, "--week", week,
+             "--by", OWNER, "--reviewed-sha", ordered["request_sha256"])
+        reviewed = keep("classifier-action-preview", "classifier-action-preview", ws,
+                        "--action", action["id"])
+        keep("classifier-action", "classifier-action", ws, "--action", action["id"], "--by",
+             OWNER, "--reviewed-sha", reviewed["request_sha256"])
+        keep("error-classifier-action-again", "classifier-action", ws, "--action", action["id"],
+             "--by", OWNER, "--reviewed-sha", reviewed["request_sha256"])
+        keep("error-approve-held-by-jev", "approve", ws, "--action", action["id"], "--approver",
+             OWNER, "--sha", action["payload_sha256"], "--destination", "week.md")
+        keep("classifier-acknowledge", "classifier-acknowledge", ws, "--action", action["id"],
+             "--by", OWNER)
+        keep("error-classifier-acknowledge-again", "classifier-acknowledge", ws, "--action",
+             action["id"], "--by", OWNER)
+        keep("approve-after-jev-hold", "approve", ws, "--action", action["id"], "--approver",
+             OWNER, "--sha", action["payload_sha256"], "--destination", "week.md")
+        keep("classifier-used", "classifier", ws)
+        keep("mission-jev-after", "mission", ws, "--today", today, "--week", week)
+        # Unreachable: nothing changes, and the manager is told why.
+        with mock.patch.object(classifier, "JEV_ENDPOINT",
+                               f"http://127.0.0.1:{_closed_port()}/v1/systemone"):
+            down = keep("classifier-route-preview-unreachable", "classifier-route-preview", ws,
+                        "--request", request)
+            keep("classifier-route-unavailable", "classifier-route", ws, "--request", request,
+                 "--by", OWNER, "--reviewed-sha", down["request_sha256"])
+        keep("classifier-off", "classifier-off", ws, "--by", OWNER)
 
 def main(argv: list[str]) -> int:
     if len(argv) != 1:

@@ -297,7 +297,12 @@ class MigrationTests(unittest.TestCase):
                 old.close()
             new = ManagerWorkspace(tmp / "ws", clock=fixed_clock())
             try:
-                self.assertEqual(new.store.schema_version, "0013_pilot_feedback")
+                # Upgrades run to the latest migration, through 0013 on the way.
+                self.assertEqual(new.store.schema_version,
+                                 max(f.stem for f in MIGRATIONS_DIR.glob("*.sql")))
+                self.assertIsNotNone(new.store.conn.execute(
+                    "SELECT 1 FROM schema_migrations WHERE version = '0013_pilot_feedback'"
+                ).fetchone())
                 self.assertEqual(new.store.conn.execute("SELECT count(*) FROM tasks").fetchone()[0],
                                  before)
                 PilotFeedback(new).add("other", "worked", "Upgraded cleanly (synthetic).")

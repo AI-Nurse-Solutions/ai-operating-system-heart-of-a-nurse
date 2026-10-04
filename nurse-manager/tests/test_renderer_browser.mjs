@@ -245,6 +245,10 @@ try {
   await page.waitForSelector('.view--assistant');
   assert.equal(await page.getByLabel('Model name').count(), 0, 'no AI settings form on the dev host');
   assert.match(await page.getByRole('region', { name: 'Right now' }).textContent(), /No AI model/);
+  // JEV (ADR 0006): its facts are readable here; connecting it is not.
+  const jev = page.getByRole('region', { name: 'JEV classifier' });
+  assert.match(await jev.textContent(), /Not connected.*It never writes text.*TypeSafe.*Read-only/s);
+  assert.equal(await page.getByLabel('Your TypeSafe API key').count(), 0, 'no key field on the dev host');
   await page.getByRole('link', { name: 'Board', exact: true }).click();
   await page.waitForSelector('.view--board');
 

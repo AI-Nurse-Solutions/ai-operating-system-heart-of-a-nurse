@@ -124,7 +124,46 @@ const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
  * @property {Notice} [notice]
  * @property {() => void} [onStop]
  * @property {() => void} [onResume]
+ * @property {JevMission | null} [jev] JEV's suggestions, when its jobs are on (ADR 0006)
  */
+
+/**
+ * JEV on Mission Control: a suggested place to start, and a suggested order
+ * for Needs my judgment. Suggestions only; nothing starts and nothing is hidden.
+ * @typedef {object} JevMission
+ * @property {boolean} routing
+ * @property {boolean} attention
+ * @property {boolean} [busy]
+ * @property {string} [routeRequest]
+ * @property {ClassifierPreview | null} [routePreview]
+ * @property {ClassifierRoute | null} [route]
+ * @property {Notice} [routeNotice]
+ * @property {ClassifierPreview | null} [orderPreview]
+ * @property {ClassifierOrder | null} [order] the suggested order, while it is shown
+ * @property {Notice} [orderNotice]
+ * @property {(request: string) => void} onRoutePreview
+ * @property {(sha: string) => void} onRouteSend
+ * @property {() => void} onRouteCancel
+ * @property {(request: string) => void} onRouteEdit
+ * @property {() => void} onOrderPreview
+ * @property {(sha: string) => void} onOrderSend
+ * @property {() => void} onOrderCancel
+ * @property {() => void} onOrderUsual
+ */
+
+/**
+ * Items in the order of the given ids. An item not named keeps its place after them.
+ * @template {{ id: string }} T
+ * @param {readonly T[]} items
+ * @param {readonly string[]} ids
+ * @returns {T[]}
+ */
+export function orderedBy(items, ids) {
+  const rank = new Map(ids.map((id, i) => [id, i]));
+  return items.map((item, i) => ({ item, at: rank.get(item.id) ?? ids.length + i }))
+    .sort((a, b) => a.at - b.at)
+    .map(({ item }) => item);
+}
 
 /**
  * Assistants at work, and the one switch that stops them all (step 5.3).
@@ -213,6 +252,9 @@ function workingBlock(doc, onStop) {
 export function renderMission(doc, data, options = { writable: false }) {
   const root = h(doc, 'div', { class: 'view view--mission' });
   root.append(viewHeading(doc, 'Mission Control', `Week of ${data.week_of} · Today ${data.today}`));
+  const jev = options.writable ? options.jev ?? null : null;
+  const suggested = jev && jev.order && jev.order.reordered ? jev.order.order : null;
+  const judgmentItems = suggested ? orderedBy(data.needs_my_judgment.items, suggested) : data.needs_my_judgment.items;
 
   const grid = h(doc, 'div', { class: 'mc-grid' });
   grid.append(
@@ -221,7 +263,7 @@ export function renderMission(doc, data, options = { writable: false }) {
         h(doc, 'li', {}, [p.text])))),
 
     missionSection(doc, 'judgment', 'Needs my judgment', data.needs_my_judgment, () =>
-      h(doc, 'ul', { class: 'item-list' }, data.needs_my_judgment.items.map((item) => {
+      h(doc, 'ul', { class: 'item-list' }, judgmentItems.map((item) => {
         const kinds = {
           task: badge(doc, 'judgment', '◇', 'Decision'),
           draft: badge(doc, 'review', '✎', 'Draft to review'),
@@ -260,7 +302,9 @@ export function renderMission(doc, data, options = { writable: false }) {
         ])))),
 
     assistantsSection(doc, data.assistants_at_work, options),
-
+  );
+  if (jev && jev.routing) grid.append(routeSection(doc, jev));
+  grid.append(
     missionSection(doc, 'accepted', 'Recently accepted outputs', data.recent_accepted_outputs, () =>
       h(doc, 'ul', { class: 'item-list' }, data.recent_accepted_outputs.items.map((a) =>
         h(doc, 'li', { 'data-record-id': a.id }, [
@@ -269,6 +313,9 @@ export function renderMission(doc, data, options = { writable: false }) {
           h(doc, 'span', { class: 'item-meta' }, [` · ${a.accepted_by}, ${a.accepted_at}`]),
         ])))),
   );
+  if (jev && jev.attention && data.needs_my_judgment.state === 'ok' && judgmentItems.length >= 2) {
+    grid.querySelector('#judgment')?.append(orderControls(doc, jev, Boolean(suggested)));
+  }
   root.append(grid);
 
   const counts = data.task_counts;
@@ -730,8 +777,9 @@ function thinkSection(doc, think) {
   section.append(form);
   if (think.sending && think.onStop) section.append(workingBlock(doc, think.onStop));
   if (think.preview) {
+    const jevCheck = think.preview.classifier.provider === 'jev' ? jevCheckBlock(doc, think.preview.classifier) : null;
     section.append(previewPanel(doc, think.preview, busy, think,
-      { prefix: 'think-', level: 'h3', promptLabel: "Your question and this project's records" }));
+      { prefix: 'think-', level: 'h3', promptLabel: "Your question and this project's records", extra: jevCheck }));
   }
   if (think.answer && think.answer.answered_by_model) {
     section.append(h(doc, 'div', { class: 'think-answer', 'aria-labelledby': 'think-answer-heading' }, [
@@ -857,7 +905,7 @@ export function aboutFacts(doc) {
     fact('What it does.', ['Keeps your projects, tasks, decisions, sources, learning, and weekly brief in one workspace, and drafts from your own records.']),
     fact('What it does not do.', ['It never emails, posts, or uploads anything. It does not connect to your employer’s systems. It does not decide for you: every draft waits until you accept it.']),
     fact('Your data stays on this computer.', ['Records are saved in your user-data folder on this computer, never inside the app, and never uploaded. The app only answers this computer.']),
-    fact('No AI model runs by default.', ['Everything works without one. You can connect a model that runs on this computer, and you see exactly what it would be sent first. No cloud AI service is offered.']),
+    fact('No AI model runs by default.', ['Everything works without one. You can connect a model that runs on this computer, and you see exactly what it would be sent first. No cloud AI service drafts or answers for you. JEV, an optional classifier, is off unless you connect it with your own key.']),
     fact('The sample workspace', ['is synthetic: every person, project, and date in it is made up, and every screen says so. This computer keeps one workspace, so the sample does not turn into your own later; the support guide says how to set it aside.']),
     fact('Your own workspace', ['starts empty. You name it and give your name as its accountable manager. It is for public, synthetic, or your own permitted material.']),
     fact('The privacy screen has limits.', [
@@ -1204,7 +1252,8 @@ const GATE_LABELS = { data_rules: 'Data rules', edena: 'EDENA policy', budget: '
  * @param {AssistantPreview | ProjectQuestionPreview} preview
  * @param {boolean} busy
  * @param {{ onSend: (sha: string) => void, onCancel: () => void, onRecords?: () => void }} handlers
- * @param {{ prefix?: string, level?: string, promptLabel?: string }} [layout]
+ * @param {{ prefix?: string, level?: string, promptLabel?: string, extra?: HTMLElement | null }} [layout]
+ *   extra is shown just before the send buttons (JEV's check of a question)
  */
 function previewPanel(doc, preview, busy, handlers, layout = {}) {
   const prefix = layout.prefix ?? '';
@@ -1243,6 +1292,7 @@ function previewPanel(doc, preview, busy, handlers, layout = {}) {
     h(doc, 'pre', { class: 'sent-text', tabindex: '0', 'aria-label': promptLabel }, [preview.prompt]),
   );
   if (preview.will_send) {
+    if (layout.extra) panel.append(layout.extra);
     panel.append(h(doc, 'p', { class: 'button-row' }, [
       button(doc, `Send to ${preview.model}`, busy, () => handlers.onSend(preview.prompt_sha256)),
       button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button'),
@@ -1428,6 +1478,9 @@ function scheduleSection(doc, schedule, busy, options) {
  * @param {{
  *   writable: boolean, busy?: boolean, notice?: Notice,
  *   onConnect: (model: string, endpoint: string) => void, onDisconnect: () => void,
+ *   classifier?: ClassifierStatus | null, classifierError?: string,
+ *   onJevConnect?: (key: string, limit: number) => void, onJevDisconnect?: () => void,
+ *   onJevJobs?: (jobs: ClassifierJobs) => void,
  * }} options
  */
 export function renderAssistant(doc, data, options) {
@@ -1498,11 +1551,350 @@ export function renderAssistant(doc, data, options) {
     h(doc, 'h2', { id: 'cloud-heading' }, ['Cloud AI service']),
     h(doc, 'p', { class: 'section-state' }, [badge(doc, 'unavailable', '○', 'Not available'), ' ', data.cloud.reason]),
   ]));
+  if (options.classifier) {
+    const noop = () => {};
+    root.append(classifierSection(doc, options.classifier, {
+      writable: options.writable, busy,
+      onConnect: options.onJevConnect ?? noop, onDisconnect: options.onJevDisconnect ?? noop,
+      onJobs: options.onJevJobs ?? noop,
+    }));
+  } else if (options.classifierError) {
+    root.append(h(doc, 'section', { class: 'mc-section', id: 'jev', 'aria-labelledby': 'jev-heading' }, [
+      h(doc, 'h2', { id: 'jev-heading', tabindex: '-1' }, ['JEV classifier']),
+      h(doc, 'p', { class: 'section-state' }, [
+        badge(doc, 'unavailable', '○', 'Unavailable'), ` JEV's settings could not be read (${options.classifierError}).`,
+      ]),
+    ]));
+  }
   root.append(h(doc, 'section', { class: 'mc-section', 'aria-labelledby': 'gates-heading' }, [
     h(doc, 'h2', { id: 'gates-heading' }, ['What every AI model must pass']),
     h(doc, 'ol', { class: 'item-list' }, data.gates.map((gate) => h(doc, 'li', {}, [gate]))),
   ]));
   return root;
+}
+
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierStatus} ClassifierStatus */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierPreview} ClassifierPreview */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierRoute} ClassifierRoute */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierRouteKey} ClassifierRouteKey */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierOrder} ClassifierOrder */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierJobs} ClassifierJobs */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierJob} ClassifierJob */
+
+/** @type {Record<ClassifierJob, string>} */
+export const JEV_JOB_LABELS = {
+  action_review: 'Action review: suggest allow, hold for review, or deny beside the policy',
+  refusal_check: 'Refusal check: check a project question before the AI model sees it',
+  routing: 'Routing: suggest where a request belongs',
+  attention: 'Attention order: suggest an order for Needs my judgment',
+};
+
+/**
+ * Where each suggested place opens. A project question starts from a
+ * project's dashboard, and "outside" is not a place in this workspace.
+ * @type {Record<ClassifierRouteKey, string | null>}
+ */
+const ROUTE_LINKS = {
+  weekly_brief: '#/brief',
+  project_question: null,
+  pack_education: '#/packs',
+  pack_committee: '#/packs',
+  pack_communication: '#/packs',
+  library: '#/library',
+  learning: '#/learning',
+  contributions: '#/contributions',
+  memory: '#/memory',
+  outside: null,
+};
+
+/** @param {Document} doc @param {ClassifierRouteKey} route @param {string} label */
+function routeLink(doc, route, label) {
+  const href = ROUTE_LINKS[route];
+  return href ? h(doc, 'a', { href }, [label]) : h(doc, 'span', {}, [label]);
+}
+
+/** @param {Document} doc @param {ClassifierPreview} preview */
+function jevChecks(doc, preview) {
+  return h(doc, 'ul', { class: 'check-list', 'aria-label': 'Checks before asking JEV' }, preview.checks.map((check) =>
+    h(doc, 'li', {}, [
+      check.passed ? badge(doc, 'accepted', '✓', `${GATE_LABELS[check.gate]}: passed`)
+        : badge(doc, 'blocked', '✕', `${GATE_LABELS[check.gate]}: stopped`),
+      ' ', check.detail,
+    ])));
+}
+
+/**
+ * Exactly what JEV would receive, and the gates' verdicts. Nothing is sent to show it.
+ * @param {Document} doc
+ * @param {ClassifierPreview} preview
+ * @param {boolean} busy
+ * @param {{ onSend: (sha: string) => void, onCancel: () => void }} handlers
+ * @param {string} prefix
+ */
+function jevPreviewPanel(doc, preview, busy, handlers, prefix) {
+  const heading = h(doc, 'h3', { id: `${prefix}jev-preview-heading`, tabindex: '-1' }, ['Before anything is sent to JEV']);
+  if (!preview.will_send) {
+    return h(doc, 'div', { class: 'preview-panel jev-preview', id: `${prefix}jev-preview` }, [
+      heading,
+      preview.checks.length ? jevChecks(doc, preview) : null,
+      h(doc, 'p', { class: 'error-message' }, [badge(doc, 'blocked', '✕', 'Will not be sent'), ' ', preview.reason]),
+      h(doc, 'p', { class: 'button-row' }, [button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button')]),
+    ]);
+  }
+  return h(doc, 'div', { class: 'preview-panel jev-preview', id: `${prefix}jev-preview` }, [
+    heading,
+    h(doc, 'p', {}, [
+      `This is exactly what will be sent to JEV (${preview.model}) on ${preview.runs_on}. `,
+      'JEV answers with a choice or a score, never with text. Nothing has been sent yet.',
+    ]),
+    jevChecks(doc, preview),
+    h(doc, 'h4', {}, ['The request JEV would receive']),
+    h(doc, 'pre', { class: 'sent-text', tabindex: '0', 'aria-label': 'The request JEV would receive' }, [preview.request]),
+    h(doc, 'p', { class: 'button-row' }, [
+      button(doc, 'Ask JEV', busy, () => handlers.onSend(preview.request_sha256)),
+      button(doc, 'Cancel', busy, handlers.onCancel, 'secondary-button'),
+    ]),
+  ]);
+}
+
+/**
+ * JEV's refusal check inside a project question's preview: what it would
+ * receive, before the AI model sees the question. No buttons of its own:
+ * sending the question sends this check first.
+ * @param {Document} doc
+ * @param {ClassifierPreview} preview
+ */
+function jevCheckBlock(doc, preview) {
+  if (!preview.will_send) {
+    return h(doc, 'div', { class: 'jev-check', id: 'think-jev-check' }, [
+      h(doc, 'p', { class: 'section-state' }, [
+        badge(doc, 'unavailable', '○', 'JEV check will not run'), ' ', preview.reason,
+        ' The question is checked as it would be without JEV.',
+      ]),
+    ]);
+  }
+  return h(doc, 'div', { class: 'jev-check', id: 'think-jev-check' }, [
+    h(doc, 'h4', {}, ['JEV checks the question first']),
+    h(doc, 'p', {}, [
+      `Before the AI model sees your question, JEV (${preview.model}) on ${preview.runs_on} checks it for patient information, `,
+      "an individual's performance, confidential employer material, a clinical decision, or a judgment about a named person. ",
+      'If JEV is confident it finds one, nothing goes to the AI model.',
+    ]),
+    jevChecks(doc, preview),
+    h(doc, 'h5', {}, ['The request JEV would receive']),
+    h(doc, 'pre', { class: 'sent-text', tabindex: '0', 'aria-label': 'The request JEV would receive' }, [preview.request]),
+  ]);
+}
+
+/**
+ * The JEV section of AI assistance (ADR 0006): off by default, the manager's
+ * own key, each job switched on separately, and TypeSafe's terms as read.
+ * @param {Document} doc
+ * @param {ClassifierStatus} data
+ * @param {{
+ *   writable: boolean, busy?: boolean,
+ *   onConnect: (key: string, limit: number) => void, onDisconnect: () => void,
+ *   onJobs: (jobs: ClassifierJobs) => void,
+ * }} options
+ */
+function classifierSection(doc, data, options) {
+  const busy = Boolean(options.busy);
+  const connected = data.provider === 'jev';
+  const section = h(doc, 'section', { class: 'mc-section', id: 'jev', 'aria-labelledby': 'jev-heading' }, [
+    h(doc, 'h2', { id: 'jev-heading', tabindex: '-1' }, ['JEV classifier']),
+    h(doc, 'p', {}, [
+      'Optional. JEV, from TypeSafe AI, answers yes-or-no, choice, and score questions about text you have reviewed. ',
+      'It advises and can only make things stricter. It never writes text.',
+    ]),
+    h(doc, 'p', { class: 'section-state' }, connected
+      ? [badge(doc, 'accepted', '✓', 'Connected'), ` JEV (${data.model}) on ${data.runs_on}. Your key is kept in ${data.keystore}.`]
+      : [badge(doc, 'unavailable', '○', 'Not connected'), ' Nothing is ever sent to JEV.']),
+    connected
+      ? h(doc, 'p', {}, [`JEV requests today: ${data.requests_today} of ${data.daily_request_limit}.`])
+      : null,
+    h(doc, 'h3', {}, ['What it does, once you turn a job on']),
+    h(doc, 'ul', { class: 'item-list' }, data.what_it_does.map((line) => h(doc, 'li', {}, [line]))),
+    h(doc, 'h3', {}, ['What it never does']),
+    h(doc, 'ul', { class: 'item-list' }, data.never_does.map((line) => h(doc, 'li', {}, [line]))),
+    h(doc, 'h3', {}, ["TypeSafe's terms, as we read them"]),
+    h(doc, 'ul', { class: 'item-list' }, data.terms.map((line) => h(doc, 'li', {}, [line]))),
+  ]);
+  if (!options.writable) {
+    section.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'Read-only'), ' JEV can be connected in the Nurse AI OS app.',
+    ]));
+    return section;
+  }
+  if (connected) {
+    const boxes = /** @type {Array<[ClassifierJob, HTMLInputElement]>} */ (
+      /** @type {ClassifierJob[]} */ (Object.keys(JEV_JOB_LABELS)).map((job) => {
+        const box = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: `jev-job-${job}`, type: 'checkbox', name: job }));
+        box.checked = data.jobs[job];
+        box.disabled = busy;
+        return [job, box];
+      }));
+    const save = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'secondary-button' }, ['Save jobs']));
+    save.disabled = busy;
+    const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'jev-jobs-heading' }, [
+      h(doc, 'h3', { id: 'jev-jobs-heading' }, ['Jobs']),
+      h(doc, 'p', { class: 'field-hint' }, ['Each job is off until you turn it on. Turning one off stops it at once.']),
+      ...boxes.map(([job, box]) => h(doc, 'p', { class: 'field field--inline' }, [
+        box, ' ', h(doc, 'label', { for: box.id }, [JEV_JOB_LABELS[job]]),
+      ])),
+      save,
+    ]);
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const checked = (/** @type {ClassifierJob} */ job) => boxes.some(([j, box]) => j === job && box.checked);
+      options.onJobs({
+        action_review: checked('action_review'), refusal_check: checked('refusal_check'),
+        routing: checked('routing'), attention: checked('attention'),
+      });
+    });
+    section.append(form);
+    const off = button(doc, 'Disconnect JEV', busy, options.onDisconnect, 'secondary-button');
+    off.setAttribute('aria-describedby', 'jev-off-hint');
+    section.append(
+      h(doc, 'p', { class: 'field-hint', id: 'jev-off-hint' }, [
+        `Disconnecting turns every job off and removes your key from ${data.keystore}.`,
+      ]),
+      h(doc, 'p', { class: 'button-row' }, [off]),
+    );
+    return section;
+  }
+  if (!data.keystore_available) {
+    section.append(h(doc, 'p', { class: 'section-state' }, [
+      badge(doc, 'unavailable', '○', 'No credential store'),
+      ' This computer has no credential store Nurse AI OS can use, so a key cannot be kept safely. JEV stays off.',
+    ]));
+    return section;
+  }
+  const key = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+    id: 'jev-key', name: 'api_key', type: 'password', required: '', minlength: '16', maxlength: '512',
+    autocomplete: 'off', spellcheck: 'false', 'aria-describedby': 'jev-key-hint',
+  }));
+  const limit = /** @type {HTMLInputElement} */ (h(doc, 'input', {
+    id: 'jev-limit', name: 'daily_request_limit', type: 'number', min: '0', max: '2000', step: '1', required: '',
+    'aria-describedby': 'jev-limit-hint',
+  }));
+  limit.value = String(data.daily_request_limit);
+  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Connect JEV']));
+  for (const control of [key, limit, submit]) control.disabled = busy;
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'jev-connect-heading' }, [
+    h(doc, 'h3', { id: 'jev-connect-heading' }, ['Connect your own key']),
+    h(doc, 'p', { class: 'field' }, [
+      h(doc, 'label', { for: 'jev-key' }, ['Your TypeSafe API key']),
+      h(doc, 'span', { class: 'field-hint', id: 'jev-key-hint' }, [
+        `Kept in ${data.keystore}, never in your workspace file, a backup, or an export. Every job stays off until you turn it on.`,
+      ]),
+      key,
+    ]),
+    h(doc, 'p', { class: 'field' }, [
+      h(doc, 'label', { for: 'jev-limit' }, ['JEV requests per day, at most']),
+      h(doc, 'span', { class: 'field-hint', id: 'jev-limit-hint' }, ['From 0 to 2000. Once it is reached, JEV is not asked until tomorrow.']),
+      limit,
+    ]),
+    submit,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const typed = key.value.trim();
+    key.value = ''; // the key leaves the page with this request, and nowhere else
+    options.onConnect(typed, Number(limit.value));
+  });
+  section.append(form);
+  return section;
+}
+
+/**
+ * Mission Control's "Where does this belong?": JEV suggests a place to start.
+ * The manager chooses; nothing starts by itself.
+ * @param {Document} doc
+ * @param {JevMission} jev
+ */
+function routeSection(doc, jev) {
+  const busy = Boolean(jev.busy);
+  const section = h(doc, 'section', { class: 'mc-section', id: 'route', 'aria-labelledby': 'route-heading' }, [
+    h(doc, 'h2', { id: 'route-heading' }, ['Where does this belong?']),
+    h(doc, 'p', {}, [
+      'Type what you want to do. JEV suggests where in this workspace to start; you choose, and nothing starts by itself.',
+    ]),
+  ]);
+  const notice = noticeBlock(doc, jev.routeNotice);
+  if (notice) section.append(notice);
+  const input = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', {
+    id: 'route-request', name: 'request', rows: '2', maxlength: '500', required: '',
+    'aria-describedby': 'route-request-hint',
+  }));
+  input.value = jev.routeRequest ?? '';
+  // A preview is only for the request it showed: editing withdraws it.
+  input.addEventListener('input', () => {
+    const panel = section.querySelector('#route-jev-preview');
+    if (panel) {
+      panel.remove();
+      jev.onRouteEdit(input.value);
+    }
+  });
+  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' },
+    ['Preview what JEV would see']));
+  submit.disabled = busy;
+  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'route-heading' }, [
+    h(doc, 'p', { class: 'field' }, [
+      h(doc, 'label', { for: 'route-request' }, ['What do you want to do?']),
+      h(doc, 'span', { class: 'field-hint', id: 'route-request-hint' }, [
+        'For example: draft a huddle message about the new float process. Leave out names of patients and staff.',
+      ]),
+      input,
+    ]),
+    submit,
+  ]);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    jev.onRoutePreview(input.value.trim());
+  });
+  section.append(form);
+  if (jev.routePreview) {
+    section.append(jevPreviewPanel(doc, jev.routePreview, busy,
+      { onSend: jev.onRouteSend, onCancel: jev.onRouteCancel }, 'route-'));
+  }
+  const route = jev.route;
+  if (route) {
+    section.append(h(doc, 'div', { class: 'route-result', id: 'route-result', tabindex: '-1' }, [
+      route.suggested
+        ? h(doc, 'p', {}, [
+          badge(doc, 'review', '→', 'Suggestion'), ' JEV suggests: ', routeLink(doc, route.suggested, route.label),
+          route.suggested === 'project_question' ? ' Open a project from Projects in motion.' : '',
+          ' You choose.',
+        ])
+        : null,
+      h(doc, 'h3', {}, ['Every place you can start']),
+      h(doc, 'ul', { class: 'item-list' }, route.alternatives.map((alt) =>
+        h(doc, 'li', {}, [routeLink(doc, alt.route, alt.label)]))),
+    ]));
+  }
+  return section;
+}
+
+/**
+ * The JEV controls under Needs my judgment: preview, ask, and the way back
+ * to the usual order. No number is ever shown.
+ * @param {Document} doc
+ * @param {JevMission} jev
+ * @param {boolean} reordered
+ */
+function orderControls(doc, jev, reordered) {
+  const busy = Boolean(jev.busy);
+  const notice = noticeBlock(doc, jev.orderNotice);
+  return h(doc, 'div', { class: 'jev-order', id: 'jev-order' }, [
+    notice,
+    reordered
+      ? h(doc, 'p', { class: 'button-row' }, [button(doc, 'Show my usual order', busy, jev.onOrderUsual, 'secondary-button')])
+      : jev.orderPreview ? null
+        : h(doc, 'p', { class: 'button-row' }, [button(doc, 'Suggest an order with JEV', busy, jev.onOrderPreview, 'secondary-button')]),
+    jev.orderPreview
+      ? jevPreviewPanel(doc, jev.orderPreview, busy, { onSend: jev.onOrderSend, onCancel: jev.onOrderCancel }, 'order-')
+      : null,
+  ]);
 }
 
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').Library} Library */

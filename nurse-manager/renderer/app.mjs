@@ -24,7 +24,7 @@ import {
 /**
  * A data source. Only `call` is required; the local app adds the rest.
  * @typedef {object} Source
- * @property {(command: ReadCommand | 'assistant-preview' | 'assistant-project-preview' | 'pilot-feedback-preview', params?: Record<string, string>) => Promise<Envelope>} call
+ * @property {(command: ReadCommand | 'assistant-preview' | 'assistant-project-preview' | 'pilot-feedback-preview' | 'classifier' | 'classifier-route-preview' | 'classifier-order-preview', params?: Record<string, string>) => Promise<Envelope>} call
  * @property {() => Promise<AppStatus | null>} [status] null means a read-only development host
  * @property {(command: WriteCommand, body: WriteBody) => Promise<Envelope>} [send]
  * @property {() => Promise<void>} [heartbeat]
@@ -111,7 +111,17 @@ export function httpSource(token = '') {
  *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify' | 'brief-schedule-set'
  *   | 'memory-add' | 'memory-correct' | 'memory-exclude' | 'memory-include' | 'memory-delete'
  *   | 'assistants-stop' | 'assistants-resume' | 'pack-start' | 'document-save'
- *   | 'pilot-feedback-add' | 'pilot-feedback-delete' | 'pilot-feedback-export'} WriteCommand */
+ *   | 'pilot-feedback-add' | 'pilot-feedback-delete' | 'pilot-feedback-export'
+ *   | 'classifier-connect' | 'classifier-off' | 'classifier-jobs' | 'classifier-route' | 'classifier-order'} WriteCommand */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierStatus} ClassifierStatus */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierPreview} ClassifierPreview */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierRoute} ClassifierRoute */
+/** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierOrder} ClassifierOrder */
+/**
+ * What Mission Control shows of JEV between renders; the handlers are added each time.
+ * @typedef {Pick<import('./views.mjs').JevMission, 'routing' | 'attention' | 'routeRequest' | 'routePreview'
+ *   | 'route' | 'routeNotice' | 'orderPreview' | 'order' | 'orderNotice'>} JevMissionState
+ */
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
@@ -265,7 +275,12 @@ export function start(doc, source) {
       workspaceName.textContent = data.workspace;
     }
     if (envelope.command === 'mission') {
-      showMission(/** @type {import('../contracts/ipc/nurse-manager-ipc').MissionControl} */ (data), {}, moveFocus);
+      // JEV's suggestions need writes, so only the app asks for its settings here.
+      const jev = writable ? (await classifierStatus()).status : null;
+      if (mine !== generation) return;
+      const jobs = jev && jev.provider === 'jev' ? jev.jobs : null;
+      showMission(/** @type {import('../contracts/ipc/nurse-manager-ipc').MissionControl} */ (data), {}, moveFocus,
+        jobs && (jobs.routing || jobs.attention) ? { routing: jobs.routing, attention: jobs.attention } : null);
       announce('Mission Control loaded.');
     } else if (envelope.command === 'project') {
       const dashboard = /** @type {import('../contracts/ipc/nurse-manager-ipc').ProjectDashboard} */ (data);
@@ -279,17 +294,23 @@ export function start(doc, source) {
           announce('Showing exactly what would be sent. Nothing has been sent yet.');
           return { preview: /** @type {import('./views.mjs').ProjectQuestionPreview} */ (envelope.data) };
         }, '#think-preview-heading'),
-        onSend: (/** @type {string} */ sha) => thinkAction({ sending: true }, async () => {
-          announce('Sending to the AI model. This can take a minute. You can stop it.');
-          const { envelope, failure } = await write('assistant-project', {
-            id: dashboard.project.id, question: think.question ?? '', prompt_sha256: sha,
+        onSend: (/** @type {string} */ sha) => {
+          // JEV's check, when it runs, is bound to the request shown in the preview.
+          const jevCheck = think.preview?.classifier;
+          /** @type {WriteBody} */
+          const checked = jevCheck && jevCheck.will_send ? { classifier_sha256: jevCheck.request_sha256 } : {};
+          return thinkAction({ sending: true }, async () => {
+            announce('Sending to the AI model. This can take a minute. You can stop it.');
+            const { envelope, failure } = await write('assistant-project', {
+              id: dashboard.project.id, question: think.question ?? '', prompt_sha256: sha, ...checked,
+            });
+            if (failure || !envelope || !envelope.ok) return { notice: failure };
+            const answer = /** @type {import('./views.mjs').ProjectAnswer} */ (envelope.data);
+            return answer.answered_by_model
+              ? { answer, notice: { kind: 'ok', text: 'The AI model answered. It is a suggestion and is not saved.' } }
+              : { notice: { kind: 'unanswered', text: answer.reason } };
           });
-          if (failure || !envelope || !envelope.ok) return { notice: failure };
-          const answer = /** @type {import('./views.mjs').ProjectAnswer} */ (envelope.data);
-          return answer.answered_by_model
-            ? { answer, notice: { kind: 'ok', text: 'The AI model answered. It is a suggestion and is not saved.' } }
-            : { notice: { kind: 'unanswered', text: answer.reason } };
-        }),
+        },
         onCancel: () => { think = { question: think.question }; redraw('#think-question'); },
         onStop: stopAssistants,
         onKeep: async () => {
@@ -408,7 +429,10 @@ export function start(doc, source) {
       showLibrary(/** @type {import('./views.mjs').Library} */ (data), {}, moveFocus);
       announce('Library loaded.');
     } else if (envelope.command === 'assistant') {
-      showAssistant(/** @type {import('./views.mjs').AssistantStatus} */ (data), {}, moveFocus);
+      const jev = await classifierStatus();
+      if (mine !== generation) return;
+      showAssistant(/** @type {import('./views.mjs').AssistantStatus} */ (data),
+        { classifier: jev.status, classifierError: jev.error }, moveFocus);
       announce('AI assistance loaded.');
     } else if (envelope.command === 'board') {
       show(renderBoard(doc, /** @type {import('../contracts/ipc/nurse-manager-ipc').Board} */ (data)), moveFocus);
@@ -494,6 +518,20 @@ export function start(doc, source) {
    * waiting returns by itself, within a second, saying it was stopped.
    * @returns {Promise<boolean>} whether the stop was saved
    */
+  /**
+   * JEV's settings, or why they could not be read. Never the key.
+   * @returns {Promise<{ status: ClassifierStatus | null, error: string }>}
+   */
+  const classifierStatus = async () => {
+    try {
+      const envelope = await source.call('classifier');
+      if (!envelope.ok) return { status: null, error: envelope.error.message };
+      return { status: /** @type {ClassifierStatus} */ (envelope.data), error: '' };
+    } catch (error) {
+      return { status: null, error: error instanceof Error ? error.message : String(error) };
+    }
+  };
+
   const stopAssistants = async () => {
     const { failure } = await write('assistants-stop', {});
     announce(failure ? `Not stopped: ${failure.text}. Try again.` : 'Stopped. Nothing more is sent, and its reply will be discarded.');
@@ -583,12 +621,15 @@ export function start(doc, source) {
   };
 
   /**
-   * Mission Control, with the switch that stops every assistant (step 5.3).
+   * Mission Control, with the switch that stops every assistant (step 5.3),
+   * and JEV's suggestions when its jobs are on (ADR 0006).
    * @param {import('../contracts/ipc/nurse-manager-ipc').MissionControl} data
    * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice }} state
    * @param {boolean} moveFocus
+   * @param {JevMissionState | null} [jev]
+   * @param {string} [focusSelector]
    */
-  const showMission = (data, state, moveFocus) => {
+  const showMission = (data, state, moveFocus, jev = null, focusSelector = undefined) => {
     const mine = generation;
     /** @param {'assistants-stop' | 'assistants-resume'} command @param {string} done */
     const act = async (command, done) => {
@@ -597,24 +638,98 @@ export function start(doc, source) {
       const { failure } = await write(command, {});
       if (mine !== generation) return;
       if (failure) {
-        showMission(data, { notice: failure }, true);
+        showMission(data, { notice: failure }, true, jev);
         return;
       }
       // Re-render from the fresh records, so the switch shows what is true now.
       const fresh = await reload('mission', mine, {}, (message) => showMission(data, {
         notice: { kind: 'error', text: `${done} Mission Control could not be refreshed (${message}); open it again to see it.` },
-      }, true));
+      }, true, jev));
       if (!fresh) return;
-      showMission(/** @type {import('../contracts/ipc/nurse-manager-ipc').MissionControl} */ (fresh), { notice: { kind: 'ok', text: done } }, true);
+      showMission(/** @type {import('../contracts/ipc/nurse-manager-ipc').MissionControl} */ (fresh), { notice: { kind: 'ok', text: done } }, true, jev);
+    };
+    /**
+     * Run one JEV step: show it busy, then show what came back.
+     * @param {'route' | 'order'} kind
+     * @param {Partial<JevMissionState>} start
+     * @param {() => Promise<Partial<JevMissionState>>} work
+     * @param {string} focus where focus goes when there is no notice to read
+     */
+    const jevStep = async (kind, start, work, focus) => {
+      if (!jev) return;
+      const before = { ...jev, ...start };
+      main.replaceChildren(renderMission(doc, data, { ...options, jev: { ...before, ...jevHandlers, busy: true } }));
+      main.setAttribute('aria-busy', 'true');
+      /** @type {Partial<JevMissionState>} */
+      let next;
+      try {
+        next = await work();
+      } catch (error) {
+        const notice = { kind: /** @type {'error'} */ ('error'), text: error instanceof Error ? error.message : String(error) };
+        next = kind === 'route' ? { routeNotice: notice } : { orderNotice: notice };
+      }
+      if (mine !== generation) return;
+      const notice = kind === 'route' ? next.routeNotice : next.orderNotice;
+      showMission(data, {}, true, { ...before, ...next },
+        notice ? (kind === 'route' ? '#route .notice' : '#jev-order .notice') : focus);
+      if (notice) announce(notice.text);
+    };
+    const jevHandlers = {
+      onRoutePreview: (/** @type {string} */ request) => jevStep('route',
+        { routeRequest: request, routePreview: null, route: null, routeNotice: undefined }, async () => {
+          const envelope = await source.call('classifier-route-preview', { request });
+          if (!envelope.ok) return { routeNotice: { kind: 'error', text: envelope.error.message } };
+          announce('Showing exactly what JEV would receive. Nothing has been sent yet.');
+          return { routePreview: /** @type {ClassifierPreview} */ (envelope.data) };
+        }, '#route-jev-preview-heading'),
+      onRouteSend: (/** @type {string} */ sha) => jevStep('route', { routePreview: null }, async () => {
+        const { envelope, failure } = await write('classifier-route', { request: jev?.routeRequest ?? '', request_sha256: sha });
+        if (failure || !envelope || !envelope.ok) return { routeNotice: failure };
+        const route = /** @type {ClassifierRoute} */ (envelope.data);
+        if (route.suggested) announce(`JEV suggests: ${route.label}. You choose.`);
+        return { route, routeNotice: route.suggested ? undefined : { kind: 'unanswered', text: route.reason } };
+      }, '#route-result'),
+      onRouteCancel: () => {
+        if (jev) showMission(data, {}, true, { ...jev, routePreview: null, route: null, routeNotice: undefined }, '#route-request');
+      },
+      onRouteEdit: (/** @type {string} */ request) => {
+        if (jev) jev = { ...jev, routeRequest: request, routePreview: null };
+        announce('The request changed. Preview it again before asking JEV.');
+      },
+      onOrderPreview: () => jevStep('order', { orderPreview: null, orderNotice: undefined }, async () => {
+        const envelope = await source.call('classifier-order-preview');
+        if (!envelope.ok) return { orderNotice: { kind: 'error', text: envelope.error.message } };
+        announce('Showing exactly what JEV would receive. Nothing has been sent yet.');
+        return { orderPreview: /** @type {ClassifierPreview} */ (envelope.data) };
+      }, '#order-jev-preview-heading'),
+      onOrderSend: (/** @type {string} */ sha) => jevStep('order', { orderPreview: null }, async () => {
+        const { envelope, failure } = await write('classifier-order', { request_sha256: sha });
+        if (failure || !envelope || !envelope.ok) return { orderNotice: failure };
+        const order = /** @type {ClassifierOrder} */ (envelope.data);
+        return order.reordered
+          ? { order, orderNotice: { kind: 'ok', text: 'Shown in the order JEV suggests. Every item is still here.' } }
+          : { order: null, orderNotice: { kind: 'unanswered', text: order.reason } };
+      }, '#jev-order .notice'),
+      onOrderCancel: () => {
+        if (jev) showMission(data, {}, true, { ...jev, orderPreview: null }, '#judgment-heading');
+      },
+      onOrderUsual: () => {
+        if (!jev) return;
+        const notice = { kind: /** @type {'ok'} */ ('ok'), text: 'Shown in your usual order.' };
+        showMission(data, {}, true, { ...jev, order: null, orderNotice: notice }, '#jev-order .notice');
+        announce(notice.text);
+      },
     };
     /** @type {import('./views.mjs').MissionOptions} */
     const options = {
       writable,
       onStop: () => act('assistants-stop', 'Assistants are stopped. Nothing is sent to an AI model until you let them work again.'),
       onResume: () => act('assistants-resume', 'Assistants can work again. Nothing that was stopped restarts by itself.'),
+      jev: jev ? { ...jev, ...jevHandlers } : null,
     };
     const view = renderMission(doc, data, { ...options, ...state });
     if (state.notice) showAfterAction(view, state.notice, '#assistants .notice');
+    else if (focusSelector) showAfterAction(view, undefined, focusSelector);
     else show(view, moveFocus);
   };
 
@@ -700,23 +815,38 @@ export function start(doc, source) {
 
   /**
    * @param {import('./views.mjs').AssistantStatus} data
-   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice }} state
+   * @param {{ busy?: boolean, notice?: import('./views.mjs').Notice, classifier?: ClassifierStatus | null, classifierError?: string }} state
    * @param {boolean} moveFocus
    */
   const showAssistant = (data, state, moveFocus) => {
     const mine = generation;
-    /** @param {WriteCommand} command @param {Record<string, string>} body @param {string} done */
+    /** @param {WriteCommand} command @param {WriteBody} body @param {string} done */
     const act = async (command, body, done) => {
-      main.replaceChildren(renderAssistant(doc, data, { ...options, busy: true }));
+      main.replaceChildren(renderAssistant(doc, data, { ...options, ...state, notice: undefined, busy: true }));
+      main.setAttribute('aria-busy', 'true');
       const { failure } = await write(command, body);
       const fresh = await reload('assistant', mine);
-      if (fresh) showAssistant(/** @type {import('./views.mjs').AssistantStatus} */ (fresh), { notice: failure || { kind: 'ok', text: done } }, true);
+      if (!fresh) return;
+      const jev = await classifierStatus();
+      if (mine !== generation) return;
+      showAssistant(/** @type {import('./views.mjs').AssistantStatus} */ (fresh), {
+        notice: failure || { kind: 'ok', text: done }, classifier: jev.status, classifierError: jev.error,
+      }, true);
     };
     const options = {
       writable,
       onConnect: (/** @type {string} */ model, /** @type {string} */ endpoint) =>
         act('assistant-local', { model, endpoint }, `Connected to the AI model “${model}” on this computer.`),
       onDisconnect: () => act('assistant-off', {}, 'The AI model is disconnected. Nothing will be sent anywhere.'),
+      // The key goes once, in the body of this request, to the local app, which
+      // hands it to the credential store. It is never shown or kept here.
+      onJevConnect: (/** @type {string} */ key, /** @type {number} */ limit) =>
+        act('classifier-connect', { api_key: key, daily_request_limit: limit },
+          'JEV is connected. Every job is off until you turn it on.'),
+      onJevDisconnect: () => act('classifier-off', {},
+        'JEV is disconnected and your key is removed. Nothing will be sent to JEV.'),
+      onJevJobs: (/** @type {import('../contracts/ipc/nurse-manager-ipc').ClassifierJobs} */ jobs) =>
+        act('classifier-jobs', { ...jobs }, "JEV's jobs are saved."),
     };
     const view = renderAssistant(doc, data, { ...options, ...state });
     if (state.notice) showAfterAction(view, state.notice);

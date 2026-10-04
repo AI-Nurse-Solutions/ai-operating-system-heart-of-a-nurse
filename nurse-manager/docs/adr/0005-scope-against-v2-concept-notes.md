@@ -102,8 +102,11 @@ and this ADR cites none of them.
    - The on-screen promise "does not connect to your employer's systems"
      is shown at every first run. `test_app_browser.mjs` checks that it is
      shown.
-   - The import allowlist (proposed step P1.2) will hold the promise
-     mechanically.
+   - Proposed step P1.2 will hold the promise mechanically. An import
+     allowlist alone cannot: an allowed module could add a new destination
+     without a new import. So P1.2 also pins every outbound destination to
+     one allowlist where the connection is made, and adds a runtime egress
+     test that fails on any other destination.
 2. A connector admission contract is a G7 design item.
    - A read-only connector is a data source gated by EDENA. It is
      institution-hosted and evaluated at yellow/`recommend`, at most D2. It
@@ -140,8 +143,8 @@ requires:
 1. No Hermes-named surface appears in the Manager Edition.
 2. No Hermes session holds conversation state outside the hash-bound
    preview and the text-free request ledger.
-3. The import allowlist (proposed step P1.2) is extended only in the same
-   PR as a decision that admits the new runtime.
+3. The import and destination allowlists (proposed step P1.2) are extended
+   only in the same PR as a decision that admits the new runtime.
 4. Plugins are treated as unsandboxed, and every effect is still decided in
    the Python backend (validation report, correction 6).
 
@@ -182,8 +185,9 @@ requires:
 - A proposal that brings back a router, supervisor, specialist agent,
   persona, connector, or hosted surface needs a new ADR that supersedes
   this one.
-- The naming guard (proposed step P0.5) and the import allowlist (proposed
-  step P1.2) will hold sections 2 and 4 mechanically, not only by review.
+- The naming guard (proposed step P0.5) and the import and destination
+  allowlists with their egress test (proposed step P1.2) will hold sections
+  2 and 4 mechanically, not only by review.
 
 ## Decision record
 

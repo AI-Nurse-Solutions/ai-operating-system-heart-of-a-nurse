@@ -263,6 +263,22 @@ class ActionBoundary:
         if revision.body_sha256 != action.payload_sha256:
             raise StaleApproval("the content changed after it was proposed")
         with self.ws.store.transaction() as db:
+            # A confident, stricter JEV suggestion holds the approval until the
+            # manager acknowledges it (ADR 0006). It adds a review step; the
+            # policy's decision is unchanged. Checked inside the write, so an
+            # acknowledgment and an approval cannot interleave.
+            held = db.execute(
+                "SELECT suggestion FROM action_classifications WHERE action_id = ?"
+                " AND hold = 1 AND acknowledged_at IS NULL", (action_id,),
+            ).fetchone()
+            if held is not None:
+                label = {"require_human": "held for your review",
+                         "deny": "denied"}.get(held["suggestion"], held["suggestion"])
+                raise ActionError(
+                    f"JEV suggested this action be {label}; acknowledge its suggestion"
+                    " (classifier-acknowledge) before you approve. The policy's decision"
+                    " is unchanged."
+                )
             db.execute(
                 "INSERT INTO approvals (id, action_id, approver, workspace_id,"
                 " artifact_revision_id, payload_sha256, destination, approved_at)"

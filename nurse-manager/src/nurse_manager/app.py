@@ -69,7 +69,8 @@ WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assist
                   "memory-add", "memory-correct", "memory-exclude", "memory-include",
                   "memory-delete", "assistants-stop", "assistants-resume", "pack-start",
                   "document-save", "pilot-feedback-add", "pilot-feedback-delete",
-                  "pilot-feedback-export")
+                  "pilot-feedback-export", "classifier-connect", "classifier-off",
+                  "classifier-jobs", "classifier-route", "classifier-order")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
@@ -356,7 +357,12 @@ class LocalApp:
                 argv = _write_argv(command, body, app.workspace, app.owner())
                 if isinstance(argv, str):
                     return self._text(400, argv)
-                _code, envelope = cli.run(bind_values(argv))
+                # A JEV key travels only in the request body and is handed to
+                # the command in process: never an argument, never logged.
+                secret = body.get("api_key") if command == "classifier-connect" else None
+                if command == "classifier-connect" and not isinstance(secret, str):
+                    return self._text(400, "api_key is required text")
+                _code, envelope = cli.run(bind_values(argv), secret=secret)
                 return self._json(200, envelope)
 
             def _onboard(self, command: str, body: dict) -> None:
@@ -554,6 +560,37 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
             return "request_id, project_id, question, and answer are required"
         return ["note-keep", ws, "--request", request_id, "--project", project_id,
                 "--question", question, "--answer", answer, "--by", owner]
+    if command == "classifier-connect":
+        limit = body.get("daily_request_limit")
+        if limit is not None and (type(limit) is not int or not 0 <= limit <= 2000):
+            return "daily_request_limit is a whole number from 0 to 2000"
+        argv = ["classifier-connect", ws, "--by", owner, "--key-from", "stdin"]
+        return argv + (["--daily-limit", str(limit)] if limit is not None else [])
+    if command == "classifier-off":
+        return ["classifier-off", ws, "--by", owner]
+    if command == "classifier-jobs":
+        argv = ["classifier-jobs", ws, "--by", owner]
+        for job in ("action_review", "refusal_check", "routing", "attention"):
+            value = body.get(job)
+            if value is None:
+                continue
+            if not isinstance(value, bool):
+                return f"{job} is true or false"
+            argv += [f"--{job.replace('_', '-')}", "yes" if value else "no"]
+        return argv
+    if command in ("classifier-route", "classifier-order"):
+        # Bound to the preview the manager reviewed, like every AI request.
+        reviewed = text("request_sha256", 64)
+        if not reviewed or not _SHA256.fullmatch(reviewed):
+            return "request_sha256 from the preview is required"
+        if command == "classifier-order":
+            return ["classifier-order", ws, "--today", today, "--week", week, "--by", owner,
+                    "--reviewed-sha", reviewed]
+        request = text("request", 2000)
+        if request is None:
+            return "request is required text"
+        return ["classifier-route", ws, "--request", request, "--by", owner,
+                "--reviewed-sha", reviewed]
     # AI requests are always bound to the preview the manager reviewed.
     sha = text("prompt_sha256", 64)
     if sha is None or not (sha == "" or _SHA256.fullmatch(sha)):
@@ -562,8 +599,13 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
         project_id, question = text("id", 64), text("question", 2000)
         if not project_id or not _PROJECT_ID.fullmatch(project_id) or question is None:
             return "id and question are required"
-        return ["assistant-project", ws, "--id", project_id, "--today", today,
+        argv = ["assistant-project", ws, "--id", project_id, "--today", today,
                 "--question", question, "--by", owner, "--reviewed-sha", sha]
+        # JEV's refusal check, when on, is bound to its own reviewed preview.
+        checked = text("classifier_sha256", 64, required=False)
+        if checked is None or (checked and not _SHA256.fullmatch(checked)):
+            return "classifier_sha256 is the sha256 from the preview, if JEV checks the question"
+        return argv + (["--reviewed-classifier-sha", checked] if checked else [])
     return ["assistant-brief", ws, "--week", week, "--today", today, "--by", owner,
             "--reviewed-sha", sha]
 

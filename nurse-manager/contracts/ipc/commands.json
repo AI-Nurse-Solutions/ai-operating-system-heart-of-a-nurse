@@ -56,6 +56,17 @@
     "pilot-feedback-add": "PilotFeedbackResult",
     "pilot-feedback-delete": "PilotFeedbackDeleted",
     "pilot-feedback-preview": "PilotFeedbackPreview",
-    "pilot-feedback-export": "PilotFeedbackExport"
+    "pilot-feedback-export": "PilotFeedbackExport",
+    "classifier": "ClassifierStatus",
+    "classifier-connect": "ClassifierStatus",
+    "classifier-off": "ClassifierStatus",
+    "classifier-jobs": "ClassifierStatus",
+    "classifier-action-preview": "ClassifierActionPreview",
+    "classifier-action": "ClassifierActionResult",
+    "classifier-acknowledge": "ClassifierActionResult",
+    "classifier-route-preview": "ClassifierPreview",
+    "classifier-route": "ClassifierRoute",
+    "classifier-order-preview": "ClassifierPreview",
+    "classifier-order": "ClassifierOrder"
   }
 }

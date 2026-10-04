@@ -92,6 +92,19 @@ class AssistantControl:
             (self.ws.info.id, cutoff),
         )]
 
+    def running_classifier(self) -> list[dict[str, Any]]:
+        """Requests on their way to JEV right now, oldest first (ADR 0006)."""
+        from .classifier import REQUEST_TIMEOUT_SECONDS  # noqa: PLC0415 - avoids an import cycle
+
+        longest = timedelta(seconds=REQUEST_TIMEOUT_SECONDS) + RUNNING_GRACE
+        cutoff = (datetime.fromisoformat(self.ws.clock()) - longest).isoformat()
+        return [dict(row) for row in self.ws.store.conn.execute(
+            "SELECT id, job, model, created_at FROM classifier_requests"
+            " WHERE workspace_id = ? AND finished_at IS NULL AND created_at >= ?"
+            " ORDER BY created_at, id",
+            (self.ws.info.id, cutoff),
+        )]
+
     def _owner(self, by: str) -> str:
         by = (by or "").strip()
         if by != self.ws.info.owner:
@@ -122,6 +135,17 @@ def assistants_at_work(ws: ManagerWorkspace) -> dict[str, Any]:
             "detail": (f"Stopping: whatever {row['model']} sends back will be discarded."
                        if stopped else
                        f"Waiting for {row['model']} on {where}."),
+            "since": row["created_at"],
+        })
+    from .classifier import JOB_TITLES, RUNS_ON  # noqa: PLC0415 - avoids an import cycle
+
+    for row in control.running_classifier():
+        items.append({
+            "id": row["id"],
+            "kind": "request",
+            "title": JOB_TITLES[row["job"]],
+            "detail": (f"Stopping: whatever {row['model']} sends back will be discarded."
+                       if stopped else f"Waiting for {row['model']} on {RUNS_ON}."),
             "since": row["created_at"],
         })
     schedule = BriefSchedule(ws).view()

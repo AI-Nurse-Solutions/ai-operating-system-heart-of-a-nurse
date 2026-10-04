@@ -32,7 +32,9 @@ It does **not**:
 - email, post, publish, or upload anything
 - connect to your employer's systems
 - run an AI model unless you connect one that runs on this computer; no
-  cloud AI service is offered
+  cloud AI service drafts or answers for you
+- send anything to JEV, an optional cloud classifier, unless you connect it
+  with your own key and turn a job on (section 9)
 - accept a draft for you, or complete a task without your evidence
 
 ## 2. Install and launch
@@ -184,12 +186,57 @@ never runs one again:
   again**.
 - **Disconnect the model.** On **AI assistance**, **Disconnect the AI
   model** goes back to no model. Everything still works without one.
+- **JEV too.** Requests to JEV are listed under **Assistants at work**,
+  and the same switch stops them (section 9).
 - **Quit** stops the app and everything in it.
 
 A model that runs on this computer may finish its own work after a stop.
 Nothing it returns is used.
 
-## 9. How packs are reviewed
+## 9. JEV, the optional classifier
+
+JEV, from TypeSafe AI, answers yes-or-no, choice, and score questions
+about text you have reviewed. It never writes text. It can only make
+things stricter: it never approves anything, never removes a review step,
+and never changes the policy's decision. It is off until you connect it,
+and everything works without it.
+
+- **Connect it.** On **AI assistance**, under **JEV classifier**, paste
+  your own TypeSafe key and choose a daily request limit. Then press
+  **Connect JEV**.
+  - The key goes to your operating system's credential store. It is
+    never kept in your workspace file, a backup, or an export, and it is
+    never shown again.
+  - Where this computer has no credential store the app can use, JEV
+    stays off.
+- **Turn jobs on.** Every job is off until you tick it and press **Save
+  jobs**:
+  - **Refusal check.** JEV checks a project question for patient
+    information, an individual's performance, confidential employer
+    material, a clinical decision, or a judgment about a named person. If
+    it is confident it finds one, the question never reaches the AI model.
+  - **Routing.** On Mission Control, **Where does this belong?** suggests
+    where to start. You choose; nothing starts by itself.
+  - **Attention order.** Under Needs my judgment, **Suggest an order with
+    JEV** reorders the list. Every item stays, no number is shown, and
+    **Show my usual order** puts it back.
+  - **Action review.** This job works from the command surface only, like
+    approval. JEV suggests allow, hold, or deny beside the policy. A
+    confident stricter suggestion holds approval until you acknowledge it
+    with `classifier-acknowledge`.
+- **Before anything is sent**, you see exactly what JEV would receive.
+  What is sent is that text, byte for byte. If anything changes in
+  between, nothing is sent.
+- **Stop it.** **Stop all assistants** stops JEV's requests too. On
+  **AI assistance**, **Disconnect JEV** turns every job off and removes
+  your key.
+- **What TypeSafe's terms say**, as read on 2026-10-04, is on the AI
+  assistance screen. In short: it does not train on what you send; it
+  keeps it as long as it says is reasonably necessary; it is hosted in the
+  United States; it offers no business associate agreement. That is one
+  more reason only your own planning material is ever sent.
+
+## 10. How packs are reviewed
 
 Packs are reviewed sets of document templates: education, committee, and
 communication. The full rules are in [`../packs/README.md`](../packs/README.md).
@@ -205,7 +252,7 @@ communication. The full rules are in [`../packs/README.md`](../packs/README.md).
   exact text you reviewed, as with the weekly brief. Documents already
   started keep the pack version they started from.
 
-## 10. Pilot feedback
+## 11. Pilot feedback
 
 On **Help and feedback**, write what worked, a problem, an idea, or a
 question about the app. It is kept on this computer only.
@@ -230,7 +277,7 @@ From the command surface, the same steps are `pilot-feedback-add`,
 `pilot-feedback-preview`, and `pilot-feedback-export --reviewed-sha <sha256
 from the preview> --by "<the workspace's manager>"`.
 
-## 11. Where to get help
+## 12. Where to get help
 
 - **Your pilot team.** They tell you how to reach them. Describe what you
   did and what you saw. Do not include patient information, colleagues'

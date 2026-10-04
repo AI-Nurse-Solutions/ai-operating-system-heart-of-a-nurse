@@ -53,6 +53,7 @@ from ._naio import (
 )
 from .actions import DEFAULT_PROFILE_POLICY
 from .brief import ASSISTANT_PREFIX, BriefService, compose_weekly_brief, sha256_text
+from .classifier import ClassifierService
 from .control import AssistantControl
 from .memory import WorkspaceMemory
 from .services import ManagerError, ManagerWorkspace
@@ -277,9 +278,13 @@ class AssistantService:
         profile_policy: Path = DEFAULT_PROFILE_POLICY,
         timeout: float = REQUEST_TIMEOUT_SECONDS,
         stop_poll: float = STOP_POLL_SECONDS,
+        classifier: ClassifierService | None = None,
     ):
         self.ws = ws
         self.briefs = BriefService(ws)
+        # JEV's refusal check (ADR 0006): off unless the manager connected JEV
+        # and turned the check on; it can only refuse a question, never send one.
+        self.classifier = classifier or ClassifierService(ws)
         self.control = AssistantControl(ws)
         self.stop_poll = stop_poll
         self.provider_factory = provider_factory
@@ -637,6 +642,8 @@ class AssistantService:
         prep = self._prepare_project(project_id, question, today)
         provider = prep.provider
         return {
+            "classifier": self.classifier.preview_refusal(
+                prep.question, model_will_send=provider is not None and prep.blocked is None),
             "project_id": project_id,
             "provider": provider.kind if provider else "none",
             "model": provider.model if provider else "",
@@ -651,20 +658,25 @@ class AssistantService:
 
     def answer_project_question(self, project_id: str, question: str, today: str,
                                 requested_by: str, *,
-                                reviewed_prompt_sha256: str | None = None) -> dict[str, Any]:
+                                reviewed_prompt_sha256: str | None = None,
+                                reviewed_classifier_sha256: str | None = None) -> dict[str, Any]:
         """Ask the connected model about one project.
 
         The answer is a suggestion shown to the manager, never saved as a
         record. The same gates apply as for the brief, and the request is
-        bound to the preview the manager reviewed.
+        bound to the preview the manager reviewed. When JEV's refusal check
+        is on, the question goes to JEV first, bound to the same preview: a
+        confident refusal stops it before the model sees it (ADR 0006).
         """
         self._owner(requested_by)
         started = self.control.state()["generation"]  # as for the brief
         prep = self._prepare_project(project_id, question, today)
         provider = prep.provider
 
-        def result(outcome: str, reason: str, request_id: str, answer: str = "") -> dict[str, Any]:
+        def result(outcome: str, reason: str, request_id: str, answer: str = "",
+                   refusal: dict[str, str] | None = None) -> dict[str, Any]:
             return {
+                "refusal": refusal,
                 "outcome": outcome,
                 "answered_by_model": outcome == "answered",
                 "reason": reason,
@@ -688,6 +700,17 @@ class AssistantService:
                                       requested_by, "project_question")
             self._finish(request_id, outcome, reason, 0, None)
             return result(outcome, reason, request_id)
+        check = self.classifier.check_refusal(prep.question, requested_by,
+                                              reviewed_classifier_sha256, started)
+        if check["outcome"] == "refused":
+            # Nothing went to the model; JEV's ledger row is the record.
+            return result("refused_intake", check["reason"], check["request_id"],
+                          refusal=check["refusal"])
+        if check["outcome"] == "stopped":
+            request_id = self._record(provider, prep.prompt_sha, *STOPPED_BEFORE, 0,
+                                      requested_by, "project_question")
+            self._finish(request_id, *STOPPED_BEFORE, 0, None)
+            return result(*STOPPED_BEFORE, request_id)
         request_id, text, failure, cost, generation = self._send(
             provider, PROJECT_SYSTEM_PROMPT, prep.prompt, prep.prompt_sha, prep.estimate,
             prep.refs, requested_by, "project_question", "The AI answer was not shown", started)

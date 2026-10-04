@@ -203,6 +203,155 @@ export interface BriefSchedule {
   readonly stopped: boolean;
 }
 
+/** Exactly what asking JEV about one proposed action would send. Nothing is sent to produce it. */
+export interface ClassifierActionPreview {
+  readonly action_id: RecordId;
+  readonly job: "action_review";
+  readonly provider: ClassifierProvider;
+  readonly model: string;
+  readonly runs_on: string;
+  readonly request: string;
+  readonly request_sha256: Sha256 | "";
+  readonly checks: readonly AssistantCheck[];
+  readonly will_send: boolean;
+  readonly reason: string;
+}
+
+/** JEV's suggestion beside the policy's decision on one action. A hold must be acknowledged before approval; the policy's decision never changes. */
+export interface ClassifierActionResult {
+  readonly action_id: RecordId;
+  readonly outcome: ClassifierOutcome | "acknowledged";
+  /** Written for the manager. */
+  readonly reason: string;
+  readonly request_id: RecordId | "";
+  readonly model: string;
+  /** The policy's decision, as the option it corresponds to. */
+  readonly core_decision: ClassifierOption;
+  readonly suggestion: ClassifierOption | "";
+  readonly probabilities: {
+    /**
+     * @minimum 0
+     * @maximum 1
+     */
+    readonly allow?: number;
+    /**
+     * @minimum 0
+     * @maximum 1
+     */
+    readonly require_human?: number;
+    /**
+     * @minimum 0
+     * @maximum 1
+     */
+    readonly deny?: number;
+  };
+  readonly confidence: number | null;
+  readonly hold: boolean;
+  readonly acknowledged: boolean;
+}
+
+export type ClassifierJob = "action_review" | "refusal_check" | "routing" | "attention";
+
+/** Which of JEV's jobs are on. All are off by default, and none can be on while JEV is not connected. */
+export interface ClassifierJobs {
+  readonly action_review: boolean;
+  readonly refusal_check: boolean;
+  readonly routing: boolean;
+  readonly attention: boolean;
+}
+
+export type ClassifierOption = "allow" | "require_human" | "deny";
+
+/** A suggested order for Needs my judgment. Every item is kept; no score is given. When JEV is unsure or unavailable, the usual order is returned. */
+export interface ClassifierOrder {
+  readonly outcome: ClassifierOutcome | "nothing_to_order" | "too_many";
+  readonly reason: string;
+  readonly request_id: RecordId | "";
+  readonly model: string;
+  readonly order: readonly RecordId[];
+  readonly reordered: boolean;
+}
+
+/** What happened to one JEV request. Only 'answered' carries JEV's answer; every other outcome leaves things as they are without JEV. */
+export type ClassifierOutcome = "answered" | "not_connected" | "job_off" | "refused_data_rules" | "refused_policy" | "refused_budget" | "refused_stopped" | "provider_failed" | "output_refused" | "stopped";
+
+/** Exactly what asking JEV would send, and the gates' verdicts. Nothing is sent to produce it. When JEV is off or the job is off, request is empty and will_send is false. */
+export interface ClassifierPreview {
+  readonly job: ClassifierJob;
+  readonly provider: ClassifierProvider;
+  readonly model: string;
+  readonly runs_on: string;
+  /** The exact JSON body JEV would receive. */
+  readonly request: string;
+  /** Send it back with the request; a change since the preview refuses it. */
+  readonly request_sha256: Sha256 | "";
+  readonly checks: readonly AssistantCheck[];
+  readonly will_send: boolean;
+  /** Why nothing would be sent. Empty when will_send is true. */
+  readonly reason: string;
+}
+
+/** JEV, or nothing. 'none' is the default (ADR 0006). */
+export type ClassifierProvider = "none" | "jev";
+
+/** A refusal category JEV found in a question, and the nearest permitted path. */
+export interface ClassifierRefusal {
+  readonly category: "patient_information" | "staff_performance" | "employer_confidential" | "clinical_decision" | "named_person_judgment";
+  readonly label: string;
+  readonly nearest_path: string;
+}
+
+/** Where JEV suggests a request belongs. A suggestion only: the manager chooses, and nothing starts. */
+export interface ClassifierRoute {
+  readonly outcome: ClassifierOutcome;
+  readonly reason: string;
+  readonly request_id: RecordId | "";
+  readonly model: string;
+  /** The request as asked, whitespace normalized. Never stored. */
+  readonly request: string;
+  /** Empty when JEV was not sure or did not answer. */
+  readonly suggested: ClassifierRouteKey | "";
+  readonly label: string;
+  readonly confidence: number | null;
+  /** @minItems 1 */
+  readonly alternatives: readonly {
+    readonly route: ClassifierRouteKey;
+    readonly label: string;
+  }[];
+}
+
+export type ClassifierRouteKey = "weekly_brief" | "project_question" | "pack_education" | "pack_committee" | "pack_communication" | "library" | "learning" | "contributions" | "memory" | "outside";
+
+/** JEV settings, usage, what it does and never does, the gates every request passes, and TypeSafe's terms as read. Never the key. */
+export interface ClassifierStatus {
+  readonly provider: ClassifierProvider;
+  /** The pinned model, e.g. jev-1.13.0; empty when not connected. */
+  readonly model: string;
+  readonly jobs: ClassifierJobs;
+  /**
+   * @minimum 0
+   * @maximum 2000
+   */
+  readonly daily_request_limit: number;
+  /** Where the text goes, said plainly. */
+  readonly runs_on: string;
+  /** Where the key is kept: the operating system's credential store. */
+  readonly keystore: string;
+  readonly keystore_available: boolean;
+  /** @minimum 0 */
+  readonly requests_today: number;
+  /** @minimum 0 */
+  readonly input_tokens_this_month: number;
+  /** @minItems 1 */
+  readonly what_it_does: readonly string[];
+  /** @minItems 1 */
+  readonly never_does: readonly string[];
+  /** @minItems 1 */
+  readonly gates: readonly string[];
+  /** @minItems 1 */
+  readonly terms: readonly string[];
+}
+
 export type Contract = "nurse-manager-ipc@1";
 
 /** One of the manager's contributions and who shares the credit. Verified means the manager wrote the evidence that shows it happened. */
@@ -598,7 +747,8 @@ export interface Priority {
 
 /** The answer to a question about one project. It is a suggestion shown to the manager and is never saved; the ledger keeps only metadata. */
 export interface ProjectAnswer {
-  readonly outcome: "answered" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "refused_stopped" | "provider_failed" | "output_refused" | "stopped";
+  /** refused_intake: JEV's refusal check stopped the question before the model saw it; request_id is then JEV's request. */
+  readonly outcome: "answered" | "no_model" | "refused_data_rules" | "refused_policy" | "refused_budget" | "refused_stopped" | "provider_failed" | "output_refused" | "stopped" | "refused_intake";
   readonly answered_by_model: boolean;
   /** Written for the manager. Empty only when the model answered. */
   readonly reason: string;
@@ -611,6 +761,8 @@ export interface ProjectAnswer {
   /** Markdown with record citations; empty unless the model answered. */
   readonly answer: string;
   readonly source_refs: readonly RecordId[];
+  /** Why JEV refused the question, and the nearest permitted path; null unless outcome is refused_intake. */
+  readonly refusal: null | ClassifierRefusal;
 }
 
 /** What will move this initiative forward? Tasks use the same rows and ids as the table. */
@@ -661,6 +813,8 @@ export interface ProjectQuestionPreview {
   readonly will_send: boolean;
   /** Why nothing would be sent. Empty when will_send is true. */
   readonly reason: string;
+  /** JEV's refusal check on the question (ADR 0006): what it would be sent before the model sees the question. Send its request_sha256 back with assistant-project when will_send is true. */
+  readonly classifier: ClassifierPreview;
 }
 
 export interface ProjectSummary {
@@ -729,7 +883,7 @@ export interface ReconcileResult {
   readonly settled: readonly Receipt[];
 }
 
-/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem|plf|plx)-[0-9a-f]{12}$ */
+/** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem|plf|plx|clr)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
 export interface Resource {
@@ -922,6 +1076,17 @@ export interface CommandData {
   readonly "pilot-feedback-delete": PilotFeedbackDeleted;
   readonly "pilot-feedback-preview": PilotFeedbackPreview;
   readonly "pilot-feedback-export": PilotFeedbackExport;
+  readonly classifier: ClassifierStatus;
+  readonly "classifier-connect": ClassifierStatus;
+  readonly "classifier-off": ClassifierStatus;
+  readonly "classifier-jobs": ClassifierStatus;
+  readonly "classifier-action-preview": ClassifierActionPreview;
+  readonly "classifier-action": ClassifierActionResult;
+  readonly "classifier-acknowledge": ClassifierActionResult;
+  readonly "classifier-route-preview": ClassifierPreview;
+  readonly "classifier-route": ClassifierRoute;
+  readonly "classifier-order-preview": ClassifierPreview;
+  readonly "classifier-order": ClassifierOrder;
 }
 
 export type Command = keyof CommandData;

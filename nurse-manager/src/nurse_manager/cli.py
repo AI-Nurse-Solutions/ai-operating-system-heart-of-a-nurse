@@ -23,6 +23,7 @@ from . import update
 from .actions import ActionBoundary
 from .assistant import DEFAULT_LOCAL_ENDPOINT, AssistantService
 from .brief import BriefService
+from .classifier import JOBS as CLASSIFIER_JOBS, ClassifierService
 from .control import AssistantControl, assistants_at_work
 from .sample import load_sample
 from .memory import WorkspaceMemory
@@ -48,6 +49,13 @@ from .views import (
 
 
 CONTRACT = "nurse-manager-ipc@1"
+
+
+def _key_source(value: str) -> str:
+    # Not ``choices``: argparse would echo a mistyped key back in its error.
+    if value != "stdin":
+        raise argparse.ArgumentTypeError("only 'stdin' is accepted; a key is never an argument")
+    return value
 
 
 def _emit(envelope: dict[str, Any]) -> None:
@@ -241,6 +249,52 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--question", required=True)
     p.add_argument("--by", required=True)
     p.add_argument("--reviewed-sha", help="sha256 of the preview you reviewed; refuses if it changed")
+    p.add_argument("--reviewed-classifier-sha",
+                   help="sha256 of JEV's refusal check you reviewed, when that check is on")
+
+    # JEV as a classifier (ADR 0006): advises and can only tighten; off by default.
+    ws_cmd("classifier", "JEV settings, its jobs, usage, and the gates every request passes")
+    p = ws_cmd("classifier-connect", "connect JEV with your own TypeSafe key (read from standard"
+                                     " input; every job stays off)")
+    p.add_argument("--by", required=True)
+    p.add_argument("--key-from", required=True, type=_key_source, metavar="stdin",
+                   help="where the key comes from: standard input only; a key is never an"
+                        " argument")
+    p.add_argument("--daily-limit", type=int)
+    p = ws_cmd("classifier-off", "disconnect JEV: every job off, the key removed")
+    p.add_argument("--by", required=True)
+    p = ws_cmd("classifier-jobs", "turn JEV's jobs on or off")
+    p.add_argument("--by", required=True)
+    for job in CLASSIFIER_JOBS:
+        p.add_argument(f"--{job.replace('_', '-')}", dest=job, choices=("yes", "no"))
+    p = ws_cmd("classifier-action-preview", "exactly what asking JEV about an action would send;"
+                                            " sends nothing")
+    p.add_argument("--action", required=True)
+    p = ws_cmd("classifier-action", "ask JEV about a proposed action; it can add a hold, never"
+                                    " remove one")
+    p.add_argument("--action", required=True)
+    p.add_argument("--by", required=True)
+    p.add_argument("--reviewed-sha", required=True, help="sha256 of the preview you reviewed")
+    p = ws_cmd("classifier-acknowledge", "acknowledge JEV's stricter suggestion on an action;"
+                                         " it still needs your approval")
+    p.add_argument("--action", required=True)
+    p.add_argument("--by", required=True)
+    p = ws_cmd("classifier-route-preview", "exactly what asking JEV where a request belongs would"
+                                           " send; sends nothing")
+    p.add_argument("--request", required=True)
+    p = ws_cmd("classifier-route", "ask JEV where a request belongs; you choose, nothing starts")
+    p.add_argument("--request", required=True)
+    p.add_argument("--by", required=True)
+    p.add_argument("--reviewed-sha", required=True, help="sha256 of the preview you reviewed")
+    p = ws_cmd("classifier-order-preview", "exactly what asking JEV to order what needs your"
+                                           " judgment would send; sends nothing")
+    p.add_argument("--today", required=True)
+    p.add_argument("--week", required=True)
+    p = ws_cmd("classifier-order", "ask JEV to suggest an order for what needs your judgment")
+    p.add_argument("--today", required=True)
+    p.add_argument("--week", required=True)
+    p.add_argument("--by", required=True)
+    p.add_argument("--reviewed-sha", required=True, help="sha256 of the preview you reviewed")
 
     # Not a workspace command: it checks this installation's release.
     p = sub.add_parser("update-check", help="check the signed update feed (never installs)")
@@ -258,8 +312,12 @@ def commands() -> tuple[str, ...]:
     return tuple(sub.choices)
 
 
-def _dispatch(args: argparse.Namespace) -> Any:
-    """Run one parsed command and return its data. The workspace is always closed."""
+def _dispatch(args: argparse.Namespace, secret: str | None = None) -> Any:
+    """Run one parsed command and return its data. The workspace is always closed.
+
+    ``secret`` is a key handed over in process by a host (the app); from a
+    terminal, a key is read from standard input. A key is never an argument.
+    """
     # Every "today" and "week" is a real YYYY-MM-DD date before any view uses it:
     # the envelope promises IsoDate, and views derive years and windows from it.
     for name in ("today", "week"):
@@ -368,6 +426,8 @@ def _dispatch(args: argparse.Namespace) -> Any:
             else:
                 control.resume(args.by)
             return assistants_at_work(ws)
+        if args.command.startswith("classifier"):
+            return _classifier(ws, args, secret)
         if args.command.startswith("assistant") or args.command == "note-keep":
             assistant = AssistantService(ws)
             if args.command == "assistant":
@@ -387,7 +447,8 @@ def _dispatch(args: argparse.Namespace) -> Any:
             if args.command == "assistant-project":
                 return assistant.answer_project_question(
                     args.id, args.question, args.today, args.by,
-                    reviewed_prompt_sha256=args.reviewed_sha)
+                    reviewed_prompt_sha256=args.reviewed_sha,
+                    reviewed_classifier_sha256=args.reviewed_classifier_sha)
             if args.command == "assistant-brief":
                 return assistant.draft_weekly_brief(
                     args.week, args.today, args.by, reviewed_prompt_sha256=args.reviewed_sha)
@@ -433,11 +494,43 @@ def _dispatch(args: argparse.Namespace) -> Any:
         ws.close()
 
 
-def run(argv: list[str]) -> tuple[int, dict[str, Any]]:
+def _classifier(ws: ManagerWorkspace, args: argparse.Namespace, secret: str | None) -> Any:
+    jev = ClassifierService(ws)
+    if args.command == "classifier":
+        return jev.status()
+    if args.command == "classifier-connect":
+        # A host hands the key over in process; a terminal pipes it in.
+        key = secret if secret is not None else sys.stdin.readline()
+        return jev.connect(args.by, key, daily_request_limit=args.daily_limit)
+    if args.command == "classifier-off":
+        return jev.disconnect(args.by)
+    if args.command == "classifier-jobs":
+        chosen = {job: getattr(args, job) == "yes" for job in CLASSIFIER_JOBS
+                  if getattr(args, job) is not None}
+        return jev.set_jobs(args.by, chosen)
+    if args.command == "classifier-action-preview":
+        return jev.preview_action(args.action)
+    if args.command == "classifier-action":
+        return jev.review_action(args.action, args.by, args.reviewed_sha)
+    if args.command == "classifier-acknowledge":
+        return jev.acknowledge(args.action, args.by)
+    if args.command == "classifier-route-preview":
+        return jev.preview_route(args.request)
+    if args.command == "classifier-route":
+        return jev.route(args.request, args.by, args.reviewed_sha)
+    if args.command == "classifier-order-preview":
+        return jev.preview_order(args.today, args.week)
+    if args.command == "classifier-order":
+        return jev.order(args.today, args.week, args.by, args.reviewed_sha)
+    raise AssertionError(f"unhandled command {args.command}")  # pragma: no cover
+
+
+def run(argv: list[str], *, secret: str | None = None) -> tuple[int, dict[str, Any]]:
     """Run one command and return (exit code, envelope) without printing.
 
     The in-process entry point for hosts (the dev host, tests): no global
     stdout redirection, so it is safe to call from several threads.
+    ``secret`` hands a key to ``classifier-connect`` without an argument.
     """
     try:
         args = build_parser().parse_args(argv)
@@ -453,7 +546,7 @@ def run(argv: list[str]) -> tuple[int, dict[str, Any]]:
     try:
         # Round-trip through JSON so in-process callers receive exactly the
         # types the printed envelope carries (lists, not tuples).
-        data = json.loads(json.dumps(_dispatch(args)))
+        data = json.loads(json.dumps(_dispatch(args, secret)))
         return 0, {**base, "ok": True, "data": data}
     except Exception as exc:  # noqa: BLE001 — surface a truthful state, never a traceback
         code = 2 if isinstance(exc, ManagerError) else 1

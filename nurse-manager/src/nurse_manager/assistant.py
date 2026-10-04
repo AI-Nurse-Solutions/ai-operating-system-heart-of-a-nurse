@@ -673,10 +673,14 @@ class AssistantService:
         prep = self._prepare_project(project_id, question, today)
         provider = prep.provider
 
+        check: dict[str, Any] = {"reason": ""}
+
         def result(outcome: str, reason: str, request_id: str, answer: str = "",
                    refusal: dict[str, str] | None = None) -> dict[str, Any]:
             return {
                 "refusal": refusal,
+                # What JEV's refusal check did, when it ran and did not refuse.
+                "classifier_note": check["reason"] if refusal is None else "",
                 "outcome": outcome,
                 "answered_by_model": outcome == "answered",
                 "reason": reason,
@@ -706,10 +710,16 @@ class AssistantService:
             # Nothing went to the model; JEV's ledger row is the record.
             return result("refused_intake", check["reason"], check["request_id"],
                           refusal=check["refusal"])
-        if check["outcome"] == "stopped":
+        if check["outcome"] in ("stopped", "stopped_during"):
+            # The model was never asked. If JEV had the question, say so.
             request_id = self._record(provider, prep.prompt_sha, *STOPPED_BEFORE, 0,
                                       requested_by, "project_question")
             self._finish(request_id, *STOPPED_BEFORE, 0, None)
+            if check["outcome"] == "stopped_during":
+                reason = f"{check['reason']} Nothing went to the AI model."
+                check["reason"] = ""
+                return result("stopped", reason, request_id)
+            check["reason"] = ""
             return result(*STOPPED_BEFORE, request_id)
         request_id, text, failure, cost, generation = self._send(
             provider, PROJECT_SYSTEM_PROMPT, prep.prompt, prep.prompt_sha, prep.estimate,

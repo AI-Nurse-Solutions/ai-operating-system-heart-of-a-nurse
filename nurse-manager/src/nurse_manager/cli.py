@@ -14,6 +14,7 @@ and described by ``contracts/ipc/`` (schema plus generated TypeScript):
 from __future__ import annotations
 
 import argparse
+import getpass
 import json
 import sys
 from pathlib import Path
@@ -494,13 +495,21 @@ def _dispatch(args: argparse.Namespace, secret: str | None = None) -> Any:
         ws.close()
 
 
+def _read_key() -> str:
+    """The key from standard input: a hidden prompt at a terminal, else one piped line."""
+    if sys.stdin.isatty():
+        return getpass.getpass("TypeSafe API key (not shown): ")
+    return sys.stdin.readline()
+
+
 def _classifier(ws: ManagerWorkspace, args: argparse.Namespace, secret: str | None) -> Any:
     jev = ClassifierService(ws)
     if args.command == "classifier":
         return jev.status()
     if args.command == "classifier-connect":
-        # A host hands the key over in process; a terminal pipes it in.
-        key = secret if secret is not None else sys.stdin.readline()
+        # A host hands the key over in process. Typed at a terminal, it is
+        # read without being shown; otherwise it is piped in.
+        key = secret if secret is not None else _read_key()
         return jev.connect(args.by, key, daily_request_limit=args.daily_limit)
     if args.command == "classifier-off":
         return jev.disconnect(args.by)

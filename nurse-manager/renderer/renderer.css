@@ -369,6 +369,7 @@ a { color: var(--nm-primary); }
 .reference { font-size: 0.875rem; overflow-wrap: anywhere; }
 
 /* JEV (ADR 0006) */
+.masked-key { -webkit-text-security: disc; font-family: monospace; }
 .onboarding-form .field--inline { display: flex; align-items: baseline; gap: var(--nm-space-1); }
 .jev-preview { padding: var(--nm-space-2); border-radius: var(--nm-radius-badge); margin: 0 0 var(--nm-space-2); }
 .jev-check {

@@ -1037,9 +1037,10 @@
         "question": {"type": "string", "description": "The question as asked, whitespace normalized. Send it back with note-keep."},
         "answer": {"type": "string", "description": "Markdown with record citations; empty unless the model answered."},
         "source_refs": {"type": "array", "items": {"$ref": "#/$defs/RecordId"}},
-        "refusal": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/ClassifierRefusal"}], "description": "Why JEV refused the question, and the nearest permitted path; null unless outcome is refused_intake."}
+        "refusal": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/ClassifierRefusal"}], "description": "Why JEV refused the question, and the nearest permitted path; null unless outcome is refused_intake."},
+        "classifier_note": {"type": "string", "description": "What JEV's refusal check did when it ran and did not refuse: found nothing, was not sure, or was unavailable and the question went on without it. Empty when the check is off, or when it refused (see refusal)."}
       },
-      "required": ["outcome", "answered_by_model", "reason", "provider", "model", "request_id", "project_id", "question", "answer", "source_refs", "refusal"],
+      "required": ["outcome", "answered_by_model", "reason", "provider", "model", "request_id", "project_id", "question", "answer", "source_refs", "refusal", "classifier_note"],
       "additionalProperties": false
     },
     "ProjectNote": {

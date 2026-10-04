@@ -3,7 +3,7 @@
 
     python3 nurse-manager/tools/shadow_report.py          # rewrite the report
     python3 nurse-manager/tools/shadow_report.py --check  # fail if it is stale
-    python3 nurse-manager/tools/shadow_report.py --adapter jev < key.txt   # step 4.5b
+    python3 nurse-manager/tools/shadow_report.py --adapter jev   # step 4.5b: asks for the key
 
 The report shadows the review-always baseline against the synthetic
 labeled set. It is the floor any real suggester has to beat, and it proves
@@ -11,19 +11,22 @@ the harness end to end.
 
 With ``--adapter jev`` (step 4.5b, ADR 0006) the steward runs the live JEV
 adapter on the same reviewed, pinned synthetic set. The TypeSafe key is read
-from standard input, never from an argument or the environment, and the
+from standard input (at a terminal, a prompt that does not show it), never
+from an argument, the environment, or a file left on disk, and the
 report is printed, not committed: it is evidence for a decision, and JEV's
 answers can change. Nothing JEV answers reaches a decision.
 """
 
 from __future__ import annotations
 
+import getpass
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from nurse_manager.classifier import JevClient, JevDecisionAdapter  # noqa: E402
+from nurse_manager.credentials import SECRET  # noqa: E402
 from nurse_manager.decision_adapter import (  # noqa: E402
     TRUSTED_SET_DIGESTS,
     ReviewAlwaysBaseline,
@@ -43,9 +46,10 @@ def main(argv: list[str]) -> int:
               f" decision_adapter.TRUSTED_SET_DIGESTS:\n    {digest}", file=sys.stderr)
         return 1
     if argv[:2] == ["--adapter", "jev"]:
-        key = sys.stdin.readline().strip()
-        if not key:
-            print("pass the TypeSafe key on standard input", file=sys.stderr)
+        key = (getpass.getpass("TypeSafe API key (not shown): ") if sys.stdin.isatty()
+               else sys.stdin.readline()).strip()
+        if not SECRET.fullmatch(key):
+            print("that is not a TypeSafe key; it is not repeated here", file=sys.stderr)
             return 1
         print(render_markdown(run_shadow(JevDecisionAdapter(JevClient(key)))))
         return 0

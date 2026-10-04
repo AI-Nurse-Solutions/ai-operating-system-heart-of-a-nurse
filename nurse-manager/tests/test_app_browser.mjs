@@ -835,10 +835,24 @@ try {
       assert.match(off, /It never writes text/);
       assert.match(off, /never approves, sends, or exports anything, and never lowers a tier/);
       assert.match(off, /no business associate agreement/);
-      assert.equal(await jevRegion.getByLabel('Your TypeSafe API key').getAttribute('type'), 'password');
+      // Not a password field in a form, so the browser never offers to keep the key;
+      // it is masked on screen instead.
+      const keyField = jevRegion.getByLabel('Your TypeSafe API key');
+      assert.equal(await keyField.getAttribute('type'), 'text');
+      assert.equal(await keyField.evaluate((el) => el.closest('form')), null, 'the key field is in no form');
+      assert.equal(await keyField.evaluate((el) => getComputedStyle(el).webkitTextSecurity), 'disc');
+      assert.equal(await jp.locator('input[type="password"]').count(), 0);
       await jevRegion.getByLabel('Your TypeSafe API key').fill(JEV_KEY);
+      // An empty or impossible limit is asked for again; nothing is connected.
+      for (const typed of ['', '5000', '2.5']) {
+        await jevRegion.getByLabel('JEV requests per day, at most').fill(typed);
+        await jevRegion.getByRole('button', { name: 'Connect JEV' }).click();
+        assert.equal(await jp.evaluate(() => document.activeElement?.id), 'jev-limit', `the limit "${typed}" is asked for again`);
+        assert.match(await jevRegion.textContent(), /Not connected/);
+        assert.equal(await jevRegion.getByLabel('Your TypeSafe API key').inputValue(), JEV_KEY, 'the key is kept to try again');
+      }
       await jevRegion.getByLabel('JEV requests per day, at most').fill('50');
-      await jevRegion.getByRole('button', { name: 'Connect JEV' }).click();
+      await jevRegion.getByLabel('JEV requests per day, at most').press('Enter');
       await focused(/JEV is connected\. Every job is off/);
       assert.ok(!(await jp.content()).includes(JEV_KEY), 'the key is never shown back');
       const on = await jevRegion.textContent();
@@ -920,7 +934,7 @@ try {
       assert.equal(jevModelRequests.length, 0, 'the AI model never saw the refused question');
       assert.equal(await jp.getByRole('document', { name: 'AI suggestion' }).count(), 0);
       await ask('What is at risk before the next milestone?');
-      await focused(/The AI model answered/);
+      await focused(/The AI model answered\..*JEV checked the question and found nothing to refuse\./);
       assert.equal(jevModelRequests.length, 1, 'a question JEV clears goes on to the AI model');
 
       // Disconnect: every job off and the key removed; Mission Control is as before.

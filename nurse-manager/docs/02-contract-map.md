@@ -117,6 +117,9 @@ One logical writer per record type. Views never write.
 | Action, approval, receipt | `actions`, `approvals`, `receipts` | `ActionBoundary` | views |
 | AI settings | `assistant_settings` | `AssistantService.connect_local/disconnect` (the workspace owner only) | views, assistant |
 | AI request ledger (hashes and outcomes, never text; weekly briefs and project questions; unfinished while waiting for a model) | `assistant_requests` | `AssistantService` | assistant (budget, note binding), Mission Control (assistants at work) |
+| JEV settings (off by default; each job on only while JEV is connected; never the key, which is in the operating system's credential store) | `classifier_settings` | `ClassifierService.connect/disconnect/set_jobs` (the workspace owner only) | AI assistance, classifier |
+| JEV request ledger (hashes, outcomes, fixed result keys, and confidences, never text; unfinished while waiting for JEV) | `classifier_requests` | `ClassifierService` | classifier (daily limit), Mission Control (assistants at work) |
+| JEV's suggestion on a proposed action, beside the policy's decision, and its hold | `action_classifications` | `ClassifierService.review_action/acknowledge` (the workspace owner only) | `ActionBoundary.approve` (an unacknowledged hold refuses approval) |
 | Project feedback (about the work, from a group or role) | `project_feedback` | `ManagerWorkspace.add_feedback/address_feedback` | project dashboard, assistant (project context) |
 | Learning item (the manager's own professional learning) | `learning_items` | `ManagerWorkspace.add_learning/start_learning/complete_learning` | Learning and Growth |
 | Contribution (the manager's own, with shared credit and evidence) | `contributions` | `ManagerWorkspace.add_contribution/verify_contribution` | Contributions |

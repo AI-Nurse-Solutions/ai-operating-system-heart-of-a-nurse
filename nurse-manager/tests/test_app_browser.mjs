@@ -83,7 +83,7 @@ try {
   const aboutText = await about.textContent();
   for (const fact of [/What it does\..*one workspace/s, /never emails, posts, or uploads anything/,
     /does not connect to your employer’s systems/, /Your data stays on this computer\..*never uploaded/s,
-    /No AI model runs by default\..*No cloud AI service is offered/s, /sample workspace is synthetic/,
+    /No AI model runs by default\..*No cloud AI service drafts or answers for you\. JEV, an optional classifier, is off unless you connect it/s, /sample workspace is synthetic/,
     /Your own workspace starts empty/, /It does not detect people’s names\./,
     /Passing it never means text is free of patient information/]) {
     assert.match(aboutText, fact);

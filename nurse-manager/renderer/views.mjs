@@ -905,7 +905,7 @@ export function aboutFacts(doc) {
     fact('What it does.', ['Keeps your projects, tasks, decisions, sources, learning, and weekly brief in one workspace, and drafts from your own records.']),
     fact('What it does not do.', ['It never emails, posts, or uploads anything. It does not connect to your employer’s systems. It does not decide for you: every draft waits until you accept it.']),
     fact('Your data stays on this computer.', ['Records are saved in your user-data folder on this computer, never inside the app, and never uploaded. The app only answers this computer.']),
-    fact('No AI model runs by default.', ['Everything works without one. You can connect a model that runs on this computer, and you see exactly what it would be sent first. No cloud AI service is offered.']),
+    fact('No AI model runs by default.', ['Everything works without one. You can connect a model that runs on this computer, and you see exactly what it would be sent first. No cloud AI service drafts or answers for you. JEV, an optional classifier, is off unless you connect it with your own key.']),
     fact('The sample workspace', ['is synthetic: every person, project, and date in it is made up, and every screen says so. This computer keeps one workspace, so the sample does not turn into your own later; the support guide says how to set it aside.']),
     fact('Your own workspace', ['starts empty. You name it and give your name as its accountable manager. It is for public, synthetic, or your own permitted material.']),
     fact('The privacy screen has limits.', [

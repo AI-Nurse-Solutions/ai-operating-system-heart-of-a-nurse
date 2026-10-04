@@ -218,7 +218,7 @@ How the v2.0 components land, in one line each:
 | v2.0 component | In the Manager Edition |
 |---|---|
 | Nurse Manager Workspace | Mission Control and the existing screens. Huddles, coaching, and communications are packs. Staffing and quality operations are G7 |
-| Request Router | The manager picks the workflow on screen. A deterministic refusal set runs before any AI preview (P4.3) |
+| Request Router | The manager picks the workflow on screen. A deterministic refusal set runs before any AI preview (P4.3). When the manager turns it on, JEV suggests a place to start and checks a question before the AI model; it never picks (ADR 0006) |
 | Session and Task State | Per-mechanism state machines that already exist. Resume means re-verify, never re-run |
 | Supervisor Agent | Not in the Manager core, on any gate. Florence-X, after evidence and a steward decision |
 | Specialist Agents | One reviewed assistant task manifest with versioned prompts (P4.1). No Staffing or Quality & Safety tasks in the Personal profile |
@@ -272,8 +272,10 @@ These are the direction statements this document asks the steward to adopt.
    - for effects: propose → approve bound to hash and destination →
      recheck → receipt
 
-   No model ever assigns risk, picks a workflow, releases text, or holds a
-   gate.
+   No model ever assigns risk, picks a workflow, or releases text, and no
+   model can open a gate. Under ADR 0006, the JEV classifier may suggest a
+   workflow (the manager still picks), and may add a hold or a refusal. It
+   never removes one.
 3. **Close the real-manager gaps first, in the order of §5.2:**
    - decide every task status transition inside its write (P2.1)
    - wire the existing writers to commands and screens (P2.2, P3.1, P3.2)
@@ -855,7 +857,7 @@ carries the concept.
 | Id | Concept | Verdict | Today → change |
 |---|---|---|---|
 | ARCH-01 | Workspace with five surfaces | Adapt | Mission Control, brief, packs → see the list below the table |
-| ARCH-02 | Request router | Adapt | Fixed workflow per command → no intent-classifying router; manager chooses; refusal set before preview (P4.3) |
+| ARCH-02 | Request router | Adapt | Fixed workflow per command → no router that picks; manager chooses; refusal set before preview (P4.3); JEV may suggest a place to start, after a preview (ADR 0006) |
 | ARCH-03 | Session and task state | Adapt | Per-mechanism state machines → kept; resume re-verifies, never re-runs; any multi-step checkpoint lives at Florence-X and stores hashes and stage names only |
 | ARCH-04 | Supervisor agent | Defer | Absent → on no gate (§5.5) |
 | ARCH-05 | Six specialist agents | Adapt | Two fixed prompts → one assistant task manifest (P4.1); no Staffing or Quality & Safety tasks in the Personal profile |

@@ -47,7 +47,10 @@ and this ADR cites none of them.
    - memory written by agents.
 2. Routing is the manager's explicit choice of workflow on screen, plus a
    deterministic refusal set that runs before any AI preview. No model
-   assigns risk, picks a workflow, releases text, or holds a gate.
+   assigns risk, picks a workflow, or releases text, and no model can open
+   a gate. Under ADR 0006, the JEV classifier may suggest a workflow (the
+   manager still picks), and may add a hold or a refusal. It never removes
+   one.
 3. "Specialist" capability arrives only as an entry in one reviewed
    assistant task manifest.
    - Each entry declares a version, a prompt hash, a data scope, and an

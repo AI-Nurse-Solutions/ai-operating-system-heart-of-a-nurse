@@ -27,7 +27,8 @@ patient, employee-performance, or confidential employer information:
 - [`docs/02-contract-map.md`](docs/02-contract-map.md): Florence-X ↔ Integration Contract ↔ manager records, and the record-writer register.
 - [`docs/03-weekly-brief-journey.md`](docs/03-weekly-brief-journey.md): the first workflow, including its states and failure states.
 - [`docs/04-support-guide.md`](docs/04-support-guide.md): for a pilot manager and their support person. Covers launch, backup and restore, what to do after a crash, stopping assistants, how packs are reviewed, pilot feedback, and where to get help.
-- [`docs/06-architecture-direction.md`](docs/06-architecture-direction.md): the v2.0 concept notes checked against this code. Covers what already exists, what changes, what is parked at G7 or rejected, and the proposed steps. Draft for steward review.
+- [`docs/05-hermes-review.md`](docs/05-hermes-review.md): Hermes branding and redistribution review (build step 0.8). What this project must include, and what it may say.
+- [`docs/06-architecture-direction.md`](docs/06-architecture-direction.md): proposed architecture direction and build-plan additions after the v2.0 concept notes. It lists ten direction decisions, a pilot-ready subset of steps, and the steward decisions they need (§6). Draft for steward review.
 - [`docs/adr/`](docs/adr/): architecture decisions. ADRs 0001–0004 were accepted by the steward on 2026-09-28. ADR 0005 (scope against the v2.0 concept notes) is proposed, not accepted.
 
 ## Try it

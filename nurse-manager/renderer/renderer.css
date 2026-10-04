@@ -367,3 +367,12 @@ a { color: var(--nm-primary); }
 .note:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
 .note h3 { margin: 0 0 4px; }
 .reference { font-size: 0.875rem; overflow-wrap: anywhere; }
+
+/* JEV (ADR 0006) */
+.onboarding-form .field--inline { display: flex; align-items: baseline; gap: var(--nm-space-1); }
+.jev-preview { padding: var(--nm-space-2); border-radius: var(--nm-radius-badge); margin: 0 0 var(--nm-space-2); }
+.jev-check {
+  border-left: 4px solid var(--nm-accent-review);
+  padding-left: var(--nm-space-2);
+  margin: 0 0 var(--nm-space-2);
+}

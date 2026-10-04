@@ -106,8 +106,9 @@ class FakeJev:
 
             def do_POST(self):
                 length = int(self.headers.get("Content-Length", 0))
-                body = json.loads(self.rfile.read(length))
-                fake.requests.append({"path": self.path, "body": body,
+                sent = self.rfile.read(length)
+                body = json.loads(sent)
+                fake.requests.append({"path": self.path, "body": body, "raw": sent,
                                       "authorization": self.headers.get("Authorization")})
                 if delay:
                     time.sleep(delay)
@@ -369,7 +370,8 @@ class GateTests(JevCase):
         self.assertEqual([c["gate"] for c in preview["checks"]], ["data_rules", "edena", "budget"])
         self.assertTrue(all(c["passed"] for c in preview["checks"]))
         self.service().route(ROUTE_REQUEST, OWNER, preview["request_sha256"])
-        self.assertEqual(self.jev.requests[-1]["body"], json.loads(preview["request"]))
+        # Byte for byte: the preview's text is the body, not a re-serialization of it.
+        self.assertEqual(self.jev.requests[-1]["raw"], preview["request"].encode("utf-8"))
         self.assertEqual(self.jev.requests[-1]["body"]["model"], JEV_MODEL)
 
     def test_a_changed_or_unreviewed_preview_sends_nothing(self):

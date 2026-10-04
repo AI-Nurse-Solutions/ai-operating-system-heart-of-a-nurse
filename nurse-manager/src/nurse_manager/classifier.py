@@ -302,13 +302,15 @@ class JevClient:
     def __repr__(self) -> str:
         return f"JevClient(model={self.model!r}, endpoint={self.endpoint!r})"
 
-    def ask(self, body: dict[str, Any], *, timeout: float,
+    def ask(self, text: str, *, timeout: float,
             on_sent: Callable[[], None]) -> dict[str, Any]:
-        """Send one request; return the reply as parsed JSON.
+        """Send one request body, exactly as given; return the reply as parsed JSON.
 
-        Call ``on_sent`` once, when the request has been handed to the network.
+        ``text`` is the JSON the manager previewed: its bytes are what is
+        sent, not a re-serialization of it. Call ``on_sent`` once, when the
+        request has been handed to the network.
         """
-        data = json.dumps(body).encode("utf-8")
+        data = text.encode("utf-8")
         address = self._address
         connect_timeout = min(timeout, CONNECT_TIMEOUT_SECONDS)
         if address.scheme == "https":
@@ -359,8 +361,13 @@ class Client(Protocol):
     endpoint: str
     runs_on: str
 
-    def ask(self, body: dict[str, Any], *, timeout: float,
+    def ask(self, text: str, *, timeout: float,
             on_sent: Callable[[], None]) -> dict[str, Any]: ...
+
+
+def request_text(body: dict[str, Any]) -> str:
+    """The one way a request body is written: shown in the preview, hashed, and sent."""
+    return json.dumps(body, indent=2, sort_keys=True, ensure_ascii=False)
 
 
 def default_client_factory(api_key: str, model: str) -> Client:
@@ -643,7 +650,7 @@ class ClassifierService:
         settings = self.settings()
         model = settings["model"] or JEV_MODEL
         body = {"model": model, "state": state, "questions": questions}
-        text = json.dumps(body, indent=2, sort_keys=True, ensure_ascii=False)
+        text = request_text(body)
         sha = sha256_text(f"{PROVIDER}\n{JEV_ENDPOINT}\n\n{text}")
         prep = _Prepared(job, body, text, sha, model=model)
         if settings["provider"] != PROVIDER:
@@ -758,7 +765,7 @@ class ClassifierService:
 
         def call() -> None:
             try:
-                outcome["reply"] = client.ask(prep.body, timeout=self.timeout, on_sent=sent.set)
+                outcome["reply"] = client.ask(prep.text, timeout=self.timeout, on_sent=sent.set)
             except BaseException as exc:  # noqa: BLE001 — reported below
                 outcome["error"] = exc
             finally:
@@ -1205,8 +1212,8 @@ class JevDecisionAdapter:
                             " review, or denied?",
             "criteria": {o: ACTION_OPTIONS[o] for o in options},
         }}
-        reply = self.client.ask({"model": self.client.model, "state": question,
-                                 "questions": questions},
+        reply = self.client.ask(request_text({"model": self.client.model, "state": question,
+                                              "questions": questions}),
                                 timeout=self.timeout, on_sent=lambda: None)
         checked = check_answers(questions, reply, self.client.model)
         if isinstance(checked, str):

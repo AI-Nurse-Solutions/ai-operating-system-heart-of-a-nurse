@@ -52,6 +52,9 @@ decision record).
      lowers a tier, or changes the EDENA policy's decision.
    - When JEV is unsure, unavailable, or answers outside the contract,
      everything works as it does without JEV, and the manager is told why.
+   - An answer counts only if JEV, and that job, are still on when it comes
+     back. This is checked in the same write that would use the answer, so
+     turning a job off stops it at once.
    - EDENA and the manager still decide.
 3. **D0/D1 only, after a preview, and off by default.**
    - Only material the workspace's data rules admit (D0 public or
@@ -85,6 +88,12 @@ decision record).
       A confident yes refuses the question, names the category, and offers
       the nearest permitted path. This adds to the deterministic refusal
       set (proposed step P4.3); it does not replace it.
+
+      The check works by sending the question to TypeSafe, which means
+      sending exactly the content it looks for. It does so even when the AI
+      model runs on this computer, so turning the check on sends questions
+      off this computer that would otherwise never leave it. The preview
+      and the job's own description say so.
    3. **Workflow routing.** For a request the manager types, JEV suggests
       where in the workspace to start. It only suggests: every place stays
       one click away, and nothing starts by itself.
@@ -99,8 +108,10 @@ decision record).
 
    Each request is recorded before it is sent, in a ledger that keeps
    hashes, outcomes, fixed result keys, and confidences, never the text.
-6. **A pinned model.** Requests name `jev-1.13.0`, never `jev-latest`.
-   Changing the model is a reviewed code change.
+6. **A pinned model.** Requests always name the model pinned in the code,
+   `jev-1.13.0`, never `jev-latest`, whatever was stored when JEV was
+   connected. Changing the model is a reviewed code change, and a reply
+   from any other model is not used.
 
 ## Consequences
 
@@ -133,6 +144,9 @@ decision record).
 
   The terms must be re-read before a pilot uses JEV, and whenever the
   pinned model changes.
+- The key is stored per workspace. A workspace set aside or deleted
+  without **Disconnect JEV** leaves its key in the credential store, under
+  "Nurse AI OS", until the manager removes it there.
 - JEV adds cost and a dependency only for a manager who connects it.
   Everything works without it, and every JEV failure leaves today's
   behavior in place.

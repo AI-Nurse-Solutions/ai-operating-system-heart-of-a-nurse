@@ -126,7 +126,7 @@ or changes the EDENA policy's decision.
 
 ```bash
 python3 -m nurse_manager classifier /tmp/mgr                     # settings, usage, terms, and the gates
-python3 -m nurse_manager classifier-connect /tmp/mgr --by "Sample Manager" --key-from stdin   # then paste the key
+python3 -m nurse_manager classifier-connect /tmp/mgr --by "Sample Manager" --key-from stdin   # paste the key at the prompt; it is not shown
 python3 -m nurse_manager classifier-jobs /tmp/mgr --by "Sample Manager" --routing yes
 python3 -m nurse_manager classifier-route-preview /tmp/mgr --request "Draft a huddle message"   # sends nothing
 python3 -m nurse_manager classifier-off /tmp/mgr --by "Sample Manager"   # every job off, the key removed

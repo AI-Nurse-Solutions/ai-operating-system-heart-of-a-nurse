@@ -15,6 +15,7 @@ import contextlib
 import io
 import json
 import shutil
+import socketserver
 import sqlite3
 import subprocess
 import tempfile
@@ -478,10 +479,26 @@ class ContractTests(unittest.TestCase):
             "score levels missing": lambda r: r["answers"]["level"]["probabilities"].pop("4"),
             "not a number": lambda r: r["answers"]["decision"]["probabilities"].update(
                 allow=float("nan")),
+            "a number too large for a float": lambda r: r["answers"]["decision"].update(
+                confidence=10 ** 400),
+            "a choice that is not its most probable option": lambda r: r["answers"][
+                "decision"].update(probabilities={"allow": 0.7, "require_human": 0.2,
+                                                  "deny": 0.1}),
+            "score levels not the ones asked": lambda r: r["answers"]["level"].update(
+                probabilities={"-inf": 0.1, "0": 0.1, "1": 0.5, "inf": 0.3}),
+            "score levels renumbered": lambda r: r["answers"]["level"].update(
+                probabilities={"0": 0.1, "1": 0.1, "2": 0.5, "3": 0.3}),
         }
         for name, edit in cases.items():
             with self.subTest(case=name):
                 self.assertIsInstance(check_answers(self.QUESTIONS, changed(edit), JEV_MODEL), str)
+
+    def test_an_impossible_token_count_is_not_recorded(self):
+        for tokens in (10 ** 400, 2 ** 63, -1, True, "12"):
+            with self.subTest(tokens=tokens):
+                reply = self.good()
+                reply["usage"]["input_tokens"] = tokens
+                self.assertIsNone(check_answers(self.QUESTIONS, reply, JEV_MODEL)[1])
 
 
 class FailureTests(JevCase):
@@ -510,6 +527,49 @@ class FailureTests(JevCase):
                 self.assertEqual(result["suggested"], "")
                 self.assertIn(words, result["reason"])
                 self.assertIn("Choose where to go yourself", result["reason"])
+
+    def test_a_reply_that_never_finishes_is_given_up_on_time(self):
+        # Each byte comes within the read timeout, so only an overall deadline ends it.
+        class Drip(socketserver.BaseRequestHandler):
+            def handle(self):
+                self.request.recv(65536)
+                try:
+                    for byte in b"HTTP/1.1 200 OK\r\n" * 100:
+                        self.request.sendall(bytes([byte]))
+                        time.sleep(0.05)
+                except OSError:
+                    pass
+
+        server = socketserver.ThreadingTCPServer(("127.0.0.1", 0), Drip)
+        server.daemon_threads = True
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        self.addCleanup(server.server_close)
+        self.addCleanup(server.shutdown)
+        self.connect()
+        url = f"http://127.0.0.1:{server.server_address[1]}/v1/systemone"
+        svc = ClassifierService(
+            self.ws, keystore=self.keys, timeout=0.5, stop_poll=0.05,
+            client_factory=lambda key, model: JevClient(key, endpoint=url, model=model))
+        started = time.monotonic()
+        result = svc.route(ROUTE_REQUEST, OWNER, svc.preview_route(ROUTE_REQUEST)["request_sha256"])
+        self.assertLess(time.monotonic() - started, 3)
+        self.assertEqual((result["outcome"], result["suggested"]), ("provider_failed", ""))
+        self.assertIn("did not reply in time", result["reason"])
+        self.assertIsNotNone(self.ledger()[-1]["finished_at"])
+
+    def test_the_last_request_of_the_day_is_taken_once(self):
+        # Two requests passed the preview's limit check at once; the one that
+        # comes second to the write is refused there, and nothing is sent.
+        svc = self.connect()
+        svc.connect(OWNER, KEY, daily_request_limit=1)
+        svc.set_jobs(OWNER, dict.fromkeys(classifier.JOBS, True))
+        sha = svc.preview_route(ROUTE_REQUEST)["request_sha256"]
+        counts = iter([0, 1])  # the gate saw none sent; by the write, another had been
+        with mock.patch.object(ClassifierService, "_sent_since",
+                               side_effect=lambda _day: next(counts)):
+            result = svc.route(ROUTE_REQUEST, OWNER, sha)
+        self.assertEqual(result["outcome"], "refused_budget")
+        self.assertEqual(self.jev.requests, [])
 
     def test_an_unreachable_jev_changes_nothing(self):
         self.jev.close()
@@ -571,6 +631,25 @@ class ActionReviewTests(JevCase):
                 _svc, action, result = self.review(answer)
                 self.assertFalse(result["hold"])
                 self.assertEqual(self.approve(action).status, "approved")
+
+    def test_turning_jev_off_while_it_works_means_its_answer_is_not_used(self):
+        svc = self.connect()
+        action = self.proposed_export()
+        preview = svc.preview_action(action.id)
+
+        def answer(body):
+            other = ManagerWorkspace(self.root, clock=fixed_clock())
+            try:
+                self.service(other).disconnect(OWNER)
+            finally:
+                other.close()
+            return suggests("deny", 0.95)(body)
+        self.jev.answer = answer
+        result = svc.review_action(action.id, OWNER, preview["request_sha256"])
+        self.assertEqual((result["outcome"], result["hold"]), ("stopped", False))
+        self.assertIn("turned off while JEV worked", result["reason"])
+        self.assertIsNone(svc.action_classification(action.id))
+        self.assertEqual(self.ledger()[-1]["outcome"], "stopped")
 
     def test_jev_never_approves_anything(self):
         _svc, action, _result = self.review(suggests("allow", 1.0))
@@ -653,23 +732,61 @@ class RefusalCheckTests(JevCase):
         self.assertEqual((result["outcome"], result["refusal"]), ("answered", None))
         self.assertEqual(len(self.model.requests), 1)
         self.assertEqual(self.ledger()[-1]["result"], "clear")
+        self.assertIn("found nothing to refuse", result["classifier_note"])
 
-    def test_an_unsure_check_refuses_nothing(self):
+    def test_an_unsure_check_refuses_nothing_and_says_so(self):
         self.jev.answer = refuses("staff_performance", CONFIDENT - 0.01)
         _preview, result = self.ask(self.assistant(), "What should I do first?")
         self.assertEqual(result["outcome"], "answered")
+        self.assertIn("not sure", result["classifier_note"])
+        self.assertIn("an individual's performance or conduct", result["classifier_note"])
 
-    def test_an_unavailable_jev_lets_the_question_go_on_as_without_it(self):
+    def test_an_unavailable_jev_lets_the_question_go_on_and_says_so(self):
         self.jev.close()
         _preview, result = self.ask(self.assistant(), "What should I do first?")
         self.assertEqual(result["outcome"], "answered")
         self.assertEqual(len(self.model.requests), 1)
+        self.assertIn("went on without JEV's check", result["classifier_note"])
 
     def test_with_the_check_off_jev_is_not_asked(self):
         preview, result = self.ask(self.assistant(refusal_check=False), "What should I do first?")
         self.assertFalse(preview["classifier"]["will_send"])
-        self.assertEqual(result["outcome"], "answered")
+        self.assertEqual((result["outcome"], result["classifier_note"]), ("answered", ""))
         self.assertEqual(self.jev.requests, [])
+
+    def test_a_stop_while_jev_checks_says_jev_had_the_question(self):
+        self.jev.close()
+        self.jev = FakeJev(delay=2.0)
+        self.addCleanup(self.jev.close)
+        assistant = self.assistant()
+        project, question = self.project_id(), "What should I do first?"
+        preview = assistant.preview_project_question(project, question, TODAY)
+        result: dict = {}
+
+        def work():
+            ws = ManagerWorkspace(self.root, clock=fixed_clock())
+            try:
+                mine = AssistantService(ws, classifier=self.service(ws, stop_poll=0.05))
+                result.update(mine.answer_project_question(
+                    project, question, TODAY, OWNER,
+                    reviewed_prompt_sha256=preview["prompt_sha256"],
+                    reviewed_classifier_sha256=preview["classifier"]["request_sha256"]))
+            finally:
+                ws.close()
+        worker = threading.Thread(target=work, daemon=True)
+        worker.start()
+        deadline = time.monotonic() + 2
+        while not self.jev.requests and time.monotonic() < deadline:
+            time.sleep(0.02)
+        other = ManagerWorkspace(self.root, clock=fixed_clock())
+        self.addCleanup(other.close)
+        AssistantControl(other).stop(OWNER)
+        worker.join(5)
+        self.assertEqual((len(self.jev.requests), len(self.model.requests)), (1, 0))
+        self.assertEqual(result["outcome"], "stopped")
+        self.assertIn("while JEV was working", result["reason"])
+        self.assertIn("Nothing went to the AI model", result["reason"])
+        self.assertNotIn("Nothing was sent", result["reason"])
 
     def test_the_check_must_be_reviewed_too(self):
         with self.assertRaises(ClassifierError):
@@ -836,13 +953,29 @@ class CredentialStoreTests(unittest.TestCase):
 
     def test_the_system_keyring_gets_the_key_on_standard_input_only(self):
         calls, fake_run = self.run_recorder()
-        with mock.patch.object(credentials.shutil, "which", return_value="/usr/bin/secret-tool"), \
+        with mock.patch.object(SecretToolStore, "_find", return_value="/usr/bin/secret-tool"), \
                 mock.patch.object(credentials.subprocess, "run", side_effect=fake_run):
             SecretToolStore().set("jev-ws-0123", KEY)
         store_argv, stdin = calls[0]
         self.assertEqual(store_argv[1], "store")
         self.assertEqual(stdin, KEY)
         self.assertTrue(all(KEY not in " ".join(a) for a, _ in calls))
+
+    def test_the_keyring_program_is_never_found_through_path(self):
+        with tempfile.TemporaryDirectory() as planted:
+            fake = Path(planted) / "secret-tool"
+            fake.write_text("#!/bin/sh\ncat > /dev/null\n")
+            fake.chmod(0o755)
+            with mock.patch.dict(credentials.os.environ, {"PATH": planted}):
+                found = SecretToolStore()._find()
+        self.assertIn(found, (None, *SecretToolStore.TOOLS))
+        self.assertTrue(all(Path(t).is_absolute() for t in SecretToolStore.TOOLS))
+
+    def test_a_key_typed_at_a_terminal_is_not_shown(self):
+        with mock.patch.object(cli.sys.stdin, "isatty", return_value=True), \
+                mock.patch.object(cli.getpass, "getpass", return_value=KEY) as hidden:
+            self.assertEqual(cli._read_key(), KEY)
+        hidden.assert_called_once()
 
     def test_a_store_that_did_not_keep_the_key_is_an_error(self):
         _calls, fake_run = self.run_recorder([1])

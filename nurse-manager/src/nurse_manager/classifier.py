@@ -49,8 +49,10 @@ from __future__ import annotations
 import http.client
 import json
 import math
+import socket
 import ssl
 import threading
+import time
 import urllib.parse
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -302,6 +304,18 @@ class JevClient:
     def __repr__(self) -> str:
         return f"JevClient(model={self.model!r}, endpoint={self.endpoint!r})"
 
+    def _port(self) -> int:
+        return self._address.port or (443 if self._address.scheme == "https" else 80)
+
+    def resolve(self, timeout: float) -> None:
+        """Look up JEV's address now, within ``timeout``.
+
+        A name lookup has no timeout of its own. Doing it before the request
+        is sent means nothing waits on it while the workspace is locked for
+        the last stop check (see ``ClassifierService._ask``).
+        """
+        self._resolved = _lookup(self._address.hostname or "", self._port(), timeout)
+
     def ask(self, text: str, *, timeout: float,
             on_sent: Callable[[], None]) -> dict[str, Any]:
         """Send one request body, exactly as given; return the reply as parsed JSON.
@@ -312,18 +326,23 @@ class JevClient:
         """
         data = text.encode("utf-8")
         address = self._address
+        host, port = address.hostname or "", self._port()
         connect_timeout = min(timeout, CONNECT_TIMEOUT_SECONDS)
         if address.scheme == "https":
             conn: http.client.HTTPConnection = http.client.HTTPSConnection(
-                address.hostname, address.port or 443, timeout=connect_timeout,
-                context=ssl.create_default_context())
+                host, port, timeout=connect_timeout)
         else:
-            conn = http.client.HTTPConnection(address.hostname, address.port or 80,
-                                              timeout=connect_timeout)
+            conn = http.client.HTTPConnection(host, port, timeout=connect_timeout)
         try:
             try:
-                conn.connect()
-                conn.sock.settimeout(timeout)
+                # Connect to the address looked up beforehand; TLS still checks
+                # the certificate against JEV's own host name.
+                resolved = getattr(self, "_resolved", None) or _lookup(host, port, connect_timeout)
+                sock = socket.create_connection(resolved, timeout=connect_timeout)
+                if address.scheme == "https":
+                    sock = ssl.create_default_context().wrap_socket(sock, server_hostname=host)
+                sock.settimeout(timeout)
+                conn.sock = sock
                 conn.request("POST", address.path or "/", body=data, headers={
                     "Authorization": f"Bearer {self._key}",
                     "Content-Type": "application/json",
@@ -364,6 +383,38 @@ class Client(Protocol):
     def ask(self, text: str, *, timeout: float,
             on_sent: Callable[[], None]) -> dict[str, Any]: ...
 
+    def resolve(self, timeout: float) -> None: ...
+
+
+def _lookup(host: str, port: int, timeout: float) -> tuple[str, int]:
+    """One address for ``host``, or ClassifierUnavailable if none comes within ``timeout``."""
+    found: dict[str, Any] = {}
+
+    def look() -> None:
+        try:
+            found["address"] = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)[0][4][:2]
+        except OSError as exc:
+            found["error"] = exc
+
+    worker = threading.Thread(target=look, name="classifier-lookup", daemon=True)
+    worker.start()
+    worker.join(timeout)
+    if "address" not in found:
+        raise ClassifierUnavailable(
+            "JEV could not be reached; check this computer's internet connection")
+    return found["address"]
+
+
+def action_questions() -> dict[str, dict[str, Any]]:
+    """The one question about a proposed action, asked by the live review and the
+    shadow harness alike, so the harness measures what the live review asks."""
+    return {"decision": {
+        "type": "choice",
+        "instructions": "Under this workspace's policy, should this proposed action be"
+                        " allowed, held for the manager's review, or denied?",
+        "criteria": dict(ACTION_OPTIONS),
+    }}
+
 
 def request_text(body: dict[str, Any]) -> str:
     """The one way a request body is written: shown in the preview, hashed, and sent."""
@@ -381,7 +432,10 @@ def default_client_factory(api_key: str, model: str) -> Client:
 def _number(value: Any, low: float = 0.0, high: float = 1.0) -> float | None:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
-    value = float(value)
+    try:
+        value = float(value)
+    except OverflowError:  # an integer too large for a float is outside the contract
+        return None
     if not math.isfinite(value) or value < low - 1e-9 or value > high + 1e-9:
         return None
     return min(max(value, low), high)
@@ -430,28 +484,24 @@ def check_answers(questions: dict[str, dict[str, Any]], reply: dict[str, Any],
             confidence = _number(answer.get("confidence"))
             if answer.get("choice") not in options or probs is None or confidence is None:
                 return "JEV's choice was not one of the options, or its probabilities did not add up"
+            if probs[answer["choice"]] < max(probs.values()) - _TOLERANCE:
+                return "JEV's choice was not the option it gave the highest probability"
             checked[qid] = {"choice": answer["choice"], "probabilities": probs,
                             "confidence": confidence}
         else:  # score
+            # The levels are the ones asked, numbered 1 to N, and nothing else.
             levels = len(question["criteria"])
-            probs = answer.get("probabilities")
-            keys = list(probs) if isinstance(probs, dict) else []
-            try:
-                numbers = sorted(float(k) for k in keys)
-            except ValueError:
-                numbers = []
-            dist = _distribution(probs, keys) if len(keys) == levels else None
+            keys = [str(n) for n in range(1, levels + 1)]
+            dist = _distribution(answer.get("probabilities"), keys) if levels >= 2 else None
             confidence = _number(answer.get("confidence"))
-            score = (_number(answer.get("score"), numbers[0], numbers[-1])
-                     if len(numbers) == levels and numbers[-1] > numbers[0] else None)
+            score = _number(answer.get("score"), 1, levels)
             if dist is None or confidence is None or score is None:
                 return "JEV's score was out of range, or its probabilities did not add up"
             # Where the score falls between the lowest and highest level, 0 to 1.
-            checked[qid] = {"position": (score - numbers[0]) / (numbers[-1] - numbers[0]),
-                            "confidence": confidence}
+            checked[qid] = {"position": (score - 1) / (levels - 1), "confidence": confidence}
     usage = reply.get("usage")
     tokens = usage.get("input_tokens") if isinstance(usage, dict) else None
-    if isinstance(tokens, bool) or not isinstance(tokens, int) or tokens < 0:
+    if isinstance(tokens, bool) or not isinstance(tokens, int) or not 0 <= tokens < 2**53:
         tokens = None
     return checked, tokens
 
@@ -527,7 +577,9 @@ class ClassifierService:
         if row is None:  # the default: not connected, every job off
             return {"provider": "none", "model": "", "jobs": dict.fromkeys(JOBS, False),
                     "daily_request_limit": DEFAULT_DAILY_LIMIT}
-        return {"provider": row["provider"], "model": row["model"],
+        # The model shown is the one sent: always the pinned one while connected.
+        return {"provider": row["provider"],
+                "model": JEV_MODEL if row["provider"] == PROVIDER else "",
                 "jobs": {job: bool(row[f"job_{job}"]) for job in JOBS},
                 "daily_request_limit": row["daily_request_limit"]}
 
@@ -648,7 +700,9 @@ class ClassifierService:
         what the manager sees is what is sent.
         """
         settings = self.settings()
-        model = settings["model"] or JEV_MODEL
+        # Always the pinned model: a reviewed change to JEV_MODEL reaches every
+        # connected workspace, whatever was stored when JEV was connected.
+        model = JEV_MODEL
         body = {"model": model, "state": state, "questions": questions}
         text = request_text(body)
         sha = sha256_text(f"{PROVIDER}\n{JEV_ENDPOINT}\n\n{text}")
@@ -759,6 +813,12 @@ class ClassifierService:
                                                  f" {self.keystore.name}. Connect JEV again."), \
                 None, started
         client = self.client_factory(key, prep.model)
+        resolve = getattr(client, "resolve", None)
+        if resolve is not None:
+            try:
+                resolve(min(self.timeout, CONNECT_TIMEOUT_SECONDS))
+            except ClassifierUnavailable as exc:
+                return "", None, ("provider_failed", f"JEV did not answer: {exc}."), None, started
         outcome: dict[str, Any] = {}
         sent = threading.Event()
         done = threading.Event()
@@ -778,14 +838,26 @@ class ClassifierService:
             if self._stopped_since(started):
                 request_id = self._record(prep, *STOPPED_BEFORE, by, finished=True)
                 return request_id, None, STOPPED_BEFORE, None, started
+            # Checked again here, where requests are counted one at a time, so
+            # two at once cannot both take the last request of the day.
+            limit = self.settings()["daily_request_limit"]
+            if self._sent_since(self.ws.clock()[:10]) >= limit:
+                over = ("refused_budget", f"Nothing was sent: today's limit of {limit} JEV"
+                                          " requests has been reached.")
+                return self._record(prep, *over, by, finished=True), None, over, None, started
             request_id = self._record(prep, "provider_failed", "interrupted before JEV replied",
                                       by, finished=False)
             threading.Thread(target=call, name=f"classifier-{request_id}", daemon=True).start()
             while not sent.wait(0.01) and not done.is_set():
                 pass
+        # One deadline for the whole reply, however slowly it arrives.
+        deadline = time.monotonic() + self.timeout
         while not done.wait(self.stop_poll):
             if self._stopped_since(started):
                 return request_id, None, STOPPED_DURING, None, started
+            if time.monotonic() > deadline:
+                return request_id, None, ("provider_failed", "JEV did not answer: JEV did not"
+                                                             " reply in time."), None, started
         if self._stopped_since(started):
             return request_id, None, STOPPED_DURING, None, started
         error = outcome.get("error")
@@ -803,6 +875,15 @@ class ClassifierService:
                 None, started
         answers, tokens = checked
         return request_id, answers, None, tokens, started
+
+    def _turned_off(self, job: str) -> tuple[str, str] | None:
+        """Why an answer that just came back is not used: JEV, or this job, was
+        turned off while JEV worked. Read inside the write that would use it."""
+        settings = self.settings()
+        if settings["provider"] != PROVIDER or not settings["jobs"][job]:
+            return ("stopped", f"JEV's {JOB_NAMES[job]} was turned off while JEV worked, so its"
+                               " answer was not used.")
+        return None
 
     def _stopped_since(self, generation: int) -> bool:
         control = self.control.state()
@@ -862,13 +943,7 @@ class ClassifierService:
             "carrying": content,
             "purpose": action.purpose,
         }
-        questions = {"decision": {
-            "type": "choice",
-            "instructions": "Under this workspace's policy, should this proposed action be"
-                            " allowed, held for the manager's review, or denied?",
-            "criteria": dict(ACTION_OPTIONS),
-        }}
-        prep = self._prepare("action_review", state, questions)
+        prep = self._prepare("action_review", state, action_questions())
         if prep.blocked is None:
             if action.status != "awaiting_approval":
                 prep.blocked = ("not_waiting", f"This action is {action.status}, not waiting for"
@@ -904,7 +979,11 @@ class ClassifierService:
             self._finish(request_id, *failure, tokens=tokens)
             return result(*failure, request_id)
         decision = answers["decision"]
-        suggestion, confidence = decision["choice"], decision["confidence"]
+        # The most probable option, a tie going to the stricter one: the same
+        # rule the shadow harness reads (Choice.suggested).
+        suggestion = Choice(decision["probabilities"]).suggested
+        decision = {**decision, "choice": suggestion}
+        confidence = decision["confidence"]
         stricter = STRICTNESS[suggestion] > STRICTNESS[core]
         hold = stricter and confidence >= CONFIDENT
         if hold:
@@ -921,6 +1000,10 @@ class ClassifierService:
             if self._stopped_since(generation):
                 self._finish(request_id, *STOPPED_DURING, tokens=tokens)
                 return result(*STOPPED_DURING, request_id)
+            off = self._turned_off(prep.job)
+            if off:
+                self._finish(request_id, *off, tokens=tokens)
+                return result(*off, request_id)
             current = ActionBoundary(self.ws).get(action_id)
             changed = (current.status != "awaiting_approval"
                        or self.action_classification(action_id) is not None)
@@ -1017,10 +1100,17 @@ class ClassifierService:
         """Check a question before the AI model sees it.
 
         Returns ``{"outcome": ..., "refusal": ..., "reason": ..., "request_id": ...}``.
-        Only ``outcome == "refused"`` stops the question. When the job is off,
-        JEV is unsure or unavailable, or its answer is outside the contract,
-        the outcome is ``"skipped"`` and the question goes on as it would
-        without JEV. ``"stopped"`` means the manager stopped assistants.
+        Only ``outcome == "refused"`` stops the question; the reason says why
+        in every other case, for the manager:
+
+        - ``"off"``: JEV or the check is off; JEV was not asked (no reason).
+        - ``"clear"``: JEV found nothing to refuse, or was not sure.
+        - ``"skipped"``: JEV was unavailable, refused by a gate, turned off
+          meanwhile, or answered outside the contract; the question goes on
+          as it would without JEV.
+        - ``"stopped"``: the manager had stopped assistants; nothing was sent.
+        - ``"stopped_during"``: the manager stopped assistants while JEV had
+          the question; its answer was discarded.
         """
         prep = self._refusal_prep(question)
 
@@ -1030,22 +1120,33 @@ class ClassifierService:
                     "request_id": request_id}
 
         if prep.blocked:
+            if prep.blocked[0] in ("not_connected", "job_off"):
+                return outcome("off", "", "")
             if prep.blocked[0] == "refused_stopped":
                 return outcome("stopped", prep.blocked[1], self._blocked_record(prep, by))
-            return outcome("skipped", prep.blocked[1], self._blocked_record(prep, by))
+            return outcome("skipped", f"{prep.blocked[1]} The question went on without JEV's"
+                                      " check.", self._blocked_record(prep, by))
         self._require_reviewed(prep, reviewed_sha256)
         request_id, answers, failure, tokens, generation = self._ask(prep, by, started)
         if failure:
             self._finish(request_id, *failure, tokens=tokens)
+            if failure == STOPPED_DURING:
+                # The question reached JEV; only the AI model never saw it.
+                return outcome("stopped_during", failure[1], request_id)
             if failure[0] in ("stopped", "refused_stopped"):
                 return outcome("stopped", failure[1], request_id)
-            return outcome("skipped", f"{failure[1]} The question was checked without JEV.",
+            return outcome("skipped", f"{failure[1]} The question went on without JEV's check.",
                            request_id)
         category, yes = max(((c, answers[c]["noul"]) for c in REFUSALS), key=lambda cy: cy[1])
         with self.ws.store.transaction():
             if self._stopped_since(generation):
                 self._finish(request_id, *STOPPED_DURING, tokens=tokens)
-                return outcome("stopped", STOPPED_DURING[1], request_id)
+                return outcome("stopped_during", STOPPED_DURING[1], request_id)
+            off = self._turned_off(prep.job)
+            if off:
+                self._finish(request_id, *off, tokens=tokens)
+                return outcome("skipped", f"{off[1]} The question went on without JEV's check.",
+                               request_id)
             if yes >= CONFIDENT:
                 _question, label, path = REFUSALS[category]
                 self._finish(request_id, "answered", "", result=f"refused:{category}",
@@ -1055,7 +1156,12 @@ class ClassifierService:
                                {"category": category, "label": label, "nearest_path": path})
             self._finish(request_id, "answered", "", result="clear", confidence=yes,
                          tokens=tokens)
-        return outcome("clear", "", request_id)
+        if yes >= SUGGEST:
+            _question, label, _path = REFUSALS[category]
+            return outcome("clear", f"JEV was not sure whether the question has {label}, so it was"
+                                    " not refused. Check it yourself.", request_id)
+        return outcome("clear", "JEV checked the question and found nothing to refuse.",
+                       request_id)
 
     # -- 3. routing ---------------------------------------------------------------
 
@@ -1100,6 +1206,10 @@ class ClassifierService:
             if self._stopped_since(generation):
                 self._finish(request_id, *STOPPED_DURING, tokens=tokens)
                 return result(*STOPPED_DURING, request_id)
+            off = self._turned_off(prep.job)
+            if off:
+                self._finish(request_id, *off, tokens=tokens)
+                return result(off[0], f"{off[1]} Choose where to go yourself.", request_id)
             self._finish(request_id, "answered", "",
                          result=choice if sure else f"unsure:{choice}",
                          confidence=confidence, tokens=tokens)
@@ -1174,6 +1284,10 @@ class ClassifierService:
             if self._stopped_since(generation):
                 self._finish(request_id, *STOPPED_DURING, tokens=tokens)
                 return result(*STOPPED_DURING, request_id)
+            off = self._turned_off(prep.job)
+            if off:
+                self._finish(request_id, *off, tokens=tokens)
+                return result(off[0], f"{off[1]} Your usual order is kept.", request_id)
             self._finish(request_id, "answered", "",
                          result=("reordered" if order != ids else "unchanged") if sure
                          else "unsure", confidence=confidence, tokens=tokens)
@@ -1206,12 +1320,7 @@ class JevDecisionAdapter:
         options = list(options)
         if set(options) != set(OPTIONS):
             raise ValueError("JEV is asked only the harness's three options")
-        questions = {"decision": {
-            "type": "choice",
-            "instructions": "Should this proposed action be allowed, held for the manager's"
-                            " review, or denied?",
-            "criteria": {o: ACTION_OPTIONS[o] for o in options},
-        }}
+        questions = action_questions()
         reply = self.client.ask(request_text({"model": self.client.model, "state": question,
                                               "questions": questions}),
                                 timeout=self.timeout, on_sent=lambda: None)

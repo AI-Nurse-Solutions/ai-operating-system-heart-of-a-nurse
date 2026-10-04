@@ -20,8 +20,8 @@ off, and the manager is told why.
 from __future__ import annotations
 
 import ctypes
+import os
 import re
-import shutil
 import subprocess  # noqa: S404 - fixed programs, fixed arguments, key on stdin only
 import sys
 from typing import Protocol
@@ -80,7 +80,8 @@ class MacKeychain:
     NOT_FOUND = 44  # errSecItemNotFound, as security(1) reports it
 
     def available(self) -> bool:
-        return sys.platform == "darwin" and shutil.which(self.TOOL) is not None
+        return (sys.platform == "darwin" and os.path.isfile(self.TOOL)
+                and os.access(self.TOOL, os.X_OK))
 
     def get(self, account: str) -> str | None:
         _check(account)
@@ -112,16 +113,22 @@ class SecretToolStore:
     """The freedesktop Secret Service, through ``secret-tool``."""
 
     name = "the system keyring"
-    TOOL = "secret-tool"
+    # Fixed places only, as for the Keychain's /usr/bin/security: the key is
+    # handed to this program, so it is never found through PATH, which a
+    # program planted earlier on PATH could answer.
+    TOOLS = ("/usr/bin/secret-tool", "/bin/secret-tool")
+
+    def _find(self) -> str | None:
+        return next((t for t in self.TOOLS if os.path.isfile(t) and os.access(t, os.X_OK)), None)
 
     def _tool(self) -> str:
-        path = shutil.which(self.TOOL)
+        path = self._find()
         if path is None:
             raise KeyStoreUnavailable("no system keyring is installed (secret-tool)")
         return path
 
     def available(self) -> bool:
-        return sys.platform.startswith("linux") and shutil.which(self.TOOL) is not None
+        return sys.platform.startswith("linux") and self._find() is not None
 
     def get(self, account: str) -> str | None:
         _check(account)

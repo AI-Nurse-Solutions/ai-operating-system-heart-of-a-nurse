@@ -1737,7 +1737,11 @@ function classifierSection(doc, data, options) {
     save.disabled = busy;
     const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'jev-jobs-heading' }, [
       h(doc, 'h3', { id: 'jev-jobs-heading' }, ['Jobs']),
-      h(doc, 'p', { class: 'field-hint' }, ['Each job is off until you turn it on. Turning one off stops it at once.']),
+      h(doc, 'p', { class: 'field-hint' }, [
+        'Each job is off until you turn it on. Turning one off stops it at once. ',
+        'The refusal check sends each project question to TypeSafe before the AI model sees it, ',
+        'even when that model runs on this computer.',
+      ]),
       ...boxes.map(([job, box]) => h(doc, 'p', { class: 'field field--inline' }, [
         box, ' ', h(doc, 'label', { for: box.id }, [JEV_JOB_LABELS[job]]),
       ])),
@@ -1769,18 +1773,23 @@ function classifierSection(doc, data, options) {
     ]));
     return section;
   }
+  // Not a password field in a form: browsers offer to save those to their own
+  // (often synced) password store, and the key belongs in the credential
+  // store only. The characters are masked by CSS instead.
   const key = /** @type {HTMLInputElement} */ (h(doc, 'input', {
-    id: 'jev-key', name: 'api_key', type: 'password', required: '', minlength: '16', maxlength: '512',
-    autocomplete: 'off', spellcheck: 'false', 'aria-describedby': 'jev-key-hint',
+    id: 'jev-key', type: 'text', class: 'masked-key', minlength: '16', maxlength: '512',
+    autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false',
+    'data-1p-ignore': '', 'data-lpignore': 'true', 'data-form-type': 'other',
+    'aria-describedby': 'jev-key-hint',
   }));
   const limit = /** @type {HTMLInputElement} */ (h(doc, 'input', {
     id: 'jev-limit', name: 'daily_request_limit', type: 'number', min: '0', max: '2000', step: '1', required: '',
     'aria-describedby': 'jev-limit-hint',
   }));
   limit.value = String(data.daily_request_limit);
-  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' }, ['Connect JEV']));
+  const submit = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'button', class: 'primary-button' }, ['Connect JEV']));
   for (const control of [key, limit, submit]) control.disabled = busy;
-  const form = h(doc, 'form', { class: 'onboarding-form', 'aria-labelledby': 'jev-connect-heading' }, [
+  const form = h(doc, 'div', { class: 'onboarding-form', role: 'group', 'aria-labelledby': 'jev-connect-heading' }, [
     h(doc, 'h3', { id: 'jev-connect-heading' }, ['Connect your own key']),
     h(doc, 'p', { class: 'field' }, [
       h(doc, 'label', { for: 'jev-key' }, ['Your TypeSafe API key']),
@@ -1796,12 +1805,20 @@ function classifierSection(doc, data, options) {
     ]),
     submit,
   ]);
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
+  const connect = () => {
     const typed = key.value.trim();
     key.value = ''; // the key leaves the page with this request, and nowhere else
     options.onConnect(typed, Number(limit.value));
-  });
+  };
+  submit.addEventListener('click', connect);
+  for (const field of [key, limit]) {
+    field.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        connect();
+      }
+    });
+  }
   section.append(form);
   return section;
 }

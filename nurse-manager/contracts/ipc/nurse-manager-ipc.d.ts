@@ -763,6 +763,8 @@ export interface ProjectAnswer {
   readonly source_refs: readonly RecordId[];
   /** Why JEV refused the question, and the nearest permitted path; null unless outcome is refused_intake. */
   readonly refusal: null | ClassifierRefusal;
+  /** What JEV's refusal check did when it ran and did not refuse: found nothing, was not sure, or was unavailable and the question went on without it. Empty when the check is off, or when it refused (see refusal). */
+  readonly classifier_note: string;
 }
 
 /** What will move this initiative forward? Tasks use the same rows and ids as the table. */

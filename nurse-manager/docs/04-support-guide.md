@@ -215,6 +215,9 @@ and everything works without it.
     information, an individual's performance, confidential employer
     material, a clinical decision, or a judgment about a named person. If
     it is confident it finds one, the question never reaches the AI model.
+    To check it, JEV is sent the question, even when your AI model runs on
+    this computer. After each answer, the app says what the check found,
+    or why it did not run.
   - **Routing.** On Mission Control, **Where does this belong?** suggests
     where to start. You choose; nothing starts by itself.
   - **Attention order.** Under Needs my judgment, **Suggest an order with
@@ -227,9 +230,12 @@ and everything works without it.
 - **Before anything is sent**, you see exactly what JEV would receive.
   What is sent is that text, byte for byte. If anything changes in
   between, nothing is sent.
-- **Stop it.** **Stop all assistants** stops JEV's requests too. On
-  **AI assistance**, **Disconnect JEV** turns every job off and removes
-  your key.
+- **Stop it.** **Stop all assistants** stops JEV's requests too. Turning
+  a job off stops it at once: an answer that comes back afterwards is not
+  used. On **AI assistance**, **Disconnect JEV** turns every job off and
+  removes your key. Disconnect before you set a workspace aside;
+  otherwise its key stays in the credential store, under "Nurse AI OS",
+  until you remove it there.
 - **What TypeSafe's terms say**, as read on 2026-10-04, is on the AI
   assistance screen. In short: it does not train on what you send; it
   keeps it as long as it says is reasonably necessary; it is hosted in the

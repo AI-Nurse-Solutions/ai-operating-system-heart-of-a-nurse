@@ -306,9 +306,11 @@ export function start(doc, source) {
             });
             if (failure || !envelope || !envelope.ok) return { notice: failure };
             const answer = /** @type {import('./views.mjs').ProjectAnswer} */ (envelope.data);
+            // What JEV's check did, when it ran and did not refuse, is said every time.
+            const note = answer.classifier_note ? ` ${answer.classifier_note}` : '';
             return answer.answered_by_model
-              ? { answer, notice: { kind: 'ok', text: 'The AI model answered. It is a suggestion and is not saved.' } }
-              : { notice: { kind: 'unanswered', text: answer.reason } };
+              ? { answer, notice: { kind: 'ok', text: `The AI model answered. It is a suggestion and is not saved.${note}` } }
+              : { notice: { kind: 'unanswered', text: `${answer.reason}${note}` } };
           });
         },
         onCancel: () => { think = { question: think.question }; redraw('#think-question'); },

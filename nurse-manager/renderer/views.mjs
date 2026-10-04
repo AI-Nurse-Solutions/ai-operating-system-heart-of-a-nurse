@@ -1806,6 +1806,13 @@ function classifierSection(doc, data, options) {
     submit,
   ]);
   const connect = () => {
+    // Outside a form the field's own limits are not checked for us: an empty
+    // limit would become 0 and refuse every request, so it is asked for again.
+    if (limit.value.trim() === '' || !limit.checkValidity()) {
+      limit.reportValidity();
+      limit.focus();
+      return;
+    }
     const typed = key.value.trim();
     key.value = ''; // the key leaves the page with this request, and nowhere else
     options.onConnect(typed, Number(limit.value));

@@ -843,6 +843,14 @@ try {
       assert.equal(await keyField.evaluate((el) => getComputedStyle(el).webkitTextSecurity), 'disc');
       assert.equal(await jp.locator('input[type="password"]').count(), 0);
       await jevRegion.getByLabel('Your TypeSafe API key').fill(JEV_KEY);
+      // An empty or impossible limit is asked for again; nothing is connected.
+      for (const typed of ['', '5000', '2.5']) {
+        await jevRegion.getByLabel('JEV requests per day, at most').fill(typed);
+        await jevRegion.getByRole('button', { name: 'Connect JEV' }).click();
+        assert.equal(await jp.evaluate(() => document.activeElement?.id), 'jev-limit', `the limit "${typed}" is asked for again`);
+        assert.match(await jevRegion.textContent(), /Not connected/);
+        assert.equal(await jevRegion.getByLabel('Your TypeSafe API key').inputValue(), JEV_KEY, 'the key is kept to try again');
+      }
       await jevRegion.getByLabel('JEV requests per day, at most').fill('50');
       await jevRegion.getByLabel('JEV requests per day, at most').press('Enter');
       await focused(/JEV is connected\. Every job is off/);

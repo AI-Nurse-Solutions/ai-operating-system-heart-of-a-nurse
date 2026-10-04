@@ -15,6 +15,7 @@ import contextlib
 import io
 import json
 import shutil
+import socket
 import socketserver
 import sqlite3
 import subprocess
@@ -571,6 +572,24 @@ class FailureTests(JevCase):
         self.assertEqual(result["outcome"], "refused_budget")
         self.assertEqual(self.jev.requests, [])
 
+    def test_a_dead_first_address_falls_through_to_the_next(self):
+        # As when an IPv6 address has no route: the next address is tried.
+        with socket.socket() as probe:
+            probe.bind(("127.0.0.1", 0))
+            dead = probe.getsockname()[1]  # closed again before it is tried
+        port = int(self.jev.url.split(":")[2].split("/")[0])
+        real = socket.getaddrinfo
+
+        def both(host, _port, *args, **kwargs):
+            return ([(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.0.1", dead))]
+                    + real(host, port, *args, **kwargs))
+        svc = self.connect()
+        with mock.patch.object(classifier.socket, "getaddrinfo", side_effect=both):
+            result = svc.route(ROUTE_REQUEST, OWNER,
+                               svc.preview_route(ROUTE_REQUEST)["request_sha256"])
+        self.assertEqual(result["outcome"], "answered")
+        self.assertEqual(len(self.jev.requests), 1)
+
     def test_an_unreachable_jev_changes_nothing(self):
         self.jev.close()
         svc = self.connect()
@@ -895,6 +914,31 @@ class AttentionTests(JevCase):
 
 
 class StopTests(JevCase):
+    def test_a_stop_during_a_slow_lookup_returns_at_once_and_sends_nothing(self):
+        real = socket.getaddrinfo
+
+        def slow(*args, **kwargs):
+            time.sleep(3)
+            return real(*args, **kwargs)
+
+        def stop_soon():
+            time.sleep(0.3)
+            other = ManagerWorkspace(self.root, clock=fixed_clock())
+            try:
+                AssistantControl(other).stop(OWNER)
+            finally:
+                other.close()
+        svc = self.service(stop_poll=0.05)
+        self.connect()
+        sha = svc.preview_route(ROUTE_REQUEST)["request_sha256"]
+        threading.Thread(target=stop_soon, daemon=True).start()
+        started = time.monotonic()
+        with mock.patch.object(classifier.socket, "getaddrinfo", side_effect=slow):
+            result = svc.route(ROUTE_REQUEST, OWNER, sha)
+        self.assertLess(time.monotonic() - started, 1.5)
+        self.assertEqual(result["outcome"], "refused_stopped")
+        self.assertEqual(self.jev.requests, [])
+
     def test_a_stop_abandons_a_request_and_discards_its_answer(self):
         self.jev.close()
         self.jev = FakeJev(delay=3.0)

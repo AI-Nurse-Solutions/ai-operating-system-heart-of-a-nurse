@@ -338,7 +338,7 @@ class JevClient:
                 # Connect to the address looked up beforehand; TLS still checks
                 # the certificate against JEV's own host name.
                 resolved = getattr(self, "_resolved", None) or _lookup(host, port, connect_timeout)
-                sock = socket.create_connection(resolved, timeout=connect_timeout)
+                sock = _connect(resolved, connect_timeout)
                 if address.scheme == "https":
                     sock = ssl.create_default_context().wrap_socket(sock, server_hostname=host)
                 sock.settimeout(timeout)
@@ -386,23 +386,48 @@ class Client(Protocol):
     def resolve(self, timeout: float) -> None: ...
 
 
-def _lookup(host: str, port: int, timeout: float) -> tuple[str, int]:
-    """One address for ``host``, or ClassifierUnavailable if none comes within ``timeout``."""
+Addresses = list[tuple[int, Any]]
+
+
+def _lookup(host: str, port: int, timeout: float) -> Addresses:
+    """Every address for ``host``, in the order given, or ClassifierUnavailable
+    if none comes within ``timeout``."""
     found: dict[str, Any] = {}
 
     def look() -> None:
         try:
-            found["address"] = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)[0][4][:2]
+            found["addresses"] = [(family, address) for family, _type, _proto, _name, address
+                                  in socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)]
         except OSError as exc:
             found["error"] = exc
 
     worker = threading.Thread(target=look, name="classifier-lookup", daemon=True)
     worker.start()
     worker.join(timeout)
-    if "address" not in found:
+    if not found.get("addresses"):
         raise ClassifierUnavailable(
             "JEV could not be reached; check this computer's internet connection")
-    return found["address"]
+    return found["addresses"]
+
+
+def _connect(addresses: Addresses, timeout: float) -> socket.socket:
+    """Connect to the first address that answers, trying each in turn (an IPv6
+    address with no route falls through to IPv4), all within ``timeout``."""
+    deadline = time.monotonic() + timeout
+    failure: OSError | None = None
+    for family, address in addresses:
+        left = deadline - time.monotonic()
+        if left <= 0:
+            break
+        sock = socket.socket(family, socket.SOCK_STREAM)
+        sock.settimeout(left)
+        try:
+            sock.connect(address)
+            return sock
+        except OSError as exc:
+            failure = exc
+            sock.close()
+    raise failure or OSError("JEV could not be reached in time")
 
 
 def action_questions() -> dict[str, dict[str, Any]]:
@@ -815,10 +840,31 @@ class ClassifierService:
         client = self.client_factory(key, prep.model)
         resolve = getattr(client, "resolve", None)
         if resolve is not None:
-            try:
-                resolve(min(self.timeout, CONNECT_TIMEOUT_SECONDS))
-            except ClassifierUnavailable as exc:
-                return "", None, ("provider_failed", f"JEV did not answer: {exc}."), None, started
+            # Looked up before the lock, while the stop control is watched: a
+            # stop during a slow lookup returns as quickly as one during the
+            # request, and nothing is sent.
+            looked: dict[str, Any] = {}
+            found = threading.Event()
+
+            def look() -> None:
+                try:
+                    resolve(min(self.timeout, CONNECT_TIMEOUT_SECONDS))
+                except ClassifierUnavailable as exc:
+                    looked["error"] = exc
+                except Exception:  # noqa: BLE001 — any lookup failure: JEV is not reached
+                    looked["error"] = ClassifierUnavailable(
+                        "JEV could not be reached; check this computer's internet connection")
+                finally:
+                    found.set()
+
+            threading.Thread(target=look, name="classifier-resolve", daemon=True).start()
+            while not found.wait(self.stop_poll):
+                if self._stopped_since(started):
+                    request_id = self._record(prep, *STOPPED_BEFORE, by, finished=True)
+                    return request_id, None, STOPPED_BEFORE, None, started
+            if "error" in looked:
+                return "", None, ("provider_failed", f"JEV did not answer: {looked['error']}."), \
+                    None, started
         outcome: dict[str, Any] = {}
         sent = threading.Event()
         done = threading.Event()

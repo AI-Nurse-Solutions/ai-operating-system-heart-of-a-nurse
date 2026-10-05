@@ -35,6 +35,7 @@ import urllib.request
 import webbrowser
 from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from socketserver import TCPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -143,6 +144,20 @@ def _launch_token() -> str:
     return secrets.token_urlsafe(32)
 
 
+class LoopbackHTTPServer(ThreadingHTTPServer):
+    """Bind the local app without a reverse-DNS lookup at startup.
+
+    HTTPServer normally resolves its informational server_name with
+    socket.getfqdn. That can stall on macOS even for 127.0.0.1. The app
+    uses a fixed numeric loopback address and does not need DNS.
+    """
+
+    def server_bind(self) -> None:
+        TCPServer.server_bind(self)
+        self.server_name = "localhost"
+        self.server_port = self.server_address[1]
+
+
 class LocalApp:
     """One running instance: its token, workspace, and lifetime."""
 
@@ -160,7 +175,7 @@ class LocalApp:
         self.stopping = threading.Event()
         self.ready = threading.Event()  # set once the lock file names this instance
         try:
-            self.server = ThreadingHTTPServer(("127.0.0.1", port), self._handler())
+            self.server = LoopbackHTTPServer(("127.0.0.1", port), self._handler())
         except OSError:
             self.instance.release()
             raise

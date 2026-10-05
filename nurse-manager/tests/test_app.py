@@ -638,6 +638,15 @@ class LifetimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             self.assertEqual(local_app.self_test(Path(tmp)), 0)
 
+    def test_local_app_works_without_reverse_dns(self):
+        # A stalled or unavailable resolver must not prevent local startup,
+        # authenticated requests, bundled screens, or a clean shutdown.
+        with tempfile.TemporaryDirectory() as tmp, mock.patch(
+            "socket.getfqdn", side_effect=AssertionError("startup must not resolve DNS")
+        ) as resolver:
+            self.assertEqual(local_app.self_test(Path(tmp)), 0)
+            resolver.assert_not_called()
+
     def test_self_test_fails_if_capture_asset_is_missing(self):
         import shutil
         from nurse_manager import http_transport

@@ -36,7 +36,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Build both Mac architectures natively; neither is a universal binary.
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
@@ -102,7 +103,7 @@ jobs:
         run: python nurse-manager/tools/build_receipt.py --artifact dist/nurse-ai-os.exe --output dist/build-receipt.json
       - uses: actions/upload-artifact@v4
         with:
-          name: nurse-ai-os-${{ runner.os }}-UNSIGNED-test-build
+          name: nurse-ai-os-${{ runner.os }}-${{ runner.arch }}-UNSIGNED-test-build
           path: |
             dist/nurse-ai-os
             dist/nurse-ai-os.exe

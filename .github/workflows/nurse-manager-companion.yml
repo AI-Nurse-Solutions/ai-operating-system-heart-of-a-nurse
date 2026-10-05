@@ -35,7 +35,7 @@ jobs:
           node-version: '22'
       - name: Install locked Desktop build dependencies without lifecycle scripts
         working-directory: upstream
-        run: npm ci --ignore-scripts --omit=peer --workspace apps/desktop --workspace apps/shared --include-workspace-root
+        run: npm ci --ignore-scripts
       - name: Prepare explicitly reviewed Electron and native build tools
         working-directory: upstream
         run: |

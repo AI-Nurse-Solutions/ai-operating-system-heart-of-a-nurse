@@ -34,7 +34,12 @@ testing remain independent gates.
 
 The native smoke test launches the packaged x64 executable with fresh
 synthetic settings and a kernel sandbox denying non-loopback network traffic.
-It must prove that outbound traffic is denied, then verify that setup remains
+Chromium cannot initialize its own sandbox inside that inherited macOS policy,
+so this constrained smoke uses a test-only `--no-sandbox` argument while
+retaining the outer kernel network policy for the app and its children. This
+flag is not added to the application build or user launch instructions.
+Normal launch with Chromium's own sandbox remains unverified. The smoke must
+prove that outbound traffic is denied, then verify that setup remains
 idle and that no runtime or provider configuration is created. It does not
 choose an installation or connection option. Passing this test would not
 mean that ordinary launches have the same network sandbox.

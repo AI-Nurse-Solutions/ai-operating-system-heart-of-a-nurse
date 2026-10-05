@@ -1,0 +1,58 @@
+name: Nurse AI OS and Intel Desktop companion build
+
+on:
+  push:
+    branches: [codex/hermes-desktop-test]
+    paths:
+      - .github/workflows/nurse-manager-companion.yml
+      - nurse-manager/tests/test_hermes_desktop.mjs
+      - nurse-manager/tools/companion*
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15-intel
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            nurse-manager
+            naio-integrations
+      - name: Check out the pinned Desktop source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          repository: NousResearch/hermes-agent
+          ref: f97608f178d1ffeca59860195ab7da295f7c8e5f
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install locked Desktop build dependencies without lifecycle scripts
+        working-directory: upstream
+        run: npm ci --ignore-scripts --omit=peer --workspace apps/desktop --workspace apps/shared --include-workspace-root
+      - name: Prepare explicitly reviewed Electron and native build tools
+        working-directory: upstream
+        run: |
+          node node_modules/electron/install.js
+          node node_modules/esbuild/install.js
+          node apps/desktop/scripts/rebuild-native.mjs x64
+      - name: Check Desktop types
+        working-directory: upstream
+        run: npm run typecheck --workspace apps/desktop
+      - name: Build the pinned Intel Desktop without publishing
+        working-directory: upstream
+        env:
+          GITHUB_SHA: f97608f178d1ffeca59860195ab7da295f7c8e5f
+          GITHUB_REF_NAME: v2026.9.24
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          npm run build --workspace apps/desktop
+          npm run builder --workspace apps/desktop -- --mac --x64 --dir --publish never
+      - name: Verify actual Intel Desktop waits for human setup with outbound denied
+        run: node nurse-manager/tests/test_hermes_desktop.mjs "$PWD/upstream" "$PWD/upstream/apps/desktop/release/mac/Hermes.app/Contents/MacOS/Hermes"

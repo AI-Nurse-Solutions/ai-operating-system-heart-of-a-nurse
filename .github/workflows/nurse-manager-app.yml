@@ -69,6 +69,9 @@ jobs:
         run: |
           $p = Start-Process -FilePath "dist\nurse-ai-os.exe" -ArgumentList "--self-test" -Wait -PassThru -NoNewWindow
           if ($p.ExitCode -ne 0) { throw "self-test failed with exit code $($p.ExitCode)" }
+      - name: Diagnose native subprocess launch (macOS)
+        if: runner.os == 'macOS'
+        run: python nurse-manager/tests/probe_native_launch.py "dist/Nurse AI OS.app/Contents/MacOS/nurse-ai-os"
       - uses: actions/setup-node@v4
         if: runner.os != 'Windows'
         with:

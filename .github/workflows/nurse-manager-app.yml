@@ -4,7 +4,7 @@ name: Nurse AI OS app builds
 # browser. This builds it for Windows, macOS, and Linux with the Python
 # runtime bundled, then proves each build works without a terminal-level
 # setup: a built-in self-test on every platform, and the full browser
-# journey against the packaged Linux build.
+# journeys against the packaged Linux build and macOS bundle.
 #
 # Builds are UNSIGNED until signing identities exist. Artifacts are for
 # testing only and must not be distributed to managers.
@@ -36,7 +36,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Build both Mac architectures natively; neither is a universal binary.
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
@@ -52,7 +53,8 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install the pinned build tool
-        run: python -m pip install "pyinstaller==${{ env.PYINSTALLER_VERSION }}"
+        run: |
+          python -m pip install --only-binary=:all: "pyinstaller==${{ env.PYINSTALLER_VERSION }}"
       - name: Build the app
         run: pyinstaller --noconfirm --clean nurse-manager/packaging/nurse-ai-os.spec --distpath dist --workpath build
       - name: Self-test (Linux)
@@ -68,20 +70,44 @@ jobs:
         run: |
           $p = Start-Process -FilePath "dist\nurse-ai-os.exe" -ArgumentList "--self-test" -Wait -PassThru -NoNewWindow
           if ($p.ExitCode -ne 0) { throw "self-test failed with exit code $($p.ExitCode)" }
-      - name: Browser journey against the packaged build (Linux)
-        if: runner.os == 'Linux'
+      - uses: actions/setup-node@v4
+        if: runner.os != 'Windows'
+        with:
+          node-version: "22"
+      - name: Browser dependencies
+        if: runner.os != 'Windows'
         run: |
           npm ci --ignore-scripts
+          node nurse-manager/tests/test_app_launch.mjs
+      - name: Browser journeys against the packaged build (Linux)
+        if: runner.os == 'Linux'
+        run: |
           NURSE_AI_OS_BIN="$PWD/dist/nurse-ai-os" node nurse-manager/tests/test_app_browser.mjs
+          NURSE_AI_OS_BIN="$PWD/dist/nurse-ai-os" node nurse-manager/tests/test_capture_browser.mjs
+      - name: Browser journeys against the packaged bundle (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          NURSE_AI_OS_BIN="$PWD/dist/Nurse AI OS.app/Contents/MacOS/nurse-ai-os" node nurse-manager/tests/test_app_browser.mjs
+          NURSE_AI_OS_BIN="$PWD/dist/Nurse AI OS.app/Contents/MacOS/nurse-ai-os" node nurse-manager/tests/test_capture_browser.mjs
       - name: Package macOS bundle
         if: runner.os == 'macOS'
         run: cd dist && ditto -c -k --keepParent "Nurse AI OS.app" nurse-ai-os-macos-unsigned.zip
+      - name: Record Linux artifact and source hashes
+        if: runner.os == 'Linux'
+        run: python nurse-manager/tools/build_receipt.py --artifact dist/nurse-ai-os --output dist/build-receipt.json
+      - name: Record macOS artifact and source hashes
+        if: runner.os == 'macOS'
+        run: python nurse-manager/tools/build_receipt.py --artifact dist/nurse-ai-os-macos-unsigned.zip --output dist/build-receipt.json
+      - name: Record Windows artifact and source hashes
+        if: runner.os == 'Windows'
+        run: python nurse-manager/tools/build_receipt.py --artifact dist/nurse-ai-os.exe --output dist/build-receipt.json
       - uses: actions/upload-artifact@v4
         with:
-          name: nurse-ai-os-${{ runner.os }}-UNSIGNED-test-build
+          name: nurse-ai-os-${{ runner.os }}-${{ runner.arch }}-UNSIGNED-test-build
           path: |
             dist/nurse-ai-os
             dist/nurse-ai-os.exe
             dist/nurse-ai-os-macos-unsigned.zip
+            dist/build-receipt.json
           if-no-files-found: error
           retention-days: 14

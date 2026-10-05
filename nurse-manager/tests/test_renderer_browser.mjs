@@ -49,7 +49,7 @@ try {
   python(['-c', [
     'import sys; from nurse_manager.services import ManagerWorkspace',
     'ws = ManagerWorkspace(sys.argv[1])',
-    'ws.add_task(sys.argv[2], "Sample Manager", status="ready", due_date="2026-10-04")',
+    'ws.add_task(sys.argv[2], "me", status="ready", due_date="2026-10-04")',
     'ubc = ws.store.conn.execute("SELECT id FROM projects WHERE title LIKE ?", ("Unit%",)).fetchone()[0]',
     'ws.add_feedback(ubc, "Council members", "question", sys.argv[2], "2026-09-27")',
     'from nurse_manager.pilot import PilotFeedback',
@@ -58,7 +58,7 @@ try {
   ].join('\n'), sample, INJECTED]);
   python(['-m', 'nurse_manager', 'brief', sample, '--week', '2026-09-28', '--today', TODAY]);
   const empty = join(work, 'empty');
-  python(['-m', 'nurse_manager', 'init', empty, '--name', 'Empty workspace', '--owner', 'Test Manager']);
+  python(['-m', 'nurse_manager', 'init', empty, '--name', 'Empty workspace', '--owner', 'me']);
 
   const main = await host(sample); hosts.push(main.child);
   const blank = await host(empty); hosts.push(blank.child);
@@ -141,6 +141,11 @@ try {
   assert.equal(await page.evaluate(() => window.__injected), undefined, 'markup in a title never executes');
   assert.equal(await page.locator('.task-card img').count(), 0);
 
+  await page.getByRole('link', { name: 'Add work', exact: true }).click();
+  await page.waitForSelector('.view--capture');
+  assert.match(await page.locator('main').textContent(), /development preview is read-only/);
+  assert.equal(await page.locator('form[data-capture]').count(), 0);
+
   // Learning and Growth: facts, not scores; read-only here.
   await page.getByRole('link', { name: 'Learning and Growth' }).click();
   await page.waitForSelector('.view--learning');
@@ -158,7 +163,7 @@ try {
   await page.waitForSelector('.view--contributions');
   assert.equal(await page.title(), 'Contributions — Nurse AI OS');
   const drafts = page.getByRole('region', { name: 'Drafts awaiting evidence (1)' });
-  assert.match(await drafts.textContent(), /Designed the five-part huddle format.*Project: Huddle format pilot.*Shared credit: Night charge nurse group/s);
+  assert.match(await drafts.textContent(), /Designed the five-part huddle format.*Project: Huddle format pilot.*Shared credit: Charge nurse; Educator/s);
   assert.match(await page.getByRole('region', { name: 'Verified (1)' }).textContent(), /Evidence.*Session outline and sign-in count/s);
   assert.match(await page.getByRole('list', { name: 'Facts' }).textContent(), /1 contribution from this year verified/);
   await drafts.getByRole('link', { name: 'Huddle format pilot' }).waitFor();
@@ -183,7 +188,7 @@ try {
   await page.getByRole('link', { name: 'Memory' }).click();
   await page.waitForSelector('.view--memory');
   assert.equal(await page.title(), 'Memory — Nurse AI OS');
-  assert.match(await page.getByRole('region', { name: 'In use (2)' }).textContent(), /Lead with the decisions.*All work.*Written by Sample Manager.*Huddles stay at five minutes.*Project: Huddle format pilot/s);
+  assert.match(await page.getByRole('region', { name: 'In use (2)' }).textContent(), /Lead with the decisions.*All work.*Written by me.*Huddles stay at five minutes.*Project: Huddle format pilot/s);
   assert.match(await page.getByRole('region', { name: 'Excluded (1)' }).textContent(), /budget talks/);
   assert.equal(await page.locator('.view--memory button').count(), 0, 'no memory changes on the dev host');
 
@@ -290,7 +295,7 @@ try {
   for (const name of ['Purpose', 'Readiness', 'Decisions', 'Resources', 'Evidence of completed work', 'Tasks']) {
     assert.ok(await page.getByRole('region', { name, exact: true }).isVisible(), `dashboard region "${name}" is named`);
   }
-  assert.match(await page.locator('.view-subtitle').first().textContent(), /Accountable owner: Sample Manager/);
+  assert.match(await page.locator('.view-subtitle').first().textContent(), /Accountable owner: me/);
   const readiness = await page.getByRole('region', { name: 'Readiness', exact: true }).textContent();
   assert.match(readiness, /Next milestone: Charter draft to council on 2026-10-07/);
   assert.match(readiness, /3 open tasks · 0 completed/);
@@ -341,7 +346,7 @@ try {
   const reflowProject = await open(`${main.url}#/mission`);
   const someProject = await reflowProject.$eval('.card__title a', (a) => a.getAttribute('href'));
   await reflowProject.close();
-  for (const route of ['mission', 'board', 'table', 'help', someProject.replace('#/', '')]) {
+  for (const route of ['mission', 'board', 'table', 'help', 'capture', someProject.replace('#/', '')]) {
     const narrow = await open(`${main.url}#/${route}`, { viewport: { width: 320, height: 800 } });
     const overflow = await narrow.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     assert.ok(overflow <= 0, `${route} reflows at 320px (overflow ${overflow}px)`);
@@ -357,6 +362,26 @@ try {
   await emptyPage.waitForSelector('.view--table');
   assert.match(await emptyPage.locator('main').textContent(), /No tasks yet/);
   await emptyPage.close();
+
+  // Withdrawn is a terminal state, visible on the board and table without
+  // implying that the work was completed or needs follow-up.
+  python(['-c', [
+    'import sys; from nurse_manager.services import ManagerWorkspace',
+    'ws = ManagerWorkspace(sys.argv[1])',
+    'task = ws.add_task("Withdrawn planning exercise", "me", status="ready")',
+    'ws.withdraw_task(task, "The exercise ended")',
+    'ws.close()',
+  ].join('\n'), empty]);
+  for (const width of [1280, 320]) {
+    const withdrawnBoard = await open(`${blank.url}#/board`, { viewport: { width, height: 800 } });
+    assert.ok(await withdrawnBoard.getByRole('heading', { name: 'Withdrawn (1 task)', exact: true }).isVisible());
+    assert.match(await withdrawnBoard.locator('main').textContent(), /Withdrawn planning exercise/);
+    assert.ok(await withdrawnBoard.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
+    await withdrawnBoard.getByRole('link', { name: 'Table', exact: true }).click();
+    await withdrawnBoard.waitForSelector('.view--table');
+    assert.match(await withdrawnBoard.locator('tbody').textContent(), /Withdrawn planning exercise.*Withdrawn/s);
+    await withdrawnBoard.close();
+  }
 
   const unknownProject = await open(`${main.url}#/project/prj-000000000000`);
   assert.match(await unknownProject.getByRole('alert').textContent(), /not in this workspace/);

@@ -37,7 +37,7 @@ from nurse_manager.store import _connect, _split_sql
 from nurse_manager.views import mission_control, packs as packs_view
 
 TODAY = "2026-09-30"
-OWNER = "Sample Manager"
+OWNER = "me"
 SHIPPED = ("committee", "communication", "education")
 
 

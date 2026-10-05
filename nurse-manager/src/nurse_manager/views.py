@@ -10,6 +10,7 @@ shows a progress percentage without a defined denominator.
 """
 
 from __future__ import annotations
+from . import people
 
 import json
 from datetime import date, timedelta
@@ -24,6 +25,7 @@ BOARD_COLUMNS = (
     ("in_progress", "In progress"),
     ("needs_judgment", "Needs my judgment"),
     ("completed", "Completed"),
+    ("withdrawn", "Withdrawn"),
 )
 
 TABLE_COLUMNS = (
@@ -99,6 +101,22 @@ def table(ws: ManagerWorkspace, *, sort_by: str = "due_date") -> dict[str, Any]:
     return {"sample": ws.info.sample, "columns": list(TABLE_COLUMNS), "rows": rows}
 
 
+def capture(ws: ManagerWorkspace, *, today: str, week_of: str) -> dict[str, Any]:
+    """One consistent snapshot for the personal capture forms and their bindings."""
+    with ws.store.snapshot() as db:
+        wid = ws.info.id
+        priorities = [dict(row) for row in db.execute(
+            "SELECT rank,text,project_id FROM priorities WHERE workspace_id = ?"
+            " AND week_of = ? ORDER BY rank", (wid, week_of))]
+        decisions = [dict(row) for row in db.execute(
+            "SELECT id,question,decision,decided_by,decided_on,rationale FROM decisions"
+            " WHERE workspace_id = ? ORDER BY decided_on DESC,id", (wid,))]
+        return {"sample": ws.info.sample, "today": today, "week_of": week_of,
+                "projects": _project_choices(ws), "tasks": table(ws)["rows"],
+                "decisions": decisions, "priorities": priorities,
+                "priorities_sha256": ws.priorities_sha256(week_of)}
+
+
 def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> dict[str, Any]:
     """What will move this initiative forward? One project, from the same records.
 
@@ -108,7 +126,7 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
     project = ws._require_row("projects", project_id)
     db = ws.store.conn
     tasks = [t for t in _tasks(ws) if t["project_id"] == project_id]
-    open_tasks = [t for t in tasks if t["status"] != "completed"]
+    open_tasks = [t for t in tasks if t["status"] not in ("completed", "withdrawn")]
     decisions = [
         {
             "id": d["id"],
@@ -166,7 +184,7 @@ def project_dashboard(ws: ManagerWorkspace, project_id: str, *, today: str) -> d
         "readiness": {
             "has_next_milestone": bool(project["next_milestone"].strip()),
             "open_tasks": len(open_tasks),
-            "completed_tasks": len(tasks) - len(open_tasks),
+            "completed_tasks": sum(t["status"] == "completed" for t in tasks),
             "blocked_tasks": sum(1 for t in open_tasks if t["blocked"]),
             "needs_judgment": sum(1 for t in open_tasks if t["status"] == "needs_judgment"),
             "overdue_tasks": sum(
@@ -248,7 +266,7 @@ def mission_control(ws: ManagerWorkspace, *, today: str, week_of: str) -> dict[s
                 "title": p["title"],
                 "owner": p["owner"],
                 "next_milestone": p["next_milestone"],
-                "open_tasks": sum(1 for t in mine if t["status"] != "completed"),
+                "open_tasks": sum(1 for t in mine if t["status"] not in ("completed", "withdrawn")),
                 "completed_tasks": sum(1 for t in mine if t["status"] == "completed"),
                 "blocked_tasks": sum(1 for t in mine if t["blocked"]),
             }
@@ -263,7 +281,7 @@ def mission_control(ws: ManagerWorkspace, *, today: str, week_of: str) -> dict[s
             "overdue": t["due_date"] < today,
         }
         for t in tasks
-        if t["status"] != "completed" and t["due_date"] and t["due_date"] <= horizon
+        if t["status"] not in ("completed", "withdrawn") and t["due_date"] and t["due_date"] <= horizon
         and not t["paused"]
     ]
 
@@ -281,6 +299,7 @@ def mission_control(ws: ManagerWorkspace, *, today: str, week_of: str) -> dict[s
 
     return {
         "workspace": ws.info.name,
+        "people_fields": people.status(db, wid),
         "sample": ws.info.sample,
         "today": today,
         "week_of": week_of,

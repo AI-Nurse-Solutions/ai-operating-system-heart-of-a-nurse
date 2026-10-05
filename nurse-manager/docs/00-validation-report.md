@@ -76,6 +76,8 @@ rather than checked. Section 3 lists them.
    - Issue #16 here was a link fix, closed 2026-07-13.
 
    If the plan meant `florence-x` numbers, verifying them needs that repo attached with API access, which this session did not have. The plan's own instruction applies: *do not assume their status*.
+
+   **Follow-up, 2026-10-03 (step 0.10):** Florence-X API access is now available. Its PR #25 is open, draft, and unmerged; issue #16 is open. Their disposition and remaining upstream gates are recorded in [06-florence-review-disposition.md](06-florence-review-disposition.md). This completes the status investigation, not those upstream gates.
 9. **The privacy screen does not detect personal names.** The plan's Personal profile relies on this screen plus the user's own restraint. The screen catches the following: MRN, SSN, DOB, room/bed, encounter dates, employee IDs, phone, email, and credentials. It will not stop a manager typing a colleague's name next to a performance concern. The product must say this plainly at onboarding, and never label content "PHI-free".
 
 ## 4. Other risks to carry into the plan

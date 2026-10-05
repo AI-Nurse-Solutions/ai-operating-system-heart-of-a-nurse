@@ -246,6 +246,12 @@ class ActionBoundary:
     def approve(
         self, action_id: str, approver: str, *, seen_sha256: str, seen_destination: str
     ) -> ActionRecord:
+        with self.ws.store.transaction():
+            return self._approve_locked(action_id, approver, seen_sha256, seen_destination)
+
+    def _approve_locked(
+        self, action_id: str, approver: str, seen_sha256: str, seen_destination: str
+    ) -> ActionRecord:
         action = self.get(action_id)
         if action.status != "awaiting_approval":
             raise ActionError(f"action is {action.status}; nothing to approve")
@@ -262,6 +268,8 @@ class ActionBoundary:
         revision = self.briefs.revision(action.artifact_revision_id)
         if revision.body_sha256 != action.payload_sha256:
             raise StaleApproval("the content changed after it was proposed")
+        if revision.status != "accepted":
+            raise StaleApproval("the proposed revision is no longer accepted")
         with self.ws.store.transaction() as db:
             # A confident, stricter JEV suggestion holds the approval until the
             # manager acknowledges it (ADR 0006). It adds a review step; the
@@ -286,30 +294,30 @@ class ActionBoundary:
                 (new_id("apr"), action_id, approver, self.ws.info.id,
                  action.artifact_revision_id, seen_sha256, seen_destination, self.ws.clock()),
             )
-            self._set_status(action_id, "approved", approver, "approve")
+            self._set_status(action_id, "approved", approver, "approve", "awaiting_approval")
         return self.get(action_id)
 
     def execute(self, action_id: str, actor: str) -> dict[str, Any]:
-        action = self.get(action_id)
-        if action.status == "succeeded":
-            # Retry never duplicates an effect.
-            return self.receipt(action_id)
-        if action.status != "approved":
-            raise ActionError(f"action is {action.status}; it cannot run")
         if actor != self.ws.info.owner:
             raise ActionError("only this workspace's manager can run its actions")
-
-        problem = self._recheck(action)
-        if problem:
-            with self.ws.store.transaction():
-                self._set_status(action_id, "stale", actor, "stale")
-            raise StaleApproval(problem)
-
-        revision = self.briefs.revision(action.artifact_revision_id)
-        text = self.briefs.render(revision)
-        target = self.exports_dir / action.destination
         with self.ws.store.transaction():
-            self._set_status(action_id, "executing", actor, "execute")
+            action = self.get(action_id)
+            if action.status == "succeeded":
+                # Retry never duplicates an effect.
+                return self.receipt(action_id)
+            if action.status != "approved":
+                raise ActionError(f"action is {action.status}; it cannot run")
+            problem = self._recheck(action)
+            if problem:
+                self._set_status(action_id, "stale", actor, "stale", "approved")
+            else:
+                revision = self.briefs.revision(action.artifact_revision_id)
+                text = self.briefs.render(revision)
+                target = self.exports_dir / action.destination
+                self._set_status(action_id, "executing", actor, "execute", "approved")
+        if problem:
+            # Raise after committing the stale state.
+            raise StaleApproval(problem)
         try:
             handler = self.handlers[action.effect]
             digest = handler(target, text)
@@ -329,20 +337,23 @@ class ActionBoundary:
             "SELECT id FROM actions WHERE workspace_id = ? AND status = 'executing'",
             (self.ws.info.id,),
         ).fetchall():
-            action = self.get(row["id"])
-            target = self.exports_dir / action.destination
-            expected = self.approved_export_sha256(action)
-            if target.is_file() and hashlib.sha256(target.read_bytes()).hexdigest() == expected:
-                settled.append(self._finish(
-                    action.id, "system", "succeeded",
-                    "confirmed after restart: file on disk matches the approved content"
-                    f" (sha256 {expected})",
-                ))
-            else:
-                settled.append(self._finish(
-                    action.id, "system", "effect_unknown",
-                    "interrupted before the effect could be confirmed; not retried",
-                ))
+            with self.ws.store.transaction():
+                action = self.get(row["id"])
+                if action.status != "executing":
+                    continue
+                target = self.exports_dir / action.destination
+                expected = self.approved_export_sha256(action)
+                if target.is_file() and hashlib.sha256(target.read_bytes()).hexdigest() == expected:
+                    settled.append(self._finish(
+                        action.id, "system", "succeeded",
+                        "confirmed after restart: file on disk matches the approved content"
+                        f" (sha256 {expected})",
+                    ))
+                else:
+                    settled.append(self._finish(
+                        action.id, "system", "effect_unknown",
+                        "interrupted before the effect could be confirmed; not retried",
+                    ))
         return settled
 
     def approved_export_sha256(self, action: ActionRecord) -> str:
@@ -386,19 +397,29 @@ class ActionBoundary:
 
     def _finish(self, action_id: str, actor: str, outcome: str, detail: str) -> dict[str, Any]:
         with self.ws.store.transaction() as db:
+            action = self.get(action_id)
+            if action.status in ("succeeded", "failed", "effect_unknown"):
+                # Recovery may have settled the execution while its handler was
+                # running. Keep that receipt; never overwrite a settled outcome.
+                return self.receipt(action_id)
+            self._set_status(action_id, outcome, actor, outcome, "executing")
             db.execute(
                 "INSERT INTO receipts (id, action_id, outcome, detail, recorded_at)"
                 " VALUES (?, ?, ?, ?, ?)",
                 (new_id("rcp"), action_id, outcome, detail, self.ws.clock()),
             )
-            self._set_status(action_id, outcome, actor, outcome)
         return self.receipt(action_id)
 
-    def _set_status(self, action_id: str, status: str, actor: str, kind: str) -> None:
-        self.ws.store.conn.execute(
-            "UPDATE actions SET status = ?, updated_at = ? WHERE id = ?",
-            (status, self.ws.clock(), action_id),
+    def _set_status(
+        self, action_id: str, status: str, actor: str, kind: str, expected_status: str
+    ) -> None:
+        changed = self.ws.store.conn.execute(
+            "UPDATE actions SET status = ?, updated_at = ?"
+            " WHERE id = ? AND workspace_id = ? AND status = ?",
+            (status, self.ws.clock(), action_id, self.ws.info.id, expected_status),
         )
+        if changed.rowcount != 1:
+            raise ActionError("the action state changed; this transition cannot run")
         self.ws.store.log(actor, kind, "action", action_id)
 
     # -- reads ------------------------------------------------------------
@@ -433,9 +454,11 @@ class ActionBoundary:
 
     def receipt(self, action_id: str) -> dict[str, Any]:
         row = self.ws.store.conn.execute(
-            "SELECT * FROM receipts WHERE action_id = ? ORDER BY recorded_at DESC, rowid DESC"
+            "SELECT r.* FROM receipts r JOIN actions a ON a.id = r.action_id"
+            " WHERE r.action_id = ? AND a.workspace_id = ?"
+            " ORDER BY r.recorded_at DESC, r.rowid DESC"
             " LIMIT 1",
-            (action_id,),
+            (action_id, self.ws.info.id),
         ).fetchone()
         if row is None:
             raise ActionError(f"action {action_id} has no receipt")

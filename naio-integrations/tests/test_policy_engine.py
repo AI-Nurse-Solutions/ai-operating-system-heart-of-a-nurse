@@ -99,10 +99,25 @@ class PolicyEngineTests(unittest.TestCase):
             approvals=("appr-77",),
         )
         decision = self.engine.decide(
-            make_request(actor=actor, risk_tier=RiskTier.ORANGE, data_class=DataClass.D2)
+            make_request(actor=actor, risk_tier=RiskTier.ORANGE, data_class=DataClass.D2,
+                         metadata={"approval_id": "appr-77"})
         )
         self.assertIs(decision.decision, Decision.ALLOW)
         self.assertIn("continuous_audit", decision.obligations)
+
+    def test_orange_requires_the_specific_named_held_approval_even_without_effects(self):
+        actor = Actor(actor_id="rn-2", role="nurse", tenant="org:mercy",
+                      authenticated_org="org:mercy", approvals=("appr-77",))
+        for metadata in ({}, {"approval_id": ""}, {"approval_id": "invented"},
+                         {"approval_id": True}, {"approval_id": ["appr-77"]},
+                         {"approval_id": " appr-77 "}):
+            with self.subTest(metadata=metadata):
+                decision = self.engine.decide(make_request(
+                    actor=actor, risk_tier=RiskTier.ORANGE, data_class=DataClass.D2,
+                    metadata=metadata))
+                expected = Decision.REQUIRE_APPROVAL if metadata.get("approval_id") in (None, "") else Decision.DENY
+                self.assertIs(decision.decision, expected)
+                self.assertNotIn("continuous_audit", decision.obligations)
 
     def test_external_side_effects_require_meaningful_approval(self):
         actor = Actor(

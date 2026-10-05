@@ -31,9 +31,10 @@ from .memory import WorkspaceMemory
 from .packs import PackService
 from .pilot import AREAS as PILOT_AREAS, KINDS as PILOT_KINDS, PilotFeedback, pilot_item
 from .schedule import BriefSchedule
-from .services import ManagerError, ManagerWorkspace, _iso_date
+from .services import ACTIVE_TASK_STATUSES, TASK_STATUSES, ManagerError, ManagerWorkspace, _iso_date
 from .views import (
     board,
+    capture,
     contribution_item,
     contributions,
     feedback_item,
@@ -75,8 +76,54 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = ws_cmd("init", "create an empty Personal Manager workspace")
     p.add_argument("--name", required=True)
-    p.add_argument("--owner", required=True)
+    p.add_argument("--owner", default="me")
     ws_cmd("sample", "create the synthetic sample workspace")
+    p = ws_cmd("capture", "current records for the personal capture forms")
+    p.add_argument("--today", required=True)
+    p.add_argument("--week", required=True)
+    p = ws_cmd("project-add", "capture a project in your own workspace")
+    p.add_argument("--title", required=True)
+    p.add_argument("--purpose", required=True)
+    p.add_argument("--owner", required=True)
+    p.add_argument("--milestone", default="")
+    p = ws_cmd("task-add", "capture a task; completion is a separate evidence-bound step")
+    p.add_argument("--title", required=True)
+    p.add_argument("--owner", required=True)
+    p.add_argument("--project")
+    p.add_argument("--due", help="YYYY-MM-DD")
+    p.add_argument("--status", choices=ACTIVE_TASK_STATUSES, default="idea")
+    p.add_argument("--reviewer", default="")
+    p.add_argument("--next-action", default="")
+    for name in ("task-move", "task-block", "task-pause", "task-complete", "task-reopen", "task-withdraw"):
+        p = ws_cmd(name, "change a task against the status you reviewed")
+        p.add_argument("--id", required=True)
+        p.add_argument("--expected-status", choices=TASK_STATUSES, required=True)
+        if name == "task-move":
+            p.add_argument("--status", choices=ACTIVE_TASK_STATUSES, required=True)
+        elif name == "task-reopen":
+            p.add_argument("--status", choices=ACTIVE_TASK_STATUSES, default="ready")
+            p.add_argument("--reason", required=True)
+        elif name == "task-withdraw":
+            p.add_argument("--reason", required=True)
+        elif name == "task-block":
+            p.add_argument("--blocked", choices=("yes", "no"), required=True)
+            p.add_argument("--reason", default="")
+        elif name == "task-pause":
+            p.add_argument("--paused", choices=("yes", "no"), required=True)
+        elif name == "task-complete":
+            p.add_argument("--evidence", required=True)
+    p = ws_cmd("decision-add", "capture a decision and who made it")
+    p.add_argument("--question", required=True)
+    p.add_argument("--decision", required=True)
+    p.add_argument("--by", required=True)
+    p.add_argument("--on", required=True, help="YYYY-MM-DD")
+    p.add_argument("--rationale", default="")
+    p.add_argument("--project")
+    p = ws_cmd("priorities-set", "replace this week's one to three priorities")
+    p.add_argument("--expected-sha", help="bind replacement to the priority list reviewed")
+    p.add_argument("--week", required=True)
+    p.add_argument("--item", action="append", required=True)
+    p.add_argument("--project", action="append", help="optional matching project for each item; empty means none")
     p = ws_cmd("mission", "Mission Control: what needs my attention?")
     p.add_argument("--today", required=True)
     p.add_argument("--week", required=True)
@@ -337,6 +384,43 @@ def _dispatch(args: argparse.Namespace, secret: str | None = None) -> Any:
     try:
         if args.command == "init":
             return ws.create(args.name, args.owner).__dict__
+        if args.command == "capture":
+            return capture(ws, today=_iso_date(args.today, "today"),
+                           week_of=_iso_date(args.week, "priority week"))
+        if args.command == "project-add":
+            return {"id": ws.add_project(args.title, args.purpose, args.owner, args.milestone)}
+        if args.command.startswith("task-"):
+            if args.command == "task-add":
+                task_id = ws.add_task(args.title, args.owner, project_id=args.project, due_date=args.due,
+                                      status=args.status, reviewer=args.reviewer, next_action=args.next_action)
+            else:
+                task_id = args.id
+                expected = {"expected_status": args.expected_status}
+                if args.command == "task-move":
+                    ws.move_task(task_id, args.status, **expected)
+                elif args.command == "task-block":
+                    ws.set_blocked(task_id, args.blocked == "yes", args.reason, **expected)
+                elif args.command == "task-pause":
+                    ws.set_paused(task_id, args.paused == "yes", **expected)
+                elif args.command == "task-complete":
+                    ws.complete_task(task_id, args.evidence, **expected)
+                elif args.command == "task-reopen":
+                    ws.reopen_task(task_id, args.reason, status=args.status, **expected)
+                elif args.command == "task-withdraw":
+                    ws.withdraw_task(task_id, args.reason, **expected)
+                else:
+                    raise AssertionError(f"unhandled task command {args.command}")
+            return {"task": next(row for row in table(ws)["rows"] if row["id"] == task_id)}
+        if args.command == "decision-add":
+            return {"id": ws.record_decision(args.question, args.decision, args.by, args.on,
+                                             rationale=args.rationale, project_id=args.project)}
+        if args.command == "priorities-set":
+            # Keep item/project positions intact; the writer also enforces
+            # lengths and capture rules before replacing existing priorities.
+            items = [ws._require(item, "priority") for item in args.item]
+            links = [project or None for project in args.project] if args.project else None
+            ws.set_priorities(args.week, items, links, expected_sha256=args.expected_sha)
+            return mission_control(ws, today=ws.local_today(), week_of=args.week)["priorities"]
         if args.command == "mission":
             return mission_control(ws, today=args.today, week_of=args.week)
         if args.command == "project":

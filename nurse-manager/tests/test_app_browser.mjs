@@ -26,6 +26,7 @@
 // CHROME_PATH=/path/to/chrome overrides the system Chrome channel (local runs).
 // NURSE_AI_OS_BIN=/path/to/nurse-ai-os runs it against a packaged build.
 import assert from 'node:assert/strict';
+import { launchApp } from './app-launch.mjs';
 import { spawn, spawnSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
@@ -39,20 +40,10 @@ const env = { ...process.env, PYTHONPATH: src };
 const work = mkdtempSync(join(tmpdir(), 'nm-app-'));
 
 /** Launch the app; resolve with { child, url, exited }. */
-const launch = (home) => new Promise((resolve, reject) => {
-  const args = ['--no-browser', '--print-url', '--idle-timeout', '120', '--home', home];
-  // NURSE_AI_OS_BIN runs the same journey against a packaged build.
-  const child = process.env.NURSE_AI_OS_BIN
-    ? spawn(process.env.NURSE_AI_OS_BIN, args, { env })
-    : spawn('python3', ['-m', 'nurse_manager.app', ...args], { env });
-  const exited = new Promise((done) => child.on('exit', (code) => done(code)));
-  let out = '';
-  child.stdout.on('data', (chunk) => {
-    out += chunk;
-    if (out.includes('\n')) resolve({ child, url: out.split('\n')[0].trim(), exited });
-  });
-  child.on('error', reject);
-});
+const launch = async (home) => {
+  const app = launchApp(home);
+  return { child: app.child, url: await app.ready, exited: app.exited };
+};
 
 const apps = [];
 let browser;
@@ -76,7 +67,7 @@ try {
   assert.match(await page.getByRole('contentinfo').textContent(), /running on this computer.*2 minutes/s);
   assert.ok(await page.getByRole('button', { name: 'Quit Nurse AI OS' }).isVisible());
   assert.match(await page.getByRole('note').filter({ hasText: 'Before you start' }).textContent(),
-    /Keep patient information, staff performance, and confidential employer material out/);
+    /Use public or synthetic information and nonconfidential personal planning only.*Do not enter patient details, names of other people, or confidential workplace information.*Names are not automatically detected/s);
 
   // What to know first: every fact, stated before anything is created.
   const about = page.getByRole('region', { name: 'What to know first' });
@@ -92,18 +83,28 @@ try {
     'nothing is ever called free of patient information');
 
   // Keyboard onboarding, with an identifier refused first.
-  await page.getByLabel('Workspace name').fill('Unit 4 planning');
-  await page.getByLabel('Your name').fill('manager@example.org');
+  await page.getByLabel('Workspace name').fill('manager@example.org');
+  assert.equal(await page.getByLabel('Your name').count(), 0, 'onboarding does not request a name');
+  assert.match(await page.locator('main').textContent(), /Your owner label is “me”/);
   await page.getByRole('button', { name: 'Create my workspace' }).focus();
   await page.keyboard.press('Enter');
   await page.waitForSelector('[role="alert"]');
   assert.match(await page.getByRole('alert').textContent(), /Not created.*does not keep identifying details.*EMAIL_ADDRESS/s);
   await page.getByLabel('Workspace name').fill('Unit planning');
-  await page.getByLabel('Your name').fill('Test Manager');
-  await page.getByLabel('Your name').press('Enter');
+  await page.getByLabel('Workspace name').press('Enter');
   await page.waitForFunction(() => document.activeElement?.tagName === 'H1'
     && document.activeElement.textContent === 'Mission Control', null, { timeout: 10000 });
   assert.equal(await page.locator('#workspace-name').textContent(), 'Unit planning');
+  // Earlier/unrecognized owners survive; a label warning does not rename
+  // them or replace operational owner binding with the new self label.
+  const legacySeed = spawnSync('python3', ['-c',
+    'import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); c.execute("UPDATE workspaces SET owner = ?", ("Synthetic legacy manager",)); c.commit(); c.close()',
+    join(work, 'own', 'workspace', 'workspace.sqlite')], { env });
+  assert.equal(legacySeed.status, 0, legacySeed.stderr.toString());
+  await page.reload();
+  await page.waitForSelector('.view--mission');
+  assert.match(await page.getByRole('note').filter({ hasText: 'stored people fields' }).textContent(),
+    /1 stored people fields.*preserved, not automatically verified or renamed/s);
   assert.equal(await page.getByRole('note').filter({ hasText: 'Sample workspace' }).count() === 0
     || !(await page.locator('#sample-banner').isVisible()), true, 'a real workspace is not labeled sample');
   assert.match(await page.getByRole('region', { name: "This week's priorities" }).textContent(), /No priorities set/);
@@ -164,7 +165,7 @@ try {
   const shown = await page.getByLabel('Exactly what will be shared', { exact: true }).textContent();
   assert.match(shown, /^# Nurse AI OS pilot feedback\n\n- App version: .+\n- Workspace: the manager’s own\n/);
   assert.match(shown, /## 1\. Weekly brief: Problem .*hard to find.*## 2\. Getting started: Worked well/s);
-  assert.doesNotMatch(shown, /Unit planning|Test Manager/);
+  assert.doesNotMatch(shown, /Unit planning|Synthetic legacy manager/);
   const [download] = await Promise.all([
     page.waitForEvent('download'),
     page.getByRole('button', { name: 'Save as a file' }).click(),
@@ -230,6 +231,19 @@ try {
   samplePage.on('pageerror', (e) => sampleErrors.push(e.message));
   const ipcCalls = [];
   samplePage.on('request', (r) => { if (r.url().includes('/ipc/')) ipcCalls.push({ url: r.url(), body: r.postData() }); });
+  // Keep this synthetic teaching week's date stable across calendar Mondays.
+  // Use the existing public date/week request parameters, not a runtime clock override.
+  await samplePage.route('**/ipc/**', route => {
+    const request = route.request();
+    if (request.method() === 'GET') {
+      const url = new URL(request.url());
+      if (!url.searchParams.has('today')) url.searchParams.set('today', '2026-09-30');
+      if (!url.searchParams.has('week')) url.searchParams.set('week', '2026-09-28');
+      return route.continue({ url: url.href });
+    }
+    const body = JSON.parse(request.postData() || '{}');
+    return route.continue({ postData: JSON.stringify({ today: '2026-09-30', week: '2026-09-28', ...body }) });
+  });
   await samplePage.goto(sample.url);
   await samplePage.waitForSelector('.view--onboarding');
   await samplePage.getByRole('button', { name: 'Explore the sample workspace' }).click();
@@ -257,7 +271,7 @@ try {
   await samplePage.getByRole('button', { name: /accept this version/ }).focus();
   await samplePage.keyboard.press('Enter');
   await samplePage.waitForFunction(() => /Version 1 is accepted/.test(document.activeElement?.textContent ?? ''));
-  assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by Sample Manager/);
+  assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by me/);
 
   // --- Every week: off by default; choices kept through a refused save --
   const everyWeek = samplePage.getByRole('region', { name: 'Every week' });
@@ -340,16 +354,29 @@ try {
   assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Drafted the template and tested it at two meetings.');
 
   await samplePage.getByLabel('Kind').selectOption('committee');
-  await samplePage.getByLabel('Your part').fill('Drafted the template and tested it at two meetings.');
-  await samplePage.getByLabel('Who shares the credit').fill('Thanks to jane.doe@example.org');
+  await samplePage.getByLabel('Your part').fill('Thanks to jane.doe@example.org');
+  await samplePage.getByLabel('Who shares the credit').selectOption('Council members');
   await samplePage.getByLabel('Project (optional)').selectOption({ label: 'Unit Based Council charter refresh' });
   await samplePage.getByRole('button', { name: 'Save as draft' }).click();
   await samplePage.waitForSelector('.view--contributions .notice[role="alert"]');
   assert.match(await samplePage.locator('.notice').textContent(), /not stored.*EMAIL_ADDRESS/s);
   // The refusal keeps what was typed; only the refused field needs fixing.
-  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Drafted the template and tested it at two meetings.');
+  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Thanks to jane.doe@example.org');
   assert.equal(await samplePage.getByLabel('Kind').inputValue(), 'committee');
-  await samplePage.getByLabel('Who shares the credit').fill('Unit Based Council members');
+  await samplePage.getByLabel('Your part').fill('Drafted the template and tested it at two meetings.');
+  await samplePage.getByLabel('Who shares the credit').selectOption('Unit Based Council members');
+  // A modified browser can inject a custom choice. The backend still
+  // refuses it, and the pending form keeps its other fields.
+  await samplePage.getByLabel('Who shares the credit').evaluate((select) => {
+    select.add(new Option('Synthetic Person', 'Synthetic Person'));
+  });
+  await samplePage.getByLabel('Who shares the credit').selectOption('Synthetic Person');
+  await samplePage.getByRole('button', { name: 'Save as draft' }).click();
+  await samplePage.waitForFunction(() => /choose approved role labels/.test(
+    document.querySelector('.view--contributions .notice[role="alert"]')?.textContent ?? ''));
+  assert.match(await samplePage.locator('.notice').textContent(), /choose approved role labels/);
+  assert.equal(await samplePage.getByLabel('Your part').inputValue(), 'Drafted the template and tested it at two meetings.');
+  await samplePage.getByLabel('Who shares the credit').selectOption('Unit Based Council members');
   // While its own save is in flight, the submitted form is read-only.
   let releaseAdd = () => {};
   const addHeld = new Promise((resolve) => { releaseAdd = resolve; });
@@ -428,14 +455,14 @@ try {
   await samplePage.waitForFunction(() => /Remembered\./.test(document.activeElement?.textContent ?? ''));
   const inUse = samplePage.getByRole('region', { name: 'In use (3)' });
   const mine = inUse.getByRole('listitem').filter({ hasText: 'Council agendas go out two days ahead' });
-  assert.match(await mine.textContent(), /Project: Unit Based Council charter refresh.*Written by Sample Manager on/s);
+  assert.match(await mine.textContent(), /Project: Unit Based Council charter refresh.*Written by me on/s);
   await mine.getByRole('button', { name: 'Correct…' }).click();
   await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
   await samplePage.getByLabel('Corrected wording').fill('Council agendas go out three days ahead (synthetic).');
   await samplePage.getByRole('button', { name: 'Save correction' }).click();
   await samplePage.waitForFunction(() => /Corrected\./.test(document.activeElement?.textContent ?? ''));
   const corrected = samplePage.getByRole('listitem').filter({ hasText: 'three days ahead' });
-  assert.match(await corrected.textContent(), /Corrected by Sample Manager on/);
+  assert.match(await corrected.textContent(), /Corrected by me on/);
   await corrected.getByRole('button', { name: 'Exclude' }).click();
   await samplePage.waitForFunction(() => /Excluded\./.test(document.activeElement?.textContent ?? ''));
   assert.match(await samplePage.getByRole('region', { name: 'Excluded (2)' }).textContent(), /three days ahead/);
@@ -482,7 +509,7 @@ try {
   await samplePage.getByRole('button', { name: /accept this version/ }).focus();
   await samplePage.keyboard.press('Enter');
   await samplePage.waitForFunction(() => /Version 2 is accepted/.test(document.activeElement?.textContent ?? ''));
-  assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by Sample Manager/);
+  assert.match(await samplePage.locator('.brief-text').textContent(), /Accepted\. Reviewed and accepted by me/);
   await samplePage.getByRole('link', { name: '← Packs' }).click();
   await samplePage.waitForSelector('.view--packs');
   const yours = samplePage.getByRole('region', { name: 'Your documents (2)' });
@@ -596,13 +623,13 @@ try {
     await samplePage.waitForFunction(() => document.activeElement?.id === 'notes-heading');
     const notes = samplePage.getByRole('region', { name: 'Notes (1)' });
     const note = notes.getByRole('article', { name: 'What should I do first?' });
-    assert.match(await note.textContent(), /Kept.*Written by the AI model “llama3\.2”; kept by Sample Manager/s);
+    assert.match(await note.textContent(), /Kept.*Written by the AI model “llama3\.2”; kept by me/s);
     assert.match(await note.getByRole('document').textContent(), /Title: .+prj-[0-9a-f]{12}/);
 
     // Feedback: add it by keyboard, then close it with a written response.
     const openCount = async () => Number((await samplePage.locator('#feedback-heading').textContent()).match(/\((\d+) open\)/)[1]);
     const before = await openCount();
-    await samplePage.getByLabel('From (a group or role)').fill('Evening huddle (synthetic)');
+    await samplePage.getByLabel('From (a group or role)').selectOption('Team');
     await samplePage.getByLabel('Kind').selectOption('question');
     await samplePage.getByLabel('What was said').fill('Can the Dates slot cover two weeks?');
     await samplePage.getByRole('button', { name: 'Add feedback' }).focus();
@@ -610,7 +637,7 @@ try {
     await samplePage.waitForFunction(() => document.activeElement?.id === 'feedback-heading');
     assert.equal(await openCount(), before + 1);
     const added = samplePage.getByRole('listitem').filter({ hasText: 'Can the Dates slot cover two weeks?' });
-    assert.match(await added.textContent(), /Question from Evening huddle \(synthetic\)/);
+    assert.match(await added.textContent(), /Question from Team/);
     await added.getByRole('button', { name: 'Mark addressed…' }).click();
     await samplePage.waitForFunction(() => document.activeElement?.tagName === 'TEXTAREA');
     await samplePage.keyboard.type('Yes: Dates now covers two weeks.');
@@ -677,7 +704,7 @@ try {
     await samplePage.getByRole('link', { name: 'Let them work again from Mission Control' }).click();
     await samplePage.waitForSelector('.view--mission');
     const atWork = samplePage.getByRole('region', { name: 'Assistants at work' });
-    assert.match(await atWork.textContent(), /Stopped by Sample Manager.*Nothing is sent to an AI model/s);
+    assert.match(await atWork.textContent(), /Stopped by me.*Nothing is sent to an AI model/s);
     assert.match(await atWork.textContent(), /Recurring weekly brief.*Waiting while assistants are stopped/s);
     await atWork.getByRole('button', { name: 'Let assistants work again' }).focus();
     await samplePage.keyboard.press('Enter');

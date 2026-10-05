@@ -1,9 +1,9 @@
 {
   "synthetic": true,
-  "label": "SYNTHETIC EXAMPLE — every person, unit, and detail is fictional teaching material. No patient, colleague, or institution is described.",
+  "label": "SYNTHETIC EXAMPLE \u2014 every person, unit, and detail is fictional teaching material. No patient, colleague, or institution is described.",
   "workspace": {
     "name": "Sample manager workspace (synthetic)",
-    "owner": "Sample Manager"
+    "owner": "me"
   },
   "week_of": "2026-09-28",
   "today": "2026-09-30",
@@ -12,40 +12,113 @@
       "key": "ubc",
       "title": "Unit Based Council charter refresh",
       "purpose": "Give the council a current charter so members know their scope, cadence, and decision rights.",
-      "owner": "Sample Manager",
+      "owner": "me",
       "next_milestone": "Charter draft to council on 2026-10-07"
     },
     {
       "key": "edu",
       "title": "Fall education calendar",
       "purpose": "Publish one calendar of required and optional education so staff can plan around it.",
-      "owner": "Sample Educator",
+      "owner": "Educator",
       "next_milestone": "Calendar review with educator on 2026-10-02"
     },
     {
       "key": "huddle",
       "title": "Huddle format pilot",
       "purpose": "Test a five-minute huddle structure (Wins, Changes, Watch-fors, Asks, Dates) for four weeks.",
-      "owner": "Sample Manager",
+      "owner": "me",
       "next_milestone": "Week-two check-in on 2026-10-05"
     }
   ],
   "tasks": [
-    {"project": "ubc", "title": "Collect council feedback on draft scope section", "owner": "Sample Council Chair", "due_date": "2026-10-01", "status": "in_progress", "next_action": "Send the scope section to members for comment"},
-    {"project": "ubc", "title": "Decide council meeting cadence", "owner": "Sample Manager", "due_date": "2026-10-02", "status": "needs_judgment", "reviewer": "Sample Manager"},
-    {"project": "ubc", "title": "Book room for charter review meeting", "owner": "Sample Unit Coordinator", "due_date": "2026-10-03", "status": "ready", "blocked_reason": "Waiting for the cadence decision"},
-    {"project": "edu", "title": "List required annual education modules", "owner": "Sample Educator", "due_date": "2026-09-29", "status": "completed", "evidence": "Module list saved in the education project folder (synthetic)"},
-    {"project": "edu", "title": "Draft calendar layout", "owner": "Sample Educator", "due_date": "2026-10-02", "status": "in_progress", "next_action": "Share layout for manager review"},
-    {"project": "edu", "title": "Confirm vendor webinar dates", "owner": "Sample Educator", "due_date": "2026-09-26", "status": "ready"},
-    {"project": "huddle", "title": "Collect week-one huddle feedback", "owner": "Sample Charge Nurse", "due_date": "2026-10-05", "status": "ready"},
-    {"project": "huddle", "title": "Idea: rotate huddle facilitator weekly", "owner": "Sample Manager", "status": "idea"}
+    {
+      "project": "ubc",
+      "title": "Collect council feedback on draft scope section",
+      "owner": "Council chair",
+      "due_date": "2026-10-01",
+      "status": "in_progress",
+      "next_action": "Send the scope section to members for comment"
+    },
+    {
+      "project": "ubc",
+      "title": "Decide council meeting cadence",
+      "owner": "me",
+      "due_date": "2026-10-02",
+      "status": "needs_judgment",
+      "reviewer": "me"
+    },
+    {
+      "project": "ubc",
+      "title": "Book room for charter review meeting",
+      "owner": "Unit coordinator",
+      "due_date": "2026-10-03",
+      "status": "ready",
+      "blocked_reason": "Waiting for the cadence decision"
+    },
+    {
+      "project": "edu",
+      "title": "List required annual education modules",
+      "owner": "Educator",
+      "due_date": "2026-09-29",
+      "status": "completed",
+      "evidence": "Module list saved in the education project folder (synthetic)"
+    },
+    {
+      "project": "edu",
+      "title": "Draft calendar layout",
+      "owner": "Educator",
+      "due_date": "2026-10-02",
+      "status": "in_progress",
+      "next_action": "Share layout for manager review"
+    },
+    {
+      "project": "edu",
+      "title": "Confirm vendor webinar dates",
+      "owner": "Educator",
+      "due_date": "2026-09-26",
+      "status": "ready"
+    },
+    {
+      "project": "huddle",
+      "title": "Collect week-one huddle feedback",
+      "owner": "Charge nurse",
+      "due_date": "2026-10-05",
+      "status": "ready"
+    },
+    {
+      "project": "huddle",
+      "title": "Idea: rotate huddle facilitator weekly",
+      "owner": "me",
+      "status": "idea"
+    }
   ],
   "decisions": [
-    {"project": "huddle", "question": "Which huddle format do we pilot?", "decision": "Wins / Changes / Watch-fors / Asks / Dates, five minutes, start of shift", "decided_by": "Sample Manager", "decided_on": "2026-09-29", "rationale": "Short, predictable, and leaves room for questions."}
+    {
+      "project": "huddle",
+      "question": "Which huddle format do we pilot?",
+      "decision": "Wins / Changes / Watch-fors / Asks / Dates, five minutes, start of shift",
+      "decided_by": "me",
+      "decided_on": "2026-09-29",
+      "rationale": "Short, predictable, and leaves room for questions."
+    }
   ],
   "sources": [
-    {"project": "huddle", "title": "Huddle format one-pager (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/huddle-format-one-pager", "data_class": "D0", "review_date": "2027-03-31"},
-    {"project": "ubc", "title": "Council charter template (synthetic)", "kind": "synthetic", "reference": "synthetic://samples/council-charter-template", "data_class": "D0", "review_date": "2026-09-01"}
+    {
+      "project": "huddle",
+      "title": "Huddle format one-pager (synthetic)",
+      "kind": "synthetic",
+      "reference": "synthetic://samples/huddle-format-one-pager",
+      "data_class": "D0",
+      "review_date": "2027-03-31"
+    },
+    {
+      "project": "ubc",
+      "title": "Council charter template (synthetic)",
+      "kind": "synthetic",
+      "reference": "synthetic://samples/council-charter-template",
+      "data_class": "D0",
+      "review_date": "2026-09-01"
+    }
   ],
   "learning": [
     {
@@ -71,9 +144,17 @@
     }
   ],
   "memories": [
-    {"content": "Lead with the decisions I need to make, then blockers (synthetic)."},
-    {"project": "huddle", "content": "Huddles stay at five minutes; do not suggest longer formats (synthetic)."},
-    {"content": "Unit budget talks are paused until next quarter (synthetic).", "excluded": true}
+    {
+      "content": "Lead with the decisions I need to make, then blockers (synthetic)."
+    },
+    {
+      "project": "huddle",
+      "content": "Huddles stay at five minutes; do not suggest longer formats (synthetic)."
+    },
+    {
+      "content": "Unit budget talks are paused until next quarter (synthetic).",
+      "excluded": true
+    }
   ],
   "contributions": [
     {
@@ -82,14 +163,14 @@
       "kind": "improvement",
       "occurred_on": "2026-09-15",
       "my_part": "Drafted the format and ran the first two huddles.",
-      "shared_credit": "Night charge nurse group; unit educator"
+      "shared_credit": "Charge nurse; Educator"
     },
     {
       "title": "Taught delegation basics to new charge nurses (synthetic)",
       "kind": "teaching",
       "occurred_on": "2026-06-12",
       "my_part": "Wrote and taught the one-hour session.",
-      "shared_credit": "Unit educator co-taught the practice cases",
+      "shared_credit": "Educator",
       "evidence": "Session outline and sign-in count in my teaching folder (synthetic)."
     }
   ],
@@ -102,34 +183,47 @@
     }
   ],
   "pack_documents": [
-    {"pack": "education", "template": "education-plan", "project": "edu"}
+    {
+      "pack": "education",
+      "template": "education-plan",
+      "project": "edu"
+    }
   ],
   "feedback": [
     {
       "project": "huddle",
-      "from": "Day shift huddle (synthetic)",
+      "from": "Day shift huddle",
       "kind": "worked",
       "summary": "The Dates slot helped people remember the education sessions coming up.",
       "received_on": "2026-09-24"
     },
     {
       "project": "huddle",
-      "from": "Night shift huddle (synthetic)",
+      "from": "Night shift huddle",
       "kind": "change",
       "summary": "Five minutes runs long when the Asks slot has more than three items; try capping Asks at three.",
       "received_on": "2026-09-25"
     },
     {
       "project": "ubc",
-      "from": "Council members (synthetic)",
+      "from": "Council members",
       "kind": "question",
       "summary": "Will the refreshed charter say how members rotate off the council?",
       "received_on": "2026-09-26"
     }
   ],
   "priorities": [
-    {"text": "Settle council cadence so the charter can move", "project": "ubc"},
-    {"text": "Get the education calendar into review", "project": "edu"},
-    {"text": "Keep the huddle pilot on track through week two", "project": "huddle"}
+    {
+      "text": "Settle council cadence so the charter can move",
+      "project": "ubc"
+    },
+    {
+      "text": "Get the education calendar into review",
+      "project": "edu"
+    },
+    {
+      "text": "Keep the huddle pilot on track through week two",
+      "project": "huddle"
+    }
   ]
 }

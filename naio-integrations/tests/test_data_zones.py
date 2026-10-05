@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 
 import _bootstrap  # noqa: F401
@@ -96,6 +97,7 @@ class ZoneMigrationTests(unittest.TestCase):
     def test_approved_zone_migration_is_allowed_and_logged(self):
         decision = self.engine.decide(
             make_request(
+                actor=replace(NURSE, approvals=("appr-12",)),
                 metadata={
                     "target_zone": "shared_professional",
                     "zone_migration_approval": "appr-12",
@@ -104,6 +106,30 @@ class ZoneMigrationTests(unittest.TestCase):
         )
         self.assertIs(decision.decision, Decision.ALLOW)
         self.assertIn("log_zone_migration", decision.obligations)
+
+    def test_fabricated_unrelated_and_malformed_migration_approvals_are_denied(self):
+        for reference in ("invented", "appr-other", True, False, 12, [], {}, " ", " appr-12 "):
+            with self.subTest(reference=reference):
+                decision = self.engine.decide(make_request(
+                    actor=replace(NURSE, approvals=("appr-12",)),
+                    metadata={"target_zone": "shared_professional",
+                              "zone_migration_approval": reference}))
+                self.assertIs(decision.decision, Decision.DENY)
+                self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", decision.reason_codes)
+                self.assertNotIn("log_zone_migration", decision.obligations)
+
+    def test_named_migration_approval_must_be_held_by_this_actor(self):
+        decision = self.engine.decide(make_request(metadata={
+            "target_zone": "shared_professional", "zone_migration_approval": "appr-12"}))
+        self.assertIs(decision.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", decision.reason_codes)
+
+    def test_ordinary_action_approval_does_not_substitute_for_migration_approval(self):
+        decision = self.engine.decide(make_request(
+            actor=replace(NURSE, approvals=("appr-12",)),
+            metadata={"target_zone": "shared_professional", "approval_id": "appr-12"}))
+        self.assertIs(decision.decision, Decision.REQUIRE_APPROVAL)
+        self.assertIn("record_zone_migration_approval", decision.obligations)
 
     def test_same_zone_target_is_not_a_migration(self):
         decision = self.engine.decide(

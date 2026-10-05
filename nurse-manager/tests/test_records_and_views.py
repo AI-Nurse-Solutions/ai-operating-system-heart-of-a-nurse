@@ -39,7 +39,7 @@ class _TempCase(unittest.TestCase):
         self.addCleanup(ws.close)
         return ws
 
-    def empty(self, name="empty", owner="Test Manager"):
+    def empty(self, name="empty", owner="me"):
         ws = ManagerWorkspace(self.tmp / name, clock=fixed_clock())
         self.addCleanup(ws.close)
         ws.create("Empty workspace", owner)
@@ -69,7 +69,7 @@ class StoreTests(_TempCase):
     def test_restore_refuses_to_discard_newer_work(self):
         ws = self.sample()
         backup = ws.store.backup(self.tmp / "backups" / "b1.sqlite")
-        task_id = ws.add_task("Created after the backup", "Sample Manager")
+        task_id = ws.add_task("Created after the backup", "me")
         with self.assertRaises(RestoreRefused) as caught:
             ws.store.restore(backup)
         self.assertEqual(caught.exception.newer_events, 1)
@@ -79,7 +79,7 @@ class StoreTests(_TempCase):
     def test_explicit_restore_keeps_a_recoverable_pre_restore_copy(self):
         ws = self.sample()
         backup = ws.store.backup(self.tmp / "backups" / "b1.sqlite")
-        task_id = ws.add_task("Created after the backup", "Sample Manager")
+        task_id = ws.add_task("Created after the backup", "me")
         safety = ws.store.restore(backup, allow_discarding_newer=True)
         self.assertFalse(any(r["id"] == task_id for r in table(ws)["rows"]))
         kept = sqlite3.connect(str(safety))
@@ -90,27 +90,32 @@ class StoreTests(_TempCase):
 
     def test_a_backup_from_an_earlier_release_is_brought_up_to_date_on_restore(self):
         ws = self.sample()
-        backup = ws.store.backup(self.tmp / "backups" / "b1.sqlite")
-        # Make the backup look like one from the first release: drop every
-        # table a later migration added, and forget those migrations.
-        import re
+        backup = self.tmp / "old.sqlite"
+        # Build a genuine old schema. Dropping modern tables alone leaves
+        # modern columns and audit guards, which is not an old backup.
+        from unittest import mock
+        from nurse_manager import store as store_module
 
-        first = set(re.findall(r"CREATE TABLE (\w+)",
-                               (MIGRATIONS_DIR / "0001_initial.sql").read_text()))
-        old = sqlite3.connect(str(backup))
-        later = [name for (name,) in old.execute(
-            "SELECT name FROM sqlite_master WHERE type = 'table'")
-            if name not in first | {"schema_migrations", "sqlite_sequence"}]
-        self.assertIn("assistant_settings", later)
-        for name in later:
-            old.execute(f"DROP TABLE {name}")
-        old.execute("DELETE FROM schema_migrations WHERE version != '0001_initial'")
-        old.commit()
+        with mock.patch.object(store_module, "_migrations", return_value=store_module._migrations()[:1]):
+            old = Store(backup)
+        counts = {}
+        with old.transaction():
+            # Only kinds admitted by the first release: pack documents did
+            # not exist then. Restore permission is tested independently.
+            for name in ("workspaces", "projects", "tasks", "decisions", "sources", "priorities"):
+                counts[name] = ws.store.conn.execute(f"SELECT count(*) FROM {name}").fetchone()[0]
+                columns = [row["name"] for row in old.conn.execute(f"PRAGMA table_info({name})")]
+                names = ",".join(columns)
+                for row in ws.store.conn.execute(f"SELECT {names} FROM {name}"):
+                    old.conn.execute(f"INSERT INTO {name} ({names}) VALUES ({','.join('?' for _ in columns)})",
+                                     tuple(row))
         old.close()
-        ws.store.restore(backup)
+        ws.store.restore(backup, allow_discarding_newer=True)
         tables = {r[0] for r in ws.store.conn.execute(
             "SELECT name FROM sqlite_master WHERE type = 'table'")}
         self.assertIn("assistant_settings", tables)
+        for name, count in counts.items():
+            self.assertEqual(ws.store.conn.execute(f"SELECT count(*) FROM {name}").fetchone()[0], count)
         self.assertEqual(ws.store.schema_version, max(f.stem for f in MIGRATIONS_DIR.glob("*.sql")))
 
     def test_upgrading_keeps_every_ai_request_already_recorded(self):
@@ -176,7 +181,7 @@ class CaptureRuleTests(_TempCase):
             "Follow up MRN: A123456",
         ):
             with self.subTest(text=text), self.assertRaises(CaptureRefused):
-                ws.add_task(text, "Test Manager")
+                ws.add_task(text, "me")
         self.assertEqual(table(ws)["rows"], [])
 
     def test_restricted_material_is_outside_the_personal_profile(self):
@@ -189,7 +194,7 @@ class CaptureRuleTests(_TempCase):
 
     def test_dragging_a_card_cannot_complete_it(self):
         ws = self.empty()
-        task_id = ws.add_task("Draft agenda", "Test Manager", status="ready")
+        task_id = ws.add_task("Draft agenda", "me", status="ready")
         with self.assertRaises(ManagerError):
             ws.move_task(task_id, "completed")
         with self.assertRaises(ManagerError):
@@ -199,7 +204,7 @@ class CaptureRuleTests(_TempCase):
 
     def test_the_database_itself_refuses_completion_without_evidence(self):
         ws = self.empty()
-        task_id = ws.add_task("Draft agenda", "Test Manager")
+        task_id = ws.add_task("Draft agenda", "me")
         with self.assertRaises(sqlite3.IntegrityError):
             ws.store.conn.execute("UPDATE tasks SET status = 'completed' WHERE id = ?", (task_id,))
 
@@ -213,7 +218,7 @@ class CaptureRuleTests(_TempCase):
         foreign_project = other.store.conn.execute("SELECT id FROM projects").fetchone()[0]
         ws = self.empty()
         with self.assertRaises(ManagerError):
-            ws.add_task("Borrowed", "Test Manager", project_id=foreign_project)
+            ws.add_task("Borrowed", "me", project_id=foreign_project)
 
 
 class ViewTests(_TempCase):
@@ -264,7 +269,7 @@ class ViewTests(_TempCase):
 
     def test_blocked_and_paused_are_explicit_not_hidden(self):
         ws = self.empty()
-        task_id = ws.add_task("Book room", "Test Manager", status="ready", due_date="2026-10-01")
+        task_id = ws.add_task("Book room", "me", status="ready", due_date="2026-10-01")
         ws.set_blocked(task_id, True, "Waiting for a decision")
         ws.set_paused(task_id, True)
         card = board(ws)["columns"][1]["cards"][0]
@@ -356,7 +361,7 @@ class ContributionTests(_TempCase):
                          (1, 1, 1))
         draft = view["items"][0]
         self.assertEqual(draft["project_title"], "Huddle format pilot")
-        self.assertEqual(draft["shared_credit"], "Night charge nurse group; unit educator")
+        self.assertEqual(draft["shared_credit"], "Charge nurse; Educator")
         self.assertEqual(len(view["projects"]), 3)
         self.assertEqual(contributions(ws, today="2027-01-04")["this_year_verified"], 0)
 
@@ -434,7 +439,7 @@ class ContributionTests(_TempCase):
     def test_changes_are_audited(self):
         ws = self.sample()
         cid = ws.add_contribution("Article (synthetic)", "publication", TODAY,
-                                  "Wrote the first draft.", "Co-authors from the council")
+                                  "Wrote the first draft.", "Council members")
         ws.verify_contribution(cid, "Accepted by the newsletter (synthetic).")
         kinds = [e["kind"] for e in ws.store.events() if e["record_id"] == cid]
         self.assertEqual(kinds, ["create", "verify"])
@@ -521,7 +526,7 @@ class LibraryTests(_TempCase):
     def test_an_empty_workspace_has_an_empty_library(self):
         ws = ManagerWorkspace(self.tmp / "empty", clock=fixed_clock())
         self.addCleanup(ws.close)
-        ws.create("Empty", "Test Manager")
+        ws.create("Empty", "me")
         lib = library(ws, today=TODAY)
         self.assertEqual((lib["items"], lib["review_overdue"], lib["projects"]), ([], 0, []))
 
@@ -565,14 +570,14 @@ class FeedbackTests(_TempCase):
             ws.add_feedback(pid, "Night shift", "change", "Call 555-867-5309 about it", TODAY)
         with self.assertRaises(CaptureRefused):
             ws.add_feedback(pid, "jane.doe@example.org", "worked", "Good pilot", TODAY)
-        for args in (("", "worked", "Good", TODAY), ("Group", "praise", "Good", TODAY),
-                     ("Group", "worked", "", TODAY), ("Group", "worked", "Good", "last week"),
-                     ("Group", "worked", "Good", "2030-01-01"), ("x" * 81, "worked", "Good", TODAY),
-                     ("Group", "worked", "x" * 1001, TODAY)):
+        for args in (("", "worked", "Good", TODAY), ("Team", "praise", "Good", TODAY),
+                     ("Team", "worked", "", TODAY), ("Team", "worked", "Good", "last week"),
+                     ("Team", "worked", "Good", "2030-01-01"), ("x" * 81, "worked", "Good", TODAY),
+                     ("Team", "worked", "x" * 1001, TODAY)):
             with self.subTest(args=args[:2]), self.assertRaises(ManagerError):
                 ws.add_feedback(pid, *args)
         with self.assertRaises(ManagerError):
-            ws.add_feedback("prj-000000000000", "Group", "worked", "Good", TODAY)
+            ws.add_feedback("prj-000000000000", "Team", "worked", "Good", TODAY)
         with self.assertRaises(ManagerError):
             ws.address_feedback("fbk-000000000000", "Done")
 
@@ -639,7 +644,7 @@ class ProjectDashboardTests(_TempCase):
         dash = project_dashboard(ws, pid, today=TODAY)
         rows = [r for r in table(ws)["rows"] if r["project"] == dash["project"]["title"]]
         self.assertEqual(dash["tasks"], rows)
-        self.assertEqual(dash["project"]["owner"], "Sample Manager")
+        self.assertEqual(dash["project"]["owner"], "me")
 
     def test_readiness_is_stated_facts_from_the_records(self):
         ws = self.sample()

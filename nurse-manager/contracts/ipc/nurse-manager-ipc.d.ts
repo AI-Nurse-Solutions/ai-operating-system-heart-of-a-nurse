@@ -135,8 +135,8 @@ export interface BackupResult {
 export interface Board {
   readonly sample: boolean;
   /**
-   * @minItems 5
-   * @maxItems 5
+   * @minItems 6
+   * @maxItems 6
    */
   readonly columns: readonly BoardColumn[];
 }
@@ -201,6 +201,20 @@ export interface BriefSchedule {
   readonly last_run: BriefRun | null;
   /** The manager has stopped assistants: nothing is prepared until they let them work again. */
   readonly stopped: boolean;
+}
+
+export interface CaptureView {
+  readonly today: IsoDate;
+  readonly week_of: IsoDate;
+  readonly priorities_sha256: Sha256;
+  readonly sample: boolean;
+  readonly tasks: readonly TableRow[];
+  readonly decisions: readonly Decision[];
+  readonly priorities: readonly Priority[];
+  readonly projects: readonly {
+    readonly id: RecordId;
+    readonly title: string;
+  }[];
 }
 
 /** Exactly what asking JEV about one proposed action would send. Nothing is sent to produce it. */
@@ -577,6 +591,7 @@ export interface MemoryResult {
 /** What needs my attention? Every section reads the same records as the board and table. */
 export interface MissionControl {
   readonly workspace: string;
+  readonly people_fields: PeopleFields;
   readonly sample: boolean;
   readonly today: IsoDate;
   readonly week_of: IsoDate;
@@ -656,6 +671,12 @@ export interface Packs {
     readonly id: RecordId;
     readonly title: string;
   }[];
+}
+
+export interface PeopleFields {
+  readonly policy: "personal-people@1";
+  /** @minimum 0 */
+  readonly unrecognized_fields: number;
 }
 
 export interface PilotChoice {
@@ -885,6 +906,10 @@ export interface ReconcileResult {
   readonly settled: readonly Receipt[];
 }
 
+export interface RecordCreated {
+  readonly id: RecordId;
+}
+
 /** @pattern ^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem|plf|plx|clr)-[0-9a-f]{12}$ */
 export type RecordId = string;
 
@@ -970,9 +995,15 @@ export interface TaskCounts {
   readonly needs_judgment: number;
   /** @minimum 0 */
   readonly completed: number;
+  /** @minimum 0 */
+  readonly withdrawn: number;
 }
 
-export type TaskStatus = "idea" | "ready" | "in_progress" | "needs_judgment" | "completed";
+export interface TaskResult {
+  readonly task: TableRow;
+}
+
+export type TaskStatus = "idea" | "ready" | "in_progress" | "needs_judgment" | "completed" | "withdrawn";
 
 /** One download a signed feed names. Check the file against its sha256 before installing. */
 export interface UpdateArtifact {
@@ -1089,6 +1120,17 @@ export interface CommandData {
   readonly "classifier-route": ClassifierRoute;
   readonly "classifier-order-preview": ClassifierPreview;
   readonly "classifier-order": ClassifierOrder;
+  readonly "project-add": RecordCreated;
+  readonly "decision-add": RecordCreated;
+  readonly "priorities-set": PrioritiesSection;
+  readonly "task-add": TaskResult;
+  readonly "task-move": TaskResult;
+  readonly "task-block": TaskResult;
+  readonly "task-pause": TaskResult;
+  readonly "task-complete": TaskResult;
+  readonly "task-reopen": TaskResult;
+  readonly "task-withdraw": TaskResult;
+  readonly capture: CaptureView;
 }
 
 export type Command = keyof CommandData;

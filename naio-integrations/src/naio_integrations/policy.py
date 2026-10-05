@@ -89,14 +89,13 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
             target_zone
             and target_zone != request.data_zone.value
             and zone_rules["migration_requires_approval"]
-            and not request.metadata.get("zone_migration_approval")
         ):
-            return PolicyDecision(
-                decision=Decision.REQUIRE_APPROVAL,
-                reason_codes=("EDENA-ZONE-MIGRATION",),
-                obligations=("record_zone_migration_approval",),
-                policy_version=self.version,
+            approval_gate = self._named_approval(
+                request, "zone_migration_approval", "EDENA-ZONE-MIGRATION",
+                "record_zone_migration_approval",
             )
+            if approval_gate is not None:
+                return approval_gate
 
         # Packet role ids resolve to their policy archetype before rule
         # lookup, so "pre-licensure-student" carries the student gates.
@@ -252,6 +251,16 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
             ]
             if missing:
                 return self._deny("EDENA-INSTITUTIONAL-CONTROLS")
+            approval_key = requirements.get("approval_metadata_key")
+            if requirements.get("recorded_approval") and approval_key:
+                approval_gate = self._named_approval(
+                    request, approval_key,
+                    "EDENA-SIDE-EFFECT-GATE" if mode.has_side_effects
+                    else "EDENA-APPROVAL-REQUIRED",
+                    "record_approval_id",
+                )
+                if approval_gate is not None:
+                    return approval_gate
             obligations.append("continuous_audit")
 
         if mode.has_side_effects:
@@ -295,3 +304,28 @@ class EdenaPolicyEngine(PolicyDecisionInterface):
             reason_codes=(reason_code,),
             policy_version=self.version,
         )
+
+    def _named_approval(
+        self, request: GatewayRequest, key: str, missing_reason: str, obligation: str
+    ) -> PolicyDecision | None:
+        """A named reference must be one of the actor's recorded approvals.
+
+        Actor approval provenance is supplied by the trusted host. Membership
+        is not an approval registry, expiry check, or scope/binding check.
+        """
+        reference = request.metadata.get(key)
+        if reference is None or reference == "":
+            return PolicyDecision(
+                decision=Decision.REQUIRE_APPROVAL,
+                reason_codes=(missing_reason,),
+                obligations=(obligation,),
+                policy_version=self.version,
+            )
+        if (
+            not isinstance(reference, str)
+            or not reference.strip()
+            or reference != reference.strip()
+            or reference not in request.actor.approvals
+        ):
+            return self._deny("EDENA-APPROVAL-UNRECOGNIZED")
+        return None

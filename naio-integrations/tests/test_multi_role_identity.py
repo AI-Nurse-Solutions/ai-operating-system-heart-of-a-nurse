@@ -144,6 +144,7 @@ class MultiRoleIdentityTests(unittest.TestCase):
                 risk_tier=RiskTier.ORANGE,
                 data_class=DataClass.D2,
                 action_mode=ActionMode.RECOMMEND,
+                metadata={"approval_id": "appr-31"},
             )
         )
         self.assertIs(allowed.decision, Decision.ALLOW)

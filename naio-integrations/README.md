@@ -56,8 +56,9 @@ data class, and action mode):
 
 - Green cannot accept patient identifiers — not even redacted.
 - Yellow may analyze de-identified institutional information (<= D2).
-- Orange requires an authenticated organizational context and a recorded
-  approval.
+- Orange requires an authenticated organizational context and an explicit
+  `metadata.approval_id` held in that actor's recorded approvals. An
+  unrelated approval grants nothing.
 - Red-P is prohibited at every action mode; Red-E cannot execute without
   defined institutional controls (kill switch, audit stream, named
   accountable human).
@@ -83,8 +84,18 @@ enforced at the policy decision point:
 - Private reflections never appear in manager, faculty, cohort, or
   executive views (`EDENA-PRIVATE-REFLECTION`).
 - Content never silently migrates between zones: a cross-zone move
-  requires an explicit, recorded approval (`EDENA-ZONE-MIGRATION`), and
-  approved moves are logged.
+  requires an explicit `metadata.zone_migration_approval` held in the actor's
+  recorded approvals (`EDENA-ZONE-MIGRATION`), and approved moves are logged.
+  Missing references request approval; invented or malformed references are
+  denied (`EDENA-APPROVAL-UNRECOGNIZED`). An ordinary action approval does
+  not substitute for a migration approval.
+
+Policy version 1.0.1 tightens these reference checks under the steward's
+2026-10-04 approval (decision record:
+`nurse-manager/docs/09-steward-go-decisions.md`). Hosts must populate actor
+approvals from trusted provenance; request metadata alone is not authority.
+These membership checks do not establish approval scope, expiry, or a
+production approval registry, and do not authorize organizational deployment.
 
 Note on tier naming: the Mission Control specification uses the public
 four-tier shorthand (Green/Yellow/Orange/Red). This package follows

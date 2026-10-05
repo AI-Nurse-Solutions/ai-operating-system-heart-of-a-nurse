@@ -4,12 +4,89 @@
   "title": "Nurse Manager IPC contract, version 1",
   "description": "Every message the manager core sends to the desktop host. Each CLI command prints one Envelope; commands.json names the data type for each command. TypeScript types in nurse-manager-ipc.d.ts are generated from this file.",
   "$defs": {
+    "CaptureView": {
+      "type": "object",
+      "properties": {
+        "today": {
+          "$ref": "#/$defs/IsoDate"
+        },
+        "week_of": {
+          "$ref": "#/$defs/IsoDate"
+        },
+        "priorities_sha256": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "sample": {
+          "type": "boolean"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TableRow"
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Decision"
+          }
+        },
+        "priorities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Priority"
+          }
+        },
+        "projects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/RecordId"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "today",
+        "week_of",
+        "priorities_sha256",
+        "sample",
+        "tasks",
+        "decisions",
+        "priorities",
+        "projects"
+      ],
+      "additionalProperties": false
+    },
     "Contract": {"const": "nurse-manager-ipc@1"},
     "IsoDate": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
     "IsoDateTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)$"},
     "Sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "RecordId": {"type": "string", "pattern": "^(ws|prj|tsk|dec|src|pri|art|rev|act|air|note|fbk|lrn|ctb|mem|plf|plx|clr)-[0-9a-f]{12}$"},
-    "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed"]},
+    "RecordCreated": {
+      "type": "object",
+      "properties": {"id": {"$ref": "#/$defs/RecordId"}},
+      "required": ["id"],
+      "additionalProperties": false
+    },
+    "TaskResult": {
+      "type": "object",
+      "properties": {"task": {"$ref": "#/$defs/TableRow"}},
+      "required": ["task"],
+      "additionalProperties": false
+    },
+    "TaskStatus": {"enum": ["idea", "ready", "in_progress", "needs_judgment", "completed", "withdrawn"]},
     "SectionState": {"enum": ["ok", "empty"]},
 
     "OkEnvelope": {
@@ -207,16 +284,19 @@
         "ready": {"type": "integer", "minimum": 0},
         "in_progress": {"type": "integer", "minimum": 0},
         "needs_judgment": {"type": "integer", "minimum": 0},
-        "completed": {"type": "integer", "minimum": 0}
+        "completed": {"type": "integer", "minimum": 0},
+        "withdrawn": {"type": "integer", "minimum": 0}
       },
-      "required": ["idea", "ready", "in_progress", "needs_judgment", "completed"],
+      "required": ["idea", "ready", "in_progress", "needs_judgment", "completed", "withdrawn"],
       "additionalProperties": false
     },
+    "PeopleFields": {"type": "object", "properties": {"policy": {"const": "personal-people@1"}, "unrecognized_fields": {"type": "integer", "minimum": 0}}, "required": ["policy", "unrecognized_fields"], "additionalProperties": false},
     "MissionControl": {
       "description": "What needs my attention? Every section reads the same records as the board and table.",
       "type": "object",
       "properties": {
         "workspace": {"type": "string"},
+        "people_fields": {"$ref": "#/$defs/PeopleFields"},
         "sample": {"type": "boolean"},
         "today": {"$ref": "#/$defs/IsoDate"},
         "week_of": {"$ref": "#/$defs/IsoDate"},
@@ -228,7 +308,7 @@
         "recent_accepted_outputs": {"$ref": "#/$defs/AcceptedOutputsSection"},
         "task_counts": {"$ref": "#/$defs/TaskCounts"}
       },
-      "required": ["workspace", "sample", "today", "week_of", "priorities", "needs_my_judgment",
+      "required": ["workspace", "people_fields", "sample", "today", "week_of", "priorities", "needs_my_judgment",
                    "projects_in_motion", "follow_ups", "assistants_at_work",
                    "recent_accepted_outputs", "task_counts"],
       "additionalProperties": false
@@ -647,7 +727,7 @@
       "type": "object",
       "properties": {
         "sample": {"type": "boolean"},
-        "columns": {"type": "array", "items": {"$ref": "#/$defs/BoardColumn"}, "minItems": 5, "maxItems": 5}
+        "columns": {"type": "array", "items": {"$ref": "#/$defs/BoardColumn"}, "minItems": 6, "maxItems": 6}
       },
       "required": ["sample", "columns"],
       "additionalProperties": false

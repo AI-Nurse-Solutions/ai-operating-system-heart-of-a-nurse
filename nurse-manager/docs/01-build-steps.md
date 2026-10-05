@@ -27,7 +27,7 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 | 0.7 | Pin the upstream Hermes commit for the spike | ⏸ deferred | ADR 0003; candidate when resumed: tag `v2026.9.24` |
 | 0.8 | Branding and redistribution review of Hermes (MIT) and notices | ✅ | `THIRD_PARTY_NOTICES.md` Hermes Desktop row and §2.1 (referenced, not bundled; step 1.11 obligations); `05-hermes-review.md` (sources read 2026-09-29 at `v2026.9.24`/`f97608f` and main `ee5f49b`); `test_notices.py` |
 | 0.9 | Request code-signing identities (Windows, Apple) | ⛔ | Needs the steward's accounts |
-| 0.10 | Establish the disposition of the "PR #25 / issue #16" the plan names | ⛔ | Needs `florence-x` API access |
+| 0.10 | Establish the disposition of the "PR #25 / issue #16" the plan names | ✅ | `06-florence-review-disposition.md`: GitHub API checked 2026-10-03; Florence-X PR #25 remains open and draft, issue #16 remains open. Their upstream review gates remain unresolved |
 
 ## G1 — Installer and contracts (NM-003, NM-004)
 
@@ -118,3 +118,89 @@ Legend: ✅ done in this PR · 🟡 started · ⬜ not started · ⛔ blocked on
 ## G7 — Managed organization extension
 
 Requires institutional authorization. Out of scope until then.
+
+## Approved architecture follow-up: P2.3
+
+The steward approved the Go audit recommendation on 2026-10-04 in the
+coding conversation. P2.3 is implemented locally on `codex/audit-chain`,
+based on upstream `9ebd2134bf0354d8cab8635d340e45f8f48b0699`.
+Migration `0016_event_chain` adds canonical linked events, verified inserts,
+append-only guards, transactional failure rollback, and explicit legacy
+unchained reporting. A latest head/count outside the SQLite file detects
+database-only rollback; missing/pending anchors fail closed. Backup pairs
+hold a checkpoint from the copied snapshot, and restore verifies a single
+source snapshot while excluding concurrent live writers.
+
+`test_event_chain.py` covers tampering, tail deletion, valid older-file
+rollback, independent checkpoint comparison, missing/malformed anchors,
+failed inserts/commits/checkpoint writes, legacy migration, two-process
+append, and restore concurrency. Completion evidence and review limits are
+in `10-audit-history-implementation.md`. No merge, publication, release,
+institutional authorization, or resolution of clinical P0 blockers is
+claimed. Earlier local task/capture/approval changes have now been reconciled
+with this work on `codex/integrated-manager`; both source checkouts remain
+preserved. See [`11-manager-integration-handoff.md`](11-manager-integration-handoff.md).
+
+## Implementation follow-up to the proposed architecture direction
+
+The steward approved the assessment's Go recommendations on 2026-10-04.
+[`09-steward-go-decisions.md`](09-steward-go-decisions.md) records the
+instruction, approved choices, and remaining prerequisites. I-2 audit,
+I-3 data/people, and I-4 local approval direction now have implementation
+authorization; hardware, accounts, public governance publication, and
+release checks are not represented as complete.
+
+The following steps from PR #146 have been implemented in this workspace.
+Their proposal ids remain provisional; this records implementation evidence
+separately from ADR publication, upstream merging, and release completion.
+
+| Proposal | Implemented change | Exit check |
+|---|---|---|
+| P1.1 | Complete the record-writer register and correct the shipped Florence-X adapter description | `test_record_writer_register.py`: actual migrated tables equal the register, each table appears once, missing and extra tables and duplicate writers are detected |
+| P1.3 | Shared HTTP boundary probes for every browser write command | `BrowserWriteBoundaryTests`: fixture coverage equals `WRITE_COMMANDS`; malformed bodies, non-POST methods, missing tokens and foreign origins refused; page-supplied identities leave dispatched arguments unchanged; every write refused by the dev host |
+| P2.1 | Task transitions checked inside the write transaction; explicit reasoned reopen and withdrawal; prior completion evidence retained in append-only transition history (migration 0014) | `test_task_transitions.py`: two processes moving the same reviewed state produce one success; terminal-state guards; history failure rolls back the change; migration preserves tasks and audit events; withdrawn work excluded from open/completed counts and brief follow-ups |
+| P2.2 | Capture commands for projects, tasks, decisions, and priorities; task changes require the reviewed status; existing capture writers reused | `CliJourneyTests`: empty own workspace gains records, completes and reopens a task, same ids and counts across views, captured decision cited in the brief, refusals preserve existing priorities; every new command has real IPC fixtures and generated types |
+| P2.4 | Action approval, execution, and settlement check workspace and current state inside the write transaction; approval refuses superseded revisions; recovery and a late finisher keep the first terminal receipt | `test_action_transitions.py`: competing processes produce one approval and one effect; recovery versus execution produces one receipt; an unknown outcome stays unknown; receipt failure rolls back state and audit together |
+| N-1 | Named held approval required for zone migration and Orange requests; EDENA policy version 1.0.1 | Policy and zone tests: missing references gated, invented/malformed/unrelated references denied; multi-role valid approval remains allowed; gateway tests prove refused requests never invoke the executor and migration/Orange checks are independent |
+
+The integration step preserves both historical migration identifiers:
+`0014_classifier` and `0014_task_transitions`. Versions are full filenames
+without `.sql`, not their numeric prefixes. `0016_event_chain` follows;
+`0015` is unused. Upgrade/restore tests cover the original task database,
+current upstream, and the completed audit branch without renaming applied
+history or inventing old task transitions/audit hashes.
+
+Next authorized feature: shared backend role-label enforcement for new
+personal-pilot people fields, with existing records preserved and their
+legacy status stated honestly. Capture screens follow that shared rule.
+
+Completion update: the shared people-field rule is implemented locally on
+`codex/people-fields`. New records use `me` and fixed role/group labels;
+unrecognized stored labels remain unchanged and are reported honestly.
+Onboarding no longer requests a name, and feedback/shared-credit forms use
+fixed choices. See [`12-people-fields-handoff.md`](12-people-fields-handoff.md)
+for verification and limitations. Personal-workspace project/task/decision/
+priority capture screens remain the next feature, not implemented by this
+step. Signing, release, and institutional gates remain unchanged.
+
+Further completion update: personal-workspace capture screens are now
+implemented locally on `codex/capture-screens`. **Add work** reuses the
+shared project/task/decision/priority writers and fixed people rules.
+Task changes check the reviewed status; priority replacement checks a
+confirmed snapshot hash. Unknown save outcomes require explicit refresh
+before another capture write. See
+[`13-capture-screens-handoff.md`](13-capture-screens-handoff.md): 516 Manager
+tests ran (four skipped), 174 IPC envelopes and all three browser journeys
+passed. The next technical step is packaging and checking the combined
+macOS app; signing, hardware and release gates remain incomplete.
+
+Packaging follow-up: the combined implementation has now been built and
+verified as a Linux standalone executable on `codex/packaged-capture`.
+Capture tests now target the actual configured executable, and the existing
+macOS build job has equivalent packaged app/capture journeys and a source/
+artifact hash receipt. See
+[`14-packaged-app-verification.md`](14-packaged-app-verification.md).
+519 Manager tests ran (four skipped); Linux packaged and source journeys
+passed. macOS/Windows builds, exact-head CI, signing, runtime license review,
+and offline pilot hardware remain NOT RUN here. The next step is executing
+the reviewed combined source on the macOS build runner.

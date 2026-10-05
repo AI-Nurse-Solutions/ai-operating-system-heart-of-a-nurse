@@ -1,0 +1,26 @@
+{
+  "policy": "personal-people@1",
+  "data_rule": "Use public or synthetic information and nonconfidential personal planning only. Do not enter patient details, names of other people, or confidential workplace information. Names are not automatically detected.",
+  "labels": [
+    "me",
+    "Manager",
+    "Educator",
+    "Council chair",
+    "Unit coordinator",
+    "Charge nurse",
+    "Reviewer",
+    "Review team",
+    "Team",
+    "Council",
+    "Council members",
+    "Quality council",
+    "Unit Based Council members",
+    "Committee",
+    "Mentor",
+    "Day shift",
+    "Night shift",
+    "Day shift huddle",
+    "Night shift huddle"
+  ],
+  "max_shared_labels": 6
+}

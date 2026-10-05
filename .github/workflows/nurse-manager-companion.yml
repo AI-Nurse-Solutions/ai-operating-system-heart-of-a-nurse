@@ -61,4 +61,6 @@ jobs:
       - name: Inventory bundled dependency notices and source obligations
         run: node nurse-manager/tools/companion_notices.mjs "$PWD/upstream" "$PWD/companion-notice-audit"
       - name: Verify actual Intel Desktop waits for human setup with outbound denied
+        env:
+          DEBUG: pw:browser
         run: node nurse-manager/tests/test_hermes_desktop.mjs "$PWD/upstream" "$PWD/upstream/apps/desktop/release/mac/Hermes.app/Contents/MacOS/Hermes"

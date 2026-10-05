@@ -1,0 +1,113 @@
+{
+  "electronCommit": "fd8ec408db9ca3d1f55c5746e19f63f30615ba10",
+  "chromium": "144.0.7559.236",
+  "ffmpegCommit": "e18f48eba6b367ac68b9c477ae6cbe224e36b031",
+  "downloads": [
+    {
+      "name": "ffmpeg.tar.gz",
+      "url": "https://chromium.googlesource.com/chromium/third_party/ffmpeg/+archive/e18f48eba6b367ac68b9c477ae6cbe224e36b031.tar.gz",
+      "bytes": 18017285,
+      "sha256": "aed016bdc7bac5843f8b173c9ab17f8c82b4ffc96a3324d3175033ed00981fc5",
+      "treeSha256": "53d5b76c16d02710c1ac4b2444ddedd1ee5ebafc9dea800d1a55fafca6b6dea7"
+    },
+    {
+      "name": "electron.tar.gz",
+      "url": "https://codeload.github.com/electron/electron/tar.gz/refs/tags/v40.10.2",
+      "bytes": 17397951,
+      "sha256": "5fc0b9f12e37aa5d08a94a189624ee6331fd99071865b5e32f94f3f189bb441c"
+    },
+    {
+      "name": "chromium-build.tar.gz",
+      "url": "https://chromium.googlesource.com/chromium/src/+archive/refs/tags/144.0.7559.236/build.tar.gz",
+      "bytes": 1797371,
+      "sha256": "53a803e8b44507a8cc9e1ecf95e9178e0031594129e017a12faa7823cc6a3028",
+      "treeSha256": "077c98d169bae8507f61a24b37427f86fc028f384fef21e75937a3b644360a2b"
+    },
+    {
+      "name": "chromium-opus.tar.gz",
+      "url": "https://chromium.googlesource.com/chromium/src/+archive/refs/tags/144.0.7559.236/third_party/opus.tar.gz",
+      "bytes": 4258598,
+      "sha256": "4f1e203d10a4a3dd36f2d7c8ad6a8bccf6b807aa58798c1d75be7b744b168cce",
+      "treeSha256": "5fe1116dae5abedddd3edf686cc8e67a794c3f5ec0e8980b6c25f5ea8e368fbb"
+    },
+    {
+      "name": "jetbrains-OFL.txt",
+      "url": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/v2.304/OFL.txt",
+      "bytes": 4399,
+      "sha256": "30f0c136e3c88e422d0791acd97238870f9054a9729bc34cf2ff0d4ed8cac4ad"
+    },
+    {
+      "name": "chromium-nasm.tar.gz",
+      "url": "https://chromium.googlesource.com/chromium/deps/nasm/+archive/af5eeeb054bebadfbb79c7bcd100a95e2ad4525f.tar.gz",
+      "bytes": 1654542,
+      "sha256": "96e8951855cbe3f9df315afda9fdde1a11baae06b64264ecef1906fbd6bbd1c6",
+      "treeSha256": "985eb8dffb5fce6b4e2602d7da82f22d4bb209eb3b1599bab06ac09fc1c5461b"
+    },
+    {
+      "name": "CPython-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/python/cpython/v3.12.10/LICENSE",
+      "bytes": 13936,
+      "sha256": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf"
+    },
+    {
+      "name": "PyInstaller-COPYING.txt",
+      "url": "https://raw.githubusercontent.com/pyinstaller/pyinstaller/v6.22.3/COPYING.txt",
+      "bytes": 32604,
+      "sha256": "0598064c7d2718e38d7914a7d08343b2fa008e3bea9ebba2aa7a6ffa5900dd64"
+    },
+    {
+      "name": "OpenSSL-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/LICENSE.txt",
+      "bytes": 10175,
+      "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+    },
+    {
+      "name": "OpenSSL-AUTHORS.txt",
+      "url": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/AUTHORS.md",
+      "bytes": 990,
+      "sha256": "5076ca441daef7fb35e904c2ac070880c7b3d58300a5a6aecac41e8f525f4412"
+    },
+    {
+      "name": "notice-@simple-git__args-pathspec-1.0.3.txt",
+      "url": "https://raw.githubusercontent.com/steveukx/git-js/01bb7ceae698831e9abd9310f7d61484970ab53c/LICENSE",
+      "sha256": "3a31277abe4e0a30eb17dad52addace2fd73580fd9d79d40590e69785fdf71d5",
+      "bytes": 1077,
+      "component": "@simple-git/args-pathspec@1.0.3"
+    },
+    {
+      "name": "notice-@simple-git__argv-parser-1.1.1.txt",
+      "url": "https://raw.githubusercontent.com/steveukx/git-js/0e485f7706f61e7b1f8dba7b0d82448d23bc4b53/LICENSE",
+      "sha256": "3a31277abe4e0a30eb17dad52addace2fd73580fd9d79d40590e69785fdf71d5",
+      "bytes": 1077,
+      "component": "@simple-git/argv-parser@1.1.1"
+    },
+    {
+      "name": "notice-@xterm__addon-serialize-0.14.0.txt",
+      "url": "https://raw.githubusercontent.com/xtermjs/xterm.js/f447274f430fd22513f6adbf9862d19524471c04/LICENSE",
+      "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+      "bytes": 1261,
+      "component": "@xterm/addon-serialize@0.14.0"
+    },
+    {
+      "name": "notice-react-arborist-3.13.2.txt",
+      "url": "https://raw.githubusercontent.com/jameskerr/react-arborist/e6dc5c6d2cd1efd94ce3bc7cee722f6b428134e4/LICENSE",
+      "sha256": "f1dcfe846608164333e4662013cd41adcee862327ca0b93228fbc11418b299c8",
+      "bytes": 1066,
+      "component": "react-arborist@3.13.2"
+    },
+    {
+      "name": "notice-remark-math-6.0.0.txt",
+      "url": "https://raw.githubusercontent.com/remarkjs/remark-math/d5d0660b150810a535bbb07eac6cc96a4510aa24/license",
+      "sha256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9",
+      "bytes": 1098,
+      "component": "remark-math@6.0.0"
+    },
+    {
+      "name": "notice-simple-git-3.36.0.txt",
+      "url": "https://raw.githubusercontent.com/steveukx/git-js/01bb7ceae698831e9abd9310f7d61484970ab53c/LICENSE",
+      "sha256": "3a31277abe4e0a30eb17dad52addace2fd73580fd9d79d40590e69785fdf71d5",
+      "bytes": 1077,
+      "component": "simple-git@3.36.0"
+    }
+  ]
+}

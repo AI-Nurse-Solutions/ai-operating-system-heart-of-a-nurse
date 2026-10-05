@@ -1,6 +1,8 @@
 // Native developer smoke: actual Intel bundle, synthetic homes, no setup clicks.
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, existsSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, existsSync, rmSync, realpathSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
@@ -31,6 +33,21 @@ try {
     process.getBuiltinModule('path').join(process.resourcesPath, 'install-stamp.json'), 'utf8')));
   assert.equal(stamp.commit, 'f97608f178d1ffeca59860195ab7da295f7c8e5f');
   assert.equal(stamp.branch, 'v2026.9.24');
+  assert.equal(stamp.dirty, true, 'font fallback modification must be disclosed');
+  let replacement = null;
+  if (process.env.NAIO_REPLACEMENT_LIBRARY) {
+    const library = realpathSync(process.env.NAIO_REPLACEMENT_LIBRARY);
+    const hash = createHash('sha256').update(readFileSync(library)).digest('hex');
+    assert.equal(hash, process.env.NAIO_REPLACEMENT_SHA256);
+    const pid = await app.evaluate(() => process.pid);
+    const loaded = execFileSync('/usr/sbin/lsof', ['-a', '-p', String(pid), '-d', 'txt', '-Fn'], { encoding: 'utf8' })
+      .split('\n').filter(x => x.startsWith('n')).map(x => x.slice(1))
+      .map(path => existsSync(path) ? realpathSync(path) : path);
+    assert.ok(loaded.includes(library), 'the changed replacement library must actually be loaded');
+    replacement = { changedLibraryLoaded: true, sha256: hash,
+      method: 'separate copy, changed ad-hoc signature, actual lsof mapping',
+      modifiedSourceRebuild: false };
+  }
   // A raw TCP probe to a reserved documentation address must be denied by
   // the kernel sandbox, not merely fail from a timeout or unavailable server.
   const deny = await app.evaluate(() => new Promise(resolve => {
@@ -59,7 +76,7 @@ try {
   await check();
   console.log(JSON.stringify({ result: 'PASS', packagedArch: 'x64', upstreamCommit: stamp.commit,
     testMode: { chromiumSandboxDisabled: true, outerKernelNetworkDeny: true },
-    normalLaunchVerified: false, humanSetupIdle: true, runtimeProvisioned: false }));
+    normalLaunchVerified: false, humanSetupIdle: true, runtimeProvisioned: false, replacement }));
 } finally {
   if (app) {
     const timeout = setTimeout(() => app.process().kill('SIGKILL'), 10000);

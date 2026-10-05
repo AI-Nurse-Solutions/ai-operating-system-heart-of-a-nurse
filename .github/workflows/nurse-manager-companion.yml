@@ -7,15 +7,17 @@ on:
       - .github/workflows/nurse-manager-companion.yml
       - nurse-manager/tests/test_hermes_desktop.mjs
       - nurse-manager/tools/companion*
+      - nurse-manager/packaging/companion-sources.json
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   build:
     runs-on: macos-15-intel
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
@@ -42,6 +44,9 @@ jobs:
           node -e 'const r = require("node:module").createRequire(process.cwd() + "/apps/desktop/package.json"); require(require("node:path").join(require("node:path").dirname(r.resolve("electron/package.json")), "install.js"))'
           node -e 'const r = require("node:module").createRequire(process.cwd() + "/apps/desktop/package.json"); require(require("node:path").join(require("node:path").dirname(r.resolve("esbuild/package.json")), "install.js"))'
           node apps/desktop/scripts/rebuild-native.mjs x64
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Check Desktop types
         working-directory: upstream
         run: npm run typecheck --workspace apps/desktop
@@ -52,8 +57,9 @@ jobs:
         run: |
           node apps/desktop/scripts/assert-root-install.mjs
           npm run clean --workspace apps/desktop
+          node ../nurse-manager/tools/companion_fonts.mjs "$PWD"
           GITHUB_SHA=f97608f178d1ffeca59860195ab7da295f7c8e5f GITHUB_REF_NAME=v2026.9.24 node apps/desktop/scripts/write-build-stamp.mjs
-          node -e 'const s=require("./apps/desktop/build/install-stamp.json"); if(s.commit!=="f97608f178d1ffeca59860195ab7da295f7c8e5f" || s.branch!=="v2026.9.24") throw Error("Incorrect upstream build stamp")'
+          node -e 'const fs=require("node:fs"); const p="./apps/desktop/build/install-stamp.json"; const s=JSON.parse(fs.readFileSync(p)); if(s.commit!=="f97608f178d1ffeca59860195ab7da295f7c8e5f" || s.branch!=="v2026.9.24") throw Error("Incorrect upstream build stamp"); s.dirty=true; s.companionModificationsSha256=require("node:crypto").createHash("sha256").update(fs.readFileSync("companion-audit/font-modifications.json")).digest("hex"); fs.writeFileSync(p,JSON.stringify(s,null,2)+"\n")'
           node ../nurse-manager/tools/companion_build_inputs.mjs "$PWD"
           node apps/desktop/scripts/stage-native-deps.mjs
           node apps/desktop/scripts/assert-dist-built.mjs
@@ -63,4 +69,33 @@ jobs:
       - name: Verify actual Intel Desktop waits for human setup with outbound denied
         env:
           DEBUG: pw:browser
-        run: node nurse-manager/tests/test_hermes_desktop.mjs "$PWD/upstream" "$PWD/upstream/apps/desktop/release/mac/Hermes.app/Contents/MacOS/Hermes"
+        run: |
+          set -o pipefail
+          node nurse-manager/tests/test_hermes_desktop.mjs "$PWD/upstream" "$PWD/upstream/apps/desktop/release/mac/Hermes.app/Contents/MacOS/Hermes" | tee hermes-smoke.json
+      - name: Verify the actual packaged assets and excluded fonts
+        run: node nurse-manager/tools/companion_package.mjs "$PWD/upstream" "$PWD/upstream/apps/desktop/release/mac/Hermes.app" "$PWD/companion-notice-audit" "$PWD/hermes-package.json"
+      - name: Retain matching LGPL preferred source, build controls and runtime notices
+        run: python nurse-manager/tools/companion_sources.py nurse-manager/packaging/companion-sources.json "$PWD/companion-runtime-source"
+      - name: Verify changed FFmpeg library loads in a separate developer app copy
+        run: python nurse-manager/tools/companion_replacement.py "$PWD" "$PWD/upstream"
+      - name: Retrieve the unchanged verified Nurse Intel app
+        uses: actions/download-artifact@v4
+        with:
+          name: nurse-ai-os-macOS-X64-UNSIGNED-test-build
+          run-id: 37263039161
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: nurse-intel-input
+      - name: Assemble both real Intel apps, instructions, notices and source
+        run: |
+          python nurse-manager/tools/companion_assemble.py "$PWD" "$PWD/upstream" "$PWD/nurse-intel-input" "$PWD/companion-notice-audit" "$PWD/companion-runtime-source" "$PWD/Nurse AI OS Intel Developer Test"
+          ditto -c -k --keepParent "Nurse AI OS Intel Developer Test" nurse-ai-os-and-hermes-intel-UNSIGNED-test.zip
+          shasum -a 256 nurse-ai-os-and-hermes-intel-UNSIGNED-test.zip > combined-download.sha256
+      - name: Upload the authorized combined developer download
+        uses: actions/upload-artifact@v4
+        with:
+          name: nurse-ai-os-and-hermes-INTEL-UNSIGNED-developer-test
+          path: |
+            nurse-ai-os-and-hermes-intel-UNSIGNED-test.zip
+            combined-download.sha256
+          if-no-files-found: error
+          retention-days: 14

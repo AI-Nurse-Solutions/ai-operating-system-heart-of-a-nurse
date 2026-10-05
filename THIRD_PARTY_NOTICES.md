@@ -58,6 +58,43 @@ SOFTWARE.
 4. Not use the Hermes or Nous Research names, logos, or icons (including the `nous-girl` brand mark) as our product's name or icon. Say only what is true, such as "runs on Hermes Desktop". Do not state or imply endorsement.
 5. Record the exact upstream tag and commit in §1 and in the step's evidence.
 
+### 2.2 Separate Intel developer companion (October 5, 2026)
+
+The dedicated companion workflow on `codex/hermes-desktop-test` conditionally
+redistributes a separate source-built Hermes Desktop 0.17.6 app from tag
+`v2026.9.24`, commit `f97608f178d1ffeca59860195ab7da295f7c8e5f`. The earlier
+“referenced, not bundled” statement describes the standard Manager build;
+this two-app developer download is an explicit exception. It does not make
+Hermes the Manager host or include the full agent/bootstrap runtime.
+
+Commercial UI fonts are excluded from binaries and retained source; modified
+CSS uses system fallbacks. The separate Hermes app keeps upstream identity
+for factual attribution, not as our product branding or an endorsement.
+It is not an official Nous Research signed release. Modification hashes,
+actual package inventory and full notices travel in the download.
+
+| Component | Version / license | Materials in combined download |
+|---|---|---|
+| Hermes Desktop and Hermes Bots | pinned above / MIT | Original full notices, font modification ledger and modified source |
+| Electron / Chromium / embedded Node | 40.10.2 / 144.0.7559.236 / 24.15.0 | Electron MIT and full LICENSES.chromium.html, Electron source and exact dependency/build controls |
+| Electron FFmpeg | e18f48eba6b367ac68b9c477ae6cbe224e36b031 + Electron patch / LGPL-2.1-or-later configuration | Patched preferred source, build controls/dependencies and replacement/debugging instructions |
+| noVNC | 1.7.0 / MPL-2.0 | Full license and preferred package source |
+| DOMPurify | 3.4.13 / Apache-2.0 alternative | Original dual-license notice; Apache alternative selected |
+| Codicons | 0.0.45 / CC-BY-4.0 (font), MIT (code) | Microsoft attribution, original full licenses; font unchanged |
+| JetBrains Mono | fonts from pinned source / SIL-OFL-1.1 | Project-author attribution, full OFL; fonts unchanged |
+| KaTeX and fonts | locked dependency / MIT | Original package notice |
+| CPython | 3.12.10 / PSF and nested notices | Full exact-source LICENSE |
+| PyInstaller bootloader | 6.22.3 / GPL with bootloader exception | Full exact-source COPYING.txt including exception |
+| OpenSSL | 3.0.16 / Apache-2.0 | Full exact-source LICENSE and AUTHORS |
+| Further JS/native inputs | exact upstream lockfile / recorded per package | Generated inventory, exact installed manifests, full supplied notices; MIT packages lacking a standalone notice retain their provided source/notices and permission text |
+
+The developer workflow verifies notices, actual packaged assets, source hashes,
+GPL/nonfree-disabled FFmpeg configuration and a limited actual replacement
+loader test before upload. These are developer distribution checks; Developer
+ID signing, Apple notarization, ordinary Tahoe hardware launch, full runtime
+installation and clinical/pilot release are not claimed as passed. See
+`nurse-manager/docs/hermes-companion-build.md` for evidence and limits.
+
 ## 3. OpenClaw
 
 OpenClaw is distributed under the MIT License. Its original notice is reproduced verbatim:

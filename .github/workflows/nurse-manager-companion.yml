@@ -39,8 +39,8 @@ jobs:
       - name: Prepare explicitly reviewed Electron and native build tools
         working-directory: upstream
         run: |
-          node node_modules/electron/install.js
-          node node_modules/esbuild/install.js
+          node -e 'const r = require("node:module").createRequire(process.cwd() + "/apps/desktop/package.json"); require(require("node:path").join(require("node:path").dirname(r.resolve("electron/package.json")), "install.js"))'
+          node -e 'const r = require("node:module").createRequire(process.cwd() + "/apps/desktop/package.json"); require(require("node:path").join(require("node:path").dirname(r.resolve("esbuild/package.json")), "install.js"))'
           node apps/desktop/scripts/rebuild-native.mjs x64
       - name: Check Desktop types
         working-directory: upstream

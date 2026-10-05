@@ -21,7 +21,10 @@ Object.assign(env, { HERMES_HOME: hermesHome, HERMES_SHARED_AUTH_DIR: join(home,
   HERMES_SKIP_INTRO: '1', HERMES_GUEST_ONBOARDING: '0' });
 let app;
 try {
-  app = await _electron.launch({ executablePath: wrapper, cwd: home, env, timeout: 60000 });
+  // Chromium cannot initialize a nested sandbox inside inherited SBPL.
+  // This test-only flag leaves the outer kernel network policy in force.
+  // Ordinary application launch/security is a separate, unverified gate.
+  app = await _electron.launch({ executablePath: wrapper, args: ['--no-sandbox'], cwd: home, env, timeout: 60000 });
   const identity = await app.evaluate(({ app }) => ({ packaged: app.isPackaged, arch: process.arch, version: app.getVersion(), userData: app.getPath('userData') }));
   assert.deepEqual(identity, { packaged: true, arch: 'x64', version: '0.17.6', userData });
   const stamp = await app.evaluate(() => JSON.parse(process.getBuiltinModule('fs').readFileSync(
@@ -54,7 +57,9 @@ try {
   await check();
   await new Promise(r => setTimeout(r, 5000));
   await check();
-  console.log('Hermes Intel Desktop: actual packaged x64 app; native outbound deny; idle human setup gate; no runtime/provider provisioning.');
+  console.log(JSON.stringify({ result: 'PASS', packagedArch: 'x64', upstreamCommit: stamp.commit,
+    testMode: { chromiumSandboxDisabled: true, outerKernelNetworkDeny: true },
+    normalLaunchVerified: false, humanSetupIdle: true, runtimeProvisioned: false }));
 } finally {
   if (app) {
     const timeout = setTimeout(() => app.process().kill('SIGKILL'), 10000);

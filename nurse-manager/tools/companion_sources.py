@@ -7,7 +7,10 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
+import urllib.error
 import urllib.request
+import zipfile
 
 config = json.loads(Path(sys.argv[1]).read_text())
 output = Path(sys.argv[2]).resolve()
@@ -24,10 +27,23 @@ def source_tree_hash(path):
     return digest.hexdigest()
 
 for item in config['downloads']:
+    if Path(item['name']).name != item['name'] or item['name'] in {'', '.', '..'}:
+        raise ValueError('Source destination must be one reviewed filename')
     target = output / item['name']
-    with urllib.request.urlopen(item['url'], timeout=120) as response:
-        with target.open('xb') as stream:
-            shutil.copyfileobj(response, stream)
+    for attempt in range(4):
+        try:
+            request = urllib.request.Request(item['url'], headers={'User-Agent': 'NAIO-developer-source-check/1'})
+            with urllib.request.urlopen(request, timeout=120) as response:
+                with target.open('wb') as stream:
+                    shutil.copyfileobj(response, stream)
+            break
+        except (urllib.error.URLError, TimeoutError) as error:
+            if isinstance(error, urllib.error.HTTPError) and error.code != 429 and not 500 <= error.code <= 599:
+                raise
+            if attempt == 3:
+                raise
+            print('Retry transient source download:', item['name'], 'attempt', attempt + 2, flush=True)
+            time.sleep(2 ** (attempt + 1))
     digest = hashlib.sha256(target.read_bytes()).hexdigest()
     if item.get('treeSha256'):
         if source_tree_hash(target) != item['treeSha256']:
@@ -63,6 +79,33 @@ with tempfile.TemporaryDirectory(prefix='naio-corresponding-source-') as scratch
     shutil.copyfile(patch, output / 'electron-ffmpeg.patch')
     # Full source is retained in the patched archive; omit its duplicate.
     (output / 'ffmpeg.tar.gz').unlink()
+
+    # CPython's root PSF license does not contain all statically included
+    # vendor notices. Retain actual preferred sources plus accessible notices.
+    with tarfile.open(output / 'cpython-3.12.10.tar.gz') as archive:
+        archive.extractall(scratch / 'python', filter='data')
+    python = scratch / 'python/cpython-3.12.10'
+    shutil.copytree(python / 'Modules/_hacl', output / 'CPython-HACL-source-notices')
+    shutil.copytree(python / 'Modules/_blake2', output / 'CPython-BLAKE2-source-notices')
+    shutil.copyfile(python / 'Modules/_decimal/libmpdec/mpdecimal.h', output / 'CPython-libmpdec-notice.h')
+    shutil.copyfile(python / 'Modules/expat/COPYING', output / 'CPython-Expat-COPYING.txt')
+    with zipfile.ZipFile(output / 'sqlite-amalgamation-3490100.zip') as archive:
+        header = archive.read('sqlite-amalgamation-3490100/sqlite3.h').split(b'*/', 1)[0] + b'*/\n'
+        if b'disclaims copyright' not in header:
+            raise ValueError('Review changed SQLite license header')
+        (output / 'SQLite-public-domain-notice.txt').write_bytes(header)
+    (output / 'NURSE-PYTHON-NESTED-NOTICES.txt').write_text('''Nurse runtime: CPython 3.12.10, OpenSSL 3.0.16, PyInstaller 6.22.3.
+Root licenses and bootloader exception are provided separately. Complete
+Python library notices are in CPython-library-notices.rst. Preferred pinned
+CPython source is supplied, with accessible HACL MIT source notices, BLAKE2
+CC0 source + dedication, libmpdec BSD header and Expat MIT COPYING.
+The actual Expat binary reports 2.7.1, libmpdec 2.5.1, liblzma 5.2.3 and
+SQLite 3.49.1. XZ-5.2.3-COPYING identifies liblzma as public domain; XZ's
+separate GPL scripts/build tools are not bundled. SQLite source and its
+public-domain notice are included. Mach-O linkage inspection confirms
+zlib, bzip2, libedit (not GNU Readline) and libffi use macOS /usr/lib
+libraries; those OS libraries are not redistributed in this download.
+''')
 
 (output / 'source-receipt.json').write_text(json.dumps({
     **config, 'downloads': receipts,

@@ -86,9 +86,10 @@ actual package inventory and full notices travel in the download.
 | Codicons | 0.0.45 / CC-BY-4.0 (font), MIT (code) | Microsoft attribution, original full licenses; font unchanged |
 | JetBrains Mono | fonts from pinned source / SIL-OFL-1.1 | Project-author attribution, full OFL; fonts unchanged |
 | KaTeX and fonts | locked dependency / MIT | Original package notice |
-| CPython | 3.12.10 / PSF and nested notices | Full exact-source LICENSE |
+| CPython | 3.12.10 / PSF and nested notices | Full exact-source LICENSE, Python library notices and vendored HACL/BLAKE2/libmpdec/Expat notices with complete CPython source |
 | PyInstaller bootloader | 6.22.3 / GPL with bootloader exception | Full exact-source COPYING.txt including exception |
 | OpenSSL | 3.0.16 / Apache-2.0 | Full exact-source LICENSE and AUTHORS |
+| liblzma / SQLite | 5.2.3 / 3.49.1; public domain | Exact XZ library COPYING, SQLite source and copyright disclaimer; separate GPL tools are not bundled |
 | Further JS/native inputs | exact upstream lockfile / recorded per package | Generated inventory, exact installed manifests, full supplied notices; MIT packages lacking a standalone notice retain their provided source/notices and permission text |
 
 The developer workflow verifies notices, actual packaged assets, source hashes,

@@ -127,3 +127,12 @@ resolver is exercised with simulated installed agents: before patch it
 selects Python despite the flag (RED); afterward it returns setup without
 CLI/Python probes, while ordinary CLI/Python discovery still works (GREEN).
 The modified main source and before/after hashes travel with the download.
+
+Runtime source verification runs as a Linux prerequisite with four bounded
+retries for transient HTTP 429/5xx/network errors; hash failures remain fatal.
+The Intel Mac job consumes those verified source/notices before assembly.
+Complete CPython preferred source and Doc/license.rst plus accessible HACL,
+BLAKE2/CC0, libmpdec and Expat notices are retained. Native linkage inspection
+identifies statically included public-domain liblzma5.2.3 and SQLite3.49.1;
+their exact notices/source are included. zlib, bzip2, libedit and libffi
+are linked to macOS system libraries, which are not bundled.

@@ -16,7 +16,29 @@ permissions:
   actions: read
 
 jobs:
+  sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            nurse-manager/packaging
+            nurse-manager/tools
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify and retain matching source and complete runtime notices
+        run: python nurse-manager/tools/companion_sources.py nurse-manager/packaging/companion-sources.json "$PWD/companion-runtime-source"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: companion-verified-runtime-source-${{ github.sha }}
+          path: companion-runtime-source
+          if-no-files-found: error
+          retention-days: 14
   build:
+    needs: sources
     runs-on: macos-15-intel
     timeout-minutes: 45
     steps:
@@ -48,6 +70,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Prepare disclosed typography and first-test boundary changes
+        working-directory: upstream
+        run: |
+          node ../nurse-manager/tools/companion_fonts.mjs "$PWD"
+          node ../nurse-manager/tools/companion_setup.mjs "$PWD"
+          node ../nurse-manager/tests/test_companion_setup.mjs "$PWD"
       - name: Check Desktop types
         working-directory: upstream
         run: npm run typecheck --workspace apps/desktop
@@ -58,9 +86,6 @@ jobs:
         run: |
           node apps/desktop/scripts/assert-root-install.mjs
           npm run clean --workspace apps/desktop
-          node ../nurse-manager/tools/companion_fonts.mjs "$PWD"
-          node ../nurse-manager/tools/companion_setup.mjs "$PWD"
-          node ../nurse-manager/tests/test_companion_setup.mjs "$PWD"
           GITHUB_SHA=f97608f178d1ffeca59860195ab7da295f7c8e5f GITHUB_REF_NAME=v2026.9.24 node apps/desktop/scripts/write-build-stamp.mjs
           node -e 'const fs=require("node:fs"); const p="./apps/desktop/build/install-stamp.json"; const s=JSON.parse(fs.readFileSync(p)); if(s.commit!=="f97608f178d1ffeca59860195ab7da295f7c8e5f" || s.branch!=="v2026.9.24") throw Error("Incorrect upstream build stamp"); s.dirty=true; s.companionModificationsSha256=require("node:crypto").createHash("sha256").update(fs.readFileSync("companion-audit/font-modifications.json")).digest("hex"); fs.writeFileSync(p,JSON.stringify(s,null,2)+"\n")'
           node ../nurse-manager/tools/companion_build_inputs.mjs "$PWD"
@@ -77,8 +102,11 @@ jobs:
           node nurse-manager/tests/test_hermes_desktop.mjs "$PWD/upstream" "$PWD/upstream/apps/desktop/release/mac/Hermes.app/Contents/MacOS/Hermes" | tee hermes-smoke.json
       - name: Verify the actual packaged assets and excluded fonts
         run: node nurse-manager/tools/companion_package.mjs "$PWD/upstream" "$PWD/upstream/apps/desktop/release/mac/Hermes.app" "$PWD/companion-notice-audit" "$PWD/hermes-package.json"
-      - name: Retain matching LGPL preferred source, build controls and runtime notices
-        run: python nurse-manager/tools/companion_sources.py nurse-manager/packaging/companion-sources.json "$PWD/companion-runtime-source"
+      - name: Retrieve the source and notices already verified on Linux
+        uses: actions/download-artifact@v4
+        with:
+          name: companion-verified-runtime-source-${{ github.sha }}
+          path: companion-runtime-source
       - name: Verify changed FFmpeg library loads in a separate developer app copy
         run: python nurse-manager/tools/companion_replacement.py "$PWD" "$PWD/upstream"
       - name: Retrieve the unchanged verified Nurse Intel app

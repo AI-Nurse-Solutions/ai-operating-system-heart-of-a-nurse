@@ -11,7 +11,7 @@ const { _electron } = require('playwright');
 const home = mkdtempSync(join(tmpdir(), 'naio-hermes-smoke-'));
 const hermesHome = join(home, 'hermes');
 const userData = join(home, 'electron');
-const profile = '(version 1) (allow default) (deny network*) (allow network-inbound (local ip "localhost:*")) (allow network-outbound (remote ip "localhost:*")) (allow network-bind (local ip "localhost:*"))';
+const profile = '(version 1) (allow default) (deny network*) (allow network* (local unix-socket)) (allow network* (remote unix-socket)) (allow network-inbound (local ip "localhost:*")) (allow network-outbound (remote ip "localhost:*")) (allow network-bind (local ip "localhost:*"))';
 const quote = s => `'${s.replaceAll("'", "'\\''")}'`;
 const wrapper = join(home, 'launch');
 writeFileSync(wrapper, `#!/bin/sh\nexec /usr/bin/sandbox-exec -p ${quote(profile)} ${quote(binary)} "$@"\n`, { mode: 0o700 });
@@ -24,6 +24,10 @@ try {
   app = await _electron.launch({ executablePath: wrapper, cwd: home, env, timeout: 60000 });
   const identity = await app.evaluate(({ app }) => ({ packaged: app.isPackaged, arch: process.arch, version: app.getVersion(), userData: app.getPath('userData') }));
   assert.deepEqual(identity, { packaged: true, arch: 'x64', version: '0.17.6', userData });
+  const stamp = await app.evaluate(() => JSON.parse(process.getBuiltinModule('fs').readFileSync(
+    process.getBuiltinModule('path').join(process.resourcesPath, 'install-stamp.json'), 'utf8')));
+  assert.equal(stamp.commit, 'f97608f178d1ffeca59860195ab7da295f7c8e5f');
+  assert.equal(stamp.branch, 'v2026.9.24');
   // A raw TCP probe to a reserved documentation address must be denied by
   // the kernel sandbox, not merely fail from a timeout or unavailable server.
   const deny = await app.evaluate(() => new Promise(resolve => {

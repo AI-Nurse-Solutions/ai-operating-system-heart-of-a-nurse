@@ -1,0 +1,41 @@
+name: Read back the combined Intel developer download
+
+on:
+  push:
+    branches: [codex/hermes-desktop-test]
+    paths:
+      - .github/workflows/nurse-manager-companion-verify.yml
+      - nurse-manager/tools/verify_companion_download.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+          sparse-checkout: nurse-manager/tools
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download the actual approved two-app artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nurse-ai-os-and-hermes-INTEL-UNSIGNED-developer-test
+          run-id: 37297751205
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifact-readback
+      - name: Verify every archived file, Intel executable, symlink and source receipt
+        run: python nurse-manager/tools/verify_companion_download.py artifact-readback b7c71be3677bfccc5946e70bb315094b2911b101 combined-download-readback.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: combined-intel-download-readback-receipt
+          path: combined-download-readback.json
+          if-no-files-found: error
+          retention-days: 14

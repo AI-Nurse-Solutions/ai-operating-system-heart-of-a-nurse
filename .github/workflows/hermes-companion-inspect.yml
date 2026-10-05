@@ -1,0 +1,37 @@
+name: Inspect official Hermes installer for Intel companion build
+
+on:
+  push:
+    branches: [codex/hermes-desktop-test]
+    paths: [.github/workflows/hermes-companion-inspect.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: macos-15-intel
+    timeout-minutes: 10
+    steps:
+      - name: Download the pinned official installer
+        run: |
+          curl --fail --location --proto '=https' --tlsv1.2 --max-time 120 'https://hermes-assets.nousresearch.com/Hermes-Setup.dmg?build=439334127f01' --output Hermes-Setup.dmg
+          echo 'b61e047efe3059faf1c55fec3252e661f2d2a993a7a3eebf5cc6a9aa5c1790f5  Hermes-Setup.dmg' | shasum -a 256 --check
+      - name: Inspect without running setup
+        shell: bash
+        run: |
+          mkdir mount
+          hdiutil attach Hermes-Setup.dmg -readonly -nobrowse -noautoopen -mountpoint "$PWD/mount"
+          trap 'hdiutil detach "$PWD/mount"' EXIT
+          find mount -maxdepth 2 -name '*.app' -print
+          for app in mount/*.app; do
+            /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Contents/Info.plist"
+            /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist"
+            executable=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app/Contents/Info.plist")
+            lipo -archs "$app/Contents/MacOS/$executable"
+            codesign --verify --deep --strict --verbose=2 "$app"
+            codesign -d --verbose=4 "$app"
+            spctl --assess --type execute --verbose=4 "$app"
+            find "$app" -iname '*license*' -o -iname '*notice*'
+          done

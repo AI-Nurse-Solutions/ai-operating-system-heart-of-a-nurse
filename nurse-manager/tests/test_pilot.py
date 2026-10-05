@@ -25,7 +25,7 @@ from nurse_manager.sample import load_sample
 from nurse_manager.services import CaptureRefused, ManagerError, ManagerWorkspace
 from nurse_manager.store import MIGRATIONS_DIR, Store
 
-OWNER = "Sample Manager"
+OWNER = "me"
 
 
 class _Case(unittest.TestCase):
@@ -150,6 +150,7 @@ class PreviewTests(_Case):
         self.assertEqual(self.pilot.preview(), preview)
 
     def test_only_feedback_crosses_never_names_ids_or_records(self):
+        self.ws.store.conn.execute("UPDATE workspaces SET owner = 'Synthetic legacy manager'")
         fid = self.pilot.add("projects", "worked", "Dashboards are clear.")
         text = self.pilot.preview()["text"]
         info = self.ws.info
@@ -252,13 +253,14 @@ class ExportTests(_Case):
     def test_the_own_workspace_is_named_as_such_never_by_its_name(self):
         own = ManagerWorkspace(self.tmp / "own", clock=fixed_clock())
         self.addCleanup(own.close)
-        own.create("Unit planning", "Test Manager")
+        own.create("Unit planning", "me")
+        own.store.conn.execute("UPDATE workspaces SET owner = 'Synthetic legacy manager'")
         pilot = PilotFeedback(own)
         pilot.add("getting_started", "worked", "Creating my workspace was quick.")
-        text = pilot.export(pilot.preview()["sha256"], "Test Manager")["text"]
+        text = pilot.export(pilot.preview()["sha256"], own.info.owner)["text"]
         self.assertIn("- Workspace: the manager’s own\n", text)
         self.assertNotIn("Unit planning", text)
-        self.assertNotIn("Test Manager", text)
+        self.assertNotIn("Synthetic legacy manager", text)
 
 
 class CliTests(_Case):
@@ -291,7 +293,11 @@ class MigrationTests(unittest.TestCase):
                 if path.stem < "0013":
                     shutil.copy(path, old_dir / path.name)
             with mock.patch.object(store_module, "MIGRATIONS_DIR", old_dir):
-                old, _ = load_sample(tmp / "ws", clock=fixed_clock())
+                old = ManagerWorkspace(tmp / "ws", clock=fixed_clock())
+                old.create("Synthetic upgrade", "me")
+                old.add_task("Synthetic retained task", "me")
+                old.store.conn.execute("UPDATE workspaces SET owner = 'Synthetic legacy manager'")
+                old.store.conn.execute("UPDATE tasks SET owner = 'Synthetic legacy task role'")
                 before = old.store.conn.execute("SELECT count(*) FROM tasks").fetchone()[0]
                 self.assertEqual(old.store.schema_version, "0012_action_policy_version")
                 old.close()
@@ -305,6 +311,9 @@ class MigrationTests(unittest.TestCase):
                 ).fetchone())
                 self.assertEqual(new.store.conn.execute("SELECT count(*) FROM tasks").fetchone()[0],
                                  before)
+                self.assertEqual(new.info.owner, "Synthetic legacy manager")
+                self.assertEqual(new.store.conn.execute("SELECT owner FROM tasks").fetchone()[0],
+                                 "Synthetic legacy task role")
                 PilotFeedback(new).add("other", "worked", "Upgraded cleanly (synthetic).")
             finally:
                 new.close()

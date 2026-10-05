@@ -2,7 +2,7 @@
   "name": "nurse-ai-os-static-site-tests",
   "private": true,
   "scripts": {
-    "test": "npm run test:switchboard-schema && npm run test:portal-model && npm run test:switchboard-browser && npm run test:portal-browser && npm run test:leader-home-browser && npm run test:lm-studio-bionic-guide-browser && npm run test:local-sovereign-browser && npm run test:personal-ai-datacenter-browser && npm run test:technical-ally-soul-quiz-browser && npm run test:soul-quiz-five-door-browser && npm run test:student-nurse-browser && npm run test:nurse-practitioner-browser && npm run test:staff-nurse-browser && npm run test:medical-resident-browser && npm run test:burnout-signal-browser && npm run test:nurse-manager-ipc && npm run test:nurse-manager-renderer && npm run test:nurse-manager-app && python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "test": "npm run test:switchboard-schema && npm run test:portal-model && npm run test:switchboard-browser && npm run test:portal-browser && npm run test:leader-home-browser && npm run test:lm-studio-bionic-guide-browser && npm run test:local-sovereign-browser && npm run test:personal-ai-datacenter-browser && npm run test:technical-ally-soul-quiz-browser && npm run test:soul-quiz-five-door-browser && npm run test:student-nurse-browser && npm run test:nurse-practitioner-browser && npm run test:staff-nurse-browser && npm run test:medical-resident-browser && npm run test:burnout-signal-browser && npm run test:nurse-manager-ipc && npm run test:nurse-manager-renderer && npm run test:nurse-manager-app && npm run test:nurse-manager-capture && python3 -m unittest discover -s tests -p 'test_*.py' -v",
     "test:portal-model": "node tests/test_portal_model.mjs",
     "test:portal-browser": "node tests/test_portal_browser.mjs",
     "test:switchboard-browser": "node tests/test_switchboard_browser.mjs",
@@ -21,7 +21,8 @@
     "test:nurse-manager-ipc": "node nurse-manager/tests/test_ipc_contract.mjs",
     "test:nurse-manager-renderer": "node nurse-manager/tests/test_renderer_browser.mjs",
     "test:nurse-manager-app": "node nurse-manager/tests/test_app_browser.mjs",
-    "test:notices-browser": "node nurse-manager/tests/test_notices_browser.mjs"
+    "test:notices-browser": "node nurse-manager/tests/test_notices_browser.mjs",
+    "test:nurse-manager-capture": "node nurse-manager/tests/test_capture_browser.mjs"
   },
   "devDependencies": {
     "ajv": "8.20.0",

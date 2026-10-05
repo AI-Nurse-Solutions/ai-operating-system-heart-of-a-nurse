@@ -9,6 +9,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest import mock
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -17,6 +18,103 @@ import _bootstrap  # noqa: F401
 from nurse_manager import app as local_app
 from nurse_manager import resources
 from nurse_manager.services import ManagerWorkspace
+from nurse_manager import cli, devhost
+
+
+# Valid transport bodies, not domain fixtures: dispatch is intercepted below.
+# Adding a browser write requires adding its body here to keep the shared
+# authorization and malformed-body probes mandatory.
+_WRITE_BODIES = {'project-add': {'title': 'Synthetic plan', 'purpose': 'Practice', 'owner_role': 'me'},
+ 'task-add': {'title': 'Practice', 'owner_role': 'me', 'reviewer_role': 'me'},
+ 'decision-add': {'question': 'Which plan?',
+                  'decision': 'Short plan',
+                  'decision_role': 'me',
+                  'decided_on': '2026-10-04'},
+ 'priorities-set': {'item_1': 'Practice',
+                    'replace_priorities': True,
+                    'expected_sha256': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'},
+ 'task-move': {'id': 'tsk-aaaaaaaaaaaa',
+               'expected_status': 'ready',
+               'status': 'in_progress',
+               'reason': 'Practice',
+               'evidence': 'Public outline reviewed',
+               'blocked': True,
+               'paused': True},
+ 'task-block': {'id': 'tsk-aaaaaaaaaaaa',
+                'expected_status': 'ready',
+                'status': 'in_progress',
+                'reason': 'Practice',
+                'evidence': 'Public outline reviewed',
+                'blocked': True,
+                'paused': True},
+ 'task-pause': {'id': 'tsk-aaaaaaaaaaaa',
+                'expected_status': 'ready',
+                'status': 'in_progress',
+                'reason': 'Practice',
+                'evidence': 'Public outline reviewed',
+                'blocked': True,
+                'paused': True},
+ 'task-complete': {'id': 'tsk-aaaaaaaaaaaa',
+                   'expected_status': 'ready',
+                   'status': 'in_progress',
+                   'reason': 'Practice',
+                   'evidence': 'Public outline reviewed',
+                   'blocked': True,
+                   'paused': True},
+ 'task-reopen': {'id': 'tsk-aaaaaaaaaaaa',
+                 'expected_status': 'ready',
+                 'status': 'in_progress',
+                 'reason': 'Practice',
+                 'evidence': 'Public outline reviewed',
+                 'blocked': True,
+                 'paused': True},
+ 'task-withdraw': {'id': 'tsk-aaaaaaaaaaaa',
+                   'expected_status': 'ready',
+                   'status': 'in_progress',
+                   'reason': 'Practice',
+                   'evidence': 'Public outline reviewed',
+                   'blocked': True,
+                   'paused': True}} | {
+    "brief": {},
+    "accept": {"revision": "rev-" + "a" * 12, "sha256": "a" * 64},
+    "assistant-local": {"model": "synthetic-model"},
+    "assistant-off": {},
+    "assistant-brief": {"prompt_sha256": "a" * 64},
+    "assistant-project": {"id": "prj-" + "a" * 12, "question": "What next?",
+                          "prompt_sha256": "a" * 64},
+    "note-keep": {"request_id": "air-" + "a" * 12, "project_id": "prj-" + "a" * 12,
+                  "question": "What next?", "answer": "Review the draft."},
+    "feedback-add": {"project_id": "prj-" + "a" * 12, "from_group": "Review team",
+                     "kind": "question", "summary": "Clarify the purpose."},
+    "feedback-address": {"feedback_id": "fbk-" + "a" * 12, "response": "Purpose clarified."},
+    "source-add": {"title": "Public reference", "kind": "public", "reference": "Synthetic"},
+    "learning-add": {"title": "Practice planning", "kind": "reading"},
+    "learning-start": {"learning_id": "lrn-" + "a" * 12},
+    "learning-complete": {"learning_id": "lrn-" + "a" * 12, "takeaway": "Plan a review."},
+    "contribution-add": {"title": "Practice session", "kind": "teaching",
+                         "my_part": "Prepared the outline", "shared_credit": "Review team"},
+    "contribution-verify": {"contribution_id": "ctb-" + "a" * 12, "evidence": "Outline reviewed"},
+    "brief-schedule-set": {"enabled": False, "weekday": 0, "hour": 9},
+    "memory-add": {"content": "Keep outlines short."},
+    "memory-correct": {"memory_id": "mem-" + "a" * 12, "content": "Use clear headings."},
+    "memory-exclude": {"memory_id": "mem-" + "a" * 12},
+    "memory-include": {"memory_id": "mem-" + "a" * 12},
+    "memory-delete": {"memory_id": "mem-" + "a" * 12},
+    "assistants-stop": {},
+    "assistants-resume": {},
+    "pack-start": {"pack": "communication", "template": "message-draft"},
+    "document-save": {"document_id": "art-" + "a" * 12,
+                      "body_markdown": "Synthetic draft", "base_sha256": "a" * 64},
+    "pilot-feedback-add": {"area": "other", "kind": "idea", "summary": "Clearer headings"},
+    "pilot-feedback-delete": {"feedback_id": "plf-" + "a" * 12},
+    "pilot-feedback-export": {"sha256": "a" * 64},
+    "classifier-connect": {"api_key": "synthetic-test-value", "daily_request_limit": 10},
+    "classifier-off": {},
+    "classifier-jobs": {"action_review": False, "refusal_check": False,
+                        "routing": False, "attention": False},
+    "classifier-route": {"request": "Synthetic planning", "request_sha256": "a" * 64},
+    "classifier-order": {"request_sha256": "a" * 64},
+}
 
 
 class _AppCase(unittest.TestCase):
@@ -61,7 +159,90 @@ class _AppCase(unittest.TestCase):
         return json.loads(payload)
 
 
+class BrowserWriteBoundaryTests(_AppCase):
+    def setUp(self):
+        super().setUp()
+        self.envelope("/ipc/init", "POST", {"name": "Synthetic workspace", "owner": "me"})
+        self.assertEqual(set(_WRITE_BODIES), set(local_app.WRITE_COMMANDS),
+                         "every browser write needs a valid body for the shared boundary probes")
+
+    def test_each_write_refuses_malformed_bodies_and_non_post_methods(self):
+        for command, body in _WRITE_BODIES.items():
+            with self.subTest(command=command):
+                for malformed in (b"{", [], {**body, "today": 42}):
+                    self.assertEqual(self.request(f"/ipc/{command}", "POST", malformed)[0], 400)
+                self.assertEqual(self.request(f"/ipc/{command}")[0], 404)
+                for method in ("PUT", "PATCH", "DELETE"):
+                    # These methods are not implemented by the stdlib app
+                    # handler; its 501 response refuses them before dispatch.
+                    self.assertEqual(self.request(f"/ipc/{command}", method, body)[0], 501)
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", body, token=False)[0], 401)
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", body,
+                                             headers={"Origin": "https://foreign.example"})[0], 403)
+
+    def test_each_write_ignores_page_supplied_identity(self):
+        original_run = cli.run
+        calls = []
+
+        def intercept(argv, *, secret=None):
+            if argv[0] not in local_app.WRITE_COMMANDS:
+                return original_run(argv, secret=secret)  # readiness checks use the real core
+            args = cli.build_parser().parse_args(argv)
+            self.assertEqual(args.workspace, self.app.workspace)
+            if args.command == "classifier-connect":
+                self.assertEqual(secret, "synthetic-test-value")
+                self.assertFalse(any("synthetic-test-value" in arg for arg in argv))
+            else:
+                self.assertIsNone(secret)
+            calls.append(argv)
+            return 0, {"contract": cli.CONTRACT, "command": args.command, "ok": True, "data": {}}
+
+        with mock.patch.object(cli, "run", side_effect=intercept):
+            for command, body in _WRITE_BODIES.items():
+                with self.subTest(command=command):
+                    self.assertTrue(self.envelope(f"/ipc/{command}", "POST", body)["ok"])
+                    baseline = calls[-1]
+                    forged = {**body, **{key: "Forged identity" for key in
+                              ("owner", "reviewer", "by", "actor", "requested_by", "approver")}}
+                    self.assertTrue(self.envelope(f"/ipc/{command}", "POST", forged)["ok"])
+                    self.assertEqual(calls[-1], baseline)
+                    self.assertEqual(baseline[0], command)
+                    for option in ("--by", "--reviewer"):
+                        values = [arg.split("=", 1)[1] for arg in baseline
+                                  if arg.startswith(option + "=")]
+                        self.assertTrue(all(value == "me" for value in values))
+
+    def test_development_host_refuses_every_browser_write(self):
+        server = devhost.serve(self.app.workspace)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            for command in local_app.WRITE_COMMANDS:
+                for method, expected in (("GET", 404), ("POST", 405)):
+                    with self.subTest(command=command, method=method):
+                        connection = http.client.HTTPConnection("127.0.0.1", server.server_port)
+                        try:
+                            connection.request(method, f"/ipc/{command}")
+                            response = connection.getresponse()
+                            response.read()
+                            self.assertEqual(response.status, expected)
+                        finally:
+                            connection.close()
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(5)
+
+
 class LocalAppTests(_AppCase):
+    def test_capture_commands_require_authenticated_post(self):
+        for command in ("project-add", "task-add", "task-move", "task-block", "task-pause",
+                        "task-complete", "task-reopen", "task-withdraw", "decision-add", "priorities-set"):
+            with self.subTest(command=command):
+                self.assertIn(command, local_app.WRITE_COMMANDS)
+                self.assertEqual(self.request(f"/ipc/{command}", "POST", {}, token=False)[0], 401)
+                self.assertEqual(self.request(f"/ipc/{command}")[0], 404)
+
     def test_binds_loopback_only(self):
         self.assertEqual(self.app.server.server_address[0], "127.0.0.1")
 
@@ -101,7 +282,7 @@ class LocalAppTests(_AppCase):
         self.assertFalse(refused["ok"])
         self.assertEqual(refused["error"]["type"], "CaptureRefused")
         self.assertFalse(self.envelope("/app/status")["has_workspace"])
-        made = self.envelope("/ipc/init", "POST", {"name": "My unit", "owner": "Test Manager"})
+        made = self.envelope("/ipc/init", "POST", {"name": "My unit", "owner": "me"})
         self.assertTrue(made["ok"])
         self.assertTrue(self.envelope("/app/status")["has_workspace"])
         for command, body in (("init", {"name": "Other", "owner": "Someone"}), ("sample", {})):
@@ -167,7 +348,7 @@ class WorkspaceWriteTests(_AppCase):
         # A reviewer in the body is ignored: the app accepts as the owner only.
         accepted = self.envelope("/ipc/accept", "POST", {
             "revision": saved["id"], "sha256": saved["sha256"], "reviewer": "Someone Else"})["data"]
-        self.assertEqual((accepted["status"], accepted["accepted_by"]), ("accepted", "Sample Manager"))
+        self.assertEqual((accepted["status"], accepted["accepted_by"]), ("accepted", "me"))
         due = self.envelope("/ipc/pack-start", "POST", {
             "pack": "communication", "template": "message-draft", "today": "2027-04-01"})
         self.assertIn("Past its review date", due["error"]["message"])
@@ -207,7 +388,7 @@ class WorkspaceWriteTests(_AppCase):
         # A reviewer in the body is ignored: the app accepts as the owner only.
         accepted = self.envelope("/ipc/accept", "POST", {
             "revision": draft["id"], "sha256": draft["sha256"], "reviewer": "Someone Else"})
-        self.assertEqual(accepted["data"]["accepted_by"], "Sample Manager")
+        self.assertEqual(accepted["data"]["accepted_by"], "me")
 
     def test_learning_from_the_screens(self):
         added = self.envelope("/ipc/learning-add", "POST", {
@@ -320,7 +501,7 @@ class WorkspaceWriteTests(_AppCase):
         mission = self.envelope("/ipc/mission")["data"]
         project_id = mission["projects_in_motion"]["items"][0]["id"]
         added = self.envelope("/ipc/feedback-add", "POST", {
-            "project_id": project_id, "from_group": "Evening huddle", "kind": "question",
+            "project_id": project_id, "from_group": "Team", "kind": "question",
             "summary": "Can Dates cover two weeks?", "received_on": "2026-09-27"})["data"]
         feedback_id = added["feedback"]["id"]
         refused = self.envelope("/ipc/feedback-add", "POST", {
@@ -361,7 +542,7 @@ class WorkspaceWriteTests(_AppCase):
         ws = ManagerWorkspace(self.app.workspace)
         try:
             self.assertEqual(ws.store.conn.execute(
-                "SELECT exported_by FROM pilot_feedback_exports").fetchall()[0][0], "Sample Manager")
+                "SELECT exported_by FROM pilot_feedback_exports").fetchall()[0][0], "me")
         finally:
             ws.close()
         # Reading an export never makes one: it is a write, reachable only by POST.
@@ -435,7 +616,7 @@ class WorkspaceWriteTests(_AppCase):
         edited = self.envelope("/ipc/note-keep", "POST", {**keep, "answer": "Edited."})
         self.assertFalse(edited["ok"])
         note = self.envelope("/ipc/note-keep", "POST", {**keep, "kept_by": "Someone Else"})["data"]
-        self.assertEqual(note["kept_by"], "Sample Manager")
+        self.assertEqual(note["kept_by"], "me")
         dashboard = self.envelope(f"/ipc/project?id={project_id}")["data"]
         self.assertEqual([n["id"] for n in dashboard["notes"]], [note["id"]])
         self.assertEqual(self.request("/ipc/note-keep", "POST", {**keep, "request_id": "x"})[0], 400)
@@ -456,6 +637,17 @@ class LifetimeTests(unittest.TestCase):
     def test_self_test_passes(self):
         with tempfile.TemporaryDirectory() as tmp:
             self.assertEqual(local_app.self_test(Path(tmp)), 0)
+
+    def test_self_test_fails_if_capture_asset_is_missing(self):
+        import shutil
+        from nurse_manager import http_transport
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            renderer = root / "renderer"
+            shutil.copytree(http_transport.RENDERER, renderer)
+            (renderer / "capture.mjs").unlink()
+            with mock.patch.object(http_transport, "RENDERER", renderer):
+                self.assertEqual(local_app.self_test(root / "home"), 1)
 
     def test_self_test_passes_without_a_console(self):
         # A windowed Windows build has no stdout; the exit code still reports.
@@ -571,7 +763,7 @@ class RecurringBriefAppTests(_AppCase):
 
     def test_the_app_prepares_nothing_while_assistants_are_stopped(self):
         stopped = self.envelope("/ipc/assistants-stop", "POST", {})["data"]
-        self.assertEqual((stopped["stopped"], stopped["changed_by"]), (True, "Sample Manager"))
+        self.assertEqual((stopped["stopped"], stopped["changed_by"]), (True, "me"))
         self.envelope("/ipc/brief-schedule-set", "POST", {"enabled": True, "weekday": 0, "hour": 0})
         time.sleep(0.8)  # several scheduler ticks while stopped: nothing happens
         weekly = self.weekly()

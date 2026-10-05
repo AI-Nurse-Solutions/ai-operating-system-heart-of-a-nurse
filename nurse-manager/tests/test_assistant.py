@@ -39,7 +39,7 @@ from nurse_manager.views import mission_control
 
 WEEK = "2026-09-28"
 TODAY = "2026-09-30"
-OWNER = "Sample Manager"
+OWNER = "me"
 
 
 class FakeModelServer:

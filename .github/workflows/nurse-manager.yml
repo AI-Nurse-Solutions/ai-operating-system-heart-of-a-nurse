@@ -149,3 +149,5 @@ jobs:
         run: |
           node --check nurse-manager/tests/test_app_browser.mjs
           npm run test:nurse-manager-app
+      - name: Run the personal capture journey
+        run: npm run test:nurse-manager-capture

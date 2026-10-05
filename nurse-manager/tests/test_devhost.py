@@ -69,7 +69,7 @@ class DevHostTests(unittest.TestCase):
                 response, body = self.request(f"/ipc/{command}{query}")
                 self.assertEqual(response.status, 200)
                 argv = [command, str(self.workspace)]
-                if command == "mission":
+                if command in ("mission", "capture"):
                     argv += ["--today", TODAY, "--week", "2026-09-28"]
                 if command == "project":
                     argv += ["--id", self.project_id, "--today", TODAY]

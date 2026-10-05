@@ -26,7 +26,7 @@ if str(SRC) not in sys.path:
 
 from nurse_manager import classifier, cli, credentials, update  # noqa: E402
 
-OWNER = "Sample Manager"
+OWNER = "me"
 # A throwaway key for the stand-in JEV server; never a real TypeSafe key.
 JEV_TEST_KEY = "ts-test-key-0123456789abcdef"
 WEEK, TODAY = "2026-09-28", "2026-09-30"
@@ -141,7 +141,38 @@ def collect(workdir: Path) -> dict[str, dict]:
         return envelope.get("data", {})
 
     keep("sample", "sample", ws)
-    keep("init", "init", empty, "--name", "Empty workspace", "--owner", "Test Manager")
+    keep("init", "init", empty, "--name", "Empty workspace", "--owner", "me")
+    capture = workdir / "capture"
+    keep("capture-init", "init", capture, "--name", "Synthetic capture", "--owner", "me")
+    captured_project = keep("project-add", "project-add", capture, "--title", "Planning exercise",
+                            "--purpose", "Practice clear follow-through", "--owner", "me")["id"]
+    captured_task = keep("task-add", "task-add", capture, "--title", "Review the outline",
+                        "--owner", "me", "--project", captured_project,
+                        "--status", "ready", "--due", TODAY)["task"]["id"]
+    keep("task-move", "task-move", capture, "--id", captured_task, "--expected-status", "ready",
+         "--status", "in_progress")
+    keep("task-block", "task-block", capture, "--id", captured_task,
+         "--expected-status", "in_progress", "--blocked", "yes", "--reason", "Awaiting review")
+    keep("task-pause", "task-pause", capture, "--id", captured_task,
+         "--expected-status", "in_progress", "--paused", "yes")
+    keep("task-complete", "task-complete", capture, "--id", captured_task,
+         "--expected-status", "in_progress", "--evidence", "Outline reviewed")
+    keep("task-reopen", "task-reopen", capture, "--id", captured_task,
+         "--expected-status", "completed", "--reason", "A second review is needed")
+    keep("task-withdraw", "task-withdraw", capture, "--id", captured_task,
+         "--expected-status", "ready", "--reason", "The exercise ended")
+    keep("decision-add", "decision-add", capture, "--question", "Which outline?",
+         "--decision", "Use the reviewed outline", "--by", "me", "--on", TODAY,
+         "--project", captured_project)
+    keep("priorities-set", "priorities-set", capture, "--week", WEEK,
+         "--item", "Review the outline", "--project", captured_project)
+    keep("error-task-stale", "task-move", capture, "--id", captured_task,
+         "--expected-status", "ready", "--status", "in_progress")
+    keep("error-task-due", "task-add", capture, "--title", "Synthetic task",
+         "--owner", "me", "--due", "2026-02-30")
+    keep("error-decision-date", "decision-add", capture, "--question", "Which outline?",
+         "--decision", "Use the reviewed outline", "--by", "me", "--on", "not-a-date")
+    keep("capture", "capture", capture, "--today", TODAY, "--week", WEEK)
     mission = keep("mission", "mission", ws, "--today", TODAY, "--week", WEEK)
     for item in mission["projects_in_motion"]["items"]:
         keep(f"project-{item['id']}", "project", ws, "--id", item["id"], "--today", TODAY)
@@ -150,7 +181,7 @@ def collect(workdir: Path) -> dict[str, dict]:
     huddle = next(i["id"] for i in mission["projects_in_motion"]["items"]
                   if i["title"].startswith("Huddle"))
     added = keep("feedback-add", "feedback-add", ws, "--project", huddle, "--from",
-                 "Evening huddle (synthetic)", "--kind", "question", "--summary",
+                 "Team", "--kind", "question", "--summary",
                  "Can the Dates slot include next week too?", "--received", "2026-09-27")
     keep("feedback-address", "feedback-address", ws, "--id", added["feedback"]["id"],
          "--response", "Yes: Dates now covers two weeks.")
@@ -194,7 +225,7 @@ def collect(workdir: Path) -> dict[str, dict]:
          "# Meeting pack\n\nAgenda: dates first.\n", "--base", "0" * 64)
     saved = keep("document-save", "document-save", ws, "--id", document_id, "--body",
                  started["current"]["body_markdown"].replace(
-                     "_Write this section._", "Council members (synthetic) agree dates first.", 1),
+                     "_Write this section._", "Council members agree dates first.", 1),
                  "--base", started["current"]["revision"]["sha256"])
     keep("accept-pack-document", "accept", ws, "--revision", saved["current"]["revision"]["id"],
          "--reviewer", OWNER, "--sha", saved["current"]["revision"]["sha256"])
@@ -215,7 +246,7 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("pilot-feedback-empty", "pilot-feedback", empty)
     keep("pilot-feedback-preview-empty", "pilot-feedback-preview", empty)
     keep("error-pilot-feedback-export-nothing", "pilot-feedback-export", empty,
-         "--reviewed-sha", "0" * 64, "--by", "Test Manager")
+         "--reviewed-sha", "0" * 64, "--by", "me")
     noted = keep("pilot-feedback-add", "pilot-feedback-add", ws, "--area", "weekly_brief",
                  "--kind", "problem", "--summary",
                  "The Accept button was hard to find on a small screen.")["item"]["id"]
@@ -350,7 +381,7 @@ def collect(workdir: Path) -> dict[str, dict]:
     keep("error-brief-schedule-set-not-owner", "brief-schedule-set", scheduled, "--enabled",
          "yes", "--weekday", "0", "--hour", "0", "--by", "Someone Else")
     keep("brief-schedule-set", "brief-schedule-set", scheduled, "--enabled", "yes",
-         "--weekday", "0", "--hour", "0", "--by", "Sample Manager")
+         "--weekday", "0", "--hour", "0", "--by", "me")
     keep("brief-run-due", "brief-run-due", scheduled)
     keep("brief-run-due-again", "brief-run-due", scheduled)
     keep("weekly-with-schedule", "weekly", scheduled, "--week", WEEK)

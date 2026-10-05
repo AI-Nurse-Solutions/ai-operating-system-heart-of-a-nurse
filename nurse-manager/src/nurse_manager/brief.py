@@ -133,7 +133,7 @@ def compose_weekly_brief(ws: ManagerWorkspace, week_of: str, today: str) -> tupl
         " ORDER BY t.due_date IS NULL, t.due_date, t.id",
         (wid,),
     )]
-    open_tasks = [t for t in tasks if t["status"] != "completed"]
+    open_tasks = [t for t in tasks if t["status"] not in ("completed", "withdrawn")]
 
     lines += ["## Blockers", ""]
     blocked = [t for t in open_tasks if t["blocked"]]

@@ -9,6 +9,7 @@ from naio_integrations.contract import (
     ActionMode,
     Actor,
     DataClass,
+    DataZone,
     Decision,
     GatewayRequest,
     RiskTier,
@@ -133,6 +134,54 @@ class EdenaPolicyGatewayTests(unittest.TestCase):
         )
         self.assertTrue(approved.allowed)
         self.assertIn("log_side_effect", approved.obligations)
+
+    def test_unheld_zone_migration_approval_never_reaches_executor(self):
+        calls = []
+        result = self.gateway.submit(
+            make_request(metadata={"target_zone": "shared_professional",
+                                   "zone_migration_approval": "invented"}),
+            executor=lambda req: calls.append(req) or "Not permitted",
+        )
+        self.assertIs(result.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", result.reason_codes)
+        self.assertEqual(calls, [])
+        self.assertTrue(self.gateway.tracer.verify(NURSE.tenant)["ok"])
+
+    def test_orange_cannot_borrow_an_unrelated_held_approval(self):
+        calls = []
+        result = self.gateway.submit(
+            make_request(actor=ORG_NURSE, risk_tier=RiskTier.ORANGE,
+                         data_class=DataClass.D2, action_mode=ActionMode.RECOMMEND,
+                         metadata={"approval_id": "appr-other"}),
+            executor=lambda req: calls.append(req) or "Not permitted",
+        )
+        self.assertIs(result.decision, Decision.DENY)
+        self.assertIn("EDENA-APPROVAL-UNRECOGNIZED", result.reason_codes)
+        self.assertEqual(calls, [])
+
+    def test_migration_and_orange_each_need_their_own_held_reference(self):
+        from dataclasses import replace
+
+        actor = replace(ORG_NURSE, approvals=("appr-77", "migration-1"))
+        for metadata, expected in (
+            ({"target_zone": "institutional", "approval_id": "appr-77"},
+             Decision.REQUIRE_APPROVAL),
+            ({"target_zone": "institutional", "zone_migration_approval": "migration-1"},
+             Decision.REQUIRE_APPROVAL),
+            ({"target_zone": "institutional", "zone_migration_approval": "migration-1",
+              "approval_id": "appr-77"}, Decision.ALLOW),
+        ):
+            with self.subTest(metadata=metadata):
+                calls = []
+                result = self.gateway.submit(
+                    make_request(actor=actor, risk_tier=RiskTier.ORANGE,
+                                 data_class=DataClass.D2, data_zone=DataZone.SHARED_PROFESSIONAL,
+                                 action_mode=ActionMode.RECOMMEND, metadata=metadata),
+                    executor=lambda req: calls.append(req) or
+                    "Permitted synthetic summary. Revisit if the supplied source changes.",
+                )
+                self.assertIs(result.decision, expected)
+                self.assertEqual(len(calls), int(expected is Decision.ALLOW))
 
     def test_unsupported_clinical_output_is_denied(self):
         result = self.gateway.submit(

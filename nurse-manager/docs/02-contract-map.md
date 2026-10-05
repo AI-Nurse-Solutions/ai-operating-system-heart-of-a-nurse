@@ -1,7 +1,7 @@
 ---
 title: Contract map and record-writer register (NM-003)
 date: 2026-09-28
-authorship: Substantially AI-generated (Claude Code) with human review pending
+authorship: Substantially AI-generated (Claude Code and Codex) with human review pending
 ---
 
 # Contract map and record-writer register
@@ -12,7 +12,7 @@ authorship: Substantially AI-generated (Claude Code) with human review pending
 |---|---|---|---|
 | Florence-X core | Pydantic v2, Python ≥ 3.12 | `florence-x/packages/florence-core/florence_core/schemas/` | Clinical orchestration substrate; Postgres/LangGraph targets |
 | Integration Contract v1.0 | stdlib dataclasses, Python 3.11 | `naio-integrations/src/naio_integrations/contract.py` | Working EDENA gateway, Directive v1.1 semantics |
-| Manager core (this PR) | SQLite schema + stdlib, Python 3.11 | `nurse-manager/` | Manager records; reuses the Integration Contract |
+| Manager core | SQLite schema + stdlib, Python 3.11 | `nurse-manager/` | Manager records; reuses the Integration Contract |
 
 ## 2. Overlapping types
 
@@ -105,16 +105,39 @@ holds those tables equal to its fields, so they cannot drift.
 
 One logical writer per record type. Views never write.
 
+People fields for new captures share `people.py` validation against
+`config/people-fields.json` (`personal-people@1`). Workspace owner is `me`;
+project/task owner, reviewer, decision owner, feedback source, and shared
+credit use fixed labels. The reviewer may be empty; shared credit permits
+up to six distinct semicolon-separated labels. Case and surrounding space
+are normalized on capture. This is domain-writer validation, not a SQL
+constraint, authentication, or automatic detection of names in free text.
+Operational actor fields remain bound to the existing workspace owner;
+existing identity strings are not rewritten.
+
+Mission Control's `people_fields` reports the policy and the count of stored
+capture fields outside current labels. It does not infer provenance or
+certify text safety. `tools/gen_people_rules.py --check` holds the browser
+choices and exact visible data rule to the backend config; the focused
+people tests run this check. No new table or migration is introduced.
+
+`test_record_writer_register.py` checks this register against the actual
+migrated database. Every application table must occur exactly once and
+name its writer and readers; temporary migration tables must not remain.
+This is a coverage check, not proof that every write uses the named writer.
+
 | Record | Table(s) | Sole writer | Readers |
 |---|---|---|---|
 | Workspace | `workspaces` | `ManagerWorkspace.create` | all |
 | Project | `projects` | `ManagerWorkspace.add_project` | views, brief |
-| Task | `tasks` | `ManagerWorkspace.add_task/move_task/set_blocked/set_paused/complete_task` | views, brief |
+| Task | `tasks` | `ManagerWorkspace.add_task/move_task/set_blocked/set_paused/complete_task/reopen_task/withdraw_task` | views, brief |
+| Task transition history (reasons and completion evidence, recorded from migration 0014 onwards) | `task_transitions` | `ManagerWorkspace._update_task`, in the task's transaction | task history tests; future task detail view |
 | Source | `sources` | `ManagerWorkspace.add_source` | brief |
 | Decision | `decisions` | `ManagerWorkspace.record_decision` | brief |
 | Priorities | `priorities` | `ManagerWorkspace.set_priorities` | views, brief |
 | Artifact + revisions (weekly briefs and pack documents) | `artifacts`, `artifact_revisions` | `BriefService` (pack documents through `PackService`) | views, actions, Packs |
 | Action, approval, receipt | `actions`, `approvals`, `receipts` | `ActionBoundary` | views |
+| Policy version at action proposal | `action_policy_versions` | `ActionBoundary.propose` (in the action's transaction) | action boundary, Florence-X adapter |
 | AI settings | `assistant_settings` | `AssistantService.connect_local/disconnect` (the workspace owner only) | views, assistant |
 | AI request ledger (hashes and outcomes, never text; weekly briefs and project questions; unfinished while waiting for a model) | `assistant_requests` | `AssistantService` | assistant (budget, note binding), Mission Control (assistants at work) |
 | JEV settings (off by default; each job on only while JEV is connected; never the key, which is in the operating system's credential store) | `classifier_settings` | `ClassifierService.connect/disconnect/set_jobs` (the workspace owner only) | AI assistance, classifier |
@@ -129,10 +152,29 @@ One logical writer per record type. Views never write.
 | Assistants stopped or working (one switch per workspace; a generation that rises with every stop) | `assistant_control` | `AssistantControl.stop/resume` (the workspace owner only) | Mission Control, assistant, recurring brief |
 | Pack document origin (pack, version, and template pin a document started from) | `pack_documents` | `PackService.start` (the workspace owner only) | Packs, document |
 | Project note (an AI answer the manager kept, exactly as given) | `project_notes` | `AssistantService.keep_project_note` (the workspace owner only) | project dashboard |
+| Pilot feedback (screened app feedback, kept on this computer) | `pilot_feedback` | `PilotFeedback.add/delete` | Help and feedback, feedback export preview |
+| Pilot feedback export record (count and reviewed digest, never feedback text) | `pilot_feedback_exports` | `PilotFeedback.export` (the workspace owner only) | Help and feedback |
 | Audit stream | `event_log` | every writer, via `Store.log`, inside the same transaction | backup/restore |
+| Audit chain state | `audit_chain_state` | migration 0016 establishes the legacy boundary; `event_log_advance_head` advances it only with a verified event insert | `Store.verify_events`, transaction checks, backup/restore |
 | Schema | `schema_migrations` | `Store._migrate` | restore |
+
+Migration 0016 adds a canonical SHA-256 link to new events without hashing
+older rows after the fact. UPDATE/DELETE are refused; insertion verifies the
+digest through the connection's SQLite function. The latest head/count also
+live in `workspace.sqlite.audit-head.json`, outside the database file.
+`Store.verify_events` checks that anchor, or an explicitly supplied retained
+checkpoint. Missing, changed, or pending anchors are unverified and block
+gated writes. Backups pair the copied database with its own `.audit.json`
+checkpoint; restore checks one source snapshot and holds an exclusive live
+database lock through the safety copy and replacement. These are tamper
+evidence within the stated threat model, not immutable storage: someone who
+can rewrite both the database and anchor as the same account can replace
+both. Copy checkpoints independently for stronger comparison.
 
 Not owned here, and to be preserved:
 
-- Mission lifecycle and workflow state are owned by Florence-X once G2 step 2.11 lands.
-- Hermes session history is context only, mapped to mission ids.
+- Mission lifecycle and workflow state belong to Florence-X. Completed
+  step 2.11 is a one-way projection of manager actions; it does not transfer
+  lifecycle ownership or implement orchestration.
+- Hermes hosting and session-to-mission mapping remain deferred under
+  ADR 0003 (steps 1.11 and 4.2c). No session history is imported today.

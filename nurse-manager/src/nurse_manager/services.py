@@ -20,11 +20,15 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
+import hashlib
+import json
 
 from ._naio import PrivacyScreen, privacy_screen
 from .store import Store, new_id, utc_now
+from . import people
 
-TASK_STATUSES = ("idea", "ready", "in_progress", "needs_judgment", "completed")
+TASK_STATUSES = ("idea", "ready", "in_progress", "needs_judgment", "completed", "withdrawn")
+ACTIVE_TASK_STATUSES = TASK_STATUSES[:4]
 SOURCE_KINDS = ("public", "synthetic", "personal_permitted")
 PERMITTED_DATA_CLASSES = ("D0", "D1")
 FEEDBACK_KINDS = ("worked", "change", "question")
@@ -72,6 +76,7 @@ class ManagerWorkspace:
     def create(self, name: str, owner: str, *, sample: bool = False) -> WorkspaceInfo:
         if self._workspace_row() is not None:
             raise ManagerError("this directory already holds a workspace")
+        owner = self._person_label(owner, "workspace owner", self_only=True)
         self._screen(name=name, owner=owner)
         ws_id = new_id("ws")
         with self.store.transaction() as db:
@@ -126,9 +131,18 @@ class ManagerWorkspace:
             )
 
     def _require(self, value: str, label: str) -> str:
-        if not value or not value.strip():
+        if not isinstance(value, str) or not value.strip():
             raise ManagerError(f"{label} is required")
         return value.strip()
+
+    def _person_label(self, value, field: str, *, optional=False, self_only=False,
+                      shared=False) -> str:
+        try:
+            return (people.shared_labels(value) if shared
+                    else people.label(value, optional=optional, self_only=self_only))
+        except ValueError:
+            raise CaptureRefused(
+                f"not stored — choose approved role labels for {field}; do not enter names.") from None
 
     def _require_row(self, table: str, record_id: str | None):
         if record_id is None:
@@ -149,7 +163,7 @@ class ManagerWorkspace:
     ) -> str:
         title = self._require(title, "project title")
         purpose = self._require(purpose, "project purpose")
-        owner = self._require(owner, "accountable owner")
+        owner = self._person_label(owner, "accountable owner")
         self._screen(title=title, purpose=purpose, owner=owner, next_milestone=next_milestone)
         project_id = new_id("prj")
         now = self.clock()
@@ -176,11 +190,14 @@ class ManagerWorkspace:
         next_action: str = "",
     ) -> str:
         title = self._require(title, "task title")
-        owner = self._require(owner, "task owner")
-        if status == "completed":
-            raise ManagerError("a new task cannot start completed; use complete_task")
+        owner = self._person_label(owner, "task owner")
+        reviewer = self._person_label(reviewer, "reviewer", optional=True)
+        if status in ("completed", "withdrawn"):
+            raise ManagerError("a new task cannot start completed or withdrawn; record the transition")
         if status not in TASK_STATUSES:
             raise ManagerError(f"unknown task status: {status}")
+        if due_date is not None:
+            due_date = _iso_date(due_date, "task due date")
         self._require_row("projects", project_id)
         self._screen(title=title, owner=owner, reviewer=reviewer, next_action=next_action)
         task_id = new_id("tsk")
@@ -196,43 +213,91 @@ class ManagerWorkspace:
             self.store.log(self.info.owner, "create", "task", task_id)
         return task_id
 
-    def move_task(self, task_id: str, status: str) -> None:
-        """Board moves. Dragging a card can never complete it."""
-        if status == "completed":
-            raise ManagerError(
-                "moving a card cannot complete it; completion needs recorded evidence"
-                " (use complete_task)"
-            )
-        if status not in TASK_STATUSES:
-            raise ManagerError(f"unknown task status: {status}")
-        self._require_row("tasks", task_id)
-        self._update_task(task_id, "move", status=status)
+    def move_task(self, task_id: str, status: str, *, expected_status: str | None = None) -> None:
+        """Board moves cannot complete, withdraw, or reopen terminal work.
 
-    def set_blocked(self, task_id: str, blocked: bool, reason: str = "") -> None:
-        self._require_row("tasks", task_id)
+        A host editing a displayed task supplies expected_status so a stale
+        move cannot overwrite a transition made since that view was loaded.
+        """
+        if status == "completed":
+            raise ManagerError("moving a card cannot complete it; completion needs recorded evidence"
+                               " (use complete_task)")
+        if status not in ACTIVE_TASK_STATUSES:
+            raise ManagerError("use an active task status; withdrawal needs a reason")
+        self._update_task(task_id, "move", expected_status=expected_status, status=status)
+
+    def set_blocked(self, task_id: str, blocked: bool, reason: str = "", *,
+                    expected_status: str | None = None) -> None:
+        if type(blocked) is not bool:
+            raise ManagerError("blocked must be true or false")
         if blocked:
             reason = self._require(reason, "blocked reason")
             self._screen(reason=reason)
         self._update_task(task_id, "block" if blocked else "unblock",
-                          blocked=int(blocked), blocked_reason=reason if blocked else "")
+                          expected_status=expected_status, blocked=int(blocked),
+                          blocked_reason=reason if blocked else "")
 
-    def set_paused(self, task_id: str, paused: bool) -> None:
-        self._require_row("tasks", task_id)
-        self._update_task(task_id, "pause" if paused else "resume", paused=int(paused))
+    def set_paused(self, task_id: str, paused: bool, *, expected_status: str | None = None) -> None:
+        if type(paused) is not bool:
+            raise ManagerError("paused must be true or false")
+        self._update_task(task_id, "pause" if paused else "resume",
+                          expected_status=expected_status, paused=int(paused))
 
-    def complete_task(self, task_id: str, evidence: str) -> None:
+    def complete_task(self, task_id: str, evidence: str, *, expected_status: str | None = None) -> None:
         evidence = self._require(evidence, "completion evidence")
         self._screen(evidence=evidence)
-        self._require_row("tasks", task_id)
-        self._update_task(task_id, "complete", status="completed",
-                          completion_evidence=evidence, blocked=0, blocked_reason="")
+        self._update_task(task_id, "complete", expected_status=expected_status, status="completed",
+                          completion_evidence=evidence, blocked=0, blocked_reason="", paused=0)
 
-    def _update_task(self, task_id: str, kind: str, **fields: Any) -> None:
+    def reopen_task(self, task_id: str, reason: str, *, status: str = "ready",
+                    expected_status: str | None = None) -> None:
+        reason = self._require(reason, "reopen reason")
+        self._screen(reason=reason)
+        if status not in ACTIVE_TASK_STATUSES:
+            raise ManagerError("reopen into an active task status")
+        self._update_task(task_id, "reopen", expected_status=expected_status, reason=reason,
+                          status=status, completion_evidence="", withdrawal_reason="",
+                          blocked=0, blocked_reason="", paused=0)
+
+    def withdraw_task(self, task_id: str, reason: str, *, expected_status: str | None = None) -> None:
+        reason = self._require(reason, "withdrawal reason")
+        self._screen(reason=reason)
+        self._update_task(task_id, "withdraw", expected_status=expected_status, reason=reason,
+                          status="withdrawn", withdrawal_reason=reason,
+                          blocked=0, blocked_reason="", paused=0)
+
+    def _update_task(self, task_id: str, kind: str, *, expected_status: str | None = None,
+                     reason: str = "", **fields: Any) -> None:
         assignments = ", ".join(f"{column} = ?" for column in fields)
         with self.store.transaction() as db:
+            # Read and decide only after taking the write lock. Every update
+            # is bound to this workspace and the state that was checked.
+            task = self._require_row("tasks", task_id)
+            if task is None:
+                raise ManagerError("task id is required")
+            if expected_status is not None and task["status"] != expected_status:
+                raise ManagerError("the task changed; review its current status and try again")
+            allowed = ("completed", "withdrawn") if kind == "reopen" else ACTIVE_TASK_STATUSES
+            if task["status"] not in allowed:
+                raise ManagerError("completed or withdrawn tasks need an explicit reopen with a reason"
+                                   if kind != "reopen" else "only completed or withdrawn tasks can reopen")
+            if all(task[column] == value for column, value in fields.items()):
+                raise ManagerError("the task already has that state")
+            now = self.clock()
+            changed = db.execute(
+                f"UPDATE tasks SET {assignments}, updated_at = ?"
+                " WHERE id = ? AND workspace_id = ? AND status = ?",  # noqa: S608
+                (*fields.values(), now, task_id, self.info.id, task["status"]),
+            ).rowcount
+            if changed != 1:
+                raise ManagerError("the task changed; review it before trying again")
             db.execute(
-                f"UPDATE tasks SET {assignments}, updated_at = ? WHERE id = ?",  # noqa: S608
-                (*fields.values(), self.clock(), task_id),
+                "INSERT INTO task_transitions (id, workspace_id, task_id, kind, from_status,"
+                " to_status, reason, previous_evidence, completion_evidence, created_by, created_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (new_id("ttr"), self.info.id, task_id, kind, task["status"],
+                 fields.get("status", task["status"]), reason, task["completion_evidence"],
+                 fields.get("completion_evidence", task["completion_evidence"]), self.info.owner, now),
             )
             self.store.log(self.info.owner, kind, "task", task_id)
 
@@ -291,8 +356,8 @@ class ManagerWorkspace:
     ) -> str:
         question = self._require(question, "decision question")
         decision = self._require(decision, "decision")
-        decided_by = self._require(decided_by, "decision owner")
-        decided_on = self._require(decided_on, "decision date")
+        decided_by = self._person_label(decided_by, "decision owner")
+        decided_on = _iso_date(decided_on, "decision date")
         self._require_row("projects", project_id)
         self._screen(question=question, decision=decision, decided_by=decided_by,
                      rationale=rationale)
@@ -309,9 +374,11 @@ class ManagerWorkspace:
         return decision_id
 
     def set_priorities(
-        self, week_of: str, items: list[str], project_ids: list[str | None] | None = None
+        self, week_of: str, items: list[str], project_ids: list[str | None] | None = None,
+        *, expected_sha256: str | None = None,
     ) -> None:
         """Today's (this week's) three priorities — never more than three."""
+        week_of = _iso_date(week_of, "priority week")
         items = [item.strip() for item in items if item and item.strip()]
         if not items:
             raise ManagerError("name at least one priority")
@@ -324,6 +391,8 @@ class ManagerWorkspace:
             self._require_row("projects", project_id)
         self._screen(**{f"priority_{i + 1}": text for i, text in enumerate(items)})
         with self.store.transaction() as db:
+            if expected_sha256 is not None and expected_sha256 != self.priorities_sha256(week_of):
+                raise ManagerError("priorities changed; refresh and review the current list before saving")
             db.execute(
                 "DELETE FROM priorities WHERE workspace_id = ? AND week_of = ?",
                 (self.info.id, week_of),
@@ -337,6 +406,15 @@ class ManagerWorkspace:
                 )
             self.store.log(self.info.owner, "set", "priorities", week_of)
 
+    def priorities_sha256(self, week_of: str) -> str:
+        week_of = _iso_date(week_of, "priority week")
+        rows = [dict(row) for row in self.store.conn.execute(
+            "SELECT id, rank, text, project_id FROM priorities WHERE workspace_id = ?"
+            " AND week_of = ? ORDER BY rank", (self.info.id, week_of))]
+        value = {"workspace_id": self.info.id, "week_of": week_of, "rows": rows}
+        return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False,
+                                         separators=(",", ":")).encode("utf-8")).hexdigest()
+
     # -- project feedback -------------------------------------------------
 
     def add_feedback(self, project_id: str, from_group: str, kind: str, summary: str,
@@ -348,7 +426,7 @@ class ManagerWorkspace:
         cannot detect names, so the screens say the rule plainly.
         """
         self._require_row("projects", project_id)
-        from_group = self._require(from_group, "who the feedback came from")
+        from_group = self._person_label(from_group, "who the feedback came from")
         summary = self._require(summary, "the feedback")
         if kind not in FEEDBACK_KINDS:
             raise ManagerError(f"unknown feedback kind: {kind}")
@@ -469,7 +547,7 @@ class ManagerWorkspace:
         self._require_row("projects", project_id or None)
         title = self._require(title, "what the contribution was")
         my_part = self._require(my_part, "your part in it")
-        shared_credit = self._require(shared_credit, "who shares the credit")
+        shared_credit = self._person_label(shared_credit, "who shares the credit", shared=True)
         if kind not in CONTRIBUTION_KINDS:
             raise ManagerError(f"unknown contribution kind: {kind}")
         if len(title) > 200:

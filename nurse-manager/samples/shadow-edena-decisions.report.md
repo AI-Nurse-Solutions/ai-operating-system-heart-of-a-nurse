@@ -5,7 +5,7 @@
 > suggester only suggests; the manager accepts.
 
 - Labeled set: `shadow-edena-decisions.json` (sha256 `5b68895de9e7`), 24 synthetic cases
-- Policy: `nurse-manager-personal-profile@0.1.0`; EDENA gateway `1.0.0`
+- Policy: `nurse-manager-personal-profile@0.1.0`; EDENA gateway `1.0.1`
 - EDENA decided: allow 0, require_human 4, deny 20
 
 | Measure | Value |

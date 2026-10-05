@@ -65,8 +65,8 @@ class CommandsExistTests(unittest.TestCase):
 
     def test_every_command_and_option_named_in_the_text_exists(self):
         for name in re.findall(
-                r"`(pilot-feedback[a-z-]*|classifier[a-z-]*|reconcile|export|approve|run|backup|restore)\b",
-                TEXT):
+                r"`(pilot-feedback[a-z-]*|classifier[a-z-]*|reconcile|export|approve|run|backup|restore|"
+                r"project-add|task-[a-z-]+|decision-add|priorities-set)\b", TEXT):
             with self.subTest(command=name):
                 self.assertIn(name, cli.commands())
         options = {o for a in cli.build_parser()._subparsers._group_actions[0].choices.values()

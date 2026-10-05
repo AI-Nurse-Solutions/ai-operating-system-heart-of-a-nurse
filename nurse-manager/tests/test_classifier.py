@@ -65,7 +65,7 @@ from nurse_manager.views import mission_control
 
 WEEK = "2026-09-28"
 TODAY = "2026-09-30"
-OWNER = "Sample Manager"
+OWNER = "me"
 KEY = "ts-throwaway-test-key-0123456789"
 ROUTE_REQUEST = "Draft a huddle message about the new hand hygiene audit"
 
@@ -1041,19 +1041,25 @@ class MigrationTests(unittest.TestCase):
     def test_upgrading_keeps_every_record_and_starts_with_jev_off(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
-            old_dir = tmp / "migrations-0013"
+            old_dir = tmp / "migrations-before-classifier"
             old_dir.mkdir()
             for path in MIGRATIONS_DIR.glob("*.sql"):
-                if path.stem < "0014":
+                # The sample's current writer needs task transitions. This
+                # fixture is genuinely pre-classifier, with task history;
+                # separate integration tests cover upstream without history.
+                if path.stem < "0014" or path.stem == "0014_task_transitions":
                     shutil.copy(path, old_dir / path.name)
             with mock.patch.object(store_module, "MIGRATIONS_DIR", old_dir):
                 old, _ = load_sample(tmp / "ws", clock=fixed_clock())
+                self.assertIsNone(old.store.conn.execute(
+                    "SELECT 1 FROM sqlite_master WHERE name = 'classifier_settings'").fetchone())
                 counts = {t: old.store.conn.execute(f"SELECT count(*) FROM {t}").fetchone()[0]
                           for t in ("tasks", "projects", "event_log", "assistant_requests")}
                 old.close()
             new = ManagerWorkspace(tmp / "ws", clock=fixed_clock())
             try:
-                self.assertEqual(new.store.schema_version, "0014_classifier")
+                self.assertEqual(new.store.schema_version,
+                                 max(f.stem for f in MIGRATIONS_DIR.glob("*.sql")))
                 for table, n in counts.items():
                     self.assertGreaterEqual(
                         new.store.conn.execute(f"SELECT count(*) FROM {table}").fetchone()[0], n)

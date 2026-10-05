@@ -1,5 +1,6 @@
 // @ts-check
 // Pure view functions: IPC data in, DOM out (build step 3.5).
+import { DATA_RULE, PEOPLE_LABELS } from './people-rules.mjs';
 //
 // Rules this module keeps, because the plan and the contract require them:
 // - Record text is only ever assigned with textContent. There is no
@@ -26,6 +27,7 @@ export const STATUS_LABELS = {
   in_progress: 'In progress',
   needs_judgment: 'Needs my judgment',
   completed: 'Completed',
+  withdrawn: 'Withdrawn',
 };
 
 /** @type {Record<TableColumn, string>} */
@@ -77,10 +79,11 @@ export function badge(doc, kind, icon, label) {
  * @param {string} title
  * @param {string} [subtitle]
  */
-function viewHeading(doc, title, subtitle) {
+export function viewHeading(doc, title, subtitle) {
   return h(doc, 'div', { class: 'view-heading' }, [
     h(doc, 'h1', { tabindex: '-1', class: 'view-title' }, [title]),
     subtitle ? h(doc, 'p', { class: 'view-subtitle' }, [subtitle]) : null,
+    h(doc, 'p', { class: 'field-hint data-rule' }, [DATA_RULE]),
   ]);
 }
 
@@ -252,6 +255,12 @@ function workingBlock(doc, onStop) {
 export function renderMission(doc, data, options = { writable: false }) {
   const root = h(doc, 'div', { class: 'view view--mission' });
   root.append(viewHeading(doc, 'Mission Control', `Week of ${data.week_of} · Today ${data.today}`));
+  if (data.people_fields.unrecognized_fields > 0) {
+    root.append(h(doc, 'p', { class: 'section-state', role: 'note' }, [
+      `${data.people_fields.unrecognized_fields} stored people fields use older or unrecognized labels. `,
+      'They are preserved, not automatically verified or renamed. New people fields use approved role labels.',
+    ]));
+  }
   const jev = options.writable ? options.jev ?? null : null;
   const suggested = jev && jev.order && jev.order.reordered ? jev.order.order : null;
   const judgmentItems = suggested ? orderedBy(data.needs_my_judgment.items, suggested) : data.needs_my_judgment.items;
@@ -655,10 +664,10 @@ function feedbackSection(doc, data, options) {
     })));
   }
   if (options?.writable) {
-    const fromInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
-      id: 'feedback-from', type: 'text', required: '', maxlength: '80', autocomplete: 'off',
+    const fromInput = /** @type {HTMLSelectElement} */ (h(doc, 'select', {
+      id: 'feedback-from', required: '',
       'aria-describedby': 'feedback-rule',
-    }));
+    }, PEOPLE_LABELS.map((value) => h(doc, 'option', { value }, [value]))));
     const kindSelect = /** @type {HTMLSelectElement} */ (h(doc, 'select', { id: 'feedback-kind' },
       Object.entries(FEEDBACK_KINDS).map(([value, [, , label]]) => h(doc, 'option', { value }, [label]))));
     const dateInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
@@ -829,8 +838,7 @@ export function renderOnboarding(doc, handlers, state = {}) {
     'Organize your manager work in one place. Everything stays on this computer.'));
   root.append(h(doc, 'p', { class: 'onboarding-rules', role: 'note' }, [
     badge(doc, 'review', '!', 'Before you start'), ' ',
-    'This workspace is for your own planning with public, synthetic, or your own permitted material. ',
-    'Keep patient information, staff performance, and confidential employer material out of it.',
+    DATA_RULE,
   ]));
   if (state.error) {
     root.append(h(doc, 'p', { role: 'alert', class: 'error-message' }, [
@@ -850,9 +858,6 @@ export function renderOnboarding(doc, handlers, state = {}) {
   const nameInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
     id: 'ws-name', name: 'name', type: 'text', required: '', maxlength: '200', autocomplete: 'off',
   }));
-  const ownerInput = /** @type {HTMLInputElement} */ (h(doc, 'input', {
-    id: 'ws-owner', name: 'owner', type: 'text', required: '', maxlength: '200', autocomplete: 'name',
-  }));
   const createButton = /** @type {HTMLButtonElement} */ (h(doc, 'button', { type: 'submit', class: 'primary-button' },
     ['Create my workspace']));
   createButton.disabled = busy;
@@ -862,18 +867,15 @@ export function renderOnboarding(doc, handlers, state = {}) {
       nameInput,
     ]),
     h(doc, 'p', { class: 'field' }, [
-      h(doc, 'label', { for: 'ws-owner' }, ['Your name']),
-      h(doc, 'span', { class: 'field-hint', id: 'owner-hint' }, [
-        'You are the accountable manager for this workspace.',
+      h(doc, 'span', { class: 'field-hint' }, [
+        'Your owner label is “me”. You are the accountable manager for this workspace; no name is needed.',
       ]),
-      ownerInput,
     ]),
     createButton,
   ]);
-  ownerInput.setAttribute('aria-describedby', 'owner-hint');
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    handlers.onCreate(nameInput.value.trim(), ownerInput.value.trim());
+    handlers.onCreate(nameInput.value.trim(), 'me');
   });
 
   root.append(h(doc, 'div', { class: 'mc-grid' }, [
@@ -902,6 +904,8 @@ export function aboutFacts(doc) {
   /** @param {string} lead @param {Array<Node | string>} rest */
   const fact = (lead, rest) => h(doc, 'li', {}, [h(doc, 'strong', {}, [lead]), ' ', ...rest]);
   return h(doc, 'ul', { class: 'item-list about-facts', 'aria-label': 'What to know' }, [
+    fact('Data rule.', [DATA_RULE]),
+    fact('People fields.', ['New records use “me” or approved role labels. Labels do not verify identity. Older or unrecognized labels are preserved, not automatically verified or renamed.']),
     fact('What it does.', ['Keeps your projects, tasks, decisions, sources, learning, and weekly brief in one workspace, and drafts from your own records.']),
     fact('What it does not do.', ['It never emails, posts, or uploads anything. It does not connect to your employer’s systems. It does not decide for you: every draft waits until you accept it.']),
     fact('Your data stays on this computer.', ['Records are saved in your user-data folder on this computer, never inside the app, and never uploaded. The app only answers this computer.']),
@@ -2313,10 +2317,11 @@ export function renderContributions(doc, data, options) {
   const kind = select('contribution-kind', CONTRIBUTION_KINDS);
   const occurred = /** @type {HTMLInputElement} */ (h(doc, 'input', { id: 'contribution-occurred', type: 'date', required: '', max: data.today }));
   const myPart = /** @type {HTMLTextAreaElement} */ (h(doc, 'textarea', { id: 'contribution-my-part', rows: '2', required: '', maxlength: '1000' }));
-  const shared = /** @type {HTMLInputElement} */ (h(doc, 'input', {
-    id: 'contribution-shared', type: 'text', required: '', maxlength: '200', autocomplete: 'off',
+  const shared = /** @type {HTMLSelectElement} */ (h(doc, 'select', {
+    id: 'contribution-shared', required: '',
     'aria-describedby': 'contribution-shared-hint',
-  }));
+  }, [h(doc, 'option', { value: '' }, ['Choose a role']),
+      ...PEOPLE_LABELS.map((value) => h(doc, 'option', { value }, [value]))]));
   const project = select('contribution-project',
     Object.fromEntries(data.projects.map((p) => [p.id, p.title])), 'No project');
   // Unsaved text survives every re-render, so a refused save means fixing one field, not six.
@@ -2332,7 +2337,8 @@ export function renderContributions(doc, data, options) {
   // The submitted form is read-only while its own save is in flight, so what was
   // saved is exactly what is shown; the other form stays open for typing.
   if (busy && options.saving === 'add') {
-    for (const control of [title, occurred, myPart, shared]) control.readOnly = true;
+    for (const control of [title, occurred, myPart]) control.readOnly = true;
+    shared.disabled = true;
     kind.disabled = true;
     project.disabled = true;
   }
@@ -2347,7 +2353,7 @@ export function renderContributions(doc, data, options) {
     field('contribution-kind', 'Kind', kind),
     field('contribution-occurred', 'When', occurred),
     field('contribution-my-part', 'Your part', myPart),
-    field('contribution-shared', 'Who shares the credit', shared, 'Teams, groups or roles, like “night charge nurses”. Not named colleagues.'),
+    field('contribution-shared', 'Who shares the credit', shared, 'Choose an approved role or group label. Names are not allowed here.'),
     field('contribution-project', 'Project (optional)', project),
     submit,
   ]);

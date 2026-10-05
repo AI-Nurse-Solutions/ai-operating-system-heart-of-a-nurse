@@ -34,7 +34,7 @@ from nurse_manager.store import _connect, _split_sql
 
 WEEK = "2026-09-28"
 TODAY = "2026-09-30"
-OWNER = "Sample Manager"
+OWNER = "me"
 POLL = 0.05
 
 
@@ -127,6 +127,19 @@ class _Case(unittest.TestCase):
     def section(self):
         return assistants_at_work(self.ws)
 
+    def running_section(self):
+        # The provider's started signal occurs inside the send transaction.
+        # This connection can see the request only after that transaction
+        # commits; wait for visibility rather than assuming thread ordering.
+        deadline = time.monotonic() + 5
+        while True:
+            section = self.section()
+            if section["items"]:
+                return section
+            if time.monotonic() >= deadline:
+                self.fail("the sent request did not become visible as at work")
+            threading.Event().wait(0.01)
+
 
 class StopWhileWorkingTests(_Case):
     def test_stopping_abandons_a_brief_being_drafted_and_discards_the_reply(self):
@@ -136,7 +149,7 @@ class StopWhileWorkingTests(_Case):
         self.assertTrue(model.started.wait(5))
 
         # It is shown as at work while the model works.
-        (item,) = self.section()["items"]
+        (item,) = self.running_section()["items"]
         self.assertEqual((item["kind"], item["title"]), ("request", "Drafting this week's brief"))
         self.assertIn("Waiting for held on this computer", item["detail"])
         self.assertEqual(item["id"], self.ledger()[-1]["id"])
@@ -173,7 +186,7 @@ class StopWhileWorkingTests(_Case):
         thread, box = self.in_background(lambda ws: self.service(model, ws).answer_project_question(
             project_id, "What comes next?", TODAY, OWNER))
         self.assertTrue(model.started.wait(5))
-        self.assertEqual(self.section()["items"][0]["title"],
+        self.assertEqual(self.running_section()["items"][0]["title"],
                          "Answering a question about a project")
         self.control.stop(OWNER)
         thread.join(5)
@@ -430,12 +443,12 @@ class RecurringBriefTests(unittest.TestCase):
         self.at = datetime(2026, 9, 28, 9, tzinfo=timezone.utc)  # Monday, after 07:00
         self.ws = ManagerWorkspace(Path(tmp.name) / "ws", clock=lambda: self.at.isoformat())
         self.addCleanup(self.ws.close)
-        self.ws.create("Stop workspace", "Test Manager")
+        self.ws.create("Stop workspace", "me")
         self.schedule = BriefSchedule(self.ws, tz=timezone.utc)
-        self.schedule.configure(enabled=True, weekday=0, hour=7, by="Test Manager")
+        self.schedule.configure(enabled=True, weekday=0, hour=7, by="me")
 
     def test_the_recurring_brief_waits_while_stopped_and_runs_after(self):
-        AssistantControl(self.ws).stop("Test Manager")
+        AssistantControl(self.ws).stop("me")
         for _ in range(3):
             self.assertEqual(self.schedule.run_due()["outcome"], "stopped")
         self.assertTrue(self.schedule.view()["stopped"])
@@ -443,7 +456,7 @@ class RecurringBriefTests(unittest.TestCase):
         self.assertEqual(self.ws.store.conn.execute(count).fetchone()[0], 0)
         self.assertEqual(self.ws.store.conn.execute(
             "SELECT count(*) FROM artifact_revisions").fetchone()[0], 0)
-        AssistantControl(self.ws).resume("Test Manager")
+        AssistantControl(self.ws).resume("me")
         self.assertFalse(self.schedule.view()["stopped"])
         self.assertEqual(self.schedule.run_due()["outcome"], "drafted")
 
@@ -456,7 +469,7 @@ class RecurringBriefTests(unittest.TestCase):
             # The pre-check outside the lock sees "running"; the stop lands
             # before the run takes the lock, and the run must see it.
             if not self_.ws.store.conn.in_transaction:
-                AssistantControl(other).stop("Test Manager")
+                AssistantControl(other).stop("me")
             return settings(self_)
 
         with mock.patch.object(BriefSchedule, "settings", stop_first):

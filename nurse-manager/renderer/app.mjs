@@ -5,6 +5,8 @@
 // Hermes desktop host can later replace the development HTTP source with
 // its own validated IPC without touching any view.
 
+import { renderCapture, typedCapture } from './capture.mjs';
+
 import {
   renderAssistant, renderBoard, renderBrief, renderContributions, renderError, renderMemory, typedContributions, typedMemory, typedSchedule, renderLearning, renderLibrary, renderMission, renderOnboarding,
   renderProject, renderTable, renderPacks, typedPacks, renderDocument, renderHelp, typedPilot,
@@ -106,12 +108,13 @@ export function httpSource(token = '') {
 }
 
 /** @typedef {Record<string, string | number | boolean>} WriteBody */
-/** @typedef {'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'packs' | 'document' | 'pilot-feedback'} ReadCommand */
+/** @typedef {'capture' | 'mission' | 'project' | 'board' | 'table' | 'weekly' | 'assistant' | 'library' | 'learning' | 'contributions' | 'memory' | 'packs' | 'document' | 'pilot-feedback'} ReadCommand */
 /** @typedef {'sample' | 'init' | 'brief' | 'accept' | 'assistant-local' | 'assistant-off' | 'assistant-brief' | 'assistant-project' | 'note-keep' | 'feedback-add' | 'feedback-address' | 'source-add'
  *   | 'learning-add' | 'learning-start' | 'learning-complete' | 'contribution-add' | 'contribution-verify' | 'brief-schedule-set'
  *   | 'memory-add' | 'memory-correct' | 'memory-exclude' | 'memory-include' | 'memory-delete'
  *   | 'assistants-stop' | 'assistants-resume' | 'pack-start' | 'document-save'
  *   | 'pilot-feedback-add' | 'pilot-feedback-delete' | 'pilot-feedback-export'
+ *   | 'project-add' | 'task-add' | 'decision-add' | 'priorities-set' | 'task-move' | 'task-block' | 'task-pause' | 'task-complete' | 'task-reopen' | 'task-withdraw'
  *   | 'classifier-connect' | 'classifier-off' | 'classifier-jobs' | 'classifier-route' | 'classifier-order'} WriteCommand */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierStatus} ClassifierStatus */
 /** @typedef {import('../contracts/ipc/nurse-manager-ipc').ClassifierPreview} ClassifierPreview */
@@ -125,6 +128,7 @@ export function httpSource(token = '') {
 
 /** @type {Record<string, { title: string, command: ReadCommand }>} */
 const ROUTES = {
+  capture: { title: 'Add work', command: 'capture' },
   mission: { title: 'Mission Control', command: 'mission' },
   project: { title: 'Project', command: 'project' },
   board: { title: 'Board', command: 'board' },
@@ -274,7 +278,10 @@ export function start(doc, source) {
     if (envelope.command === 'mission' && 'workspace' in data && typeof data.workspace === 'string') {
       workspaceName.textContent = data.workspace;
     }
-    if (envelope.command === 'mission') {
+    if (envelope.command === 'capture') {
+      showCapture(/** @type {import('./capture.mjs').CaptureView} */ (data), {}, moveFocus);
+      announce('Add work loaded.');
+    } else if (envelope.command === 'mission') {
       // JEV's suggestions need writes, so only the app asks for its settings here.
       const jev = writable ? (await classifierStatus()).status : null;
       if (mine !== generation) return;
@@ -985,6 +992,98 @@ export function start(doc, source) {
     };
     const view = renderContributions(doc, data, { ...options, ...state });
     if (state.notice || focusSelector) showAfterAction(view, state.notice, focusSelector);
+    else show(view, moveFocus);
+  };
+
+  // An uncertain reply persists across navigation until an explicit records refresh.
+  let captureUncertain = false;
+  let captureBusy = false;
+  /** @type {(text:string)=>void} */
+  let captureSettledRedraw = () => {};
+  /**
+   * @param {import('./capture.mjs').CaptureView} data
+   * @param {{typed?:import('./capture.mjs').CaptureTyped,busy?:boolean,notice?:import('./views.mjs').Notice}} state
+   * @param {boolean} moveFocus
+   */
+  const showCapture = (data, state, moveFocus) => {
+    const mine = generation;
+    const typedNow = () => typedCapture(main, state.typed);
+    captureSettledRedraw = (text) => {
+      if (mine === generation && currentRoute().name === 'capture') {
+        showCapture(data, { typed: typedNow(), notice: { kind: 'error', text } }, true);
+      }
+    };
+    /** @param {import('./capture.mjs').CaptureTyped} typed @param {string} done @param {boolean} explicit */
+    const refresh = async (typed, done, explicit) => {
+      let fresh;
+      try {
+        const envelope = await source.call('capture', { today: data.today, week: data.week_of });
+        if (!envelope.ok) throw new Error(envelope.error.message);
+        fresh = /** @type {import('./capture.mjs').CaptureView} */ (envelope.data);
+      } catch (error) {
+        if (mine !== generation) return;
+        showCapture(data, { typed, notice: { kind: 'error', text: `${done} The records could not be refreshed. Use Refresh records to check them. ${error instanceof Error ? error.message : String(error)}` } }, true);
+        return;
+      }
+      if (mine !== generation) return;
+      if (explicit) {
+        captureUncertain = false;
+        // Keep the manager's proposed priorities, but require a new review of the current list.
+        typed = { ...typed, priorities: { ...typed.priorities, expected_sha256: fresh.priorities_sha256, replace_priorities: 'no' } };
+      }
+      showCapture(fresh, { typed, notice: { kind: 'ok', text: done } }, true);
+    };
+    /** @type {import('./capture.mjs').CaptureOptions} */
+    const options = {
+      writable, uncertain: captureUncertain,
+      onRefresh: () => {
+        if (state.busy || captureBusy) return;
+        const typed = typedNow();
+        showCapture(data, { typed, busy: true }, false);
+        void refresh(typed, 'Records refreshed. Check whether your last save is present before trying again.', true);
+      },
+      onSave: async (key, fields) => {
+        if (state.busy || captureBusy || captureUncertain || !source.send) return;
+        const typed = typedNow();
+        /** @type {WriteCommand} */
+        let command = key === 'project' ? 'project-add' : key === 'task' ? 'task-add' : key === 'decision' ? 'decision-add' : 'priorities-set';
+        /** @type {WriteBody} */
+        let body = { ...fields, today: data.today };
+        if (key === 'priorities') body.replace_priorities = fields.replace_priorities === 'yes';
+        if (key === 'change') {
+          const task = data.tasks.find(t => t.id === fields.task_id);
+          if (!task) return;
+          const commands = /** @type {Record<string,WriteCommand>} */ ({ move:'task-move', block:'task-block', pause:'task-pause', complete:'task-complete', reopen:'task-reopen', withdraw:'task-withdraw' });
+          command = commands[fields.action];
+          if (!command) return;
+          body = { ...body, id: task.id, expected_status: task.status, blocked: fields.blocked === 'yes', paused: fields.paused === 'yes' };
+        }
+        showCapture(data, { typed, busy: true }, false);
+        let envelope;
+        try {
+          captureBusy = true;
+          envelope = await source.send(command, body);
+          captureBusy = false;
+        }
+        catch {
+          captureBusy = false;
+          captureUncertain = true;
+          if (mine !== generation) { captureSettledRedraw('Save result unknown. Refresh records and check whether it was saved before trying again.'); return; }
+          showCapture(data, { typed, notice: { kind:'error', text:'Save result unknown. Refresh records and check whether it was saved before trying again. No retry has been sent.' } }, true);
+          return;
+        }
+        if (mine !== generation) { captureSettledRedraw(envelope.ok ? 'Your earlier save succeeded. Refresh records to see it.' : envelope.error.message); return; }
+        if (!envelope.ok) {
+          showCapture(data, { typed, notice: { kind:'error', text:envelope.error.message } }, true);
+          return;
+        }
+        const kept = { ...typed, [key]: {} };
+        await refresh(kept, 'Saved on this computer.', false);
+      },
+    };
+    const notice = state.notice || (captureUncertain ? { kind: /** @type {'error'} */ ('error'), text:'A save result is unknown. Refresh records and check whether it was saved before trying again.' } : undefined);
+    const view = renderCapture(doc, data, { ...options, ...state, busy: Boolean(state.busy || captureBusy), notice });
+    if (notice) showAfterAction(view, notice);
     else show(view, moveFocus);
   };
 

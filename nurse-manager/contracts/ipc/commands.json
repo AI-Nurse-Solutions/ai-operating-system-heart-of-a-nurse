@@ -67,6 +67,17 @@
     "classifier-route-preview": "ClassifierPreview",
     "classifier-route": "ClassifierRoute",
     "classifier-order-preview": "ClassifierPreview",
-    "classifier-order": "ClassifierOrder"
+    "classifier-order": "ClassifierOrder",
+    "project-add": "RecordCreated",
+    "decision-add": "RecordCreated",
+    "priorities-set": "PrioritiesSection",
+    "task-add": "TaskResult",
+    "task-move": "TaskResult",
+    "task-block": "TaskResult",
+    "task-pause": "TaskResult",
+    "task-complete": "TaskResult",
+    "task-reopen": "TaskResult",
+    "task-withdraw": "TaskResult",
+    "capture": "CaptureView"
   }
 }

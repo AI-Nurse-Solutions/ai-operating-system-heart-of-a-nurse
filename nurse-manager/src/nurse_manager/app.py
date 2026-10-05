@@ -39,7 +39,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from . import __version__, cli, resources
-from .devhost import (
+from .http_transport import (
     READ_ONLY_COMMANDS,
     _PROJECT_ID,
     bind_values,
@@ -71,6 +71,9 @@ WRITE_COMMANDS = ("brief", "accept", "assistant-local", "assistant-off", "assist
                   "document-save", "pilot-feedback-add", "pilot-feedback-delete",
                   "pilot-feedback-export", "classifier-connect", "classifier-off",
                   "classifier-jobs", "classifier-route", "classifier-order")
+WRITE_COMMANDS += ("project-add", "task-add", "decision-add", "priorities-set", "task-move",
+                   "task-block", "task-pause", "task-complete", "task-reopen", "task-withdraw")
+_TASK_ID = re.compile(r"^tsk-[0-9a-f]{12}$")
 _REVISION_ID = re.compile(r"^rev-[0-9a-f]{12}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQUEST_ID = re.compile(r"^air-[0-9a-f]{12}$")
@@ -401,6 +404,86 @@ def _write_argv(command: str, body: dict, workspace: Path, owner: str) -> list[s
     if not isinstance(week, str) or not _valid_date(week):
         return "week must be a YYYY-MM-DD date"
     ws = str(workspace)
+    if command in ("project-add", "task-add", "decision-add", "priorities-set",
+                   "task-move", "task-block", "task-pause", "task-complete", "task-reopen", "task-withdraw"):
+        # Reject oversize capture inputs instead of silently truncating them.
+        def field(key, limit, *, default=None):
+            value = body.get(key, default)
+            return value if isinstance(value, str) and len(value) <= limit else None
+
+        def project_link():
+            value = field("project_id", 64, default="")
+            return value if value is not None and (not value or _PROJECT_ID.fullmatch(value)) else None
+
+        if command == "project-add":
+            title, purpose = field("title", 200), field("purpose", 2000)
+            role, milestone = field("owner_role", 80, default="me"), field("milestone", 1000, default="")
+            if None in (title, purpose, role, milestone):
+                return "title, purpose, owner_role and milestone must be bounded text"
+            return [command, ws, "--title", title, "--purpose", purpose, "--owner", role, "--milestone", milestone]
+        if command == "task-add":
+            title, role = field("title", 200), field("owner_role", 80, default="me")
+            reviewer, next_action = field("reviewer_role", 80, default=""), field("next_action", 2000, default="")
+            link, due, status = project_link(), field("due_date", 10, default=""), body.get("status", "idea")
+            if (None in (title, role, reviewer, next_action, link, due)
+                    or status not in ("idea", "ready", "in_progress", "needs_judgment")
+                    or (due and not _valid_date(due))):
+                return "task fields, project id, due date and active status must be valid"
+            return ([command, ws, "--title", title, "--owner", role, "--reviewer", reviewer,
+                     "--next-action", next_action, "--status", status]
+                    + (["--project", link] if link else []) + (["--due", due] if due else []))
+        if command == "decision-add":
+            question, decision = field("question", 2000), field("decision", 2000)
+            role, on = field("decision_role", 80, default="me"), field("decided_on", 10)
+            rationale, link = field("rationale", 4000, default=""), project_link()
+            if None in (question, decision, role, on, rationale, link) or not _valid_date(on):
+                return "decision fields, date and project id must be valid"
+            return ([command, ws, "--question", question, "--decision", decision, "--by", role,
+                     "--on", on, "--rationale", rationale] + (["--project", link] if link else []))
+        if command == "priorities-set":
+            digest = field("expected_sha256", 64)
+            if body.get("replace_priorities") is not True or not digest or not _SHA256.fullmatch(digest):
+                return "confirm replacement and supply the current priorities hash"
+            argv = [command, ws, "--week", week, "--expected-sha", digest]
+            count = 0
+            for rank in (1, 2, 3):
+                item = field(f"item_{rank}", 1000, default="")
+                link = field(f"project_{rank}", 64, default="")
+                if item is None or link is None or (link and not _PROJECT_ID.fullmatch(link)):
+                    return "priorities must be bounded text with valid project ids"
+                if item.strip():
+                    argv += ["--item", item, "--project", link]
+                    count += 1
+                elif link:
+                    return "a project link needs a priority"
+            return argv if count else "name at least one priority"
+        task_id, expected = field("id", 64), body.get("expected_status")
+        if (not task_id or not _TASK_ID.fullmatch(task_id)
+                or expected not in ("idea", "ready", "in_progress", "needs_judgment", "completed", "withdrawn")):
+            return "task id and the reviewed status are required"
+        argv = [command, ws, "--id", task_id, "--expected-status", expected]
+        if command in ("task-move", "task-reopen"):
+            target = body.get("status")
+            if target not in ("idea", "ready", "in_progress", "needs_judgment"):
+                return "choose an active target status"
+            argv += ["--status", target]
+        if command in ("task-reopen", "task-withdraw", "task-block"):
+            reason = field("reason", 2000, default="")
+            if reason is None:
+                return "reason must be bounded text"
+            argv += ["--reason", reason]
+        if command == "task-complete":
+            evidence = field("evidence", 2000)
+            if evidence is None:
+                return "completion evidence is required text"
+            argv += ["--evidence", evidence]
+        if command in ("task-block", "task-pause"):
+            key = "blocked" if command == "task-block" else "paused"
+            value = body.get(key)
+            if type(value) is not bool:
+                return f"{key} must be true or false"
+            argv += [f"--{key}", "yes" if value else "no"]
+        return argv
     if command == "brief":
         return ["brief", ws, "--week", week, "--today", today]
     if command == "accept":
@@ -656,9 +739,12 @@ def self_test(home: Path) -> int:
     checks.append(("screens are served", status == 200 and b"Nurse AI OS" in page))
     status, raw = call("/ipc/sample", "POST", {})
     checks.append(("sample workspace created", status == 200 and json.loads(raw)["ok"]))
-    for command in ("mission", "board", "table"):
+    for command in ("mission", "board", "table", "capture"):
         status, raw = call(f"/ipc/{command}")
         checks.append((f"{command} answers", status == 200 and json.loads(raw)["ok"]))
+    for asset in ("capture.mjs", "people-rules.mjs"):
+        status, raw = call(f"/{asset}")
+        checks.append((f"{asset} is bundled", status == 200 and bool(raw)))
     status, _ = call("/app/quit", "POST", {})
     thread.join(timeout=10)
     checks.append(("quit stops the app", not thread.is_alive()))

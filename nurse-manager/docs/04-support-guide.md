@@ -13,6 +13,8 @@ needs the command surface, it says so; managers never have to use it.
 
 Two rules apply everywhere in this guide:
 
+> Use public or synthetic information and nonconfidential personal planning only. Do not enter patient details, names of other people, or confidential workplace information. Names are not automatically detected.
+
 - **Keep patient information, colleagues' names, and staff performance
   out.** That includes questions, screenshots, feedback, and backups you
   hand to anyone.
@@ -36,6 +38,27 @@ It does **not**:
 - send anything to JEV, an optional cloud classifier, unless you connect it
   with your own key and turn a job on (section 9)
 - accept a draft for you, or complete a task without your evidence
+
+Open **Add work** in the local app to capture projects, tasks, decisions,
+and up to three priorities for the current week. Choose approved role labels;
+use **Change a task** to move, block, pause, complete, reopen, or withdraw it.
+Completion needs written evidence; reopening and withdrawal need a reason.
+Completed or withdrawn tasks must be reopened before other changes.
+Priorities replace the current week's list only after you review and confirm.
+A stale change is refused. **Refresh records** shows the current list and
+requires fresh confirmation while preserving your proposed priorities.
+
+If the app says **Save result unknown**, use **Refresh records** and check
+whether the record is already present before trying again. No automatic retry
+is sent. If it says the save worked but the list could not refresh, the record
+was saved; refresh rather than creating it again.
+
+Developers and support testers can still use `project-add`, `task-add`,
+`decision-add`, `priorities-set`, `task-move`, `task-block`, `task-pause`,
+`task-complete`, `task-reopen`, and `task-withdraw`. Each task change names
+the reviewed status. See the Manager Edition README for synthetic examples.
+The development host remains read-only. This implementation does not complete
+signing or authorize managers to use unsigned pilot builds.
 
 ## 2. Install and launch
 
@@ -64,6 +87,20 @@ Things that can happen, and what to do:
 | "Nurse AI OS has stopped" | You pressed Quit, or no page was open for 15 minutes. | Your work is saved. Double-click Nurse AI OS to open it again. |
 
 ## 3. Where your records are
+
+New workspaces use **me** as the owner label; no name is requested.
+New project/task owners, reviewers, decision makers, feedback sources, and
+shared credit use approved role or group labels. The feedback and shared
+credit forms offer fixed choices. From the command surface, shared credit
+may name up to six distinct approved labels separated by semicolons, for
+example `Council; Educator`. Labels do not authenticate anyone or change
+what data is allowed. Names in other text are not automatically detected.
+
+Existing labels remain unchanged. Mission Control reports stored people
+fields that use older or unrecognized labels; it does not verify their age
+or identity, rename them, or certify their text as safe. An earlier owner
+continues to own that workspace for its existing approval controls. Review
+older records yourself before using their text in an AI preview or export.
 
 Records live in your user-data folder, never inside the app:
 
@@ -102,6 +139,17 @@ python3 -m nurse_manager backup "<data folder>/workspace" /path/to/backup-2026-0
 
 This makes a consistent copy even while the app is open. It refuses to
 overwrite an existing file.
+If another operation changes the audit checkpoint during the copy, backup
+refuses rather than keeping a copy with an uncertain checkpoint. Wait for
+that operation to finish, or quit the app, then retry the backup.
+
+The command also creates a file with `.audit.json` appended to the backup
+filename. Keep and copy that file together with the backup; restore needs
+it for backups with chained audit history. Copy both to another disk.
+The workspace's separate `workspace.sqlite.audit-head.json` holds its
+latest audit checkpoint. A database-only rollback is detected against it;
+copying or changing both files can defeat that comparison. This does not
+make records immutable or private from an employer managing the computer.
 
 ## 5. Restore
 
@@ -126,6 +174,20 @@ python3 -m nurse_manager restore "<data folder>/workspace" /path/to/backup-2026-
   need from the current workspace.
 - A backup made by a newer release cannot be restored by an older one. A
   backup from an older release is brought up to date as it is restored.
+- Chained backups need their matching checkpoint. A broken chain, missing
+  checkpoint, malformed checkpoint, or altered audit guards refuses restore
+  before replacing the live records. Older unchained backups remain usable
+  and are reported honestly as unchained after upgrade.
+- Restore holds off concurrent writers while it makes the safety copy and
+  replaces the database. Quit the app first to avoid competing operations.
+
+If an audit anchor is missing, differs, or reports an interrupted commit,
+gated changes stop. Preserve the whole workspace, its anchor, and any
+separately retained backup/checkpoint. Ask support to review them; do not
+delete or recreate the anchor to clear the warning. A final checkpoint
+write can fail after the database commit, so an error does not prove that
+the requested change was absent. Do not blindly retry it. This step does
+not add an automatic anchor-recovery or repair command.
 
 ## 6. Setting the sample aside
 

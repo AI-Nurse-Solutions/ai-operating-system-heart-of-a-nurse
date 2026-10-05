@@ -36,7 +36,7 @@ PINNED = {
     "candidate_action.schema.json": "97c728a00fe0917dd985ce2e2412bdf9499dea8246448f82db4887f494c46699",
     "edena_decision.schema.json": "1d68ae7b790231bb551c9bc202aba540c2d04625f86b5522d1407c5b6d2bc8b2",
 }
-OWNER = "Sample Manager"
+OWNER = "Synthetic legacy manager"
 WEEK, TODAY = "2026-09-28", "2026-09-30"
 
 try:  # present only in the florence-x-contract CI job
@@ -73,6 +73,9 @@ class _Case(unittest.TestCase):
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
         self.ws, _ = load_sample(Path(self._tmp.name) / "ws", clock=fixed_clock())
+        # Preserve disclosure probes for an earlier named owner, rather than
+        # looking for the substring "me" in unrelated metadata words.
+        self.ws.store.conn.execute("UPDATE workspaces SET owner = ?", (OWNER,))
         self.boundary = ActionBoundary(self.ws)
         briefs = BriefService(self.ws)
         draft = briefs.draft_weekly_brief(WEEK, TODAY)
@@ -250,14 +253,14 @@ class EvidenceTests(_Case):
                        purpose="Save it", proposed_by=OWNER)
         approve(lost)
         with self.ws.store.transaction():  # interrupted mid-effect, then restarted
-            self.boundary._set_status(lost.id, "executing", OWNER, "execute")
+            self.boundary._set_status(lost.id, "executing", OWNER, "execute", "approved")
         recovered = propose("export_markdown", revision_id=rid, destination="recovered.md",
                             purpose="Save it", proposed_by=OWNER)
         approve(recovered)
         (self.boundary.exports_dir / "recovered.md").write_text(  # written, then the crash
             self.boundary.briefs.render(self.accepted), encoding="utf-8")
         with self.ws.store.transaction():
-            self.boundary._set_status(recovered.id, "executing", OWNER, "execute")
+            self.boundary._set_status(recovered.id, "executing", OWNER, "execute", "approved")
         self.boundary.reconcile()
         out["effect_unknown"] = lost
         out["recovered"] = recovered
@@ -265,7 +268,7 @@ class EvidenceTests(_Case):
                           purpose="Save it", proposed_by=OWNER)
         approve(running)
         with self.ws.store.transaction():  # started; no receipt yet (running, or crashed)
-            self.boundary._set_status(running.id, "executing", OWNER, "execute")
+            self.boundary._set_status(running.id, "executing", OWNER, "execute", "approved")
         out["executing"] = running
         return {label: self.boundary.get(a.id) for label, a in out.items()}
 

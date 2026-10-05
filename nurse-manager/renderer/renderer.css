@@ -377,3 +377,11 @@ a { color: var(--nm-primary); }
   padding-left: var(--nm-space-2);
   margin: 0 0 var(--nm-space-2);
 }
+
+/* Capture fieldsets must shrink with the narrow personal workspace view. */
+.view--capture fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.view--capture .field { min-width: 0; }
+.view--capture input,
+.view--capture select,
+.view--capture textarea { min-width: 0; width: 100%; box-sizing: border-box; }
+.view--capture input[type="checkbox"] { width: auto; justify-self: start; }

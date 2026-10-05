@@ -19,7 +19,7 @@ from nurse_manager.services import CaptureRefused, ManagerError
 from nurse_manager.views import memory, mission_control
 
 TODAY = "2026-09-30"
-OWNER = "Sample Manager"
+OWNER = "me"
 
 
 class _Case(unittest.TestCase):
@@ -43,7 +43,7 @@ class ContractTests(_Case):
         self.assertIsInstance(self.mem, MemoryInterface)
         record = MemoryRecord(memory_id="mem-000000000001", tenant=self.ws.info.id,
                               role_scope="any", content="Keep it short.",
-                              provenance="Written by Sample Manager", created_at="x")
+                              provenance="Written by me", created_at="x")
         for consent in ("ask_before_remembering", "do_not_remember", "sure"):
             with self.subTest(consent=consent), self.assertRaises(MemoryRefused):
                 self.mem.remember(record, consent)
@@ -93,7 +93,7 @@ class InspectTests(_Case):
         first = view["items"][0]
         self.assertIsNone(first["project_id"])  # all work comes before one project
         self.assertEqual(view["items"][1]["project_title"], "Huddle format pilot")
-        self.assertRegex(first["provenance"], r"^Written by Sample Manager on \d{4}-\d{2}-\d{2}$")
+        self.assertRegex(first["provenance"], r"^Written by me on \d{4}-\d{2}-\d{2}$")
 
 
 class CaptureRuleTests(_Case):
@@ -128,7 +128,7 @@ class CorrectExcludeDeleteTests(_Case):
         self.mem.correct_text(self.mid, "Council agendas go out three days ahead (synthetic).")
         item = self.item(self.mid)
         self.assertEqual(item["content"], "Council agendas go out three days ahead (synthetic).")
-        self.assertRegex(item["provenance"], r"^Corrected by Sample Manager on ")
+        self.assertRegex(item["provenance"], r"^Corrected by me on ")
         with self.assertRaises(CaptureRefused):
             self.mem.correct_text(self.mid, "Ask jane.doe@example.org")
 

@@ -573,6 +573,20 @@ def _old_workspace(path: Path, before: str) -> None:
 
 
 class UpgradeTests(unittest.TestCase):
+    def apply_latest_elsewhere(self):
+        # A controlled second migrator uses the actual transaction protocol,
+        # including the outside anchor, rather than SQL-only schema imitation.
+        other = Store.__new__(Store)
+        other.path, other.clock = self.path, lambda: "elsewhere"
+        other.conn = _connect(self.path)
+        try:
+            with other.transaction():
+                for statement in _split_sql(dict(store_module._migrations())[self.latest]):
+                    other.conn.execute(statement)
+                other.conn.execute("INSERT INTO schema_migrations VALUES (?, 'elsewhere')", (self.latest,))
+        finally:
+            other.close()
+
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
@@ -631,14 +645,7 @@ class UpgradeTests(unittest.TestCase):
         def backup_then_another_copy_upgrades(store, current, target):
             dest = real_backup(store, current, target)
             if not upgraded:
-                other = sqlite3.connect(str(self.path), isolation_level=None)
-                sql = dict(store_module._migrations())[self.latest]
-                other.execute("BEGIN IMMEDIATE")
-                for statement in _split_sql(sql):
-                    other.execute(statement)
-                other.execute("INSERT INTO schema_migrations VALUES (?, 'elsewhere')", (self.latest,))
-                other.execute("COMMIT")
-                other.close()
+                self.apply_latest_elsewhere()
                 upgraded.append(1)
             return dest
 
@@ -662,14 +669,7 @@ class UpgradeTests(unittest.TestCase):
 
         def another_copy_upgrades_first(store):
             if not upgraded:
-                other = sqlite3.connect(str(self.path), isolation_level=None)
-                sql = dict(store_module._migrations())[self.latest]
-                other.execute("BEGIN IMMEDIATE")
-                for statement in _split_sql(sql):
-                    other.execute(statement)
-                other.execute("INSERT INTO schema_migrations VALUES (?, 'elsewhere')", (self.latest,))
-                other.execute("COMMIT")
-                other.close()
+                self.apply_latest_elsewhere()
                 upgraded.append(1)
             return real_data_version(store)
 

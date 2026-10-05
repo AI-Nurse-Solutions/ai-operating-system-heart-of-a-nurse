@@ -69,3 +69,13 @@ governed.
 ## Decision record
 
 Accepted by the project steward, Robert Domondon, on 2026-09-28. This is a steward decision on EDENA posture under `GOVERNANCE.md` §3. He gave the approval as a direct instruction in the Claude Code session that drafted this ADR. He then explicitly authorized recording it here.
+
+## Addendum approved 2026-10-04
+
+The steward approved explicit human approval controls in the authenticated
+local app and governed local evidence-packet exports. Exact review binding,
+single-use read tokens, execution rechecks, and the existing blocked effects
+remain required. The complete addendum and verbatim instruction are in
+[`09-steward-go-decisions.md`](../09-steward-go-decisions.md).
+This is implementation authorization, not a claim that those controls or
+the public decision-record synchronization are already complete.

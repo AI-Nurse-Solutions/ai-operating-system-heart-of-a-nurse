@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.0.1",
   "policy_id": "edena-gateway-policy",
   "directive": "NIN-NAIO Master Directive v1.1",
   "doctrine": "Agents propose. Humans judge. Nurses steward.",
@@ -17,7 +17,8 @@
   },
   "orange_requirements": {
     "authenticated_org": true,
-    "recorded_approval": true
+    "recorded_approval": true,
+    "approval_metadata_key": "approval_id"
   },
   "red_e_requirements": {
     "authenticated_org": true,

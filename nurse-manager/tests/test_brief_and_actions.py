@@ -12,6 +12,7 @@ import json
 import shutil
 import tempfile
 import unittest
+from unittest import mock
 from contextlib import redirect_stdout
 from pathlib import Path
 
@@ -33,7 +34,7 @@ from nurse_manager.views import mission_control
 
 WEEK = "2026-09-28"
 TODAY = "2026-09-30"
-OWNER = "Sample Manager"
+OWNER = "me"
 
 
 class _Case(unittest.TestCase):
@@ -336,10 +337,82 @@ class AssistantProposalTests(_Case):
 
 
 class CliJourneyTests(unittest.TestCase):
+    def setUp(self):
+        # CLI writes and read dates must describe the same synthetic week.
+        self.clock = fixed_clock()
+
+    def test_empty_workspace_capture_review_complete_and_reopen(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = Path(tmp) / "own"
+            self.data("init", ws, "--name", "Synthetic own work", "--owner", OWNER)
+            project = self.data("project-add", ws, "--title", "Planning exercise",
+                                "--purpose", "Practice clear follow-through", "--owner", OWNER,
+                                "--milestone", "Outline reviewed")["id"]
+            task = self.data("task-add", ws, "--title", "Review an outline", "--owner", OWNER,
+                             "--project", project, "--due", TODAY, "--status", "ready")["task"]["id"]
+            self.data("task-move", ws, "--id", task, "--expected-status", "ready", "--status", "in_progress")
+            decision = self.data("decision-add", ws, "--question", "Which outline?",
+                                 "--decision", "Use the reviewed outline", "--by", OWNER,
+                                 "--on", TODAY, "--project", project)["id"]
+            self.data("priorities-set", ws, "--week", WEEK, "--item", "Review the outline",
+                      "--project", project)
+            complete = self.data("task-complete", ws, "--id", task, "--expected-status", "in_progress",
+                                 "--evidence", "Outline reviewed")
+            self.assertEqual(complete["task"]["status"], "completed")
+            # Each call opens a new connection. Records, counts and evidence
+            # must survive and agree across every read model.
+            home = self.data("mission", ws, "--today", TODAY, "--week", WEEK)
+            cards = self.data("board", ws)["columns"]
+            rows = self.data("table", ws)["rows"]
+            dashboard = self.data("project", ws, "--id", project, "--today", TODAY)
+            self.assertEqual([card["id"] for column in cards for card in column["cards"]], [task])
+            self.assertEqual([row["id"] for row in rows], [task])
+            self.assertEqual(home["task_counts"]["completed"], 1)
+            self.assertEqual(dashboard["readiness"]["completed_tasks"], 1)
+            self.assertEqual(dashboard["decisions"][0]["id"], decision)
+            self.assertEqual(home["priorities"]["items"][0]["project_id"], project)
+            draft = self.data("brief", ws, "--week", WEEK, "--today", TODAY)
+            shown = self.data("show", ws, "--revision", draft["id"])
+            self.assertIn("Use the reviewed outline", shown["markdown"])
+            self.assertIn(decision, shown["markdown"])
+            self.assertIn("Outline reviewed", shown["markdown"])
+            self.data("task-reopen", ws, "--id", task, "--expected-status", "completed",
+                      "--reason", "A new review is needed")
+            self.assertEqual(self.data("table", ws)["rows"][0]["evidence"], "")
+            code, _ = self.run_cli("task-complete", ws, "--id", task,
+                                   "--expected-status", "completed", "--evidence", "Stale review")
+            self.assertNotEqual(code, 0)
+
+    def test_capture_refusals_leave_existing_work_unchanged(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = Path(tmp) / "own"
+            self.data("init", ws, "--name", "Synthetic own work", "--owner", OWNER)
+            self.data("priorities-set", ws, "--week", WEEK, "--item", "Existing priority")
+            for args in (
+                ("project-add", "--title", "Contact 555-867-5309", "--purpose", "Planning", "--owner", OWNER),
+                ("task-add", "--title", "Synthetic task", "--owner", OWNER, "--due", "2026-02-30"),
+                ("task-add", "--title", "Synthetic task", "--owner", OWNER, "--project", "prj-ffffffffffff"),
+                ("decision-add", "--question", "Which outline?", "--decision", "Reviewed", "--by", OWNER,
+                 "--on", "not-a-date"),
+                ("priorities-set", "--week", WEEK, "--item", "One", "--item", "Two", "--item", "Three",
+                 "--item", "Four"),
+                ("priorities-set", "--week", WEEK, "--item", " "),
+                ("priorities-set", "--week", WEEK, "--item", "One", "--item", "Two", "--project", ""),
+            ):
+                with self.subTest(command=args[0], arguments=args[1:]):
+                    code, envelope = self.run_cli(args[0], ws, *args[1:])
+                    self.assertNotEqual(code, 0)
+                    self.assertFalse(envelope["ok"])
+            self.assertEqual(self.data("table", ws)["rows"], [])
+            home = self.data("mission", ws, "--today", TODAY, "--week", WEEK)
+            self.assertEqual(home["projects_in_motion"]["items"], [])
+            self.assertEqual([item["text"] for item in home["priorities"]["items"]], ["Existing priority"])
+
     def run_cli(self, *argv):
         """Run one command; return (exit code, parsed envelope)."""
         buf = io.StringIO()
-        with redirect_stdout(buf):
+        with redirect_stdout(buf), mock.patch.object(
+                cli, "ManagerWorkspace", side_effect=lambda root: ManagerWorkspace(root, clock=self.clock)):
             code = cli.main([str(a) for a in argv])
         envelope = json.loads(buf.getvalue())
         self.assertEqual(envelope["contract"], cli.CONTRACT)

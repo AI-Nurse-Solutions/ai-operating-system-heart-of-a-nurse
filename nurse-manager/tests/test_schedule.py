@@ -22,7 +22,7 @@ from nurse_manager.schedule import BriefSchedule
 from nurse_manager.services import ManagerError, ManagerWorkspace
 from nurse_manager.store import Store, _connect, _migrations
 
-OWNER = "Test Manager"
+OWNER = "me"
 UTC = timezone.utc
 MONDAY = datetime(2026, 9, 28, tzinfo=UTC)  # week of 2026-09-28
 

@@ -119,3 +119,11 @@ connection and automatically start/attach its backend. The launcher clears
 inherited credentials and uses new temporary Hermes/settings directories;
 it does not change HOME or impose a network sandbox. Stop and report if an
 existing session appears instead of setup.
+
+The companion extends upstream’s explicit HERMES_DESKTOP_IGNORE_EXISTING=1
+flag to skip system-Python fallback as well as CLI fallback. The fresh
+launcher sets this flag; ordinary resolution is unchanged. The actual
+resolver is exercised with simulated installed agents: before patch it
+selects Python despite the flag (RED); afterward it returns setup without
+CLI/Python probes, while ordinary CLI/Python discovery still works (GREEN).
+The modified main source and before/after hashes travel with the download.

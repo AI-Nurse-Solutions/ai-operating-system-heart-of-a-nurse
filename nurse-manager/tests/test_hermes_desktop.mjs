@@ -20,7 +20,7 @@ writeFileSync(wrapper, `#!/bin/sh\nexec /usr/bin/sandbox-exec -p ${quote(profile
 const env = Object.fromEntries(['PATH', 'HOME', 'TMPDIR', 'LANG', 'LC_ALL'].filter(k => process.env[k]).map(k => [k, process.env[k]]));
 Object.assign(env, { HERMES_HOME: hermesHome, HERMES_SHARED_AUTH_DIR: join(home, 'shared'),
   HERMES_DESKTOP_USER_DATA_DIR: userData, HERMES_DESKTOP_HERMES_ROOT: join(home, 'no-runtime'),
-  HERMES_SKIP_INTRO: '1', HERMES_GUEST_ONBOARDING: '0' });
+  HERMES_SKIP_INTRO: '1', HERMES_GUEST_ONBOARDING: '0', HERMES_DESKTOP_IGNORE_EXISTING: '1' });
 let app;
 try {
   // Chromium cannot initialize a nested sandbox inside inherited SBPL.

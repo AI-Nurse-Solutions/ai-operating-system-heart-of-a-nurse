@@ -52,7 +52,7 @@ printf '%s\\n' "Hermes first test uses fresh temporary settings." "Stop at the s
 exec /usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin HOME="$HOME" TMPDIR="${TMPDIR:-/tmp}" LANG=en_US.UTF-8 \\
   HERMES_HOME="$test_profile/hermes" HERMES_SHARED_AUTH_DIR="$test_profile/shared" \\
   HERMES_DESKTOP_USER_DATA_DIR="$test_profile/electron" HERMES_DESKTOP_HERMES_ROOT="$test_profile/no-runtime" \\
-  HERMES_SKIP_INTRO=1 HERMES_GUEST_ONBOARDING=0 \\
+  HERMES_SKIP_INTRO=1 HERMES_GUEST_ONBOARDING=0 HERMES_DESKTOP_IGNORE_EXISTING=1 \\
   "$app_folder/Hermes.app/Contents/MacOS/Hermes"
 ''')
 launcher.chmod(0o755)
@@ -86,7 +86,9 @@ provider or existing system creates separate data/privacy boundaries.
 No provider credentials, runtime configuration or private data is bundled.
 
 Hermes is our source-built developer companion from Nous Research's pinned
-source, with commercial UI fonts removed and system-font fallbacks. It is
+source, with commercial UI fonts removed and system-font fallbacks. The explicit
+ignore-existing flag in the test launcher also skips installed Python agents;
+ordinary backend discovery is unchanged. It is
 not an official Nous release. Nurse AI OS is not affiliated with or endorsed
 by Nous Research. Original branding identifies the separate third-party app.
 
@@ -122,7 +124,7 @@ manifest = {
     'packagingHead': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
     'nurseSource': receipt['git_head'], 'nurseOriginalZipSha256': expected,
     'hermesSource': 'f97608f178d1ffeca59860195ab7da295f7c8e5f',
-    'hermesModified': 'commercial font faces and font assets removed; modification hashes included',
+    'hermesModified': 'commercial fonts removed; opt-in ignore-existing flag also covers Python fallback; modification hashes included',
     'architecture': 'x86_64', 'distribution': 'UNSIGNED developer test only',
     'gates': {'DeveloperIDSigning': 'NOT RUN', 'notarization': 'NOT RUN',
               'TahoeHardwareNormalLaunch': 'NOT RUN', 'pilotRelease': 'NOT RUN'},

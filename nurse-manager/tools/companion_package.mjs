@@ -22,6 +22,15 @@ for (const path of files.filter(p => /\.(woff2?|ttf|otf)$/i.test(p))) {
 }
 for (const asset of inventory.assets) {
   const path = asset.path.replace(/^apps\/desktop\//, '');
+  if (path.startsWith('assets/')) {
+    // electron-builder excludes its build-resource directory from app.asar.
+    // ICO is an explicit extraResource; ICNS is the native bundle icon.
+    if (path === 'assets/icon.png') continue; // build source, not a Mac payload
+    assert.ok(['assets/icon.ico', 'assets/icon.icns'].includes(path), 'Review new build resource: ' + path);
+    const bytes = readFileSync(join(app, 'Contents/Resources', path.slice('assets/'.length)));
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), asset.sha256, path);
+    continue;
+  }
   assert.ok(files.includes(path), 'Inventoried asset is absent from bundle: ' + path);
   const bytes = asar.extractFile(archive, path);
   assert.equal(createHash('sha256').update(bytes).digest('hex'), asset.sha256, path);

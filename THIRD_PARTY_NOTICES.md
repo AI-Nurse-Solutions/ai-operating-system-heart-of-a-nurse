@@ -68,7 +68,10 @@ this two-app developer download is an explicit exception. It does not make
 Hermes the Manager host or include the full agent/bootstrap runtime.
 
 Commercial UI fonts are excluded from binaries and retained source; modified
-CSS uses system fallbacks. The separate Hermes app keeps upstream identity
+CSS uses system fallbacks. The companion also extends the explicit
+ignore-existing test flag to skip the Python-agent fallback; ordinary agent
+discovery is unchanged. Modified source and hashes are included. The separate
+Hermes app keeps upstream identity
 for factual attribution, not as our product branding or an endorsement.
 It is not an official Nous Research signed release. Modification hashes,
 actual package inventory and full notices travel in the download.

@@ -33,7 +33,15 @@ export function launchApp(home) {
   const child = binary ? spawn(binary, args, { env, cwd: home }) : spawn('python3', ['-m', 'nurse_manager.app', ...args], { env, cwd: home });
   const exited = new Promise(resolve => child.on('exit', resolve));
   // Consume errors without echoing workspace text or launch credentials.
-  child.stderr.on('data', () => {});
+  let stderrBytes = 0;
+  let stderrKind = 'none';
+  child.stderr.on('data', chunk => {
+    stderrBytes += chunk.length;
+    // Classify only known runtime failures; never echo the error payload.
+    for (const kind of ['ModuleNotFoundError', 'ImportError', 'FileNotFoundError', 'PermissionError', 'Traceback']) {
+      if (chunk.toString().includes(kind)) { stderrKind = kind; break; }
+    }
+  });
   const ready = new Promise((resolve, reject) => {
     let settled = false; let output = ''; let polling = false;
     let poll;
@@ -43,7 +51,11 @@ export function launchApp(home) {
       if (settled) return;
       settled = true; clear(); child.kill(); reject(new Error(message));
     };
-    const timer = setTimeout(() => fail('App did not publish a launch address within 20 seconds.'), 20000);
+    const timer = setTimeout(() => {
+      let lock = 'absent';
+      try { const stat = lstatSync(join(home, 'app.lock.json')); lock = `present,mode=${(stat.mode & 0o777).toString(8)}`; } catch {}
+      fail(`App did not publish a launch address within 20 seconds (record=${lock}; stdoutBytes=${output.length}; stderrBytes=${stderrBytes}; runtimeError=${stderrKind}).`);
+    }, 20000);
     poll = setInterval(async () => {
       if (settled || polling) return;
       polling = true;

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission Control — Nurse Managers &amp; Entrepreneurs</title>
+<style>
+:root{--navy:#203b3a;--teal:#286357;--gold:#946b30;--line:#d9e3dc;--paper:#fffefa;--bg:#f5f7f2;--soft:#edf3ec}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--navy);font:17px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+header,main,footer{max-width:1180px;margin:auto;padding:20px 28px}
+header{border-bottom:1px solid var(--line)}
+h1,h2,h3{font-family:Georgia,serif;line-height:1.2}
+h1{font-weight:500;font-size:clamp(30px,5vw,46px);margin:.2em 0}
+h2{font-size:24px;margin:0 0 8px}
+.eyebrow{font-weight:700;color:var(--teal);letter-spacing:.1em;font-size:13px;margin:0}
+.notice{border-left:5px solid #799989;background:var(--soft);padding:14px 18px;border-radius:0 12px 12px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}
+label{display:block;margin:10px 0;font-weight:600;font-size:15px}
+input[type=text],select,textarea{display:block;width:100%;margin-top:4px;padding:10px;font:16px/1.5 inherit;font-family:inherit;border:1px solid #82928e;border-radius:8px;background:#fff;color:inherit}
+textarea{min-height:84px}
+button{background:var(--teal);color:#fff;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer;min-height:46px;margin:6px 6px 6px 0}
+button.ghost{background:transparent;color:var(--teal);border:2px solid var(--teal)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.lane-tag{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--soft);color:var(--teal)}
+@media(max-width:760px){.grid{grid-template-columns:1fr}header,main,footer{padding:16px}}
+</style>
+</head>
+<body data-export="mission-control-week.md">
+<header>
+<p class="eyebrow">NURSE AI OS · MISSION CONTROL · OFFLINE BOARD</p>
+<h1>This week, on purpose.</h1>
+</header>
+<main>
+<p class="notice"><strong>A manual board, not an installed agent.</strong> It runs in your browser with no network calls, no storage, and no integrations. Export before closing; unsaved notes are lost. Use public or synthetic examples only: no patient, personnel, or client confidential data. Status here is what you report, not proof of work.</p>
+
+<form id="board">
+<section class="card" style="margin:18px 0">
+<h2>Week of</h2>
+<div class="grid">
+<label for="week">Week starting<input type="text" id="week" data-label="Week starting" placeholder="YYYY-MM-DD"></label>
+<label for="energy">My capacity this week<select id="energy" data-label="My capacity this week"><option>Full</option><option>Steady</option><option>Stretched</option><option>Protect rest first</option></select></label>
+</div>
+<label for="intent">What good should this week make possible?<textarea id="intent" data-label="Intent for the week" placeholder="One or two sentences."></textarea></label>
+</section>
+
+<div class="grid">
+<section class="card">
+<span class="lane-tag">LEAD</span>
+<h2>Team and unit</h2>
+<label for="lead1">Priority 1<input type="text" id="lead1" data-label="Lead priority 1"></label>
+<label for="lead2">Priority 2<input type="text" id="lead2" data-label="Lead priority 2"></label>
+<label for="lead3">Priority 3<input type="text" id="lead3" data-label="Lead priority 3"></label>
+<label for="decisions">Decisions pending (mine to make)<textarea id="decisions" data-label="Decisions pending" placeholder="Decision · options · by when · who I will consult"></textarea></label>
+<label for="meetings">Meetings to prepare<textarea id="meetings" data-label="Meetings to prepare" placeholder="Meeting · purpose · what I need drafted (use templates/meeting-pack.md)"></textarea></label>
+</section>
+
+<section class="card">
+<span class="lane-tag">BUILD</span>
+<h2>Venture and business</h2>
+<label for="build1">Priority 1<input type="text" id="build1" data-label="Build priority 1"></label>
+<label for="build2">Priority 2<input type="text" id="build2" data-label="Build priority 2"></label>
+<label for="build3">Priority 3<input type="text" id="build3" data-label="Build priority 3"></label>
+<label for="experiment">This week's validation step<textarea id="experiment" data-label="Validation step" placeholder="Hypothesis · who I will talk to · what would change my mind (see venture/30-Day-Validation-Sprint.md)"></textarea></label>
+<label for="learned">What I learned from customers<textarea id="learned" data-label="Customer learning" placeholder="No client confidential details."></textarea></label>
+</section>
+</div>
+
+<section class="card" style="margin:18px 0">
+<h2>Agent work queue</h2>
+<p>What I will ask Hermes to draft. Every item waits for my review.</p>
+<label for="drafts">Drafts requested<textarea id="drafts" data-label="Drafts requested from Hermes" placeholder="Weekly brief · meeting pack for Tuesday huddle · three post ideas"></textarea></label>
+<label for="state">Status of the queue<select id="state" data-label="Queue status (self-reported)"><option>Not started</option><option>Drafts requested</option><option>Drafts received, under my review</option><option>Reviewed and approved by me</option><option>Paused</option></select></label>
+<label for="stops">Stop conditions<textarea id="stops" data-label="Stop conditions" placeholder="Stop if anything looks like patient or personnel data, if a draft would be sent externally, or if authority is unclear.">Stop if anything looks like patient or personnel data, if a draft would be sent or posted, or if my authority is unclear.</textarea></label>
+</section>
+
+<section class="card" style="margin:18px 0">
+<h2>Friday review</h2>
+<label for="wins">What moved<textarea id="wins" data-label="What moved"></textarea></label>
+<label for="carry">What carries to next week<textarea id="carry" data-label="Carry forward"></textarea></label>
+<label for="rest">How I protected rest<textarea id="rest" data-label="Rest and restoration"></textarea></label>
+</section>
+
+<button type="button" id="export">Export week as Markdown</button>
+<button type="reset" class="ghost">Clear board</button>
+<p id="status" role="status" aria-live="polite"></p>
+</form>
+</main>
+<footer>
+<p><strong>Agents propose. Humans judge. Nurses steward.</strong></p>
+<p>Manual template. Self-reported entries. No model calls, storage, or execution.</p>
+</footer>
+<script>
+'use strict';
+const form=document.getElementById('board');
+document.getElementById('export').addEventListener('click',()=>{
+  const lines=['# Mission Control — week of '+(document.getElementById('week').value||'(not set)'),'','Manual board; self-reported entries, not verified execution.',''];
+  for(const el of form.querySelectorAll('input,textarea,select')){ lines.push('## '+el.dataset.label, el.value||'_(blank)_',''); }
+  const url=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/markdown;charset=utf-8'}));
+  const a=document.createElement('a'); a.href=url; a.download=document.body.dataset.export; document.body.append(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  document.getElementById('status').textContent='Exported. Give the file to Hermes and ask for a draft weekly brief.';
+});
+form.addEventListener('reset',()=>{ document.getElementById('status').textContent='Cleared. Exported files are not deleted.'; });
+</script>
+</body>
+</html>

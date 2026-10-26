@@ -37,6 +37,11 @@
   .invite-links a strong { display: block; font-size: 1.1rem; margin-bottom: .3rem; }
   .invite-links a span { display: block; opacity: .8; }
   .invite-next { margin-top: 1.5rem; }
+  .invite-videos { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 1.5rem; }
+  .invite-video { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #0b1627; box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+  .invite-video.vertical { aspect-ratio: 9 / 16; max-width: 360px; justify-self: center; width: 100%; }
+  .invite-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .invite-video-note { margin-top: 1rem; opacity: .8; }
 </style>
 </head>
 <body>
@@ -48,6 +53,7 @@
     <div class="nav-links">
       <a href="#the-seat">The seat</a>
       <a href="#where-we-are">Where we are</a>
+      <a href="#watch">Watch</a>
       <a class="nav-cta" href="#next-step">Your next step</a>
     </div>
   </nav>
@@ -149,6 +155,23 @@
     <p>We're early and pre-institutional. What we can offer now is founding influence — shaping the advanced-practice side before anything is locked in. How deeply you're involved is entirely up to you, and roles formalize as the Institute does.</p>
     <p class="invite-next"><strong>Next step:</strong> look this over, let me know your decision, and then we meet.</p>
     <p><a class="btn btn-primary" href="mailto:robert@domondon.us?subject=NAIO%20Institute%20founding%20seat%20%E2%80%94%20Gloria%20Cheng">Reply to Robert</a></p>
+  </div>
+</section>
+
+<section class="invite-section section-alt" id="watch" aria-labelledby="watch-title">
+  <div class="container">
+    <p class="eyebrow">Watch</p>
+    <h2 id="watch-title">See it, hear it, in a few minutes</h2>
+    <p class="section-intro">A short set of videos on Nurse AI OS and the thinking behind it — the quickest way to get a feel for what we're building before we talk.</p>
+    <div class="invite-videos">
+      <div class="invite-video"><iframe src="https://www.youtube-nocookie.com/embed/W1eOXb-l2EI?rel=0" title="Nurse AI OS video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <div class="invite-video"><iframe src="https://www.youtube-nocookie.com/embed/8FvTTp-sZVk?rel=0" title="Nurse AI OS video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <div class="invite-video"><iframe src="https://www.youtube-nocookie.com/embed/M-dIPB-pSp0?rel=0" title="Nurse AI OS video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <div class="invite-video"><iframe src="https://www.youtube-nocookie.com/embed/xV3ZPd-dRaI?rel=0" title="Nurse AI OS video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <div class="invite-video"><iframe src="https://www.youtube-nocookie.com/embed/6HU_HOOPS9c?rel=0" title="Nurse AI OS video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <div class="invite-video vertical"><iframe src="https://www.youtube-nocookie.com/embed/79xHeOuH_1k?rel=0" title="Nurse AI OS video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    </div>
+    <p class="invite-video-note">Videos open on YouTube's privacy-enhanced player; nothing here collects your data.</p>
   </div>
 </section>
 

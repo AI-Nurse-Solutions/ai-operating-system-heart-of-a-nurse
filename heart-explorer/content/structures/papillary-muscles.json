@@ -1,0 +1,25 @@
+{
+  "id": "papillary-muscles",
+  "type": "structure",
+  "label": "Papillary muscles",
+  "summary": "Muscles in the left ventricular wall that anchor the mitral leaflets through the chordae tendineae, so the valve cannot flip back into the atrium in systole. The posteromedial muscle usually has a single coronary blood supply, which makes it more likely to rupture after MI.",
+  "relations": [
+    {
+      "rel": "part_of",
+      "target": "left-ventricle",
+      "why": "The papillary muscles rise from the inner wall of the left ventricle.",
+      "citations": [
+        "openstax-ap-heart-anatomy"
+      ]
+    }
+  ],
+  "citations": [
+    "openstax-ap-heart-anatomy",
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

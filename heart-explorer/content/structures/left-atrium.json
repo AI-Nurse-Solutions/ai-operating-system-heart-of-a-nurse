@@ -1,0 +1,27 @@
+{
+  "id": "left-atrium",
+  "type": "structure",
+  "label": "Left atrium",
+  "aliases": [
+    "LA"
+  ],
+  "summary": "Receives oxygenated blood from the pulmonary veins and passes it through the mitral valve to the left ventricle. When the mitral valve leaks or the LV stiffens, pressure here backs up into the lungs.",
+  "relations": [
+    {
+      "rel": "flows_to",
+      "target": "mitral-valve",
+      "why": "In diastole, blood moves from the left atrium through the open mitral valve.",
+      "citations": [
+        "openstax-ap-heart-anatomy"
+      ]
+    }
+  ],
+  "citations": [
+    "openstax-ap-heart-anatomy"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

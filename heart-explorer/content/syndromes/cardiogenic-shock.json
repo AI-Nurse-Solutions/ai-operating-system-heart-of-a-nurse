@@ -1,0 +1,146 @@
+{
+  "id": "cardiogenic-shock",
+  "type": "syndrome",
+  "label": "Cardiogenic shock",
+  "summary": "A low cardiac output state from heart dysfunction that causes tissue hypoperfusion, most often after acute MI. The SCAI scale stages it from A (at risk) to E (extremis) so teams can escalate early.",
+  "levers": [
+    {
+      "lever": "contractility",
+      "effect": "decrease",
+      "why": "Loss of working LV muscle, most often from MI, lowers stroke volume.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "lever": "o2-supply",
+      "effect": "decrease",
+      "why": "Hypotension lowers coronary perfusion pressure, which worsens ischemia in a downward spiral.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Trend MAP, lactate, urine output, mental status and skin perfusion together; one normal value does not prove adequate perfusion.",
+    "Escalate early: SCAI stage B (hypotension or tachycardia without hypoperfusion) is the window before lactate rises.",
+    "After MI with shock, prepare for emergency transfer to the cath lab."
+  ],
+  "relations": [
+    {
+      "rel": "located_in",
+      "target": "left-ventricle",
+      "why": "LV pump failure, most often from acute MI, is the commonest cause.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "elevated-lactate",
+      "why": "Poor tissue perfusion shifts cells to anaerobic metabolism.",
+      "citations": [
+        "aha-cardiogenic-shock-2017",
+        "scai-shock-2019"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "low-mixed-venous-o2",
+      "why": "Tissues extract more oxygen when delivery falls.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "cool-mottled-extremities",
+      "why": "Vasoconstriction diverts blood from the skin to vital organs.",
+      "citations": [
+        "aha-cardiogenic-shock-2017",
+        "scai-shock-2019"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "oliguria",
+      "why": "Kidney perfusion drops with low cardiac output.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "low-cardiac-index",
+      "why": "Measured low output with high filling pressure defines the syndrome hemodynamically.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "norepinephrine",
+      "why": "A vasopressor restores perfusion pressure when MAP is low.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "dobutamine",
+      "why": "An inotrope raises contractility and cardiac output.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "milrinone",
+      "why": "An inodilator raises contractility while lowering afterload.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "pci",
+      "why": "Emergency revascularization of the culprit artery after MI improves survival.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "iabp",
+      "why": "Counterpulsation can support selected patients, though routine use in MI shock did not lower mortality.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "impella",
+      "why": "A microaxial pump unloads the LV and adds forward flow.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "va-ecmo",
+      "why": "Full circulatory and respiratory support for refractory shock.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "citations": [
+    "aha-cardiogenic-shock-2017",
+    "scai-shock-2019"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

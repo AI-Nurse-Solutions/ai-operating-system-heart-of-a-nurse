@@ -1,0 +1,117 @@
+{
+  "id": "acute-mitral-regurgitation",
+  "type": "dysfunction",
+  "label": "Acute mitral regurgitation",
+  "aliases": [
+    "Acute MR"
+  ],
+  "summary": "A sudden leak of the mitral valve, for example from papillary muscle rupture after MI, chordal rupture or endocarditis. The left atrium has no time to enlarge, so pressure surges into the lungs and forward output drops.",
+  "levers": [
+    {
+      "lever": "preload",
+      "effect": "increase",
+      "why": "The leaked volume returns to the LV each beat, raising LV and left atrial filling pressures.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Watch for sudden dyspnea, crackles, pink frothy sputum and falling SpO2, and escalate immediately.",
+    "After an MI, a new murmur or sudden pulmonary edema calls for urgent echo and surgical consult.",
+    "Monitor BP closely during afterload reduction; vasodilators need an adequate MAP."
+  ],
+  "relations": [
+    {
+      "rel": "located_in",
+      "target": "mitral-valve",
+      "why": "The leak is through the mitral valve as it fails to close in systole.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "located_in",
+      "target": "papillary-muscles",
+      "why": "Papillary muscle rupture or dysfunction after MI is a classic cause.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "holosystolic-apical-murmur",
+      "why": "Systolic backflow into the left atrium makes the murmur, though in acute MR it may be soft or short.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "flash-pulmonary-edema",
+      "why": "A non-enlarged left atrium cannot absorb the sudden volume, so pressure floods back into the lungs.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "causes",
+      "target": "cardiogenic-shock",
+      "why": "Loss of forward stroke volume can tip into cardiogenic shock.",
+      "citations": [
+        "acc-aha-vhd-2020",
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "nitroprusside",
+      "why": "Afterload reduction favors forward flow over backflow when BP allows.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "furosemide",
+      "why": "Diuresis relieves pulmonary congestion while definitive repair is arranged.",
+      "citations": [
+        "acc-aha-vhd-2020",
+        "aha-hf-2022"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "iabp",
+      "why": "Balloon counterpulsation lowers afterload and supports output as a bridge to surgery.",
+      "citations": [
+        "acc-aha-vhd-2020",
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "mitral-valve-surgery",
+      "why": "Urgent surgery is the definitive treatment for papillary muscle rupture.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "mitral-teer",
+      "why": "Edge-to-edge repair is mainly for chronic MR at high surgical risk; use in acute MR is selective and decided by the heart team.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

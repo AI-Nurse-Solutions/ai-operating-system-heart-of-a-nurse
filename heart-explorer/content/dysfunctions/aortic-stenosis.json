@@ -1,0 +1,98 @@
+{
+  "id": "aortic-stenosis",
+  "type": "dysfunction",
+  "label": "Aortic stenosis",
+  "aliases": [
+    "AS"
+  ],
+  "summary": "Narrowing of the aortic valve opening, most often from age-related calcification or a bicuspid valve. The LV must generate higher pressure to eject, so it thickens. Once symptoms start, outcomes without valve replacement are poor.",
+  "levers": [
+    {
+      "lever": "afterload",
+      "effect": "increase",
+      "why": "The narrowed valve is a fixed obstruction, so the LV must push against a higher pressure.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "lever": "o2-demand",
+      "effect": "increase",
+      "why": "Higher wall stress and a thickened LV raise myocardial oxygen demand, so angina can occur even with normal coronaries.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Treat as preload-dependent: avoid sudden drops in preload, such as rapid diuresis or nitrates, without a provider plan, and report hypotension early.",
+    "Report new exertional chest pain, syncope or dyspnea; symptom onset marks severe disease and triggers valve replacement review.",
+    "New atrial fibrillation or tachycardia is poorly tolerated, because the stiff LV relies on atrial kick and diastolic filling time; report it promptly."
+  ],
+  "relations": [
+    {
+      "rel": "located_in",
+      "target": "aortic-valve",
+      "why": "The lesion is the stiff, calcified or malformed valve leaflets.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "crescendo-decrescendo-murmur",
+      "why": "Turbulent flow across the narrowed valve during ejection makes the murmur.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "as-symptom-triad",
+      "why": "A fixed outflow limits output with exertion: angina from high O2 demand, syncope from failure to raise output, dyspnea from rising filling pressure.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "pulsus-parvus-et-tardus",
+      "why": "Slow ejection through the narrowed valve makes the carotid pulse weak and late.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "manifests_as",
+      "target": "echo-aortic-valve-area",
+      "why": "Echocardiography confirms the diagnosis and grades its severity.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "tavr",
+      "why": "Transcatheter replacement treats symptomatic severe AS; the heart team weighs age, surgical risk and anatomy.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "treated_by",
+      "target": "savr",
+      "why": "Surgical replacement treats symptomatic severe AS, especially in younger or lower-risk patients.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

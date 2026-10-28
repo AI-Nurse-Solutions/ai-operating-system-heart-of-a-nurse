@@ -1,0 +1,42 @@
+{
+  "id": "va-ecmo",
+  "type": "device",
+  "label": "VA-ECMO",
+  "aliases": [
+    "Venoarterial ECMO"
+  ],
+  "summary": "Venoarterial extracorporeal membrane oxygenation drains venous blood, oxygenates it and returns it to the arterial system, supporting both heart and lungs.",
+  "levers": [
+    {
+      "lever": "afterload",
+      "effect": "increase",
+      "why": "Retrograde flow into the aorta raises the pressure the LV must eject against, which can distend the LV.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Watch for LV distension, such as loss of arterial pulsatility and pulmonary edema; an LV vent such as an Impella may be added.",
+    "With femoral cannulation, check right radial SpO2 or ABG for differential hypoxemia.",
+    "Check perfusion of the cannulated limb and monitor bleeding and anticoagulation."
+  ],
+  "relations": [
+    {
+      "rel": "acts_on",
+      "target": "left-ventricle",
+      "why": "Returned arterial flow raises LV afterload.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "citations": [
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

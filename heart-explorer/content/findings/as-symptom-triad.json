@@ -1,0 +1,15 @@
+{
+  "id": "as-symptom-triad",
+  "type": "finding",
+  "label": "Exertional angina, syncope and dyspnea",
+  "summary": "The classic symptoms of severe aortic stenosis, usually appearing first with exertion. Their onset is a key trigger for valve replacement.",
+  "relations": [],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "holosystolic-apical-murmur",
+  "type": "finding",
+  "label": "Holosystolic apical murmur",
+  "summary": "A blowing murmur through all of systole, loudest at the apex and radiating to the left axilla. In acute mitral regurgitation it may be short or soft, so a quiet murmur does not rule it out.",
+  "relations": [],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cool-mottled-extremities",
+  "type": "finding",
+  "label": "Cool, mottled extremities",
+  "summary": "Cool, clammy or mottled skin and slow capillary refill from vasoconstriction as the body diverts blood to vital organs.",
+  "relations": [],
+  "citations": [
+    "aha-cardiogenic-shock-2017",
+    "scai-shock-2019"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "flash-pulmonary-edema",
+  "type": "finding",
+  "label": "Flash pulmonary edema",
+  "summary": "Sudden fluid in the lungs from a rapid rise in left atrial pressure: severe dyspnea, crackles, hypoxemia and sometimes pink frothy sputum.",
+  "relations": [],
+  "citations": [
+    "acc-aha-vhd-2020",
+    "aha-hf-2022"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

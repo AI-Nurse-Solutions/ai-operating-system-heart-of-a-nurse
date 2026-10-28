@@ -1,0 +1,42 @@
+{
+  "id": "furosemide",
+  "type": "drug",
+  "label": "Furosemide",
+  "aliases": [
+    "Lasix"
+  ],
+  "summary": "Loop diuretic that blocks sodium reabsorption in the loop of Henle. It removes volume and lowers filling pressures in congestion.",
+  "levers": [
+    {
+      "lever": "preload",
+      "effect": "decrease",
+      "why": "Volume removal lowers ventricular filling pressure and pulmonary congestion.",
+      "citations": [
+        "aha-hf-2022"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Track intake and output, daily weight, potassium, magnesium and creatinine.",
+    "Watch for hypotension, especially in preload-dependent patients such as those with severe aortic stenosis."
+  ],
+  "relations": [
+    {
+      "rel": "caution_in",
+      "target": "aortic-stenosis",
+      "why": "A preload-dependent LV can lose stroke volume and BP if volume is removed too fast.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "citations": [
+    "dailymed-furosemide",
+    "aha-hf-2022"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "echo-aortic-valve-area",
+  "type": "finding",
+  "label": "Echo: aortic valve area and gradient",
+  "summary": "Severe aortic stenosis on echo is typically a valve area of 1.0 cm2 or less, a peak velocity of 4 m/s or more, or a mean gradient of 40 mmHg or more.",
+  "relations": [],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -481,14 +481,16 @@
     }
     if (p.uninsured) {
       var pregLimit = PREGNANCY_LIMIT_BELOW_200[p.state] || 200;
+      // Medicaid counts the expected child in a pregnant person's household (42 CFR 435.603(b)); assume one.
+      var pregPct = p.pregnant ? Math.round(income * 12 / fplAnnual(size + 1, p.state) * 100) : pct;
       var partialAdult = !expansion && PARTIAL_ADULT_COVERAGE[p.state] && pct <= 100;
-      var medicaidLikely = (expansion && pct <= 138) || (p.pregnant && pct <= pregLimit) || partialAdult;
+      var medicaidLikely = (expansion && pct <= 138) || (p.pregnant && pregPct <= pregLimit) || partialAdult;
       var w = acaWindow(now);
       if (medicaidLikely) {
         tasks.push(task({ id: "coverage", pillar: "health", draft: "coverage", title: "Apply for Medicaid (any day of the year)",
-          why: p.pregnant && pct <= pregLimit ? "Pregnancy coverage limits are higher than for other adults (in your state, about " + pregLimit + "% of poverty or more)." :
+          why: p.pregnant && pregPct <= pregLimit ? "Pregnancy coverage counts your baby in your household, and the limit in your state is about " + pregLimit + "% of poverty or more — you're at about " + pregPct + "%." :
             partialAdult ? PARTIAL_ADULT_COVERAGE[p.state] + "." : "Your state expanded Medicaid and your income is at or below 138% of poverty.",
-          confidence: partialAdult && !(p.pregnant && pct <= pregLimit) && !(expansion && pct <= 138) ? "possible" : "likely", valueLabel: "Coverage", effortMin: 45, dueDays: 3, urgent: true, links: [L.medicaid, L.healthcare], meta: { route: "medicaid", pct: pct },
+          confidence: partialAdult && !(p.pregnant && pregPct <= pregLimit) && !(expansion && pct <= 138) ? "possible" : "likely", valueLabel: "Coverage", effortMin: 45, dueDays: 3, urgent: true, links: [L.medicaid, L.healthcare], meta: { route: "medicaid", pct: pct },
           source: "ACA §2001 expansion (138% FPL); expansion status per KFF/Medicaid.gov, Oct 2026; pregnancy limits per KFF, Jan 2026" }));
       } else if (pct >= ACA.minPct && pct <= ACA.maxPct) {
         var planYear = now.getMonth() >= 10 ? now.getFullYear() + 1 : now.getFullYear(); // Nov–Dec enrollment is for next year

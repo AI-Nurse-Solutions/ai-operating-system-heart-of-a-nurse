@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Household Plan — Life Within Reach | Nurse AI OS</title>
+<meta name="description" content="Your AI community organizer for the next 30 days: a private, in-browser plan for food, health care, housing, energy, and family-care costs.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/favicon-lamp.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&amp;family=Source+Sans+3:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lwr.css">
+</head>
+<body class="app-body">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="safety-strip" role="note">
+  In danger right now? Call <a href="tel:911">911</a>. Thinking about suicide or in crisis? Call or text <a href="tel:988">988</a>. Poison: <a href="tel:18002221222">1-800-222-1222</a>.
+</div>
+
+<header class="lwr-header" id="siteHeader">
+  <nav class="nav-bar" aria-label="Main">
+    <a class="brand" href="../">
+      <img src="../assets/favicon-lamp.svg" alt="" width="34" height="34">
+      <span>Life Within Reach<small>by Nurse AI OS</small></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../">About</a></li>
+      <li class="hide-sm"><a href="../#guardrails">Guardrails</a></li>
+      <li><a href="https://www.211.org" target="_blank" rel="noopener">Talk to a person (211)</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="app-tabs" id="appTabs">
+  <div class="tablist" role="tablist" aria-label="Household plan sections" id="tablist"></div>
+</div>
+
+<main id="main" class="app-main" tabindex="-1">
+  <div class="container" id="view" aria-live="polite"></div>
+  <div class="container">
+    <p class="app-foot">
+      <strong>Life Within Reach is an AI tool. It is not a nurse, doctor, lawyer, or any other licensed professional, and it never presents itself as one.</strong>
+      Navigation and education — not medical, legal, or financial advice.
+      Eligibility results are screening estimates from published rules (ruleset <span id="rulesetVersion"></span>); the program decides.
+      Your answers stay in this browser on this device — nothing is sent to a server. We never ask about immigration status.
+      <a href="../#guardrails">Read the guardrails</a>.
+    </p>
+  </div>
+</main>
+
+<dialog id="taskDialog" aria-labelledby="dlgTitle">
+  <div class="dlg-head">
+    <div>
+      <p class="eyebrow" id="dlgEyebrow">Do it with me</p>
+      <h2 id="dlgTitle">Task</h2>
+    </div>
+    <button class="dlg-close" type="button" aria-label="Close" data-close>×</button>
+  </div>
+  <div class="dlg-body" id="dlgBody"></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../assets/rules.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

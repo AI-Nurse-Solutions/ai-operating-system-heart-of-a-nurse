@@ -168,11 +168,12 @@
           yes("wantsTraining", "Someone wants training that leads to a better-paying job", p.wantsTraining, "Apprenticeships and free programs") +
           yes("aiAffected", "Software or AI screened someone out, cut their hours, or took over their work", p.aiAffected, "Unlocks your rights and ways to push back") +
           "</div>" +
-          '<div class="row" style="margin-top:1rem">' + numField("jobEndDays", "Days since the job ended or hours were cut", shown(p.jobEndDays), 0, "Leave blank if it hasn't happened or you're not sure. Enter 0 if it's today.") + "</div>";
+          '<div class="row" style="margin-top:1rem">' + numField("jobEndDays", "Days since the job ended or hours were cut", shown(p.jobEndDays), 0, "Leave blank if it hasn't happened or you're not sure. Enter 0 if it's today.") +
+          numField("coverageEndDays", "Days since the job-based health coverage ended", shown(p.coverageEndDays), 0, "Often later than the last day of work. Enter 0 if it ends today; leave blank if it hasn't ended yet or you're not sure.") + "</div>";
       },
       read: function (f, p) {
         p.jobLoss = !!f.get("jobLoss"); p.lostCoverage = !!f.get("lostCoverage"); p.warnLarge = !!f.get("warnLarge"); p.newGrad = !!f.get("newGrad"); p.wantsTraining = !!f.get("wantsTraining"); p.aiAffected = !!f.get("aiAffected");
-        p.jobEndDays = optNum(f.get("jobEndDays"));
+        p.jobEndDays = optNum(f.get("jobEndDays")); p.coverageEndDays = optNum(f.get("coverageEndDays"));
       }
     },
     {
@@ -301,7 +302,7 @@
       income: 3400, benefits: ["medicaid"], tenure: "rent", housingCost: 2100, behindRent: false, evictionNotice: false, repairs: true, rentIncreasePct: 14,
       energyBill: 210, shutoff: true, medEquip: true, shutoffDays: 5, uninsured: false, renewalDue: true, renewalDays: 12, rxTrouble: true, paDenied: true, medBill: 2400, rxMonthly: 42,
       childcareCost: 1900, employerDCAP: "unsure", caringAdult: true, needLeave: true, foodRunsOut: true, internetBill: 75,
-      jobLoss: true, jobEndDays: 10, lostCoverage: false, warnLarge: false, newGrad: false, wantsTraining: true, aiAffected: true, sample: true
+      jobLoss: true, jobEndDays: 10, coverageEndDays: null, lostCoverage: false, warnLarge: false, newGrad: false, wantsTraining: true, aiAffected: true, sample: true
     };
     state.profile = JSON.parse(JSON.stringify(state.draft)); state.profile.intakeDate = new Date().toISOString(); state.done = {}; save(); refresh(); setTab("home");
     toast(T("Loaded a sample household — replace it with your own any time.", "Se cargó un hogar de ejemplo: cámbielo por el suyo cuando quiera."));
@@ -638,7 +639,7 @@
       var elapsed = Math.max(0, Math.floor((Date.now() - new Date(state.draft.intakeDate)) / 86400000));
       ["renewalDays", "shutoffDays"].forEach(function (k) { var v = optNum(state.draft[k]); if (v !== null) state.draft[k] = Math.max(0, v - elapsed); });
       // "Days since the job ended" grows with time, unlike the countdowns above.
-      var je = optNum(state.draft.jobEndDays); if (je !== null) state.draft.jobEndDays = je + elapsed;
+      ["jobEndDays", "coverageEndDays"].forEach(function (k) { var v = optNum(state.draft[k]); if (v !== null) state.draft[k] = v + elapsed; });
       delete state.draft.intakeDate;
     }
     state.profile = null; intakeStep = typeof step === "number" ? step : 0; save(); plan = null; setTab("home"); focusQ();

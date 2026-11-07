@@ -227,7 +227,7 @@
         "If you miss the call, call back the same day and ask to reschedule — do not let the case close.\n" +
         "If you need help fast and have under $150 income this month, ask about EXPEDITED SNAP (7 days)." +
         (p.jobLoss ? "\n\nYOU SAID A JOB ENDED OR HOURS WERE CUT: say so in the application and give this month's actual income, not last month's.\n" +
-          "If this month's income is under $150 (or your rent plus utilities is more than your income), you qualify for EXPEDITED SNAP — benefits within 7 days.\n" +
+          "Ask for an EXPEDITED screening. You qualify for benefits within 7 days if EITHER (a) this month's gross income is under $150 AND you have $100 or less in cash and bank accounts, OR (b) your rent or mortgage plus utilities is more than this month's income plus what you have in cash and bank accounts. The office decides; ask them to check.\n" +
           "If you are an adult without children at home, ask whether work rules apply to you and whether signing up for free SNAP Employment & Training satisfies them." : "");
     },
     wic: function (p) {
@@ -474,17 +474,21 @@
         "KEEP A FOLDER: pay stubs, the separation letter, insurance notices, every email. If anything goes wrong later, the person with the paper wins.";
     },
     coverageClock: function (p) {
-      var since = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+      var covSince = p.coverageEndDays === null || p.coverageEndDays === undefined ? null : Math.round(num(p.coverageEndDays));
+      var jobSince = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
       return "LOST HEALTH COVERAGE WITH THE JOB — THREE DOORS, ONE 60-DAY CLOCK\n\n" +
-        (since !== null ? "You said the job ended about " + since + " days ago. Coverage often runs to the end of that month — confirm the exact end date with HR, because the 60 days count from THAT date.\n\n" : "") +
+        "THE CLOCK STARTS THE DAY COVERAGE ENDS — not the day the job ended. Coverage often runs to the end of the month you left, and sometimes longer under a severance deal.\n" +
+        (covSince !== null && covSince > 60 ? "You said coverage ended about " + covSince + " days ago, so the 60-day Marketplace window has likely closed. Medicaid is still open any day. Ask the Marketplace anyway (some states allow more time), and check the date on your COBRA election notice — COBRA's 60 days run from that notice if it came later.\n\n" :
+          covSince !== null ? "You said coverage ended about " + covSince + " days ago, so about " + (60 - covSince) + " days remain on the 60-day windows. Confirm the exact end date with HR or the insurer's letter.\n\n" :
+          "You haven't told me the exact day coverage ends" + (jobSince !== null ? " (the job ended about " + jobSince + " days ago)" : "") + ". FIRST STEP: call HR or the insurer and get that date in writing, then come back and enter it so I can set the real deadline.\n\n") +
         "DOOR 1 — MEDICAID (any day of the year, usually free)\n" +
         "Medicaid looks at your income NOW, not last year's. A household of " + p.hhSize + " earning about " + money(num(p.income)) + " a month" +
         (num(p.income) ? " is at roughly " + fplPct(p) + "% of the poverty line" : "") + ". " +
         (NON_EXPANSION.indexOf(p.state) !== -1 ? "Your state has not expanded Medicaid to most adults, so check the Marketplace too, and look for a community health center while you sort it out." : "If you are under about 138% of the poverty line, you likely qualify. Apply through your state Medicaid office or HealthCare.gov.") + "\n\n" +
-        "DOOR 2 — MARKETPLACE SPECIAL ENROLLMENT (60 days from losing coverage)\n" +
-        "Losing job-based coverage opens a 60-day window at HealthCare.gov (or your state's exchange) even outside Open Enrollment. Report your NEW lower income — the subsidy is based on what you expect to earn this year, and you can update it if you find work.\n\n" +
+        "DOOR 2 — MARKETPLACE SPECIAL ENROLLMENT (60 days before or after coverage ends)\n" +
+        "Losing job-based coverage opens a window at HealthCare.gov (or your state's exchange) even outside Open Enrollment: you can apply up to 60 days BEFORE the end date so there's no gap, and up to 60 days after. Report your NEW lower income — the subsidy is based on what you expect to earn this year, and you can update it if you find work.\n\n" +
         "DOOR 3 — COBRA (60 days to decide; usually the most expensive)\n" +
-        "You can keep the same plan for up to 18 months, but you pay the full premium plus 2% — often $600–$2,000 a month. It makes sense mainly if you're mid-treatment or have met a big deductible. You can wait up to 60 days to elect it, and if you do, it covers you back to the day the old plan ended.\n\n" +
+        "You can keep the same plan for up to 18 months, but you pay the full premium plus 2% — often $600–$2,000 a month. It makes sense mainly if you're mid-treatment or have met a big deductible. You have 60 days to elect it, counted from the day coverage ended or the day you receive the COBRA election notice, whichever is later; if you elect, it covers you back to the day the old plan ended.\n\n" +
         "WHILE YOU DECIDE: a community health center sees you regardless of coverage and charges on a sliding scale. Don't skip medications — ask the pharmacy for the cash price and the manufacturer's assistance program.\n\n" +
         "WRITE DOWN: coverage end date ______  ·  60-day deadline ______  ·  Marketplace application date ______";
     },
@@ -609,8 +613,8 @@
     // WorkBridge (English-only)
     ui: "Unemployment insurance is paid for by a tax on your employer that's figured into your wages — you earned it. It pays from the week you file, not the day you lost the job, so delay costs you money. Most states replace about half of prior wages up to a cap, for up to 26 weeks. Partial benefits exist for cut hours, and many denials are won on appeal.",
     owed: "A final paycheck, unused vacation and earned commissions are debts the employer owes you, with state deadlines behind them. A severance agreement trades money for your right to sue; federal law gives workers 40 and over 21 days to think about it. And if 100 or more people work there, a mass layoff usually requires 60 days' notice — or 60 days of pay.",
-    coverageClock: "Losing job-based insurance opens three doors. Medicaid is open any day and judges income now, not last year's. The Marketplace opens a 60-day special enrollment window with subsidies based on this year's expected income. COBRA keeps the old plan at full price for up to 18 months and can be elected retroactively within 60 days. Miss the 60 days and you may wait until November.",
-    snapReport: "SNAP is recalculated when income changes — but a drop only raises your benefit once you report it, and the increase starts from the report, not the job loss. If this month's income is under $150, expedited SNAP must be issued within 7 days.",
+    coverageClock: "Losing job-based insurance opens three doors. Medicaid is open any day and judges income now, not last year's. The Marketplace opens a 60-day special enrollment window with subsidies based on this year's expected income. COBRA keeps the old plan at full price for up to 18 months and can be elected retroactively within 60 days of losing coverage or getting the election notice, whichever is later. Both clocks run from the day coverage ends, not the day the job ended. Miss them and you may wait until November.",
+    snapReport: "SNAP is recalculated when income changes — but a drop only raises your benefit once you report it, and the increase starts from the report, not the job loss. Expedited SNAP (benefits within 7 days) goes to households with under $150 in monthly income and $100 or less in cash and bank accounts, or whose rent plus utilities exceeds their income plus those resources — ask the office to screen you for it.",
     ajc: "American Job Centers are the public job-service system created by federal law (WIOA). They're free, in person, and can pay for training through Individual Training Accounts. They are the human front door to almost every program on this page — you don't need an app or an AI to use them.",
     training: "The only workforce programs proven in randomized trials — Year Up, Per Scholas, Project QUEST — share a design: built with employers, free to the participant, with a coach and a job at the end. Earnings gains of 14–30% lasted 7 to 14 years. Programs that charge you, push loans, or can't name their employer partners don't have that record.",
     firstJob: "Since 2023, recent college graduates have been unemployed at a higher rate than workers overall for the first time in decades, and 42% of those working are in jobs that don't need a degree. The best evidence says paid experience with an employer attached — internships, co-ops, apprenticeships, residencies — is what changes the odds, not another certificate.",
@@ -1133,6 +1137,7 @@
        A job loss sets off deadlines in the other pillars, so some of these steps
        land there (health, food) while WorkBridge holds the work itself. */
     var jobEnd = daysOr(p.jobEndDays, null);
+    var covEnd = daysOr(p.coverageEndDays, null); // days since job-based coverage ended; the 60-day windows run from this, not from the job's end
     if (p.jobLoss) {
       // UI pays from the week you file; if the job ended more than a week ago the deadline is today.
       tasks.push(task({ id: "ui", pillar: "work", draft: "ui", title: tr("File for unemployment this week — it pays from the week you file", "Solicite el seguro de desempleo esta semana"),
@@ -1145,10 +1150,13 @@
         links: p.warnLarge ? [L.warn, L.whd, L.lawhelp] : [L.whd, L.lawhelp], source: "FLSA and state final-pay laws; OWBPA, 29 U.S.C. 626(f) (workers 40+: 21 days to consider a release, 7 to revoke; 45 days in a group layoff); WARN Act, 29 U.S.C. 2101–2109 (employers of 100+, 60 days' notice)" }));
     }
     if (p.lostCoverage) {
-      tasks.push(task({ id: "coverageClock", pillar: "health", draft: "coverageClock", title: "Beat the 60-day clock on health coverage: Medicaid, Marketplace, or COBRA",
-        why: "Losing job-based insurance opens a 60-day Special Enrollment Period and a 60-day COBRA election window. Medicaid is open any day and judges income now. Miss the 60 days and you may wait until Open Enrollment.",
-        confidence: "likely", valueLabel: "Keeps coverage", effortMin: 60, urgent: true, dueDays: jobEnd === null ? 60 : Math.max(0, 60 - jobEnd),
-        links: [L.healthcare, L.medicaid, L.cobra, L.hrsa], source: "45 CFR 155.420(d)(1) (loss of coverage SEP: 60 days); COBRA, 29 U.S.C. 1165 (60-day election period, coverage retroactive); Medicaid enrollment is year-round" }));
+      // The Marketplace and COBRA windows run 60 days from the day coverage ends. Without that date, the step is to pin it down within a week.
+      tasks.push(task({ id: "coverageClock", pillar: "health", draft: "coverageClock",
+        title: covEnd === null ? "Find out the exact day job-based coverage ends — the 60-day clocks start from it" : "Beat the 60-day clock on health coverage: Medicaid, Marketplace, or COBRA",
+        why: covEnd === null ? "Losing job-based insurance opens a 60-day Marketplace Special Enrollment Period and a 60-day COBRA election window, both counted from the day coverage ends — not the day the job ended. Get that date in writing, then enter it here for the real deadline. Medicaid is open any day."
+          : "Losing job-based insurance opens a 60-day Special Enrollment Period and a 60-day COBRA election window, counted from the day coverage ended. Medicaid is open any day and judges income now. Miss the 60 days and you may wait until Open Enrollment.",
+        confidence: "likely", valueLabel: "Keeps coverage", effortMin: 60, urgent: true, dueDays: covEnd === null ? 7 : Math.max(0, 60 - covEnd),
+        links: [L.healthcare, L.medicaid, L.cobra, L.hrsa], source: "45 CFR 155.420(c)(2) and (d)(1) (loss of coverage SEP: 60 days before or after the loss); COBRA, 29 U.S.C. 1165(a)(1) (election period ends 60 days after the later of coverage loss or the election notice; coverage retroactive); Medicaid enrollment is year-round" }));
     }
     if (p.jobLoss && has(b, "snap")) {
       tasks.push(task({ id: "snapReport", pillar: "food", draft: "snapReport", title: "Report the income drop to SNAP — your benefit should go up",

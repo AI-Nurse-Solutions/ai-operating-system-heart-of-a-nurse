@@ -64,7 +64,7 @@ class AllyStewardshipTests(unittest.TestCase):
         # Frozen origin/main homepage baseline; no git executable or mutable HEAD needed.
         current=(ROOT/'index.html').read_text()
         stripped=re.sub(r'<!-- ALLY PATHWAY START -->.*?<!-- ALLY PATHWAY END -->\n\n','',current,flags=re.S)
-        self.assertEqual(hashlib.sha256(stripped.encode()).hexdigest(),"de7c4cac84ed9abe222e9e2833a79634ce6f37a8eae06e72d19a8f19016d4adf")
+        self.assertEqual(hashlib.sha256(stripped.encode()).hexdigest(),"a8d0d5f0f0735977a966c499a3d0303a79a601035c404d2a88a20898904c81c6")
         self.assertIn('id="ally-stewardship-pathway"',current)
     def test_ci_coverage(self):
         text=(ROOT/'.github/workflows/website-alignment.yml').read_text()

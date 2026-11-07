@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Nightingale lamp: flame over a simple lamp base, brand navy + lamplight gold -->
+  <rect width="64" height="64" rx="14" fill="#10233a"/>
+  <path d="M32 10c4.5 6.2 8 10.6 8 15.4 0 4.9-3.6 8.6-8 8.6s-8-3.7-8-8.6c0-4.8 3.5-9.2 8-15.4z" fill="#f5b942"/>
+  <path d="M32 16.5c2.4 3.4 4.3 5.9 4.3 8.6 0 2.8-1.9 4.9-4.3 4.9s-4.3-2.1-4.3-4.9c0-2.7 1.9-5.2 4.3-8.6z" fill="#fde6b0"/>
+  <path d="M20 40h24l-3 6H23l-3-6z" fill="#d9a136"/>
+  <rect x="17" y="48" width="30" height="4" rx="2" fill="#d9a136"/>
+</svg>

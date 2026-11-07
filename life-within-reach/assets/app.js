@@ -29,6 +29,9 @@
   function fmtDate(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
   function toast(msg) { var t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 2400); }
   function num(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
+  // Optional numeric answer: blank stays null (unknown); 0 is a real answer.
+  function optNum(v) { if (v === null || v === undefined || String(v).trim() === "") return null; var n = parseFloat(v); return isFinite(n) ? Math.max(0, n) : null; }
+  function shown(v) { return v === null || v === undefined ? "" : v; }
   function has(a, v) { return Array.isArray(a) && a.indexOf(v) !== -1; }
   function setHeaderVar() { var h = document.getElementById("siteHeader"); if (h) document.documentElement.style.setProperty("--header-h", h.offsetHeight + "px"); }
   window.addEventListener("resize", setHeaderVar); setHeaderVar();
@@ -100,8 +103,13 @@
     {
       id: "income", q: "About how much does your household earn in a month, before taxes?",
       why: "Nearly every program compares income to the federal poverty guideline. A close estimate is fine — I'll show the math, and the program checks the real numbers.",
-      html: function (p) { return moneyField("income", "Monthly household income before taxes", p.income, "Include wages, self-employment, unemployment, Social Security, and child support received.") + '<div class="choices">' + yes("incomeDropped", "Our income dropped recently", p.incomeDropped) + "</div>"; },
-      read: function (f, p) { p.income = num(f.get("income")); p.incomeDropped = !!f.get("incomeDropped"); }
+      html: function (p) {
+        return moneyField("income", "Monthly household income before taxes", p.income, "Include wages, self-employment, unemployment, Social Security, and child support received.") +
+          '<div class="field"><label for="f-earnedIncome">How much of that comes from a job or self-employment?</label><div class="money"><input id="f-earnedIncome" name="earnedIncome" type="number" inputmode="decimal" min="0" step="1" value="' + esc(shown(p.earnedIncome)) + '" placeholder="Leave blank if all of it"></div>' +
+          '<span class="hint">SNAP gives a 20% deduction on earnings only — not on Social Security, unemployment, or child support. Enter 0 if none of it is from work.</span></div>' +
+          '<div class="choices">' + yes("incomeDropped", "Our income dropped recently", p.incomeDropped) + "</div>";
+      },
+      read: function (f, p) { p.income = num(f.get("income")); p.earnedIncome = optNum(f.get("earnedIncome")); p.incomeDropped = !!f.get("incomeDropped"); }
     },
     {
       id: "benefits", q: "Which of these do you already have?",
@@ -130,9 +138,9 @@
       html: function (p) {
         return moneyField("energyBill", "Typical monthly energy bill (electric + gas)", p.energyBill) +
           '<div class="choices">' + yes("shutoff", "I have a shutoff / disconnection notice", p.shutoff) + yes("medEquip", "Someone uses medical equipment that needs power", p.medEquip, "CPAP, oxygen, refrigerated medicine, power wheelchair…") + "</div>" +
-          '<div class="row" style="margin-top:1rem">' + numField("shutoffDays", "Days until the shutoff date", p.shutoffDays || "", 0, "If you have a notice") + "</div>";
+          '<div class="row" style="margin-top:1rem">' + numField("shutoffDays", "Days until the shutoff date", shown(p.shutoffDays), 0, "If you have a notice. Enter 0 if it's today.") + "</div>";
       },
-      read: function (f, p) { p.energyBill = num(f.get("energyBill")); p.shutoff = !!f.get("shutoff"); p.medEquip = !!f.get("medEquip"); p.shutoffDays = num(f.get("shutoffDays")); }
+      read: function (f, p) { p.energyBill = num(f.get("energyBill")); p.shutoff = !!f.get("shutoff"); p.medEquip = !!f.get("medEquip"); p.shutoffDays = optNum(f.get("shutoffDays")); }
     },
     {
       id: "health", q: "How is health coverage and health spending going?",
@@ -145,12 +153,12 @@
           yes("rxTrouble", "Cost makes it hard to take a prescription as prescribed", p.rxTrouble) +
           yes("paDenied", "Insurance denied a prior authorization", p.paDenied) + "</div>" +
           '<div class="row" style="margin-top:1rem">' +
-          (has(b, "medicaid") ? numField("renewalDays", "Days until the renewal is due", p.renewalDays || "", 0) : "") +
+          (has(b, "medicaid") ? numField("renewalDays", "Days until the renewal is due", shown(p.renewalDays), 0, "Enter 0 if it's due today.") : "") +
           moneyField("medBill", "Unpaid medical bills (total)", p.medBill) + moneyField("rxMonthly", "Prescriptions per month (out of pocket)", p.rxMonthly) + "</div>";
       },
       read: function (f, p) {
         p.uninsured = !!f.get("uninsured"); p.renewalDue = !!f.get("renewalDue"); p.rxTrouble = !!f.get("rxTrouble"); p.paDenied = !!f.get("paDenied");
-        p.renewalDays = num(f.get("renewalDays")); p.medBill = num(f.get("medBill")); p.rxMonthly = num(f.get("rxMonthly"));
+        p.renewalDays = optNum(f.get("renewalDays")); p.medBill = num(f.get("medBill")); p.rxMonthly = num(f.get("rxMonthly"));
       }
     },
     {
@@ -518,7 +526,7 @@
     state.draft = JSON.parse(JSON.stringify(state.profile || state.draft || {})); delete state.draft.sample;
     if (state.draft.intakeDate) {
       var elapsed = Math.max(0, Math.floor((Date.now() - new Date(state.draft.intakeDate)) / 86400000));
-      ["renewalDays", "shutoffDays"].forEach(function (k) { if (num(state.draft[k])) state.draft[k] = Math.max(0, num(state.draft[k]) - elapsed); });
+      ["renewalDays", "shutoffDays"].forEach(function (k) { var v = optNum(state.draft[k]); if (v !== null) state.draft[k] = Math.max(0, v - elapsed); });
       delete state.draft.intakeDate;
     }
     state.profile = null; intakeStep = typeof step === "number" ? step : 0; save(); plan = null; setTab("home"); focusQ();

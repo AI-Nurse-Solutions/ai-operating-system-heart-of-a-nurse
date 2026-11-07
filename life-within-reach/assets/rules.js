@@ -122,6 +122,8 @@
 
   /* ---------- Helpers ---------- */
   function num(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
+  // A day count the person may leave blank: blank keeps the fallback, 0 means "today".
+  function daysOr(v, fallback) { var n = parseFloat(v); return (v === null || v === undefined || v === "" || !isFinite(n)) ? fallback : Math.max(0, n); }
   function has(arr, v) { return Array.isArray(arr) && arr.indexOf(v) !== -1; }
   function round5(n) { return Math.round(n / 5) * 5; }
 
@@ -140,7 +142,9 @@
     var max = size <= 8 ? SNAP.maxAllotment[size] : SNAP.maxAllotment[8] + (size - 8) * SNAP.perAdditional;
     var gross = num(p.income);
     var stdDed = SNAP.standardDeduction[Math.min(size, 6)];
-    var adjusted = Math.max(0, gross * (1 - SNAP.earnedIncomeDeduction) - stdDed);
+    // The 20% deduction applies only to earnings (wages, self-employment), not Social Security, unemployment or child support.
+    var earned = (p.earnedIncome === null || p.earnedIncome === undefined || p.earnedIncome === "") ? gross : Math.min(gross, num(p.earnedIncome));
+    var adjusted = Math.max(0, gross - SNAP.earnedIncomeDeduction * earned - stdDed);
     var shelterCosts = num(p.housingCost) + num(p.energyBill);
     var excess = Math.max(0, shelterCosts - adjusted / 2);
     if (!(num(p.seniors) > 0 || p.disability)) excess = Math.min(excess, SNAP.shelterCap);
@@ -474,10 +478,10 @@
     /* ----- II. Health ----- */
     var expansion = NON_EXPANSION.indexOf(p.state) === -1;
     if (p.renewalDue) {
-      var rd = Math.max(1, num(p.renewalDays) || 14);
+      var rd = daysOr(p.renewalDays, 14);
       tasks.push(task({ id: "renew", pillar: "health", draft: "renew", title: "Return your Medicaid/CHIP renewal packet",
         why: "Most people who lose Medicaid at renewal are still eligible — they lose it for paperwork.",
-        confidence: "likely", valueLabel: "Keeps coverage", effortMin: 30, dueDays: Math.max(1, rd - 2), urgent: rd <= 14, links: [L.medicaid], source: "42 CFR 435.916 (annual renewals; 90-day reconsideration)" }));
+        confidence: "likely", valueLabel: "Keeps coverage", effortMin: 30, dueDays: Math.max(0, rd - 2), urgent: rd <= 14, links: [L.medicaid], source: "42 CFR 435.916 (annual renewals; 90-day reconsideration)" }));
     }
     if (p.uninsured) {
       var pregLimit = PREGNANCY_LIMIT_BELOW_200[p.state] || 200;
@@ -565,10 +569,10 @@
     /* ----- IV. Energy ----- */
     var bill = num(p.energyBill);
     if (p.shutoff) {
-      var sd = Math.max(1, num(p.shutoffDays) || 5);
+      var sd = daysOr(p.shutoffDays, 5);
       tasks.push(task({ id: "shutoff", pillar: "energy", draft: "shutoff", title: p.medEquip ? "Stop the shutoff: medical certificate + payment plan" : "Stop the shutoff: call for a payment plan",
         why: p.medEquip ? "Someone relies on powered medical equipment — a clinician's certificate can delay disconnection." : "Utilities must offer options before disconnecting in most states — but you have to call first.",
-        confidence: "likely", valueLabel: "Keeps power on", effortMin: 30, dueDays: Math.max(1, sd - 2), urgent: true, links: [L.liheap, L.l211], source: "State utility commission shutoff rules; protections vary by state and season" }));
+        confidence: "likely", valueLabel: "Keeps power on", effortMin: 30, dueDays: Math.max(0, sd - 2), urgent: true, links: [L.liheap, L.l211], source: "State utility commission shutoff rules; protections vary by state and season" }));
     }
     if (!has(b, "utilDiscount") && bill > 0 && (pct <= 200 || (p.state === "CA" && pct <= 250))) {
       tasks.push(task({ id: "discount", pillar: "energy", draft: "discount", title: p.state === "CA" ? (pct > 200 ? "Enroll in FERA (18% off electric)" : "Enroll in CARE (30–35% off electric)") : "Enroll in your utility's low-income rate",

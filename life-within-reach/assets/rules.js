@@ -102,8 +102,7 @@
     housing: { key: "housing",   roman: "III", app: "HomeHold",   name: "Housing", nameEs: "Vivienda",                accent: "var(--p-home)" },
     energy: { key: "energy", roman: "IV",  app: "WattWise",   name: "Energy & utilities", nameEs: "Energía y servicios",     accent: "var(--p-energy)" },
     family: { key: "family", roman: "V",   app: "KinCare",    name: "Child care, elder care & leave", nameEs: "Cuidado infantil, de mayores y licencias", accent: "var(--p-family)" },
-    // WorkBridge is English-only for now: its drafts, lessons and pillar page have no Spanish twin yet.
-    work:   { key: "work",   roman: "VI",  app: "WorkBridge", name: "Work, income & training", nameEs: "Trabajo, ingresos y capacitación", accent: "var(--p-work)", englishOnly: true }
+    work:   { key: "work",   roman: "VI",  app: "WorkBridge", name: "Work, income & training", nameEs: "Trabajo, ingresos y capacitación", accent: "var(--p-work)" }
   };
 
   /* ---------- Links (official or long-standing nonprofit sources) ---------- */
@@ -131,25 +130,25 @@
     rep: { label: "Find your U.S. Representative", url: "https://www.house.gov/representatives/find-your-representative", labelEs: "Encuentre a su representante en el Congreso" },
     congress: { label: "Congress.gov bill tracker", url: "https://www.congress.gov", labelEs: "Congress.gov: seguimiento de leyes" },
     lifeline988: { label: "988 Suicide & Crisis Lifeline", url: "https://988lifeline.org", labelEs: "988: línea de crisis y suicidio (oprima 2 para español)" },
-    // WorkBridge (English-only). Government or long-standing nonprofit sources; every one is a place staffed by people.
-    ui: { label: "Unemployment benefits — your state's office (USA.gov)", url: "https://www.usa.gov/unemployment-benefits" },
-    ajc: { label: "Find an American Job Center (free, in person)", url: "https://www.careeronestop.org/LocalHelp/AmericanJobCenters/find-american-job-centers.aspx" },
-    jobTraining: { label: "USA.gov — job training programs", url: "https://www.usa.gov/job-training" },
-    apprenticeship: { label: "Apprenticeship.gov — find a paid apprenticeship", url: "https://www.apprenticeship.gov/apprenticeship-job-finder" },
-    snapET: { label: "SNAP Employment & Training (free training for SNAP households)", url: "https://www.fns.usda.gov/snap/et" },
-    pell: { label: "Federal Pell Grant, including short Workforce Pell programs", url: "https://studentaid.gov/understand-aid/types/grants/pell" },
-    yearup: { label: "Year Up United (ages 18–29, no degree needed)", url: "https://www.yearup.org" },
-    perscholas: { label: "Per Scholas (free tech training)", url: "https://perscholas.org" },
-    jobcorps: { label: "Job Corps (ages 16–24, free training with housing)", url: "https://www.jobcorps.gov" },
-    warn: { label: "WARN Act — 60-day layoff notice (U.S. Dept. of Labor)", url: "https://www.dol.gov/agencies/eta/layoffs/warn" },
-    cobra: { label: "COBRA — keeping job-based insurance (U.S. Dept. of Labor)", url: "https://www.dol.gov/agencies/ebsa/laws-and-regulations/laws/cobra" },
-    whd: { label: "Unpaid wages or final pay — Wage and Hour Division", url: "https://www.dol.gov/agencies/whd" },
-    eeoc: { label: "EEOC — file a discrimination charge", url: "https://www.eeoc.gov/how-file-charge-employment-discrimination" },
-    nlrb: { label: "NLRB — your right to act together at work", url: "https://www.nlrb.gov/about-nlrb/rights-we-protect/your-rights" },
-    formUnion: { label: "AFL-CIO — how to form a union", url: "https://aflcio.org/formaunion" },
-    nnuAI: { label: "National Nurses United on AI in patient care", url: "https://www.nationalnursesunited.org/artificial-intelligence" },
-    nrp: { label: "Nurse residency programs (AACN)", url: "https://www.aacnnursing.org/nurse-residency-program" },
-    vaJobs: { label: "VA careers & employment help for veterans", url: "https://www.va.gov/careers-employment/" }
+    // WorkBridge. Government or long-standing nonprofit sources; every one is a place staffed by people.
+    ui: { label: "Unemployment benefits — your state's office (USA.gov)", url: "https://www.usa.gov/unemployment-benefits", labelEs: "Beneficios de desempleo: la oficina de su estado (USA.gov)" },
+    ajc: { label: "Find an American Job Center (free, in person)", url: "https://www.careeronestop.org/LocalHelp/AmericanJobCenters/find-american-job-centers.aspx", labelEs: "Encuentre un American Job Center (centro de empleo gratis, en persona)" },
+    jobTraining: { label: "USA.gov — job training programs", url: "https://www.usa.gov/job-training", labelEs: "USA.gov: programas de capacitación laboral", urlEs: "https://www.usa.gov/es/capacitacion-laboral" },
+    apprenticeship: { label: "Apprenticeship.gov — find a paid apprenticeship", url: "https://www.apprenticeship.gov/apprenticeship-job-finder", labelEs: "Apprenticeship.gov: busque un aprendizaje pagado" },
+    snapET: { label: "SNAP Employment & Training (free training for SNAP households)", url: "https://www.fns.usda.gov/snap/et", labelEs: "SNAP Empleo y Capacitación (E&T): capacitación gratis para hogares con SNAP" },
+    pell: { label: "Federal Pell Grant, including short Workforce Pell programs", url: "https://studentaid.gov/understand-aid/types/grants/pell", labelEs: "Beca federal Pell, incluidos los programas cortos de Workforce Pell", urlEs: "https://studentaid.gov/es/understand-aid/types/grants/pell" },
+    yearup: { label: "Year Up United (ages 18–29, no degree needed)", url: "https://www.yearup.org", labelEs: "Year Up United (de 18 a 29 años, sin título universitario)" },
+    perscholas: { label: "Per Scholas (free tech training)", url: "https://perscholas.org", labelEs: "Per Scholas (capacitación gratis en tecnología)" },
+    jobcorps: { label: "Job Corps (ages 16–24, free training with housing)", url: "https://www.jobcorps.gov", labelEs: "Job Corps (de 16 a 24 años, capacitación gratis con vivienda)", urlEs: "https://www.jobcorps.gov/es" },
+    warn: { label: "WARN Act — 60-day layoff notice (U.S. Dept. of Labor)", url: "https://www.dol.gov/agencies/eta/layoffs/warn", labelEs: "Ley WARN: aviso de despido de 60 días (Departamento de Trabajo)" },
+    cobra: { label: "COBRA — keeping job-based insurance (U.S. Dept. of Labor)", url: "https://www.dol.gov/agencies/ebsa/laws-and-regulations/laws/cobra", labelEs: "COBRA: conservar el seguro del trabajo (Departamento de Trabajo)" },
+    whd: { label: "Unpaid wages or final pay — Wage and Hour Division", url: "https://www.dol.gov/agencies/whd", labelEs: "Sueldos no pagados o último cheque: División de Horas y Salarios" },
+    eeoc: { label: "EEOC — file a discrimination charge", url: "https://www.eeoc.gov/how-file-charge-employment-discrimination", labelEs: "EEOC: presente una queja por discriminación" },
+    nlrb: { label: "NLRB — your right to act together at work", url: "https://www.nlrb.gov/about-nlrb/rights-we-protect/your-rights", labelEs: "NLRB: su derecho a actuar en conjunto en el trabajo" },
+    formUnion: { label: "AFL-CIO — how to form a union", url: "https://aflcio.org/formaunion", labelEs: "AFL-CIO: cómo formar un sindicato" },
+    nnuAI: { label: "National Nurses United on AI in patient care", url: "https://www.nationalnursesunited.org/artificial-intelligence", labelEs: "National Nurses United sobre la IA en la atención a pacientes" },
+    nrp: { label: "Nurse residency programs (AACN)", url: "https://www.aacnnursing.org/nurse-residency-program", labelEs: "Programas de residencia para enfermería (AACN)" },
+    vaJobs: { label: "VA careers & employment help for veterans", url: "https://www.va.gov/careers-employment/", labelEs: "VA: ayuda de empleo para veteranos" }
   };
 
   /* ---------- Helpers ---------- */
@@ -437,7 +436,7 @@
         "If you feel hopeless or think about harming yourself: call or text 988, any time.";
     },
 
-    /* ----- VI. WorkBridge (English-only). Every draft points to an office with people in it. ----- */
+    /* ----- VI. WorkBridge. Every draft points to an office with people in it. ----- */
     ui: function (p) {
       var since = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
       return "FILE FOR UNEMPLOYMENT — THIS WEEK\n\n" +
@@ -610,7 +609,7 @@
     leave: "FMLA protects your job but doesn't pay. A growing number of states run paid family leave insurance funded by payroll deductions you've likely already been paying. The certification form is where most claims stall — a clear, specific clinician note prevents delays.",
     caregiverPay: "Many states' Medicaid programs let people hire a family member as their paid caregiver. California's IHSS is the largest. If your parent or partner already gets your help daily, you may be able to be paid for it.",
     respite: "Family caregivers have higher rates of depression and chronic illness. Respite — even a few hours — is a health intervention, not a luxury.",
-    // WorkBridge (English-only)
+    // WorkBridge
     ui: "Unemployment insurance is paid for by a tax on your employer that's figured into your wages — you earned it. It pays from the week you file, not the day you lost the job, so delay costs you money. Most states replace about half of prior wages up to a cap, for up to 26 weeks. Partial benefits exist for cut hours, and many denials are won on appeal.",
     owed: "A final paycheck, unused vacation and earned commissions are debts the employer owes you, with state deadlines behind them. A severance agreement trades money for your right to sue; federal law gives workers 40 and over 21 days to think about it. And if 100 or more people work there, a mass layoff usually requires 60 days' notice — or 60 days of pay.",
     coverageClock: "Losing job-based insurance opens three doors. Medicaid is open any day and judges income now, not last year's. The Marketplace opens a 60-day special enrollment window with subsidies based on this year's expected income. COBRA keeps the old plan at full price for up to 18 months and can be elected retroactively within 60 days of losing coverage or getting the election notice, whichever is later. Both clocks run from the day coverage ends, not the day the job ended. Miss them and you may wait until November.",
@@ -860,6 +859,155 @@
           "Importante: no puede usar el mismo dinero para la DCAP y para el Crédito por Gastos del Cuidado de Hijos y Dependientes (Child and Dependent Care Credit). Un preparador de impuestos (los sitios VITA son gratis) le puede ayudar a escoger la mejor combinación.\n\n" +
           "— CORREO EN INGLÉS PARA ENVIAR —\n\n" + carta;
       },
+      /* ----- VI. WorkBridge ----- */
+      ui: function (p) {
+        var since = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+        return "SOLICITE EL SEGURO DE DESEMPLEO — ESTA SEMANA\n\n" + INTERPRETER_ES + "\n\n" +
+          "Por qué ahora: el seguro de desempleo (unemployment insurance) paga desde la semana en que usted lo SOLICITA, no desde el día en que terminó el trabajo. Cada semana que espera es una semana que no recupera.\n" +
+          (since !== null && since > 7 ? "Usted dijo que el trabajo terminó hace unos " + since + " días, así que solicítelo hoy.\n" : "") +
+          "Usted lo pagó con cada cheque. Es un seguro, no caridad.\n\n" +
+          "DÓNDE: la oficina de desempleo de su estado (solicítelo en el estado donde TRABAJÓ, aunque viva en otro). Por internet, por teléfono o en persona en un American Job Center (centro de empleo), donde una persona le ayuda gratis.\n\n" +
+          "TENGA A LA MANO:\n[ ] Número de Seguro Social (lo pide solo la oficina del estado; esta app nunca)\n[ ] Nombres, direcciones y fechas de sus empleadores de los últimos 18 meses\n" +
+          "[ ] Sus últimos talones de pago; el motivo por el que terminó el trabajo, con sus propias palabras\n[ ] Una cuenta bancaria para depósito directo (o pida una tarjeta de débito)\n[ ] Su número de registro de extranjero (alien registration number) si no es ciudadano: la oficina lo pregunta; nosotros nunca\n\n" +
+          "QUÉ ESPERAR:\n• La mayoría de los estados reemplazan cerca de la mitad de su sueldo anterior, hasta un máximo semanal, durante hasta 26 semanas (en algunos estados, menos).\n" +
+          "• ¿Le redujeron las horas sin despedirlo? Pregunte por el desempleo PARCIAL. Muchas veces puede recibir un cheque reducido mientras trabaja menos horas.\n" +
+          "• ¿Renunció o lo despidieron? Solicítelo de todos modos. Muchas negaciones se revierten en la apelación: \"causa justificada\" (good cause) y \"mala conducta\" (misconduct) son términos legales con significados muy limitados.\n" +
+          "• Normalmente debe estar buscando trabajo y llevar un registro sencillo. Anote cada solicitud: fecha, empleador, puesto y cómo la envió.\n" +
+          "• El finiquito (severance) puede retrasar los beneficios en algunos estados. Solicítelo de todos modos; que decida la oficina.\n\n" +
+          "SI SE LO NIEGAN: apele por escrito antes de la fecha límite de la carta (a menudo de 10 a 30 días). La asistencia legal gratuita atiende estos casos.\n\n" +
+          "Los beneficios de desempleo pagan impuestos. Pida que le retengan impuestos (normalmente el 10% federal) para que no haya sorpresas en abril.";
+      },
+      owed: function (p) {
+        return "LO QUE LE DEBEN CUANDO TERMINA UN TRABAJO — LISTA\n\n" + INTERPRETER_ES + "\n\n" +
+          "[ ] ÚLTIMO CHEQUE: cada hora trabajada, incluidas las horas extra. Muchos estados fijan un plazo (en algunos, el mismo día del despido). Si llega tarde o incompleto, presente un reclamo de salarios ante el departamento de trabajo de su estado o la División de Horas y Salarios federal (Wage and Hour Division): es gratis y no necesita abogado.\n" +
+          "[ ] VACACIONES / PTO NO USADOS: en muchos estados se pagan al terminar el empleo, o si la política de la empresa lo dice. Pida la política por escrito.\n" +
+          "[ ] REEMBOLSOS DE GASTOS y cualquier comisión o bono ya ganado.\n" +
+          "[ ] FECHA EN QUE TERMINA EL SEGURO MÉDICO: pregunte a Recursos Humanos (HR) exactamente qué día termina la cobertura (a menudo, a fin de mes). Anótela: ahí empiezan los plazos de 60 días de COBRA y del Mercado de Seguros.\n" +
+          "[ ] JUBILACIÓN: el dinero de su 401(k)/403(b) es suyo. No lo retire por pánico (paga impuestos más una multa del 10% si tiene menos de 59½ años). Dejarlo donde está o pasarlo a una cuenta IRA lo conserva.\n" +
+          "[ ] El MOTIVO POR ESCRITO de la separación y una copia de su expediente de personal (es su derecho en muchos estados).\n" +
+          "[ ] REFERENCIAS: pida ahora una referencia a un supervisor que lo respete, mientras la relación está fresca.\n\n" +
+          "FINIQUITO (SEVERANCE) — NO LO FIRME EL MISMO DÍA\n" +
+          "Un acuerdo de finiquito normalmente le pide renunciar al derecho de demandar. Lléveselo a casa.\n" +
+          "• Si tiene 40 años o más, la ley federal (OWBPA) le da 21 días para pensarlo y 7 días para retractarse después de firmar; 45 días si es un despido en grupo.\n" +
+          "• Todo se negocia: más semanas de pago, el pago de las primas del seguro, una referencia neutral, quitar una cláusula de no competencia.\n" +
+          "• La asistencia legal gratuita o un centro de trabajadores (workers' center) puede leerlo con usted.\n\n" +
+          (p.warnLarge ? "LEY WARN — PUEDEN DEBERLE 60 DÍAS DE SUELDO\n" +
+            "Los empleadores con 100 o más trabajadores generalmente deben dar un aviso por escrito con 60 días de anticipación antes de cerrar una planta o hacer un despido masivo. Si le avisaron con poco tiempo o sin aviso, pueden deberle hasta 60 días de sueldo y beneficios. Varios estados (entre ellos CA, NY, NJ e IL) tienen versiones más fuertes. Comuníquese con el equipo de Respuesta Rápida (Rapid Response) de su estado a través de un American Job Center, o con asistencia legal. Guarde cada carta y correo sobre el despido.\n\n" : "") +
+          "GUARDE UNA CARPETA: talones de pago, la carta de separación, los avisos del seguro, cada correo. Si algo sale mal después, gana quien tiene los papeles.";
+      },
+      coverageClock: function (p) {
+        var covSince = p.coverageEndDays === null || p.coverageEndDays === undefined ? null : Math.round(num(p.coverageEndDays));
+        var jobSince = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+        return "PERDIÓ EL SEGURO MÉDICO CON EL TRABAJO — TRES PUERTAS, UN PLAZO DE 60 DÍAS\n\n" + INTERPRETER_ES + "\n\n" +
+          "EL PLAZO EMPIEZA EL DÍA EN QUE TERMINA LA COBERTURA, no el día en que terminó el trabajo. La cobertura suele durar hasta el fin del mes en que se fue, y a veces más si hay un acuerdo de finiquito.\n" +
+          (covSince !== null && covSince > 60 ? "Usted dijo que la cobertura terminó hace unos " + covSince + " días, así que el plazo de 60 días del Mercado probablemente ya cerró. Medicaid sigue abierto todos los días. Pregunte en el Mercado de todos modos (algunos estados dan más tiempo) y revise la fecha de su aviso de elección de COBRA: los 60 días de COBRA corren desde ese aviso si llegó después.\n\n" :
+            covSince !== null ? "Usted dijo que la cobertura terminó hace unos " + covSince + " días, así que le quedan unos " + (60 - covSince) + " días de los plazos de 60 días. Confirme la fecha exacta con Recursos Humanos o con la carta de la aseguradora.\n\n" :
+            "Todavía no me ha dicho el día exacto en que termina la cobertura" + (jobSince !== null ? " (el trabajo terminó hace unos " + jobSince + " días)" : "") + ". PRIMER PASO: llame a Recursos Humanos o a la aseguradora, pida esa fecha por escrito y luego vuelva y anótela aquí para que pueda fijar la fecha límite real.\n\n") +
+          "PUERTA 1 — MEDICAID (cualquier día del año, normalmente gratis)\n" +
+          "Medicaid mira sus ingresos de AHORA, no los del año pasado. Un hogar de " + p.hhSize + " con ingresos de unos " + money(num(p.income)) + " al mes" +
+          (num(p.income) ? " está más o menos en el " + fplPct(p) + "% del nivel de pobreza" : "") + ". " +
+          (NON_EXPANSION.indexOf(p.state) !== -1 ? "Su estado no ha ampliado Medicaid a la mayoría de los adultos, así que revise también el Mercado y busque un centro de salud comunitario mientras lo resuelve." : "Si está por debajo de más o menos el 138% del nivel de pobreza, es probable que califique. Solicítelo en la oficina de Medicaid de su estado o en CuidadoDeSalud.gov.") + "\n\n" +
+          "PUERTA 2 — INSCRIPCIÓN ESPECIAL EN EL MERCADO (60 días antes o después de que termine la cobertura)\n" +
+          "Perder el seguro del trabajo abre un plazo en CuidadoDeSalud.gov (o en el mercado de su estado) aun fuera de la Inscripción Abierta: puede solicitar hasta 60 días ANTES de la fecha de fin, para que no quede sin cobertura, y hasta 60 días después. Informe sus NUEVOS ingresos, más bajos: la ayuda se calcula con lo que espera ganar este año, y puede actualizarla si encuentra trabajo.\n\n" +
+          "PUERTA 3 — COBRA (60 días para decidir; normalmente la más cara)\n" +
+          "Puede conservar el mismo plan hasta 18 meses, pero paga la prima completa más un 2%: muchas veces de $600 a $2,000 al mes. Tiene sentido sobre todo si está a mitad de un tratamiento o ya cubrió un deducible alto. Tiene 60 días para elegirlo, contados desde el día en que terminó la cobertura o desde el día en que recibe el aviso de elección de COBRA, lo que ocurra después; si lo elige, lo cubre desde el día en que terminó el plan anterior.\n\n" +
+          "MIENTRAS DECIDE: un centro de salud comunitario lo atiende tenga o no seguro y cobra según sus ingresos. No deje de tomar sus medicamentos: pida en la farmacia el precio en efectivo y el programa de ayuda del fabricante.\n\n" +
+          "ANOTE: fecha en que termina la cobertura ______  ·  fecha límite de 60 días ______  ·  fecha de la solicitud en el Mercado ______";
+      },
+      snapReport: function (p) {
+        return "INFORME A SNAP QUE BAJARON SUS INGRESOS — GUION PARA LLAMAR\n\n" + INTERPRETER_ES + "\n\n" +
+          "Usted ya tiene SNAP. Un ingreso más bajo normalmente significa un beneficio MÁS ALTO, pero solo cuando usted lo informa.\n\n" +
+          "Llame a su trabajador de caso o a la línea de SNAP del estado y diga:\n" +
+          "\"Necesito informar un cambio. [Mi trabajo / el trabajo de un miembro de mi hogar] terminó / le redujeron las horas el [fecha]. Los ingresos de nuestro hogar ahora son de unos " + money(num(p.income)) + " al mes. Por favor, vuelvan a calcular nuestro beneficio desde la fecha del cambio y díganme qué comprobantes necesitan.\"\n\n" +
+          "ENVÍE LOS COMPROBANTES LA MISMA SEMANA: la carta de separación, el último talón de pago o una declaración breve firmada por el empleador. Guarde una copia y anote con quién habló y cuándo.\n\n" +
+          "PREGUNTE TAMBIÉN:\n• \"¿Esto cambia mi fecha de recertificación?\"\n• \"¿Hay reglas de trabajo para mí, y cuenta el programa de Empleo y Capacitación de SNAP (E&T)?\" (Es gratis y puede incluir ayuda para buscar trabajo, capacitación y dinero para transporte.)\n" +
+          "• \"¿Pueden agregar nuestra deducción de servicios públicos?\", si usted paga la calefacción o la electricidad por separado y todavía no está contada.\n\n" +
+          "Si la oficina dice que el cambio no importa, pídalo por escrito. Informar una BAJA de ingresos siempre está permitido, aun entre un informe y otro.";
+      },
+      ajc: function (p) {
+        return "AMERICAN JOB CENTER (CENTRO DE EMPLEO) — QUÉ PEDIR\n\n" + INTERPRETER_ES + "\n\n" +
+          "Hay unos 2,300 en todo el país. Los atienden personas, se pagan con los impuestos que usted ya pagó, y son gratis. No necesita ninguna app ni IA para usarlos.\n\n" +
+          "Encuentre el suyo (buscador de CareerOneStop) y vaya en persona o llame. Diga:\n" +
+          "\"Quisiera reunirme con un consejero de empleo. " + (p.jobLoss ? "Hace poco perdí mi trabajo / me redujeron las horas" : p.newGrad ? "Busco mi primer empleo después de terminar los estudios" : "Quiero una capacitación que me lleve a un trabajo mejor pagado") + ". Quiero saber para qué califico bajo la ley WIOA.\"\n\n" +
+          "QUÉ PUEDEN HACER:\n" +
+          "[ ] Ayudarle a solicitar el desempleo ahí mismo\n" +
+          "[ ] Pagar una capacitación (una \"Cuenta Individual de Capacitación\", muchas veces de varios miles de dólares) en una escuela o programa aprobado\n" +
+          "[ ] Ayudar con los gastos de buscar trabajo: transporte, ropa de trabajo, herramientas y, a veces, cuidado de niños\n" +
+          "[ ] Ayuda de una persona con el currículum (résumé) y las entrevistas; contacto con empleadores que contratan a través del centro\n" +
+          "[ ] Servicios de \"Respuesta Rápida\" si su despido fue parte de uno más grande\n" +
+          "[ ] Referencias a aprendizajes, al programa de Empleo y Capacitación de SNAP y al personal de empleo para veteranos\n\n" +
+          "LLEVE: identificación, su historial de trabajo de los últimos años y la lista de empleos a los que ha aplicado.\n\n" +
+          "ANTES DE IRSE, PREGUNTE: \"¿Para qué califico, cuál es el siguiente paso y quién es mi persona de contacto?\" Anote el nombre.";
+      },
+      training: function (p) {
+        return "CAPACITACIÓN QUE TERMINA EN UN SUELDO — CÓMO ELEGIR\n\n" +
+          "Los programas con la evidencia más fuerte tienen tres cosas en común: se diseñan CON los empleadores que contratan, le pagan o no le cuestan nada, y terminan en un trabajo real. Así se distinguen.\n\n" +
+          "1. APRENDIZAJE REGISTRADO (registered apprenticeship): lo contratan desde el primer día y le pagan mientras aprende (oficios, salud, tecnología, manufactura, y cada vez más en trabajos de oficina). Busque en Apprenticeship.gov. Evidencia: los ingresos de los aprendices subieron 43%, frente a 16% en trabajadores parecidos (Urban Institute).\n\n" +
+          "2. PROGRAMAS SECTORIALES: gratuitos, de varios meses, diseñados con empleadores y con un consejero. Year Up United (de 18 a 29 años) y Per Scholas (tecnología) son los mejor estudiados: en estudios aleatorizados, los graduados ganaron de 14 a 30% más durante 7 años o más. Los cupos son limitados y no están en todas las ciudades; pregunte en el centro de empleo cuál es el equivalente local.\n\n" +
+          "3. PROGRAMAS CORTOS PAGADOS CON PELL: desde julio de 2026, las becas Pell pueden pagar programas aprobados de 8 a 15 semanas (\"Workforce Pell\"). Cada uno debe demostrar que el 70% termina y el 70% consigue empleo para seguir aprobado. Pregunte en el colegio comunitario (community college) cuáles de sus programas cortos están aprobados y cuánto ganan de verdad los graduados.\n\n" +
+          "4. EMPLEO Y CAPACITACIÓN DE SNAP (E&T): si tiene SNAP, capacitación gratis más ayuda con transporte y libros. Pregunte a su trabajador de caso.\n\n" +
+          "PREGUNTAS QUE LO PROTEGEN (hágalas en todos los programas):\n" +
+          "[ ] ¿Qué porcentaje de los que EMPIEZAN termina? ¿Qué porcentaje tiene trabajo en el campo 6 meses después? ¿Cuánto ganan?\n" +
+          "[ ] ¿Con qué empleadores trabajan? ¿Puedo hablar con alguien que se graduó hace poco?\n" +
+          "[ ] ¿Cuánto me va a costar, con cuotas, y hay algún préstamo de por medio? (Si un programa le empuja un préstamo privado, aléjese.)\n" +
+          "[ ] ¿Los empleadores o una junta de licencias reconocen el certificado?\n\n" +
+          "DÓNDE SE MANTIENEN LOS EMPLEOS: las caídas más fuertes en la contratación de principiantes están en el trabajo de oficina que un programa puede hacer (programación rutinaria, atención al cliente con guion, mercadeo básico). El trabajo manual, en persona y con licencia (salud, oficios calificados, servicios públicos, servicio en campo) ha seguido creciendo. Elija con los ojos abiertos.";
+      },
+      firstJob: function (p) {
+        return "PRIMER EMPLEO DESPUÉS DE LA ESCUELA — LOS PASOS CON EVIDENCIA DETRÁS\n\n" +
+          "El mercado para los recién graduados está más apretado que antes. No es su culpa, y se puede medir: el desempleo de los recién graduados va unos 1.3 puntos por encima del de todos los demás (Reserva Federal de Nueva York, 2026). Esto es lo que de verdad mueve las probabilidades.\n\n" +
+          "1. PONGA EXPERIENCIA PAGADA EN EL CURRÍCULUM, AUN AHORA. Una pasantía (internship), un co-op o un aprendizaje reduce casi a la mitad la probabilidad de quedarse en un trabajo que no necesita su título (Strada/Burning Glass). Muchos aceptan a recién graduados, no solo a estudiantes. Pregunte en el centro de carreras de su escuela (la mayoría atiende a exalumnos) y en el American Job Center.\n\n" +
+          "2. TENGA CUIDADO CON UN TRABAJO PROVISIONAL. En un experimento de contratación, los graduados en trabajos por debajo de su título recibieron de 15 a 30% menos entrevistas, pero la experiencia de pasantía borró casi toda esa desventaja. Si necesita el trabajo provisional para la renta, tómelo, y mantenga una cosa relacionada con su campo al mismo tiempo.\n\n" +
+          "3. APLIQUE DONDE UNA PERSONA LEA SU SOLICITUD. Los empleadores pequeños, los hospitales, las agencias públicas, los sindicatos y los aprendizajes tienen más probabilidad de tener a una persona del otro lado. En Illinois, los empleadores ahora deben avisarle cuando usan IA en una decisión de contratación; en la ciudad de Nueva York deben publicar un aviso y una auditoría de sesgo. En cualquier lugar, usted puede preguntar.\n\n" +
+          "4. INCLÍNESE HACIA EL TRABAJO DONDE LA TECNOLOGÍA AYUDA EN VEZ DE REEMPLAZAR. Los empleos de principiante más expuestos a la IA cayeron un 11% para los jóvenes de 22 a 25 años desde 2022; los menos expuestos crecieron un 10% (Stanford, 2026). El trabajo de cuidado, los oficios, los puestos en campo y todo lo que requiere licencia se han mantenido.\n\n" +
+          "5. ENFERMERAS Y ENFERMEROS NUEVOS: dé prioridad a los empleadores con un programa de residencia acreditado (el 89% de los residentes sigue ahí al año, frente al 76% a nivel nacional). Mire los hospitales rurales y fuera de las grandes ciudades: ahí la escasez es unas tres veces mayor. Oregón y Washington ahora prohíben que un programa se llame a sí mismo \"enfermera\" o \"enfermero\".\n\n" +
+          "6. USE A LAS PERSONAS GRATIS: el centro de carreras (también para exalumnos), el American Job Center, las redes de sus profesores, la oficina de aprendizajes de su estado y un local sindical de su campo.\n\n" +
+          "RITMO SEMANAL QUE FUNCIONA: 5 solicitudes personalizadas, 2 conversaciones reales con personas del campo, 1 hora de práctica. Anótelo: también cumple con la regla de búsqueda de trabajo del desempleo si lo está cobrando.";
+      },
+      aiRights: function (p) {
+        var s = DRAFTS.aiRights(p);
+        var i = s.indexOf('"Dear [HR'), j = s.indexOf('Thank you."', i);
+        var carta = i >= 0 && j >= 0 ? s.slice(i, j + 11) : "";
+        return "CUANDO UN PROGRAMA DE COMPUTADORA LO FILTRA, LO VIGILA O LO REEMPLAZA — SUS DERECHOS\n\n" +
+          "Primero, con claridad: todavía ninguna ley federal impide que un empleador use IA para filtrar solicitudes, fijar horarios, vigilar el trabajo o decidir despidos. Pero las leyes de siempre aplican a lo que haga el programa, y algunos estados han agregado reglas. Esto es lo que puede usar.\n\n" +
+          "LAS LEYES CONTRA LA DISCRIMINACIÓN APLICAN A LA HERRAMIENTA. Si un sistema automatizado descarta a personas por raza, sexo, edad (40 años o más), discapacidad, origen nacional o embarazo, aunque sea sin querer, el EMPLEADOR es responsable bajo el Título VII, la ADA y la ADEA. Puede presentar una queja ante la EEOC (gratis; de 180 a 300 días desde el hecho). Una IA que no puede manejar una adaptación por discapacidad es un problema bajo la ADA.\n\n" +
+          "PREGUNTE POR ESCRITO. Abajo hay una carta en inglés para copiar y enviar a Recursos Humanos o a quien contrata. La carta está en inglés porque el empleador la necesita en inglés. Qué debe llenar: lo que está entre [corchetes]: el puesto o la decisión, y la fecha. Lo que pide: si se usó una herramienta automatizada o de IA en la decisión, qué evaluó, cómo pedir que una persona la revise, y cómo pedir una adaptación si la necesita.\n" +
+          "En ILLINOIS (desde el 1 de enero de 2026), los empleadores deben avisarle cuando usan IA para contratar, ascender, disciplinar o despedir, y no pueden usarla de manera que discrimine. En la CIUDAD DE NUEVA YORK, las herramientas automatizadas de contratación necesitan una auditoría de sesgo publicada y un aviso previo. Otros estados van en la misma dirección: pregunte al departamento de trabajo de su estado.\n\n" +
+          "DESPIDOS: si en la empresa trabajan 100 personas o más, un despido masivo normalmente requiere un aviso por escrito con 60 días de anticipación (ley WARN). La \"eficiencia por IA\" no es una excepción.\n\n" +
+          "VIGILANCIA: en general, el empleador puede vigilar las cuentas y los aparatos del trabajo. Lo que no puede es usar esa vigilancia para castigarlo por hablar con sus compañeros sobre el sueldo, la seguridad, el personal o la IA: eso está protegido por la Ley Nacional de Relaciones Laborales, con sindicato o sin él.\n\n" +
+          "EN LA SALUD: la IA no puede ejercer la enfermería ni la medicina. Oregón (2026) y Washington (2026) prohibieron que un programa use el título de \"enfermera\" o \"enfermero\". Si lo que dice una herramienta choca con su criterio clínico, documéntelo y siga su ámbito de práctica: la licencia es suya, no del proveedor del programa.\n\n" +
+          "GUARDE UN REGISTRO: capturas de pantalla de cualquier rechazo automático, el anuncio del puesto, fechas y nombres. Las agencias y los abogados actúan sobre patrones.\n\n" +
+          "— CARTA EN INGLÉS PARA ENVIAR —\n\n" + carta;
+      },
+      organize: function (p) {
+        var s = DRAFTS.organize(p);
+        var i = s.indexOf('"We, the undersigned'), j = s.indexOf('by [date]."', i);
+        var carta = i >= 0 && j >= 0 ? s.slice(i, j + 11) : "";
+        return "HABLE CON SUS COMPAÑEROS — LA IA, EL PERSONAL Y LA AUTOMATIZACIÓN SE PUEDEN NEGOCIAR\n\n" +
+          "Una persona que se queja de un sistema nuevo es una queja. Diez personas que lo ponen por escrito son una negociación. La ley protege a la segunda.\n\n" +
+          "SU DERECHO: bajo la Sección 7 de la Ley Nacional de Relaciones Laborales (NLRA), la mayoría de los trabajadores del sector privado pueden actuar juntos sobre sus condiciones de trabajo (sueldo, horarios, seguridad, personal, vigilancia y cómo se introduce la tecnología nueva), tengan sindicato o no. Despedir o castigar a alguien por eso es ilegal, y la NLRB recibe las quejas gratis.\n\n" +
+          "PRIMERAS CONVERSACIONES (fuera del horario de trabajo y fuera de los sistemas de la empresa):\n" +
+          "• \"¿Qué ha cambiado en tu trabajo desde [el sistema nuevo / los despidos]?\"\n" +
+          "• \"¿Qué haría que esto fuera seguro y justo?\": anote las tres respuestas más comunes.\n" +
+          "• \"¿Firmarías algo que diga eso?\"\n\n" +
+          "UNA CARTA EN GRUPO QUE FUNCIONA: abajo hay un modelo en inglés, porque la gerencia lo necesita en inglés. Qué debe llenar: el departamento, el sistema (de horarios, de vigilancia o de IA), el nivel de personal que consideran seguro y la fecha para reunirse. Pide tres cosas: aviso antes de que una herramienta automatizada los evalúe, programe o discipline; una persona ante quien apelar; y que el personal no baje de un nivel seguro. La firman varias personas y la entregan juntas.\n\n" +
+          "SI TIENE SINDICATO: llévelo a su delegado (steward); la tecnología que cambia las condiciones de trabajo normalmente se tiene que negociar. Enfermería: National Nurses United tiene lenguaje modelo de contrato sobre la IA y la seguridad del paciente.\n" +
+          "SI NO LO TIENE: un centro de trabajadores (workers' center) o la línea de organización de la AFL-CIO puede guiarlo. Muchos primeros pasos no requieren formar un sindicato.\n\n" +
+          "Anote con quién habló y cuándo. Mantenga las conversaciones de organización fuera del correo y el chat del empleador.\n\n" +
+          "— CARTA EN INGLÉS PARA ENTREGAR —\n\n" + carta;
+      },
+      medicaidWork: function (p) {
+        return "CONSERVE MEDICAID — LA REGLA DE 80 HORAS A PARTIR DE 2027\n\n" + INTERPRETER_ES + "\n\n" +
+          "Bajo la ley de presupuesto de 2025 (P.L. 119-21), los estados deben empezar a exigir a muchos adultos cubiertos por Medicaid ampliado que demuestren 80 horas al mes de trabajo, capacitación, estudios o voluntariado, a partir de enero de 2027 en la mayoría de los estados (algunos pueden tener más tiempo). Quien no pueda demostrarlo, o se pierda el papeleo, puede perder la cobertura.\n\n" +
+          "QUÉ CUENTA PARA LAS 80 HORAS: trabajo pagado (por horas o por ingresos), un programa de capacitación laboral, estudios de medio tiempo o más, servicio comunitario, o una combinación.\n" +
+          "PROBABLEMENTE EXENTOS (confirme con su estado): padres, madres o cuidadores de niños de 13 años o menos, personas embarazadas o que acaban de dar a luz, personas con discapacidad o con una enfermedad grave, personas en tratamiento por consumo de sustancias, veteranos con una calificación de discapacidad total, y otros.\n\n" +
+          "POR QUÉ ESTÁ EN SU PLAN: me dijo que un trabajo terminó o que redujeron las horas mientras alguien del hogar tiene Medicaid. Empezar ahora lo protege:\n" +
+          "[ ] Inscríbase en el programa gratuito de Empleo y Capacitación de SNAP o en un programa del centro de empleo: las horas de capacitación cuentan\n" +
+          "[ ] Lleve un registro mensual sencillo: horas trabajadas, horas de clase, horas de voluntariado\n" +
+          "[ ] Asegúrese de que la oficina de Medicaid tenga su dirección, teléfono y correo actuales: la mayoría de las pérdidas de cobertura son por papeleo, no por elegibilidad\n" +
+          "[ ] Pregunte a la oficina de Medicaid de su estado: \"¿Cuándo empieza aquí el requisito de participación comunitaria, y estoy exento?\"\n\n" +
+          "Si pierde la cobertura, puede volver a solicitarla, y Medicaid puede cubrir hasta 3 meses hacia atrás las cuentas de ese período.";
+      },
       leave: function (p) {
         var st = PAID_LEAVE_STATES[p.state];
         var s = DRAFTS.leave(p);
@@ -918,7 +1066,18 @@
       dcap: "Una cuenta FSA para el cuidado de dependientes le permite pagar el cuidado con dinero antes de impuestos: hasta $7,500 por hogar a partir de 2026. Si su tasa combinada de impuestos es del 22 al 30%, eso es un ahorro de $1,600 a $2,200 con una contribución completa, pero solo si su empleador actualizó su plan al nuevo límite.",
       leave: "La FMLA (Ley de Licencia Familiar y Médica) protege su empleo, pero no le paga. Cada vez más estados tienen un seguro de licencia familiar pagada que se financia con descuentos de nómina que probablemente usted ya ha estado pagando. La mayoría de las solicitudes se atrasan en el formulario de certificación; una nota clara y específica del profesional de salud evita retrasos.",
       caregiverPay: "Los programas de Medicaid de muchos estados permiten contratar a un familiar como cuidador pagado. IHSS de California es el más grande. Si su padre, su madre o su pareja ya recibe su ayuda todos los días, es posible que le puedan pagar a usted por ella.",
-      respite: "Las personas que cuidan a sus familiares tienen más depresión y enfermedades crónicas. El relevo (respite), aunque sea de unas pocas horas, es una medida para su salud, no un lujo."
+      respite: "Las personas que cuidan a sus familiares tienen más depresión y enfermedades crónicas. El relevo (respite), aunque sea de unas pocas horas, es una medida para su salud, no un lujo.",
+      // WorkBridge
+      ui: "El seguro de desempleo se paga con un impuesto a su empleador que ya está contado dentro de su sueldo: usted se lo ganó. Paga desde la semana en que lo solicita, no desde el día en que perdió el trabajo, así que esperar le cuesta dinero. La mayoría de los estados reemplazan cerca de la mitad del sueldo anterior, hasta un máximo, durante hasta 26 semanas. Hay beneficios parciales cuando le reducen las horas, y muchas negaciones se ganan en la apelación.",
+      owed: "El último cheque, las vacaciones no usadas y las comisiones ganadas son deudas del empleador con usted, con plazos fijados por el estado. Un acuerdo de finiquito cambia dinero por su derecho a demandar; la ley federal da 21 días para pensarlo a los trabajadores de 40 años o más. Y si ahí trabajan 100 personas o más, un despido masivo normalmente exige 60 días de aviso, o 60 días de sueldo.",
+      coverageClock: "Perder el seguro del trabajo abre tres puertas. Medicaid está abierto cualquier día y mira los ingresos de ahora, no los del año pasado. El Mercado abre un período de inscripción especial de 60 días, con ayuda calculada según lo que espera ganar este año. COBRA conserva el plan anterior a precio completo hasta 18 meses y se puede elegir con efecto retroactivo dentro de los 60 días desde que termina la cobertura o desde el aviso de elección, lo que ocurra después. Los dos plazos corren desde el día en que termina la cobertura, no desde el día en que terminó el trabajo. Si se le pasan, puede tener que esperar hasta noviembre.",
+      snapReport: "SNAP se vuelve a calcular cuando cambian los ingresos, pero una baja solo sube su beneficio cuando usted la informa, y el aumento empieza desde el informe, no desde la pérdida del trabajo. El SNAP acelerado (beneficios en 7 días) es para hogares con menos de $150 de ingresos al mes y $100 o menos en efectivo y cuentas bancarias, o cuya renta más servicios supera sus ingresos más esos recursos: pida a la oficina que lo revise.",
+      ajc: "Los American Job Centers son el sistema público de empleo creado por una ley federal (WIOA). Son gratuitos, en persona, y pueden pagar capacitación a través de Cuentas Individuales de Capacitación. Son la puerta de entrada humana a casi todos los programas de esta página: no necesita ninguna app ni IA para usarlos.",
+      training: "Los únicos programas de empleo probados en estudios aleatorizados (Year Up, Per Scholas, Project QUEST) comparten un diseño: hechos con empleadores, gratuitos para el participante, con un consejero y un trabajo al final. Las ganancias de ingresos de 14 a 30% duraron de 7 a 14 años. Los programas que le cobran, le empujan préstamos o no pueden nombrar a sus empleadores aliados no tienen ese historial.",
+      firstJob: "Desde 2023, los recién graduados universitarios tienen más desempleo que los trabajadores en general por primera vez en décadas, y el 42% de los que trabajan están en empleos que no necesitan título. La mejor evidencia dice que la experiencia pagada con un empleador de por medio (pasantías, co-ops, aprendizajes, residencias) es lo que cambia las probabilidades, no otro certificado.",
+      aiRights: "Todavía ninguna ley federal limita la IA en la contratación o el despido, pero las leyes contra la discriminación aplican a lo que haga la herramienta, y el empleador responde por ello. Illinois exige aviso cuando se usa IA en decisiones de empleo (2026); la ciudad de Nueva York exige auditorías de sesgo. En la salud, Oregón y Washington prohíben que un programa use el título de enfermera o enfermero. Su registro de lo que pasó es lo que permite exigir cualquiera de estas cosas.",
+      organize: "La Ley Nacional de Relaciones Laborales protege a la mayoría de los trabajadores del sector privado que actúan juntos sobre sus condiciones de trabajo, con sindicato o sin él, incluida la forma en que se introduce la tecnología nueva. Donde hay sindicato, la tecnología que cambia los empleos se tiene que negociar. Los estudios sobre IA y empleo muestran que las pérdidas caen donde los trabajadores tienen menos voz.",
+      medicaidWork: "La ley de presupuesto de 2025 agrega a Medicaid ampliado un requisito de trabajo o actividad a partir de 2027: 80 horas al mes de trabajo, capacitación, estudios o voluntariado, con exenciones para padres de niños pequeños, personas con discapacidad y otros. Donde se probaron reglas parecidas, la mayoría de quienes perdieron la cobertura sí calificaban: la perdieron por papeleo. Un registro y una dirección actualizada son la defensa."
     };
   var DRAFTS_ES = typeof DRAFTS_ES_IMPL !== "undefined" ? DRAFTS_ES_IMPL : {};
   var LESSONS_ES = typeof LESSONS_ES_IMPL !== "undefined" ? LESSONS_ES_IMPL : {};
@@ -1140,64 +1299,64 @@
     var covEnd = daysOr(p.coverageEndDays, null); // days since job-based coverage ended; the 60-day windows run from this, not from the job's end
     if (p.jobLoss) {
       // UI pays from the week you file; if the job ended more than a week ago the deadline is today.
-      tasks.push(task({ id: "ui", pillar: "work", draft: "ui", title: tr("File for unemployment this week — it pays from the week you file", "Solicite el seguro de desempleo esta semana"),
-        why: "You paid into unemployment insurance with every paycheck. Benefits start the week you file, not the day the job ended, so each week of delay is money you don't get back. Hours cut, not lost? Partial benefits exist.",
-        confidence: "likely", valueLabel: "Partial wage replacement", effortMin: 45, urgent: true, dueDays: jobEnd === null ? 7 : Math.max(0, 7 - jobEnd),
+      tasks.push(task({ id: "ui", pillar: "work", draft: "ui", title: tr("File for unemployment this week — it pays from the week you file", "Solicite el seguro de desempleo esta semana: paga desde la semana en que lo pide"),
+        why: tr("You paid into unemployment insurance with every paycheck. Benefits start the week you file, not the day the job ended, so each week of delay is money you don't get back. Hours cut, not lost? Partial benefits exist.", "Usted pagó el seguro de desempleo con cada cheque. Los beneficios empiezan la semana en que lo solicita, no el día en que terminó el trabajo, así que cada semana de espera es dinero que no recupera. ¿Le redujeron las horas sin perder el empleo? Existen beneficios parciales."),
+        confidence: "likely", valueLabel: tr("Partial wage replacement", "Reemplaza parte del sueldo"), effortMin: 45, urgent: true, dueDays: jobEnd === null ? 7 : Math.max(0, 7 - jobEnd),
         links: [L.ui, L.ajc], source: "State unemployment insurance laws (file in the state where you worked); USA.gov unemployment benefits. Most states replace about half of prior wages up to a weekly cap for up to 26 weeks" }));
-      tasks.push(task({ id: "owed", pillar: "work", draft: "owed", title: p.warnLarge ? "Collect what you're owed — and check whether the WARN Act's 60-day notice applied" : "Collect what you're owed: final pay, unused PTO, severance terms, your file",
-        why: "Final wages and earned leave are debts the employer owes you. A severance release should never be signed the same day" + (p.warnLarge ? ", and a large employer that gave little notice may owe up to 60 days of pay" : "") + ".",
-        confidence: "likely", valueLabel: "Money already yours", effortMin: 40, dueDays: 7,
+      tasks.push(task({ id: "owed", pillar: "work", draft: "owed", title: p.warnLarge ? tr("Collect what you're owed — and check whether the WARN Act's 60-day notice applied", "Cobre lo que le deben y revise si aplicaba el aviso de 60 días de la ley WARN") : tr("Collect what you're owed: final pay, unused PTO, severance terms, your file", "Cobre lo que le deben: último cheque, vacaciones no usadas, condiciones del finiquito, su expediente"),
+        why: tr("Final wages and earned leave are debts the employer owes you. A severance release should never be signed the same day", "El último sueldo y las vacaciones ganadas son deudas que el empleador tiene con usted. Nunca firme un acuerdo de finiquito (severance) el mismo día") + (p.warnLarge ? tr(", and a large employer that gave little notice may owe up to 60 days of pay", ", y un empleador grande que avisó con poca anticipación puede deberle hasta 60 días de sueldo") : "") + ".",
+        confidence: "likely", valueLabel: tr("Money already yours", "Dinero que ya es suyo"), effortMin: 40, dueDays: 7,
         links: p.warnLarge ? [L.warn, L.whd, L.lawhelp] : [L.whd, L.lawhelp], source: "FLSA and state final-pay laws; OWBPA, 29 U.S.C. 626(f) (workers 40+: 21 days to consider a release, 7 to revoke; 45 days in a group layoff); WARN Act, 29 U.S.C. 2101–2109 (employers of 100+, 60 days' notice)" }));
     }
     if (p.lostCoverage) {
       // The Marketplace and COBRA windows run 60 days from the day coverage ends. Without that date, the step is to pin it down within a week.
       tasks.push(task({ id: "coverageClock", pillar: "health", draft: "coverageClock",
-        title: covEnd === null ? "Find out the exact day job-based coverage ends — the 60-day clocks start from it" : "Beat the 60-day clock on health coverage: Medicaid, Marketplace, or COBRA",
-        why: covEnd === null ? "Losing job-based insurance opens a 60-day Marketplace Special Enrollment Period and a 60-day COBRA election window, both counted from the day coverage ends — not the day the job ended. Get that date in writing, then enter it here for the real deadline. Medicaid is open any day."
-          : "Losing job-based insurance opens a 60-day Special Enrollment Period and a 60-day COBRA election window, counted from the day coverage ended. Medicaid is open any day and judges income now. Miss the 60 days and you may wait until Open Enrollment.",
-        confidence: "likely", valueLabel: "Keeps coverage", effortMin: 60, urgent: true, dueDays: covEnd === null ? 7 : Math.max(0, 60 - covEnd),
+        title: covEnd === null ? tr("Find out the exact day job-based coverage ends — the 60-day clocks start from it", "Averigüe el día exacto en que termina el seguro del trabajo: los plazos de 60 días empiezan ahí") : tr("Beat the 60-day clock on health coverage: Medicaid, Marketplace, or COBRA", "Gane la carrera de 60 días por el seguro médico: Medicaid, el Mercado o COBRA"),
+        why: covEnd === null ? tr("Losing job-based insurance opens a 60-day Marketplace Special Enrollment Period and a 60-day COBRA election window, both counted from the day coverage ends — not the day the job ended. Get that date in writing, then enter it here for the real deadline. Medicaid is open any day.", "Perder el seguro del trabajo abre un Período de Inscripción Especial de 60 días en el Mercado y un plazo de 60 días para elegir COBRA, ambos contados desde el día en que termina la cobertura, no desde el día en que terminó el trabajo. Pida esa fecha por escrito y luego anótela aquí para tener la fecha límite real. Medicaid está abierto todos los días.")
+          : tr("Losing job-based insurance opens a 60-day Special Enrollment Period and a 60-day COBRA election window, counted from the day coverage ended. Medicaid is open any day and judges income now. Miss the 60 days and you may wait until Open Enrollment.", "Perder el seguro del trabajo abre un Período de Inscripción Especial de 60 días y un plazo de 60 días para elegir COBRA, contados desde el día en que terminó la cobertura. Medicaid está abierto todos los días y mira sus ingresos de ahora. Si se pasan los 60 días, puede tener que esperar a la Inscripción Abierta."),
+        confidence: "likely", valueLabel: tr("Keeps coverage", "Conserva la cobertura"), effortMin: 60, urgent: true, dueDays: covEnd === null ? 7 : Math.max(0, 60 - covEnd),
         links: [L.healthcare, L.medicaid, L.cobra, L.hrsa], source: "45 CFR 155.420(c)(2) and (d)(1) (loss of coverage SEP: 60 days before or after the loss); COBRA, 29 U.S.C. 1165(a)(1) (election period ends 60 days after the later of coverage loss or the election notice; coverage retroactive); Medicaid enrollment is year-round" }));
     }
     if (p.jobLoss && has(b, "snap")) {
-      tasks.push(task({ id: "snapReport", pillar: "food", draft: "snapReport", title: "Report the income drop to SNAP — your benefit should go up",
-        why: "SNAP is figured on current income, but a drop only raises the benefit once it's reported, and the increase starts from the report. Ten minutes on the phone.",
-        confidence: "likely", valueLabel: "Higher SNAP benefit", effortMin: 15, dueDays: 10,
+      tasks.push(task({ id: "snapReport", pillar: "food", draft: "snapReport", title: tr("Report the income drop to SNAP — your benefit should go up", "Informe a SNAP que bajaron sus ingresos: su beneficio debería subir"),
+        why: tr("SNAP is figured on current income, but a drop only raises the benefit once it's reported, and the increase starts from the report. Ten minutes on the phone.", "SNAP se calcula con los ingresos actuales, pero una baja solo sube el beneficio cuando usted la informa, y el aumento empieza desde el informe. Diez minutos por teléfono."),
+        confidence: "likely", valueLabel: tr("Higher SNAP benefit", "Beneficio de SNAP más alto"), effortMin: 15, dueDays: 10,
         links: [L.snapState, L.snapET], source: "7 CFR 273.12 (reporting changes; reported decreases in income take effect for the next issuance) and 7 CFR 273.2(i) (expedited service within 7 days)" }));
     }
     if (p.jobLoss || p.newGrad || p.wantsTraining) {
-      tasks.push(task({ id: "ajc", pillar: "work", draft: "ajc", title: "Visit an American Job Center — free help from a person, and money for training",
-        why: "About 2,300 public job centers offer free career counseling, help filing for unemployment, and Individual Training Accounts that can pay for training. No app or AI required — you talk to a person.",
-        confidence: "likely", valueLabel: "Free help; training funds", effortMin: 90, dueDays: 14,
+      tasks.push(task({ id: "ajc", pillar: "work", draft: "ajc", title: tr("Visit an American Job Center — free help from a person, and money for training", "Vaya a un American Job Center (centro de empleo): ayuda gratis de una persona y dinero para capacitarse"),
+        why: tr("About 2,300 public job centers offer free career counseling, help filing for unemployment, and Individual Training Accounts that can pay for training. No app or AI required — you talk to a person.", "Unos 2,300 centros públicos de empleo ofrecen orientación laboral gratis, ayuda para solicitar el desempleo y Cuentas Individuales de Capacitación (ITA) que pueden pagar un curso. No hace falta ninguna app ni IA: usted habla con una persona."),
+        confidence: "likely", valueLabel: tr("Free help; training funds", "Ayuda gratis; fondos para capacitación"), effortMin: 90, dueDays: 14,
         links: [L.ajc, L.jobTraining, L.vaJobs], source: "Workforce Innovation and Opportunity Act (P.L. 113-128), Title I adult and dislocated worker programs; Individual Training Accounts under 20 CFR 680.300" }));
     }
     if (p.wantsTraining || p.newGrad) {
-      tasks.push(task({ id: "training", pillar: "work", draft: "training", title: "Pick training with a paycheck at the end: apprenticeship, a sectoral program, or a short Pell-funded course",
-        why: "The programs proven in randomized trials are free, built with employers, and end in a job — earnings 14–30% higher for 7 to 14 years. Programs that charge you or push loans don't have that record.",
-        confidence: "possible", valueLabel: "Earnings +14–30% in trials", effortMin: 90, dueDays: 30,
+      tasks.push(task({ id: "training", pillar: "work", draft: "training", title: tr("Pick training with a paycheck at the end: apprenticeship, a sectoral program, or a short Pell-funded course", "Elija una capacitación que termine en un sueldo: aprendizaje registrado, programa sectorial o curso corto pagado con Pell"),
+        why: tr("The programs proven in randomized trials are free, built with employers, and end in a job — earnings 14–30% higher for 7 to 14 years. Programs that charge you or push loans don't have that record.", "Los programas probados en estudios aleatorizados son gratuitos, se diseñan con los empleadores y terminan en un empleo: ingresos de 14 a 30% más altos durante 7 a 14 años. Los programas que le cobran o le empujan a pedir préstamos no tienen ese historial."),
+        confidence: "possible", valueLabel: tr("Earnings +14–30% in trials", "Ingresos +14–30% en los estudios"), effortMin: 90, dueDays: 30,
         links: [L.apprenticeship, L.snapET, L.pell, L.yearup, L.perscholas], source: "Year Up PACE randomized trial (ACF/OPRE, 2021); MDRC WorkAdvance 7-year follow-up (Per Scholas); Urban Institute, American Apprenticeship Initiative earnings brief; Workforce Pell final rule, 91 FR (May 19, 2026), effective July 1, 2026" }));
     }
     if (p.newGrad) {
-      tasks.push(task({ id: "firstJob", pillar: "work", draft: "firstJob", title: "First job after school: the moves with evidence behind them",
-        why: "Recent graduates' unemployment now runs about 1.3 points above everyone else's. Paid experience with an employer attached — internships, co-ops, apprenticeships, residencies — is what changes the odds, not another certificate.",
-        confidence: "likely", valueLabel: "A first job that uses your training", effortMin: 60, dueDays: 14,
+      tasks.push(task({ id: "firstJob", pillar: "work", draft: "firstJob", title: tr("First job after school: the moves with evidence behind them", "Primer empleo después de la escuela: los pasos con evidencia detrás"),
+        why: tr("Recent graduates' unemployment now runs about 1.3 points above everyone else's. Paid experience with an employer attached — internships, co-ops, apprenticeships, residencies — is what changes the odds, not another certificate.", "El desempleo de los recién graduados va ahora unos 1.3 puntos por encima del de todos los demás. La experiencia pagada con un empleador de por medio (pasantías, co-ops, aprendizajes, residencias) es lo que cambia las probabilidades, no otro certificado."),
+        confidence: "likely", valueLabel: tr("A first job that uses your training", "Un primer empleo que use su formación"), effortMin: 60, dueDays: 14,
         links: [L.ajc, L.apprenticeship, L.nrp], source: "Federal Reserve Bank of New York, Labor Market for Recent College Graduates (Nov. 2, 2026); Strada/Burning Glass, Talent Disrupted (2024); Nunley et al., résumé field experiment (Auburn, 2014); Vizient/AACN Nurse Residency Program fact sheet; Stanford Digital Economy Lab, Canaries in the Coal Mine (Aug. 2026)" }));
     }
     if (p.aiAffected) {
-      tasks.push(task({ id: "aiRights", pillar: "work", draft: "aiRights", title: "Know your rights when software screens, monitors, or replaces you",
-        why: "No federal law yet limits AI in hiring or layoffs, but discrimination law applies to whatever the tool does, Illinois and New York City require notice, and large layoffs still require 60 days' notice. A written record is what makes any of it enforceable.",
-        confidence: "likely", valueLabel: "Your rights, in writing", effortMin: 45, dueDays: 14,
+      tasks.push(task({ id: "aiRights", pillar: "work", draft: "aiRights", title: tr("Know your rights when software screens, monitors, or replaces you", "Conozca sus derechos cuando un programa de computadora lo filtra, lo vigila o lo reemplaza"),
+        why: tr("No federal law yet limits AI in hiring or layoffs, but discrimination law applies to whatever the tool does, Illinois and New York City require notice, and large layoffs still require 60 days' notice. A written record is what makes any of it enforceable.", "Todavía no hay una ley federal que limite la IA en las contrataciones o los despidos, pero las leyes contra la discriminación aplican a lo que haga la herramienta, Illinois y la ciudad de Nueva York exigen aviso, y los despidos grandes siguen requiriendo 60 días de aviso. Un registro por escrito es lo que hace que algo de esto se pueda exigir."),
+        confidence: "likely", valueLabel: tr("Your rights, in writing", "Sus derechos, por escrito"), effortMin: 45, dueDays: 14,
         links: [L.eeoc, L.nlrb, L.warn, L.nnuAI], source: "Title VII, ADA and ADEA as applied to automated tools (EEOC); Illinois HB 3773, 775 ILCS 5/2-102(L) (effective Jan. 1, 2026); NYC Local Law 144 of 2021 (automated employment decision tools); WARN Act; Oregon 2025 Or. Laws ch. 378 and Washington HB 2155 (2026) on the title \"nurse\"" }));
     }
     if (p.aiAffected || p.jobLoss) {
-      tasks.push(task({ id: "organize", pillar: "work", draft: "organize", title: "Talk with coworkers: AI, staffing and automation are things you can bargain over",
-        why: "The National Labor Relations Act protects most private-sector workers who act together over working conditions, union or not. The research on AI and jobs finds the losses land where workers have the least say.",
-        confidence: "possible", valueLabel: "Collective leverage", effortMin: 60, dueDays: 45, organizer: true,
+      tasks.push(task({ id: "organize", pillar: "work", draft: "organize", title: tr("Talk with coworkers: AI, staffing and automation are things you can bargain over", "Hable con sus compañeros: la IA, el personal y la automatización se pueden negociar"),
+        why: tr("The National Labor Relations Act protects most private-sector workers who act together over working conditions, union or not. The research on AI and jobs finds the losses land where workers have the least say.", "La Ley Nacional de Relaciones Laborales protege a la mayoría de los trabajadores del sector privado que actúan juntos sobre sus condiciones de trabajo, con sindicato o sin él. Los estudios sobre IA y empleo muestran que las pérdidas caen donde los trabajadores tienen menos voz."),
+        confidence: "possible", valueLabel: tr("Collective leverage", "Fuerza colectiva"), effortMin: 60, dueDays: 45, organizer: true,
         links: [L.nlrb, L.formUnion, L.nnuAI], source: "National Labor Relations Act §7, 29 U.S.C. 157 (protected concerted activity); NLRB, Your Rights" }));
     }
     if (p.jobLoss && has(b, "medicaid") && NON_EXPANSION.indexOf(p.state) === -1) {
-      tasks.push(task({ id: "medicaidWork", pillar: "health", draft: "medicaidWork", title: "Keep Medicaid in 2027: the 80-hours-a-month rule and what counts",
-        why: "Starting by January 2027, most states must require many adults on Medicaid expansion to show 80 hours a month of work, training, school or volunteering. Training and job-center programs count, and a log protects you.",
-        confidence: "possible", valueLabel: "Keeps coverage", effortMin: 20, dueDays: 60,
+      tasks.push(task({ id: "medicaidWork", pillar: "health", draft: "medicaidWork", title: tr("Keep Medicaid in 2027: the 80-hours-a-month rule and what counts", "Conserve Medicaid en 2027: la regla de 80 horas al mes y qué cuenta"),
+        why: tr("Starting by January 2027, most states must require many adults on Medicaid expansion to show 80 hours a month of work, training, school or volunteering. Training and job-center programs count, and a log protects you.", "A partir de enero de 2027, la mayoría de los estados deberán exigir a muchos adultos con Medicaid ampliado que demuestren 80 horas al mes de trabajo, capacitación, estudios o voluntariado. Los programas de capacitación y de los centros de empleo cuentan, y un registro lo protege."),
+        confidence: "possible", valueLabel: tr("Keeps coverage", "Conserva la cobertura"), effortMin: 20, dueDays: 60,
         links: [L.medicaid, L.snapET, L.ajc], source: "P.L. 119-21 (2025) §71119, adding Social Security Act §1902(xx): community engagement requirement, 80 hours/month, states to implement no later than Jan. 1, 2027 (extensions possible); exemptions include parents of dependent children 13 and under, pregnant and postpartum people, people with disabilities, and others. Confirm your state's start date" }));
     }
 

@@ -10,49 +10,68 @@
   "use strict";
 
   var RULESET = {
-    version: "2026.11-preview.1",
+    version: "2026.11-verified.1",
     reviewed: "2026-11-07",
-    note: "Screening estimates from published federal rules. States add their own rules on top; always confirm with the program."
+    note: "Screening estimates from published federal rules, each checked against its primary source on 2026-11-07. States add their own rules on top; always confirm with the program."
   };
 
   /* ---------- Reference tables (each with effective date + source) ---------- */
 
   var FPL = {
-    effective: "2025-01-15",
-    source: "HHS Poverty Guidelines 2025 (used for 2026 ACA plan year and most 2026 program screens)",
-    contiguous: { base: 15650, per: 5500 },
-    AK: { base: 19550, per: 6880 },
-    HI: { base: 17990, per: 6330 }
+    effective: "2026-01-13",
+    source: "HHS Poverty Guidelines 2026 (91 FR 1797, Jan 15, 2026); used by SNAP FY2027, WIC and school meals 2026–27, Lifeline, and ACA plan year 2027",
+    contiguous: { base: 15960, per: 5680 },
+    AK: { base: 19950, per: 7100 },
+    HI: { base: 18360, per: 6530 }
   };
 
   var SNAP = {
-    effective: "2025-10-01",
-    source: "USDA FNS SNAP FY2026 cost-of-living adjustments (48 states & DC)",
-    maxAllotment: [0, 298, 546, 785, 994, 1183, 1421, 1571, 1789], // by household size 1–8
-    perAdditional: 218,
-    standardDeduction: [0, 209, 209, 209, 223, 261, 299],          // 6+ = 299
-    shelterCap: 744,
-    minBenefit: 24,
+    effective: "2026-10-01", expires: "2027-09-30",
+    source: "USDA FNS SNAP FY2027 cost-of-living adjustments, 48 states & DC (snap-fy27maximumAllotments-deductions.pdf; snap-fy27MinimumAllotments.pdf). Since P.L. 119-21 (2025), LIHEAP receipt triggers the heating/cooling utility allowance only for households with an elderly or disabled member, and internet costs don't count as shelter costs",
+    maxAllotment: [0, 306, 562, 808, 1023, 1217, 1463, 1616, 1841], // by household size 1–8
+    perAdditional: 225,
+    standardDeduction: [0, 217, 217, 217, 229, 268, 308],          // 6+ = 308
+    shelterCap: 769,
+    minBenefit: 25,
     earnedIncomeDeduction: 0.20,
     grossTestPct: 130,
     bbceTestPct: 200 // broad-based categorical eligibility used by many states
   };
 
   var ACA = {
-    effective: "2026-01-01",
-    source: "IRS Rev. Proc. 2025-25 (2026 applicable percentage); enhanced credits under ARPA/IRA ended after plan year 2025 unless restored",
-    minPct: 100, maxPct: 400, maxContributionPct: 9.96,
+    effective: "2026-11-01",
+    source: "IRS Rev. Proc. 2026-26 (plan year 2027: required contribution up to 10.22% of income) and Rev. Proc. 2025-25 (2026: 9.96%). Enhanced ARPA/IRA credits ended after 2025 and had not been restored as of Nov 7, 2026, so credits again stop at 400% FPL. HealthCare.gov Open Enrollment for 2027: Nov 1, 2026–Jan 15, 2027 (Dec 15 for Jan 1 coverage); state-run exchanges may differ",
+    minPct: 100, maxPct: 400, maxContributionPct: 10.22, maxContributionPctByYear: { 2026: 9.96, 2027: 10.22 },
     openEnrollment: { start: [11, 1], endForJan1: [12, 15], end: [1, 15] }
   };
 
-  var NON_EXPANSION = ["AL", "FL", "GA", "KS", "MS", "SC", "TN", "TX", "WI", "WY"]; // as reviewed 2026-11
-  var RENT_CAP_STATES = { CA: "AB 1482 (5% + CPI, max 10%)", OR: "SB 608 / SB 611 (7% + CPI, max 10%)", WA: "HB 1217 (7% + CPI, max 10%)" };
-  var PAID_LEAVE_STATES = {
-    CA: "Paid Family Leave (EDD)", NJ: "Family Leave Insurance", RI: "Temporary Caregiver Insurance", NY: "Paid Family Leave",
-    WA: "Paid Family & Medical Leave", DC: "Paid Family Leave", MA: "PFML", CT: "CT Paid Leave", OR: "Paid Leave Oregon",
-    CO: "FAMLI", MN: "Paid Leave (benefits from 2026)", DE: "Paid Leave (benefits from 2026)", ME: "Paid Family & Medical Leave (benefits from 2026)"
+  // Not adopted as of Oct 2026 (KFF; Medicaid.gov). No state has ended expansion via a trigger law.
+  var NON_EXPANSION = ["AL", "FL", "GA", "KS", "MS", "SC", "TN", "TX", "WI", "WY"];
+  // Partial adult coverage in non-expansion states (up to 100% FPL)
+  var PARTIAL_ADULT_COVERAGE = {
+    WI: "Wisconsin BadgerCare Plus covers adults without dependent children up to 100% of poverty (waiver through 2029)",
+    GA: "Georgia Pathways covers adults up to 100% of poverty with a work or activity requirement; its status after Dec 31, 2026 is pending federal approval"
   };
-  var DCAP_LIMIT = { effective: "2026-01-01", amount: 7500, source: "IRC §129 as amended by P.L. 119-21 (2025)" };
+  // Pregnancy Medicaid/CHIP limits below 200% FPL (KFF, Jan 2026). Median is 213%; all other states are 200% or higher.
+  var PREGNANCY_LIMIT_BELOW_200 = { AZ: 161, FL: 196, HI: 196, ID: 138, KS: 171, MS: 199, MT: 162, ND: 175, OR: 190, SC: 199, SD: 138, UT: 144, WY: 159 };
+  // Statewide rent caps. capByYear = published maximum for that calendar year; CA's varies by region (5% + regional CPI, never above 10%).
+  var RENT_CAP_STATES = {
+    CA: { law: "AB 1482 (Civil Code 1947.12): 5% + regional CPI, never more than 10%; most units over 15 years old", capByYear: {} },
+    OR: { law: "ORS 90.323/90.324: 7% + CPI, never more than 10%; units under 15 years old are exempt", capByYear: { 2026: 9.5, 2027: 10 } },
+    WA: { law: "RCW 59.18.700–.710 (HB 1217, effective May 7, 2025): 7% + CPI, never more than 10%; no increase in the first 12 months; units 12 years old or newer are exempt", capByYear: { 2026: 9.683, 2027: 10 } }
+  };
+  function rentCapFor(state, year) {
+    var c = RENT_CAP_STATES[state];
+    if (!c) return null;
+    return { law: c.law, cap: c.capByYear[year] || 10, published: !!c.capByYear[year] };
+  }
+  // State paid family & medical leave programs paying benefits as of Nov 2026 (Maryland FAMLI: benefits from Jan 2028)
+  var PAID_LEAVE_STATES = {
+    CA: "California Paid Family Leave (EDD)", NJ: "New Jersey Family Leave Insurance", RI: "Rhode Island Temporary Caregiver Insurance", NY: "New York Paid Family Leave",
+    WA: "Washington Paid Family & Medical Leave", DC: "DC Paid Family Leave", MA: "Massachusetts PFML", CT: "Connecticut Paid Leave", OR: "Paid Leave Oregon",
+    CO: "Colorado FAMLI", MN: "Minnesota Paid Leave", DE: "Delaware Paid Leave", ME: "Maine Paid Family and Medical Leave"
+  };
+  var DCAP_LIMIT = { effective: "2026-01-01", amount: 7500, amountMFS: 3750, source: "IRC §129 as amended by P.L. 119-21 §70404 (tax years after Dec 31, 2025); the employer's plan must be amended to allow the higher limit" };
 
   var STATES = [
     ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],["CO","Colorado"],["CT","Connecticut"],
@@ -204,6 +223,7 @@
         "[ ] Update your address and phone so you get every notice\n[ ] Upload last 30 days of pay stubs for everyone who works\n" +
         "[ ] Sign and submit — online is fastest; keep the confirmation number\n" +
         "[ ] If you were cut off for 'paperwork' reasons, you usually have 90 days to turn it in and be reinstated without reapplying\n\n" +
+        "COMING JAN 1, 2027: adults covered through Medicaid expansion will renew every 6 months, and most will need to show work, school, volunteering or caregiving hours (with exemptions). Ask your Medicaid office which rules apply to you and when.\n\n" +
         "CALL SCRIPT: \"I'm calling to confirm you received my Medicaid renewal for case number ______.\n" +
         "Is anything missing? Can you note on my case that I submitted on " + today() + "?\"";
     },
@@ -214,6 +234,7 @@
           "Based on your state and income, a subsidized plan or Medicaid may not be available to you right now.\n" +
           "You can still get care at lower cost:\n" +
           "• Community health centers (findahealthcenter.hrsa.gov) charge on a sliding scale by income — call and ask for a new-patient visit.\n" +
+          (PARTIAL_ADULT_COVERAGE[p.state] && t.meta.pct <= 100 ? "• " + PARTIAL_ADULT_COVERAGE[p.state] + ". Ask your state Medicaid office.\n" : "") +
           "• Ask any nonprofit hospital for its financial assistance policy BEFORE a planned visit.\n" +
           "• Children and pregnant people often qualify for Medicaid/CHIP at higher incomes — apply for them separately.\n" +
           "• Recheck if your income, household, or state changes — eligibility can change mid-year.\n" :
@@ -223,7 +244,8 @@
           "Rough ceiling for a benchmark silver plan: about " + money(t.meta.maxPremium) + "/mo for your household.\n" +
           (t.meta.pct <= 250 ? "At your income, choose a SILVER plan — it comes with lower deductibles (cost-sharing reductions).\n" : "")) +
         "\nHave ready: income estimate for next year, Social Security numbers for people applying (not for others in the household), current coverage info.\n" +
-        "Free local help: search 'navigator' at HealthCare.gov — navigators can't charge you or sell you anything.";
+        "Free local help: search 'navigator' at HealthCare.gov — navigators can't charge you or sell you anything.\n" +
+        "Eligibility rules for some groups changed for 2027; a navigator can check your situation confidentially.";
     },
     rx: function (p) {
       return "PRESCRIPTION COST — QUESTIONS THAT SAVE MONEY\n\n" +
@@ -231,7 +253,8 @@
         "• \"Is this on a $4 or low-cost generic list here?\"\n• \"Would a 90-day supply or mail order be cheaper per month?\"\n\n" +
         "Ask the PRESCRIBER (by portal message is fine):\n• \"Cost is making it hard for me to take this as prescribed. Is there a generic or a\n" +
         "  lower-cost option in the same class that would work for me?\"\n• \"Can you check if the manufacturer has a patient-assistance program?\"\n\n" +
-        "INSULIN: many manufacturers cap insulin at $35/month through their own programs; Medicare caps it at $35.\n\n" +
+        "INSULIN: Medicare caps covered insulin at $35/month. Lilly, Novo Nordisk and Sanofi each run $35/month programs (Sanofi's includes Medicare);\n" +
+        "  some programs must be renewed each January, so re-check terms for 2027.\n\n" +
         "SAFETY: never stop, split, or skip a medicine to save money without talking to your prescriber or pharmacist first.";
     },
     charity: function (p, t) {
@@ -242,7 +265,7 @@
         "Please:\n1. Send me your financial assistance application and plain-language summary.\n" +
         "2. Place this account on hold from collections while my application is reviewed.\n" +
         "3. Confirm in writing that no extraordinary collection actions will be taken during review.\n\n" +
-        "Thank you." + SIG + "\n\n— NOTE: Nonprofit hospitals must have a written financial assistance policy (IRS §501(r)). You generally have at least 240 days from the first bill to apply.";
+        "Thank you." + SIG + "\n\n— NOTE: Nonprofit hospitals can't use extraordinary collection actions (lawsuits, credit reporting) for at least 120 days after the first bill, and must pause them once you apply. Apply within 240 days of the first bill.\n— NOTE: Nonprofit hospitals must have a written financial assistance policy (IRS §501(r)). You generally have at least 240 days from the first bill to apply.";
     },
     pa: function (p) {
       return today() + "\n\n[Health plan name] — Appeals Department\n[Address or fax from the denial letter]\n\n" +
@@ -305,7 +328,7 @@
     },
     discount: function (p) {
       return "LOW-INCOME UTILITY RATE — CALL SCRIPT\n\n\"I'd like to enroll in your low-income discount program.\n" +
-        (p.state === "CA" ? "In California that's CARE (or FERA if we're just over the CARE limit). " : "") +
+        (p.state === "CA" ? "In California that's CARE (30–35% off electric, 20% off gas, up to 200% of poverty), or FERA (18% off electric, 200–250% of poverty, for PG&E, SCE and SDG&E customers). " : "") +
         "Our household has " + p.hhSize + " people and earns about " + money(num(p.income)) + " a month.\n" +
         "Can you also check whether a different rate plan would cost me less based on my last 12 months of usage?\"\n\n" +
         "Many utilities let you enroll online in 5 minutes. Enrollment is often self-certified, with income verification later.";
@@ -339,7 +362,7 @@
     },
     dcap: function (p) {
       return "DEPENDENT CARE FSA (DCAP) — EMAIL TO HR\n\nSubject: Dependent care FSA enrollment\n\nHi [HR],\nDoes our benefits plan include a Dependent Care Assistance Program (dependent care FSA)? If so, what are the open-enrollment dates and how do I enroll?\nI pay about " +
-        money(num(p.childcareCost)) + " a month for child care.\n\nThanks,\n[Your name]\n\n— The household limit is $" + DCAP_LIMIT.amount.toLocaleString() + "/year starting 2026. Money goes in pre-tax, so you save your tax rate on every dollar.\n" +
+        money(num(p.childcareCost)) + " a month for child care.\n\nThanks,\n[Your name]\n\n— The household limit is $" + DCAP_LIMIT.amount.toLocaleString() + "/year starting 2026 ($" + DCAP_LIMIT.amountMFS.toLocaleString() + " if married filing separately), but only if your employer updated its plan. Money goes in pre-tax, so you save your tax rate on every dollar.\n" +
         "— You can't use the same dollars for both DCAP and the Child and Dependent Care Credit — a tax preparer (free VITA sites) can help pick the mix.";
     },
     leave: function (p) {
@@ -347,7 +370,9 @@
       return today() + "\n\nDear [Manager/HR],\n\nI am requesting leave beginning [date] for approximately [number] weeks to [care for my family member with a serious health condition / bond with my new child / recover from my own serious health condition].\n\n" +
         "Please let me know whether this qualifies under the Family and Medical Leave Act" + (st ? " and " + st : "") + ", and send me any certification forms you need. I will return the completed certification within 15 days.\n\nThank you." + SIG +
         "\n\n— FMLA: job-protected, unpaid, up to 12 weeks if your employer has 50+ employees nearby and you've worked 1,250 hours in the past year.\n" +
-        (st ? "— " + st + " can replace part of your wages; you usually apply to the STATE, not your employer.\n" : "— Your state doesn't have a statewide paid leave program as of this review; ask about employer short-term disability or paid time off.\n") +
+        (st ? "— " + st + " can replace part of your wages; you usually apply to the STATE, not your employer.\n" :
+          p.state === "MD" ? "— Maryland FAMLI starts paying benefits in January 2028; until then ask about employer short-term disability or paid time off.\n" :
+          "— Your state doesn't have a statewide paid leave program as of this review; ask about employer short-term disability or paid time off.\n") +
         "— TIP for the certification form: ask the clinician to describe how often care is needed, for how long, and why — vague forms get rejected.";
     },
     caregiverPay: function (p) {
@@ -355,6 +380,7 @@
         "\"I care for my [relationship], who needs help with [bathing, meals, medications, getting around]. Are there programs that pay family caregivers — like " +
         (p.state === "CA" ? "IHSS (In-Home Supportive Services)" : "consumer-directed home care under Medicaid") + "? Also, what respite care and adult day programs are available?\"\n\n" +
         "Also ask about: Medicaid home- and community-based services (HCBS) waivers · PACE · VA Aid & Attendance (if a veteran) · state caregiver tax credits.\n\n" +
+        (p.state === "CA" ? "IHSS lets you hire a family member or friend. Spouses and parents of minor children can be paid only in certain circumstances.\n\n" : "") +
         "Write down every agency name, person, and date — these programs often take several calls.";
     },
     respite: function (p) {
@@ -371,23 +397,23 @@
     lifeline: "Lifeline is a federal discount (about $9.25/month) on phone or internet. Separately, most large internet providers run their own low-income plans — often $10–$30 for usable home internet. You can often stack the two.",
     foodweek: "The cheapest calories are rarely the cheapest nutrition. Beans, eggs, oats, frozen vegetables and whole chickens give the most protein and fiber per dollar — which keeps people full and blood sugar steadier through the end of the month.",
     renew: "Medicaid must check eligibility at least once a year. Most people who lose coverage at renewal are still eligible — they lose it for paperwork. Returning the packet on time, with current income, is the single most protective thing you can do.",
-    coverage: "Marketplace premium tax credits cap what you pay for a benchmark silver plan as a share of your income. Between 100% and 250% of poverty, silver plans also lower your deductible and copays. The enhanced credits from 2021–2025 ended unless Congress restored them, so check current numbers on HealthCare.gov.",
+    coverage: "Marketplace premium tax credits cap what you pay for a benchmark silver plan as a share of your income. Between 100% and 250% of poverty, silver plans also lower your deductible and copays. The enhanced credits from 2021–2025 ended, and as of November 2026 Congress hasn't restored them, so credits again stop at 400% of poverty and the most you pay for 2027 is 10.22% of income. Check your numbers on HealthCare.gov.",
     rx: "The price at the counter isn't fixed. Cash price, insurance price, discount-card price and mail-order price can differ several-fold for the same generic. Pharmacy benefit managers set many of these prices — that's what PBM-transparency bills are about.",
-    charity: "Nonprofit hospitals get tax breaks and in return must publish a financial assistance policy. Many forgive bills entirely below 200% of poverty and discount them up to 300–400%. You can apply even after a bill goes to collections. Medical debts under $500 and paid medical debts no longer appear on major credit reports.",
+    charity: "Nonprofit hospitals get tax breaks and in return must publish a financial assistance policy. Many forgive bills entirely below 200% of poverty and discount them up to 300–400%. You can apply even after a bill goes to collections. Under the credit bureaus' own policy, medical debts under $500 and paid medical debts don't appear on credit reports (a 2025 federal rule that went further was struck down by a court).",
     pa: "Prior authorization means your plan must approve something before it pays. A denial is not the final word: you have a right to an internal appeal, and then an independent external review. Many denials are overturned — especially when the prescriber addresses the plan's own written criteria.",
     eviction: "An eviction notice starts a legal clock, but it isn't an eviction. Only a court can order you out. Tenants with a lawyer are far more likely to stay housed or get time to move — which is why getting legal aid on day one matters more than anything else.",
-    rentIncrease: "A few states (California, Oregon, Washington) cap yearly increases on many older units; dozens of cities have their own rules. Where there's no cap, landlords still weigh the cost of vacancy — a calm, written request often lands a smaller increase.",
+    rentIncrease: "A few states cap yearly increases on many older units — for 2026, Oregon at 9.5% and Washington at 9.683%, California at 5% plus regional inflation (never over 10%); dozens of cities have their own rules. Where there's no cap, landlords still weigh the cost of vacancy — a calm, written request often lands a smaller increase.",
     erap: "Emergency rental assistance is now mostly county, city and charity funded. Programs open and close quickly, so 211 is the best live source. Many pay the landlord directly, which also helps stop an eviction case.",
     affordable: "Below-market-rate and tax-credit (LIHTC) apartments rent at set prices tied to area income. They're won by lottery or waitlist, so the households who get them are the ones who apply to many and keep documents ready.",
     tenantOrg: "One tenant asking for repairs is a complaint; twenty tenants asking is a negotiation. Tenant associations are how renters win repairs, fair increases, and protection from retaliation.",
     shutoff: "A shutoff is a health event. Most states let a clinician certify that someone's health would be endangered without power, which can delay disconnection. Payment plans and seasonal protections exist in many states — but you have to ask before the shutoff date.",
-    liheap: "LIHEAP is a federal block grant run by states. It gives one-time help with heating or cooling bills, plus crisis help when a shutoff is near. Funding is limited each year, so applying early matters.",
+    liheap: "LIHEAP is a federal block grant run by states. It gives one-time help with heating or cooling bills, plus crisis help when a shutoff is near. It's funded for 2026, and only partly funded for 2027 under a temporary spending law, so applying early matters.",
     discount: "Many utilities offer a permanent low-income rate — in California, CARE takes 30–35% off electric and 20% off gas. Unlike a one-time grant, a discount rate lowers every bill for as long as you qualify.",
     rateplan: "Your bill depends on the rate plan as much as your usage. Time-of-use plans reward shifting usage away from evening peaks; tiered plans charge more as total use rises. The wrong plan for your routine can quietly cost $10–$30 a month.",
     weatherize: "The Weatherization Assistance Program pays for insulation, air sealing and repairs in low-income homes — the Department of Energy estimates savings of several hundred dollars a year per home. Cheap DIY fixes come first; windows come last.",
     ratepayer: "Utility rates are set in public proceedings at your state's utility commission. Public comment from real customers becomes part of the record — and decisions about who pays for new power plants and data centers are being made right now.",
     childcare: "Child care subsidies are funded by the federal Child Care and Development Fund and run by states, with income limits up to 85% of state median income. Families usually pay a sliding co-pay. Head Start is free for eligible families.",
-    dcap: "A Dependent Care FSA lets you pay for care with pre-tax dollars — up to $7,500 per household starting in 2026. If your combined tax rate is 22–30%, that's $1,600–$2,200 back on a full contribution.",
+    dcap: "A Dependent Care FSA lets you pay for care with pre-tax dollars — up to $7,500 per household starting in 2026. If your combined tax rate is 22–30%, that's $1,600–$2,200 back on a full contribution — but only if your employer updated its plan to the new limit.",
     leave: "FMLA protects your job but doesn't pay. A growing number of states run paid family leave insurance funded by payroll deductions you've likely already been paying. The certification form is where most claims stall — a clear, specific clinician note prevents delays.",
     caregiverPay: "Many states' Medicaid programs let people hire a family member as their paid caregiver. California's IHSS is the largest. If your parent or partner already gets your help daily, you may be able to be paid for it.",
     respite: "Family caregivers have higher rates of depression and chronic illness. Respite — even a few hours — is a health intervention, not a luxury."
@@ -454,15 +480,19 @@
         confidence: "likely", valueLabel: "Keeps coverage", effortMin: 30, dueDays: Math.max(1, rd - 2), urgent: rd <= 14, links: [L.medicaid], source: "42 CFR 435.916 (annual renewals; 90-day reconsideration)" }));
     }
     if (p.uninsured) {
-      var medicaidLikely = (expansion && pct <= 138) || (p.pregnant && pct <= 200);
+      var pregLimit = PREGNANCY_LIMIT_BELOW_200[p.state] || 200;
+      var partialAdult = !expansion && PARTIAL_ADULT_COVERAGE[p.state] && pct <= 100;
+      var medicaidLikely = (expansion && pct <= 138) || (p.pregnant && pct <= pregLimit) || partialAdult;
       var w = acaWindow(now);
       if (medicaidLikely) {
         tasks.push(task({ id: "coverage", pillar: "health", draft: "coverage", title: "Apply for Medicaid (any day of the year)",
-          why: p.pregnant && pct <= 200 ? "Pregnancy coverage limits are higher than for other adults." : "Your state expanded Medicaid and your income is at or below 138% of poverty.",
-          confidence: "likely", valueLabel: "Coverage", effortMin: 45, dueDays: 3, urgent: true, links: [L.medicaid, L.healthcare], meta: { route: "medicaid", pct: pct },
-          source: "ACA §2001 expansion (138% FPL); state expansion status reviewed " + RULESET.reviewed }));
+          why: p.pregnant && pct <= pregLimit ? "Pregnancy coverage limits are higher than for other adults (in your state, about " + pregLimit + "% of poverty or more)." :
+            partialAdult ? PARTIAL_ADULT_COVERAGE[p.state] + "." : "Your state expanded Medicaid and your income is at or below 138% of poverty.",
+          confidence: partialAdult && !(p.pregnant && pct <= pregLimit) && !(expansion && pct <= 138) ? "possible" : "likely", valueLabel: "Coverage", effortMin: 45, dueDays: 3, urgent: true, links: [L.medicaid, L.healthcare], meta: { route: "medicaid", pct: pct },
+          source: "ACA §2001 expansion (138% FPL); expansion status per KFF/Medicaid.gov, Oct 2026; pregnancy limits per KFF, Jan 2026" }));
       } else if (pct >= ACA.minPct && pct <= ACA.maxPct) {
-        var maxPrem = income * ACA.maxContributionPct / 100;
+        var planYear = now.getMonth() >= 10 ? now.getFullYear() + 1 : now.getFullYear(); // Nov–Dec enrollment is for next year
+        var maxPrem = income * (ACA.maxContributionPctByYear[planYear] || ACA.maxContributionPct) / 100;
         tasks.push(task({ id: "coverage", pillar: "health", draft: "coverage", title: w.open ? "Enroll in a Marketplace plan during Open Enrollment" : "Check for a Special Enrollment Period",
           why: "At about " + pct + "% of poverty you can get a premium tax credit. " + w.label + ".",
           confidence: "likely", valueLabel: "Subsidized coverage", effortMin: 60, dueDays: w.open ? Math.max(1, daysBetween(now, w.due)) : 60, absDue: w.open ? w.due : null, urgent: w.open && daysBetween(now, w.due) <= 45,
@@ -505,10 +535,12 @@
         valueLabel: "Keeps you housed", effortMin: 30, dueDays: 1, urgent: true, escalate: "legal", links: [L.lawhelp, L.l211], source: "Navigation only — not legal advice" }));
     }
     if (p.tenure === "rent" && num(p.rentIncreasePct) > 0) {
-      var capped = RENT_CAP_STATES[p.state];
-      var over = capped ? Math.max(0, num(p.rentIncreasePct) - 10) : 0;
+      var capInfo = rentCapFor(p.state, now.getFullYear());
+      var capped = capInfo ? capInfo.law : null;
+      var capPct = capInfo ? capInfo.cap : 10;
+      var over = capped ? Math.max(0, num(p.rentIncreasePct) - capPct) : 0;
       tasks.push(task({ id: "rentIncrease", pillar: "housing", draft: "rentIncrease", title: capped && over > 0 ? "Challenge a rent increase that may exceed the state cap" : "Push back on the rent increase in writing",
-        why: capped ? (over > 0 ? "Your increase (" + num(p.rentIncreasePct) + "%) is above the 10% maximum under " + capped + "." : "Your state caps increases on many units (" + capped + ") — confirm yours is covered.") : "Your state has no statewide cap, but a written request often lowers an increase.",
+        why: capped ? (over > 0 ? "Your increase (" + num(p.rentIncreasePct) + "%) is above the " + capPct + "% " + (capInfo.published ? now.getFullYear() + " cap" : "maximum") + " under " + capped + "." : "Your state caps increases on many units (" + capped + ") — confirm yours is covered.") : "Your state has no statewide cap, but a written request often lowers an increase.",
         confidence: capped && over > 0 ? "likely" : "possible", monthly: capped && over > 0 ? rent * over / (100 + num(p.rentIncreasePct)) : 0,
         valueLabel: capped && over > 0 ? null : "Negotiation", effortMin: 30, dueDays: 7, links: [L.lawhelp], source: capped ? capped : "Local rules vary — confirm with legal aid" }));
     }
@@ -536,15 +568,15 @@
         why: p.medEquip ? "Someone relies on powered medical equipment — a clinician's certificate can delay disconnection." : "Utilities must offer options before disconnecting in most states — but you have to call first.",
         confidence: "likely", valueLabel: "Keeps power on", effortMin: 30, dueDays: Math.max(1, sd - 2), urgent: true, links: [L.liheap, L.l211], source: "State utility commission shutoff rules; protections vary by state and season" }));
     }
-    if (!has(b, "utilDiscount") && bill > 0 && pct <= 200) {
-      tasks.push(task({ id: "discount", pillar: "energy", draft: "discount", title: p.state === "CA" ? "Enroll in CARE/FERA (−20% or more)" : "Enroll in your utility's low-income rate",
+    if (!has(b, "utilDiscount") && bill > 0 && (pct <= 200 || (p.state === "CA" && pct <= 250))) {
+      tasks.push(task({ id: "discount", pillar: "energy", draft: "discount", title: p.state === "CA" ? (pct > 200 ? "Enroll in FERA (18% off electric)" : "Enroll in CARE (30–35% off electric)") : "Enroll in your utility's low-income rate",
         why: "Discount rates lower every bill, not just one. Most utilities set the limit near 200% of poverty.",
-        confidence: p.state === "CA" ? "likely" : "possible", monthly: bill * 0.2, effortMin: 15, dueDays: 7, links: [L.l211], source: p.state === "CA" ? "CPUC CARE program (200% FPL)" : "Utility-specific programs — confirm yours" }));
+        confidence: p.state === "CA" ? "likely" : "possible", monthly: bill * (p.state === "CA" && pct > 200 ? 0.1 : 0.2), effortMin: 15, dueDays: 7, links: [L.l211], source: p.state === "CA" ? "CPUC CARE (≤200% FPL) and FERA (200–250% FPL, electric only), income limits Jun 1, 2026–May 31, 2027" : "Utility-specific programs — confirm yours" }));
     }
     if (!has(b, "liheap") && bill > 0 && pct <= 150) {
       tasks.push(task({ id: "liheap", pillar: "energy", draft: "liheap", title: "Apply for LIHEAP energy assistance",
         why: "Your income is within LIHEAP's federal ceiling (150% of poverty). " + (p.shutoff ? "Ask for crisis assistance." : ""),
-        confidence: "likely", oneTime: 400, effortMin: 45, dueDays: p.shutoff ? 2 : 14, urgent: !!p.shutoff, links: [L.liheap, L.l211], source: "42 U.S.C. 8624 (150% FPL or 60% SMI); benefit amounts vary by state and funding" }));
+        confidence: "likely", oneTime: 400, effortMin: 45, dueDays: p.shutoff ? 2 : 14, urgent: !!p.shutoff, links: [L.liheap, L.l211], source: "42 U.S.C. 8624 (greater of 150% FPL or 60% of state median income); funded for FY2026, partly funded for FY2027 under a stopgap law; benefit amounts vary by state" }));
     }
     if (bill > 0) {
       tasks.push(task({ id: "rateplan", pillar: "energy", draft: "rateplan", title: "Decode the bill and check your rate plan",
@@ -642,7 +674,7 @@
 
   global.LWR = {
     RULESET: RULESET, FPL: FPL, SNAP: SNAP, ACA: ACA, STATES: STATES, PILLARS: PILLARS, LINKS: L,
-    PAID_LEAVE_STATES: PAID_LEAVE_STATES, RENT_CAP_STATES: RENT_CAP_STATES, NON_EXPANSION: NON_EXPANSION,
+    PAID_LEAVE_STATES: PAID_LEAVE_STATES, RENT_CAP_STATES: RENT_CAP_STATES, NON_EXPANSION: NON_EXPANSION, PREGNANCY_LIMIT_BELOW_200: PREGNANCY_LIMIT_BELOW_200, rentCapFor: rentCapFor,
     DRAFTS: DRAFTS, LESSONS: LESSONS, POLICY: POLICY,
     fplPct: fplPct, fplAnnual: fplAnnual, snapEstimate: snapEstimate, buildPlan: buildPlan, acaWindow: acaWindow
   };

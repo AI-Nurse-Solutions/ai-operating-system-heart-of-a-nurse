@@ -37,10 +37,18 @@ Until then, it is previewable from this repo's GitHub Pages site at `/life-withi
 
 ## Updating rules
 
-Edit the tables at the top of `assets/rules.js`, including `effective` and `source`, and bump `RULESET.version`. Review these when they change:
+Every value in `assets/rules.js` was checked against its primary source on **2026-11-07** (ruleset `2026.11-verified.1`). Each table carries its effective date and source. When a value changes, update it there, update `effective` and `source`, and bump `RULESET.version`.
 
-- **HHS poverty guidelines.** The tables currently use the 2025 guidelines, which also apply to the 2026 ACA plan year. Load the 2026 figures for programs that have switched.
-- SNAP cost-of-living adjustments, each Oct 1.
-- The ACA applicable percentage.
-- The list of states that have not expanded Medicaid.
-- State paid-leave programs and rent caps.
+Calendar of updates:
+
+| When | What changes | Where in `rules.js` |
+| --- | --- | --- |
+| Mid-January | HHS poverty guidelines | `FPL` |
+| January | Manufacturer insulin programs renew (Lilly's current card ends Dec 31, 2026) | `DRAFTS.rx` |
+| Spring (for July 1) | WIC and school-meal income limits (follow the new poverty guidelines) | screened as % of `FPL` |
+| June | CPUC CARE/FERA income limits (June 1–May 31) | `discount` task |
+| Summer–fall | IRS Rev. Proc. with next year's ACA applicable percentage; next year's Oregon and Washington rent caps | `ACA.maxContributionPctByYear`, `RENT_CAP_STATES` |
+| Oct 1 | SNAP cost-of-living adjustment (max allotments, standard deductions, shelter cap, minimum benefit) | `SNAP` (current values expire 2027-09-30) |
+| As enacted | Medicaid expansion or partial-coverage changes (Georgia Pathways after Dec 31, 2026), state paid leave (Maryland FAMLI benefits Jan 2028), enhanced ACA credits, LIHEAP full-year FY2027 funding, the 4th Circuit appeal on Open Enrollment dates | `NON_EXPANSION`, `PARTIAL_ADULT_COVERAGE`, `PAID_LEAVE_STATES`, `ACA`, lessons |
+
+Known simplifications: SNAP estimates use the household's actual energy bill rather than state utility allowances, and California's AB 1482 cap is treated as "never more than 10%" because the CPI part differs by region.

@@ -190,6 +190,14 @@
   function addDays(d, n) { var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
   function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
   function startOfDay(d) { var x = new Date(d.getTime()); x.setHours(0, 0, 0, 0); return x; }
+  // Day counts entered at intake ("days since the job ended") grow with time. A draft opened on a
+  // return visit must age them by the days since intake, or it describes a deadline that has moved.
+  function agedDays(p, v) {
+    var n = parseFloat(v);
+    if (v === null || v === undefined || v === "" || !isFinite(n)) return null;
+    var elapsed = p.intakeDate ? Math.max(0, daysBetween(startOfDay(new Date(p.intakeDate)), startOfDay(new Date()))) : 0;
+    return Math.round(Math.max(0, n)) + elapsed;
+  }
 
   function acaWindow(today) {
     var y = today.getFullYear(), m = today.getMonth() + 1, d = today.getDate();
@@ -438,7 +446,7 @@
 
     /* ----- VI. WorkBridge. Every draft points to an office with people in it. ----- */
     ui: function (p) {
-      var since = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+      var since = agedDays(p, p.jobEndDays);
       return "FILE FOR UNEMPLOYMENT — THIS WEEK\n\n" +
         "Why now: unemployment insurance pays from the week you FILE, not from the day the job ended. Every week you wait is a week you don't get back.\n" +
         (since !== null && since > 7 ? "You said the job ended about " + since + " days ago, so file today.\n" : "") +
@@ -473,8 +481,8 @@
         "KEEP A FOLDER: pay stubs, the separation letter, insurance notices, every email. If anything goes wrong later, the person with the paper wins.";
     },
     coverageClock: function (p) {
-      var covSince = p.coverageEndDays === null || p.coverageEndDays === undefined ? null : Math.round(num(p.coverageEndDays));
-      var jobSince = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+      var covSince = agedDays(p, p.coverageEndDays);
+      var jobSince = agedDays(p, p.jobEndDays);
       return "LOST HEALTH COVERAGE WITH THE JOB — THREE DOORS, ONE 60-DAY CLOCK\n\n" +
         "THE CLOCK STARTS THE DAY COVERAGE ENDS — not the day the job ended. Coverage often runs to the end of the month you left, and sometimes longer under a severance deal.\n" +
         (covSince !== null && covSince > 60 ? "You said coverage ended about " + covSince + " days ago, so the 60-day Marketplace window has likely closed. Medicaid is still open any day. Ask the Marketplace anyway (some states allow more time), and check the date on your COBRA election notice — COBRA's 60 days run from that notice if it came later.\n\n" :
@@ -861,7 +869,7 @@
       },
       /* ----- VI. WorkBridge ----- */
       ui: function (p) {
-        var since = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+        var since = agedDays(p, p.jobEndDays);
         return "SOLICITE EL SEGURO DE DESEMPLEO — ESTA SEMANA\n\n" + INTERPRETER_ES + "\n\n" +
           "Por qué ahora: el seguro de desempleo (unemployment insurance) paga desde la semana en que usted lo SOLICITA, no desde el día en que terminó el trabajo. Cada semana que espera es una semana que no recupera.\n" +
           (since !== null && since > 7 ? "Usted dijo que el trabajo terminó hace unos " + since + " días, así que solicítelo hoy.\n" : "") +
@@ -896,8 +904,8 @@
           "GUARDE UNA CARPETA: talones de pago, la carta de separación, los avisos del seguro, cada correo. Si algo sale mal después, gana quien tiene los papeles.";
       },
       coverageClock: function (p) {
-        var covSince = p.coverageEndDays === null || p.coverageEndDays === undefined ? null : Math.round(num(p.coverageEndDays));
-        var jobSince = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+        var covSince = agedDays(p, p.coverageEndDays);
+        var jobSince = agedDays(p, p.jobEndDays);
         return "PERDIÓ EL SEGURO MÉDICO CON EL TRABAJO — TRES PUERTAS, UN PLAZO DE 60 DÍAS\n\n" + INTERPRETER_ES + "\n\n" +
           "EL PLAZO EMPIEZA EL DÍA EN QUE TERMINA LA COBERTURA, no el día en que terminó el trabajo. La cobertura suele durar hasta el fin del mes en que se fue, y a veces más si hay un acuerdo de finiquito.\n" +
           (covSince !== null && covSince > 60 ? "Usted dijo que la cobertura terminó hace unos " + covSince + " días, así que el plazo de 60 días del Mercado probablemente ya cerró. Medicaid sigue abierto todos los días. Pregunte en el Mercado de todos modos (algunos estados dan más tiempo) y revise la fecha de su aviso de elección de COBRA: los 60 días de COBRA corren desde ese aviso si llegó después.\n\n" :

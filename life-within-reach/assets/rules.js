@@ -10,9 +10,9 @@
   "use strict";
 
   var RULESET = {
-    version: "2026.11-verified.1",
+    version: "2026.11-verified.2",
     reviewed: "2026-11-07",
-    note: "Screening estimates from published federal rules, each checked against its primary source on 2026-11-07. States add their own rules on top; always confirm with the program."
+    note: "Screening estimates from published federal rules, each checked against its primary source on 2026-11-07. WorkBridge (work, income and training) added in .2 with its own cited sources. States add their own rules on top; always confirm with the program."
   };
 
   /* ---------- Language ---------- */
@@ -101,7 +101,9 @@
     health: { key: "health", roman: "II",  app: "CareBridge", name: "Health care", nameEs: "Salud",            accent: "var(--p-health)" },
     housing: { key: "housing",   roman: "III", app: "HomeHold",   name: "Housing", nameEs: "Vivienda",                accent: "var(--p-home)" },
     energy: { key: "energy", roman: "IV",  app: "WattWise",   name: "Energy & utilities", nameEs: "Energía y servicios",     accent: "var(--p-energy)" },
-    family: { key: "family", roman: "V",   app: "KinCare",    name: "Child care, elder care & leave", nameEs: "Cuidado infantil, de mayores y licencias", accent: "var(--p-family)" }
+    family: { key: "family", roman: "V",   app: "KinCare",    name: "Child care, elder care & leave", nameEs: "Cuidado infantil, de mayores y licencias", accent: "var(--p-family)" },
+    // WorkBridge is English-only for now: its drafts, lessons and pillar page have no Spanish twin yet.
+    work:   { key: "work",   roman: "VI",  app: "WorkBridge", name: "Work, income & training", nameEs: "Trabajo, ingresos y capacitación", accent: "var(--p-work)", englishOnly: true }
   };
 
   /* ---------- Links (official or long-standing nonprofit sources) ---------- */
@@ -128,7 +130,26 @@
     fmla: { label: "FMLA (U.S. Dept. of Labor)", url: "https://www.dol.gov/agencies/whd/fmla", labelEs: "FMLA (Departamento de Trabajo)" },
     rep: { label: "Find your U.S. Representative", url: "https://www.house.gov/representatives/find-your-representative", labelEs: "Encuentre a su representante en el Congreso" },
     congress: { label: "Congress.gov bill tracker", url: "https://www.congress.gov", labelEs: "Congress.gov: seguimiento de leyes" },
-    lifeline988: { label: "988 Suicide & Crisis Lifeline", url: "https://988lifeline.org", labelEs: "988: línea de crisis y suicidio (oprima 2 para español)" }
+    lifeline988: { label: "988 Suicide & Crisis Lifeline", url: "https://988lifeline.org", labelEs: "988: línea de crisis y suicidio (oprima 2 para español)" },
+    // WorkBridge (English-only). Government or long-standing nonprofit sources; every one is a place staffed by people.
+    ui: { label: "Unemployment benefits — your state's office (USA.gov)", url: "https://www.usa.gov/unemployment-benefits" },
+    ajc: { label: "Find an American Job Center (free, in person)", url: "https://www.careeronestop.org/LocalHelp/AmericanJobCenters/find-american-job-centers.aspx" },
+    jobTraining: { label: "USA.gov — job training programs", url: "https://www.usa.gov/job-training" },
+    apprenticeship: { label: "Apprenticeship.gov — find a paid apprenticeship", url: "https://www.apprenticeship.gov/apprenticeship-job-finder" },
+    snapET: { label: "SNAP Employment & Training (free training for SNAP households)", url: "https://www.fns.usda.gov/snap/et" },
+    pell: { label: "Federal Pell Grant, including short Workforce Pell programs", url: "https://studentaid.gov/understand-aid/types/grants/pell" },
+    yearup: { label: "Year Up United (ages 18–29, no degree needed)", url: "https://www.yearup.org" },
+    perscholas: { label: "Per Scholas (free tech training)", url: "https://perscholas.org" },
+    jobcorps: { label: "Job Corps (ages 16–24, free training with housing)", url: "https://www.jobcorps.gov" },
+    warn: { label: "WARN Act — 60-day layoff notice (U.S. Dept. of Labor)", url: "https://www.dol.gov/agencies/eta/layoffs/warn" },
+    cobra: { label: "COBRA — keeping job-based insurance (U.S. Dept. of Labor)", url: "https://www.dol.gov/agencies/ebsa/laws-and-regulations/laws/cobra" },
+    whd: { label: "Unpaid wages or final pay — Wage and Hour Division", url: "https://www.dol.gov/agencies/whd" },
+    eeoc: { label: "EEOC — file a discrimination charge", url: "https://www.eeoc.gov/how-file-charge-employment-discrimination" },
+    nlrb: { label: "NLRB — your right to act together at work", url: "https://www.nlrb.gov/about-nlrb/rights-we-protect/your-rights" },
+    formUnion: { label: "AFL-CIO — how to form a union", url: "https://aflcio.org/formaunion" },
+    nnuAI: { label: "National Nurses United on AI in patient care", url: "https://www.nationalnursesunited.org/artificial-intelligence" },
+    nrp: { label: "Nurse residency programs (AACN)", url: "https://www.aacnnursing.org/nurse-residency-program" },
+    vaJobs: { label: "VA careers & employment help for veterans", url: "https://www.va.gov/careers-employment/" }
   };
 
   /* ---------- Helpers ---------- */
@@ -204,7 +225,10 @@
         "Our gross income is about " + money(num(p.income)) + " a month. We pay " + money(num(p.housingCost)) + " for housing\n" +
         "and about " + money(num(p.energyBill)) + " for utilities. Please make sure the utility allowance is applied.\"\n\n" +
         "If you miss the call, call back the same day and ask to reschedule — do not let the case close.\n" +
-        "If you need help fast and have under $150 income this month, ask about EXPEDITED SNAP (7 days).";
+        "If you need help fast and have under $150 income this month, ask about EXPEDITED SNAP (7 days)." +
+        (p.jobLoss ? "\n\nYOU SAID A JOB ENDED OR HOURS WERE CUT: say so in the application and give this month's actual income, not last month's.\n" +
+          "If this month's income is under $150 (or your rent plus utilities is more than your income), you qualify for EXPEDITED SNAP — benefits within 7 days.\n" +
+          "If you are an adult without children at home, ask whether work rules apply to you and whether signing up for free SNAP Employment & Training satisfies them." : "");
     },
     wic: function (p) {
       return "WIC — CALL SCRIPT\n\n\"Hi, I'd like to schedule a WIC appointment. " +
@@ -411,6 +435,147 @@
       return "CAREGIVER CHECK-IN — FOR YOU\n\nCaregiving is skilled work, done unpaid at home. Your health counts too.\n\nThis week:\n[ ] One 2-hour break covered by someone else (family, friend, respite program)\n" +
         "[ ] Write the medication list in one place and share it with a backup person\n[ ] Find one caregiver support group (in person or online)\n[ ] Book your own overdue check-up\n\n" +
         "If you feel hopeless or think about harming yourself: call or text 988, any time.";
+    },
+
+    /* ----- VI. WorkBridge (English-only). Every draft points to an office with people in it. ----- */
+    ui: function (p) {
+      var since = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+      return "FILE FOR UNEMPLOYMENT — THIS WEEK\n\n" +
+        "Why now: unemployment insurance pays from the week you FILE, not from the day the job ended. Every week you wait is a week you don't get back.\n" +
+        (since !== null && since > 7 ? "You said the job ended about " + since + " days ago, so file today.\n" : "") +
+        "You paid into this through every paycheck. It is insurance, not charity.\n\n" +
+        "WHERE: your state's unemployment office (file in the state where you WORKED, even if you live elsewhere). Online, by phone, or in person at an American Job Center — a person can walk you through it for free.\n\n" +
+        "HAVE READY:\n[ ] Social Security number (asked by the state office only — never by this app)\n[ ] Employer names, addresses and dates for the last 18 months\n" +
+        "[ ] Last pay stubs; the reason the job ended, in your own words\n[ ] Bank account for direct deposit (or ask for a debit card)\n[ ] Alien registration number if you are not a U.S. citizen — the office asks; we never do\n\n" +
+        "WHAT TO EXPECT:\n• Most states replace about half of your prior wages, up to a weekly cap, for up to 26 weeks (some states fewer).\n" +
+        "• Hours cut, not lost? Ask about PARTIAL unemployment. You can often get a reduced check while working fewer hours.\n" +
+        "• Quit or fired? File anyway. Many denials are overturned on appeal — \"good cause\" and \"misconduct\" are legal terms with narrow meanings.\n" +
+        "• You must usually be looking for work and keep a simple log of it. Write every application down: date, employer, position, how you applied.\n" +
+        "• Severance may delay benefits in some states. File anyway; let the office decide.\n\n" +
+        "IF DENIED: appeal in writing before the deadline on the letter (often 10–30 days). Free legal aid handles these.\n\n" +
+        "Unemployment benefits are taxable. Ask to have taxes withheld (usually 10% federal) so nothing surprises you in April.";
+    },
+    owed: function (p) {
+      return "WHAT YOU'RE OWED WHEN A JOB ENDS — CHECKLIST\n\n" +
+        "[ ] FINAL PAYCHECK: every hour worked, including overtime. Many states set a deadline (some the same day you're let go). If it's late or short, file a wage claim with your state labor department or the U.S. Wage and Hour Division — free, no lawyer needed.\n" +
+        "[ ] UNUSED VACATION / PTO: paid out at separation in many states, or if the company's own policy says so. Ask for the policy in writing.\n" +
+        "[ ] EXPENSE REIMBURSEMENTS and any commissions or bonuses already earned.\n" +
+        "[ ] HEALTH INSURANCE END DATE: ask HR exactly which day coverage stops (often the end of the month). Write it down — it starts the 60-day clocks for COBRA and the Marketplace.\n" +
+        "[ ] RETIREMENT: your 401(k)/403(b) money is yours. Don't cash it out in a panic (taxes plus a 10% penalty under 59½). Leaving it or rolling it to an IRA keeps it.\n" +
+        "[ ] WRITTEN REASON for the separation, and a copy of your personnel file (your right in many states).\n" +
+        "[ ] REFERENCES: ask a manager who respects you for a reference now, while the relationship is warm.\n\n" +
+        "SEVERANCE — DON'T SIGN THE SAME DAY\n" +
+        "A severance agreement usually asks you to give up the right to sue. Take it home.\n" +
+        "• If you are 40 or older, federal law (OWBPA) gives you 21 days to consider it and 7 days to revoke after signing — 45 days in a group layoff.\n" +
+        "• Everything is negotiable: more weeks of pay, paid health premiums, a neutral reference, dropping a non-compete.\n" +
+        "• Free legal aid or a workers' center can read it with you.\n\n" +
+        (p.warnLarge ? "WARN ACT — YOU MAY BE OWED 60 DAYS OF PAY\n" +
+          "Employers with 100 or more workers generally must give 60 days' written notice before a plant closing or mass layoff. If you got little or no notice, you may be owed up to 60 days of wages and benefits. Several states (including CA, NY, NJ, IL) have stronger versions. Contact your state's Rapid Response team through an American Job Center, or legal aid. Keep every letter and email about the layoff.\n\n" : "") +
+        "KEEP A FOLDER: pay stubs, the separation letter, insurance notices, every email. If anything goes wrong later, the person with the paper wins.";
+    },
+    coverageClock: function (p) {
+      var since = p.jobEndDays === null || p.jobEndDays === undefined ? null : Math.round(num(p.jobEndDays));
+      return "LOST HEALTH COVERAGE WITH THE JOB — THREE DOORS, ONE 60-DAY CLOCK\n\n" +
+        (since !== null ? "You said the job ended about " + since + " days ago. Coverage often runs to the end of that month — confirm the exact end date with HR, because the 60 days count from THAT date.\n\n" : "") +
+        "DOOR 1 — MEDICAID (any day of the year, usually free)\n" +
+        "Medicaid looks at your income NOW, not last year's. A household of " + p.hhSize + " earning about " + money(num(p.income)) + " a month" +
+        (num(p.income) ? " is at roughly " + fplPct(p) + "% of the poverty line" : "") + ". " +
+        (NON_EXPANSION.indexOf(p.state) !== -1 ? "Your state has not expanded Medicaid to most adults, so check the Marketplace too, and look for a community health center while you sort it out." : "If you are under about 138% of the poverty line, you likely qualify. Apply through your state Medicaid office or HealthCare.gov.") + "\n\n" +
+        "DOOR 2 — MARKETPLACE SPECIAL ENROLLMENT (60 days from losing coverage)\n" +
+        "Losing job-based coverage opens a 60-day window at HealthCare.gov (or your state's exchange) even outside Open Enrollment. Report your NEW lower income — the subsidy is based on what you expect to earn this year, and you can update it if you find work.\n\n" +
+        "DOOR 3 — COBRA (60 days to decide; usually the most expensive)\n" +
+        "You can keep the same plan for up to 18 months, but you pay the full premium plus 2% — often $600–$2,000 a month. It makes sense mainly if you're mid-treatment or have met a big deductible. You can wait up to 60 days to elect it, and if you do, it covers you back to the day the old plan ended.\n\n" +
+        "WHILE YOU DECIDE: a community health center sees you regardless of coverage and charges on a sliding scale. Don't skip medications — ask the pharmacy for the cash price and the manufacturer's assistance program.\n\n" +
+        "WRITE DOWN: coverage end date ______  ·  60-day deadline ______  ·  Marketplace application date ______";
+    },
+    snapReport: function (p) {
+      return "REPORT THE INCOME DROP TO SNAP — CALL SCRIPT\n\n" +
+        "You are already on SNAP. A lower income usually means a HIGHER benefit — but only once you report it.\n\n" +
+        "Call your caseworker or the state SNAP line and say:\n" +
+        "\"I need to report a change. [My / my household member's] job ended / hours were cut on [date]. Our household income is now about " + money(num(p.income)) + " a month. Please recalculate our benefit from the date of the change, and tell me what proof you need.\"\n\n" +
+        "SEND PROOF THE SAME WEEK: the separation letter, last pay stub, or a short signed statement from the employer. Keep a copy and note who you spoke to and when.\n\n" +
+        "ALSO ASK:\n• \"Does this change my recertification date?\"\n• \"Are there work rules for me, and does SNAP Employment & Training count?\" (It's free and can include job search help, training and transportation money.)\n" +
+        "• \"Can you add our utility allowance?\" — if you pay heat or electric separately and it isn't already counted.\n\n" +
+        "If the office says the change doesn't matter, ask for that in writing. Reporting a DROP in income is always allowed, even between reports.";
+    },
+    ajc: function (p) {
+      return "AMERICAN JOB CENTER — WHAT TO ASK FOR\n\n" +
+        "There are about 2,300 of these across the country. They are run by people, paid for with taxes you already paid, and free. You do not need to use any app or AI to use them.\n\n" +
+        "Find yours (CareerOneStop locator) and walk in or call. Say:\n" +
+        "\"I'd like to meet with a career counselor. " + (p.jobLoss ? "I recently lost my job / had my hours cut" : p.newGrad ? "I'm looking for my first job after finishing school" : "I want training that leads to a better-paying job") + ". I'd like to know what I'm eligible for under WIOA.\"\n\n" +
+        "WHAT THEY CAN DO:\n" +
+        "[ ] Help you file for unemployment on the spot\n" +
+        "[ ] Pay for training (an \"Individual Training Account\" — often several thousand dollars) at an approved school or program\n" +
+        "[ ] Help with the costs of looking for work: transportation, work clothes, tools, sometimes child care\n" +
+        "[ ] Résumé and interview help from a person; access to employers who hire through the center\n" +
+        "[ ] \"Rapid Response\" services if your layoff was part of a larger one\n" +
+        "[ ] Referrals to apprenticeships, SNAP Employment & Training, and veterans' employment staff\n\n" +
+        "BRING: ID, your work history for the last few years, and the list of jobs you've applied to.\n\n" +
+        "ASK BEFORE YOU LEAVE: \"What am I eligible for, what's the next step, and who is my point of contact?\" Write down the name.";
+    },
+    training: function (p) {
+      return "TRAINING WITH A PAYCHECK AT THE END — HOW TO CHOOSE\n\n" +
+        "The programs with the strongest evidence share three things: they're designed WITH the employers who hire from them, they pay you or cost you nothing, and they end in a real job. Here's how to tell them apart.\n\n" +
+        "1. REGISTERED APPRENTICESHIP — you're hired on day one and paid while you learn (trades, health care, IT, manufacturing, and growing in office jobs). Search Apprenticeship.gov. Evidence: apprentices' earnings grew 43% vs. 16% for similar workers (Urban Institute).\n\n" +
+        "2. SECTORAL PROGRAMS — free, several months, built with employers, with a coach. Year Up United (ages 18–29) and Per Scholas (tech) are the best-studied: in randomized trials, graduates earned 14–30% more for 7+ years. Seats are limited and they're not in every city — ask the job center what the local equivalent is.\n\n" +
+        "3. SHORT PELL-FUNDED PROGRAMS — from July 2026, Pell Grants can pay for approved programs of 8 to 15 weeks (\"Workforce Pell\"). Each must show 70% completion and 70% job placement to stay approved. Ask the community college which of its short programs are approved and what graduates actually earn.\n\n" +
+        "4. SNAP EMPLOYMENT & TRAINING — if you're on SNAP, free training plus help with transportation and books. Ask your caseworker.\n\n" +
+        "QUESTIONS THAT PROTECT YOU (ask every program):\n" +
+        "[ ] What share of people who START finish? What share have a job in the field 6 months later? What do they earn?\n" +
+        "[ ] Who are the employers you work with — can I talk to a recent graduate?\n" +
+        "[ ] What will it cost me, including fees, and is there any loan involved? (If a program pushes a private loan, walk away.)\n" +
+        "[ ] Is the credential recognized by employers or a licensing board?\n\n" +
+        "WHERE THE JOBS ARE HOLDING UP: the sharpest drops in entry-level hiring are in office work that software can do (routine coding, scripted customer service, basic marketing). Hands-on, in-person and licensed work — health care, the skilled trades, utilities, field service — has kept growing. Choose with your eyes open.";
+    },
+    firstJob: function (p) {
+      return "FIRST JOB AFTER SCHOOL — THE MOVES WITH EVIDENCE BEHIND THEM\n\n" +
+        "The market for new graduates is tighter than it was. That is not your fault, and it is measurable: recent graduates' unemployment is running about 1.3 points above everyone else's (NY Fed, 2026). Here is what actually moves the odds.\n\n" +
+        "1. GET PAID EXPERIENCE ON THE RÉSUMÉ — EVEN NOW. An internship, co-op or apprenticeship cuts the odds of being stuck in a job that doesn't need your degree almost in half (Strada/Burning Glass). Many take recent graduates, not just students. Ask the career center (most serve alumni) and the American Job Center.\n\n" +
+        "2. BE CAREFUL WITH A STOPGAP JOB. In a hiring experiment, graduates in jobs below their degree got 15–30% fewer interviews — but internship experience erased most of that penalty. If you need the stopgap for rent, take it, and keep one relevant thing going beside it.\n\n" +
+        "3. APPLY WHERE A PERSON READS YOUR APPLICATION. Smaller employers, hospitals, public agencies, unions and apprenticeships are more likely to have a human on the other end. In Illinois, employers must now tell you when AI is used in a hiring decision; in New York City they must post notice and a bias audit. Anywhere, you can ask.\n\n" +
+        "4. LEAN TOWARD WORK WHERE SOFTWARE HELPS RATHER THAN REPLACES. Entry-level jobs most exposed to AI fell about 11% for 22–25-year-olds since 2022; the least-exposed grew about 10% (Stanford, 2026). Care work, trades, field roles and anything licensed held up.\n\n" +
+        "5. NEW NURSES: prioritize employers with an accredited nurse residency program (89% of residents are still there after a year, vs. 76% nationally). Look at rural and non-metro hospitals — shortages there run about three times deeper. Oregon and Washington now bar software from calling itself a \"nurse.\"\n\n" +
+        "6. USE THE FREE PEOPLE: career center (alumni too), American Job Center, your professors' networks, your state's apprenticeship office, and a union hall in your field.\n\n" +
+        "WEEKLY RHYTHM THAT WORKS: 5 tailored applications, 2 real conversations with people in the field, 1 skill hour. Log it — it also satisfies unemployment's work-search rule if you're collecting.";
+    },
+    aiRights: function (p) {
+      return "WHEN SOFTWARE SCREENS, MONITORS OR REPLACES YOU — YOUR RIGHTS\n\n" +
+        "Plain talk first: no federal law yet stops an employer from using AI to screen applications, set schedules, monitor work or decide layoffs. But the old laws still apply to whatever the software does, and a few states have added rules. Here's what you can use.\n\n" +
+        "DISCRIMINATION LAWS APPLY TO THE TOOL. If an automated system screens out people by race, sex, age (40+), disability, national origin or pregnancy — even by accident — the EMPLOYER is responsible under Title VII, the ADA and the ADEA. You can file with the EEOC (free; 180–300 days from the event). An AI that can't handle a disability accommodation is an ADA problem.\n\n" +
+        "ASK IN WRITING. Copy and send this:\n" +
+        "\"Dear [HR / hiring manager], I'm writing about [my application for ___ / the decision on ___ dated ___]. Please tell me whether an automated or AI-based tool was used in this decision, what it evaluated, and how I can request a review by a person. If I need an accommodation for the process, please let me know how to request one. Thank you.\"\n" +
+        "In ILLINOIS (since Jan. 1, 2026) employers must notify you when AI is used in hiring, promotion, discipline or firing, and may not use it in a way that discriminates. In NEW YORK CITY, automated hiring tools need a published bias audit and advance notice. Other states are moving — ask your state labor department.\n\n" +
+        "LAYOFFS: if 100+ people work for the company, a mass layoff usually requires 60 days' written notice (WARN Act). \"AI efficiency\" is not an exemption.\n\n" +
+        "MONITORING: your employer can generally monitor work accounts and devices. It cannot use monitoring to punish you for talking with coworkers about pay, safety, staffing or AI — that's protected under the National Labor Relations Act, union or not.\n\n" +
+        "IN HEALTH CARE: AI cannot practice nursing or medicine. Oregon (2026) and Washington (2026) made it illegal for software to use the title \"nurse.\" If a tool's output conflicts with your clinical judgment, document it and follow your scope of practice — your license is yours, not the vendor's.\n\n" +
+        "KEEP A RECORD: screenshots of any automated rejection, the job posting, dates, names. Patterns are what agencies and lawyers act on.";
+    },
+    organize: function (p) {
+      return "TALK WITH COWORKERS — AI, STAFFING AND AUTOMATION ARE BARGAINABLE\n\n" +
+        "One person objecting to a new system is a complaint. Ten people putting it in writing is a negotiation. The law protects the second one.\n\n" +
+        "YOUR RIGHT: under Section 7 of the National Labor Relations Act, most private-sector workers can act together about working conditions — pay, schedules, safety, staffing, surveillance, and how new technology is introduced — whether or not there's a union. Firing or disciplining people for it is illegal, and the NLRB takes complaints for free.\n\n" +
+        "FIRST CONVERSATIONS (off the clock, off company systems):\n" +
+        "• \"What's changed in your job since [the new system / the layoffs]?\"\n" +
+        "• \"What would make this safe and fair?\" — write down the three most common answers.\n" +
+        "• \"Would you sign something that says that?\"\n\n" +
+        "A GROUP LETTER THAT WORKS:\n" +
+        "\"We, the undersigned employees of [department], ask management to meet with us about [the new scheduling/monitoring/AI system]. Specifically we ask for: (1) notice before any automated tool is used to evaluate, schedule or discipline us; (2) a person we can appeal to; (3) no reduction in staffing below [safe level] as a result. We'd like to meet by [date].\"\n" +
+        "Signed by several people, delivered together.\n\n" +
+        "IF YOU'RE IN A UNION: bring it to your steward — technology that changes working conditions usually must be bargained. Nurses: National Nurses United has model contract language on AI and patient safety.\n" +
+        "IF YOU'RE NOT: a workers' center or the AFL-CIO's organizing line can walk you through it. Many first steps don't require forming a union.\n\n" +
+        "Record who you talked to and when. Keep organizing conversations off employer email and chat.";
+    },
+    medicaidWork: function (p) {
+      return "KEEP MEDICAID — THE 80-HOUR RULE STARTING IN 2027\n\n" +
+        "Under the 2025 budget law (P.L. 119-21), states must start requiring many adults covered by Medicaid expansion to show 80 hours a month of work, job training, school, or volunteering — by January 2027 in most states (some may get extra time). People who can't show it, or who miss the paperwork, can lose coverage.\n\n" +
+        "WHAT COUNTS TOWARD 80 HOURS: paid work (hours or earnings), a job-training program, half-time or more school, community service, or a mix.\n" +
+        "LIKELY EXEMPT (confirm with your state): parents or caregivers of children 13 and under, people who are pregnant or recently gave birth, people with disabilities or serious health conditions, people in substance-use treatment, veterans with a total disability rating, and others.\n\n" +
+        "WHY THIS IS ON YOUR PLAN: you told me a job ended or hours were cut while someone in the household has Medicaid. Starting now protects you:\n" +
+        "[ ] Sign up for free SNAP Employment & Training or a job-center program — training hours count\n" +
+        "[ ] Keep a simple monthly log: hours worked, class hours, volunteer hours\n" +
+        "[ ] Make sure the Medicaid office has your current address, phone and email — most coverage losses are paperwork, not eligibility\n" +
+        "[ ] Ask your state Medicaid office: \"When does the community engagement requirement start here, and am I exempt?\"\n\n" +
+        "If you lose coverage, you can reapply — and Medicaid can be backdated up to 3 months for bills in that gap.";
     }
   };
 
@@ -440,7 +605,18 @@
     dcap: "A Dependent Care FSA lets you pay for care with pre-tax dollars — up to $7,500 per household starting in 2026. If your combined tax rate is 22–30%, that's $1,600–$2,200 back on a full contribution — but only if your employer updated its plan to the new limit.",
     leave: "FMLA protects your job but doesn't pay. A growing number of states run paid family leave insurance funded by payroll deductions you've likely already been paying. The certification form is where most claims stall — a clear, specific clinician note prevents delays.",
     caregiverPay: "Many states' Medicaid programs let people hire a family member as their paid caregiver. California's IHSS is the largest. If your parent or partner already gets your help daily, you may be able to be paid for it.",
-    respite: "Family caregivers have higher rates of depression and chronic illness. Respite — even a few hours — is a health intervention, not a luxury."
+    respite: "Family caregivers have higher rates of depression and chronic illness. Respite — even a few hours — is a health intervention, not a luxury.",
+    // WorkBridge (English-only)
+    ui: "Unemployment insurance is paid for by a tax on your employer that's figured into your wages — you earned it. It pays from the week you file, not the day you lost the job, so delay costs you money. Most states replace about half of prior wages up to a cap, for up to 26 weeks. Partial benefits exist for cut hours, and many denials are won on appeal.",
+    owed: "A final paycheck, unused vacation and earned commissions are debts the employer owes you, with state deadlines behind them. A severance agreement trades money for your right to sue; federal law gives workers 40 and over 21 days to think about it. And if 100 or more people work there, a mass layoff usually requires 60 days' notice — or 60 days of pay.",
+    coverageClock: "Losing job-based insurance opens three doors. Medicaid is open any day and judges income now, not last year's. The Marketplace opens a 60-day special enrollment window with subsidies based on this year's expected income. COBRA keeps the old plan at full price for up to 18 months and can be elected retroactively within 60 days. Miss the 60 days and you may wait until November.",
+    snapReport: "SNAP is recalculated when income changes — but a drop only raises your benefit once you report it, and the increase starts from the report, not the job loss. If this month's income is under $150, expedited SNAP must be issued within 7 days.",
+    ajc: "American Job Centers are the public job-service system created by federal law (WIOA). They're free, in person, and can pay for training through Individual Training Accounts. They are the human front door to almost every program on this page — you don't need an app or an AI to use them.",
+    training: "The only workforce programs proven in randomized trials — Year Up, Per Scholas, Project QUEST — share a design: built with employers, free to the participant, with a coach and a job at the end. Earnings gains of 14–30% lasted 7 to 14 years. Programs that charge you, push loans, or can't name their employer partners don't have that record.",
+    firstJob: "Since 2023, recent college graduates have been unemployed at a higher rate than workers overall for the first time in decades, and 42% of those working are in jobs that don't need a degree. The best evidence says paid experience with an employer attached — internships, co-ops, apprenticeships, residencies — is what changes the odds, not another certificate.",
+    aiRights: "No federal law yet limits AI in hiring or firing — but the discrimination laws apply to whatever the tool does, and the employer answers for it. Illinois requires notice when AI is used in employment decisions (2026); New York City requires bias audits. In health care, Oregon and Washington bar software from using the title \"nurse.\" Your record of what happened is what makes any of this enforceable.",
+    organize: "The National Labor Relations Act protects most private-sector workers who act together over working conditions, union or not — including how new technology is introduced. Technology that changes jobs is a mandatory bargaining subject where there's a union. The research on AI and jobs finds the losses land where workers have the least say.",
+    medicaidWork: "The 2025 budget law adds a work-or-activity requirement to Medicaid expansion starting by 2027: 80 hours a month of work, training, school or volunteering, with exemptions for parents of young children, people with disabilities and others. Where similar rules were tried before, most people who lost coverage were eligible — they lost it to paperwork. A log and an up-to-date address are the defense."
   };
 
   /* ---------- Spanish drafts and lessons ---------- */
@@ -953,12 +1129,76 @@
         links: [L.respite, L.lifeline988], source: "Community organizer guidance" }));
     }
 
+    /* ----- VI. Work, income & training (WorkBridge; English-only) -----
+       A job loss sets off deadlines in the other pillars, so some of these steps
+       land there (health, food) while WorkBridge holds the work itself. */
+    var jobEnd = daysOr(p.jobEndDays, null);
+    if (p.jobLoss) {
+      // UI pays from the week you file; if the job ended more than a week ago the deadline is today.
+      tasks.push(task({ id: "ui", pillar: "work", draft: "ui", title: tr("File for unemployment this week — it pays from the week you file", "Solicite el seguro de desempleo esta semana"),
+        why: "You paid into unemployment insurance with every paycheck. Benefits start the week you file, not the day the job ended, so each week of delay is money you don't get back. Hours cut, not lost? Partial benefits exist.",
+        confidence: "likely", valueLabel: "Partial wage replacement", effortMin: 45, urgent: true, dueDays: jobEnd === null ? 7 : Math.max(0, 7 - jobEnd),
+        links: [L.ui, L.ajc], source: "State unemployment insurance laws (file in the state where you worked); USA.gov unemployment benefits. Most states replace about half of prior wages up to a weekly cap for up to 26 weeks" }));
+      tasks.push(task({ id: "owed", pillar: "work", draft: "owed", title: p.warnLarge ? "Collect what you're owed — and check whether the WARN Act's 60-day notice applied" : "Collect what you're owed: final pay, unused PTO, severance terms, your file",
+        why: "Final wages and earned leave are debts the employer owes you. A severance release should never be signed the same day" + (p.warnLarge ? ", and a large employer that gave little notice may owe up to 60 days of pay" : "") + ".",
+        confidence: "likely", valueLabel: "Money already yours", effortMin: 40, dueDays: 7,
+        links: p.warnLarge ? [L.warn, L.whd, L.lawhelp] : [L.whd, L.lawhelp], source: "FLSA and state final-pay laws; OWBPA, 29 U.S.C. 626(f) (workers 40+: 21 days to consider a release, 7 to revoke; 45 days in a group layoff); WARN Act, 29 U.S.C. 2101–2109 (employers of 100+, 60 days' notice)" }));
+    }
+    if (p.lostCoverage) {
+      tasks.push(task({ id: "coverageClock", pillar: "health", draft: "coverageClock", title: "Beat the 60-day clock on health coverage: Medicaid, Marketplace, or COBRA",
+        why: "Losing job-based insurance opens a 60-day Special Enrollment Period and a 60-day COBRA election window. Medicaid is open any day and judges income now. Miss the 60 days and you may wait until Open Enrollment.",
+        confidence: "likely", valueLabel: "Keeps coverage", effortMin: 60, urgent: true, dueDays: jobEnd === null ? 60 : Math.max(0, 60 - jobEnd),
+        links: [L.healthcare, L.medicaid, L.cobra, L.hrsa], source: "45 CFR 155.420(d)(1) (loss of coverage SEP: 60 days); COBRA, 29 U.S.C. 1165 (60-day election period, coverage retroactive); Medicaid enrollment is year-round" }));
+    }
+    if (p.jobLoss && has(b, "snap")) {
+      tasks.push(task({ id: "snapReport", pillar: "food", draft: "snapReport", title: "Report the income drop to SNAP — your benefit should go up",
+        why: "SNAP is figured on current income, but a drop only raises the benefit once it's reported, and the increase starts from the report. Ten minutes on the phone.",
+        confidence: "likely", valueLabel: "Higher SNAP benefit", effortMin: 15, dueDays: 10,
+        links: [L.snapState, L.snapET], source: "7 CFR 273.12 (reporting changes; reported decreases in income take effect for the next issuance) and 7 CFR 273.2(i) (expedited service within 7 days)" }));
+    }
+    if (p.jobLoss || p.newGrad || p.wantsTraining) {
+      tasks.push(task({ id: "ajc", pillar: "work", draft: "ajc", title: "Visit an American Job Center — free help from a person, and money for training",
+        why: "About 2,300 public job centers offer free career counseling, help filing for unemployment, and Individual Training Accounts that can pay for training. No app or AI required — you talk to a person.",
+        confidence: "likely", valueLabel: "Free help; training funds", effortMin: 90, dueDays: 14,
+        links: [L.ajc, L.jobTraining, L.vaJobs], source: "Workforce Innovation and Opportunity Act (P.L. 113-128), Title I adult and dislocated worker programs; Individual Training Accounts under 20 CFR 680.300" }));
+    }
+    if (p.wantsTraining || p.newGrad) {
+      tasks.push(task({ id: "training", pillar: "work", draft: "training", title: "Pick training with a paycheck at the end: apprenticeship, a sectoral program, or a short Pell-funded course",
+        why: "The programs proven in randomized trials are free, built with employers, and end in a job — earnings 14–30% higher for 7 to 14 years. Programs that charge you or push loans don't have that record.",
+        confidence: "possible", valueLabel: "Earnings +14–30% in trials", effortMin: 90, dueDays: 30,
+        links: [L.apprenticeship, L.snapET, L.pell, L.yearup, L.perscholas], source: "Year Up PACE randomized trial (ACF/OPRE, 2021); MDRC WorkAdvance 7-year follow-up (Per Scholas); Urban Institute, American Apprenticeship Initiative earnings brief; Workforce Pell final rule, 91 FR (May 19, 2026), effective July 1, 2026" }));
+    }
+    if (p.newGrad) {
+      tasks.push(task({ id: "firstJob", pillar: "work", draft: "firstJob", title: "First job after school: the moves with evidence behind them",
+        why: "Recent graduates' unemployment now runs about 1.3 points above everyone else's. Paid experience with an employer attached — internships, co-ops, apprenticeships, residencies — is what changes the odds, not another certificate.",
+        confidence: "likely", valueLabel: "A first job that uses your training", effortMin: 60, dueDays: 14,
+        links: [L.ajc, L.apprenticeship, L.nrp], source: "Federal Reserve Bank of New York, Labor Market for Recent College Graduates (Nov. 2, 2026); Strada/Burning Glass, Talent Disrupted (2024); Nunley et al., résumé field experiment (Auburn, 2014); Vizient/AACN Nurse Residency Program fact sheet; Stanford Digital Economy Lab, Canaries in the Coal Mine (Aug. 2026)" }));
+    }
+    if (p.aiAffected) {
+      tasks.push(task({ id: "aiRights", pillar: "work", draft: "aiRights", title: "Know your rights when software screens, monitors, or replaces you",
+        why: "No federal law yet limits AI in hiring or layoffs, but discrimination law applies to whatever the tool does, Illinois and New York City require notice, and large layoffs still require 60 days' notice. A written record is what makes any of it enforceable.",
+        confidence: "likely", valueLabel: "Your rights, in writing", effortMin: 45, dueDays: 14,
+        links: [L.eeoc, L.nlrb, L.warn, L.nnuAI], source: "Title VII, ADA and ADEA as applied to automated tools (EEOC); Illinois HB 3773, 775 ILCS 5/2-102(L) (effective Jan. 1, 2026); NYC Local Law 144 of 2021 (automated employment decision tools); WARN Act; Oregon 2025 Or. Laws ch. 378 and Washington HB 2155 (2026) on the title \"nurse\"" }));
+    }
+    if (p.aiAffected || p.jobLoss) {
+      tasks.push(task({ id: "organize", pillar: "work", draft: "organize", title: "Talk with coworkers: AI, staffing and automation are things you can bargain over",
+        why: "The National Labor Relations Act protects most private-sector workers who act together over working conditions, union or not. The research on AI and jobs finds the losses land where workers have the least say.",
+        confidence: "possible", valueLabel: "Collective leverage", effortMin: 60, dueDays: 45, organizer: true,
+        links: [L.nlrb, L.formUnion, L.nnuAI], source: "National Labor Relations Act §7, 29 U.S.C. 157 (protected concerted activity); NLRB, Your Rights" }));
+    }
+    if (p.jobLoss && has(b, "medicaid") && NON_EXPANSION.indexOf(p.state) === -1) {
+      tasks.push(task({ id: "medicaidWork", pillar: "health", draft: "medicaidWork", title: "Keep Medicaid in 2027: the 80-hours-a-month rule and what counts",
+        why: "Starting by January 2027, most states must require many adults on Medicaid expansion to show 80 hours a month of work, training, school or volunteering. Training and job-center programs count, and a log protects you.",
+        confidence: "possible", valueLabel: "Keeps coverage", effortMin: 20, dueDays: 60,
+        links: [L.medicaid, L.snapET, L.ajc], source: "P.L. 119-21 (2025) §71119, adding Social Security Act §1902(xx): community engagement requirement, 80 hours/month, states to implement no later than Jan. 1, 2027 (extensions possible); exemptions include parents of dependent children 13 and under, pregnant and postpartum people, people with disabilities, and others. Confirm your state's start date" }));
+    }
+
     /* ----- Situation summary per pillar ----- */
     var dx = {};
     Object.keys(PILLARS).forEach(function (k) {
       var ts = tasks.filter(function (t) { return t.pillar === k; });
       var urgentT = ts.filter(function (t) { return t.urgent; });
-      var enrollT = ts.filter(function (t) { return /snap|wic|meals|lifeline|coverage|discount|liheap|childcare|charity|erap/.test(t.id); });
+      var enrollT = ts.filter(function (t) { return /^(snap|wic|meals|lifeline|coverage|coverageClock|discount|liheap|childcare|charity|erap|ui|ajc|snapReport)$/.test(t.id); });
       var status, words;
       if (urgentT.length) { status = "at-risk"; words = tr("Something has a deadline: ", "Hay una fecha límite: ") + urgentT[0].title.toLowerCase() + "."; }
       else if (enrollT.length) { status = "eligible"; words = tr("You likely qualify for help you're not getting yet.", "Es probable que califique para ayuda que todavía no recibe."); }

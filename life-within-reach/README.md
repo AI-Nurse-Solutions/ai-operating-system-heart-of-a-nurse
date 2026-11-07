@@ -1,6 +1,15 @@
 # Life Within Reach
 
-A Nurse AI OS web app: an AI community organizer that helps a household lower its costs across the five pillars of the Affordability App Map. Those are groceries (PantryPlan), health care (CareBridge), housing (HomeHold), energy (WattWise) and family care (KinCare). It also includes the Household Command Center and a Policy Watch preview.
+A Nurse AI OS web app: an AI community organizer that helps a household lower its costs across the five pillars of the Affordability App Map, plus a sixth for the income side. The pillars are groceries (PantryPlan), health care (CareBridge), housing (HomeHold), energy (WattWise), family care (KinCare) and work, income and training (WorkBridge). It also includes the Household Command Center and a Policy Watch preview.
+
+## WorkBridge (pillar VI, English-only)
+
+WorkBridge covers a lost job or cut hours, a first job after school, training, and what to do when software or AI screens, schedules or replaces someone. It is written for people who would rather deal with a person than a program: every step ends at a staffed office (American Job Centers, the state unemployment office, legal aid, the EEOC, the NLRB, a union or workers' center), and the pillar page says plainly that the app doesn't hire, screen or monitor anyone and sends nothing anywhere.
+
+- A job loss sets off deadlines in other pillars, so some WorkBridge answers create steps there: the 60-day coverage clock and the 2027 Medicaid 80-hour rule land in CareBridge; the SNAP income-change report lands in PantryPlan.
+- Evidence labels follow the research doc *AI and New Graduates: Mitigation Strategies* (Nov. 2026): sectoral training and apprenticeships carry the strongest evidence; AI-rights steps cite the specific laws (Illinois HB 3773, NYC Local Law 144, WARN, NLRA §7, Oregon and Washington's "nurse" title laws).
+- **No Spanish version yet.** `PILLARS.work.englishOnly` is set; in Spanish mode the intake question, the pillar page and the plan summary show a short Spanish notice and the English content. Add `DRAFTS_ES_IMPL` / `LESSONS_ES_IMPL` entries and `T()` twins when translating.
+- The unemployment-office and job-center links go to USA.gov and CareerOneStop, which route to each state. Re-verify them with the rest of the ruleset.
 
 Target URL: **https://nurse-ai-os.org/life-within-reach/**
 
@@ -10,7 +19,7 @@ Target URL: **https://nurse-ai-os.org/life-within-reach/**
 | --- | --- |
 | `index.html` | Public landing page |
 | `es/index.html` | Spanish landing page |
-| `app/index.html` | The app (Household Command Center plus the five pillar tabs and Policy Watch) |
+| `app/index.html` | The app (Household Command Center plus the six pillar tabs and Policy Watch) |
 | `assets/rules.js` | Versioned benefits rules engine. Every threshold has an effective date and a source |
 | `assets/app.js` | Five-step loop (Assess → Understand → Plan → Act → Check in): intake, situation summary, ranked 30/60/90 plan, "Do it with me" drafts, weekly check-in and story bank |
 | `assets/lwr.css` | Styles, using the shared Nurse AI OS palette and type (Fraunces, Source Sans 3) |

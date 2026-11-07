@@ -97,6 +97,7 @@
     ["childcare", T("Child care costs or a waitlist", "El costo del cuidado infantil o una lista de espera"), ""],
     ["caregiving", T("Caring for a parent or family member", "Cuidar a un padre, madre u otro familiar"), ""],
     ["food", T("Food runs out before the month does", "La comida se acaba antes de fin de mes"), ""],
+    ["work", T("A lost job, cut hours, or a job search", "Un trabajo perdido, menos horas o una búsqueda de empleo"), T("including a first job after school", "incluida una primera búsqueda después de la escuela")],
     ["general", T("I just want to lower costs", "Solo quiero bajar mis gastos"), ""]
   ];
   var BENEFITS = [
@@ -151,6 +152,29 @@
           '<div class="choices">' + yes("incomeDropped", T("Our income dropped recently", "Nuestros ingresos bajaron hace poco"), p.incomeDropped) + "</div>";
       },
       read: function (f, p) { p.income = num(f.get("income")); p.earnedIncome = optNum(f.get("earnedIncome")); p.incomeDropped = !!f.get("incomeDropped"); }
+    },
+    {
+      // WorkBridge intake. English-only for now; in Spanish the question shows a short notice and the same English choices.
+      id: "work", q: T("Has work changed for anyone in the household?", "¿Cambió el trabajo de alguien en el hogar?"),
+      why: T("A job ending sets off deadlines everywhere else: unemployment pays from the week you file, health coverage has a 60-day window, and SNAP can go up. I'm asking so those land on your plan with dates. Every step this unlocks leads to an office with people in it — you can do all of it without using any AI.",
+        "Cuando termina un trabajo, se activan plazos en todo lo demás: el desempleo paga desde la semana en que lo solicita, el seguro médico tiene un plazo de 60 días y SNAP puede subir. Esta sección está disponible solo en inglés por ahora."),
+      html: function (p) {
+        return (ES ? '<p class="small muted">' + "Esta sección y los pasos que genera están en inglés por ahora." + "</p>" : "") +
+          '<div class="choices">' +
+          yes("jobLoss", "Someone lost a job or had hours cut", p.jobLoss, "Includes being laid off, let go, or quitting for a good reason") +
+          yes("lostCoverage", "Health insurance ended, or will end, with that job", p.lostCoverage, "Starts a 60-day clock") +
+          yes("warnLarge", "The employer has 100 or more workers and gave little or no notice", p.warnLarge, "The WARN Act may apply") +
+          yes("newGrad", "Someone is looking for a first job after finishing school or training", p.newGrad, "Including new nurses") +
+          yes("wantsTraining", "Someone wants training that leads to a better-paying job", p.wantsTraining, "Apprenticeships and free programs") +
+          yes("aiAffected", "Software or AI screened someone out, cut their hours, or took over their work", p.aiAffected, "Unlocks your rights and ways to push back") +
+          "</div>" +
+          '<div class="row" style="margin-top:1rem">' + numField("jobEndDays", "Days since the job ended or hours were cut", shown(p.jobEndDays), 0, "Leave blank if it hasn't happened or you're not sure. Enter 0 if it's today.") +
+          numField("coverageEndDays", "Days since the job-based health coverage ended", shown(p.coverageEndDays), 0, "Often later than the last day of work. Enter 0 if it ends today; leave blank if it hasn't ended yet or you're not sure.") + "</div>";
+      },
+      read: function (f, p) {
+        p.jobLoss = !!f.get("jobLoss"); p.lostCoverage = !!f.get("lostCoverage"); p.warnLarge = !!f.get("warnLarge"); p.newGrad = !!f.get("newGrad"); p.wantsTraining = !!f.get("wantsTraining"); p.aiAffected = !!f.get("aiAffected");
+        p.jobEndDays = optNum(f.get("jobEndDays")); p.coverageEndDays = optNum(f.get("coverageEndDays"));
+      }
     },
     {
       id: "benefits", q: T("Which of these do you already have?", "¿Cuáles de estos ya tiene?"),
@@ -277,7 +301,8 @@
       reasons: ["bill", "coverage", "shutoff", "childcare", "caregiving"], state: "CA", zip: "94109", hhSize: 3, kidsUnder5: 1, kids5to17: 0, seniors: 0, pregnant: false, disability: false,
       income: 3400, benefits: ["medicaid"], tenure: "rent", housingCost: 2100, behindRent: false, evictionNotice: false, repairs: true, rentIncreasePct: 14,
       energyBill: 210, shutoff: true, medEquip: true, shutoffDays: 5, uninsured: false, renewalDue: true, renewalDays: 12, rxTrouble: true, paDenied: true, medBill: 2400, rxMonthly: 42,
-      childcareCost: 1900, employerDCAP: "unsure", caringAdult: true, needLeave: true, foodRunsOut: true, internetBill: 75, sample: true
+      childcareCost: 1900, employerDCAP: "unsure", caringAdult: true, needLeave: true, foodRunsOut: true, internetBill: 75,
+      jobLoss: true, jobEndDays: 10, coverageEndDays: null, lostCoverage: false, warnLarge: false, newGrad: false, wantsTraining: true, aiAffected: true, sample: true
     };
     state.profile = JSON.parse(JSON.stringify(state.draft)); state.profile.intakeDate = new Date().toISOString(); state.done = {}; save(); refresh(); setTab("home");
     toast(T("Loaded a sample household — replace it with your own any time.", "Se cargó un hogar de ejemplo: cámbielo por el suyo cuando quiera."));
@@ -303,6 +328,7 @@
       if (eligible.length) parts.push("Es probable que califique para " + eligible.length + (eligible.length > 1 ? " tipos" : " tipo") + " de ayuda que todavía no recibe.");
       if (plan.burden >= 30 && p.tenure === "rent") parts.push("La renta se lleva el " + plan.burden + "% de sus ingresos" + (plan.burden >= 50 ? ": eso es una carga severa." : "."));
       if (plan.flags.indexOf("coverage-gap") !== -1) parts.push("Su estado no ha ampliado Medicaid, lo que puede dejar una brecha de cobertura; agregué opciones de atención de bajo costo.");
+      if (p.jobLoss || p.newGrad || p.wantsTraining) parts.push("Agregué pasos sobre trabajo, ingresos y capacitación (WorkBridge); por ahora están en inglés.");
       if (!plan.tasks.length) parts.push("Según lo que me contó, no hay nada urgente. Revise cada semana: las cosas cambian.");
       return parts.join(" ");
     }
@@ -311,6 +337,8 @@
     if (eligible.length) parts.push("You likely qualify for " + eligible.length + " kind" + (eligible.length > 1 ? "s" : "") + " of help you aren't getting yet.");
     if (plan.burden >= 30 && p.tenure === "rent") parts.push("Rent takes " + plan.burden + "% of income" + (plan.burden >= 50 ? " — that's severe cost burden." : "."));
     if (plan.flags.indexOf("coverage-gap") !== -1) parts.push("Your state hasn't expanded Medicaid, which can leave a coverage gap — I've added low-cost care options.");
+    if (p.jobLoss) parts.push("A job ended or hours were cut, so I've lined up the steps that bring money back fastest and protect your coverage — each one leads to a person, not a program.");
+    else if (p.newGrad || p.wantsTraining) parts.push("You're looking for work or training, so I've added the options with the strongest evidence behind them.");
     if (!plan.tasks.length) parts.push("Based on what you told me, nothing urgent stands out. Check in weekly — things change.");
     return parts.join(" ");
   }
@@ -422,7 +450,13 @@
     family: { who: T("Working parents priced out of child care, the sandwich generation, anyone who needs leave, and seniors facing care costs.", "Padres que trabajan y no pueden pagar el cuidado infantil, quienes cuidan a hijos y a padres a la vez, quien necesite una licencia, y personas mayores con gastos de cuidado."),
       job: T("Caregiving is skilled work, done unpaid at home. Find and fund care, protect your job and health, and connect you with other caregivers.", "Cuidar es un trabajo con mucha habilidad, hecho sin pago en casa. Encontrar y pagar el cuidado, proteger su empleo y su salud, y conectarle con otros cuidadores."),
       tools: [[T("Child care subsidy stacker", "Combinador de subsidios para cuidado infantil"), T("State subsidy, Head Start, DCAP", "Subsidio estatal, Head Start y DCAP"), true], [T("Leave navigator", "Guía de licencias"), T("FMLA + state paid leave + request letter", "FMLA + licencia pagada del estado + carta de solicitud"), true], [T("Paid family caregiver finder", "Buscador de pago para familiares cuidadores"), T("IHSS and consumer-directed programs", "IHSS y programas dirigidos por el consumidor"), true], [T("Caregiver check-in", "Revisión para cuidadores"), T("Respite and support", "Respiro y apoyo"), true], [T("Elder care cost map", "Mapa de costos del cuidado de mayores"), T("In-home vs. adult day vs. assisted living, with Medicaid waivers", "En casa, centro de día o vivienda asistida, con exenciones de Medicaid"), false], [T("Care co-op builder", "Cooperativas de cuidado"), T("Shared nannies and babysitting swaps", "Niñeras compartidas e intercambio de cuidado"), false]],
-      links: ["childcare", "headstart", "eldercare", "respite", "fmla"] }
+      links: ["childcare", "headstart", "eldercare", "respite", "fmla"] },
+    // WorkBridge is English-only for now; the page shows a Spanish notice instead of a translation.
+    work: { who: "Anyone who lost a job or had hours cut, is looking for a first job after school or training, wants training that leads to a raise, or was screened out, scheduled, or replaced by software.",
+      job: "Replace the paycheck fast, collect what you're owed, protect your coverage, and connect you to people — not bots — who can help: job centers, unions, legal aid, and training with a real employer at the end.",
+      guard: "Plain talk about AI. This tool is software with fixed rules and published sources: it doesn't hire, screen, rank, or monitor anyone, and nothing you type here is sent anywhere or used to train an AI. Every step below ends at a human office you can walk into. If you'd rather not use AI at all, print this page and start with the American Job Center and 211.",
+      tools: [["Job-loss cascade", "Unemployment, final pay, the 60-day coverage clock, and SNAP — with dates", true], ["What you're owed checklist", "Final paycheck, PTO, severance timing, WARN Act notice", true], ["Free training finder", "Apprenticeships, sectoral programs, SNAP E&T, Workforce Pell — with the evidence behind each", true], ["First-job playbook", "For new graduates, including new nurses", true], ["Rights letter: AI in hiring and firing", "Ask in writing whether a tool was used; where notice is required", true], ["Coworker organizing kit", "Group letter and first conversations on AI, staffing and automation", true], ["Local hiring map", "Employers near you hiring through job centers and apprenticeships", false], ["Union and workers' center finder", "By industry and ZIP, with contract language on AI", false]],
+      links: ["ajc", "ui", "apprenticeship", "snapET", "eeoc", "nlrb", "lawhelp", "l211"] }
   };
 
   function renderPillar(k) {
@@ -430,6 +464,7 @@
     var ts = plan ? plan.tasks.filter(function (t) { return t.pillar === k; }) : [];
     var d = plan && plan.dx[k];
     view.innerHTML = '<div class="layout"><div>' +
+      (ES && P.englishOnly ? '<div class="boundary" style="margin-bottom:1rem"><p><strong>Esta sección está disponible solo en inglés por ahora.</strong> Los pasos, borradores y lecciones de WorkBridge aparecen en inglés. Para hablar con una persona en español, llame al 211.</p></div>' : "") +
       '<div class="pillar-hero" style="--accent:' + P.accent + '"><p class="eyebrow dark">' + T("Pillar ", "Pilar ") + P.roman + " · " + R.pillarName(k) + "</p><h2>" + P.app + "</h2>" +
       (d ? '<p><span class="chip ' + STATUS[d.status][0] + '">' + STATUS[d.status][1] + "</span> " + esc(d.words) + "</p>" : "") +
       '<p class="small"><strong>' + T("Who it's for:", "Para quién es:") + "</strong> " + I.who + '</p><p class="small"><strong>' + T("Your community organizer's job here:", "Lo que hace aquí su organizador comunitario:") + "</strong> " + I.job + "</p>" +
@@ -548,7 +583,7 @@
       e.preventDefault(); var f = new FormData(e.target); var did = f.getAll("did"); var changed = f.get("changed");
       did.forEach(function (id) { if (id[0] !== "_") state.done[id] = new Date().toISOString(); });
       state.checkins.push({ date: new Date().toISOString(), did: did, changed: changed }); save(); closeDialog();
-      if (changed && changed !== "none") { toast(T("Let's update your answers and re-plan.", "Vamos a actualizar sus respuestas y rehacer el plan.")); editAnswers(changed === "income" ? 3 : changed === "household" ? 2 : 5); return; }
+      if (changed && changed !== "none") { toast(T("Let's update your answers and re-plan.", "Vamos a actualizar sus respuestas y rehacer el plan.")); editAnswers(changed === "income" ? 3 : changed === "household" ? 2 : 6); return; }
       setTab(currentTab);
       if (did.indexOf("_denied") !== -1) openDialog(T("Evaluate", "Evaluar"), T("A denial isn't the end", "Una negación no es el final"), T('<p>Denials and waitlists are exactly where programs fail households — and where a person helps most.</p><ul><li>Ask for the reason <strong>in writing</strong> and the deadline to appeal.</li><li>Most benefit denials can be appealed through a "fair hearing" — legal aid can help for free.</li><li>Call <a href="https://www.211.org" target="_blank" rel="noopener">211</a> for other programs while you wait.</li></ul><p class="small muted">With your permission, stories like yours show lawmakers where programs break. Use "Share my story" to create a de-identified summary.</p>',
         '<p>Las negaciones y las listas de espera son justo donde los programas les fallan a los hogares, y donde una persona ayuda más.</p><ul><li>Pida el motivo <strong>por escrito</strong> y la fecha límite para apelar.</li><li>La mayoría de las negaciones de beneficios se pueden apelar en una "audiencia imparcial" (fair hearing); la ayuda legal puede ayudarle gratis.</li><li>Llame al <a href="https://www.211.org" target="_blank" rel="noopener">211</a> para buscar otros programas mientras espera.</li></ul><p class="small muted">Con su permiso, historias como la suya les muestran a los legisladores dónde fallan los programas. Use "Compartir mi historia" para crear un resumen anónimo.</p>'));
@@ -576,6 +611,9 @@
     if (num(p.childcareCost)) pressures.push(S("child care costing about ", "cuidado infantil que cuesta unos ") + usd(Math.round(num(p.childcareCost) / 100) * 100) + S("/month", " al mes"));
     if (p.caringAdult) pressures.push(S("unpaid care for an adult family member", "el cuidado sin pago de un familiar adulto"));
     if (p.foodRunsOut) pressures.push(S("food that runs out before the end of the month", "comida que se acaba antes de fin de mes"));
+    if (p.jobLoss) pressures.push(S("a lost job or cut hours" + (p.aiAffected ? ", with software or AI involved in the decision" : ""), "un trabajo perdido o menos horas" + (p.aiAffected ? ", con programas de computadora o IA de por medio" : "")));
+    else if (p.aiAffected) pressures.push(S("being screened out or replaced by software or AI", "haber sido descartado o reemplazado por programas de computadora o IA"));
+    if (p.newGrad) pressures.push(S("a new graduate still looking for a first job", "un recién graduado que todavía busca su primer empleo"));
     if (pressures.length) lines.push(S("This month they faced ", "Este mes enfrentaron ") + pressures.join(", ") + ".");
     var denied = state.checkins.some(function (c) { return c.did.indexOf("_denied") !== -1; });
     lines.push(S("Their plan found about " + usd(pl.potential.monthly) + "/month in help they may qualify for but weren't receiving", "Su plan encontró unos " + usd(pl.potential.monthly) + " al mes en ayuda para la que podrían calificar y que no recibían") + (denied ? S(", and at least one application was denied or waitlisted", ", y al menos una solicitud fue negada o quedó en lista de espera") : "") + ".");
@@ -600,6 +638,8 @@
     if (state.draft.intakeDate) {
       var elapsed = Math.max(0, Math.floor((Date.now() - new Date(state.draft.intakeDate)) / 86400000));
       ["renewalDays", "shutoffDays"].forEach(function (k) { var v = optNum(state.draft[k]); if (v !== null) state.draft[k] = Math.max(0, v - elapsed); });
+      // "Days since the job ended" grows with time, unlike the countdowns above.
+      ["jobEndDays", "coverageEndDays"].forEach(function (k) { var v = optNum(state.draft[k]); if (v !== null) state.draft[k] = v + elapsed; });
       delete state.draft.intakeDate;
     }
     state.profile = null; intakeStep = typeof step === "number" ? step : 0; save(); plan = null; setTab("home"); focusQ();
@@ -635,5 +675,5 @@
   if (params.get("sample") === "1" && !state.profile) loadSample();
   refresh();
   var h = location.hash.replace("#", "");
-  setTab(["home", "food", "health", "housing", "energy", "family", "policy"].indexOf(h) !== -1 && h ? h : "home");
+  setTab(["home", "food", "health", "housing", "energy", "family", "work", "policy"].indexOf(h) !== -1 && h ? h : "home");
 })();

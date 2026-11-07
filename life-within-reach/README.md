@@ -9,6 +9,7 @@ Target URL: **https://nurse-ai-os.org/life-within-reach/**
 | Path | What it is |
 | --- | --- |
 | `index.html` | Public landing page |
+| `es/index.html` | Spanish landing page |
 | `app/index.html` | The app (Household Command Center plus the five pillar tabs and Policy Watch) |
 | `assets/rules.js` | Versioned benefits rules engine. Every threshold has an effective date and a source |
 | `assets/app.js` | Five-step loop (Assess → Understand → Plan → Act → Check in): intake, situation summary, ranked 30/60/90 plan, "Do it with me" drafts, weekly check-in and story bank |
@@ -16,6 +17,13 @@ Target URL: **https://nurse-ai-os.org/life-within-reach/**
 | `assets/favicon-lamp.svg` | Nurse AI OS lamp mark |
 
 The app is static, with no build step, no backend and no dependencies. All paths are relative, so the folder works when served from any sub-path.
+
+## Languages (English and Spanish)
+
+- The app picks its language from `?lang=es` / `?lang=en`, then the visitor's saved choice, then the page's `lang`. The header toggle switches and remembers it. The English landing page links to `app/?lang=en`; the Spanish one to `app/?lang=es`.
+- English is the source of truth. Spanish sits beside it: `T("English", "Español")` in `app.js`, `tr("English", "Español")` in `rules.js`, `nameEs` / `labelEs` / `itemEs` on tables, and `DRAFTS_ES_IMPL` / `LESSONS_ES_IMPL` for the drafts and lessons. **When you change an English string or rule text, change its Spanish twin in the same edit.**
+- Formal letters to institutions (hospital, insurer, landlord, employer, HR, utility commission) stay in English with a Spanish explanation above them; checklists and call scripts are fully Spanish and remind people they can ask for a free interpreter. The de-identified story is offered in Spanish with an English copy.
+- Spanish uses formal "usted" and plain language. It was written with AI assistance and has **not yet been reviewed by a native-speaker community partner** — do that before promoting the Spanish version.
 
 ## Deploy to nurse-ai-os.org
 

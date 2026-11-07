@@ -292,9 +292,12 @@
         "5. Apply for emergency rental assistance at the same time (see next step).\n\nNever leave your home because of a notice alone — only a court order and a sheriff/marshal can remove you.";
     },
     rentIncrease: function (p, t) {
-      var cap = RENT_CAP_STATES[p.state];
+      var yr = new Date().getFullYear();
+      var c = rentCapFor(p.state, yr);
+      var cite = c ? c.law.split(":")[0] : null;
+      var limit = c ? (c.published ? c.cap + "% for " + yr : c.law.split(":")[1].split(";")[0].trim()) : null;
       return today() + "\n\nDear [Landlord/Property manager],\n\nI received notice of a rent increase of " + num(p.rentIncreasePct) + "% for [address], effective [date].\n\n" +
-        (cap ? "Under " + cap + ", annual increases for covered units are limited. My understanding is that this increase exceeds the allowed amount. Please confirm whether my unit is exempt, and if not, revise the increase to the lawful maximum.\n\n" :
+        (c ? "Under " + cite + ", annual rent increases on covered units are limited (" + limit + "). My understanding is that this increase exceeds the allowed amount. Please confirm whether my unit is exempt, and if not, revise the increase to the lawful maximum.\n\n" :
           "I've been a reliable tenant and I'd like to stay. I'm asking you to reconsider and limit the increase to [X]% — turnover, vacancy and re-leasing usually cost more than a smaller raise.\n\n") +
         "I'm glad to discuss.\n" + SIG + "\n\n— Check local rules too: some cities have stricter rent control than the state. Legal aid or a tenant union can confirm.";
     },

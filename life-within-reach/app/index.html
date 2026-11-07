@@ -13,34 +13,35 @@
 <link rel="stylesheet" href="../assets/lwr.css">
 </head>
 <body class="app-body">
-<a class="skip-link" href="#main">Skip to main content</a>
+<a class="skip-link" href="#main" data-es="Ir al contenido principal">Skip to main content</a>
 
-<div class="safety-strip" role="note">
+<div class="safety-strip" role="note" data-es='¿Está en peligro ahora mismo? Llame al <a href="tel:911">911</a>. ¿Piensa en el suicidio o está en crisis? Llame o envíe un texto al <a href="tel:988">988</a> (oprima 2 para español). Intoxicación o veneno: <a href="tel:18002221222">1-800-222-1222</a>.'>
   In danger right now? Call <a href="tel:911">911</a>. Thinking about suicide or in crisis? Call or text <a href="tel:988">988</a>. Poison: <a href="tel:18002221222">1-800-222-1222</a>.
 </div>
 
 <header class="lwr-header" id="siteHeader">
-  <nav class="nav-bar" aria-label="Main">
-    <a class="brand" href="../">
+  <nav class="nav-bar" aria-label="Main" data-es-aria="Principal">
+    <a class="brand" href="../" id="homeLink">
       <img src="../assets/favicon-lamp.svg" alt="" width="34" height="34">
-      <span>Life Within Reach<small>by Nurse AI OS</small></span>
+      <span>Life Within Reach<small data-es="de Nurse AI OS">by Nurse AI OS</small></span>
     </a>
     <ul class="nav-links">
-      <li><a href="../">About</a></li>
-      <li class="hide-sm"><a href="../#guardrails">Guardrails</a></li>
-      <li><a href="https://www.211.org" target="_blank" rel="noopener">Talk to a person (211)</a></li>
+      <li><a href="../" data-es="Acerca de">About</a></li>
+      <li class="hide-sm"><a href="../#guardrails" data-es="Protecciones">Guardrails</a></li>
+      <li><a href="https://www.211.org" target="_blank" rel="noopener" data-es="Hablar con una persona (211)">Talk to a person (211)</a></li>
+      <li><a href="?lang=es" id="langToggle" lang="es" hreflang="es">Español</a></li>
     </ul>
   </nav>
 </header>
 
 <div class="app-tabs" id="appTabs">
-  <div class="tablist" role="tablist" aria-label="Household plan sections" id="tablist"></div>
+  <div class="tablist" role="tablist" aria-label="Household plan sections" data-es-aria="Secciones del plan del hogar" id="tablist"></div>
 </div>
 
 <main id="main" class="app-main" tabindex="-1">
   <div class="container" id="view" aria-live="polite"></div>
   <div class="container">
-    <p class="app-foot">
+    <p class="app-foot" data-es='<strong>Life Within Reach es una herramienta de inteligencia artificial (IA). No es profesional de enfermería, ni médico, ni abogado, ni ningún otro profesional con licencia, y nunca se presenta como tal.</strong> Es orientación y educación, no consejo médico, legal ni financiero. Los resultados de elegibilidad son cálculos aproximados según reglas publicadas (reglas <span id="rulesetVersion"></span>); el programa decide. Sus respuestas se quedan en este navegador, en este aparato: no se envía nada a ningún servidor. Nunca preguntamos por su situación migratoria. <a href="../es/#guardrails">Lea las protecciones</a>.'>
       <strong>Life Within Reach is an AI tool. It is not a nurse, doctor, lawyer, or any other licensed professional, and it never presents itself as one.</strong>
       Navigation and education — not medical, legal, or financial advice.
       Eligibility results are screening estimates from published rules (ruleset <span id="rulesetVersion"></span>); the program decides.
@@ -53,10 +54,10 @@
 <dialog id="taskDialog" aria-labelledby="dlgTitle">
   <div class="dlg-head">
     <div>
-      <p class="eyebrow" id="dlgEyebrow">Do it with me</p>
-      <h2 id="dlgTitle">Task</h2>
+      <p class="eyebrow" id="dlgEyebrow">&nbsp;</p>
+      <h2 id="dlgTitle">&nbsp;</h2>
     </div>
-    <button class="dlg-close" type="button" aria-label="Close" data-close>×</button>
+    <button class="dlg-close" type="button" aria-label="Close" data-es-aria="Cerrar" data-close>×</button>
   </div>
   <div class="dlg-body" id="dlgBody"></div>
 </dialog>

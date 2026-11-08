@@ -1,0 +1,15 @@
+{
+  "id": "crescendo-decrescendo-murmur",
+  "type": "finding",
+  "label": "Crescendo-decrescendo systolic murmur",
+  "summary": "Harsh systolic ejection murmur loudest at the right upper sternal border, often radiating to the carotids. A later peak and a soft or absent S2 suggest more severe stenosis.",
+  "relations": [],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "tavr",
+  "type": "intervention",
+  "label": "TAVR",
+  "aliases": [
+    "TAVI",
+    "Transcatheter aortic valve replacement"
+  ],
+  "summary": "Transcatheter aortic valve replacement: a collapsible valve is delivered by catheter, most often through the femoral artery, and expanded inside the diseased valve.",
+  "levers": [
+    {
+      "lever": "afterload",
+      "effect": "decrease",
+      "why": "Removing the outflow obstruction lowers the pressure the LV must generate.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Check the access site and distal pulses for bleeding, hematoma or limb ischemia.",
+    "Watch telemetry for new heart block; the valve sits near the conduction system and some patients need a pacemaker.",
+    "Do neuro checks for stroke after the procedure."
+  ],
+  "relations": [
+    {
+      "rel": "acts_on",
+      "target": "aortic-valve",
+      "why": "The new valve is expanded inside the old aortic valve.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

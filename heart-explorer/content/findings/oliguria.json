@@ -1,0 +1,18 @@
+{
+  "id": "oliguria",
+  "type": "finding",
+  "label": "Low urine output",
+  "aliases": [
+    "Oliguria"
+  ],
+  "summary": "Urine output below 0.5 mL/kg/h shows reduced kidney perfusion. In shock it is an early sign, tracked hourly.",
+  "relations": [],
+  "citations": [
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

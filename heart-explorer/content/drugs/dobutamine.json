@@ -1,0 +1,46 @@
+{
+  "id": "dobutamine",
+  "type": "drug",
+  "label": "Dobutamine",
+  "summary": "Inotrope acting mainly on beta-1 receptors. It raises contractility and heart rate, and can lower blood pressure through mild beta-2 vasodilation.",
+  "levers": [
+    {
+      "lever": "contractility",
+      "effect": "increase",
+      "why": "Beta-1 stimulation strengthens each contraction.",
+      "citations": [
+        "dailymed-dobutamine"
+      ]
+    },
+    {
+      "lever": "heart-rate",
+      "effect": "increase",
+      "why": "Beta-1 stimulation also speeds the heart rate.",
+      "citations": [
+        "dailymed-dobutamine"
+      ]
+    },
+    {
+      "lever": "o2-demand",
+      "effect": "increase",
+      "why": "More work per beat and per minute raises myocardial oxygen demand.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Watch for tachycardia, new arrhythmias and hypotension; dobutamine does not raise BP by itself.",
+    "Expect it to be paired with a vasopressor when MAP is low, per orders."
+  ],
+  "relations": [],
+  "citations": [
+    "dailymed-dobutamine",
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

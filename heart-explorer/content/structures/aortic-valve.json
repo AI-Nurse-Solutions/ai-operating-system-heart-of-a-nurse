@@ -1,0 +1,15 @@
+{
+  "id": "aortic-valve",
+  "type": "structure",
+  "label": "Aortic valve",
+  "summary": "Usually three-cusp valve between the left ventricle and the aorta. It opens in systole and closes at the start of diastole, producing the aortic part of S2.",
+  "relations": [],
+  "citations": [
+    "openstax-ap-heart-anatomy"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

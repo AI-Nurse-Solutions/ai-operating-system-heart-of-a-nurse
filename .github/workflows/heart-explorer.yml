@@ -1,0 +1,49 @@
+name: Heart Explorer content graph
+
+on:
+  pull_request:
+    paths:
+      - "heart-explorer/**"
+      - "scripts/build-heart-graph.mjs"
+      - "tests/test_heart_graph.mjs"
+      - "tests/test_heart_explorer_browser.mjs"
+      - "assets/nurse-ai.css"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/heart-explorer.yml"
+  push:
+    branches: [main]
+    paths:
+      - "heart-explorer/**"
+      - "scripts/build-heart-graph.mjs"
+      - "tests/test_heart_graph.mjs"
+      - "tests/test_heart_explorer_browser.mjs"
+      - ".github/workflows/heart-explorer.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install pinned test dependencies
+        run: npm ci --ignore-scripts
+      - name: Validate cards and confirm the committed graph is current
+        run: npm run test:heart-graph
+      - name: Run browser interaction and responsive smoke test
+        run: npm run test:heart-explorer-browser
+      - name: Report the clinical review launch gate (informational until launch)
+        run: node scripts/build-heart-graph.mjs --strict --check || echo "::notice::Heart Explorer has cards pending clinical review; the page stays noindex until --strict passes."
+      - name: Scan the public page for secrets or PHI-like examples
+        run: |
+          python3 scripts/scan-public-healthcare-artifacts.py heart-explorer/index.html --label HEART_EXPLORER
+          python3 scripts/scan-public-healthcare-artifacts.py heart-explorer/heart-graph.json --label HEART_EXPLORER

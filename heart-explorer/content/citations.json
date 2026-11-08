@@ -1,0 +1,77 @@
+[
+  {
+    "id": "acc-aha-vhd-2020",
+    "title": "2020 ACC/AHA Guideline for the Management of Patients With Valvular Heart Disease",
+    "authors": "Otto CM, Nishimura RA, Bonow RO, et al.",
+    "source": "Circulation",
+    "year": 2021,
+    "doi": "10.1161/CIR.0000000000000923"
+  },
+  {
+    "id": "aha-hf-2022",
+    "title": "2022 AHA/ACC/HFSA Guideline for the Management of Heart Failure",
+    "authors": "Heidenreich PA, Bozkurt B, Aguilar D, et al.",
+    "source": "Circulation",
+    "year": 2022,
+    "doi": "10.1161/CIR.0000000000001063"
+  },
+  {
+    "id": "aha-cardiogenic-shock-2017",
+    "title": "Contemporary Management of Cardiogenic Shock: A Scientific Statement From the American Heart Association",
+    "authors": "van Diepen S, Katz JN, Albert NM, et al.",
+    "source": "Circulation",
+    "year": 2017,
+    "doi": "10.1161/CIR.0000000000000525"
+  },
+  {
+    "id": "scai-shock-2019",
+    "title": "SCAI clinical expert consensus statement on the classification of cardiogenic shock",
+    "authors": "Baran DA, Grines CL, Bailey S, et al.",
+    "source": "Catheterization and Cardiovascular Interventions",
+    "year": 2019,
+    "doi": "10.1002/ccd.28329"
+  },
+  {
+    "id": "openstax-ap-heart-anatomy",
+    "title": "Anatomy and Physiology 2e, 19.1 Heart Anatomy",
+    "authors": "Betts JG, et al.",
+    "source": "OpenStax, Rice University",
+    "year": 2022,
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/19-1-heart-anatomy"
+  },
+  {
+    "id": "dailymed-norepinephrine",
+    "title": "Norepinephrine bitartrate injection: FDA prescribing information",
+    "authors": "US National Library of Medicine",
+    "source": "DailyMed",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=norepinephrine"
+  },
+  {
+    "id": "dailymed-dobutamine",
+    "title": "Dobutamine injection: FDA prescribing information",
+    "authors": "US National Library of Medicine",
+    "source": "DailyMed",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=dobutamine"
+  },
+  {
+    "id": "dailymed-milrinone",
+    "title": "Milrinone lactate injection: FDA prescribing information",
+    "authors": "US National Library of Medicine",
+    "source": "DailyMed",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=milrinone"
+  },
+  {
+    "id": "dailymed-furosemide",
+    "title": "Furosemide injection: FDA prescribing information",
+    "authors": "US National Library of Medicine",
+    "source": "DailyMed",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=furosemide"
+  },
+  {
+    "id": "dailymed-nitroprusside",
+    "title": "Sodium nitroprusside injection: FDA prescribing information",
+    "authors": "US National Library of Medicine",
+    "source": "DailyMed",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=nitroprusside"
+  }
+]

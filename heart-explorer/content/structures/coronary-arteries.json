@@ -1,0 +1,15 @@
+{
+  "id": "coronary-arteries",
+  "type": "structure",
+  "label": "Coronary arteries",
+  "summary": "The left main (dividing into the LAD and circumflex) and the right coronary artery supply the heart muscle. They fill mainly in diastole, so a fast heart rate or low diastolic pressure cuts myocardial oxygen supply.",
+  "relations": [],
+  "citations": [
+    "openstax-ap-heart-anatomy"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

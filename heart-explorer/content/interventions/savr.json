@@ -1,0 +1,41 @@
+{
+  "id": "savr",
+  "type": "intervention",
+  "label": "SAVR",
+  "aliases": [
+    "Surgical aortic valve replacement"
+  ],
+  "summary": "Surgical aortic valve replacement on cardiopulmonary bypass, using a mechanical or biological valve.",
+  "levers": [
+    {
+      "lever": "afterload",
+      "effect": "decrease",
+      "why": "Removing the outflow obstruction lowers the pressure the LV must generate.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Provide post-cardiac surgery care: bleeding, signs of tamponade, rhythm (atrial fibrillation is common) and pacing wires.",
+    "A mechanical valve needs lifelong warfarin; teach INR monitoring and bleeding precautions."
+  ],
+  "relations": [
+    {
+      "rel": "acts_on",
+      "target": "aortic-valve",
+      "why": "The diseased valve is cut out and replaced.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "mitral-valve",
+  "type": "structure",
+  "label": "Mitral valve",
+  "aliases": [
+    "Bicuspid valve"
+  ],
+  "summary": "Two-leaflet valve between the left atrium and left ventricle. It closes at the start of systole (part of S1) and is held shut by the chordae tendineae and papillary muscles.",
+  "relations": [
+    {
+      "rel": "flows_to",
+      "target": "left-ventricle",
+      "why": "The open mitral valve lets the left ventricle fill during diastole.",
+      "citations": [
+        "openstax-ap-heart-anatomy"
+      ]
+    }
+  ],
+  "citations": [
+    "openstax-ap-heart-anatomy"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

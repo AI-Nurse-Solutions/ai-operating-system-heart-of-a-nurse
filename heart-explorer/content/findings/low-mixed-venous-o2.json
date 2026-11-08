@@ -1,0 +1,19 @@
+{
+  "id": "low-mixed-venous-o2",
+  "type": "finding",
+  "label": "Low SvO2 or ScvO2",
+  "aliases": [
+    "SvO2",
+    "ScvO2"
+  ],
+  "summary": "Low mixed venous (SvO2) or central venous (ScvO2) oxygen saturation means tissues are extracting more oxygen because delivery is low. Normal SvO2 is about 60 to 80 percent.",
+  "relations": [],
+  "citations": [
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "mitral-valve-surgery",
+  "type": "intervention",
+  "label": "Mitral valve surgery",
+  "summary": "Surgical repair or replacement of the mitral valve on cardiopulmonary bypass. It is the definitive treatment for papillary muscle rupture.",
+  "levers": [
+    {
+      "lever": "preload",
+      "effect": "decrease",
+      "why": "A competent valve ends the regurgitant volume, lowering filling pressures.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Provide post-cardiac surgery care: bleeding, signs of tamponade, rhythm and pacing wires.",
+    "A mechanical valve needs lifelong warfarin; teach INR monitoring and bleeding precautions."
+  ],
+  "relations": [
+    {
+      "rel": "acts_on",
+      "target": "mitral-valve",
+      "why": "The valve is repaired or replaced.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "acts_on",
+      "target": "papillary-muscles",
+      "why": "A ruptured papillary muscle is addressed as part of the repair or replacement.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

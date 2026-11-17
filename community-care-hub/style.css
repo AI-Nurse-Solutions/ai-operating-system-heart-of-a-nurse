@@ -89,3 +89,8 @@ nav .navbtn{white-space:nowrap}
 .note.small{font-size:.9rem}
 @media (max-width:520px){.farrow{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
 @media print{.stage,.fstep,.branch,.facts div{break-inside:avoid}}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0}
+.plan{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.plan.featured{border:2px solid var(--orange)}
+.plan .tag{display:inline-block;font-weight:700;color:var(--teal);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+.plan p{margin:6px 0 0;font-size:.95rem}

@@ -53,7 +53,7 @@ Then help us sort our tasks into:
 Ask where our data will live and which AI we're using.
 
 ## Section 7 — Tailor our agents
-Start from the four default Community Care Hub agents and tailor each one to our cause, people, and guardrails:
+Ask whether we used a Cause Starter Pack and an ADPIE assessment. If we did, start from the helpers our pack and our findings point to: every helper must trace back to something our assessment or SWOT found. If we didn't, start from the four default Community Care Hub agents. Either way, tailor each one to our cause, people, and guardrails. The four defaults are:
 1. Member Welcome & Volunteer Agent: welcomes sign-ups, matches roles, sends reminders, flags volunteers drifting away so a person can reach out.
 2. Resource Navigator: helps people find services from our verified resource list; sends anyone in crisis to a person.
 3. Event & Outreach Coordinator: handles RSVPs, sign-ups, and reminders.

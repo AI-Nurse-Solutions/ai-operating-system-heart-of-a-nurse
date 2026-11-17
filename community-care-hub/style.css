@@ -140,3 +140,16 @@ blockquote{border-left:4px solid var(--orange);margin:10px 0;padding:6px 14px;fo
 .sel{user-select:all;font-weight:600}
 p.small{font-size:.9rem;color:var(--muted)}
 @media (max-width:520px){.eco-arrow{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
+/* media kit banner */
+.mk-banner{display:flex;align-items:center;gap:16px;margin:8px 0 8px;padding:18px 20px;border-radius:14px;text-decoration:none;color:#fff;background:linear-gradient(120deg,#1f5f5b 0%,#2b8a7e 40%,#e08a2e 80%,#c96f1e 100%);box-shadow:0 8px 22px rgba(201,111,30,.25);transition:transform .15s ease,box-shadow .15s ease}
+.mk-banner:hover,.mk-banner:focus-visible{transform:translateY(-2px);box-shadow:0 12px 28px rgba(201,111,30,.35);outline:none}
+.mk-banner:focus-visible{outline:3px solid #fff;outline-offset:-6px}
+.mk-icon{flex:0 0 48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.mk-text{flex:1;min-width:0;display:flex;flex-direction:column}
+.mk-kicker{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;opacity:.9;font-weight:700}
+.mk-text b{font-size:1.5rem;line-height:1.2}
+.mk-sub{font-size:.95rem;opacity:.95}
+.mk-go{font-size:1.8rem;font-weight:700}
+@media (prefers-reduced-motion:reduce){.mk-banner{transition:none}.mk-banner:hover{transform:none}}
+@media (max-width:520px){.mk-banner{padding:14px;gap:12px}.mk-icon{flex-basis:40px;height:40px}.mk-text b{font-size:1.25rem}}
+@media print{.mk-banner{display:none}}

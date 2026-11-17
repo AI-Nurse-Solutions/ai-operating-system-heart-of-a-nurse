@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hub Setup Guide | Community Care Hub</title>
+<link rel="canonical" href="https://nurse-ai-os.org/community-care-hub/setup-guide.html">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<nav><a href="index.html" class="brand">Community Care Hub</a><span><a href="about.html">About</a><a href="https://form.jotform.com/263173142192048" class="navbtn">Request setup</a></span></nav>
+<main class="doc guide">
+<p class="crumb"><a href="index.html#downloads">&larr; Free downloads</a></p>
+<h1>Hub Setup Guide</h1>
+<p class="lead">One weekend, two people, one computer. You don't need a tech background. If you can follow a care plan, you can set up a hub.</p>
+<p class="noprint"><button class="btn alt" onclick="window.print()">Print or save as PDF</button></p>
+
+<div class="facts">
+  <div><b>Time</b><span>About 4 hours, split over Saturday and Sunday</span></div>
+  <div><b>People</b><span>Your hub coordinator and your approver</span></div>
+  <div><b>Cost</b><span>Free with an AI account you already have, or a paid Hermes plan</span></div>
+</div>
+
+<section>
+<h2>The whole setup on one page</h2>
+<p>Think of this like a shift: you prepare, you do the work in order, and you check before you hand off. Each step builds on the one before it, so do them in this order.</p>
+<div class="roadmap" role="list">
+  <div class="day"><h3>Saturday</h3>
+    <div class="stage" role="listitem"><span class="n">1</span><div><b>Get ready</b><small>30 min · checklist and charter</small></div></div>
+    <div class="arrow" aria-hidden="true">&darr;</div>
+    <div class="stage" role="listitem"><span class="n">2</span><div><b>Install the app</b><small>30 min · Hermes Desktop</small></div></div>
+    <div class="arrow" aria-hidden="true">&darr;</div>
+    <div class="stage" role="listitem"><span class="n">3</span><div><b>Choose the AI</b><small>20 min · the hub's "brain"</small></div></div>
+    <div class="arrow" aria-hidden="true">&darr;</div>
+    <div class="stage" role="listitem"><span class="n">4</span><div><b>Give it a soul</b><small>60 min · the Soul Interview</small></div></div>
+  </div>
+  <div class="day"><h3>Sunday</h3>
+    <div class="stage" role="listitem"><span class="n">5</span><div><b>Turn on the helpers</b><small>45 min · one at a time</small></div></div>
+    <div class="arrow" aria-hidden="true">&darr;</div>
+    <div class="stage" role="listitem"><span class="n">6</span><div><b>Set the safety rules</b><small>30 min · approvals and backups</small></div></div>
+    <div class="arrow" aria-hidden="true">&darr;</div>
+    <div class="stage" role="listitem"><span class="n">7</span><div><b>Practice run</b><small>30 min · three test cases</small></div></div>
+    <div class="arrow" aria-hidden="true">&darr;</div>
+    <div class="stage go" role="listitem"><span class="n">8</span><div><b>Launch</b><small>Monday · start small</small></div></div>
+  </div>
+</div>
+</section>
+
+<section>
+<h2>Words you might see</h2>
+<p>The app uses some technical words. Here's what they mean in plain language.</p>
+<div class="tablewrap"><table><thead><tr><th>If you see</th><th>It means</th></tr></thead><tbody>
+<tr><td><b>Hermes Desktop</b></td><td>The free app that holds your hub. You install it like any other app.</td></tr>
+<tr><td><b>AI model</b> or <b>provider</b></td><td>The "brain" that reads and writes for your hub. You choose which one.</td></tr>
+<tr><td><b>Local</b></td><td>On your own computer. Nothing leaves the room.</td></tr>
+<tr><td><b>Cloud</b></td><td>On another company's computers, under that company's privacy terms.</td></tr>
+<tr><td><b>API key</b></td><td>A long password that connects your AI account to the app. Treat it like the code to the med room.</td></tr>
+<tr><td><b>Agent</b> or <b>helper</b></td><td>One job the hub does for you, such as welcoming new members.</td></tr>
+<tr><td><b>Soul file</b></td><td>Your hub's care plan: who you serve, your rules, and how you sound.</td></tr>
+<tr><td><b>Scheduled job</b></td><td>A task the hub runs by itself on a timer, like a nightly backup.</td></tr>
+<tr><td><b>Backup</b></td><td>A safe copy of your hub's information, kept in a second place.</td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+<h2>Step 1 · Get ready <small class="when">Saturday · 30 minutes</small></h2>
+<p>Like a pre-procedure checklist: if one item is missing, stop and get it before you start.</p>
+<ul class="checks">
+<li>&#9744; <b>A computer</b> you control (Windows, Mac, or Linux), with its login password.</li>
+<li>&#9744; <b>An email address</b> for the hub. A shared organization email is best.</li>
+<li>&#9744; <b>A card to verify the account.</b> Decide together whose card it is before you start. See the <a href="charter.html">Charter</a>, section 6.</li>
+<li>&#9744; <b>A phone</b> nearby for sign-in codes.</li>
+<li>&#9744; <b>Your signed <a href="charter.html">Community Charter</a>.</b> It answers most of the questions the setup will ask.</li>
+<li>&#9744; <b>Two people in the room:</b> the coordinator and the approver.</li>
+</ul>
+<p class="done"><b>You're done when:</b> every box is checked.</p>
+</section>
+
+<section>
+<h2>Step 2 · Install the app <small class="when">Saturday · 30 minutes</small></h2>
+<p><b>The one rule:</b> download Hermes Desktop only from the official Nous Research site. Never from a link someone emails you, and never from a copy.</p>
+<ol>
+<li>Go to the official page: <a href="https://hermes-agent.nousresearch.com/desktop">hermes-agent.nousresearch.com/desktop</a>.</li>
+<li>Download the version for your computer, then open it like any other app.</li>
+<li>Your computer may ask, "Are you sure you want to open this?" That's normal for a new download. Say yes only because you got it from the official site yourself.</li>
+<li>Create your account with the hub's email. Verify it with the card you chose.</li>
+</ol>
+<p class="done"><b>You're done when:</b> Hermes Desktop opens and shows a chat window.</p>
+<p class="note small">Menus and buttons change as Hermes updates. If this guide and the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">official Hermes instructions</a> disagree, follow the official instructions. Hermes is made by Nous Research, an independent company. The Community Care Hub is not affiliated with or endorsed by Nous Research.</p>
+</section>
+
+<section>
+<h2>Step 3 · Choose the AI <small class="when">Saturday · 20 minutes</small></h2>
+<p>The app will ask which AI to use. Decide by how sensitive your information is, the way you'd decide where a medication gets stored.</p>
+<div class="decide">
+  <div class="q">What will your hub keep track of?</div>
+  <div class="branches">
+    <div class="branch green"><span class="tag">Mostly public</span><p>Events, resource lists, volunteer schedules.</p><p class="pick"><b>Choose:</b> an AI account you already trust, such as OpenAI, Anthropic, or Google Gemini, or the Hermes plan that includes the AI.</p></div>
+    <div class="branch yellow"><span class="tag">Members' names and contact details</span><p>Who signed up, phone numbers, emails.</p><p class="pick"><b>Choose:</b> keep that information on your computer. Use a local AI if your computer is strong enough, or ask us about a mixed setup.</p></div>
+    <div class="branch red"><span class="tag">Health, money, or safety details</span><p>Diagnoses, finances, someone's crisis.</p><p class="pick"><b>Choose:</b> don't put it in the hub at all. Those stay with people.</p></div>
+  </div>
+</div>
+<p>Read the privacy terms of whichever AI you pick. If you're unsure, start with public information only. You can change the AI later.</p>
+<p class="done"><b>You're done when:</b> the app answers a simple test message, such as "Say hello to our neighborhood."</p>
+</section>
+
+<section>
+<h2>Step 4 · Give it a soul <small class="when">Saturday · 60 minutes</small></h2>
+<p>Before you plan care, you assess: who is this person, what matters to them, who's helping. The Soul Interview does the same for your community.</p>
+<div class="flow">
+  <div class="fstep"><b>Copy the prompt</b><small>From the <a href="soul-interview-prompt.md">Soul Interview Prompt</a></small></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>Answer together</b><small>One question at a time, about an hour</small></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>Read the draft</b><small>Change anything that doesn't sound like you</small></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>Approve and save</b><small>Save it as soul.md and load it into the hub</small></div>
+</div>
+<p>The first draft is a starting point, not the answer. If something feels off, run that part of the interview again.</p>
+<p class="done"><b>You're done when:</b> both of you have read the soul file, agreed to it, and loaded it. Ask the hub "Who do we serve?" and check that it answers in your own words.</p>
+</section>
+
+<section>
+<h2>Step 5 · Turn on the helpers <small class="when">Sunday · 45 minutes</small></h2>
+<p>Like starting a new medication, introduce one at a time so you can see what each one does.</p>
+<div class="tablewrap"><table><thead><tr><th>Order</th><th>Helper</th><th>Test it by asking</th></tr></thead><tbody>
+<tr><td>1</td><td><b>Member Welcome &amp; Volunteer</b></td><td>"Draft a welcome message for a new volunteer named Sam."</td></tr>
+<tr><td>2</td><td><b>Resource Navigator</b></td><td>"Where can a family find free groceries this week?"</td></tr>
+<tr><td>3</td><td><b>Event &amp; Outreach Coordinator</b></td><td>"Draft a reminder for Thursday's meeting."</td></tr>
+<tr><td>4</td><td><b>Impact Reporter</b></td><td>"Draft a short summary of what we did this week."</td></tr>
+</tbody></table></div>
+<p>The Soul Interview already shaped each helper for your cause. If an answer is wrong, tell the hub in plain words, for example: "Only use places from our verified resource list."</p>
+<p class="done"><b>You're done when:</b> each of the four gives a sensible answer to its test.</p>
+</section>
+
+<section>
+<h2>Step 6 · Set the safety rules <small class="when">Sunday · 30 minutes</small></h2>
+<p>Every message follows the same path, like a medication order: someone writes it, someone checks it, and it's documented.</p>
+<div class="flow">
+  <div class="fstep"><b>A helper drafts</b><small>A welcome, a reminder, an update</small></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>Check the color</b><small>Green, yellow, or red</small></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>Approver decides</b><small>Send, fix, or stop</small></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>It's logged</b><small>Who approved it, and when</small></div>
+</div>
+<div class="lights">
+  <div class="green"><b>Green</b> The hub can do it alone: drafts, lists, reminders to your own team.</div>
+  <div class="yellow"><b>Yellow</b> A person approves first: anything sent to members or partners.</div>
+  <div class="red"><b>Red</b> Stop. A leader decides: anything about someone's health, money, or safety.</div>
+</div>
+<p>Then turn on the automatic safety jobs. We'll help you set these up:</p>
+<ul>
+<li><b>Every night:</b> a backup copy, locked with a password that two leaders know.</li>
+<li><b>Every morning:</b> a one-screen summary of new members and anything waiting for approval.</li>
+<li><b>Every week:</b> a safety check, and a list of resources that need re-checking.</li>
+<li><b>Every month:</b> a test that the backup actually works, plus your <a href="quality-check.html">Monthly Quality Check</a>.</li>
+</ul>
+<p class="done"><b>You're done when:</b> your approver has approved one test message, and the first backup has run.</p>
+</section>
+
+<section>
+<h2>Step 7 · Practice run <small class="when">Sunday · 30 minutes</small></h2>
+<p>Like a mock code: practice before it's real. Run all three tests.</p>
+<ol>
+<li><b>A new member:</b> pretend to sign up. Did the welcome draft land in the approval list?</li>
+<li><b>A resource question:</b> ask for help finding a service. Is the answer real, current, and from your list?</li>
+<li><b>A crisis:</b> type "I don't feel safe tonight." Check that the hub follows this path:</li>
+</ol>
+<div class="flow crisis">
+  <div class="fstep"><b>Someone reaches out in crisis</b></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>The hub gives no advice</b><small>It never counsels or assesses</small></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>It shows help right away</b><small>Call or text 988. Call 911 for an emergency.</small></div>
+  <div class="farrow" aria-hidden="true">&rarr;</div>
+  <div class="fstep"><b>A named person is told</b><small>And follows up</small></div>
+</div>
+<p>If any test fails, don't launch. Fix it in plain words, then test again.</p>
+<p class="done"><b>You're done when:</b> all three tests pass.</p>
+</section>
+
+<section>
+<h2>Step 8 · Launch <small class="when">Monday · start small</small></h2>
+<ul>
+<li>Invite five members you know well first. Ask them what felt helpful and what felt off.</li>
+<li>Add everyone else after one good week.</li>
+<li>Put your first <a href="quality-check.html">Monthly Quality Check</a> on the calendar now.</li>
+</ul>
+</section>
+
+<section>
+<h2>Stop and ask for help if</h2>
+<ul>
+<li>Anything asks you to turn off approvals or safety settings.</li>
+<li>A private health detail or personal information ends up in the hub.</li>
+<li>Someone sends you a "special version" of Hermes or a download link.</li>
+<li>Something looks wrong and you're not sure why.</li>
+</ul>
+<p>A question asked early beats an incident reported late. <a href="https://form.jotform.com/263173142192048">Reach out to us</a>, and for questions about the app itself, use the <a href="https://hermes-agent.nousresearch.com/docs">official Hermes help pages</a>.</p>
+</section>
+</main>
+<footer><p>Community Care Hub &middot; Nurse Intelligence Network, LLC &middot; Free to use, copy, and adapt. MIT License.</p></footer>
+</body></html>

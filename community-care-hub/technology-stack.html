@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Technology Stack and Sovereignty Levels | Community Care Hub</title>
+<link rel="canonical" href="https://nurse-ai-os.org/community-care-hub/technology-stack.html">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<nav><a href="index.html" class="brand">Community Care Hub</a><span><a href="about.html">About</a><a href="https://form.jotform.com/263173142192048" class="navbtn">Request setup</a></span></nav>
+<main class="doc guide">
+<p class="crumb"><a href="index.html#downloads">&larr; Free downloads</a></p>
+<h1>Technology Stack and Sovereignty Levels</h1>
+<p class="lead">Sovereignty means your community controls its own tools, data, and power. It isn't all or nothing. This page defines five levels, walks through the stack layer by layer, and helps you choose the level that fits your group. Most groups should start at Level 2 or 3 and climb only when they need to.</p>
+<p class="noprint"><button class="btn alt" onclick="window.print()">Print or save as PDF</button></p>
+
+<section>
+<h2>The five levels of sovereignty</h2>
+<p>Think of it like levels of care: you match the level to the need, and you can step up or down.</p>
+<div class="levels">
+  <div class="level l1"><span class="n">1</span><div><b>Cloud-convenient</b><p>Everything runs on other companies' services: the AI comes bundled with a paid Hermes plan. Easiest to start. You depend on those companies for privacy, price, and uptime.</p><small>Fits: public information only, a group just trying it out.</small></div></div>
+  <div class="level l2"><span class="n">2</span><div><b>Own-account cloud</b><p>The hub runs on your computer and your files stay there, but the AI is a cloud service under <i>your own</i> account (OpenAI, Anthropic, Google, or others). You control the account and can switch providers. Your prompts still travel to that provider.</p><small>Fits: most new hubs with low-sensitivity information.</small></div></div>
+  <div class="level l3"><span class="n">3</span><div><b>Hybrid</b><p>A local AI on your own computer handles anything sensitive, like member names and contact details. Cloud AI handles public-facing work: research, drafting newsletters, social posts. You decide which is which, and write it down.</p><small>Fits: groups holding member lists; the best balance for most.</small></div></div>
+  <div class="level l4"><span class="n">4</span><div><b>Local-first</b><p>All AI runs on hardware you own, or on a private GPU server you rent and control. The internet is used only to send and receive messages. Nothing is processed by an AI company.</p><small>Fits: groups with strong privacy needs and a technology volunteer.</small></div></div>
+  <div class="level l5"><span class="n">5</span><div><b>Self-sustaining sovereign</b><p>Level 4, plus your own power: battery or solar backup, offline backups you can carry, and printed essentials. The hub keeps working through grid and internet outages.</p><small>Fits: disaster-prone areas, resilience hubs, groups that must not go dark.</small></div></div>
+</div>
+<p class="note small"><b>Honest trade-off:</b> each step up gives more control and privacy, and asks more of you: more setup skill, more hardware, and more upkeep. Local AI models are also less capable than the largest cloud models on complex tasks. Higher isn't better. Fitting is better.</p>
+</section>
+
+<section>
+<h2>The stack, layer by layer</h2>
+<p>A hub is built in layers, like a care plan built on an assessment. From the ground up:</p>
+<div class="stack">
+  <div class="layer top"><b>7 · Front-facing services</b><span>Research, email, marketing, and communications</span></div>
+  <div class="layer"><b>6 · Application layer</b><span>Soul file, helpers (agents), approval rules, scheduled jobs</span></div>
+  <div class="layer"><b>5 · Agent software</b><span>Hermes Desktop, the open-source app that runs the helpers</span></div>
+  <div class="layer"><b>4 · AI model</b><span>Where the "brain" comes from and where it runs</span></div>
+  <div class="layer"><b>3 · Data and backups</b><span>Where your information lives and how it's protected</span></div>
+  <div class="layer"><b>2 · Computer and isolation</b><span>The hardware, and whether the hub is containerized</span></div>
+  <div class="layer base"><b>1 · Energy</b><span>Grid power, battery backup, solar</span></div>
+</div>
+</section>
+
+<section>
+<h2>Layer 1 · Energy sources and backup power</h2>
+<div class="tablewrap"><table><thead><tr><th>Option</th><th>What it gives you</th><th>Good to know</th></tr></thead><tbody>
+<tr><td><b>Grid only</b></td><td>Normal operation</td><td>The hub stops when the power does.</td></tr>
+<tr><td><b>Laptop battery</b></td><td>A few hours, built in</td><td>The simplest backup there is. A laptop also uses far less power than a desktop.</td></tr>
+<tr><td><b>Battery backup (UPS)</b></td><td>Minutes to about an hour</td><td>Enough to save work and shut down safely. Protects against data loss from sudden outages.</td></tr>
+<tr><td><b>Portable power station</b></td><td>Several hours to a day</td><td>A large rechargeable battery. Can also run a router or charge phones.</td></tr>
+<tr><td><b>Solar panels with battery</b></td><td>Days, renewable</td><td>What makes Level 5 possible. Size it to the computer you actually run.</td></tr>
+<tr><td><b>Generator</b></td><td>As long as fuel lasts</td><td>Needs fuel, outdoor placement, and safe handling.</td></tr>
+</tbody></table></div>
+<p>A small AI model on a laptop draws little power. A desktop with a large graphics card draws several times more under load. Choosing a model sized to the job is the biggest energy decision you'll make.</p>
+</section>
+
+<section>
+<h2>Layer 2 · The computer, and containerized or not</h2>
+<p><b>Hardware:</b> any recent Windows, Mac, or Linux computer runs the hub at Levels 1 and 2. Running a local AI (Levels 3 to 5) needs more memory. A dedicated computer for the hub is ideal. If you share one, create a separate login for the hub so personal files and community files never mix.</p>
+<div class="tablewrap"><table><thead><tr><th>Setup</th><th>What it means</th><th>Best for</th></tr></thead><tbody>
+<tr><td><b>Plain install</b></td><td>Install the app like any other program.</td><td>Most groups. Simplest to set up and maintain.</td></tr>
+<tr><td><b>Containerized</b></td><td>The hub runs inside a sealed "box" (such as Docker) that separates it from the rest of the computer.</td><td>Groups with a technology volunteer. Easier to move, copy to other sites, and restore. Limits what the helpers can touch.</td></tr>
+<tr><td><b>Dedicated machine or virtual machine</b></td><td>The hub has a whole computer, real or virtual, to itself.</td><td>The strongest separation. Good for Levels 4 and 5.</td></tr>
+</tbody></table></div>
+<p class="small">Container support and options change. Have your advisor check the <a href="https://hermes-agent.nousresearch.com/docs">official Hermes documentation</a> for current guidance.</p>
+</section>
+
+<section>
+<h2>Layer 3 · Data and backups</h2>
+<ul>
+<li><b>Where data lives:</b> on the hub computer at every level. At Levels 1 to 3, some text also travels to a cloud AI when a helper works on it.</li>
+<li><b>Encryption:</b> turn on full-disk encryption (built into Windows, Mac, and Linux) so a stolen computer doesn't expose your members.</li>
+<li><b>Backups, the 3-2-1 rule:</b> three copies, on two kinds of storage, with one kept somewhere else. For example: the hub computer, an encrypted external drive, and an encrypted copy at a leader's home or in a cloud folder you control.</li>
+<li><b>Offline essentials (Level 5):</b> a printed resource list and phone tree, updated monthly.</li>
+<li><b>Test it:</b> restore from backup once a month. An untested backup is only a hope.</li>
+</ul>
+</section>
+
+<section>
+<h2>Layer 4 · The AI model: where it comes from and where it runs</h2>
+<div class="tablewrap"><table><thead><tr><th>Source</th><th>Where it runs</th><th>Privacy</th><th>Cost and effort</th></tr></thead><tbody>
+<tr><td><b>Bundled with a Hermes plan</b></td><td>Cloud, through Nous Research's service</td><td>Prompts go to their service and its model providers. Read the terms.</td><td>About $20 a month. Easiest.</td></tr>
+<tr><td><b>Your own cloud account</b></td><td>Cloud, at the provider you choose</td><td>Prompts go to that provider under your account's terms.</td><td>Pay for what you use. Easy.</td></tr>
+<tr><td><b>Local open model</b></td><td>Your own computer, using free tools such as Ollama or LM Studio</td><td>Nothing leaves the device.</td><td>Free to run. Needs capable hardware and some setup.</td></tr>
+<tr><td><b>Rented private GPU</b></td><td>A graphics-card server you rent by the hour and run an open model on</td><td>Your data goes to a machine you control, not to an AI company. The hosting company still owns the hardware.</td><td>Hourly cost. Needs technical skill.</td></tr>
+</tbody></table></div>
+
+<h3>Choosing a model</h3>
+<ul>
+<li><b>Size to the job.</b> Drafting a welcome note needs a small model. Long research summaries need a larger one. Start small.</li>
+<li><b>Check it can use tools.</b> Helpers need a model that reliably follows instructions and uses tools. Not every small model does this well. Test before you rely on it.</li>
+<li><b>Match your hardware.</b> As a rough guide: 8 GB of memory runs only the smallest models; 16 GB runs small, useful ones; 32 GB or a dedicated graphics card runs mid-sized models. Apple computers with M-series chips are efficient at this.</li>
+<li><b>Check the license.</b> Open models come with different licenses. Confirm yours allows organizational use.</li>
+<li><b>Check your languages.</b> If your community speaks Spanish, Tagalog, or Hmong, test the model in those languages.</li>
+<li><b>Be honest about limits.</b> Local models make more mistakes on complex tasks than the largest cloud models. Human approval matters even more.</li>
+</ul>
+
+<h3>If you rent a GPU</h3>
+<ul>
+<li>Choose a <b>dedicated</b> machine from an established provider, not shared or peer-hosted hardware.</li>
+<li>Ask for their security attestations (such as SOC 2), and choose a U.S. region if location matters to you.</li>
+<li>Encrypt the disk, keep access keys private, and <b>delete the machine and its storage</b> when the job is done.</li>
+<li>Never send health records or ID numbers, the same rule as everywhere else in the hub.</li>
+</ul>
+</section>
+
+<section>
+<h2>Layers 5 and 6 · Agent software and the application layer</h2>
+<p>These stay the same at every level. That's the point: you can change what's underneath without rebuilding your hub.</p>
+<ul>
+<li><b>Agent software:</b> Hermes Desktop, open source, from Nous Research.</li>
+<li><b>Soul file:</b> your mission, voice, and ground rules, in plain text you can read and edit.</li>
+<li><b>Helpers:</b> Member Welcome, Resource Navigator, Event Coordinator, Impact Reporter, and any you add.</li>
+<li><b>Approval rules:</b> green, yellow, red. A named person approves anything that goes out.</li>
+<li><b>Scheduled jobs:</b> backups, the daily summary, weekly safety checks. They report and draft only.</li>
+</ul>
+<p>Because the soul file and helper definitions are plain files, moving from Level 2 to Level 4 means changing the AI setting, not starting over.</p>
+</section>
+
+<section>
+<h2>Layer 7 · Front-facing services: research, email, marketing, communications</h2>
+<p>Some work has to touch the outside world. Sovereignty here means <b>you own the master copy and can leave any service</b>.</p>
+<div class="tablewrap"><table><thead><tr><th>Service</th><th>Why cloud makes sense</th><th>How to keep control</th></tr></thead><tbody>
+<tr><td><b>Research and web search</b></td><td>The information is public and lives online.</td><td>Never put member names or private details in a search or research request.</td></tr>
+<tr><td><b>Email</b></td><td>Email travels through other companies' servers by nature.</td><td>Use an organizational address, ideally on a domain you own, so you can change providers without losing your address.</td></tr>
+<tr><td><b>Newsletters and marketing</b></td><td>Sending tools handle delivery, unsubscribes, and legal requirements.</td><td>Keep the master member list in the hub. Upload only what's needed to send. Export regularly.</td></tr>
+<tr><td><b>Social media</b></td><td>That's where your community already is.</td><td>Treat posts as public. Keep originals in the hub. A person approves every post.</td></tr>
+<tr><td><b>Forms and sign-ups</b></td><td>Easy for the public to reach.</td><td>Ask only for what you need. Move responses into the hub and clear the form tool regularly.</td></tr>
+<tr><td><b>Phone and text</b></td><td>The most reliable way to reach people in a crisis.</td><td>Keep a printed phone tree. It works when nothing else does.</td></tr>
+</tbody></table></div>
+<p>Cloud AI is a reasonable choice for drafting public content, like a flyer or a social post, even at Level 3. The content is going public anyway.</p>
+</section>
+
+<section>
+<h2>What changes at each level</h2>
+<div class="tablewrap"><table class="matrix"><thead><tr><th>Layer</th><th>1 · Cloud-convenient</th><th>2 · Own-account</th><th>3 · Hybrid</th><th>4 · Local-first</th><th>5 · Self-sustaining</th></tr></thead><tbody>
+<tr><td><b>Energy</b></td><td>Grid</td><td>Grid</td><td>Grid, plus battery backup</td><td>Grid, plus battery backup</td><td>Solar or battery, days of reserve</td></tr>
+<tr><td><b>Computer</b></td><td>Any recent computer</td><td>Any recent computer</td><td>16 GB memory or more</td><td>32 GB or graphics card, or rented GPU</td><td>Efficient laptop or small desktop you can power yourself</td></tr>
+<tr><td><b>Isolation</b></td><td>Plain install</td><td>Plain install, separate login</td><td>Separate login or container</td><td>Container or dedicated machine</td><td>Dedicated machine</td></tr>
+<tr><td><b>AI model</b></td><td>Bundled cloud</td><td>Your cloud account</td><td>Local for sensitive, cloud for public</td><td>Local or private rented GPU</td><td>Local only</td></tr>
+<tr><td><b>Data leaves the device?</b></td><td>Yes, to the plan's providers</td><td>Yes, to your provider</td><td>Only public-facing work</td><td>No AI processing leaves</td><td>No</td></tr>
+<tr><td><b>Backups</b></td><td>Nightly, one extra copy</td><td>Nightly, one extra copy</td><td>3-2-1</td><td>3-2-1, encrypted</td><td>3-2-1, plus printed essentials</td></tr>
+<tr><td><b>Works without internet?</b></td><td>No</td><td>No</td><td>Sensitive work, yes</td><td>AI work, yes</td><td>Yes</td></tr>
+<tr><td><b>Works without the grid?</b></td><td>No</td><td>No</td><td>Briefly</td><td>Briefly</td><td>Yes</td></tr>
+<tr><td><b>Skill needed</b></td><td>None</td><td>Low</td><td>Some</td><td>A technology volunteer</td><td>A technology volunteer, plus power planning</td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+<h2>Which level fits you?</h2>
+<div class="decide">
+  <div class="q">What's the most sensitive thing your hub will hold?</div>
+  <div class="branches">
+    <div class="branch green"><span class="tag">Public information only</span><p>Events, resource lists, announcements.</p><p class="pick"><b>Start at Level 1 or 2.</b></p></div>
+    <div class="branch yellow"><span class="tag">Member names and contacts</span><p>Sign-ups, volunteer rosters, phone numbers.</p><p class="pick"><b>Level 3, hybrid.</b></p></div>
+    <div class="branch red"><span class="tag">Must not go dark</span><p>Disaster-prone area, or a group people rely on in emergencies.</p><p class="pick"><b>Work toward Level 4 or 5.</b></p></div>
+  </div>
+</div>
+<p>Health records, ID numbers, and financial details don't belong in the hub at <b>any</b> level.</p>
+<p><b>A sensible path:</b> start at Level 2 to learn the hub. Move to Level 3 when you add member lists. Add backup power when your first outage teaches you why. Write your level in your <a href="charter.html">Charter</a> and review it at each 90-day evaluation.</p>
+</section>
+
+<section>
+<h2>For your technology advisor</h2>
+<p>See the one-page <a href="briefs/brief-technology-advisors.pdf">technology brief</a> for the controls and the seven things to verify, the <a href="checklist.html">Trustworthy AI Checklist</a>, and the <a href="https://github.com/AI-Nurse-Solutions/community-care-hub">source repository</a>.</p>
+<p class="small">Hermes is made by Nous Research, an independent company. The Community Care Hub is not affiliated with or endorsed by Nous Research, or by any tool or provider named on this page. Hardware figures are rough guides. Products change, so verify current requirements before you buy.</p>
+</section>
+</main>
+<footer><p>Community Care Hub &middot; Nurse Intelligence Network, LLC &middot; Free to use, copy, and adapt. MIT License.</p></footer>
+</body></html>

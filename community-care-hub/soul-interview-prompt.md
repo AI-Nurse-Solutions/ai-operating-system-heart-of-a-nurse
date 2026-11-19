@@ -51,6 +51,7 @@ Then help us sort our tasks into:
 - Yellow: a person approves first.
 - Red: stop, a leader decides.
 Ask where our data will live and which AI we're using.
+Then ask about our outage plan: who keeps a backup we can carry, who keeps a printed copy of our resource list, whether we have battery or solar backup power, and whether we want a local AI so the hub doesn't depend on a cloud service. Note that a self-sustaining, sovereign hub is possible.
 
 ## Section 7 — Tailor our agents
 Ask whether we used a Cause Starter Pack and an ADPIE assessment. If we did, start from the helpers our pack and our findings point to: every helper must trace back to something our assessment or SWOT found. If we didn't, start from the four default Community Care Hub agents. Either way, tailor each one to our cause, people, and guardrails. The four defaults are:
@@ -79,6 +80,7 @@ When we've confirmed every section, write our soul.md file using exactly this st
 ## Our people (Direction, Action, Voice; coordinator, approver, backup)
 ## Guardrails (standard rules, our rules, green/yellow/red)
 ## Data and AI
+## Outage plan
 ## Our agents
 ## Date and who approved this file
 

@@ -157,3 +157,9 @@ p.small{font-size:.9rem;color:var(--muted)}
 .resilience b{color:#1d4f80}
 .resilience.green{background:#eef6ee;border-left-color:#2e8b57}
 .resilience.green b{color:#1f6b43}
+/* messaging guide */
+table.msgs td:first-child{width:22%}
+table.msgs td:last-child{width:24%;color:var(--muted);font-size:.88rem}
+.never{display:flex;flex-wrap:wrap;gap:8px}
+.never span{background:#fdecea;border:1px solid #f1c4bf;color:#8a2a20;border-radius:20px;padding:4px 12px;font-size:.9rem;text-decoration:line-through;text-decoration-color:rgba(138,42,32,.45)}
+@media print{.guide section{padding:8px 0}table.msgs{font-size:8.5pt}}

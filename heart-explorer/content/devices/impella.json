@@ -1,0 +1,58 @@
+{
+  "id": "impella",
+  "type": "device",
+  "label": "Impella",
+  "aliases": [
+    "Microaxial flow pump"
+  ],
+  "summary": "A microaxial flow pump placed across the aortic valve, most often from the femoral artery. It pulls blood from the LV and ejects it into the ascending aorta.",
+  "levers": [
+    {
+      "lever": "o2-demand",
+      "effect": "decrease",
+      "why": "Unloading the LV lowers wall stress and oxygen demand.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "lever": "preload",
+      "effect": "decrease",
+      "why": "Continuous drainage lowers LV volume and filling pressure.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Watch for hemolysis (dark or red urine, rising LDH and free hemoglobin) and limb ischemia.",
+    "Report position and suction alarms; pump position is checked by echo.",
+    "Check the access leg and distal pulses."
+  ],
+  "relations": [
+    {
+      "rel": "acts_on",
+      "target": "left-ventricle",
+      "why": "The inlet sits in the LV and drains it.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "acts_on",
+      "target": "aortic-valve",
+      "why": "The pump crosses the aortic valve to reach the ascending aorta.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "citations": [
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

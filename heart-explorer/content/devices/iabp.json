@@ -1,0 +1,65 @@
+{
+  "id": "iabp",
+  "type": "device",
+  "label": "Intra-aortic balloon pump",
+  "aliases": [
+    "IABP"
+  ],
+  "summary": "A balloon in the descending thoracic aorta inflates in diastole and deflates just before systole. Routine use in MI-related shock did not lower mortality in the IABP-SHOCK II trial, so it is used selectively.",
+  "levers": [
+    {
+      "lever": "o2-supply",
+      "effect": "increase",
+      "why": "Diastolic inflation raises aortic diastolic pressure and coronary perfusion.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "lever": "afterload",
+      "effect": "decrease",
+      "why": "Deflation just before systole lowers the pressure the LV ejects against.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "lever": "o2-demand",
+      "effect": "decrease",
+      "why": "Lower afterload means less LV work.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Check timing on the arterial waveform: inflation at the dicrotic notch, deflation just before the next upstroke.",
+    "Keep the cannulated leg straight and check distal pulses; check the left radial pulse and urine output, because a migrating balloon can block the left subclavian or renal arteries."
+  ],
+  "relations": [
+    {
+      "rel": "acts_on",
+      "target": "coronary-arteries",
+      "why": "Diastolic augmentation raises coronary perfusion pressure.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    },
+    {
+      "rel": "acts_on",
+      "target": "left-ventricle",
+      "why": "Systolic unloading lowers LV afterload.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "citations": [
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

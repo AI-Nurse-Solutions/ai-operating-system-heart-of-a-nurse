@@ -1,0 +1,16 @@
+{
+  "id": "elevated-lactate",
+  "type": "finding",
+  "label": "Elevated lactate",
+  "summary": "Blood lactate of 2 mmol/L or more reflects tissue hypoperfusion in shock. A rising or non-clearing lactate signals worsening shock.",
+  "relations": [],
+  "citations": [
+    "scai-shock-2019",
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

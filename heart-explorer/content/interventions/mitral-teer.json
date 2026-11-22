@@ -1,0 +1,42 @@
+{
+  "id": "mitral-teer",
+  "type": "intervention",
+  "label": "Mitral TEER",
+  "aliases": [
+    "Transcatheter edge-to-edge repair",
+    "MitraClip"
+  ],
+  "summary": "Transcatheter edge-to-edge repair clips the mitral leaflets together, through a venous catheter that crosses the atrial septum, to reduce the leak.",
+  "levers": [
+    {
+      "lever": "preload",
+      "effect": "decrease",
+      "why": "Less regurgitant volume lowers left atrial and LV filling pressures.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Check the femoral venous access site for bleeding.",
+    "Report a new or louder murmur or worsening dyspnea, which can signal residual MR or a detached clip."
+  ],
+  "relations": [
+    {
+      "rel": "acts_on",
+      "target": "mitral-valve",
+      "why": "The clip joins the anterior and posterior leaflets.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    }
+  ],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "pulsus-parvus-et-tardus",
+  "type": "finding",
+  "label": "Pulsus parvus et tardus",
+  "summary": "A weak (parvus) and late-peaking (tardus) carotid pulse caused by slow ejection through a narrowed aortic valve.",
+  "relations": [],
+  "citations": [
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

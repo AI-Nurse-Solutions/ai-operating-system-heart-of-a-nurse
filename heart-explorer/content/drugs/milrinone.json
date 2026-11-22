@@ -1,0 +1,39 @@
+{
+  "id": "milrinone",
+  "type": "drug",
+  "label": "Milrinone",
+  "summary": "Phosphodiesterase-3 inhibitor that raises contractility and dilates blood vessels, an inodilator. It is cleared by the kidneys and has a longer half-life than dobutamine.",
+  "levers": [
+    {
+      "lever": "contractility",
+      "effect": "increase",
+      "why": "Higher intracellular cAMP strengthens contraction.",
+      "citations": [
+        "dailymed-milrinone"
+      ]
+    },
+    {
+      "lever": "afterload",
+      "effect": "decrease",
+      "why": "Vasodilation lowers systemic vascular resistance.",
+      "citations": [
+        "dailymed-milrinone"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Expect hypotension, especially with a loading dose; watch MAP closely.",
+    "It accumulates in kidney dysfunction, so trend creatinine and urine output and confirm renal dosing.",
+    "Monitor telemetry for arrhythmias."
+  ],
+  "relations": [],
+  "citations": [
+    "dailymed-milrinone",
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

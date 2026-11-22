@@ -1,0 +1,42 @@
+{
+  "id": "pci",
+  "type": "intervention",
+  "label": "PCI",
+  "aliases": [
+    "Percutaneous coronary intervention"
+  ],
+  "summary": "Percutaneous coronary intervention opens a blocked coronary artery with a balloon and stent. In shock after acute MI, emergency revascularization of the culprit artery improves survival.",
+  "levers": [
+    {
+      "lever": "o2-supply",
+      "effect": "increase",
+      "why": "Reopening the artery restores blood flow to ischemic muscle.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Check the radial or femoral access site and distal pulses.",
+    "Report recurrent chest pain or new ST changes, which may mean stent thrombosis.",
+    "Teach antiplatelet adherence; stopping early raises the risk of stent thrombosis."
+  ],
+  "relations": [
+    {
+      "rel": "acts_on",
+      "target": "coronary-arteries",
+      "why": "The stent is placed in the blocked coronary artery.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "citations": [
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

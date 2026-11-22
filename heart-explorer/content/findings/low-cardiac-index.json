@@ -1,0 +1,18 @@
+{
+  "id": "low-cardiac-index",
+  "type": "finding",
+  "label": "Low cardiac index",
+  "aliases": [
+    "CI"
+  ],
+  "summary": "Classic hemodynamic criteria for cardiogenic shock include a cardiac index below 1.8 L/min/m2 without support (or 2.2 with support) and a wedge pressure above 15 mmHg, measured by pulmonary artery catheter.",
+  "relations": [],
+  "citations": [
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

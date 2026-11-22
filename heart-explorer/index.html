@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heart Explorer (draft preview) — Nurse AI OS</title>
+<meta name="description" content="Heart Explorer links cardiac anatomy to symptoms, labs, syndromes, drug mechanisms, procedures and mechanical support devices. Draft preview pending clinical review.">
+<!-- Draft cards pending clinical review: keep out of search until the strict build passes. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/img/favicon-lamp.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nurse-ai.css">
+<style>
+.hx-notice{background:var(--gold-100);border:1px solid var(--gold-300);border-radius:var(--radius);padding:.9rem 1.1rem;margin:1.2rem 0;font-size:.98rem;}
+.hx-layout{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:1.4rem;align-items:start;margin:1.4rem 0 3rem;}
+.hx-controls{display:grid;gap:.6rem;margin-bottom:.9rem;}
+.hx-controls label{font-weight:700;font-size:.9rem;color:var(--ink-600);}
+.hx-controls input,.hx-controls select{width:100%;font:inherit;font-size:1rem;padding:.5rem .65rem;border:1px solid var(--linen-100);border-radius:8px;background:var(--white);color:var(--ink-900);}
+.hx-list{background:var(--white);border:1px solid var(--linen-100);border-radius:var(--radius);padding:.6rem;max-height:70vh;overflow:auto;}
+.hx-list h3{font-family:var(--font-body);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-600);margin:.8rem .4rem .3rem;}
+.hx-list h3:first-child{margin-top:.2rem;}
+.hx-list ul{list-style:none;margin:0;padding:0;}
+.hx-list button{display:block;width:100%;text-align:left;font:inherit;font-size:.98rem;background:none;border:0;border-radius:8px;padding:.35rem .55rem;color:var(--navy-800);cursor:pointer;}
+.hx-list button:hover{background:var(--teal-100);}
+.hx-list button:focus-visible{outline:3px solid var(--teal-600);outline-offset:1px;}
+.hx-list button[aria-current="true"]{background:var(--navy-800);color:var(--white);}
+.hx-count{font-size:.9rem;color:var(--ink-600);margin:.2rem .4rem .4rem;}
+.hx-card{background:var(--white);border:1px solid var(--linen-100);border-left:5px solid var(--teal-500);border-radius:var(--radius);padding:1.4rem 1.6rem;box-shadow:var(--shadow-sm);}
+.hx-card h2{margin:.2rem 0 .3rem;}
+.hx-card h2:focus{outline:none;}
+.hx-card h4{margin:1.2rem 0 .4rem;font-size:1rem;}
+.hx-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .6rem;}
+.hx-chip{font-size:.8rem;font-weight:700;border-radius:999px;padding:.12rem .6rem;background:var(--teal-100);color:var(--teal-600);}
+.hx-chip.hx-draft{background:var(--gold-100);color:#8a6420;}
+.hx-aliases{color:var(--ink-600);font-size:.95rem;margin:0 0 .6rem;}
+.hx-levers{list-style:none;padding:0;margin:0;display:grid;gap:.45rem;}
+.hx-levers li{padding:.5rem .7rem;border-radius:8px;background:var(--linen-50);}
+.hx-levers strong{color:var(--navy-800);}
+.hx-rel ul{margin:.2rem 0 .6rem;padding-left:1.1rem;}
+.hx-rel li{margin:.25rem 0;}
+.hx-rel a{font-weight:700;}
+.hx-why{color:var(--ink-600);}
+.hx-cites{font-size:.9rem;color:var(--ink-600);}
+.hx-model-slot{border:2px dashed var(--linen-100);border-radius:var(--radius);padding:1rem 1.2rem;color:var(--ink-600);font-size:.95rem;margin-top:1.2rem;}
+@media (max-width: 760px){.hx-layout{grid-template-columns:1fr;}.hx-list{max-height:40vh;}.hx-card{padding:1.1rem 1.1rem;}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#hx-card">Skip to the card</a>
+
+<header class="site-header">
+  <nav class="nav-bar" aria-label="Primary navigation">
+    <a class="brand" href="../index.html"><span class="lamp" aria-hidden="true">🕯️</span> Nurse AI OS</a>
+    <div class="nav-links">
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../about.html">About</a>
+      <a class="nav-cta" href="../soul-quiz.html">Take the SOUL Quiz</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+  <section class="hero" style="padding:2.6rem 0;">
+    <div class="container">
+      <p class="kicker">Cardiac education · Draft preview</p>
+      <h1>Heart Explorer</h1>
+      <p>Pick a structure, condition, drug, procedure or device to see how it connects to the rest of the heart: symptoms, labs, mechanisms and the physiologic levers each therapy moves.</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <p class="hx-notice" id="hx-boundary"><strong>Educational content only, not clinical guidance.</strong> No patient data. Every card here is a draft pending review by a nurse educator and a cardiology clinician; verify against current guidelines and your facility's protocols.</p>
+
+    <div class="hx-layout">
+      <aside aria-label="Find a card">
+        <div class="hx-controls">
+          <label for="hx-search">Search</label>
+          <input id="hx-search" type="search" placeholder="e.g. lactate, IABP, murmur" autocomplete="off">
+          <label for="hx-lever">Physiologic lever</label>
+          <select id="hx-lever"><option value="">Any lever</option></select>
+        </div>
+        <p class="hx-count" id="hx-count" aria-live="polite"></p>
+        <nav class="hx-list" id="hx-list" aria-label="Heart Explorer cards"></nav>
+      </aside>
+
+      <article class="hx-card" id="hx-card" aria-live="polite">
+        <p>Loading cards…</p>
+      </article>
+    </div>
+
+    <p class="hx-model-slot">The 3D heart arrives in milestone M1. Each structure card becomes a named mesh in the model, so hovering or tapping it opens the same card shown here.</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-motto">🕯️ Carry the lamp. Keep the ledger. Agents propose. Humans judge. Nurses steward.</p>
+    <p><strong>Boundary:</strong> Heart Explorer is education only — no PHI, no patient-specific clinical advice. AI drafted these cards and clinicians review them before release; your judgment and license stay yours.</p>
+    <div class="footer-links">
+      <a href="../index.html">Home</a>
+      <a href="../pathways.html">Pathways</a>
+      <a href="../resources.html">Resources</a>
+      <a href="../ccrn-mentor-guide.html">CCRN AI Mentor</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+    </div>
+    <p>© 2026 Robert Domondon · Nurse AI OS</p>
+  </div>
+</footer>
+
+<script src="explorer.js" defer></script>
+<script src="../assets/site-shell.js" defer></script>
+</body>
+</html>

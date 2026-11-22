@@ -1,0 +1,55 @@
+{
+  "id": "nitroprusside",
+  "type": "drug",
+  "label": "Sodium nitroprusside",
+  "summary": "Fast-acting, short half-life vasodilator of arteries and veins. It lowers afterload and preload and is titrated minute to minute, usually with an arterial line.",
+  "levers": [
+    {
+      "lever": "afterload",
+      "effect": "decrease",
+      "why": "Arterial dilation lowers the pressure the LV ejects against.",
+      "citations": [
+        "dailymed-nitroprusside"
+      ]
+    },
+    {
+      "lever": "preload",
+      "effect": "decrease",
+      "why": "Venous dilation lowers return to the heart.",
+      "citations": [
+        "dailymed-nitroprusside"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Use continuous arterial BP monitoring and titrate exactly per order.",
+    "Protect from light per the label, and watch for cyanide or thiocyanate toxicity with high doses, long infusions, or kidney or liver dysfunction."
+  ],
+  "relations": [
+    {
+      "rel": "caution_in",
+      "target": "aortic-stenosis",
+      "why": "Vasodilation can drop BP sharply when output is fixed by a narrowed valve.",
+      "citations": [
+        "acc-aha-vhd-2020"
+      ]
+    },
+    {
+      "rel": "caution_in",
+      "target": "cardiogenic-shock",
+      "why": "Hypotension worsens coronary and organ perfusion, so it is used only when MAP allows.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "citations": [
+    "dailymed-nitroprusside",
+    "acc-aha-vhd-2020"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

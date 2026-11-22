@@ -1,0 +1,27 @@
+{
+  "id": "left-ventricle",
+  "type": "structure",
+  "label": "Left ventricle",
+  "aliases": [
+    "LV"
+  ],
+  "summary": "Thick-walled chamber that pumps oxygenated blood through the aortic valve into the aorta. Its function sets cardiac output and is the main target of inotropes and LV support devices.",
+  "relations": [
+    {
+      "rel": "flows_to",
+      "target": "aortic-valve",
+      "why": "In systole the left ventricle ejects blood through the open aortic valve.",
+      "citations": [
+        "openstax-ap-heart-anatomy"
+      ]
+    }
+  ],
+  "citations": [
+    "openstax-ap-heart-anatomy"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

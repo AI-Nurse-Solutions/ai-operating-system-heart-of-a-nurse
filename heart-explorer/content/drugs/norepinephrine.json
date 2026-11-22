@@ -1,0 +1,49 @@
+{
+  "id": "norepinephrine",
+  "type": "drug",
+  "label": "Norepinephrine",
+  "aliases": [
+    "Levophed"
+  ],
+  "summary": "Vasopressor with strong alpha-1 and some beta-1 effect. It is the commonly preferred first-line vasopressor in cardiogenic shock.",
+  "levers": [
+    {
+      "lever": "afterload",
+      "effect": "increase",
+      "why": "Alpha-1 vasoconstriction raises systemic vascular resistance and MAP.",
+      "citations": [
+        "dailymed-norepinephrine"
+      ]
+    },
+    {
+      "lever": "contractility",
+      "effect": "increase",
+      "why": "Modest beta-1 stimulation adds some inotropy.",
+      "citations": [
+        "dailymed-norepinephrine"
+      ]
+    },
+    {
+      "lever": "o2-supply",
+      "effect": "increase",
+      "why": "A higher diastolic pressure supports coronary perfusion.",
+      "citations": [
+        "aha-cardiogenic-shock-2017"
+      ]
+    }
+  ],
+  "nursingPriorities": [
+    "Infuse through a central line when possible; for peripheral use follow the facility protocol and check the site often for extravasation.",
+    "Titrate to the ordered MAP target, and watch for arrhythmias and cold, ischemic fingers and toes."
+  ],
+  "relations": [],
+  "citations": [
+    "dailymed-norepinephrine",
+    "aha-cardiogenic-shock-2017"
+  ],
+  "review": {
+    "status": "draft",
+    "draftedBy": "Claude (AI draft, 2026-10-28)",
+    "reviewers": []
+  }
+}

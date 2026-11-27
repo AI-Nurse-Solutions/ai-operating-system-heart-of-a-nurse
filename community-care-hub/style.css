@@ -38,6 +38,9 @@ footer{text-align:center;padding:30px 16px;font-size:.9rem;color:var(--muted)}
 .vid-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:16px}
 .vid{margin:0}
 .vid-frame{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:var(--ink)}
+.vid-frame.wide{aspect-ratio:16/9}
+.feature{background:#fff;border:1px solid var(--line);border-left:6px solid var(--orange);border-radius:12px;padding:16px;margin:16px 0 24px}
+.feature h3{margin-top:0}
 .vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .vid figcaption{font-size:.9rem;font-weight:600;color:var(--teal);margin-top:8px;line-height:1.35}
 .doc h1{color:var(--teal);font-size:2rem;line-height:1.2;margin:8px 0 12px}
@@ -183,3 +186,9 @@ table.msgs td:last-child{width:24%;color:var(--muted);font-size:.88rem}
 table.matrix{font-size:.88rem;min-width:760px}
 table.matrix td:first-child{white-space:nowrap}
 @media print{.level,.layer{break-inside:avoid}table.matrix{min-width:0;font-size:8pt}}
+code{background:var(--teal-soft);padding:1px 5px;border-radius:4px;font-size:.92em;word-break:break-word}
+.honor{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
+.honor blockquote{flex:1 1 280px;margin:0}
+.portrait{flex:0 0 200px;margin:0 auto;text-align:center}
+.portrait img{display:block;width:200px;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.portrait figcaption{font-size:.9rem;font-weight:600;color:var(--teal);margin-top:8px}
